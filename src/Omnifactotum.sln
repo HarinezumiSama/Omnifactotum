@@ -3,6 +3,8 @@ Microsoft Visual Studio Solution File, Format Version 11.00
 # Visual Studio 2010
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Omnifactotum", "Omnifactotum\Omnifactotum.csproj", "{1054B8A0-40D7-4FBC-A658-9AC9179035F8}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Omnifactotum.Tests", "Omnifactotum.Tests\Omnifactotum.Tests.csproj", "{A6A92B13-8AF3-453B-B6AA-137312AE0CCB}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -13,6 +15,10 @@ Global
 		{1054B8A0-40D7-4FBC-A658-9AC9179035F8}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{1054B8A0-40D7-4FBC-A658-9AC9179035F8}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{1054B8A0-40D7-4FBC-A658-9AC9179035F8}.Release|Any CPU.Build.0 = Release|Any CPU
+		{A6A92B13-8AF3-453B-B6AA-137312AE0CCB}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{A6A92B13-8AF3-453B-B6AA-137312AE0CCB}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{A6A92B13-8AF3-453B-B6AA-137312AE0CCB}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{A6A92B13-8AF3-453B-B6AA-137312AE0CCB}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

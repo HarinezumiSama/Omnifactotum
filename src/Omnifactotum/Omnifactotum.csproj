@@ -23,6 +23,7 @@
     <WarningLevel>4</WarningLevel>
     <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
     <UseVSHostingProcess>false</UseVSHostingProcess>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>pdbonly</DebugType>
@@ -33,6 +34,7 @@
     <WarningLevel>4</WarningLevel>
     <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
     <UseVSHostingProcess>false</UseVSHostingProcess>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
   </PropertyGroup>
   <PropertyGroup>
     <SignAssembly>true</SignAssembly>
@@ -43,17 +45,61 @@
   <ItemGroup>
     <Reference Include="System" />
     <Reference Include="System.Core" />
-    <Reference Include="System.Xml.Linq" />
-    <Reference Include="System.Data.DataSetExtensions" />
     <Reference Include="Microsoft.CSharp" />
-    <Reference Include="System.Data" />
-    <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="ByReferenceEqualityComparer.cs" />
+    <Compile Include="DirectedGraph.cs" />
+    <Compile Include="DirectedGraphNode.cs" />
+    <Compile Include="DirectedGraphNode.Helper.cs" />
+    <Compile Include="DirectedGraphNodeCollection.cs" />
+    <Compile Include="DirectedGraphNodeCollectionBase.cs" />
+    <Compile Include="DirectedGraphOwnerRelation.cs" />
+    <Compile Include="EnumHelper.cs" />
+    <Compile Include="ExtensionMethods\OmnifactotumDisposableExtensions.cs" />
+    <Compile Include="ExtensionMethods\OmnifactotumArrayExtensions.cs" />
+    <Compile Include="ExtensionMethods\OmnifactotumAssemblyExtensions.cs" />
+    <Compile Include="ExtensionMethods\OmnifactotumCollectionExtensions.cs" />
+    <Compile Include="ExtensionMethods\OmnifactotumCollectionHashCodeHelper.cs" />
+    <Compile Include="ExtensionMethods\OmnifactotumCustomAttributeProviderExtensions.cs" />
+    <Compile Include="ExtensionMethods\OmnifactotumDateTimeExtensions.cs" />
+    <Compile Include="ExtensionMethods\OmnifactotumDateTimeOffsetExtensions.cs" />
+    <Compile Include="ExtensionMethods\OmnifactotumDictionaryExtensions.cs" />
+    <Compile Include="ExtensionMethods\OmnifactotumEnumExtensions.cs" />
+    <Compile Include="ExtensionMethods\OmnifactotumExceptionExtensions.cs" />
+    <Compile Include="ExtensionMethods\OmnifactotumGenericObjectExtensions.cs" />
+    <Compile Include="ExtensionMethods\OmnifactotumHashCodeHelper.cs" />
+    <Compile Include="ExtensionMethods\OmnifactotumMethodBaseExtensions.cs" />
+    <Compile Include="ExtensionMethods\OmnifactotumNullableBooleanExtensions.cs" />
+    <Compile Include="ExtensionMethods\OmnifactotumSetExtensions.cs" />
+    <Compile Include="ExtensionMethods\OmnifactotumStringExtensions.cs" />
+    <Compile Include="ExtensionMethods\OmnifactotumTimeSpanExtensions.cs" />
+    <Compile Include="ExtensionMethods\OmnifactotumTypeExtensions.cs" />
+    <Compile Include="Helper.cs" />
+    <Compile Include="KeyedEqualityComparer.cs" />
+    <Compile Include="KeyValuePair.Helper.cs" />
+    <Compile Include="Lazy.Helper.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="ReadOnlyDictionary.cs" />
+    <Compile Include="ReadOnlySet.cs" />
+    <Compile Include="RecursiveProcessingDirective.cs" />
+    <Compile Include="SmartDisposable.cs" />
+    <Compile Include="SmartDisposable.Helper.cs" />
+    <Compile Include="ToPropertyStringOptions.cs" />
+    <Compile Include="ValueRange.cs" />
+    <Compile Include="ValueRange.Helper.cs" />
+    <Compile Include="VirtualTreeNode.cs" />
+    <Compile Include="VirtualTreeNode.Helper.cs" />
+    <Compile Include="VirtualTreeNodeBase.cs" />
+    <Compile Include="VirtualTreeNodeCollection.cs" />
+    <Compile Include="VirtualTreeNodeRoot.cs" />
+    <Compile Include="WinEventLog.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Omnifactotum.snk" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="ExtensionMethods\__ReadMe.txt" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
