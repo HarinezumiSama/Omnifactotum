@@ -11,3 +11,4 @@ glob:*.Publish.xml
 glob:*.wbk
 glob:~$*.doc
 glob:*.DotSettings.user
+
