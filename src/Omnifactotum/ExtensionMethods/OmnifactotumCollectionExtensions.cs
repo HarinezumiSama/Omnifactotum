@@ -1,7 +1,5 @@
 using System;
-using System.Collections;
 using System.Linq;
-using Omnifactotum;
 
 //// Namespace is intentionally named so in order to simplify usage of extension methods
 
@@ -374,7 +372,7 @@ namespace System.Collections.Generic
         /// <param name="collection">
         ///     A collection of disposable elements.
         /// </param>
-        /// <seealso cref="Helper.DisposeSafely{T}"/>
+        /// <seealso cref="OmnifactotumDisposableExtensions.DisposeSafely{T}"/>
         public static void DisposeCollectionItemsSafely<TDisposable>(this IEnumerable<TDisposable> collection)
             where TDisposable : IDisposable
         {
@@ -419,6 +417,33 @@ namespace System.Collections.Generic
             #endregion
 
             return collection as T[] ?? collection.ToArray();
+        }
+
+        /// <summary>
+        ///     Gets an object that can be used to synchronize access to the specified collection.
+        /// </summary>
+        /// <typeparam name="T">
+        ///     The type of the collection object.
+        /// </typeparam>
+        /// <param name="collection">
+        ///     The collection to get a synchronization object of.
+        /// </param>
+        /// <returns>
+        ///     An object that can be used to synchronize access to the specified collection.
+        /// </returns>
+        public static object GetSyncRoot<T>(this T collection)
+            where T : ICollection
+        {
+            #region Argument Check
+
+            if (ReferenceEquals(collection, null))
+            {
+                throw new ArgumentNullException("collection");
+            }
+
+            #endregion
+
+            return collection.SyncRoot;
         }
 
         #endregion
