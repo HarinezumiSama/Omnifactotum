@@ -379,6 +379,32 @@ namespace System
             return Helper.ToPropertyString(obj, null);
         }
 
+        /// <summary>
+        ///     Determines if the contents of the specified object are equal to the contents of another specified
+        ///     object, that is, if these objects are of the same type and the values of all their corresponding
+        ///     instance fields are equal.
+        /// </summary>
+        /// <remarks>
+        ///     This method uses reflection to obtain the list of fields for comparison.
+        ///     This method recursively processes the composite objects, if any.
+        /// </remarks>
+        /// <typeparam name="T">
+        ///     The type of the objects to compare.
+        /// </typeparam>
+        /// <param name="obj">
+        ///     The first object to compare.
+        /// </param>
+        /// <param name="other">
+        ///     The second object to compare.
+        /// </param>
+        /// <returns>
+        ///     <b>true</b> if the contents of the two specified objects are equal; otherwise, <b>false</b>.
+        /// </returns>
+        public static bool IsEqualByContentsTo<T>(this T obj, T other)
+        {
+            return Helper.AreEqualByContents(obj, other);
+        }
+
         #endregion
     }
 }

@@ -44,11 +44,17 @@ namespace Omnifactotum
         private static readonly MethodInfo ToPropertyStringInternalMethodDefinition =
             new ToPropertyStringInternalMethodStub(ToPropertyStringInternal).Method.GetGenericMethodDefinition();
 
+        private static readonly Dictionary<Type, FieldInfo[]> ContentFieldsCacheMap =
+            new Dictionary<Type, FieldInfo[]>();
+
         [ThreadStatic]
         private static HashSet<object> _toPropertyStringObjectsBeingProcessed;
 
         [ThreadStatic]
         private static StringBuilder _toPropertyStringResultBuilder;
+
+        [ThreadStatic]
+        private static HashSet<PairReferenceHolder> _assertEqualityByContentsObjectsBeingProcessed;
 
         #endregion
 
@@ -232,6 +238,31 @@ namespace Omnifactotum
             var result = _toPropertyStringResultBuilder.ToString();
             _toPropertyStringResultBuilder.Clear();
             return result;
+        }
+
+        /// <summary>
+        ///     Determines if the contents of the two specified objects are equal, that is, if the objects are of
+        ///     the same type and the values of all their corresponding instance fields are equal.
+        /// </summary>
+        /// <remarks>
+        ///     This method uses reflection to obtain the list of fields for comparison.
+        ///     This method recursively processes the composite objects, if any.
+        /// </remarks>
+        /// <typeparam name="T">
+        ///     The type of the objects to compare.
+        /// </typeparam>
+        /// <param name="valueA">
+        ///     The first object to compare.
+        /// </param>
+        /// <param name="valueB">
+        ///     The second object to compare.
+        /// </param>
+        /// <returns>
+        ///     <b>true</b> if the contents of the two specified objects are equal; otherwise, <b>false</b>.
+        /// </returns>
+        public static bool AreEqualByContents<T>(T valueA, T valueB)
+        {
+            return AreEqualByContentsInternal(valueA, valueB);
         }
 
         #endregion
@@ -619,6 +650,27 @@ namespace Omnifactotum
 
         #region Private Methods
 
+        private static bool IsSimpleType(this Type type)
+        {
+            #region Argument Check
+
+            if (type == null)
+            {
+                throw new ArgumentNullException("type");
+            }
+
+            #endregion
+
+            return type.IsPrimitive
+                || type.IsEnum
+                || type.IsPointer
+                || type == typeof(string)
+                || type == typeof(decimal)
+                || type == typeof(Pointer)
+                || type == typeof(DateTime)
+                || type == typeof(DateTimeOffset);
+        }
+
         private static bool ProcessRecursivelyInternal<T>(
             T instance,
             Func<T, IEnumerable<T>> getItems,
@@ -745,14 +797,7 @@ namespace Omnifactotum
                     return;
                 }
 
-                var isSimpleType = type.IsPrimitive
-                    || type.IsEnum
-                    || type.IsPointer
-                    || type == typeof(string)
-                    || type == typeof(decimal)
-                    || type == typeof(Pointer)
-                    || type == typeof(DateTime)
-                    || type == typeof(DateTimeOffset)
+                var isSimpleType = type.IsSimpleType()
                     || typeof(Type).IsAssignableFrom(type)
                     || typeof(Assembly).IsAssignableFrom(type)
                     || typeof(Delegate).IsAssignableFrom(type);
@@ -947,6 +992,148 @@ namespace Omnifactotum
                     _toPropertyStringObjectsBeingProcessed = null;
                 }
             }
+        }
+
+        private static FieldInfo[] GetContentFields(Type type)
+        {
+            lock (ContentFieldsCacheMap.GetSyncRoot())
+            {
+                var result = ContentFieldsCacheMap.GetValueOrDefault(type);
+                if (result == null)
+                {
+                    result = type.GetFields(BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic);
+                    ContentFieldsCacheMap[type] = result;
+                }
+
+                return result;
+            }
+        }
+
+        private static bool AreEqualByContentsInternal(object valueA, object valueB)
+        {
+            var isAssertEqualityByContentObjectsBeingProcessedCreated = false;
+            var isObjectPairAddedToBeingProcessed = false;
+            try
+            {
+                if (ReferenceEquals(valueA, valueB))
+                {
+                    return true;
+                }
+
+                if (ReferenceEquals(valueA, null) || ReferenceEquals(valueB, null))
+                {
+                    return false;
+                }
+
+                var actualType = valueA.GetType();
+                if (actualType != valueB.GetType())
+                {
+                    return false;
+                }
+
+                if (actualType.IsSimpleType())
+                {
+                    return Equals(valueA, valueB);
+                }
+
+                if (_assertEqualityByContentsObjectsBeingProcessed == null)
+                {
+                    isAssertEqualityByContentObjectsBeingProcessedCreated = true;
+                    _assertEqualityByContentsObjectsBeingProcessed = new HashSet<PairReferenceHolder>();
+                }
+
+                if (!actualType.IsValueType)
+                {
+                    isObjectPairAddedToBeingProcessed = true;
+                    _assertEqualityByContentsObjectsBeingProcessed.Add(new PairReferenceHolder(valueA, valueB));
+                }
+
+                var fields = GetContentFields(actualType);
+                if (fields.Length == 0)
+                {
+                    return actualType.IsValueType || ReferenceEquals(valueA, valueB);
+                }
+
+                foreach (var field in fields)
+                {
+                    var fieldValueA = field.GetValue(valueA);
+                    var fieldValueB = field.GetValue(valueB);
+
+                    var fieldEqual = AreEqualByContentsInternal(fieldValueA, fieldValueB);
+                    if (!fieldEqual)
+                    {
+                        return false;
+                    }
+                }
+            }
+            finally
+            {
+                if (isObjectPairAddedToBeingProcessed)
+                {
+                    _assertEqualityByContentsObjectsBeingProcessed.Remove(new PairReferenceHolder(valueA, valueB));
+                }
+
+                if (isAssertEqualityByContentObjectsBeingProcessedCreated)
+                {
+                    _assertEqualityByContentsObjectsBeingProcessed = null;
+                }
+            }
+
+            return true;
+        }
+
+        #endregion
+
+        #region PairReferenceHolder Class
+
+        private struct PairReferenceHolder : IEquatable<PairReferenceHolder>
+        {
+            #region Constants and Fields
+
+            private readonly object _valueA;
+            private readonly object _valueB;
+
+            #endregion
+
+            #region Constructors
+
+            internal PairReferenceHolder(object valueA, object valueB)
+            {
+                _valueA = valueA;
+                _valueB = valueB;
+            }
+
+            #endregion
+
+            #region Public Properties
+
+            #endregion
+
+            #region Public Methods
+
+            public override bool Equals(object obj)
+            {
+                return obj is PairReferenceHolder && Equals((PairReferenceHolder)obj);
+            }
+
+            public override int GetHashCode()
+            {
+                var equalityComparer = ByReferenceEqualityComparer<object>.Instance;
+
+                return equalityComparer.GetHashCode(this._valueA)
+                    .CombineHashCodeValues(equalityComparer.GetHashCode(this._valueB));
+            }
+
+            #endregion
+
+            #region IEquatable<PairReferenceHolder> Members
+
+            public bool Equals(PairReferenceHolder other)
+            {
+                return ReferenceEquals(_valueA, other._valueA) && ReferenceEquals(_valueB, other._valueB);
+            }
+
+            #endregion
         }
 
         #endregion
