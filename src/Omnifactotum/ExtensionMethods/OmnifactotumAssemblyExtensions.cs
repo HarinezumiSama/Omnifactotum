@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Diagnostics;
 
 //// Namespace is intentionally named so in order to simplify usage of extension methods
