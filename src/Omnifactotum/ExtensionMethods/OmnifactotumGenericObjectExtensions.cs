@@ -8,8 +8,8 @@ using Omnifactotum;
 //// Namespace is intentionally named so in order to simplify usage of extension methods
 
 // ReSharper disable CheckNamespace
-namespace System
 
+namespace System
 // ReSharper restore CheckNamespace
 {
     /// <summary>
@@ -403,6 +403,152 @@ namespace System
         public static bool IsEqualByContentsTo<T>(this T obj, T other)
         {
             return Helper.AreEqualByContents(obj, other);
+        }
+
+        /// <summary>
+        ///     Computes the specified predicate against the specified reference type value and
+        ///     returns this value if the predicate evaluates to <b>true</b>; otherwise, returns <b>null</b>.
+        /// </summary>
+        /// <typeparam name="T">
+        ///     The type of the value.
+        /// </typeparam>
+        /// <param name="value">
+        ///     The value to compute the predicate against.
+        /// </param>
+        /// <param name="predicate">
+        ///     The predicate to compute.
+        /// </param>
+        /// <returns>
+        ///     <paramref name="value"/> if the predicate evaluates to <b>true</b>; otherwise, <b>null</b>.
+        /// </returns>
+        /// <exception cref="System.ArgumentNullException">
+        ///     <paramref name="predicate"/> is <b>null</b>.
+        /// </exception>
+        public static T Affirm<T>(this T value, Func<T, bool> predicate)
+            where T : class
+        {
+            #region Argument Check
+
+            if (predicate == null)
+            {
+                throw new ArgumentNullException("predicate");
+            }
+
+            #endregion
+
+            return value == null || !predicate(value) ? null : value;
+        }
+
+        /// <summary>
+        ///     Computes the specified predicate against the specified reference type value considering that
+        ///     this value can be <b>null</b>.
+        /// </summary>
+        /// <typeparam name="T">
+        ///     The type of the value.
+        /// </typeparam>
+        /// <param name="value">
+        ///     The value to compute the predicate against.
+        /// </param>
+        /// <param name="predicate">
+        ///     The predicate to compute.
+        /// </param>
+        /// <returns>
+        ///     <b>true</b> if the <paramref name="value"/> is NOT <b>null</b> and the predicate evaluates to
+        ///     <b>true</b>; otherwise, <b>false</b>.
+        /// </returns>
+        /// <exception cref="System.ArgumentNullException">
+        ///     <paramref name="predicate"/> is <b>null</b>.
+        /// </exception>
+        public static bool ComputePredicate<T>(this T value, Func<T, bool> predicate)
+            where T : class
+        {
+            #region Argument Check
+
+            if (predicate == null)
+            {
+                throw new ArgumentNullException("predicate");
+            }
+
+            #endregion
+
+            return value != null && predicate(value);
+        }
+
+        /// <summary>
+        ///     Metamorphoses the specified reference type input value into an output value using the specified
+        ///     transformation method. If the input value is <b>null</b>, the specified default output value is
+        ///     returned.
+        /// </summary>
+        /// <typeparam name="TInput">
+        ///     The type of the input.
+        /// </typeparam>
+        /// <typeparam name="TOutput">
+        ///     The type of the output.
+        /// </typeparam>
+        /// <param name="input">
+        ///     The input value.
+        /// </param>
+        /// <param name="transform">
+        ///     A reference to the transformation method.
+        /// </param>
+        /// <param name="defaultOutput">
+        ///     The default output value.
+        /// </param>
+        /// <returns>
+        ///     An output value obtained by using the <paramref name="transform"/> method if the
+        ///     <paramref name="input"/> value is NOT <b>null</b>; otherwise, the specified default output value.
+        /// </returns>
+        /// <exception cref="System.ArgumentNullException">
+        ///     <paramref name="transform"/> is <b>null</b>.
+        /// </exception>
+        public static TOutput Morph<TInput, TOutput>(
+            this TInput input,
+            Func<TInput, TOutput> transform,
+            TOutput defaultOutput)
+            where TInput : class
+        {
+            #region Argument Check
+
+            if (transform == null)
+            {
+                throw new ArgumentNullException("transform");
+            }
+
+            #endregion
+
+            return input == null ? defaultOutput : transform(input);
+        }
+
+        /// <summary>
+        ///     Metamorphoses the specified reference type input value into an output value using the specified
+        ///     transformation method. If the input value is <b>null</b>, the default value for the output type
+        ///     is returned.
+        /// </summary>
+        /// <typeparam name="TInput">
+        ///     The type of the input.
+        /// </typeparam>
+        /// <typeparam name="TOutput">
+        ///     The type of the output.
+        /// </typeparam>
+        /// <param name="input">
+        ///     The input value.
+        /// </param>
+        /// <param name="transform">
+        ///     A reference to the transformation method.
+        /// </param>
+        /// <returns>
+        ///     An output value obtained by using the <paramref name="transform"/> method if the
+        ///     <paramref name="input"/> value is NOT <b>null</b>; otherwise, the default value for the output type.
+        /// </returns>
+        /// <exception cref="System.ArgumentNullException">
+        ///     <paramref name="transform"/> is <b>null</b>.
+        /// </exception>
+        public static TOutput Morph<TInput, TOutput>(
+            this TInput input,
+            Func<TInput, TOutput> transform)
+            where TInput : class
+        {
+            return Morph(input, transform, default(TOutput));
         }
 
         #endregion
