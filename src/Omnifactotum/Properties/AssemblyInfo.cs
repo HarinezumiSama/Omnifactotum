@@ -6,9 +6,9 @@ using System.Runtime.InteropServices;
 // set of attributes. Change these attribute values to modify the information
 // associated with an assembly.
 [assembly: AssemblyTitle("Omnifactotum")]
-[assembly: AssemblyDescription("")]
+[assembly: AssemblyDescription("Omnifactotum: the .NET library intended to help .NET developers avoid writing the same helper types, methods and extension methods for different projects.")]
 [assembly: AssemblyConfiguration("")]
-[assembly: AssemblyCompany("(None)")]
+[assembly: AssemblyCompany("Vitalii Maklai")]
 [assembly: AssemblyProduct("Omnifactotum")]
 [assembly: AssemblyCopyright("Copyright © Vitalii Maklai 2013")]
 [assembly: AssemblyTrademark("")]

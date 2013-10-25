@@ -108,13 +108,13 @@
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
     <CompileDependsOn>UpdateGlobalVersion;$(CompileDependsOn)</CompileDependsOn>
-    <CleanDependsOn>UpdateGlobalVersion;$(CleanDependsOn)</CleanDependsOn>
+    <!--CleanDependsOn>UpdateGlobalVersion;$(CleanDependsOn)</CleanDependsOn-->
     <BuildDependsOn>UpdateGlobalVersion;$(BuildDependsOn)</BuildDependsOn>
   </PropertyGroup>
   <Target Name="UpdateGlobalVersion">
     <PropertyGroup>
-      <BaseVersionFile>$(SolutionDir)\SolutionItems\BaseVersion.txt</BaseVersionFile>
-      <RevisionFile>$(SolutionDir)\SolutionItems\Revision.txt</RevisionFile>
+      <BaseVersionFile>$(ProjectDir)\..\SolutionItems\BaseVersion.txt</BaseVersionFile>
+      <RevisionFile>$(ProjectDir)\..\SolutionItems\Revision.txt</RevisionFile>
     </PropertyGroup>
     <Message Importance="high" Text="* Reading base version from '$(BaseVersionFile)'..." />
     <ReadLinesFromFile File="$(BaseVersionFile)">
