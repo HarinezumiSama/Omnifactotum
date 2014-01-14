@@ -19,12 +19,18 @@ namespace Omnifactotum
         /// </summary>
         public static readonly int DefaultMaxCollectionItemCount = 32;
 
+        /// <summary>
+        ///     The default value of the <see cref="ToPropertyStringOptions.MaxRecursionLevel"/> property.
+        /// </summary>
+        public static readonly int DefaultMaxRecursionLevel = 16;
+
         private static readonly PropertyInfo[] FlagPropertyInfos = typeof(ToPropertyStringOptions)
             .GetProperties(BindingFlags.Instance | BindingFlags.Public)
             .Where(item => item.CanWrite && item.PropertyType == typeof(bool) && !item.GetIndexParameters().Any())
             .ToArray();
 
         private int _maxCollectionItemCount;
+        private int _maxRecursionLevel;
 
         #endregion
 
@@ -36,6 +42,7 @@ namespace Omnifactotum
         public ToPropertyStringOptions()
         {
             this.MaxCollectionItemCount = DefaultMaxCollectionItemCount;
+            this.MaxRecursionLevel = DefaultMaxRecursionLevel;
         }
 
         #endregion
@@ -126,6 +133,33 @@ namespace Omnifactotum
                 #endregion
 
                 _maxCollectionItemCount = value;
+            }
+        }
+
+        /// <summary>
+        ///     Gets or sets the maximum recursion level for rendering complex properties.
+        /// </summary>
+        public int MaxRecursionLevel
+        {
+            [DebuggerStepThrough]
+            get
+            {
+                return _maxRecursionLevel;
+            }
+
+            [DebuggerNonUserCode]
+            set
+            {
+                #region Argument Check
+
+                if (value <= 0)
+                {
+                    throw new ArgumentOutOfRangeException("value", value, @"The value must be positive.");
+                }
+
+                #endregion
+
+                _maxRecursionLevel = value;
             }
         }
 

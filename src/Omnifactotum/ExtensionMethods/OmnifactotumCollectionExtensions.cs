@@ -1,12 +1,11 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
+using Omnifactotum.Annotations;
 
 //// Namespace is intentionally named so in order to simplify usage of extension methods
-
-// ReSharper disable CheckNamespace
+//// ReSharper disable once CheckNamespace
 namespace System.Collections.Generic
-
-// ReSharper restore CheckNamespace
 {
     /// <summary>
     ///     Contains extension methods for collections, that is, for <see cref="IEnumerable{T}"/>.
@@ -85,7 +84,7 @@ namespace System.Collections.Generic
 
             #endregion
 
-            foreach (T item in collection)
+            foreach (var item in collection)
             {
                 action(item);
             }
@@ -126,12 +125,53 @@ namespace System.Collections.Generic
 
             #endregion
 
-            int index = 0;
-            foreach (T item in collection)
+            var index = 0;
+            foreach (var item in collection)
             {
                 action(item, index);
                 index++;
             }
+        }
+
+        /// <summary>
+        ///     Sets the items in the specified collection to the specified items.
+        ///     The previously contained items are removed from the collection.
+        /// </summary>
+        /// <typeparam name="T">
+        ///     The type of the elements in the collection.
+        /// </typeparam>
+        /// <param name="collection">
+        ///     The collection to set the items of.
+        /// </param>
+        /// <param name="items">
+        ///     The items to put to the collection.
+        /// </param>
+        public static void SetItems<T>(this ICollection<T> collection, IEnumerable<T> items)
+        {
+            #region Argument Check
+
+            if (collection == null)
+            {
+                throw new ArgumentNullException("collection");
+            }
+
+            if (items == null)
+            {
+                throw new ArgumentNullException("items");
+            }
+
+            #endregion
+
+            collection.Clear();
+
+            var list = collection as List<T>;
+            if (list != null)
+            {
+                list.AddRange(items);
+                return;
+            }
+
+            items.DoForEach(collection.Add);
         }
 
         /// <summary>
@@ -159,14 +199,18 @@ namespace System.Collections.Generic
             IEnumerable<T> otherCollection,
             IEqualityComparer<T> comparer)
         {
+            //// ReSharper disable PossibleMultipleEnumeration - the method is optimized accordingly
             var fastResult = CheckReferenceAndCountEquality(collection, otherCollection);
+            //// ReSharper restore PossibleMultipleEnumeration
             if (fastResult.HasValue)
             {
                 return fastResult.Value;
             }
 
+            //// ReSharper disable PossibleMultipleEnumeration - the method is optimized accordingly
             var map = CreateCountMap(collection, comparer);
             var otherMap = CreateCountMap(otherCollection, comparer);
+            //// ReSharper restore PossibleMultipleEnumeration
 
             if (map.Count != otherMap.Count)
             {
@@ -232,17 +276,22 @@ namespace System.Collections.Generic
             IEnumerable<T> otherCollection,
             IEqualityComparer<T> comparer)
         {
+            //// ReSharper disable PossibleMultipleEnumeration - the method is optimized accordingly
             var fastResult = CheckReferenceAndCountEquality(collection, otherCollection);
+            //// ReSharper restore PossibleMultipleEnumeration
             if (fastResult.HasValue)
             {
                 return fastResult.Value;
             }
 
             var actualComparer = comparer ?? EqualityComparer<T>.Default;
+            //// ReSharper disable PossibleMultipleEnumeration - the method is optimized accordingly
             using (var enumerator = collection.GetEnumerator())
             {
                 using (var otherEnumerator = otherCollection.GetEnumerator())
                 {
+                    //// ReSharper restore PossibleMultipleEnumeration
+
                     while (enumerator.MoveNext())
                     {
                         if (!otherEnumerator.MoveNext()
@@ -400,7 +449,7 @@ namespace System.Collections.Generic
         /// <returns>
         ///     The source collection if it is not <b>null</b>; otherwise, empty collection.
         /// </returns>
-        public static IEnumerable<T> AvoidNull<T>(this IEnumerable<T> source)
+        public static IEnumerable<T> AvoidNull<T>([CanBeNull] this IEnumerable<T> source)
         {
             return source ?? Enumerable.Empty<T>();
         }
@@ -417,6 +466,58 @@ namespace System.Collections.Generic
             #endregion
 
             return collection as T[] ?? collection.ToArray();
+        }
+
+        /// <summary>
+        ///     Creates a new instance of the <see cref="HashSet{T}"/> class that uses the specified equality comparer
+        ///     for the set type, contains elements copied from the specified collection, and has sufficient capacity
+        ///     to accommodate the number of elements copied.
+        /// </summary>
+        /// <typeparam name="T">
+        ///     The type of elements in the collection.
+        /// </typeparam>
+        /// <param name="collection">
+        ///     The collection to create a hash set from.
+        /// </param>
+        /// <param name="comparer">
+        ///     The comparer to initialize a hash set with.
+        /// </param>
+        /// <returns>
+        ///     A created hash set.
+        /// </returns>
+        public static HashSet<T> ToHashSet<T>(
+            [NotNull] this IEnumerable<T> collection,
+            [CanBeNull] IEqualityComparer<T> comparer)
+        {
+            #region Argument Check
+
+            if (collection == null)
+            {
+                throw new ArgumentNullException("collection");
+            }
+
+            #endregion
+
+            return new HashSet<T>(collection, comparer);
+        }
+
+        /// <summary>
+        ///     Creates a new instance of the <see cref="HashSet{T}"/> class that uses the default equality comparer
+        ///     for the set type, contains elements copied from the specified collection, and has sufficient capacity
+        ///     to accommodate the number of elements copied.
+        /// </summary>
+        /// <typeparam name="T">
+        ///     The type of elements in the collection.
+        /// </typeparam>
+        /// <param name="collection">
+        ///     The collection to create a hash set from.
+        /// </param>
+        /// <returns>
+        ///     A created hash set.
+        /// </returns>
+        public static HashSet<T> ToHashSet<T>([NotNull] this IEnumerable<T> collection)
+        {
+            return ToHashSet(collection, null);
         }
 
         /// <summary>

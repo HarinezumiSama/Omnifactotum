@@ -1,11 +1,10 @@
-﻿using System;
+using System;
 using System.Diagnostics;
+using System.Globalization;
 
 //// Namespace is intentionally named so in order to simplify usage of extension methods
-
-// ReSharper disable CheckNamespace
+//// ReSharper disable once CheckNamespace
 namespace System.Reflection
-// ReSharper restore CheckNamespace
 {
     /// <summary>
     ///     Contains extension methods for the <see cref="System.Reflection.Assembly"/> class.
@@ -42,7 +41,10 @@ namespace System.Reflection
             if (!uri.IsFile)
             {
                 throw new InvalidOperationException(
-                    string.Format("The path of the assembly {{{0}}} is not local.", assembly.FullName));
+                    string.Format(
+                        CultureInfo.InvariantCulture,
+                        "The path of the assembly {{{0}}} is not local.",
+                        assembly.FullName));
             }
 
             return uri.LocalPath.EnsureNotNull();

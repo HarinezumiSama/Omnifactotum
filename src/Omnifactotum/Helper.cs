@@ -3,12 +3,14 @@ using System.Collections;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Diagnostics;
+using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Linq.Expressions;
 using System.Reflection;
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
+using System.Security.Cryptography;
 using System.Text;
 
 namespace Omnifactotum
@@ -21,6 +23,12 @@ namespace Omnifactotum
         #region Constants and Fields
 
         /// <summary>
+        ///     The minimum size of a generated identifier part (see <see cref="Helper.GenerateId"/> and
+        ///     <see cref="IdGenerationModes"/>).
+        /// </summary>
+        public static readonly int MinimumGeneratedIdPartSize = Marshal.SizeOf(typeof(Guid));
+
+        /// <summary>
         ///     The pointer string format.
         /// </summary>
         internal static readonly string PointerStringFormat = string.Format(
@@ -29,15 +37,9 @@ namespace Omnifactotum
 
         private const string NullString = "<null>";
 
-        /// <summary>
-        ///     The invalid expression message format.
-        /// </summary>
         private const string InvalidExpressionMessageFormat =
             "Invalid expression (must be a getter of a property of the type '{0}'): {{ {1} }}.";
 
-        /// <summary>
-        ///     The invalid expression message auto format.
-        /// </summary>
         private const string InvalidExpressionMessageAutoFormat =
             "Invalid expression (must be a getter of a property of some type): {{ {0} }}.";
 
@@ -46,6 +48,10 @@ namespace Omnifactotum
 
         private static readonly Dictionary<Type, FieldInfo[]> ContentFieldsCacheMap =
             new Dictionary<Type, FieldInfo[]>();
+
+        private static readonly int GuidSize = Marshal.SizeOf(typeof(Guid));
+
+        private static readonly RNGCryptoServiceProvider IdGenerator = new RNGCryptoServiceProvider();
 
         [ThreadStatic]
         private static HashSet<object> _toPropertyStringObjectsBeingProcessed;
@@ -65,7 +71,8 @@ namespace Omnifactotum
             bool isRoot,
             ToPropertyStringOptions options,
             Func<Type, PropertyInfo[]> getProperties,
-            StringBuilder resultBuilder);
+            StringBuilder resultBuilder,
+            int recursionLevel);
 
         #endregion
 
@@ -233,7 +240,7 @@ namespace Omnifactotum
                 _toPropertyStringResultBuilder.Clear();
             }
 
-            ToPropertyStringInternal(obj, true, actualOptions, getProperties, _toPropertyStringResultBuilder);
+            ToPropertyStringInternal(obj, true, actualOptions, getProperties, _toPropertyStringResultBuilder, 0);
 
             var result = _toPropertyStringResultBuilder.ToString();
             _toPropertyStringResultBuilder.Clear();
@@ -646,6 +653,134 @@ namespace Omnifactotum
             return Path.GetDirectoryName(path).EnsureNotNull();
         }
 
+        /// <summary>
+        ///     Generates an identifier which is unique, cryptographically random, or both.
+        /// </summary>
+        /// <param name="size">
+        ///     <para>The size, in bytes, of the resulting identifier.</para>
+        ///     <para>
+        ///         This value must be at least <see cref="Helper.MinimumGeneratedIdPartSize"/> when either
+        ///         <see cref="IdGenerationModes.Unique"/> or <see cref="IdGenerationModes.Random"/> is solely
+        ///         specified, and it must be at least twice as <see cref="Helper.MinimumGeneratedIdPartSize"/> if
+        ///         both modes are specified.
+        ///     </para>
+        /// </param>
+        /// <param name="modes">
+        ///     Specifies the modes of identifier generation.
+        /// </param>
+        /// <returns>
+        ///     An array of bytes representing the generated identifier.
+        /// </returns>
+        /// <exception cref="ArgumentOutOfRangeException">
+        ///     <paramref name="size"/> is less than required by the specified <paramref name="modes"/>.
+        /// </exception>
+        /// <exception cref="ArgumentException">
+        ///     <paramref name="modes"/> does not specify anything to generate.
+        /// </exception>
+        public static byte[] GenerateId(int size, IdGenerationModes modes)
+        {
+            #region Argument Check
+
+            if (modes <= 0)
+            {
+                throw new ArgumentOutOfRangeException("modes", modes, @"The value must be positive.");
+            }
+
+            #endregion
+
+            var minimumSize = 0;
+            var generateUniquePart = false;
+            var generateRandomPart = false;
+
+            if (modes.IsAnySet(IdGenerationModes.Unique))
+            {
+                generateUniquePart = true;
+                minimumSize += MinimumGeneratedIdPartSize;
+            }
+
+            if (modes.IsAnySet(IdGenerationModes.Random))
+            {
+                generateRandomPart = true;
+                minimumSize += MinimumGeneratedIdPartSize;
+            }
+
+            #region Argument Check
+
+            if (size < minimumSize)
+            {
+                var errorMessage = string.Format(
+                    CultureInfo.InvariantCulture,
+                    "For the specified mode(s), the size must be at least {0}.",
+                    minimumSize);
+                throw new ArgumentOutOfRangeException("size", size, errorMessage);
+            }
+
+            if (!generateUniquePart && !generateRandomPart)
+            {
+                throw new ArgumentException("There is nothing to generate.", "modes");
+            }
+
+            #endregion
+
+            var result = new byte[size];
+
+            var offset = 0;
+            if (generateUniquePart)
+            {
+                var uniquePart = Guid.NewGuid().ToByteArray();
+                Array.Copy(uniquePart, result, GuidSize);
+                offset += GuidSize;
+            }
+
+            if (generateRandomPart)
+            {
+                var randomPartSize = size - offset;
+
+                // According to the documentation, GetBytes is thread-safe
+                // However, using a lock here to be on the safe side
+                var randomPart = new byte[randomPartSize];
+                lock (IdGenerator)
+                {
+                    IdGenerator.GetBytes(randomPart);
+                }
+
+                Array.Copy(randomPart, 0, result, offset, randomPart.Length);
+            }
+
+            return result;
+        }
+
+        /// <summary>
+        ///     Generates an identifier, which is unique, cryptographically random, or both, and returns its
+        ///     hexadecimal representation.
+        /// </summary>
+        /// <param name="size">
+        ///     <para>The size, in bytes, of the resulting identifier.</para>
+        ///     <para>
+        ///         This value must be at least <see cref="Helper.MinimumGeneratedIdPartSize"/> when either
+        ///         <see cref="IdGenerationModes.Unique"/> or <see cref="IdGenerationModes.Random"/> is solely
+        ///         specified, and it must be at least twice as <see cref="Helper.MinimumGeneratedIdPartSize"/> if
+        ///         both modes are specified.
+        ///     </para>
+        /// </param>
+        /// <param name="modes">
+        ///     Specifies the modes of identifier generation.
+        /// </param>
+        /// <returns>
+        ///     A hexadecimal representation of the generated identifier.
+        /// </returns>
+        /// <exception cref="ArgumentOutOfRangeException">
+        ///     <paramref name="size"/> is less than required by the specified <paramref name="modes"/>.
+        /// </exception>
+        /// <exception cref="ArgumentException">
+        ///     <paramref name="modes"/> does not specify anything to generate.
+        /// </exception>
+        public static string GenerateIdString(int size, IdGenerationModes modes)
+        {
+            var id = GenerateId(size, modes);
+            return id.ToHexString();
+        }
+
         #endregion
 
         #region Private Methods
@@ -728,12 +863,14 @@ namespace Omnifactotum
             return true;
         }
 
+        [DebuggerNonUserCode]
         private static void ToPropertyStringInternal<T>(
             T obj,
             bool isRoot,
             ToPropertyStringOptions options,
             Func<Type, PropertyInfo[]> getProperties,
-            StringBuilder resultBuilder)
+            StringBuilder resultBuilder,
+            int recursionLevel)
         {
             const string ItemSeparator = ", ";
             const string PropertyNameValueSeparator = " = ";
@@ -764,6 +901,8 @@ namespace Omnifactotum
                             isBraceOpen = true;
                         }
                     };
+
+                var nextRecursionLevel = recursionLevel + 1;
 
                 var type = obj.GetTypeSafely();
 
@@ -827,6 +966,14 @@ namespace Omnifactotum
                             resultBuilder.AppendFormat(PointerStringFormat, (long)Pointer.Unbox(obj));
                         }
                     }
+                    else if (type == typeof(IntPtr))
+                    {
+                        resultBuilder.AppendFormat(PointerStringFormat, ((IntPtr)(object)obj).ToInt64());
+                    }
+                    else if (type == typeof(UIntPtr))
+                    {
+                        resultBuilder.AppendFormat(PointerStringFormat, ((UIntPtr)(object)obj).ToUInt64());
+                    }
                     else if (type == typeof(string))
                     {
                         resultBuilder.Append(((string)(object)obj).ToUIString());
@@ -865,6 +1012,12 @@ namespace Omnifactotum
                 if (!isRoot && !options.RenderComplexProperties)
                 {
                     resultBuilder.Append(obj.ToStringSafelyInvariant());
+                    return;
+                }
+
+                if (recursionLevel > options.MaxRecursionLevel)
+                {
+                    resultBuilder.Append("<Max recursion level reached>");
                     return;
                 }
 
@@ -929,7 +1082,17 @@ namespace Omnifactotum
 
                             var method = ToPropertyStringInternalMethodDefinition.MakeGenericMethod(
                                 elementType.IsPointer ? typeof(object) : elementType);
-                            var parameters = new[] { currentValue, false, options, getProperties, resultBuilder };
+
+                            var parameters = new[]
+                            {
+                                currentValue,
+                                false,
+                                options,
+                                getProperties,
+                                resultBuilder,
+                                nextRecursionLevel
+                            };
+
                             method.Invoke(null, parameters);
                         }
                     }
@@ -971,7 +1134,17 @@ namespace Omnifactotum
 
                     var method = ToPropertyStringInternalMethodDefinition.MakeGenericMethod(
                         propertyInfo.PropertyType.IsPointer ? typeof(object) : propertyInfo.PropertyType);
-                    var parameters = new[] { propertyValue, false, options, getProperties, resultBuilder };
+
+                    var parameters = new[]
+                    {
+                        propertyValue,
+                        false,
+                        options,
+                        getProperties,
+                        resultBuilder,
+                        nextRecursionLevel
+                    };
+
                     method.Invoke(null, parameters);
                 }
             }

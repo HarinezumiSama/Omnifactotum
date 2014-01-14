@@ -52,7 +52,7 @@ namespace Omnifactotum
         /// <param name="children">
         ///     The children to initialize the <see cref="VirtualTreeNode{T}"/> instance with.
         /// </param>
-        public VirtualTreeNode(IEnumerable<VirtualTreeNode<T>> children)
+        public VirtualTreeNode(ICollection<VirtualTreeNode<T>> children)
             : base(children)
         {
             // Nothing to do
@@ -68,7 +68,7 @@ namespace Omnifactotum
         /// <param name="children">
         ///     The children to initialize the <see cref="VirtualTreeNode{T}"/> instance with.
         /// </param>
-        public VirtualTreeNode(T value, IEnumerable<VirtualTreeNode<T>> children)
+        public VirtualTreeNode(T value, ICollection<VirtualTreeNode<T>> children)
             : this(children)
         {
             _value = value;

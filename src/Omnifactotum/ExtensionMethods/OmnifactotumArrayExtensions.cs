@@ -1,13 +1,11 @@
 ﻿using System;
 using System.Collections.ObjectModel;
 using System.Diagnostics;
+using System.Text;
 
 //// Namespace is intentionally named so in order to simplify usage of extension methods
-
-// ReSharper disable CheckNamespace
+//// ReSharper disable once CheckNamespace
 namespace System
-
-// ReSharper restore CheckNamespace
 {
     /// <summary>
     ///     Contains extension methods for array types.
@@ -116,9 +114,84 @@ namespace System
             return source ?? StrongTypeHelper<T>.EmptyArray;
         }
 
+        /// <summary>
+        ///     Creates a read-only wrapper for the specified array.
+        /// </summary>
+        /// <typeparam name="T">
+        ///     The type of values in the array.
+        /// </typeparam>
+        /// <param name="array">
+        ///     The array to create a read-only wrapper for.
+        /// </param>
+        /// <returns>
+        ///     A read-only wrapper for the specified array.
+        /// </returns>
         public static ReadOnlyCollection<T> AsReadOnly<T>(this T[] array)
         {
+            #region Argument Check
+
+            if (array == null)
+            {
+                throw new ArgumentNullException("array");
+            }
+
+            #endregion
+
             return new ReadOnlyCollection<T>(array);
+        }
+
+        /// <summary>
+        ///     Converts the specified array of bytes to the hexadecimal string.
+        /// </summary>
+        /// <param name="byteArray">
+        ///     The byte array to convert.
+        /// </param>
+        /// <param name="useUpperCase">
+        ///     <b>true</b> to use upper case letter in the resulting hexadecimal string;
+        ///     <b>false</b> to use lower case letter in the resulting hexadecimal string.
+        /// </param>
+        /// <returns>
+        ///     A hexadecimal string.
+        /// </returns>
+        public static string ToHexString(this byte[] byteArray, bool useUpperCase)
+        {
+            #region Argument Check
+
+            if (byteArray == null)
+            {
+                throw new ArgumentNullException("byteArray");
+            }
+
+            #endregion
+
+            const string UpperCaseFormat = "X2";
+            const string LowerCaseFormat = "x2";
+
+            var format = useUpperCase ? UpperCaseFormat : LowerCaseFormat;
+            var resultBuilder = new StringBuilder(byteArray.Length * 2);
+
+            // ReSharper disable once ForCanBeConvertedToForeach
+            for (var index = 0; index < byteArray.Length; index++)
+            {
+                var item = byteArray[index].ToString(format);
+                resultBuilder.Append(item);
+            }
+
+            return resultBuilder.ToString();
+        }
+
+        /// <summary>
+        ///     Converts the specified array of bytes to the hexadecimal string (in lower case).
+        /// </summary>
+        /// <param name="byteArray">
+        ///     The byte array to convert.
+        /// </param>
+        /// <returns>
+        ///     A hexadecimal string (in lower case).
+        /// </returns>
+        public static string ToHexString(this byte[] byteArray)
+        {
+            return ToHexString(byteArray, false);
         }
 
         #endregion

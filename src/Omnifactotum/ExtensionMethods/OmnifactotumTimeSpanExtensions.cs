@@ -3,11 +3,8 @@ using System.Diagnostics;
 using System.Linq;
 
 //// Namespace is intentionally named so in order to simplify usage of extension methods
-
-// ReSharper disable CheckNamespace
+//// ReSharper disable once CheckNamespace
 namespace System
-
-// ReSharper restore CheckNamespace
 {
     /// <summary>
     ///     Contains extension methods for the <see cref="TimeSpan"/> structure.

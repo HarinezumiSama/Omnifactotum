@@ -3,11 +3,8 @@ using System.Collections.Generic;
 using System.Linq;
 
 //// Namespace is intentionally named so in order to simplify usage of extension methods
-
-// ReSharper disable CheckNamespace
+//// ReSharper disable once CheckNamespace
 namespace System.Reflection
-
-// ReSharper restore CheckNamespace
 {
     /// <summary>
     ///     Contains extension methods for <see cref="ICustomAttributeProvider"/> interface.

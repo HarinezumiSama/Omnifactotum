@@ -1,14 +1,13 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.ComponentModel;
 using System.Diagnostics;
 using System.Globalization;
+using System.Linq;
 
 //// Namespace is intentionally named so in order to simplify usage of extension methods
-
-// ReSharper disable CheckNamespace
+//// ReSharper disable once CheckNamespace
 namespace System
-
-// ReSharper restore CheckNamespace
 {
     /// <summary>
     ///     Contains extension methods for enumerations.
@@ -102,7 +101,7 @@ namespace System
         public static bool IsAllSet<TEnum>(this TEnum enumerationValue, TEnum flags)
             where TEnum : struct
         {
-            return IsSetInternal<TEnum>(enumerationValue, flags, true);
+            return IsSetInternal(enumerationValue, flags, true);
         }
 
         /// <summary>
@@ -136,7 +135,7 @@ namespace System
         public static bool IsAnySet<TEnum>(this TEnum enumerationValue, TEnum flags)
             where TEnum : struct
         {
-            return IsSetInternal<TEnum>(enumerationValue, flags, false);
+            return IsSetInternal(enumerationValue, flags, false);
         }
 
         /// <summary>
@@ -167,11 +166,12 @@ namespace System
         {
             #region Argument Check
 
-            Type enumType = typeof(TEnum);
+            var enumType = typeof(TEnum);
             if (!enumType.IsEnum)
             {
                 throw new ArgumentException(
-                    string.Format("The type must be an enumeration ({0}).", enumType.FullName),
+                    string.Format("The type is not an enumeration ({0}).", enumType.FullName),
+                    //// ReSharper disable once NotResolvedInText
                     "TEnum");
             }
 
@@ -182,15 +182,7 @@ namespace System
 
             #endregion
 
-            foreach (TEnum otherValue in otherValues)
-            {
-                if (EqualityComparer<TEnum>.Default.Equals(enumerationValue, otherValue))
-                {
-                    return true;
-                }
-            }
-
-            return false;
+            return otherValues.Any(otherValue => EqualityComparer<TEnum>.Default.Equals(enumerationValue, otherValue));
         }
 
         /// <summary>
@@ -219,7 +211,35 @@ namespace System
         public static bool IsOneOf<TEnum>(this TEnum enumerationValue, params TEnum[] otherValues)
             where TEnum : struct
         {
-            return IsOneOf<TEnum>(enumerationValue, (IEnumerable<TEnum>)otherValues);
+            return IsOneOf(enumerationValue, (IEnumerable<TEnum>)otherValues);
+        }
+
+        /// <summary>
+        ///     Ensures that the specified enumeration value is defined in the corresponding enumeration and
+        ///     if it is not, throws <see cref="System.ComponentModel.InvalidEnumArgumentException"/>.
+        /// </summary>
+        /// <param name="enumerationValue">
+        ///     The enumeration value to check.
+        /// </param>
+        /// <returns>
+        ///     <b>true</b> if the specified enumeration value is defined in the corresponding enumeration;
+        ///     otherwise, <b>false</b>.
+        /// </returns>
+        /// <exception cref="System.ArgumentNullException">
+        ///     <paramref name="enumerationValue"/> is <b>null</b>.
+        /// </exception>
+        public static bool IsDefined(this Enum enumerationValue)
+        {
+            #region Argument Check
+
+            if (enumerationValue == null)
+            {
+                throw new ArgumentNullException("enumerationValue");
+            }
+
+            #endregion
+
+            return Enum.IsDefined(enumerationValue.GetType(), enumerationValue);
         }
 
         /// <summary>
@@ -246,7 +266,7 @@ namespace System
 
             #endregion
 
-            if (!Enum.IsDefined(enumerationValue.GetType(), enumerationValue))
+            if (!IsDefined(enumerationValue))
             {
                 throw new InvalidEnumArgumentException(
                     "enumerationValue",
@@ -373,11 +393,12 @@ namespace System
         {
             #region Argument Check
 
-            Type enumType = typeof(TEnum);
+            var enumType = typeof(TEnum);
             if (!enumType.IsEnum)
             {
                 throw new ArgumentException(
                     string.Format("The type must be an enumeration ({0}).", enumType.FullName),
+                    //// ReSharper disable once NotResolvedInText
                     "TEnum");
             }
 
@@ -385,6 +406,7 @@ namespace System
             {
                 throw new ArgumentException(
                     string.Format("The type must be a flag enumeration ({0}).", enumType.FullName),
+                    //// ReSharper disable once NotResolvedInText
                     "TEnum");
             }
 
@@ -393,14 +415,14 @@ namespace System
             var underlyingType = Enum.GetUnderlyingType(enumType);
             if (underlyingType == typeof(ulong))
             {
-                ulong castFlags = Convert.ToUInt64(flags);
-                ulong andedValue = Convert.ToUInt64(enumerationValue) & castFlags;
+                var castFlags = Convert.ToUInt64(flags);
+                var andedValue = Convert.ToUInt64(enumerationValue) & castFlags;
                 return all ? andedValue == castFlags : andedValue != 0;
             }
             else
             {
-                long castFlags = Convert.ToInt64(flags);
-                long andedValue = Convert.ToInt64(enumerationValue) & castFlags;
+                var castFlags = Convert.ToInt64(flags);
+                var andedValue = Convert.ToInt64(enumerationValue) & castFlags;
                 return all ? andedValue == castFlags : andedValue != 0;
             }
         }

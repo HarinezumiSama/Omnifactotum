@@ -1,11 +1,8 @@
 ﻿using System.Diagnostics;
 
 //// Namespace is intentionally named so in order to simplify usage of extension methods
-
-// ReSharper disable CheckNamespace
+//// ReSharper disable once CheckNamespace
 namespace System.Collections.Generic
-
-// ReSharper restore CheckNamespace
 {
     /// <summary>
     ///     Provides helper functionality for creating instances of

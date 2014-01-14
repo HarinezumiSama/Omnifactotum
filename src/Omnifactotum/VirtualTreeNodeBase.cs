@@ -39,7 +39,7 @@ namespace Omnifactotum
         /// <param name="children">
         ///     The children to initialize the <see cref="VirtualTreeNodeBase{T}"/> instance with.
         /// </param>
-        protected VirtualTreeNodeBase(IEnumerable<VirtualTreeNode<T>> children)
+        protected VirtualTreeNodeBase(ICollection<VirtualTreeNode<T>> children)
             : this()
         {
             #region Argument Check
@@ -49,20 +49,14 @@ namespace Omnifactotum
                 throw new ArgumentNullException("children");
             }
 
-            #endregion
-
-            var childrenArray = children.ToArraySmart();
-
-            #region Argument Check
-
-            if (childrenArray.Any(item => item == null))
+            if (children.Any(item => item == null))
             {
-                throw new ArgumentException("The collection contains a null element.", "children");
+                throw new ArgumentException(@"The collection contains a null element.", "children");
             }
 
             #endregion
 
-            _children = new VirtualTreeNodeCollection<T>(this, childrenArray);
+            _children = new VirtualTreeNodeCollection<T>(this, children);
         }
 
         #endregion
