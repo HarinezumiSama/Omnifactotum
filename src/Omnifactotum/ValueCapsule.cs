@@ -1,0 +1,43 @@
+﻿using System;
+using System.Linq;
+
+namespace Omnifactotum
+{
+    /// <summary>
+    ///     Represents the abstract immutable container that encapsulates a strongly-typed value.
+    /// </summary>
+    /// <typeparam name="T">
+    ///     The type of an encapsulated value.
+    /// </typeparam>
+    public abstract class ValueCapsule<T>
+    {
+        #region Constructors
+
+        /// <summary>
+        ///     Initializes a new instance of the <see cref="ValueCapsule{T}"/> class
+        ///     using the specified value.
+        /// </summary>
+        /// <param name="value">
+        ///     The value to initialize this instance with.
+        /// </param>
+        protected ValueCapsule(T value)
+        {
+            this.Value = value;
+        }
+
+        #endregion
+
+        #region Public Properties
+
+        /// <summary>
+        ///     Gets the contained value.
+        /// </summary>
+        public T Value
+        {
+            get;
+            private set;
+        }
+
+        #endregion
+    }
+}

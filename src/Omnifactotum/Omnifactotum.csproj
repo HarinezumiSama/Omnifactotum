@@ -85,6 +85,10 @@
     <Compile Include="Annotations\UsedImplicitlyAttribute.cs" />
     <Compile Include="ByReferenceEqualityComparer.cs" />
     <Compile Include="ColoredConsoleTraceListener.cs" />
+    <Compile Include="ComparableValueCapsule.cs" />
+    <Compile Include="EquatableValueCapsule.cs" />
+    <Compile Include="ValueCapsule.cs" />
+    <Compile Include="SyncValueContainer.cs" />
     <Compile Include="DirectedGraph.cs" />
     <Compile Include="DirectedGraphNode.cs" />
     <Compile Include="DirectedGraphNode.Helper.cs" />
@@ -127,6 +131,7 @@
     <Compile Include="SmartDisposable.cs" />
     <Compile Include="SmartDisposable.Helper.cs" />
     <Compile Include="ToPropertyStringOptions.cs" />
+    <Compile Include="ValueContainer.cs" />
     <Compile Include="ValueRange.cs" />
     <Compile Include="ValueRange.Helper.cs" />
     <Compile Include="VirtualTreeNode.cs" />
