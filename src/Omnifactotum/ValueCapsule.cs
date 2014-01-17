@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Linq;
+using Omnifactotum.Annotations;
 
 namespace Omnifactotum
 {
@@ -20,7 +21,7 @@ namespace Omnifactotum
         /// <param name="value">
         ///     The value to initialize this instance with.
         /// </param>
-        protected ValueCapsule(T value)
+        protected ValueCapsule([CanBeNull] T value)
         {
             this.Value = value;
         }

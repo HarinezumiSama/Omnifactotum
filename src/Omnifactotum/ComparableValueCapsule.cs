@@ -2,12 +2,19 @@
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
+using Omnifactotum.Annotations;
 
 namespace Omnifactotum
 {
     /// <summary>
-    ///     Represents the abstract immutable container that encapsulates a strongly-typed value and supports
-    ///     comparison.
+    ///     <para>
+    ///         Represents the abstract immutable container that encapsulates a strongly-typed value and supports
+    ///         comparison.
+    ///     </para>
+    ///     <para>
+    ///         <b>IMPORTANT</b> note for inheritors: a derived class MUST NOT add any new fields or properties
+    ///         influencing equality comparison.
+    ///     </para>
     /// </summary>
     /// <typeparam name="T">
     ///     The type of an encapsulated value.
@@ -23,7 +30,7 @@ namespace Omnifactotum
         /// <param name="value">
         ///     The value to initialize this instance with.
         /// </param>
-        protected ComparableValueCapsule(T value)
+        protected ComparableValueCapsule([CanBeNull] T value)
             : base(value)
         {
             // Nothing to do
@@ -63,7 +70,7 @@ namespace Omnifactotum
         ///     <b>true</b> if the left <see cref="ComparableValueCapsule{T}"/> instance is less than
         ///     the right <see cref="ComparableValueCapsule{T}"/> instance; otherwise, <b>false</b>.
         /// </returns>
-        public static bool operator <(ComparableValueCapsule<T> left, ComparableValueCapsule<T> right)
+        public static bool operator <([CanBeNull] ComparableValueCapsule<T> left, [CanBeNull] ComparableValueCapsule<T> right)
         {
             return Comparer<ComparableValueCapsule<T>>.Default.Compare(left, right) < 0;
         }
@@ -82,7 +89,7 @@ namespace Omnifactotum
         ///     <b>true</b> if the left <see cref="ComparableValueCapsule{T}"/> instance is less than or equal to
         ///     the right <see cref="ComparableValueCapsule{T}"/> instance; otherwise, <b>false</b>.
         /// </returns>
-        public static bool operator <=(ComparableValueCapsule<T> left, ComparableValueCapsule<T> right)
+        public static bool operator <=([CanBeNull] ComparableValueCapsule<T> left, [CanBeNull] ComparableValueCapsule<T> right)
         {
             return Comparer<ComparableValueCapsule<T>>.Default.Compare(left, right) <= 0;
         }
@@ -101,7 +108,7 @@ namespace Omnifactotum
         ///     <b>true</b> if the left <see cref="ComparableValueCapsule{T}"/> instance is greater than
         ///     the right <see cref="ComparableValueCapsule{T}"/> instance; otherwise, <b>false</b>.
         /// </returns>
-        public static bool operator >(ComparableValueCapsule<T> left, ComparableValueCapsule<T> right)
+        public static bool operator >([CanBeNull] ComparableValueCapsule<T> left, [CanBeNull] ComparableValueCapsule<T> right)
         {
             return Comparer<ComparableValueCapsule<T>>.Default.Compare(left, right) > 0;
         }
@@ -120,7 +127,7 @@ namespace Omnifactotum
         ///     <b>true</b> if the left <see cref="ComparableValueCapsule{T}"/> instance is greater than or equal to
         ///     the right <see cref="ComparableValueCapsule{T}"/> instance; otherwise, <b>false</b>.
         /// </returns>
-        public static bool operator >=(ComparableValueCapsule<T> left, ComparableValueCapsule<T> right)
+        public static bool operator >=([CanBeNull] ComparableValueCapsule<T> left, [CanBeNull] ComparableValueCapsule<T> right)
         {
             return Comparer<ComparableValueCapsule<T>>.Default.Compare(left, right) >= 0;
         }
@@ -142,7 +149,7 @@ namespace Omnifactotum
         /// <exception cref="ArgumentException">
         ///     The <paramref name="other"/> object's type differs from this instance's type.
         /// </exception>
-        public int CompareTo(ComparableValueCapsule<T> other)
+        public int CompareTo([CanBeNull] ComparableValueCapsule<T> other)
         {
             if (ReferenceEquals(other, null))
             {
@@ -165,8 +172,11 @@ namespace Omnifactotum
         ///     Gets the <see cref="IComparer{T}"/> used for comparing contained values.
         ///     Default implementation returns the default comparer for the type <typeparamref name="T"/>.
         /// </summary>
+        /// <returns>
+        ///     The <see cref="IComparer{T}"/> used for comparing contained values.
+        /// </returns>
         [DebuggerNonUserCode]
-        public virtual IComparer<T> GetValueComparer()
+        protected virtual IComparer<T> GetValueComparer()
         {
             return Comparer<T>.Default;
         }
