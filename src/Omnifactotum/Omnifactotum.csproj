@@ -85,7 +85,9 @@
     <Compile Include="Annotations\UsedImplicitlyAttribute.cs" />
     <Compile Include="ByReferenceEqualityComparer.cs" />
     <Compile Include="ColoredConsoleTraceListener.cs" />
+    <Compile Include="ComparableObjectBase.cs" />
     <Compile Include="ComparableValueCapsule.cs" />
+    <Compile Include="EquatableObjectBase.cs" />
     <Compile Include="EquatableValueCapsule.cs" />
     <Compile Include="ValueCapsule.cs" />
     <Compile Include="SyncValueContainer.cs" />
