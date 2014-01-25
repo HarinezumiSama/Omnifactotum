@@ -8,7 +8,10 @@ EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "SolutionItems", "SolutionItems", "{D7C50C3D-0B8E-4412-AC1A-A6B92C792565}"
 	ProjectSection(SolutionItems) = preProject
 		SolutionItems\BaseVersion.txt = SolutionItems\BaseVersion.txt
+		SolutionItems\hg.cmd = SolutionItems\hg.cmd
+		SolutionItems\Omnifactotum.snk = SolutionItems\Omnifactotum.snk
 		Settings.StyleCop = Settings.StyleCop
+		SolutionItems\sign.cmd = SolutionItems\sign.cmd
 	EndProjectSection
 EndProject
 Global

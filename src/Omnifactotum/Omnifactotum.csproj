@@ -13,6 +13,9 @@
     <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <TargetFrameworkProfile>Client</TargetFrameworkProfile>
+    <SignAssembly>true</SignAssembly>
+    <AssemblyOriginatorKeyFile>..\SolutionItems\Omnifactotum.snk</AssemblyOriginatorKeyFile>
+    <DelaySign>true</DelaySign>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -36,12 +39,6 @@
     <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
     <UseVSHostingProcess>false</UseVSHostingProcess>
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
-  </PropertyGroup>
-  <PropertyGroup>
-    <SignAssembly>true</SignAssembly>
-  </PropertyGroup>
-  <PropertyGroup>
-    <AssemblyOriginatorKeyFile>Omnifactotum.snk</AssemblyOriginatorKeyFile>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="System" />
@@ -124,8 +121,11 @@
     <Compile Include="KeyValuePair.Helper.cs" />
     <Compile Include="Lazy.Helper.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="..\SolutionItems\GlobalVersion.cs">
-      <Link>Properties\GlobalVersion.cs</Link>
+    <Compile Include="..\SolutionItems\CommonAssemblyInfo.cs">
+      <Link>Properties\CommonAssemblyInfo.cs</Link>
+    </Compile>
+    <Compile Include="..\SolutionItems\Generated.GlobalVersion.cs">
+      <Link>Properties\Generated.GlobalVersion.cs</Link>
     </Compile>
     <Compile Include="ReadOnlyDictionary.cs" />
     <Compile Include="ReadOnlySet.cs" />
@@ -144,7 +144,9 @@
     <Compile Include="WinEventLog.cs" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="Omnifactotum.snk" />
+    <None Include="..\SolutionItems\Omnifactotum.snk">
+      <Link>Properties\Omnifactotum.snk</Link>
+    </None>
   </ItemGroup>
   <ItemGroup>
     <Content Include="ExtensionMethods\__ReadMe.txt" />
@@ -155,17 +157,20 @@
     <!--CleanDependsOn>UpdateGlobalVersion;$(CleanDependsOn)</CleanDependsOn-->
     <BuildDependsOn>UpdateGlobalVersion;$(BuildDependsOn)</BuildDependsOn>
   </PropertyGroup>
+  <PropertyGroup>
+    <PostBuildEvent>"$(ProjectDir)\..\SolutionItems\sign.cmd" "$(TargetPath)"</PostBuildEvent>
+  </PropertyGroup>
   <Target Name="UpdateGlobalVersion">
     <PropertyGroup>
       <BaseVersionFile>$(ProjectDir)\..\SolutionItems\BaseVersion.txt</BaseVersionFile>
-      <RevisionFile>$(ProjectDir)\..\SolutionItems\Revision.txt</RevisionFile>
+      <RevisionFile>$(ProjectDir)\..\SolutionItems\Generated.Revision.txt</RevisionFile>
     </PropertyGroup>
     <Message Importance="high" Text="* Reading base version from '$(BaseVersionFile)'..." />
     <ReadLinesFromFile File="$(BaseVersionFile)">
       <Output TaskParameter="Lines" PropertyName="BaseVersion" />
     </ReadLinesFromFile>
     <Message Importance="high" Text="* Base version: '$(BaseVersion)'" />
-    <Exec Command="hg.exe identify -n -r tip &gt;&quot;$(RevisionFile)&quot;" />
+    <Exec Command="&quot;$(ProjectDir)\..\SolutionItems\hg.cmd&quot; identify -n -r tip &gt;&quot;$(RevisionFile)&quot;" />
     <Message Importance="high" Text="* Reading HG revision number from '$(RevisionFile)'..." />
     <ReadLinesFromFile File="$(RevisionFile)">
       <Output TaskParameter="Lines" PropertyName="Revision" />
@@ -183,7 +188,7 @@
         <_Parameter1>$(GlobalVersion)</_Parameter1>
       </AssemblyFileVersion>
     </ItemGroup>
-    <WriteCodeFragment Language="C#" OutputFile="..\SolutionItems\GlobalVersion.cs" AssemblyAttributes="@(AssemblyVersion);@(AssemblyFileVersion)" />
+    <WriteCodeFragment Language="C#" OutputFile="$(ProjectDir)\..\SolutionItems\Generated.GlobalVersion.cs" AssemblyAttributes="@(AssemblyVersion);@(AssemblyFileVersion)" />
   </Target>
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
