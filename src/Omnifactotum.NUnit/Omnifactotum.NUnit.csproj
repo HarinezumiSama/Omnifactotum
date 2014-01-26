@@ -5,11 +5,11 @@
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
     <ProductVersion>8.0.30703</ProductVersion>
     <SchemaVersion>2.0</SchemaVersion>
-    <ProjectGuid>{A6A92B13-8AF3-453B-B6AA-137312AE0CCB}</ProjectGuid>
+    <ProjectGuid>{6D235396-E672-405D-824B-D91CE8C8EC99}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>Omnifactotum.Tests</RootNamespace>
-    <AssemblyName>Omnifactotum.Tests</AssemblyName>
+    <RootNamespace>Omnifactotum.NUnit</RootNamespace>
+    <AssemblyName>Omnifactotum.NUnit</AssemblyName>
     <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <SignAssembly>true</SignAssembly>
@@ -36,17 +36,15 @@
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="nunit.framework">
+    <Reference Include="nunit.framework, Version=2.6.2.12296, Culture=neutral, PublicKeyToken=96d09a1eb7f44a77, processorArchitecture=MSIL">
       <HintPath>..\packages\NUnit.2.6.2\lib\nunit.framework.dll</HintPath>
-      <SpecificVersion>False</SpecificVersion>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
     <Reference Include="Microsoft.CSharp" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="DirectedGraphTests.cs" />
-    <Compile Include="HelperTests.cs" />
+    <Compile Include="AssertEqualityExpectation.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="..\SolutionItems\CommonAssemblyInfo.cs">
       <Link>Properties\CommonAssemblyInfo.cs</Link>
@@ -54,49 +52,18 @@
     <Compile Include="..\SolutionItems\Generated.GlobalVersion.cs">
       <Link>Properties\Generated.GlobalVersion.cs</Link>
     </Compile>
-    <Compile Include="Properties\Resources.Designer.cs">
-      <AutoGen>True</AutoGen>
-      <DesignTime>True</DesignTime>
-      <DependentUpon>Resources.resx</DependentUpon>
-    </Compile>
-    <Compile Include="ReadOnlyDictionaryTests.cs" />
-    <Compile Include="ReadOnlySetTests.cs" />
-    <Compile Include="TestCategory.cs" />
-    <Compile Include="TimeSpanExtensionsTests.cs" />
-    <Compile Include="ValueRangeTests.cs" />
+    <Compile Include="PropertyAccessMode.cs" />
+    <Compile Include="TestCasesBase.cs" />
+    <Compile Include="NUnitHelper.cs" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="packages.config" />
-  </ItemGroup>
-  <ItemGroup>
-    <ProjectReference Include="..\Omnifactotum.NUnit\Omnifactotum.NUnit.csproj">
-      <Project>{6D235396-E672-405D-824B-D91CE8C8EC99}</Project>
-      <Name>Omnifactotum.NUnit</Name>
-    </ProjectReference>
     <ProjectReference Include="..\Omnifactotum\Omnifactotum.csproj">
       <Project>{1054B8A0-40D7-4FBC-A658-9AC9179035F8}</Project>
       <Name>Omnifactotum</Name>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
-    <Content Include="Resources\ExpectedComplexObjectAllFlagsToPropertyString.txt" />
-    <Content Include="Resources\ExpectedComplexObjectDefaultOptionsToPropertyString.txt" />
-    <Content Include="Resources\ExpectedComplexObjectMaxOneItemToPropertyString.txt" />
-    <Content Include="Resources\ExpectedComplexObjectWithActualTypeToPropertyString.txt" />
-    <Content Include="Resources\ExpectedComplexObjectWithCyclesAllFlagsToPropertyString.txt" />
-    <Content Include="Resources\ExpectedComplexObjectWithCyclesWithComplexPropertiesToPropertyString.txt" />
-    <Content Include="Resources\ExpectedComplexObjectWithMemberTypeToPropertyString.txt" />
-    <Content Include="Resources\ExpectedLinqExpressionToPropertyString.txt" />
-    <Content Include="Resources\ExpectedMaxRecursionToPropertyString.txt" />
-    <Content Include="Resources\ExpectedPointerContainerToPropertyStringTemplate.txt" />
-    <Content Include="Resources\ExpectedVirtualTreeNodeWithDateTimeOffsetToPropertyString.txt" />
-    <Content Include="Resources\ExpectedVirtualTreeNodeWithDateTimeToPropertyString.txt" />
-  </ItemGroup>
-  <ItemGroup>
-    <EmbeddedResource Include="Properties\Resources.resx">
-      <Generator>ResXFileCodeGenerator</Generator>
-      <LastGenOutput>Resources.Designer.cs</LastGenOutput>
-    </EmbeddedResource>
+    <None Include="packages.config" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
