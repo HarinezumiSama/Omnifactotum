@@ -45,7 +45,9 @@
     <Reference Include="Microsoft.CSharp" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="ByReferenceEqualityComparerTests.cs" />
     <Compile Include="DirectedGraphTests.cs" />
+    <Compile Include="EnumHelperTests.cs" />
     <Compile Include="HelperTests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="..\SolutionItems\CommonAssemblyInfo.cs">

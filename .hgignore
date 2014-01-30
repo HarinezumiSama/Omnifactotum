@@ -10,6 +10,7 @@ glob:_ReSharper*
 glob:*.Publish.xml
 glob:*.wbk
 glob:~$*.doc
+glob:*.DotSettings
 glob:*.DotSettings.user
 glob:StyleCop.Cache
 glob:Generated.*
