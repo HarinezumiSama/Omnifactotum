@@ -9,6 +9,7 @@ namespace Omnifactotum.Annotations
     /// will not be marked as unused (as well as by other usage inspections)
     /// </summary>
     [AttributeUsage(AttributeTargets.All, AllowMultiple = false, Inherited = true)]
+    [MeansImplicitUse]
     public sealed class UsedImplicitlyAttribute : Attribute
     {
         /// <summary>
