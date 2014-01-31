@@ -141,6 +141,7 @@
     <Compile Include="VirtualTreeNodeBase.cs" />
     <Compile Include="VirtualTreeNodeCollection.cs" />
     <Compile Include="VirtualTreeNodeRoot.cs" />
+    <Compile Include="WeakReferenceBasedCache.cs" />
     <Compile Include="WinEventLog.cs" />
   </ItemGroup>
   <ItemGroup>

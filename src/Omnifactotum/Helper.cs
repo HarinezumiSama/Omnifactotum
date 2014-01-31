@@ -46,8 +46,9 @@ namespace Omnifactotum
         private static readonly MethodInfo ToPropertyStringInternalMethodDefinition =
             new ToPropertyStringInternalMethodStub(ToPropertyStringInternal).Method.GetGenericMethodDefinition();
 
-        private static readonly Dictionary<Type, FieldInfo[]> ContentFieldsCacheMap =
-            new Dictionary<Type, FieldInfo[]>();
+        private static readonly WeakReferenceBasedCache<Type, FieldInfo[]> ContentFieldsCache =
+            new WeakReferenceBasedCache<Type, FieldInfo[]>(
+                t => t.GetFields(BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic));
 
         private static readonly int GuidSize = Marshal.SizeOf(typeof(Guid));
 
@@ -93,11 +94,13 @@ namespace Omnifactotum
         public static void DisposeAndNull<T>(ref T disposable)
             where T : class, IDisposable
         {
-            if (!ReferenceEquals(disposable, null))
+            if (ReferenceEquals(disposable, null))
             {
-                disposable.Dispose();
-                disposable = null;
+                return;
             }
+
+            disposable.Dispose();
+            disposable = null;
         }
 
         /// <summary>
@@ -785,7 +788,7 @@ namespace Omnifactotum
 
         #region Private Methods
 
-        private static bool IsSimpleType(this Type type)
+        private static bool IsSimpleTypeInternal(this Type type)
         {
             #region Argument Check
 
@@ -936,7 +939,7 @@ namespace Omnifactotum
                     return;
                 }
 
-                var isSimpleType = type.IsSimpleType()
+                var isSimpleType = type.IsSimpleTypeInternal()
                     || typeof(Type).IsAssignableFrom(type)
                     || typeof(Assembly).IsAssignableFrom(type)
                     || typeof(Delegate).IsAssignableFrom(type);
@@ -1167,21 +1170,6 @@ namespace Omnifactotum
             }
         }
 
-        private static FieldInfo[] GetContentFields(Type type)
-        {
-            lock (ContentFieldsCacheMap.GetSyncRoot())
-            {
-                var result = ContentFieldsCacheMap.GetValueOrDefault(type);
-                if (result == null)
-                {
-                    result = type.GetFields(BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic);
-                    ContentFieldsCacheMap[type] = result;
-                }
-
-                return result;
-            }
-        }
-
         private static bool AreEqualByContentsInternal(object valueA, object valueB)
         {
             var isAssertEqualityByContentObjectsBeingProcessedCreated = false;
@@ -1204,7 +1192,7 @@ namespace Omnifactotum
                     return false;
                 }
 
-                if (actualType.IsSimpleType())
+                if (actualType.IsSimpleTypeInternal())
                 {
                     return Equals(valueA, valueB);
                 }
@@ -1221,7 +1209,7 @@ namespace Omnifactotum
                     _assertEqualityByContentsObjectsBeingProcessed.Add(new PairReferenceHolder(valueA, valueB));
                 }
 
-                var fields = GetContentFields(actualType);
+                var fields = ContentFieldsCache[actualType];
                 if (fields.Length == 0)
                 {
                     return actualType.IsValueType || ReferenceEquals(valueA, valueB);

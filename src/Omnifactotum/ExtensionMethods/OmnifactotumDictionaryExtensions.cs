@@ -119,7 +119,7 @@ namespace System.Collections.Generic
         public static TValue GetValueOrCreate<TKey, TValue>(
             [NotNull] this IDictionary<TKey, TValue> dictionary,
             [NotNull] TKey key,
-            [NotNull] Func<TValue> valueFactory)
+            [NotNull] Func<TKey, TValue> valueFactory)
         {
             #region Argument Check
 
@@ -146,7 +146,7 @@ namespace System.Collections.Generic
                 return result;
             }
 
-            result = valueFactory();
+            result = valueFactory(key);
             dictionary.Add(key, result);
 
             return result;
