@@ -3,7 +3,9 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Globalization;
 using System.Linq;
+using System.Linq.Expressions;
 using System.Reflection;
+using Moq;
 using NUnit.Framework;
 using Omnifactotum.Annotations;
 using Omnifactotum.NUnit;
@@ -24,6 +26,72 @@ namespace Omnifactotum.Tests
         #endregion
 
         #region Tests
+
+        [Test]
+        public void TestDisposeAndNull()
+        {
+            var disposableMock = new Mock<IDisposable>(MockBehavior.Strict);
+            disposableMock.Setup(obj => obj.Dispose()).Verifiable();
+
+            var disposable = disposableMock.Object;
+            var disposableCopy = disposable;
+
+            Helper.DisposeAndNull(ref disposableCopy);
+            Assert.That(disposableCopy, Is.Null);
+            disposableMock.Verify(obj => obj.Dispose(), Times.Once);
+
+            Helper.DisposeAndNull(ref disposableCopy);
+            Assert.That(disposableCopy, Is.Null);
+            disposableMock.Verify(obj => obj.Dispose(), Times.Once);
+        }
+
+        [Test]
+        public void TestExchangeValueType()
+        {
+            const int OriginalA = 1;
+            const int OriginalB = 2;
+            Assert.That(OriginalA, Is.Not.EqualTo(OriginalB));
+
+            var a = OriginalA;
+            var b = OriginalB;
+
+            Helper.Exchange(ref a, ref b);
+            Assert.That(a, Is.EqualTo(OriginalB));
+            Assert.That(b, Is.EqualTo(OriginalA));
+        }
+
+        [Test]
+        public void TestExchangeReferenceType()
+        {
+            var originalA = new object();
+            var originalB = new object();
+            Assert.That(originalA, Is.Not.SameAs(originalB));
+
+            var a = originalA;
+            var b = originalB;
+
+            Helper.Exchange(ref a, ref b);
+            Assert.That(a, Is.SameAs(originalB));
+            Assert.That(b, Is.SameAs(originalA));
+        }
+
+        [Test]
+        [TestCase(int.MinValue)]
+        [TestCase(0)]
+        [TestCase(int.MaxValue)]
+        public void TestIdentityValueType(int value)
+        {
+            Assert.That(() => Helper.Identity(value), Is.EqualTo(value));
+        }
+
+        [Test]
+        [TestCase(null)]
+        [TestCase("")]
+        [TestCase("TestString")]
+        public void TestIdentityReferenceType(string value)
+        {
+            Assert.That(() => Helper.Identity(value), Is.SameAs(value));
+        }
 
         [Test]
         [TestCaseSource(typeof(ToPropertyStringCases))]

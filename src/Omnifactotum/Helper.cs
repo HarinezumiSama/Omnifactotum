@@ -185,7 +185,7 @@ namespace Omnifactotum
                         item.Property,
                         Default = item.Attribute.Value
                     })
-                .ToList();
+                .ToArray();
 
             foreach (var propertyRecord in propertyRecords)
             {
