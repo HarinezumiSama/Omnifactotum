@@ -171,7 +171,7 @@ namespace Omnifactotum
 
             var propertyRecords = obj.GetType()
                 .GetProperties(BindingFlags.Public | BindingFlags.Instance)
-                .Where(item => item.CanWrite && !item.GetIndexParameters().Any())
+                .Where(item => item.CanWrite && item.GetIndexParameters().Length == 0)
                 .Select(
                     item => new
                     {

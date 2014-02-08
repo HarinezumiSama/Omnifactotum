@@ -1,9 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Diagnostics;
 using System.Globalization;
 using System.Linq;
-using System.Linq.Expressions;
 using System.Reflection;
 using Moq;
 using NUnit.Framework;
@@ -105,6 +105,73 @@ namespace Omnifactotum.Tests
 
             var actualString = (string)method.Invoke(null, new[] { obj, options });
             Assert.That(actualString, Is.EqualTo(expectedString));
+        }
+
+        [Test]
+        public void TestSetDefaultValues()
+        {
+            const string TestStringValue = "TestStringValue";
+
+            Assert.That(TestStringValue, Is.Not.EqualTo(SetDefaultValuesTestClass.DefaultStringValue));
+
+            Assert.That(
+                SetDefaultValuesTestClass.DefaultStringValue,
+                Is.Not.EqualTo(SetDefaultValuesTestClass.NonDefaultStringValue));
+
+            SetDefaultValuesTestClass.StaticStringValueWithDefault = TestStringValue;
+
+            var testObject = new SetDefaultValuesTestClass
+            {
+                StringValueNoDefault = TestStringValue,
+                StringValueWithDefault = TestStringValue
+            };
+
+            Assert.That(SetDefaultValuesTestClass.StaticStringValueWithDefault, Is.EqualTo(TestStringValue));
+            Assert.That(testObject.StringValueNoDefault, Is.EqualTo(TestStringValue));
+            Assert.That(testObject.StringValueWithDefault, Is.EqualTo(TestStringValue));
+            Assert.That(
+                testObject.ReadOnlyStringValueWithDefault,
+                Is.EqualTo(SetDefaultValuesTestClass.NonDefaultStringValue));
+
+            var resultTestObject = Helper.SetDefaultValues(testObject);
+            Assert.That(resultTestObject, Is.SameAs(testObject));
+
+            Assert.That(SetDefaultValuesTestClass.StaticStringValueWithDefault, Is.EqualTo(TestStringValue));
+            Assert.That(testObject.StringValueNoDefault, Is.EqualTo(TestStringValue));
+            Assert.That(testObject.StringValueWithDefault, Is.EqualTo(SetDefaultValuesTestClass.DefaultStringValue));
+        }
+
+        [Test]
+        public void TestAreEqualByContents()
+        {
+            const string ValueA = "A";
+            const string ValueB = "B";
+            const string ValueC = "C";
+            const string ValueD = "D";
+
+            Assert.That(new[] { ValueA, ValueB, ValueC, ValueD }, Is.Unique);
+
+            var nodeA = new RecursiveNode { Value = ValueA };
+            var nodeB = new RecursiveNode { Value = ValueB, Parent = nodeA };
+            nodeA.Parent = nodeB;
+
+            Assert.That(nodeA, Is.Not.AssignableTo<IEquatable<RecursiveNode>>());
+
+            var nodeC1 = new RecursiveNode { Value = ValueC, Parent = nodeA };
+            var nodeC2 = new RecursiveNode { Value = ValueC, Parent = nodeA };
+            var nodeDParentA = new RecursiveNode { Value = ValueD, Parent = nodeA };
+            var nodeDParentB = new RecursiveNode { Value = ValueD, Parent = nodeB };
+
+            Assert.That(Helper.AreEqualByContents(nodeC1, nodeC1), Is.True);
+            Assert.That(Helper.AreEqualByContents(nodeC1, null), Is.False);
+            Assert.That(Helper.AreEqualByContents(null, nodeC1), Is.False);
+
+            Assert.That(Helper.AreEqualByContents(nodeC1, nodeC2), Is.True);
+            Assert.That(Helper.AreEqualByContents(nodeC2, nodeC1), Is.True);
+
+            Assert.That(Helper.AreEqualByContents(nodeC1, nodeDParentA), Is.False);
+
+            Assert.That(Helper.AreEqualByContents(nodeDParentA, nodeDParentB), Is.False);
         }
 
         #endregion
@@ -339,6 +406,74 @@ namespace Omnifactotum.Tests
                         "Func<String> :: System.Func`1[System.String]")
                         .SetName("Delegate");
             }
+        }
+
+        #endregion
+
+        #region SetDefaultValuesTestClass Class
+
+        private sealed class SetDefaultValuesTestClass
+        {
+            #region Constants and Fields
+
+            public const string DefaultStringValue = "DefaultStringValue";
+            public const string NonDefaultStringValue = "NonDefaultStringValue";
+
+            #endregion
+
+            #region Public Properties
+
+            [DefaultValue(DefaultStringValue)]
+            public static string StaticStringValueWithDefault
+            {
+                get;
+                set;
+            }
+
+            public string StringValueNoDefault
+            {
+                get;
+                set;
+            }
+
+            [DefaultValue(DefaultStringValue)]
+            public string StringValueWithDefault
+            {
+                get;
+                internal set;
+            }
+
+            [DefaultValue(DefaultStringValue)]
+            // ReSharper disable once MemberCanBeMadeStatic.Local
+            public string ReadOnlyStringValueWithDefault
+            {
+                get
+                {
+                    return NonDefaultStringValue;
+                }
+            }
+
+            [DefaultValue(DefaultStringValue)]
+            [UsedImplicitly]
+            public string this[int index]
+            {
+                get
+                {
+                    if (index != 0)
+                    {
+                        throw new NotSupportedException();
+                    }
+
+                    return NonDefaultStringValue;
+                }
+
+                set
+                {
+                    throw new NotSupportedException();
+                }
+            }
+
+            #endregion
         }
 
         #endregion
