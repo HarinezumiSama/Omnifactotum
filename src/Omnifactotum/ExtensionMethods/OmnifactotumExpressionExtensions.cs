@@ -14,7 +14,19 @@ namespace System
     {
         #region Public Methods
 
-        public static MethodInfo GetMethod<TDelegate>(this Expression<TDelegate> expression)
+        /// <summary>
+        ///     Gets the last method called in the expression.
+        /// </summary>
+        /// <typeparam name="TDelegate">
+        ///     The type of the delegate.
+        /// </typeparam>
+        /// <param name="expression">
+        ///     The expression to get the last called method of.
+        /// </param>
+        /// <returns>
+        ///     The last called method, or <b>null</b> if the last element in the expression is not a method call.
+        /// </returns>
+        public static MethodInfo GetLastMethod<TDelegate>(this Expression<TDelegate> expression)
         {
             #region Argument Check
 
@@ -25,7 +37,8 @@ namespace System
 
             #endregion
 
-            return (expression.Body as MethodCallExpression).EnsureNotNull().Method.EnsureNotNull();
+            var methodCallExpression = expression.Body as MethodCallExpression;
+            return methodCallExpression == null ? null : methodCallExpression.Method.EnsureNotNull();
         }
 
         #endregion

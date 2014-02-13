@@ -12,23 +12,43 @@ namespace Omnifactotum.Tests
         #region Tests
 
         [Test]
-        public void TestGetMethod()
+        public void TestGetLastMethodLastIsToString()
         {
-            {
-                Expression<Func<object, string>> expression = obj => obj.ToString();
-                var method = expression.GetMethod();
-                Assert.That(method, Is.Not.Null);
-                Assert.That(method.Name, Is.EqualTo("ToString"));
-                Assert.That(method.DeclaringType, Is.EqualTo(typeof(object)));
-            }
+            Expression<Func<OmnifactotumExpressionExtensionsTests, string>> expression = obj => obj.ToString();
+            var method = expression.GetLastMethod();
+            Assert.That(method, Is.Not.Null);
+            Assert.That(method.Name, Is.EqualTo("ToString"));
+            Assert.That(method.DeclaringType, Is.EqualTo(typeof(object)));
+        }
 
-            {
-                Expression<Action<OmnifactotumExpressionExtensionsTests>> expression = obj => obj.TestGetMethod();
-                var method = expression.GetMethod();
-                Assert.That(method, Is.Not.Null);
-                Assert.That(method.Name, Is.EqualTo(MethodBase.GetCurrentMethod().Name));
-                Assert.That(method.DeclaringType, Is.EqualTo(GetType()));
-            }
+        [Test]
+        public void TestGetLastMethodLastIsSelf()
+        {
+            Expression<Action<OmnifactotumExpressionExtensionsTests>> expression =
+                obj => obj.TestGetLastMethodLastIsSelf();
+            var method = expression.GetLastMethod();
+            Assert.That(method, Is.Not.Null);
+            Assert.That(method.Name, Is.EqualTo(MethodBase.GetCurrentMethod().Name));
+            Assert.That(method.DeclaringType, Is.EqualTo(GetType()));
+        }
+
+        [Test]
+        public void TestGetLastMethodSeveralCallsAndLastIsIndexOf()
+        {
+            Expression<Func<OmnifactotumExpressionExtensionsTests, int>> expression =
+                obj => obj.ToString().IndexOf("1", StringComparison.Ordinal);
+            var method = expression.GetLastMethod();
+            Assert.That(method, Is.Not.Null);
+            Assert.That(method.Name, Is.EqualTo("IndexOf"));
+            Assert.That(method.DeclaringType, Is.EqualTo(typeof(string)));
+        }
+
+        [Test]
+        public void TestGetLastMethodLastIsProperty()
+        {
+            Expression<Func<OmnifactotumExpressionExtensionsTests, int>> expression = obj => obj.ToString().Length;
+            var method = expression.GetLastMethod();
+            Assert.That(method, Is.Null);
         }
 
         #endregion
