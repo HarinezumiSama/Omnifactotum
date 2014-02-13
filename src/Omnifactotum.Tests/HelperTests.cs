@@ -14,7 +14,7 @@ using Omnifactotum.Tests.Properties;
 namespace Omnifactotum.Tests
 {
     [TestFixture]
-    public sealed unsafe class HelperTests
+    public unsafe sealed class HelperTests
     {
         #region Constants and Fields
 
@@ -444,7 +444,7 @@ namespace Omnifactotum.Tests
             }
 
             [DefaultValue(DefaultStringValue)]
-            // ReSharper disable once MemberCanBeMadeStatic.Local
+            //// ReSharper disable once MemberCanBeMadeStatic.Local
             public string ReadOnlyStringValueWithDefault
             {
                 get
