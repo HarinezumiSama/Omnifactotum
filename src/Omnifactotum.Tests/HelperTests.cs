@@ -174,6 +174,32 @@ namespace Omnifactotum.Tests
             Assert.That(Helper.AreEqualByContents(nodeDParentA, nodeDParentB), Is.False);
         }
 
+        [Test]
+        public void TestMax()
+        {
+            Assert.That(() => Helper.Max(1, 2), Is.EqualTo(2));
+            Assert.That(() => Helper.Max(1, 1), Is.EqualTo(1));
+
+            Assert.That(() => Helper.Max("abc", "abcd"), Is.EqualTo("abcd"));
+
+            Assert.That(
+                () => Helper.Max(TimeSpan.FromMilliseconds(1d), TimeSpan.FromMilliseconds(2d)),
+                Is.EqualTo(TimeSpan.FromMilliseconds(2d)));
+        }
+
+        [Test]
+        public void TestMin()
+        {
+            Assert.That(() => Helper.Min(1, 2), Is.EqualTo(1));
+            Assert.That(() => Helper.Min(1, 1), Is.EqualTo(1));
+
+            Assert.That(() => Helper.Min("abc", "abcd"), Is.EqualTo("abc"));
+
+            Assert.That(
+                () => Helper.Min(TimeSpan.FromMilliseconds(1d), TimeSpan.FromMilliseconds(2d)),
+                Is.EqualTo(TimeSpan.FromMilliseconds(1d)));
+        }
+
         #endregion
 
         #region RecursiveNode Class

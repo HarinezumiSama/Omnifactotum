@@ -15,6 +15,8 @@ using System.Text;
 
 namespace Omnifactotum
 {
+    //// TODO [vmcl] Rename Helper to Omnihelper/Factotum/etc?
+
     /// <summary>
     ///     Provides helper methods and properties for common use.
     /// </summary>
@@ -273,6 +275,48 @@ namespace Omnifactotum
         public static bool AreEqualByContents<T>(T valueA, T valueB)
         {
             return AreEqualByContentsInternal(valueA, valueB);
+        }
+
+        /// <summary>
+        ///     Compares the two specified values and returns the larger of those.
+        /// </summary>
+        /// <typeparam name="T">
+        ///     The type of values to compare.
+        /// </typeparam>
+        /// <param name="x">
+        ///     The first value to compare.
+        /// </param>
+        /// <param name="y">
+        ///     The second value to compare.
+        /// </param>
+        /// <returns>
+        ///     The larger of the two specified values.
+        /// </returns>
+        public static T Max<T>(T x, T y)
+            where T : IComparable
+        {
+            return Comparer<T>.Default.Compare(x, y) > 0 ? x : y;
+        }
+
+        /// <summary>
+        ///     Compares the two specified values and returns the smaller of those.
+        /// </summary>
+        /// <typeparam name="T">
+        ///     The type of values to compare.
+        /// </typeparam>
+        /// <param name="x">
+        ///     The first value to compare.
+        /// </param>
+        /// <param name="y">
+        ///     The second value to compare.
+        /// </param>
+        /// <returns>
+        ///     The smaller of the two specified values.
+        /// </returns>
+        public static T Min<T>(T x, T y)
+            where T : IComparable
+        {
+            return Comparer<T>.Default.Compare(x, y) < 0 ? x : y;
         }
 
         #endregion
