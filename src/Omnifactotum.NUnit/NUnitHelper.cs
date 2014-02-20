@@ -49,7 +49,7 @@ namespace Omnifactotum.NUnit
                 "Invalid accessor visibility. Must match '{0}' mask.",
                 MethodAttributes.MemberAccessMask.GetQualifiedName());
 
-            var propertyInfo = Helper.GetPropertyInfo(propertyGetterExpression);
+            var propertyInfo = Factotum.GetPropertyInfo(propertyGetterExpression);
             Assert.IsNotNull(propertyInfo);
 
             var expectedReadability = expectedAccessMode != PropertyAccessMode.WriteOnly;

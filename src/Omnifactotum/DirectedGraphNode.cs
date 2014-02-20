@@ -109,7 +109,7 @@ namespace Omnifactotum
                 return;
             }
 
-            Helper.ProcessRecursively(
+            Factotum.ProcessRecursively(
                 this,
                 item => item.Heads.Concat(item.Tails),
                 obj =>

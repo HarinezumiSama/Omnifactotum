@@ -116,7 +116,7 @@
     <Compile Include="ExtensionMethods\OmnifactotumStringExtensions.cs" />
     <Compile Include="ExtensionMethods\OmnifactotumTimeSpanExtensions.cs" />
     <Compile Include="ExtensionMethods\OmnifactotumTypeExtensions.cs" />
-    <Compile Include="Helper.cs" />
+    <Compile Include="Factotum.cs" />
     <Compile Include="IdGenerationModes.cs" />
     <Compile Include="KeyedEqualityComparer.cs" />
     <Compile Include="KeyValuePair.Helper.cs" />

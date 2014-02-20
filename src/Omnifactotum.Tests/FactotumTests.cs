@@ -14,12 +14,12 @@ using Omnifactotum.Tests.Properties;
 namespace Omnifactotum.Tests
 {
     [TestFixture]
-    public unsafe sealed class HelperTests
+    public unsafe sealed class FactotumTests
     {
         #region Constants and Fields
 
         private static readonly MethodInfo ToPropertyStringMethodDefinition =
-            new Func<object, ToPropertyStringOptions, string>(Helper.ToPropertyString)
+            new Func<object, ToPropertyStringOptions, string>(Factotum.ToPropertyString)
                 .Method
                 .GetGenericMethodDefinition();
 
@@ -36,11 +36,11 @@ namespace Omnifactotum.Tests
             var disposable = disposableMock.Object;
             var disposableCopy = disposable;
 
-            Helper.DisposeAndNull(ref disposableCopy);
+            Factotum.DisposeAndNull(ref disposableCopy);
             Assert.That(disposableCopy, Is.Null);
             disposableMock.Verify(obj => obj.Dispose(), Times.Once);
 
-            Helper.DisposeAndNull(ref disposableCopy);
+            Factotum.DisposeAndNull(ref disposableCopy);
             Assert.That(disposableCopy, Is.Null);
             disposableMock.Verify(obj => obj.Dispose(), Times.Once);
         }
@@ -55,7 +55,7 @@ namespace Omnifactotum.Tests
             var a = OriginalA;
             var b = OriginalB;
 
-            Helper.Exchange(ref a, ref b);
+            Factotum.Exchange(ref a, ref b);
             Assert.That(a, Is.EqualTo(OriginalB));
             Assert.That(b, Is.EqualTo(OriginalA));
         }
@@ -70,7 +70,7 @@ namespace Omnifactotum.Tests
             var a = originalA;
             var b = originalB;
 
-            Helper.Exchange(ref a, ref b);
+            Factotum.Exchange(ref a, ref b);
             Assert.That(a, Is.SameAs(originalB));
             Assert.That(b, Is.SameAs(originalA));
         }
@@ -81,7 +81,7 @@ namespace Omnifactotum.Tests
         [TestCase(int.MaxValue)]
         public void TestIdentityValueType(int value)
         {
-            Assert.That(() => Helper.Identity(value), Is.EqualTo(value));
+            Assert.That(() => Factotum.Identity(value), Is.EqualTo(value));
         }
 
         [Test]
@@ -90,7 +90,7 @@ namespace Omnifactotum.Tests
         [TestCase("TestString")]
         public void TestIdentityReferenceType(string value)
         {
-            Assert.That(() => Helper.Identity(value), Is.SameAs(value));
+            Assert.That(() => Factotum.Identity(value), Is.SameAs(value));
         }
 
         [Test]
@@ -133,7 +133,7 @@ namespace Omnifactotum.Tests
                 testObject.ReadOnlyStringValueWithDefault,
                 Is.EqualTo(SetDefaultValuesTestClass.NonDefaultStringValue));
 
-            var resultTestObject = Helper.SetDefaultValues(testObject);
+            var resultTestObject = Factotum.SetDefaultValues(testObject);
             Assert.That(resultTestObject, Is.SameAs(testObject));
 
             Assert.That(SetDefaultValuesTestClass.StaticStringValueWithDefault, Is.EqualTo(TestStringValue));
@@ -162,41 +162,41 @@ namespace Omnifactotum.Tests
             var nodeDParentA = new RecursiveNode { Value = ValueD, Parent = nodeA };
             var nodeDParentB = new RecursiveNode { Value = ValueD, Parent = nodeB };
 
-            Assert.That(Helper.AreEqualByContents(nodeC1, nodeC1), Is.True);
-            Assert.That(Helper.AreEqualByContents(nodeC1, null), Is.False);
-            Assert.That(Helper.AreEqualByContents(null, nodeC1), Is.False);
+            Assert.That(Factotum.AreEqualByContents(nodeC1, nodeC1), Is.True);
+            Assert.That(Factotum.AreEqualByContents(nodeC1, null), Is.False);
+            Assert.That(Factotum.AreEqualByContents(null, nodeC1), Is.False);
 
-            Assert.That(Helper.AreEqualByContents(nodeC1, nodeC2), Is.True);
-            Assert.That(Helper.AreEqualByContents(nodeC2, nodeC1), Is.True);
+            Assert.That(Factotum.AreEqualByContents(nodeC1, nodeC2), Is.True);
+            Assert.That(Factotum.AreEqualByContents(nodeC2, nodeC1), Is.True);
 
-            Assert.That(Helper.AreEqualByContents(nodeC1, nodeDParentA), Is.False);
+            Assert.That(Factotum.AreEqualByContents(nodeC1, nodeDParentA), Is.False);
 
-            Assert.That(Helper.AreEqualByContents(nodeDParentA, nodeDParentB), Is.False);
+            Assert.That(Factotum.AreEqualByContents(nodeDParentA, nodeDParentB), Is.False);
         }
 
         [Test]
         public void TestMax()
         {
-            Assert.That(() => Helper.Max(1, 2), Is.EqualTo(2));
-            Assert.That(() => Helper.Max(1, 1), Is.EqualTo(1));
+            Assert.That(() => Factotum.Max(1, 2), Is.EqualTo(2));
+            Assert.That(() => Factotum.Max(1, 1), Is.EqualTo(1));
 
-            Assert.That(() => Helper.Max("abc", "abcd"), Is.EqualTo("abcd"));
+            Assert.That(() => Factotum.Max("abc", "abcd"), Is.EqualTo("abcd"));
 
             Assert.That(
-                () => Helper.Max(TimeSpan.FromMilliseconds(1d), TimeSpan.FromMilliseconds(2d)),
+                () => Factotum.Max(TimeSpan.FromMilliseconds(1d), TimeSpan.FromMilliseconds(2d)),
                 Is.EqualTo(TimeSpan.FromMilliseconds(2d)));
         }
 
         [Test]
         public void TestMin()
         {
-            Assert.That(() => Helper.Min(1, 2), Is.EqualTo(1));
-            Assert.That(() => Helper.Min(1, 1), Is.EqualTo(1));
+            Assert.That(() => Factotum.Min(1, 2), Is.EqualTo(1));
+            Assert.That(() => Factotum.Min(1, 1), Is.EqualTo(1));
 
-            Assert.That(() => Helper.Min("abc", "abcd"), Is.EqualTo("abc"));
+            Assert.That(() => Factotum.Min("abc", "abcd"), Is.EqualTo("abc"));
 
             Assert.That(
-                () => Helper.Min(TimeSpan.FromMilliseconds(1d), TimeSpan.FromMilliseconds(2d)),
+                () => Factotum.Min(TimeSpan.FromMilliseconds(1d), TimeSpan.FromMilliseconds(2d)),
                 Is.EqualTo(TimeSpan.FromMilliseconds(1d)));
         }
 
@@ -290,7 +290,7 @@ namespace Omnifactotum.Tests
                     typeof(RecursiveNode),
                     null,
                     new ToPropertyStringOptions().SetAllFlags(true),
-                    "HelperTests.RecursiveNode :: <null>")
+                    "FactotumTests.RecursiveNode :: <null>")
                     .SetName("Null RecursiveNode, all flags");
 
                 yield return new TestCaseData(
@@ -321,7 +321,7 @@ namespace Omnifactotum.Tests
                 }
 
                 {
-                    var pointerString = string.Format(Helper.PointerStringFormat, PointerAddress);
+                    var pointerString = string.Format(Factotum.PointerStringFormat, PointerAddress);
 
                     yield return
                         new TestCaseData(

@@ -152,7 +152,7 @@ namespace Omnifactotum
                 }
             }
 
-            var result = resultList.Distinct().OrderBy(Helper.Identity).ToArray();
+            var result = resultList.Distinct().OrderBy(Factotum.Identity).ToArray();
             return result;
         }
 

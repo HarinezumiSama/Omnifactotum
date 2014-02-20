@@ -81,7 +81,7 @@ namespace Omnifactotum
 
             foreach (var node in this)
             {
-                Helper.ProcessRecursively(
+                Factotum.ProcessRecursively(
                     node,
                     item => item.Heads.Concat(item.Tails),
                     item =>

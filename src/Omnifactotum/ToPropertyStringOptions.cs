@@ -8,7 +8,7 @@ namespace Omnifactotum
 {
     /// <summary>
     ///     Represents the options used by
-    ///     the <see cref="Helper.ToPropertyString{T}(T,ToPropertyStringOptions)"/> method.
+    ///     the <see cref="Factotum.ToPropertyString{T}(T,ToPropertyStringOptions)"/> method.
     /// </summary>
     public sealed class ToPropertyStringOptions : ICloneable
     {

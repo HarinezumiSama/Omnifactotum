@@ -356,7 +356,7 @@ namespace System
         /// </returns>
         public static string ToPropertyString<T>(this T obj, ToPropertyStringOptions options)
         {
-            return Helper.ToPropertyString(obj, options);
+            return Factotum.ToPropertyString(obj, options);
         }
 
         /// <summary>
@@ -373,7 +373,7 @@ namespace System
         /// </returns>
         public static string ToPropertyString<T>(this T obj)
         {
-            return Helper.ToPropertyString(obj, null);
+            return Factotum.ToPropertyString(obj, null);
         }
 
         /// <summary>
@@ -399,7 +399,7 @@ namespace System
         /// </returns>
         public static bool IsEqualByContentsTo<T>(this T obj, T other)
         {
-            return Helper.AreEqualByContents(obj, other);
+            return Factotum.AreEqualByContents(obj, other);
         }
 
         /// <summary>

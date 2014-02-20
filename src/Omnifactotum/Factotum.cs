@@ -15,17 +15,15 @@ using System.Text;
 
 namespace Omnifactotum
 {
-    //// TODO [vmcl] Rename Helper to Omnihelper/Factotum/etc?
-
     /// <summary>
     ///     Provides helper methods and properties for common use.
     /// </summary>
-    public static class Helper
+    public static class Factotum
     {
         #region Constants and Fields
 
         /// <summary>
-        ///     The minimum size of a generated identifier part (see <see cref="Helper.GenerateId"/> and
+        ///     The minimum size of a generated identifier part (see <see cref="Factotum.GenerateId"/> and
         ///     <see cref="IdGenerationModes"/>).
         /// </summary>
         public static readonly int MinimumGeneratedIdPartSize = Marshal.SizeOf(typeof(Guid));
@@ -706,9 +704,9 @@ namespace Omnifactotum
         /// <param name="size">
         ///     <para>The size, in bytes, of the resulting identifier.</para>
         ///     <para>
-        ///         This value must be at least <see cref="Helper.MinimumGeneratedIdPartSize"/> when either
+        ///         This value must be at least <see cref="Factotum.MinimumGeneratedIdPartSize"/> when either
         ///         <see cref="IdGenerationModes.Unique"/> or <see cref="IdGenerationModes.Random"/> is solely
-        ///         specified, and it must be at least twice as <see cref="Helper.MinimumGeneratedIdPartSize"/> if
+        ///         specified, and it must be at least twice as <see cref="Factotum.MinimumGeneratedIdPartSize"/> if
         ///         both modes are specified.
         ///     </para>
         /// </param>
@@ -804,9 +802,9 @@ namespace Omnifactotum
         /// <param name="size">
         ///     <para>The size, in bytes, of the resulting identifier.</para>
         ///     <para>
-        ///         This value must be at least <see cref="Helper.MinimumGeneratedIdPartSize"/> when either
+        ///         This value must be at least <see cref="Factotum.MinimumGeneratedIdPartSize"/> when either
         ///         <see cref="IdGenerationModes.Unique"/> or <see cref="IdGenerationModes.Random"/> is solely
-        ///         specified, and it must be at least twice as <see cref="Helper.MinimumGeneratedIdPartSize"/> if
+        ///         specified, and it must be at least twice as <see cref="Factotum.MinimumGeneratedIdPartSize"/> if
         ///         both modes are specified.
         ///     </para>
         /// </param>
