@@ -181,7 +181,6 @@ namespace Omnifactotum
             return Comparer<T>.Default;
         }
 
-
         #endregion
     }
 }
