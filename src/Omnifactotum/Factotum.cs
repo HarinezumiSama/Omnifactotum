@@ -317,6 +317,132 @@ namespace Omnifactotum
             return Comparer<T>.Default.Compare(x, y) < 0 ? x : y;
         }
 
+        /// <summary>
+        ///     Generates an identifier which is unique, cryptographically random, or both.
+        /// </summary>
+        /// <param name="size">
+        ///     <para>The size, in bytes, of the resulting identifier.</para>
+        ///     <para>
+        ///         This value must be at least <see cref="Factotum.MinimumGeneratedIdPartSize"/> when either
+        ///         <see cref="IdGenerationModes.Unique"/> or <see cref="IdGenerationModes.Random"/> is solely
+        ///         specified, and it must be at least twice as <see cref="Factotum.MinimumGeneratedIdPartSize"/> if
+        ///         both modes are specified.
+        ///     </para>
+        /// </param>
+        /// <param name="modes">
+        ///     Specifies the modes of identifier generation.
+        /// </param>
+        /// <returns>
+        ///     An array of bytes representing the generated identifier.
+        /// </returns>
+        /// <exception cref="ArgumentOutOfRangeException">
+        ///     <paramref name="size"/> is less than required by the specified <paramref name="modes"/>.
+        /// </exception>
+        /// <exception cref="ArgumentException">
+        ///     <paramref name="modes"/> does not specify anything to generate.
+        /// </exception>
+        public static byte[] GenerateId(int size, IdGenerationModes modes)
+        {
+            var minimumSize = 0;
+            var generateUniquePart = false;
+            var generateRandomPart = false;
+
+            if (modes.IsAnySet(IdGenerationModes.Unique))
+            {
+                generateUniquePart = true;
+                minimumSize += MinimumGeneratedIdPartSize;
+            }
+
+            if (modes.IsAnySet(IdGenerationModes.Random))
+            {
+                generateRandomPart = true;
+                minimumSize += MinimumGeneratedIdPartSize;
+            }
+
+            #region Argument Check
+
+            if (!generateUniquePart && !generateRandomPart)
+            {
+                throw new ArgumentException("There is nothing to generate.", "modes");
+            }
+
+            if (size < minimumSize)
+            {
+                var errorMessage = string.Format(
+                    CultureInfo.InvariantCulture,
+                    "For the specified mode(s), the size must be at least {0}.",
+                    minimumSize);
+                throw new ArgumentOutOfRangeException("size", size, errorMessage);
+            }
+
+            #endregion
+
+            var result = new byte[size];
+
+            var offset = 0;
+            if (generateUniquePart)
+            {
+                var remainingUniquePartSize = generateRandomPart ? GuidSize : size;
+                while (remainingUniquePartSize > 0)
+                {
+                    var uniquePart = Guid.NewGuid().ToByteArray();
+
+                    var blockSize = Math.Min(remainingUniquePartSize, GuidSize);
+                    Array.Copy(uniquePart, 0, result, offset, blockSize);
+                    offset += blockSize;
+                    remainingUniquePartSize -= blockSize;
+                }
+            }
+
+            if (generateRandomPart)
+            {
+                var randomPartSize = size - offset;
+
+                // According to the documentation, GetBytes is thread-safe
+                // However, using a lock here to be on the safe side
+                var randomPart = new byte[randomPartSize];
+                lock (IdGenerator)
+                {
+                    IdGenerator.GetBytes(randomPart);
+                }
+
+                Array.Copy(randomPart, 0, result, offset, randomPart.Length);
+            }
+
+            return result;
+        }
+
+        /// <summary>
+        ///     Generates an identifier, which is unique, cryptographically random, or both, and returns its
+        ///     hexadecimal representation.
+        /// </summary>
+        /// <param name="size">
+        ///     <para>The size, in bytes, of the resulting identifier.</para>
+        ///     <para>
+        ///         This value must be at least <see cref="Factotum.MinimumGeneratedIdPartSize"/> when either
+        ///         <see cref="IdGenerationModes.Unique"/> or <see cref="IdGenerationModes.Random"/> is solely
+        ///         specified, and it must be at least twice as <see cref="Factotum.MinimumGeneratedIdPartSize"/> if
+        ///         both modes are specified.
+        ///     </para>
+        /// </param>
+        /// <param name="modes">
+        ///     Specifies the modes of identifier generation.
+        /// </param>
+        /// <returns>
+        ///     A hexadecimal representation of the generated identifier.
+        /// </returns>
+        /// <exception cref="ArgumentOutOfRangeException">
+        ///     <paramref name="size"/> is less than required by the specified <paramref name="modes"/>.
+        /// </exception>
+        /// <exception cref="ArgumentException">
+        ///     <paramref name="modes"/> does not specify anything to generate.
+        /// </exception>
+        public static string GenerateIdString(int size, IdGenerationModes modes)
+        {
+            var id = GenerateId(size, modes);
+            return id.ToHexString();
+        }
+
         #endregion
 
         #region Public Methods: Properties
@@ -696,134 +822,6 @@ namespace Omnifactotum
             var path = assembly.GetLocalPath();
 
             return Path.GetDirectoryName(path).EnsureNotNull();
-        }
-
-        /// <summary>
-        ///     Generates an identifier which is unique, cryptographically random, or both.
-        /// </summary>
-        /// <param name="size">
-        ///     <para>The size, in bytes, of the resulting identifier.</para>
-        ///     <para>
-        ///         This value must be at least <see cref="Factotum.MinimumGeneratedIdPartSize"/> when either
-        ///         <see cref="IdGenerationModes.Unique"/> or <see cref="IdGenerationModes.Random"/> is solely
-        ///         specified, and it must be at least twice as <see cref="Factotum.MinimumGeneratedIdPartSize"/> if
-        ///         both modes are specified.
-        ///     </para>
-        /// </param>
-        /// <param name="modes">
-        ///     Specifies the modes of identifier generation.
-        /// </param>
-        /// <returns>
-        ///     An array of bytes representing the generated identifier.
-        /// </returns>
-        /// <exception cref="ArgumentOutOfRangeException">
-        ///     <paramref name="size"/> is less than required by the specified <paramref name="modes"/>.
-        /// </exception>
-        /// <exception cref="ArgumentException">
-        ///     <paramref name="modes"/> does not specify anything to generate.
-        /// </exception>
-        public static byte[] GenerateId(int size, IdGenerationModes modes)
-        {
-            #region Argument Check
-
-            if (modes <= 0)
-            {
-                throw new ArgumentOutOfRangeException("modes", modes, @"The value must be positive.");
-            }
-
-            #endregion
-
-            var minimumSize = 0;
-            var generateUniquePart = false;
-            var generateRandomPart = false;
-
-            if (modes.IsAnySet(IdGenerationModes.Unique))
-            {
-                generateUniquePart = true;
-                minimumSize += MinimumGeneratedIdPartSize;
-            }
-
-            if (modes.IsAnySet(IdGenerationModes.Random))
-            {
-                generateRandomPart = true;
-                minimumSize += MinimumGeneratedIdPartSize;
-            }
-
-            #region Argument Check
-
-            if (size < minimumSize)
-            {
-                var errorMessage = string.Format(
-                    CultureInfo.InvariantCulture,
-                    "For the specified mode(s), the size must be at least {0}.",
-                    minimumSize);
-                throw new ArgumentOutOfRangeException("size", size, errorMessage);
-            }
-
-            if (!generateUniquePart && !generateRandomPart)
-            {
-                throw new ArgumentException("There is nothing to generate.", "modes");
-            }
-
-            #endregion
-
-            var result = new byte[size];
-
-            var offset = 0;
-            if (generateUniquePart)
-            {
-                var uniquePart = Guid.NewGuid().ToByteArray();
-                Array.Copy(uniquePart, result, GuidSize);
-                offset += GuidSize;
-            }
-
-            if (generateRandomPart)
-            {
-                var randomPartSize = size - offset;
-
-                // According to the documentation, GetBytes is thread-safe
-                // However, using a lock here to be on the safe side
-                var randomPart = new byte[randomPartSize];
-                lock (IdGenerator)
-                {
-                    IdGenerator.GetBytes(randomPart);
-                }
-
-                Array.Copy(randomPart, 0, result, offset, randomPart.Length);
-            }
-
-            return result;
-        }
-
-        /// <summary>
-        ///     Generates an identifier, which is unique, cryptographically random, or both, and returns its
-        ///     hexadecimal representation.
-        /// </summary>
-        /// <param name="size">
-        ///     <para>The size, in bytes, of the resulting identifier.</para>
-        ///     <para>
-        ///         This value must be at least <see cref="Factotum.MinimumGeneratedIdPartSize"/> when either
-        ///         <see cref="IdGenerationModes.Unique"/> or <see cref="IdGenerationModes.Random"/> is solely
-        ///         specified, and it must be at least twice as <see cref="Factotum.MinimumGeneratedIdPartSize"/> if
-        ///         both modes are specified.
-        ///     </para>
-        /// </param>
-        /// <param name="modes">
-        ///     Specifies the modes of identifier generation.
-        /// </param>
-        /// <returns>
-        ///     A hexadecimal representation of the generated identifier.
-        /// </returns>
-        /// <exception cref="ArgumentOutOfRangeException">
-        ///     <paramref name="size"/> is less than required by the specified <paramref name="modes"/>.
-        /// </exception>
-        /// <exception cref="ArgumentException">
-        ///     <paramref name="modes"/> does not specify anything to generate.
-        /// </exception>
-        public static string GenerateIdString(int size, IdGenerationModes modes)
-        {
-            var id = GenerateId(size, modes);
-            return id.ToHexString();
         }
 
         #endregion

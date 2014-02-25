@@ -25,7 +25,7 @@ namespace Omnifactotum.Tests
 
         #endregion
 
-        #region Tests
+        #region Tests: General
 
         [Test]
         public void TestDisposeAndNull()
@@ -198,6 +198,55 @@ namespace Omnifactotum.Tests
             Assert.That(
                 () => Factotum.Min(TimeSpan.FromMilliseconds(1d), TimeSpan.FromMilliseconds(2d)),
                 Is.EqualTo(TimeSpan.FromMilliseconds(1d)));
+        }
+
+        [Test]
+        public void TestGenerateIdNegativeCases()
+        {
+            Assert.That(
+                () => Factotum.GenerateId(int.MaxValue, 0),
+                Throws.ArgumentException.With.Message.Contains("There is nothing to generate."));
+
+            Assert.That(
+                () => Factotum.GenerateId(Factotum.MinimumGeneratedIdPartSize - 1, IdGenerationModes.Random),
+                Throws
+                    .TypeOf<ArgumentOutOfRangeException>()
+                    .With
+                    .Message
+                    .Contains("For the specified mode(s), the size must be at least"));
+
+            Assert.That(
+                () => Factotum.GenerateId(Factotum.MinimumGeneratedIdPartSize - 1, IdGenerationModes.Unique),
+                Throws
+                    .TypeOf<ArgumentOutOfRangeException>()
+                    .With
+                    .Message
+                    .Contains("For the specified mode(s), the size must be at least"));
+
+            Assert.That(
+                () =>
+                    Factotum.GenerateId(
+                        Factotum.MinimumGeneratedIdPartSize * 2 - 1,
+                        IdGenerationModes.UniqueAndRandom),
+                Throws
+                    .TypeOf<ArgumentOutOfRangeException>()
+                    .With
+                    .Message
+                    .Contains("For the specified mode(s), the size must be at least"));
+        }
+
+        [Test]
+        [TestCase(16, IdGenerationModes.Unique)]
+        [TestCase(16, IdGenerationModes.Random)]
+        [TestCase(32, IdGenerationModes.UniqueAndRandom)]
+        [TestCase(307, IdGenerationModes.Unique)]
+        [TestCase(307, IdGenerationModes.Random)]
+        [TestCase(307, IdGenerationModes.UniqueAndRandom)]
+        public void TestGenerateId(int size, IdGenerationModes modes)
+        {
+            var id = Factotum.GenerateId(size, modes);
+            Assert.That(id, Has.Length.EqualTo(size));
+            Assert.That(id.Count(b => b == 0), Is.LessThan(Factotum.MinimumGeneratedIdPartSize));
         }
 
         #endregion
