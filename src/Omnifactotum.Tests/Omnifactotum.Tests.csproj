@@ -54,6 +54,7 @@
     <Compile Include="DirectedGraphTests.cs" />
     <Compile Include="EnumHelperTests.cs" />
     <Compile Include="FactotumTests.cs" />
+    <Compile Include="ObjectValidatorTests.cs" />
     <Compile Include="OmnifactotumExpressionExtensionsTests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="..\SolutionItems\CommonAssemblyInfo.cs">

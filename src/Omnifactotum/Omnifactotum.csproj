@@ -87,6 +87,15 @@
     <Compile Include="EquatableObjectBase.cs" />
     <Compile Include="EquatableValueCapsule.cs" />
     <Compile Include="ExtensionMethods\OmnifactotumExpressionExtensions.cs" />
+    <Compile Include="Validation\IMemberConstraint.cs" />
+    <Compile Include="Validation\MemberConstraintAttribute.cs" />
+    <Compile Include="Validation\MemberConstraintBase.cs" />
+    <Compile Include="Validation\MemberConstraintValidationContext.cs" />
+    <Compile Include="Validation\MemberConstraintValidationError.cs" />
+    <Compile Include="Validation\NotNullConstraint.cs" />
+    <Compile Include="Validation\ObjectValidationException.cs" />
+    <Compile Include="Validation\ObjectValidationResult.cs" />
+    <Compile Include="Validation\ObjectValidator.cs" />
     <Compile Include="ValueCapsule.cs" />
     <Compile Include="SyncValueContainer.cs" />
     <Compile Include="DirectedGraph.cs" />
@@ -153,6 +162,7 @@
   <ItemGroup>
     <Content Include="ExtensionMethods\__ReadMe.txt" />
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
     <CompileDependsOn>UpdateGlobalVersion;$(CompileDependsOn)</CompileDependsOn>
