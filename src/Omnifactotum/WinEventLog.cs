@@ -1,11 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Reflection;
 
-//// Namespace is intentionally named so in order to simplify usage of the contained class
-//// ReSharper disable once CheckNamespace
-namespace System.Diagnostics
+namespace Omnifactotum
 {
     /// <summary>
     ///     Provides the simple interface to write to the Windows <b>Event Log</b>.
