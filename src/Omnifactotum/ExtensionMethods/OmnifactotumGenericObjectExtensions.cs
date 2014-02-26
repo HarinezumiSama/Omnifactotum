@@ -4,6 +4,7 @@ using System.Diagnostics;
 using System.Globalization;
 using System.Linq;
 using Omnifactotum;
+using Omnifactotum.Annotations;
 
 //// Namespace is intentionally named so in order to simplify usage of extension methods
 //// ReSharper disable once CheckNamespace
@@ -32,6 +33,7 @@ namespace System
         /// <exception cref="System.ArgumentNullException">
         ///     <paramref name="value"/> is <b>null</b>.
         /// </exception>
+        [NotNull]
         [DebuggerNonUserCode]
         public static T EnsureNotNull<T>(this T value)
             where T : class
