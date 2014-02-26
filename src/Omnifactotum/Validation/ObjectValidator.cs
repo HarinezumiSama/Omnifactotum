@@ -52,11 +52,12 @@ namespace Omnifactotum.Validation
             var validationErrors = new List<MemberConstraintValidationError>();
 
             var current = new MemberData(parameterExpression, instance, null);
+            var constraintCache = new Dictionary<Type, IMemberConstraint>();
 
             Factotum.ProcessRecursively(
                 current,
                 GetMembers,
-                obj => ValidateInternal(instance, obj, validationErrors));
+                obj => ValidateInternal(instance, obj, constraintCache, validationErrors));
 
             return new ObjectValidationResult(validationErrors);
         }
@@ -115,8 +116,6 @@ namespace Omnifactotum.Validation
                 return Enumerable.Empty<MemberData>();
             }
 
-            //// TODO [vmaklai] Cache type's validatable members
-
             var allDataMembers = instanceType.FindMembers(
                 MemberTypes.Field | MemberTypes.Property,
                 BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic,
@@ -148,13 +147,24 @@ namespace Omnifactotum.Validation
         private static void ValidateInternal(
             object root,
             MemberData memberData,
+            IDictionary<Type, IMemberConstraint> constraintCache,
             ICollection<MemberConstraintValidationError> outputErrors)
         {
             #region Argument Check
 
+            if (root == null)
+            {
+                throw new ArgumentNullException("root");
+            }
+
             if (memberData == null)
             {
                 throw new ArgumentNullException("memberData");
+            }
+
+            if (constraintCache == null)
+            {
+                throw new ArgumentNullException("constraintCache");
             }
 
             if (outputErrors == null)
@@ -167,11 +177,13 @@ namespace Omnifactotum.Validation
             var memberExpression = memberData.Expression as MemberExpression;
             if (memberExpression == null)
             {
+                // The root object itself should not be checked
                 return;
             }
 
-            //// TODO [vmaklai] Cache constraint instances
-            var constraint = (IMemberConstraint)Activator.CreateInstance(memberData.Attribute.ConstraintType);
+            var constraint = constraintCache.GetValueOrCreate(
+                memberData.Attribute.ConstraintType,
+                constraintType => (IMemberConstraint)Activator.CreateInstance(constraintType));
 
             var context = new MemberConstraintValidationContext(root, memberExpression);
 

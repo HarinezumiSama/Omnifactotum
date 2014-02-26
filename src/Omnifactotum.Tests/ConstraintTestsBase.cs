@@ -23,7 +23,7 @@ namespace Omnifactotum.Tests
         {
             return Expression.MakeMemberAccess(
                 Expression.Parameter(GetType(), "instance"),
-                Factotum.GetPropertyInfo((NotNullConstraintTests obj) => obj.DummyProperty));
+                Factotum.GetPropertyInfo((ConstraintTestsBase obj) => obj.DummyProperty));
         }
 
         protected MemberConstraintValidationContext CreateTestValidationContext()

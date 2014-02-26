@@ -4,8 +4,20 @@ using System.Linq;
 namespace Omnifactotum.Validation.Constraints
 {
     /// <summary>
-    ///     Represents a constraint for a type member (that is, for a field or a property).
-    ///     NOTE to implementers: implementation has to be stateless.
+    ///     <para>
+    ///         Represents a constraint for a type member (that is, for a field or a property).
+    ///     </para>
+    ///     <para>
+    ///         <b>NOTES</b>:
+    ///         <list type="bullet">
+    ///             <item>
+    ///                 Implementation must be stateless in order to be reusable during validation.
+    ///             </item>
+    ///             <item>
+    ///                 Implementation must have public parameterless constructor.
+    ///             </item>
+    ///         </list>
+    ///     </para>
     /// </summary>
     public interface IMemberConstraint
     {

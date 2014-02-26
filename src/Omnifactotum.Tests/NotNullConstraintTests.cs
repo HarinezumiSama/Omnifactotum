@@ -1,8 +1,6 @@
 ﻿using System;
 using System.Linq;
-using System.Linq.Expressions;
 using NUnit.Framework;
-using Omnifactotum.Annotations;
 using Omnifactotum.Validation.Constraints;
 
 namespace Omnifactotum.Tests
