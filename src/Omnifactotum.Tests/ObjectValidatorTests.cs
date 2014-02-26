@@ -14,7 +14,25 @@ namespace Omnifactotum.Tests
         #region Tests
 
         [Test]
-        public void TestValidate()
+        public void TestValidateWhenValidationSucceeded()
+        {
+            var data = new ComplexData
+            {
+                Data = new SimpleData { StartDate = DateTime.UtcNow, NullableValue = 0, Value = "A" },
+                EmptyValue = "B"
+            };
+
+            var validationResult = ObjectValidator.Validate(data);
+
+            Assert.That(validationResult, Is.Not.Null);
+            Assert.That(validationResult.Errors.Count, Is.EqualTo(0));
+            Assert.That(validationResult.IsObjectValid, Is.True);
+            Assert.That(validationResult.GetException(), Is.Null);
+            Assert.That(() => validationResult.EnsureSucceeded(), Throws.Nothing);
+        }
+
+        [Test]
+        public void TestValidateWhenValidationFailed()
         {
             var data = new ComplexData
             {
@@ -26,6 +44,9 @@ namespace Omnifactotum.Tests
 
             Assert.That(validationResult, Is.Not.Null);
             Assert.That(validationResult.Errors.Count, Is.EqualTo(4));
+            Assert.That(validationResult.IsObjectValid, Is.False);
+            Assert.That(validationResult.GetException(), Is.TypeOf<ObjectValidationException>());
+            Assert.That(() => validationResult.EnsureSucceeded(), Throws.TypeOf<ObjectValidationException>());
 
             var actualNotNullErrorExpressions = validationResult
                 .Errors
