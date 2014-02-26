@@ -45,7 +45,11 @@ namespace Omnifactotum.Tests
             Assert.That(validationResult, Is.Not.Null);
             Assert.That(validationResult.Errors.Count, Is.EqualTo(4));
             Assert.That(validationResult.IsObjectValid, Is.False);
-            Assert.That(validationResult.GetException(), Is.TypeOf<ObjectValidationException>());
+
+            var validationException = validationResult.GetException();
+            Assert.That(validationException, Is.Not.Null & Is.TypeOf<ObjectValidationException>());
+            Assert.That(validationException.EnsureNotNull().ValidationResult, Is.SameAs(validationResult));
+
             Assert.That(() => validationResult.EnsureSucceeded(), Throws.TypeOf<ObjectValidationException>());
 
             var actualNotNullErrorExpressions = validationResult

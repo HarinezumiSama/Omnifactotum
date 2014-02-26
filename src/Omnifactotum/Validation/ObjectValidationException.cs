@@ -15,19 +15,35 @@ namespace Omnifactotum.Validation
         /// <summary>
         ///     Initializes a new instance of the <see cref="ObjectValidationException"/> class.
         /// </summary>
+        /// <param name="validationResult">
+        ///     The validation result caused this exception.
+        /// </param>
         /// <param name="message">
         ///     The message that describes the error.
         /// </param>
-        public ObjectValidationException(string message)
+        internal ObjectValidationException(ObjectValidationResult validationResult, string message)
             : base(message)
         {
-            // Nothing to do
+            this.ValidationResult = validationResult;
         }
 
         private ObjectValidationException(SerializationInfo info, StreamingContext context)
             : base(info, context)
         {
             // Nothing to do
+        }
+
+        #endregion
+
+        #region Public Properties
+
+        /// <summary>
+        ///     Gets the validation result caused this exception.
+        /// </summary>
+        public ObjectValidationResult ValidationResult
+        {
+            get;
+            private set;
         }
 
         #endregion

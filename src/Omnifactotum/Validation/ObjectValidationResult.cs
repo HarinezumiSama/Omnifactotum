@@ -81,6 +81,29 @@ namespace Omnifactotum.Validation
         ///     Gets the validation exception based on the validation result.
         ///     If validation succeeded, this method returns <b>null</b>.
         /// </summary>
+        /// <param name="errorDescriptionSeparator">
+        ///     The string value that is used to separate a list of validation error descriptions.
+        /// </param>
+        /// <returns>
+        ///     An <see cref="ObjectValidationException"/> if validation failed;
+        ///     or <b>null</b> if validation succeeded.
+        /// </returns>
+        [CanBeNull]
+        public ObjectValidationException GetException(string errorDescriptionSeparator)
+        {
+            if (this.IsObjectValid)
+            {
+                return null;
+            }
+
+            var message = this.Errors.Select(GetValidationErrorDescription).Join(errorDescriptionSeparator);
+            return new ObjectValidationException(this, message);
+        }
+
+        /// <summary>
+        ///     Gets the validation exception based on the validation result.
+        ///     If validation succeeded, this method returns <b>null</b>.
+        /// </summary>
         /// <returns>
         ///     An <see cref="ObjectValidationException"/> if validation failed;
         ///     or <b>null</b> if validation succeeded.
@@ -88,21 +111,7 @@ namespace Omnifactotum.Validation
         [CanBeNull]
         public ObjectValidationException GetException()
         {
-            if (this.IsObjectValid)
-            {
-                return null;
-            }
-
-            var message =
-                this.Errors.Select(
-                    obj =>
-                        string.Format(
-                            CultureInfo.InvariantCulture,
-                            "[{0}] {1}",
-                            obj.Context.Expression.ToString(),
-                            obj.ErrorMessage)).Join(Environment.NewLine);
-
-            return new ObjectValidationException(message);
+            return GetException(Environment.NewLine);
         }
 
         /// <summary>
@@ -117,6 +126,19 @@ namespace Omnifactotum.Validation
             }
 
             throw exception;
+        }
+
+        #endregion
+
+        #region Private Methods
+
+        private static string GetValidationErrorDescription(MemberConstraintValidationError error)
+        {
+            return string.Format(
+                CultureInfo.InvariantCulture,
+                "[{0}] {1}",
+                error.Context.Expression,
+                error.ErrorMessage);
         }
 
         #endregion
