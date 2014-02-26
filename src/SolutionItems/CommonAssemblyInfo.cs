@@ -1,5 +1,4 @@
 ﻿using System.Reflection;
-using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 
 [assembly: AssemblyDescription("Omnifactotum: the .NET library intended to help .NET developers avoid writing the same helper types, methods and extension methods for different projects.")]

@@ -196,8 +196,6 @@ namespace System
 
         #endregion
 
-        #region Nested Types
-
         #region StrongTypeHelper<T> Class
 
         /// <summary>
@@ -227,7 +225,9 @@ namespace System
                 [DebuggerNonUserCode]
                 get
                 {
-                    // Thread-safe lock is not needed here
+                    //// Thread-safe lock is not needed here
+
+                    // ReSharper disable once ConvertIfStatementToNullCoalescingExpression
                     if (_emptyArray == null)
                     {
                         _emptyArray = new T[0];
@@ -239,8 +239,6 @@ namespace System
 
             #endregion
         }
-
-        #endregion
 
         #endregion
     }

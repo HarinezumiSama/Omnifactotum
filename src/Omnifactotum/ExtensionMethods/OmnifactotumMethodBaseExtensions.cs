@@ -163,7 +163,7 @@ namespace System.Reflection
             var resultBuilder = new StringBuilder();
 
             Func<Type, string> getTypeName =
-                type => VoidType.Equals(type)
+                type => type == VoidType
                     ? VoidTypeName
                     : (fullNames ? type.GetFullName() : OmnifactotumTypeExtensions.GetShortTypeNameInternal(type));
 

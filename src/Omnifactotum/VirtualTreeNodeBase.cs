@@ -71,6 +71,7 @@ namespace Omnifactotum
             [DebuggerNonUserCode]
             get
             {
+                // ReSharper disable once ConvertIfStatementToNullCoalescingExpression
                 if (_children == null)
                 {
                     _children = new VirtualTreeNodeCollection<T>(this);
