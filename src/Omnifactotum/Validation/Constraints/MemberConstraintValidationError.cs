@@ -2,7 +2,7 @@
 using System.Diagnostics;
 using System.Linq;
 
-namespace Omnifactotum.Validation
+namespace Omnifactotum.Validation.Constraints
 {
     /// <summary>
     ///     Represents the member constraint validation error.

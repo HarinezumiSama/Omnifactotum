@@ -4,6 +4,7 @@ using System.Linq;
 using System.Linq.Expressions;
 using System.Reflection;
 using Omnifactotum.Annotations;
+using Omnifactotum.Validation.Constraints;
 
 namespace Omnifactotum.Validation
 {

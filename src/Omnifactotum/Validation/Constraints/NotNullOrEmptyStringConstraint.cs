@@ -1,12 +1,12 @@
 ﻿using System;
 using System.Linq;
 
-namespace Omnifactotum.Validation
+namespace Omnifactotum.Validation.Constraints
 {
     /// <summary>
-    ///     Specifies that the annotated member should not be <b>null</b>.
+    ///     Specifies that the annotated member of type <see cref="String"/> should not be <b>null</b> or empty.
     /// </summary>
-    public sealed class NotNullConstraint : MemberConstraintBase
+    public sealed class NotNullOrEmptyStringConstraint : MemberConstraintBase
     {
         #region Protected Methods
 
@@ -27,12 +27,13 @@ namespace Omnifactotum.Validation
             MemberConstraintValidationContext context,
             object value)
         {
-            if (value != null)
+            var stringValue = CastTo<string>(value);
+            if (!string.IsNullOrEmpty(stringValue))
             {
                 return null;
             }
 
-            return CreateError(context, "The value cannot be null.");
+            return CreateError(context, "The value must not be null or an empty string.");
         }
 
         #endregion

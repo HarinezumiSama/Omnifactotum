@@ -3,7 +3,7 @@ using System.Globalization;
 using System.Linq;
 using Omnifactotum.Annotations;
 
-namespace Omnifactotum.Validation
+namespace Omnifactotum.Validation.Constraints
 {
     /// <summary>
     ///     The basic implementation of the <see cref="IMemberConstraint"/> interface.
@@ -64,6 +64,37 @@ namespace Omnifactotum.Validation
         protected abstract MemberConstraintValidationError ValidateInternal(
             [NotNull] MemberConstraintValidationContext context,
             object value);
+
+        /// <summary>
+        ///     Tries to cast the specified value to the specified target type and
+        ///     if the value is not compatible with the target type, throws an exception with the detailed description.
+        /// </summary>
+        /// <typeparam name="TTarget">
+        ///     The type to cast to.
+        /// </typeparam>
+        /// <param name="value">
+        ///     The value to cast.
+        /// </param>
+        /// <returns>
+        ///     The value cast to the specified target type.
+        /// </returns>
+        protected TTarget CastTo<TTarget>(object value)
+        {
+            var targetType = typeof(TTarget);
+            if (value is TTarget || (!targetType.IsValueType && value == null))
+            {
+                return (TTarget)value;
+            }
+
+            var message = string.Format(
+                CultureInfo.InvariantCulture,
+                "The type of the value '{0}' is not compatible with the type '{1}' expected by the constraint '{2}'.",
+                value.GetTypeSafely().GetFullName(),
+                targetType.GetFullName(),
+                GetType().GetQualifiedName());
+
+            throw new InvalidOperationException(message);
+        }
 
         /// <summary>
         ///     Creates a <see cref="MemberConstraintValidationError"/> instance using the specified arguments.

@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Linq;
 
-namespace Omnifactotum.Validation
+namespace Omnifactotum.Validation.Constraints
 {
     /// <summary>
     ///     Represents a constraint for a type member (that is, for a field or a property).

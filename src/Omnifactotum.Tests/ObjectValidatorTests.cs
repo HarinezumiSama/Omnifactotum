@@ -4,6 +4,7 @@ using System.Linq;
 using NUnit.Framework;
 using Omnifactotum.Annotations;
 using Omnifactotum.Validation;
+using Omnifactotum.Validation.Constraints;
 
 namespace Omnifactotum.Tests
 {
@@ -15,11 +16,16 @@ namespace Omnifactotum.Tests
         [Test]
         public void TestValidate()
         {
-            var data = new ComplexData { Data = new SimpleData { StartDate = DateTime.Now } };
+            var data = new ComplexData
+            {
+                Data = new SimpleData { StartDate = DateTime.Now },
+                EmptyValue = string.Empty
+            };
+
             var validationResult = ObjectValidator.Validate(data);
 
             Assert.That(validationResult, Is.Not.Null);
-            Assert.That(validationResult.Errors.Count, Is.EqualTo(3));
+            Assert.That(validationResult.Errors.Count, Is.EqualTo(4));
 
             var actualNotNullErrorExpressions = validationResult
                 .Errors
@@ -30,28 +36,39 @@ namespace Omnifactotum.Tests
             var expectedNotNullErrorExpressions =
                 new[]
                 {
-                    string.Format(
-                        CultureInfo.InvariantCulture,
-                        "{0}.Data.Value",
-                        ObjectValidator.RootObjectParameterName),
-                    string.Format(
-                        CultureInfo.InvariantCulture,
-                        "{0}.Data.NullableValue",
-                        ObjectValidator.RootObjectParameterName)
+                    MakeExpressionString("Data.Value"),
+                    MakeExpressionString("Data.NullableValue")
                 };
 
             Assert.That(actualNotNullErrorExpressions, Is.EquivalentTo(expectedNotNullErrorExpressions));
+
+            var notEmptyError =
+                validationResult.Errors.Single(
+                    obj => obj.FailedConstraintType == typeof(NotNullOrEmptyStringConstraint));
+
+            Assert.That(
+                notEmptyError.Context.Expression.ToString(),
+                Is.EqualTo(MakeExpressionString("EmptyValue")));
 
             var utcDateError =
                 validationResult.Errors.Single(obj => obj.FailedConstraintType == typeof(UtcDateConstraint));
 
             Assert.That(
                 utcDateError.Context.Expression.ToString(),
-                Is.EqualTo(
-                    string.Format(
-                        CultureInfo.InvariantCulture,
-                        "{0}.Data.StartDate",
-                        ObjectValidator.RootObjectParameterName)));
+                Is.EqualTo(MakeExpressionString("Data.StartDate")));
+        }
+
+        #endregion
+
+        #region Private Methods
+
+        private static string MakeExpressionString(string propertyPath)
+        {
+            return string.Format(
+                CultureInfo.InvariantCulture,
+                "{0}.{1}",
+                ObjectValidator.RootObjectParameterName,
+                propertyPath);
         }
 
         #endregion
@@ -128,6 +145,15 @@ namespace Omnifactotum.Tests
 
             [MemberConstraint(typeof(NotNullConstraint))]
             public SimpleData Data
+            {
+                [UsedImplicitly]
+                private get;
+
+                set;
+            }
+
+            [MemberConstraint(typeof(NotNullOrEmptyStringConstraint))]
+            public string EmptyValue
             {
                 [UsedImplicitly]
                 private get;

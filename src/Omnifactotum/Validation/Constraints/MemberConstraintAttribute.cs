@@ -2,7 +2,7 @@
 using System.Globalization;
 using System.Linq;
 
-namespace Omnifactotum.Validation
+namespace Omnifactotum.Validation.Constraints
 {
     /// <summary>
     ///     Specifies how the annotated member is validated.

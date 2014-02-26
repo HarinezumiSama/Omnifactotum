@@ -3,7 +3,7 @@ using System.Linq;
 using System.Linq.Expressions;
 using Omnifactotum.Annotations;
 
-namespace Omnifactotum.Validation
+namespace Omnifactotum.Validation.Constraints
 {
     /// <summary>
     ///     Represents the context of member constraint validation.
