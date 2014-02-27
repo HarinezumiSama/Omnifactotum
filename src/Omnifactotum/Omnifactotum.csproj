@@ -87,6 +87,7 @@
     <Compile Include="EquatableObjectBase.cs" />
     <Compile Include="EquatableValueCapsule.cs" />
     <Compile Include="ExtensionMethods\OmnifactotumExpressionExtensions.cs" />
+    <Compile Include="Validation\Constraints\NotNullOrWhiteSpaceStringConstraint.cs" />
     <Compile Include="Validation\Constraints\NotNullOrEmptyStringConstraint.cs" />
     <Compile Include="Validation\Constraints\IMemberConstraint.cs" />
     <Compile Include="Validation\Constraints\MemberConstraintAttribute.cs" />

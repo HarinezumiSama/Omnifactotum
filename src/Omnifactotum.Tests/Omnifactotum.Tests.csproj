@@ -52,6 +52,7 @@
   <ItemGroup>
     <Compile Include="ByReferenceEqualityComparerTests.cs" />
     <Compile Include="ConstraintTestsBase.cs" />
+    <Compile Include="NotNullOrWhiteSpaceStringConstraintTests.cs" />
     <Compile Include="DirectedGraphTests.cs" />
     <Compile Include="EnumHelperTests.cs" />
     <Compile Include="FactotumTests.cs" />
