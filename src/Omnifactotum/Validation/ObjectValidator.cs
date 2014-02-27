@@ -128,9 +128,9 @@ namespace Omnifactotum.Validation
                         new
                         {
                             Member = obj,
-                            Attribute = obj.GetSingleOrDefaultCustomAttribute<MemberConstraintAttribute>()
+                            Attributes = obj.GetCustomAttributes<MemberConstraintAttribute>(true)
                         })
-                .Where(obj => obj.Attribute != null)
+                .Where(obj => obj.Attributes.Length != 0)
                 .ToArray();
 
             var memberDatas = internalMemberDatas
@@ -138,7 +138,7 @@ namespace Omnifactotum.Validation
                     obj => new MemberData(
                         Expression.MakeMemberAccess(parentMemberData.Expression, obj.Member),
                         GetMemberValue(instance, obj.Member),
-                        obj.Attribute))
+                        obj.Attributes))
                 .ToArray();
 
             return memberDatas;
@@ -181,16 +181,19 @@ namespace Omnifactotum.Validation
                 return;
             }
 
-            var constraint = constraintCache.GetValueOrCreate(
-                memberData.Attribute.ConstraintType,
-                constraintType => (IMemberConstraint)Activator.CreateInstance(constraintType));
-
-            var context = new MemberConstraintValidationContext(root, memberExpression);
-
-            var validationError = constraint.Validate(context, memberData.Value);
-            if (validationError != null)
+            foreach (var constraintAttribute in memberData.Attributes)
             {
-                outputErrors.Add(validationError);
+                var constraint = constraintCache.GetValueOrCreate(
+                    constraintAttribute.ConstraintType,
+                    constraintType => (IMemberConstraint)Activator.CreateInstance(constraintType));
+
+                var context = new MemberConstraintValidationContext(root, memberExpression);
+
+                var validationError = constraint.Validate(context, memberData.Value);
+                if (validationError != null)
+                {
+                    outputErrors.Add(validationError);
+                }
             }
         }
 
@@ -214,13 +217,13 @@ namespace Omnifactotum.Validation
             /// <param name="value">
             ///     The member value.
             /// </param>
-            /// <param name="attribute">
-            ///     The constraint attribute.
+            /// <param name="attributes">
+            ///     The constraint attributes.
             /// </param>
             internal MemberData(
                 [NotNull] Expression expression,
                 [CanBeNull] object value,
-                [CanBeNull] MemberConstraintAttribute attribute)
+                [CanBeNull] MemberConstraintAttribute[] attributes)
             {
                 #region Argument Check
 
@@ -233,7 +236,7 @@ namespace Omnifactotum.Validation
 
                 this.Expression = expression;
                 this.Value = value;
-                this.Attribute = attribute;
+                this.Attributes = attributes;
             }
 
             #endregion
@@ -259,9 +262,9 @@ namespace Omnifactotum.Validation
             }
 
             /// <summary>
-            ///     Gets the attribute.
+            ///     Gets the constraint attributes.
             /// </summary>
-            public MemberConstraintAttribute Attribute
+            public MemberConstraintAttribute[] Attributes
             {
                 get;
                 private set;

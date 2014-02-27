@@ -33,9 +33,9 @@ namespace System.Reflection
         /// <exception cref="System.ArgumentNullException">
         ///     <paramref name="provider"/> is <b>null</b>.
         /// </exception>
-        public static List<TAttribute> GetCustomAttributes<TAttribute>(
+        public static TAttribute[] GetCustomAttributes<TAttribute>(
             this ICustomAttributeProvider provider,
-            bool inherit = false)
+            bool inherit)
             where TAttribute : Attribute
         {
             #region Argument Check
@@ -47,7 +47,20 @@ namespace System.Reflection
 
             #endregion
 
-            return provider.GetCustomAttributes(typeof(TAttribute), inherit).Cast<TAttribute>().ToList();
+            //// As per MSDN:
+            ////    Calling ICustomAttributeProvider.GetCustomAttributes on PropertyInfo or EventInfo when the inherit
+            ////    parameter of GetCustomAttributes is true does not walk the type hierarchy. Use System.Attribute to
+            ////    inherit custom attributes.
+            var memberInfo = provider as MemberInfo;
+            if (memberInfo != null)
+            {
+                return Attribute
+                    .GetCustomAttributes(memberInfo, typeof(TAttribute), inherit)
+                    .Cast<TAttribute>()
+                    .ToArray();
+            }
+
+            return provider.GetCustomAttributes(typeof(TAttribute), inherit).Cast<TAttribute>().ToArray();
         }
 
         /// <summary>
@@ -75,7 +88,7 @@ namespace System.Reflection
         /// </exception>
         public static TAttribute GetSingleCustomAttribute<TAttribute>(
             this ICustomAttributeProvider provider,
-            bool inherit = false)
+            bool inherit)
             where TAttribute : Attribute
         {
             return GetSingleCustomAttributeInternal<TAttribute>(provider, inherit, Enumerable.Single);
@@ -106,7 +119,7 @@ namespace System.Reflection
         /// </exception>
         public static TAttribute GetSingleOrDefaultCustomAttribute<TAttribute>(
             this ICustomAttributeProvider provider,
-            bool inherit = false)
+            bool inherit)
             where TAttribute : Attribute
         {
             return GetSingleCustomAttributeInternal<TAttribute>(provider, inherit, Enumerable.SingleOrDefault);
@@ -138,7 +151,7 @@ namespace System.Reflection
         private static TAttribute GetSingleCustomAttributeInternal<TAttribute>(
             ICustomAttributeProvider provider,
             bool inherit,
-            Func<IEnumerable<object>, object> getSingle)
+            Func<IEnumerable<TAttribute>, TAttribute> getSingle)
             where TAttribute : Attribute
         {
             #region Argument Check
@@ -150,7 +163,7 @@ namespace System.Reflection
 
             #endregion
 
-            return (TAttribute)getSingle(provider.GetCustomAttributes(typeof(TAttribute), inherit));
+            return getSingle(GetCustomAttributes<TAttribute>(provider, inherit));
         }
 
         #endregion

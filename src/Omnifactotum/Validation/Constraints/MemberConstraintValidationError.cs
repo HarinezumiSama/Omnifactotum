@@ -118,6 +118,16 @@ namespace Omnifactotum.Validation.Constraints
                 error.ErrorMessage);
         }
 
+        public override string ToString()
+        {
+            return string.Format(
+                CultureInfo.InvariantCulture,
+                "{{{0}: Failed '{1}' for [{2}]}}",
+                GetType().GetQualifiedName(),
+                this.FailedConstraintType.GetQualifiedName(),
+                this.Context.Expression);
+        }
+
         /// <summary>
         ///     Gets the default description of the current validation error.
         /// </summary>

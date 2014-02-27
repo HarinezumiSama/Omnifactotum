@@ -80,16 +80,16 @@ namespace Omnifactotum
         #region Public Methods: General
 
         /// <summary>
-        /// Calls the <see cref="IDisposable.Dispose"/> method of the instance, passed by reference, implementing
+        ///     Calls the <see cref="IDisposable.Dispose"/> method of the instance, passed by reference, implementing
         ///     the <see cref="IDisposable"/> interface and sets the reference to this object to <b>null</b>.
         ///     If the <see cref="IDisposable.Dispose"/> method implementation throws an exception,
         ///     the reference to the instance remains unchanged.
         /// </summary>
         /// <typeparam name="T">
-        /// The type of the disposable instance.
+        ///     The type of the disposable instance.
         /// </typeparam>
         /// <param name="disposable">
-        /// A reference to an object to dispose and set to <b>null</b>.
+        ///     A reference to an object to dispose and set to <b>null</b>.
         /// </param>
         public static void DisposeAndNull<T>(ref T disposable)
             where T : class, IDisposable
@@ -104,16 +104,16 @@ namespace Omnifactotum
         }
 
         /// <summary>
-        /// Exchanges two specified values, passed by reference. This method is not thread-safe.
+        ///     Exchanges two specified values, passed by reference. This method is not thread-safe.
         /// </summary>
         /// <typeparam name="T">
-        /// The type of the values to exchange.
+        ///     The type of the values to exchange.
         /// </typeparam>
         /// <param name="value1">
-        /// The first value to exchange with the second value.
+        ///     The first value to exchange with the second value.
         /// </param>
         /// <param name="value2">
-        /// The second value to exchange with the first value.
+        ///     The second value to exchange with the first value.
         /// </param>
         [DebuggerNonUserCode]
         public static void Exchange<T>(ref T value1, ref T value2)
@@ -142,19 +142,19 @@ namespace Omnifactotum
         }
 
         /// <summary>
-        /// Sets the values of the public instance properties of the specified object to the values indicated
+        ///     Sets the values of the public instance properties of the specified object to the values indicated
         ///     in the <see cref="DefaultValueAttribute">DefaultValue</see> attribute which a property is marked with.
         ///     If a property is not marked with the <see cref="DefaultValueAttribute">DefaultValue</see> attribute,
         ///     its value remains unchanged.
         /// </summary>
         /// <typeparam name="T">
-        /// The type of the object whose properties to change.
+        ///     The type of the object whose properties to change.
         /// </typeparam>
         /// <param name="obj">
-        /// The object whose properties to change.
+        ///     The object whose properties to change.
         /// </param>
         /// <returns>
-        /// The input object.
+        ///     The input object.
         /// </returns>
         [DebuggerNonUserCode]
         public static T SetDefaultValues<T>(T obj)
@@ -176,7 +176,7 @@ namespace Omnifactotum
                     item => new
                     {
                         Property = item,
-                        Attribute = item.GetSingleOrDefaultCustomAttribute<DefaultValueAttribute>()
+                        Attribute = item.GetSingleOrDefaultCustomAttribute<DefaultValueAttribute>(false)
                     })
                 .Where(item => item.Attribute != null)
                 .Select(
@@ -196,19 +196,19 @@ namespace Omnifactotum
         }
 
         /// <summary>
-        /// Gets a string representing the properties of the specified object.
+        ///     Gets a string representing the properties of the specified object.
         /// </summary>
         /// <typeparam name="T">
-        /// The type of the object to convert.
+        ///     The type of the object to convert.
         /// </typeparam>
         /// <param name="obj">
-        /// The object to convert.
+        ///     The object to convert.
         /// </param>
         /// <param name="options">
-        /// The options specifying how to build the string representation.
+        ///     The options specifying how to build the string representation.
         /// </param>
         /// <returns>
-        /// A string representing the properties of the specified object.
+        ///     A string representing the properties of the specified object.
         /// </returns>
         public static string ToPropertyString<T>(T obj, ToPropertyStringOptions options)
         {
@@ -448,19 +448,19 @@ namespace Omnifactotum
         #region Public Methods: Properties
 
         /// <summary>
-        /// Gets the <see cref="PropertyInfo"/> of the property specified by the lambda expression.
+        ///     Gets the <see cref="PropertyInfo"/> of the property specified by the lambda expression.
         /// </summary>
         /// <typeparam name="TObject">
-        /// The type containing the property.
+        ///     The type containing the property.
         /// </typeparam>
         /// <typeparam name="TProperty">
-        /// The type of the property.
+        ///     The type of the property.
         /// </typeparam>
         /// <param name="propertyGetterExpression">
-        /// The lambda expression in the following form: <c>(SomeType x) =&gt; x.Property</c>.
+        ///     The lambda expression in the following form: <c>(SomeType x) =&gt; x.Property</c>.
         /// </param>
         /// <returns>
-        /// The <see cref="PropertyInfo"/> containing information about the required property.
+        ///     The <see cref="PropertyInfo"/> containing information about the required property.
         /// </returns>
         public static PropertyInfo GetPropertyInfo<TObject, TProperty>(
             Expression<Func<TObject, TProperty>> propertyGetterExpression)
@@ -525,19 +525,19 @@ namespace Omnifactotum
         }
 
         /// <summary>
-        /// Gets the name of the property specified by the lambda expression.
+        ///     Gets the name of the property specified by the lambda expression.
         /// </summary>
         /// <typeparam name="TObject">
-        /// The type containing the property.
+        ///     The type containing the property.
         /// </typeparam>
         /// <typeparam name="TProperty">
-        /// The type of the property.
+        ///     The type of the property.
         /// </typeparam>
         /// <param name="propertyGetterExpression">
-        /// The lambda expression in the following form: <c>(SomeType x) =&gt; x.Property</c>.
+        ///     The lambda expression in the following form: <c>(SomeType x) =&gt; x.Property</c>.
         /// </param>
         /// <returns>
-        /// The name of the property.
+        ///     The name of the property.
         /// </returns>
         public static string GetPropertyName<TObject, TProperty>(
             Expression<Func<TObject, TProperty>> propertyGetterExpression)
@@ -547,19 +547,19 @@ namespace Omnifactotum
         }
 
         /// <summary>
-        /// Gets the type-qualified name of the property specified by the lambda expression.
+        ///     Gets the type-qualified name of the property specified by the lambda expression.
         /// </summary>
         /// <typeparam name="TObject">
-        /// The type containing the property.
+        ///     The type containing the property.
         /// </typeparam>
         /// <typeparam name="TProperty">
-        /// The type of the property.
+        ///     The type of the property.
         /// </typeparam>
         /// <param name="propertyGetterExpression">
-        /// The lambda expression in the following form: <c>(SomeType x) =&gt; x.Property</c>.
+        ///     The lambda expression in the following form: <c>(SomeType x) =&gt; x.Property</c>.
         /// </param>
         /// <returns>
-        /// The name of the property in the following form: <c>SomeType.Property</c>.
+        ///     The name of the property in the following form: <c>SomeType.Property</c>.
         /// </returns>
         public static string GetQualifiedPropertyName<TObject, TProperty>(
             Expression<Func<TObject, TProperty>> propertyGetterExpression)
@@ -569,16 +569,16 @@ namespace Omnifactotum
         }
 
         /// <summary>
-        /// Gets the <see cref="PropertyInfo"/> of the static property specified by the lambda expression.
+        ///     Gets the <see cref="PropertyInfo"/> of the static property specified by the lambda expression.
         /// </summary>
         /// <typeparam name="TProperty">
-        /// The type of the static property.
+        ///     The type of the static property.
         /// </typeparam>
         /// <param name="propertyGetterExpression">
-        /// The lambda expression in the following form: <c>() =&gt; propertyExpression</c>.
+        ///     The lambda expression in the following form: <c>() =&gt; propertyExpression</c>.
         /// </param>
         /// <returns>
-        /// The <see cref="PropertyInfo"/> containing information about the required static property.
+        ///     The <see cref="PropertyInfo"/> containing information about the required static property.
         /// </returns>
         public static PropertyInfo GetPropertyInfo<TProperty>(Expression<Func<TProperty>> propertyGetterExpression)
         {
@@ -629,16 +629,16 @@ namespace Omnifactotum
         }
 
         /// <summary>
-        /// Gets the name of the static property specified by the lambda expression.
+        ///     Gets the name of the static property specified by the lambda expression.
         /// </summary>
         /// <typeparam name="TProperty">
-        /// The type of the static property.
+        ///     The type of the static property.
         /// </typeparam>
         /// <param name="propertyGetterExpression">
-        /// The lambda expression in the following form: <c>() =&gt; propertyExpression</c>.
+        ///     The lambda expression in the following form: <c>() =&gt; propertyExpression</c>.
         /// </param>
         /// <returns>
-        /// The name of the static property.
+        ///     The name of the static property.
         /// </returns>
         public static string GetPropertyName<TProperty>(Expression<Func<TProperty>> propertyGetterExpression)
         {
@@ -647,16 +647,16 @@ namespace Omnifactotum
         }
 
         /// <summary>
-        /// Gets the type-qualified name of the static property specified by the lambda expression.
+        ///     Gets the type-qualified name of the static property specified by the lambda expression.
         /// </summary>
         /// <typeparam name="TProperty">
-        /// The type of the static property.
+        ///     The type of the static property.
         /// </typeparam>
         /// <param name="propertyGetterExpression">
-        /// The lambda expression in the following form: <c>() =&gt; propertyExpression</c>.
+        ///     The lambda expression in the following form: <c>() =&gt; propertyExpression</c>.
         /// </param>
         /// <returns>
-        /// The type-qualified name of the static property.
+        ///     The type-qualified name of the static property.
         /// </returns>
         public static string GetQualifiedPropertyName<TProperty>(Expression<Func<TProperty>> propertyGetterExpression)
         {
@@ -669,29 +669,29 @@ namespace Omnifactotum
         #region Public Methods: Recursive Processing
 
         /// <summary>
-        /// Processes the specified instance recursively.
+        ///     Processes the specified instance recursively.
         /// </summary>
         /// <typeparam name="T">
-        /// The type of the instances to process.
+        ///     The type of the instances to process.
         /// </typeparam>
         /// <param name="instance">
-        /// The instance to process. Can be <b>null</b>.
+        ///     The instance to process. Can be <b>null</b>.
         /// </param>
         /// <param name="getItems">
-        /// A reference to the method that maps <paramref name="instance"/> to the collection of associated objects
+        ///     A reference to the method that maps <paramref name="instance"/> to the collection of associated objects
         ///     to process them recursively.
         /// </param>
         /// <param name="processItem">
-        /// A reference to the method that processes each single item.
+        ///     A reference to the method that processes each single item.
         /// </param>
         /// <exception cref="ArgumentNullException">
-        /// <para>
-        /// <paramref name="getItems"/> is <b>null</b>.
-        /// </para>
-        /// <para>-or-</para>
-        /// <para>
-        /// <paramref name="processItem"/> is <b>null</b>.
-        /// </para>
+        ///     <para>
+        ///         <paramref name="getItems"/> is <b>null</b>.
+        ///     </para>
+        ///     <para>-or-</para>
+        ///     <para>
+        ///         <paramref name="processItem"/> is <b>null</b>.
+        ///     </para>
         /// </exception>
         public static void ProcessRecursively<T>(
             T instance,
@@ -726,29 +726,29 @@ namespace Omnifactotum
         }
 
         /// <summary>
-        /// Processes the specified instance recursively.
+        ///     Processes the specified instance recursively.
         /// </summary>
         /// <typeparam name="T">
-        /// The type of the instances to process.
+        ///     The type of the instances to process.
         /// </typeparam>
         /// <param name="instance">
-        /// The instance to process. Can be <b>null</b>.
+        ///     The instance to process. Can be <b>null</b>.
         /// </param>
         /// <param name="getItems">
-        /// A reference to the method that maps <paramref name="instance"/> to the collection of associated objects
+        ///     A reference to the method that maps <paramref name="instance"/> to the collection of associated objects
         ///     to process them recursively.
         /// </param>
         /// <param name="processItem">
-        /// A reference to the method that processes each single item.
+        ///     A reference to the method that processes each single item.
         /// </param>
         /// <exception cref="ArgumentNullException">
-        /// <para>
-        /// <paramref name="getItems"/> is <b>null</b>.
-        /// </para>
-        /// <para>-or-</para>
-        /// <para>
-        /// <paramref name="processItem"/> is <b>null</b>.
-        /// </para>
+        ///     <para>
+        ///         <paramref name="getItems"/> is <b>null</b>.
+        ///     </para>
+        ///     <para>-or-</para>
+        ///     <para>
+        ///         <paramref name="processItem"/> is <b>null</b>.
+        ///     </para>
         /// </exception>
         public static void ProcessRecursively<T>(
             T instance,
@@ -874,7 +874,6 @@ namespace Omnifactotum
             switch (processingResult)
             {
                 case RecursiveProcessingDirective.Continue:
-
                     //// Nothing to do
                     break;
 
@@ -1178,15 +1177,16 @@ namespace Omnifactotum
                     var method = ToPropertyStringInternalMethodDefinition.MakeGenericMethod(
                         propertyInfo.PropertyType.IsPointer ? typeof(object) : propertyInfo.PropertyType);
 
-                    var parameters = new[]
-                    {
-                        propertyValue,
-                        false,
-                        options,
-                        getProperties,
-                        resultBuilder,
-                        nextRecursionLevel
-                    };
+                    var parameters =
+                        new[]
+                        {
+                            propertyValue,
+                            false,
+                            options,
+                            getProperties,
+                            resultBuilder,
+                            nextRecursionLevel
+                        };
 
                     method.Invoke(null, parameters);
                 }
@@ -1303,10 +1303,6 @@ namespace Omnifactotum
                 _valueA = valueA;
                 _valueB = valueB;
             }
-
-            #endregion
-
-            #region Public Properties
 
             #endregion
 
