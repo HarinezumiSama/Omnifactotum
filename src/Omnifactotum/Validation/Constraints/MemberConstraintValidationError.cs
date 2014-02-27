@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Diagnostics;
+using System.Globalization;
 using System.Linq;
+using Omnifactotum.Annotations;
 
 namespace Omnifactotum.Validation.Constraints
 {
@@ -83,6 +85,48 @@ namespace Omnifactotum.Validation.Constraints
         {
             get;
             private set;
+        }
+
+        #endregion
+
+        #region Public Methods
+
+        /// <summary>
+        ///     Gets the default description of the specified validation error.
+        /// </summary>
+        /// <param name="error">
+        ///     The validation error to get the default description of.
+        /// </param>
+        /// <returns>
+        ///     The default description of the specified validation error.
+        /// </returns>
+        public static string GetDefaultDescription([NotNull] MemberConstraintValidationError error)
+        {
+            #region Argument Check
+
+            if (error == null)
+            {
+                throw new ArgumentNullException("error");
+            }
+
+            #endregion
+
+            return string.Format(
+                CultureInfo.InvariantCulture,
+                "[{0}] {1}",
+                error.Context.Expression,
+                error.ErrorMessage);
+        }
+
+        /// <summary>
+        ///     Gets the default description of the current validation error.
+        /// </summary>
+        /// <returns>
+        ///     The default description of the current validation error.
+        /// </returns>
+        public string GetDefaultDescription()
+        {
+            return GetDefaultDescription(this);
         }
 
         #endregion
