@@ -5,6 +5,8 @@ using System.Linq;
 using System.Text;
 
 //// Namespace is intentionally named so in order to simplify usage of extension methods
+using Omnifactotum.Annotations;
+
 //// ReSharper disable once CheckNamespace
 namespace System
 {
@@ -126,24 +128,20 @@ namespace System
         /// </param>
         /// <param name="separator">
         ///     The separator to insert between each element of the <see cref="System.String"/> collection.
+        ///     Can be <b>null</b>.
         /// </param>
         /// <returns>
-        ///     A <see cref="System.String"/> consisting of the elements of <paramref name="values"/> interspersed
-        ///     with the <paramref name="separator"/> string.
+        ///     A <see cref="System.String"/> consisting of the elements of <paramref name="values"/> delimited
+        ///     by the <paramref name="separator"/> string.
         /// </returns>
         [DebuggerNonUserCode]
-        public static string Join(this IEnumerable<string> values, string separator)
+        public static string Join([NotNull] this IEnumerable<string> values, [CanBeNull] string separator)
         {
             #region Argument Check
 
             if (values == null)
             {
                 throw new ArgumentNullException("values");
-            }
-
-            if (separator == null)
-            {
-                throw new ArgumentNullException("separator");
             }
 
             #endregion
