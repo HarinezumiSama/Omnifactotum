@@ -226,6 +226,15 @@ namespace System
 
             #endregion
 
+            if (type.HasElementType && type.IsArray)
+            {
+                var defaultElementType = type.GetElementType();
+                if (defaultElementType != null)
+                {
+                    return defaultElementType;
+                }
+            }
+
             var interfaces = type.GetInterfaces();
             foreach (var @interface in interfaces)
             {
