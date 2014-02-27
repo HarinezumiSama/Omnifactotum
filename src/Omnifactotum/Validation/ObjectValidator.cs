@@ -128,7 +128,7 @@ namespace Omnifactotum.Validation
                         new
                         {
                             Member = obj,
-                            Attributes = obj.GetCustomAttributes<MemberConstraintAttribute>(true)
+                            Attributes = obj.GetCustomAttributes<BaseMemberConstraintAttribute>(true)
                         })
                 .Where(obj => obj.Attributes.Length != 0)
                 .ToArray();
@@ -139,7 +139,26 @@ namespace Omnifactotum.Validation
                         Expression.MakeMemberAccess(parentMemberData.Expression, obj.Member),
                         GetMemberValue(instance, obj.Member),
                         obj.Attributes))
-                .ToArray();
+                .ToList();
+
+            //// TODO [vmcl] Support IEnumerable (not only 1-dimensional array)
+
+            var memberExpression = parentMemberData.Expression as MemberExpression;
+            if (memberExpression != null && memberExpression.Type.IsArray && memberExpression.Type.GetArrayRank() == 1)
+            {
+                var array = (Array)instance;
+                for (var index = 0; index < array.Length; index++)
+                {
+                    var item = array.GetValue(index);
+
+                    var expression = Expression.ArrayIndex(
+                        parentMemberData.Expression,
+                        Expression.Constant(index));
+
+                    var itemData = new MemberData(expression, item, parentMemberData.Attributes);
+                    memberDatas.Add(itemData);
+                }
+            }
 
             return memberDatas;
         }
@@ -174,20 +193,33 @@ namespace Omnifactotum.Validation
 
             #endregion
 
-            var memberExpression = memberData.Expression as MemberExpression;
-            if (memberExpression == null)
+            if (memberData.Attributes == null || memberData.Attributes.Length == 0)
             {
-                // The root object itself should not be checked
                 return;
             }
 
-            foreach (var constraintAttribute in memberData.Attributes)
+            BaseMemberConstraintAttribute[] attributes;
+            switch (memberData.Expression.NodeType)
+            {
+                case ExpressionType.MemberAccess:
+                    attributes = memberData.Attributes.Where(obj => obj is MemberConstraintAttribute).ToArray();
+                    break;
+
+                case ExpressionType.ArrayIndex:
+                    attributes = memberData.Attributes.Where(obj => obj is MemberItemConstraintAttribute).ToArray();
+                    break;
+
+                default:
+                    throw memberData.Expression.NodeType.CreateEnumValueNotSupportedException();
+            }
+
+            foreach (var constraintAttribute in attributes)
             {
                 var constraint = constraintCache.GetValueOrCreate(
                     constraintAttribute.ConstraintType,
                     constraintType => (IMemberConstraint)Activator.CreateInstance(constraintType));
 
-                var context = new MemberConstraintValidationContext(root, memberExpression);
+                var context = new MemberConstraintValidationContext(root, memberData.Expression);
 
                 var validationError = constraint.Validate(context, memberData.Value);
                 if (validationError != null)
@@ -223,7 +255,7 @@ namespace Omnifactotum.Validation
             internal MemberData(
                 [NotNull] Expression expression,
                 [CanBeNull] object value,
-                [CanBeNull] MemberConstraintAttribute[] attributes)
+                [CanBeNull] BaseMemberConstraintAttribute[] attributes)
             {
                 #region Argument Check
 
@@ -264,7 +296,7 @@ namespace Omnifactotum.Validation
             /// <summary>
             ///     Gets the constraint attributes.
             /// </summary>
-            public MemberConstraintAttribute[] Attributes
+            public BaseMemberConstraintAttribute[] Attributes
             {
                 get;
                 private set;

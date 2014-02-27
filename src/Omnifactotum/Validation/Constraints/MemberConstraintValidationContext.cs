@@ -21,7 +21,7 @@ namespace Omnifactotum.Validation.Constraints
         /// <param name="expression">
         ///     The lambda expression describing the path to the value from the root object.
         /// </param>
-        internal MemberConstraintValidationContext([NotNull] object root, [NotNull] MemberExpression expression)
+        internal MemberConstraintValidationContext([NotNull] object root, [NotNull] Expression expression)
         {
             #region Argument Check
 
@@ -57,7 +57,7 @@ namespace Omnifactotum.Validation.Constraints
         /// <summary>
         ///     Gets the lambda expression describing the path to the value from the root object.
         /// </summary>
-        public MemberExpression Expression
+        public Expression Expression
         {
             get;
             private set;

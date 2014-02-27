@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
 using NUnit.Framework;
@@ -19,7 +20,8 @@ namespace Omnifactotum.Tests
             var data = new ComplexData
             {
                 Data = new SimpleData { StartDate = DateTime.UtcNow, NullableValue = 0, Value = "A" },
-                EmptyValue = "B"
+                EmptyValue = "B",
+                MultipleDatas = new[] { new AnotherSimpleData { Value = "B" } }
             };
 
             var validationResult = ObjectValidator.Validate(data);
@@ -37,13 +39,14 @@ namespace Omnifactotum.Tests
             var data = new ComplexData
             {
                 Data = new SimpleData { StartDate = DateTime.Now },
-                EmptyValue = string.Empty
+                EmptyValue = string.Empty,
+                MultipleDatas = new[] { new AnotherSimpleData { Value = "C" }, new AnotherSimpleData() }
             };
 
             var validationResult = ObjectValidator.Validate(data);
 
             Assert.That(validationResult, Is.Not.Null);
-            Assert.That(validationResult.Errors.Count, Is.EqualTo(4));
+            Assert.That(validationResult.Errors.Count, Is.EqualTo(5));
             Assert.That(validationResult.IsObjectValid, Is.False);
 
             var validationException = validationResult.GetException();
@@ -62,7 +65,8 @@ namespace Omnifactotum.Tests
                 new[]
                 {
                     MakeExpressionString("Data.Value"),
-                    MakeExpressionString("Data.NullableValue")
+                    MakeExpressionString("Data.NullableValue"),
+                    MakeExpressionString("MultipleDatas[1].Value")
                 };
 
             Assert.That(actualNotNullErrorExpressions, Is.EquivalentTo(expectedNotNullErrorExpressions));
@@ -155,6 +159,24 @@ namespace Omnifactotum.Tests
 
         #endregion
 
+        #region AnotherSimpleData Class
+
+        public sealed class AnotherSimpleData
+        {
+            #region Public Properties
+
+            [MemberConstraint(typeof(NotNullConstraint))]
+            public string Value
+            {
+                get;
+                set;
+            }
+
+            #endregion
+        }
+
+        #endregion
+
         #region ComplexData Class
 
         public sealed class ComplexData
@@ -173,6 +195,16 @@ namespace Omnifactotum.Tests
             {
                 [UsedImplicitly]
                 private get;
+
+                set;
+            }
+
+            [MemberConstraint(typeof(NotNullConstraint))]
+            [MemberItemConstraint(typeof(NotNullConstraint))]
+            public AnotherSimpleData[] MultipleDatas
+            {
+                [UsedImplicitly]
+                get;
 
                 set;
             }
