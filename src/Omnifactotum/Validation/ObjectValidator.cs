@@ -116,6 +116,8 @@ namespace Omnifactotum.Validation
                 return Enumerable.Empty<MemberData>();
             }
 
+            var parentExpression = parentMemberData.Expression;
+
             var allDataMembers = instanceType.FindMembers(
                 MemberTypes.Field | MemberTypes.Property,
                 BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic,
@@ -136,15 +138,14 @@ namespace Omnifactotum.Validation
             var memberDatas = internalMemberDatas
                 .Select(
                     obj => new MemberData(
-                        Expression.MakeMemberAccess(parentMemberData.Expression, obj.Member),
+                        Expression.MakeMemberAccess(parentExpression, obj.Member),
                         GetMemberValue(instance, obj.Member),
                         obj.Attributes))
                 .ToList();
 
             //// TODO [vmcl] Support IEnumerable (not only 1-dimensional array)
 
-            var memberExpression = parentMemberData.Expression as MemberExpression;
-            if (memberExpression != null && memberExpression.Type.IsArray && memberExpression.Type.GetArrayRank() == 1)
+            if (parentExpression.Type.IsArray && parentExpression.Type.GetArrayRank() == 1)
             {
                 var array = (Array)instance;
                 for (var index = 0; index < array.Length; index++)
@@ -152,7 +153,7 @@ namespace Omnifactotum.Validation
                     var item = array.GetValue(index);
 
                     var expression = Expression.ArrayIndex(
-                        parentMemberData.Expression,
+                        parentExpression,
                         Expression.Constant(index));
 
                     var itemData = new MemberData(expression, item, parentMemberData.Attributes);
