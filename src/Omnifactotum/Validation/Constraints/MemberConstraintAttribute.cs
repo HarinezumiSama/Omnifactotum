@@ -65,5 +65,25 @@ namespace Omnifactotum.Validation.Constraints
         }
 
         #endregion
+
+        #region Public Methods
+
+        /// <summary>
+        ///     Returns a <see cref="System.String" /> that represents this <see cref="MemberConstraintAttribute"/>.
+        /// </summary>
+        /// <returns>
+        ///     A <see cref="System.String" /> that represents this <see cref="MemberConstraintAttribute"/>.
+        /// </returns>
+        public override string ToString()
+        {
+            return string.Format(
+                CultureInfo.InvariantCulture,
+                "{{{0}: {1} = '{2}'}}",
+                GetType().GetQualifiedName(),
+                Factotum.GetPropertyName((MemberConstraintAttribute obj) => obj.ConstraintType),
+                this.ConstraintType.GetQualifiedName());
+        }
+
+        #endregion
     }
 }

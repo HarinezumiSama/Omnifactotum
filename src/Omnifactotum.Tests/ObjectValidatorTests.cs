@@ -177,6 +177,7 @@ namespace Omnifactotum.Tests
                 set;
             }
 
+            [MemberConstraint(typeof(NotNullConstraint))]
             [MemberConstraint(typeof(NotNullOrEmptyStringConstraint))]
             public string EmptyValue
             {

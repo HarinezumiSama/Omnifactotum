@@ -118,6 +118,13 @@ namespace Omnifactotum.Validation.Constraints
                 error.ErrorMessage);
         }
 
+        /// <summary>
+        ///     Returns a <see cref="System.String" /> that represents
+        ///     this <see cref="MemberConstraintValidationError"/>.
+        /// </summary>
+        /// <returns>
+        ///     A <see cref="System.String" /> that represents this <see cref="MemberConstraintValidationError"/>.
+        /// </returns>
         public override string ToString()
         {
             return string.Format(
