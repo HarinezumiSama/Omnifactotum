@@ -51,13 +51,13 @@ namespace Omnifactotum.Validation
             var parameterExpression = Expression.Parameter(instance.GetType(), RootObjectParameterName);
             var validationErrors = new List<MemberConstraintValidationError>();
 
-            var current = new MemberData(parameterExpression, instance, null);
+            var rootMemberData = new MemberData(parameterExpression, null, instance, null, null);
             var constraintCache = new Dictionary<Type, IMemberConstraint>();
 
             Factotum.ProcessRecursively(
-                current,
+                rootMemberData,
                 GetMembers,
-                obj => ValidateInternal(instance, obj, constraintCache, validationErrors));
+                obj => ValidateInternal(instance, parameterExpression, obj, constraintCache, validationErrors));
 
             return new ObjectValidationResult(validationErrors);
         }
@@ -85,6 +85,13 @@ namespace Omnifactotum.Validation
                 || type.IsNullable();
         }
 
+        private static BaseMemberConstraintAttribute[] FilterBy<TAttribute>(
+            this IEnumerable<BaseMemberConstraintAttribute> attributes)
+            where TAttribute : BaseMemberConstraintAttribute
+        {
+            return attributes.EnsureNotNull().Where(obj => obj is TAttribute).ToArray();
+        }
+
         private static object GetMemberValue(object instance, MemberInfo memberInfo)
         {
             var field = memberInfo as FieldInfo;
@@ -95,6 +102,19 @@ namespace Omnifactotum.Validation
 
             var property = (PropertyInfo)memberInfo;
             return property.GetValue(instance, null);
+        }
+
+        private static Expression ConvertTypeAuto(Expression expression, object value)
+        {
+            if (value == null)
+            {
+                return expression;
+            }
+
+            var valueType = value.GetType();
+            var expressionType = expression.Type.GetCollectionElementType() ?? expression.Type;
+
+            return expressionType == valueType ? expression : Expression.Convert(expression, valueType);
         }
 
         private static IEnumerable<MemberData> GetMembers(MemberData parentMemberData)
@@ -138,9 +158,11 @@ namespace Omnifactotum.Validation
             var memberDatas = internalMemberDatas
                 .Select(
                     obj => new MemberData(
-                        Expression.MakeMemberAccess(parentExpression, obj.Member),
+                        Expression.MakeMemberAccess(ConvertTypeAuto(parentExpression, instance), obj.Member),
+                        instance,
                         GetMemberValue(instance, obj.Member),
-                        obj.Attributes))
+                        obj.Attributes,
+                        obj.Attributes.FilterBy<MemberConstraintAttribute>()))
                 .ToList();
 
             //// TODO [vmcl] Support IEnumerable (not only 1-dimensional array)
@@ -152,11 +174,17 @@ namespace Omnifactotum.Validation
                 {
                     var item = array.GetValue(index);
 
-                    var expression = Expression.ArrayIndex(
-                        parentExpression,
-                        Expression.Constant(index));
+                    var expression = ConvertTypeAuto(
+                        Expression.ArrayIndex(parentExpression, Expression.Constant(index)),
+                        item);
 
-                    var itemData = new MemberData(expression, item, parentMemberData.Attributes);
+                    var itemData = new MemberData(
+                        expression,
+                        instance,
+                        item,
+                        parentMemberData.Attributes,
+                        parentMemberData.Attributes.FilterBy<MemberItemConstraintAttribute>());
+
                     memberDatas.Add(itemData);
                 }
             }
@@ -166,61 +194,38 @@ namespace Omnifactotum.Validation
 
         private static void ValidateInternal(
             object root,
+            ParameterExpression parameterExpression,
             MemberData memberData,
             IDictionary<Type, IMemberConstraint> constraintCache,
             ICollection<MemberConstraintValidationError> outputErrors)
         {
             #region Argument Check
 
-            if (root == null)
-            {
-                throw new ArgumentNullException("root");
-            }
-
-            if (memberData == null)
-            {
-                throw new ArgumentNullException("memberData");
-            }
-
-            if (constraintCache == null)
-            {
-                throw new ArgumentNullException("constraintCache");
-            }
-
-            if (outputErrors == null)
-            {
-                throw new ArgumentNullException("outputErrors");
-            }
+            root.EnsureNotNull();
+            parameterExpression.EnsureNotNull();
+            memberData.EnsureNotNull();
+            constraintCache.EnsureNotNull();
+            outputErrors.EnsureNotNull();
 
             #endregion
 
-            if (memberData.Attributes == null || memberData.Attributes.Length == 0)
+            var effectiveAttributes = memberData.EffectiveAttributes;
+            if (effectiveAttributes == null || effectiveAttributes.Length == 0)
             {
                 return;
             }
 
-            BaseMemberConstraintAttribute[] attributes;
-            switch (memberData.Expression.NodeType)
-            {
-                case ExpressionType.MemberAccess:
-                    attributes = memberData.Attributes.Where(obj => obj is MemberConstraintAttribute).ToArray();
-                    break;
-
-                case ExpressionType.ArrayIndex:
-                    attributes = memberData.Attributes.Where(obj => obj is MemberItemConstraintAttribute).ToArray();
-                    break;
-
-                default:
-                    throw memberData.Expression.NodeType.CreateEnumValueNotSupportedException();
-            }
-
-            foreach (var constraintAttribute in attributes)
+            foreach (var constraintAttribute in effectiveAttributes)
             {
                 var constraint = constraintCache.GetValueOrCreate(
                     constraintAttribute.ConstraintType,
                     constraintType => (IMemberConstraint)Activator.CreateInstance(constraintType));
 
-                var context = new MemberConstraintValidationContext(root, memberData.Expression);
+                var context = new MemberConstraintValidationContext(
+                    root,
+                    memberData.Container,
+                    memberData.Expression,
+                    Expression.Lambda(memberData.Expression, parameterExpression));
 
                 var validationError = constraint.Validate(context, memberData.Value);
                 if (validationError != null)
@@ -247,16 +252,24 @@ namespace Omnifactotum.Validation
             /// <param name="expression">
             ///     The expression.
             /// </param>
+            /// <param name="container">
+            ///     The object containing the value that is being validated. Can be <b>null</b>.
+            /// </param>
             /// <param name="value">
             ///     The member value.
             /// </param>
             /// <param name="attributes">
             ///     The constraint attributes.
             /// </param>
+            /// <param name="effectiveAttributes">
+            ///     The effective constraint attributes.
+            /// </param>
             internal MemberData(
                 [NotNull] Expression expression,
+                [CanBeNull] object container,
                 [CanBeNull] object value,
-                [CanBeNull] BaseMemberConstraintAttribute[] attributes)
+                [CanBeNull] BaseMemberConstraintAttribute[] attributes,
+                [CanBeNull] BaseMemberConstraintAttribute[] effectiveAttributes)
             {
                 #region Argument Check
 
@@ -268,8 +281,10 @@ namespace Omnifactotum.Validation
                 #endregion
 
                 this.Expression = expression;
+                this.Container = container;
                 this.Value = value;
                 this.Attributes = attributes;
+                this.EffectiveAttributes = effectiveAttributes;
             }
 
             #endregion
@@ -280,6 +295,15 @@ namespace Omnifactotum.Validation
             ///     Gets the expression.
             /// </summary>
             public Expression Expression
+            {
+                get;
+                private set;
+            }
+
+            /// <summary>
+            ///     Gets the object containing the value that is being, or was, validated.
+            /// </summary>
+            public object Container
             {
                 get;
                 private set;
@@ -298,6 +322,15 @@ namespace Omnifactotum.Validation
             ///     Gets the constraint attributes.
             /// </summary>
             public BaseMemberConstraintAttribute[] Attributes
+            {
+                get;
+                private set;
+            }
+
+            /// <summary>
+            ///     Gets the effective constraint attributes.
+            /// </summary>
+            public BaseMemberConstraintAttribute[] EffectiveAttributes
             {
                 get;
                 private set;

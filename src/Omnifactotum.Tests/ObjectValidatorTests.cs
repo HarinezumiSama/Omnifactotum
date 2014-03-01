@@ -21,7 +21,8 @@ namespace Omnifactotum.Tests
             {
                 Data = new SimpleData { StartDate = DateTime.UtcNow, NullableValue = 0, Value = "A" },
                 EmptyValue = "B",
-                MultipleDatas = new[] { new AnotherSimpleData { Value = "B" } }
+                MultipleDatas = new BaseAnotherSimpleData[] { new AnotherSimpleData { Value = "B" } },
+                SingleBaseData = new AnotherSimpleData { Value = "Q" }
             };
 
             var validationResult = ObjectValidator.Validate(data);
@@ -40,13 +41,15 @@ namespace Omnifactotum.Tests
             {
                 Data = new SimpleData { StartDate = DateTime.Now },
                 EmptyValue = string.Empty,
-                MultipleDatas = new[] { new AnotherSimpleData { Value = "C" }, new AnotherSimpleData() }
+                MultipleDatas =
+                    new BaseAnotherSimpleData[] { new AnotherSimpleData { Value = "C" }, new AnotherSimpleData() },
+                SingleBaseData = new AnotherSimpleData()
             };
 
             var validationResult = ObjectValidator.Validate(data);
 
             Assert.That(validationResult, Is.Not.Null);
-            Assert.That(validationResult.Errors.Count, Is.EqualTo(5));
+            Assert.That(validationResult.Errors.Count, Is.EqualTo(6));
             Assert.That(validationResult.IsObjectValid, Is.False);
 
             var validationException = validationResult.GetException();
@@ -64,9 +67,10 @@ namespace Omnifactotum.Tests
             var expectedNotNullErrorExpressions =
                 new[]
                 {
-                    MakeExpressionString("Data.Value"),
-                    MakeExpressionString("Data.NullableValue"),
-                    MakeExpressionString("MultipleDatas[1].Value")
+                    MakeExpressionString("{0}.Data.Value"),
+                    MakeExpressionString("{0}.Data.NullableValue"),
+                    MakeExpressionString("Convert({0}.MultipleDatas[1]).Value"),
+                    MakeExpressionString("Convert({0}.SingleBaseData).Value")
                 };
 
             Assert.That(actualNotNullErrorExpressions, Is.EquivalentTo(expectedNotNullErrorExpressions));
@@ -77,27 +81,30 @@ namespace Omnifactotum.Tests
 
             Assert.That(
                 notEmptyError.Context.Expression.ToString(),
-                Is.EqualTo(MakeExpressionString("EmptyValue")));
+                Is.EqualTo(MakeExpressionString("{0}.EmptyValue")));
 
             var utcDateError =
                 validationResult.Errors.Single(obj => obj.FailedConstraintType == typeof(UtcDateConstraint));
 
             Assert.That(
                 utcDateError.Context.Expression.ToString(),
-                Is.EqualTo(MakeExpressionString("Data.StartDate")));
+                Is.EqualTo(MakeExpressionString("{0}.Data.StartDate")));
+
+            var lambdaExpression = utcDateError.Context.CreateLambdaExpression();
+            Assert.That(lambdaExpression, Is.Not.Null);
+            Assert.That(() => lambdaExpression.Compile().Invoke(data), Is.EqualTo(data.Data.StartDate));
         }
 
         #endregion
 
         #region Private Methods
 
-        private static string MakeExpressionString(string propertyPath)
+        private static string MakeExpressionString(string propertyPathTemplate)
         {
             return string.Format(
                 CultureInfo.InvariantCulture,
-                "{0}.{1}",
-                ObjectValidator.RootObjectParameterName,
-                propertyPath);
+                propertyPathTemplate,
+                ObjectValidator.RootObjectParameterName);
         }
 
         #endregion
@@ -159,9 +166,18 @@ namespace Omnifactotum.Tests
 
         #endregion
 
+        #region BaseAnotherSimpleData Class
+
+        public abstract class BaseAnotherSimpleData
+        {
+            //// No members
+        }
+
+        #endregion
+
         #region AnotherSimpleData Class
 
-        public sealed class AnotherSimpleData
+        public sealed class AnotherSimpleData : BaseAnotherSimpleData
         {
             #region Public Properties
 
@@ -194,14 +210,23 @@ namespace Omnifactotum.Tests
             public SimpleData Data
             {
                 [UsedImplicitly]
-                private get;
+                internal get;
 
                 set;
             }
 
             [MemberConstraint(typeof(NotNullConstraint))]
             [MemberItemConstraint(typeof(NotNullConstraint))]
-            public AnotherSimpleData[] MultipleDatas
+            public BaseAnotherSimpleData[] MultipleDatas
+            {
+                [UsedImplicitly]
+                get;
+
+                set;
+            }
+
+            [MemberConstraint(typeof(NotNullConstraint))]
+            public BaseAnotherSimpleData SingleBaseData
             {
                 [UsedImplicitly]
                 get;

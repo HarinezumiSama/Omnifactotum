@@ -1,5 +1,6 @@
 ﻿using System.Linq.Expressions;
 using Omnifactotum.Annotations;
+using Omnifactotum.Validation;
 using Omnifactotum.Validation.Constraints;
 
 namespace Omnifactotum.Tests
@@ -19,16 +20,19 @@ namespace Omnifactotum.Tests
 
         #region Protected Methods
 
-        protected MemberExpression CreateTestMemberExpression()
-        {
-            return Expression.MakeMemberAccess(
-                Expression.Parameter(GetType(), "instance"),
-                Factotum.GetPropertyInfo((ConstraintTestsBase obj) => obj.DummyProperty));
-        }
-
         protected MemberConstraintValidationContext CreateTestValidationContext()
         {
-            return new MemberConstraintValidationContext(this, CreateTestMemberExpression());
+            var parameterExpression = Expression.Parameter(GetType(), ObjectValidator.RootObjectParameterName);
+
+            var expression = Expression.MakeMemberAccess(
+                parameterExpression,
+                Factotum.GetPropertyInfo((ConstraintTestsBase obj) => obj.DummyProperty));
+
+            return new MemberConstraintValidationContext(
+                this,
+                this,
+                expression,
+                Expression.Lambda(expression, parameterExpression));
         }
 
         #endregion
