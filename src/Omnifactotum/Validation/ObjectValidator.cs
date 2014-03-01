@@ -86,10 +86,10 @@ namespace Omnifactotum.Validation
         }
 
         private static BaseMemberConstraintAttribute[] FilterBy<TAttribute>(
-            this IEnumerable<BaseMemberConstraintAttribute> attributes)
+            this BaseMemberConstraintAttribute[] attributes)
             where TAttribute : BaseMemberConstraintAttribute
         {
-            return attributes.EnsureNotNull().Where(obj => obj is TAttribute).ToArray();
+            return attributes == null ? null : attributes.EnsureNotNull().Where(obj => obj is TAttribute).ToArray();
         }
 
         private static object GetMemberValue(object instance, MemberInfo memberInfo)

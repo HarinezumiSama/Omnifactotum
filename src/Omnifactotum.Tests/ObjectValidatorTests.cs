@@ -25,7 +25,7 @@ namespace Omnifactotum.Tests
                 SingleBaseData = new AnotherSimpleData { Value = "Q" }
             };
 
-            var validationResult = ObjectValidator.Validate(data);
+            var validationResult = ObjectValidator.Validate(data.AsArray());
 
             Assert.That(validationResult, Is.Not.Null);
             Assert.That(validationResult.Errors.Count, Is.EqualTo(0));
