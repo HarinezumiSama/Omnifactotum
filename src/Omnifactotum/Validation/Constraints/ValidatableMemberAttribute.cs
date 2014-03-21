@@ -7,18 +7,8 @@ namespace Omnifactotum.Validation.Constraints
     ///     The base class for attributes annotating validatable members.
     /// </summary>
     [AttributeUsage(AttributeTargets.Field | AttributeTargets.Property, AllowMultiple = false, Inherited = true)]
-    public class ValidatableMemberAttribute : Attribute
+    public sealed class ValidatableMemberAttribute : BaseValidatableMemberAttribute
     {
-        #region Constructors
-
-        /// <summary>
-        ///     Initializes a new instance of the <see cref="ValidatableMemberAttribute"/> class.
-        /// </summary>
-        internal ValidatableMemberAttribute()
-        {
-            // Nothing to do
-        } 
-
-        #endregion
+        // No members
     }
 }

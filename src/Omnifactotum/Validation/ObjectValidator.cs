@@ -86,7 +86,7 @@ namespace Omnifactotum.Validation
         }
 
         private static BaseMemberConstraintAttribute[] FilterBy<TAttribute>(
-            this IEnumerable<ValidatableMemberAttribute> attributes)
+            this IEnumerable<BaseValidatableMemberAttribute> attributes)
             where TAttribute : BaseMemberConstraintAttribute
         {
             return attributes == null
@@ -152,7 +152,7 @@ namespace Omnifactotum.Validation
                         new
                         {
                             Member = obj,
-                            Attributes = obj.GetCustomAttributes<ValidatableMemberAttribute>(true)
+                            Attributes = obj.GetCustomAttributes<BaseValidatableMemberAttribute>(true)
                         })
                 .Where(obj => obj.Attributes.Length != 0)
                 .ToArray();
@@ -270,7 +270,7 @@ namespace Omnifactotum.Validation
                 [NotNull] Expression expression,
                 [CanBeNull] object container,
                 [CanBeNull] object value,
-                [CanBeNull] ValidatableMemberAttribute[] attributes,
+                [CanBeNull] BaseValidatableMemberAttribute[] attributes,
                 [CanBeNull] BaseMemberConstraintAttribute[] effectiveAttributes)
             {
                 #region Argument Check
@@ -323,7 +323,7 @@ namespace Omnifactotum.Validation
             /// <summary>
             ///     Gets the constraint attributes.
             /// </summary>
-            public ValidatableMemberAttribute[] Attributes
+            public BaseValidatableMemberAttribute[] Attributes
             {
                 get;
                 private set;
