@@ -7,7 +7,7 @@ namespace Omnifactotum.Validation.Constraints
     /// <summary>
     ///     The base class for member constraint attributes.
     /// </summary>
-    public abstract class BaseMemberConstraintAttribute : Attribute
+    public abstract class BaseMemberConstraintAttribute : ValidatableMemberAttribute
     {
         #region Constants and Fields
 

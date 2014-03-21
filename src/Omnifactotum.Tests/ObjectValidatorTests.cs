@@ -225,7 +225,7 @@ namespace Omnifactotum.Tests
                 set;
             }
 
-            [MemberConstraint(typeof(NotNullConstraint))]
+            [ValidatableMember]
             public BaseAnotherSimpleData SingleBaseData
             {
                 [UsedImplicitly]

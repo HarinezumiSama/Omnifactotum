@@ -11,10 +11,6 @@ namespace Omnifactotum.Validation.Constraints
     /// </summary>
     public abstract class MemberConstraintBase : IMemberConstraint
     {
-        #region Constants and Fields
-
-        #endregion
-
         #region IMemberConstraint Members
 
         /// <summary>

@@ -98,6 +98,7 @@
     <Compile Include="Validation\Constraints\MemberConstraintValidationContext.cs" />
     <Compile Include="Validation\Constraints\MemberConstraintValidationError.cs" />
     <Compile Include="Validation\Constraints\NotNullConstraint.cs" />
+    <Compile Include="Validation\Constraints\ValidatableMemberAttribute.cs" />
     <Compile Include="Validation\ObjectValidationException.cs" />
     <Compile Include="Validation\ObjectValidationResult.cs" />
     <Compile Include="Validation\ObjectValidator.cs" />
