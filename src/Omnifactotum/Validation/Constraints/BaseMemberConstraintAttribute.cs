@@ -84,7 +84,7 @@ namespace Omnifactotum.Validation.Constraints
                 CultureInfo.InvariantCulture,
                 "{{{0}: {1} = '{2}'}}",
                 GetType().GetQualifiedName(),
-                Factotum.GetPropertyName((BaseMemberConstraintAttribute obj) => obj.ConstraintType),
+                Factotum.For<BaseMemberConstraintAttribute>.GetPropertyName(obj => obj.ConstraintType),
                 this.ConstraintType.GetQualifiedName());
         }
 

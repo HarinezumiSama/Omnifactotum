@@ -15,7 +15,7 @@ namespace Omnifactotum.Tests
         #region Constants and Fields
 
         private static readonly string ValidationResultPropertyName =
-            Factotum.GetPropertyName((ObjectValidationException obj) => obj.ValidationResult);
+            Factotum.For<ObjectValidationException>.GetPropertyName(obj => obj.ValidationResult);
 
         #endregion
 

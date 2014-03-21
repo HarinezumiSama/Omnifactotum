@@ -448,127 +448,6 @@ namespace Omnifactotum
         #region Public Methods: Properties
 
         /// <summary>
-        ///     Gets the <see cref="PropertyInfo"/> of the property specified by the lambda expression.
-        /// </summary>
-        /// <typeparam name="TObject">
-        ///     The type containing the property.
-        /// </typeparam>
-        /// <typeparam name="TProperty">
-        ///     The type of the property.
-        /// </typeparam>
-        /// <param name="propertyGetterExpression">
-        ///     The lambda expression in the following form: <c>(SomeType x) =&gt; x.Property</c>.
-        /// </param>
-        /// <returns>
-        ///     The <see cref="PropertyInfo"/> containing information about the required property.
-        /// </returns>
-        public static PropertyInfo GetPropertyInfo<TObject, TProperty>(
-            Expression<Func<TObject, TProperty>> propertyGetterExpression)
-        {
-            #region Argument Check
-
-            if (propertyGetterExpression == null)
-            {
-                throw new ArgumentNullException("propertyGetterExpression");
-            }
-
-            #endregion
-
-            var objectType = typeof(TObject);
-
-            var memberExpression = propertyGetterExpression.Body as MemberExpression;
-            if ((memberExpression == null) || (memberExpression.NodeType != ExpressionType.MemberAccess))
-            {
-                throw new ArgumentException(
-                    string.Format(InvalidExpressionMessageFormat, objectType.FullName, propertyGetterExpression),
-                    "propertyGetterExpression");
-            }
-
-            var result = memberExpression.Member as PropertyInfo;
-            if (result == null)
-            {
-                throw new ArgumentException(
-                    string.Format(InvalidExpressionMessageFormat, objectType.FullName, propertyGetterExpression),
-                    "propertyGetterExpression");
-            }
-
-            if ((result.DeclaringType == null) || !result.DeclaringType.IsAssignableFrom(objectType))
-            {
-                throw new ArgumentException(
-                    string.Format(InvalidExpressionMessageFormat, objectType.FullName, propertyGetterExpression),
-                    "propertyGetterExpression");
-            }
-
-            if (memberExpression.Expression == null)
-            {
-                var accessor = result.GetGetMethod(true) ?? result.GetSetMethod(true);
-                if ((accessor == null) || !accessor.IsStatic || (result.ReflectedType != objectType))
-                {
-                    throw new ArgumentException(
-                        string.Format(InvalidExpressionMessageFormat, objectType.FullName, propertyGetterExpression),
-                        "propertyGetterExpression");
-                }
-            }
-            else
-            {
-                var parameterExpression = memberExpression.Expression as ParameterExpression;
-                if ((parameterExpression == null) || (parameterExpression.NodeType != ExpressionType.Parameter) ||
-                    (parameterExpression.Type != typeof(TObject)))
-                {
-                    throw new ArgumentException(
-                        string.Format(InvalidExpressionMessageFormat, objectType.FullName, propertyGetterExpression),
-                        "propertyGetterExpression");
-                }
-            }
-
-            return result;
-        }
-
-        /// <summary>
-        ///     Gets the name of the property specified by the lambda expression.
-        /// </summary>
-        /// <typeparam name="TObject">
-        ///     The type containing the property.
-        /// </typeparam>
-        /// <typeparam name="TProperty">
-        ///     The type of the property.
-        /// </typeparam>
-        /// <param name="propertyGetterExpression">
-        ///     The lambda expression in the following form: <c>(SomeType x) =&gt; x.Property</c>.
-        /// </param>
-        /// <returns>
-        ///     The name of the property.
-        /// </returns>
-        public static string GetPropertyName<TObject, TProperty>(
-            Expression<Func<TObject, TProperty>> propertyGetterExpression)
-        {
-            var propertyInfo = GetPropertyInfo(propertyGetterExpression);
-            return propertyInfo.Name;
-        }
-
-        /// <summary>
-        ///     Gets the type-qualified name of the property specified by the lambda expression.
-        /// </summary>
-        /// <typeparam name="TObject">
-        ///     The type containing the property.
-        /// </typeparam>
-        /// <typeparam name="TProperty">
-        ///     The type of the property.
-        /// </typeparam>
-        /// <param name="propertyGetterExpression">
-        ///     The lambda expression in the following form: <c>(SomeType x) =&gt; x.Property</c>.
-        /// </param>
-        /// <returns>
-        ///     The name of the property in the following form: <c>SomeType.Property</c>.
-        /// </returns>
-        public static string GetQualifiedPropertyName<TObject, TProperty>(
-            Expression<Func<TObject, TProperty>> propertyGetterExpression)
-        {
-            var propertyInfo = GetPropertyInfo(propertyGetterExpression);
-            return typeof(TObject).Name + Type.Delimiter + propertyInfo.Name;
-        }
-
-        /// <summary>
         ///     Gets the <see cref="PropertyInfo"/> of the static property specified by the lambda expression.
         /// </summary>
         /// <typeparam name="TProperty">
@@ -661,7 +540,7 @@ namespace Omnifactotum
         public static string GetQualifiedPropertyName<TProperty>(Expression<Func<TProperty>> propertyGetterExpression)
         {
             var propertyInfo = GetPropertyInfo(propertyGetterExpression);
-            return propertyInfo.DeclaringType.EnsureNotNull().Name + Type.Delimiter + propertyInfo.Name;
+            return propertyInfo.DeclaringType.EnsureNotNull().GetQualifiedName() + Type.Delimiter + propertyInfo.Name;
         }
 
         #endregion
@@ -1328,6 +1207,144 @@ namespace Omnifactotum
             public bool Equals(PairReferenceHolder other)
             {
                 return ReferenceEquals(_valueA, other._valueA) && ReferenceEquals(_valueB, other._valueB);
+            }
+
+            #endregion
+        }
+
+        #endregion
+
+        #region For<T> Class
+
+        /// <summary>
+        ///     Provides a convenient access to helper methods for the specified type.
+        /// </summary>
+        /// <typeparam name="TObject">
+        ///     The type that the helper methods are provided for.
+        /// </typeparam>
+        public static class For<TObject>
+        {
+            #region Public Methods
+
+            /// <summary>
+            ///     Gets the <see cref="PropertyInfo"/> of the property specified by the lambda expression.
+            /// </summary>
+            /// <typeparam name="TObject">
+            ///     The type containing the property.
+            /// </typeparam>
+            /// <typeparam name="TProperty">
+            ///     The type of the property.
+            /// </typeparam>
+            /// <param name="propertyGetterExpression">
+            ///     The lambda expression in the following form: <c>(SomeType x) =&gt; x.Property</c>.
+            /// </param>
+            /// <returns>
+            ///     The <see cref="PropertyInfo"/> containing information about the required property.
+            /// </returns>
+            public static PropertyInfo GetPropertyInfo<TProperty>(
+                Expression<Func<TObject, TProperty>> propertyGetterExpression)
+            {
+                #region Argument Check
+
+                if (propertyGetterExpression == null)
+                {
+                    throw new ArgumentNullException("propertyGetterExpression");
+                }
+
+                #endregion
+
+                var objectType = typeof(TObject);
+
+                var memberExpression = propertyGetterExpression.Body as MemberExpression;
+                if ((memberExpression == null) || (memberExpression.NodeType != ExpressionType.MemberAccess))
+                {
+                    throw new ArgumentException(
+                        string.Format(InvalidExpressionMessageFormat, objectType.FullName, propertyGetterExpression),
+                        "propertyGetterExpression");
+                }
+
+                var result = memberExpression.Member as PropertyInfo;
+                if (result == null)
+                {
+                    throw new ArgumentException(
+                        string.Format(InvalidExpressionMessageFormat, objectType.FullName, propertyGetterExpression),
+                        "propertyGetterExpression");
+                }
+
+                if ((result.DeclaringType == null) || !result.DeclaringType.IsAssignableFrom(objectType))
+                {
+                    throw new ArgumentException(
+                        string.Format(InvalidExpressionMessageFormat, objectType.FullName, propertyGetterExpression),
+                        "propertyGetterExpression");
+                }
+
+                if (memberExpression.Expression == null)
+                {
+                    var accessor = result.GetGetMethod(true) ?? result.GetSetMethod(true);
+                    if ((accessor == null) || !accessor.IsStatic || (result.ReflectedType != objectType))
+                    {
+                        throw new ArgumentException(
+                            string.Format(InvalidExpressionMessageFormat, objectType.FullName, propertyGetterExpression),
+                            "propertyGetterExpression");
+                    }
+                }
+                else
+                {
+                    var parameterExpression = memberExpression.Expression as ParameterExpression;
+                    if ((parameterExpression == null) || (parameterExpression.NodeType != ExpressionType.Parameter) ||
+                        (parameterExpression.Type != typeof(TObject)))
+                    {
+                        throw new ArgumentException(
+                            string.Format(InvalidExpressionMessageFormat, objectType.FullName, propertyGetterExpression),
+                            "propertyGetterExpression");
+                    }
+                }
+
+                return result;
+            }
+
+            /// <summary>
+            ///     Gets the name of the property specified by the lambda expression.
+            /// </summary>
+            /// <typeparam name="TObject">
+            ///     The type containing the property.
+            /// </typeparam>
+            /// <typeparam name="TProperty">
+            ///     The type of the property.
+            /// </typeparam>
+            /// <param name="propertyGetterExpression">
+            ///     The lambda expression in the following form: <c>(SomeType x) =&gt; x.Property</c>.
+            /// </param>
+            /// <returns>
+            ///     The name of the property.
+            /// </returns>
+            public static string GetPropertyName<TProperty>(
+                Expression<Func<TObject, TProperty>> propertyGetterExpression)
+            {
+                var propertyInfo = GetPropertyInfo(propertyGetterExpression);
+                return propertyInfo.Name;
+            }
+
+            /// <summary>
+            ///     Gets the type-qualified name of the property specified by the lambda expression.
+            /// </summary>
+            /// <typeparam name="TObject">
+            ///     The type containing the property.
+            /// </typeparam>
+            /// <typeparam name="TProperty">
+            ///     The type of the property.
+            /// </typeparam>
+            /// <param name="propertyGetterExpression">
+            ///     The lambda expression in the following form: <c>(SomeType x) =&gt; x.Property</c>.
+            /// </param>
+            /// <returns>
+            ///     The name of the property in the following form: <c>SomeType.Property</c>.
+            /// </returns>
+            public static string GetQualifiedPropertyName<TProperty>(
+                Expression<Func<TObject, TProperty>> propertyGetterExpression)
+            {
+                var propertyInfo = GetPropertyInfo(propertyGetterExpression);
+                return typeof(TObject).GetQualifiedName() + Type.Delimiter + propertyInfo.Name;
             }
 
             #endregion

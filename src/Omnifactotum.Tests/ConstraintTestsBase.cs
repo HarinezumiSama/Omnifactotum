@@ -26,7 +26,7 @@ namespace Omnifactotum.Tests
 
             var expression = Expression.MakeMemberAccess(
                 parameterExpression,
-                Factotum.GetPropertyInfo((ConstraintTestsBase obj) => obj.DummyProperty));
+                Factotum.For<ConstraintTestsBase>.GetPropertyInfo(obj => obj.DummyProperty));
 
             return new MemberConstraintValidationContext(
                 this,
