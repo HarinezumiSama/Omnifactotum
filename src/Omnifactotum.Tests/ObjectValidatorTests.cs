@@ -12,26 +12,38 @@ namespace Omnifactotum.Tests
     [TestFixture]
     public sealed class ObjectValidatorTests
     {
+        #region Constants and Fields
+
+        private static readonly string ValidationResultPropertyName =
+            Factotum.GetPropertyName((ObjectValidationException obj) => obj.ValidationResult);
+
+        #endregion
+
         #region Tests
 
         [Test]
         public void TestValidateWhenValidationSucceeded()
         {
-            var data = new ComplexData
+            var data1 = new ComplexData
             {
                 Data = new SimpleData { StartDate = DateTime.UtcNow, NullableValue = 0, Value = "A" },
-                EmptyValue = "B",
+                NonEmptyValue = "B",
                 MultipleDatas = new BaseAnotherSimpleData[] { new AnotherSimpleData { Value = "B" } },
                 SingleBaseData = new AnotherSimpleData { Value = "Q" }
             };
 
-            var validationResult = ObjectValidator.Validate(data.AsArray());
+            EnsureTestValidationSucceeded(data1);
+            EnsureTestValidationSucceeded(data1.AsArray());
 
-            Assert.That(validationResult, Is.Not.Null);
-            Assert.That(validationResult.Errors.Count, Is.EqualTo(0));
-            Assert.That(validationResult.IsObjectValid, Is.True);
-            Assert.That(validationResult.GetException(), Is.Null);
-            Assert.That(() => validationResult.EnsureSucceeded(), Throws.Nothing);
+            var data2 = new ComplexData
+            {
+                Data = new SimpleData { StartDate = DateTime.UtcNow, NullableValue = 0, Value = "A" },
+                NonEmptyValue = "B",
+                MultipleDatas = new BaseAnotherSimpleData[] { new AnotherSimpleData { Value = "B" } }
+            };
+
+            EnsureTestValidationSucceeded(data2);
+            EnsureTestValidationSucceeded(data2.AsArray());
         }
 
         [Test]
@@ -40,7 +52,7 @@ namespace Omnifactotum.Tests
             var data = new ComplexData
             {
                 Data = new SimpleData { StartDate = DateTime.Now },
-                EmptyValue = string.Empty,
+                NonEmptyValue = string.Empty,
                 MultipleDatas =
                     new BaseAnotherSimpleData[] { new AnotherSimpleData { Value = "C" }, new AnotherSimpleData() },
                 SingleBaseData = new AnotherSimpleData()
@@ -56,7 +68,13 @@ namespace Omnifactotum.Tests
             Assert.That(validationException, Is.Not.Null & Is.TypeOf<ObjectValidationException>());
             Assert.That(validationException.EnsureNotNull().ValidationResult, Is.SameAs(validationResult));
 
-            Assert.That(() => validationResult.EnsureSucceeded(), Throws.TypeOf<ObjectValidationException>());
+            Assert.That(
+                () => validationResult.EnsureSucceeded(),
+                Throws
+                    .TypeOf<ObjectValidationException>()
+                    .With
+                    .Property(ValidationResultPropertyName)
+                    .SameAs(validationResult));
 
             var actualNotNullErrorExpressions = validationResult
                 .Errors
@@ -81,7 +99,7 @@ namespace Omnifactotum.Tests
 
             Assert.That(
                 notEmptyError.Context.Expression.ToString(),
-                Is.EqualTo(MakeExpressionString("{0}.EmptyValue")));
+                Is.EqualTo(MakeExpressionString("{0}.NonEmptyValue")));
 
             var utcDateError =
                 validationResult.Errors.Single(obj => obj.FailedConstraintType == typeof(UtcDateConstraint));
@@ -105,6 +123,17 @@ namespace Omnifactotum.Tests
                 CultureInfo.InvariantCulture,
                 propertyPathTemplate,
                 ObjectValidator.RootObjectParameterName);
+        }
+
+        private static void EnsureTestValidationSucceeded<T>(T data)
+        {
+            var validationResult = ObjectValidator.Validate(data);
+
+            Assert.That(validationResult, Is.Not.Null);
+            Assert.That(validationResult.Errors.Count, Is.EqualTo(0));
+            Assert.That(validationResult.IsObjectValid, Is.True);
+            Assert.That(validationResult.GetException(), Is.Null);
+            Assert.That(() => validationResult.EnsureSucceeded(), Throws.Nothing);
         }
 
         #endregion
@@ -236,7 +265,7 @@ namespace Omnifactotum.Tests
 
             [MemberConstraint(typeof(NotNullConstraint))]
             [MemberConstraint(typeof(NotNullOrEmptyStringConstraint))]
-            public string EmptyValue
+            public string NonEmptyValue
             {
                 [UsedImplicitly]
                 private get;
