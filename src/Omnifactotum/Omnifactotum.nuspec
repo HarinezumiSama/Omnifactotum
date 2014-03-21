@@ -13,6 +13,6 @@
     <description>$description$</description>
     <!--releaseNotes>Summary of changes made in this release of the package.</releaseNotes-->
     <copyright>Copyright 2013-2014 Vitalii Maklai</copyright>
-    <!--tags>Tag1 Tag2</tags-->
+    <tags>aid assistant extension extensions factotum helper common C#</tags>
   </metadata>
 </package>

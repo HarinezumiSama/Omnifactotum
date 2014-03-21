@@ -166,7 +166,7 @@
     </None>
   </ItemGroup>
   <ItemGroup>
-    <Content Include="ExtensionMethods\__ReadMe.txt" />
+    <None Include="ExtensionMethods\__ReadMe.txt" />
   </ItemGroup>
   <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

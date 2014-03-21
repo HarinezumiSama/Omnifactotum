@@ -22,8 +22,8 @@ echo (Re)creating directory for the package - DONE.
 
 echo.
 echo Creating package...
-:: [vitalii.maklai] The backslash (\) before the double quote (") must be escaped with itself (\) for the command line parameter to be parsed properly
-nuget pack "%NG_PROJECT_PATH%" -Verbosity detailed -OutputDirectory "%PKG_PATH%\\" -BasePath "%~dp0\src\Omnifactotum" -Properties Configuration=Release;Platform=AnyCPU -Exclude *\*.txt || exit /b 4
+:: [vitalii.maklai] The backslash (\) before the double quote (") must be escaped with itself (\) for the command line parameters to be parsed properly
+nuget pack "%NG_PROJECT_PATH%" -Verbosity detailed -OutputDirectory "%PKG_PATH%\\" -Symbols -Properties Configuration=Release;Platform=AnyCPU || exit /b 4
 echo Creating package - DONE
 
 echo.
