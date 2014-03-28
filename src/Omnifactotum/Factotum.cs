@@ -448,6 +448,69 @@ namespace Omnifactotum
         #region Public Methods: Properties
 
         /// <summary>
+        ///     Gets the <see cref="PropertyInfo"/> of the property specified by the lambda expression.
+        /// </summary>
+        /// <typeparam name="TObject">
+        ///     The type containing the property.
+        /// </typeparam>
+        /// <typeparam name="TProperty">
+        ///     The type of the property.
+        /// </typeparam>
+        /// <param name="propertyGetterExpression">
+        ///     The lambda expression in the following form: <c>(SomeType x) =&gt; x.Property</c>.
+        /// </param>
+        /// <returns>
+        ///     The <see cref="PropertyInfo"/> containing information about the required property.
+        /// </returns>
+        public static PropertyInfo GetPropertyInfo<TObject, TProperty>(
+            Expression<Func<TObject, TProperty>> propertyGetterExpression)
+        {
+            return For<TObject>.GetPropertyInfo(propertyGetterExpression);
+        }
+
+        /// <summary>
+        ///     Gets the name of the property specified by the lambda expression.
+        /// </summary>
+        /// <typeparam name="TObject">
+        ///     The type containing the property.
+        /// </typeparam>
+        /// <typeparam name="TProperty">
+        ///     The type of the property.
+        /// </typeparam>
+        /// <param name="propertyGetterExpression">
+        ///     The lambda expression in the following form: <c>(SomeType x) =&gt; x.Property</c>.
+        /// </param>
+        /// <returns>
+        ///     The name of the property.
+        /// </returns>
+        public static string GetPropertyName<TObject, TProperty>(
+            Expression<Func<TObject, TProperty>> propertyGetterExpression)
+        {
+            return For<TObject>.GetPropertyName(propertyGetterExpression);
+        }
+
+        /// <summary>
+        ///     Gets the type-qualified name of the property specified by the lambda expression.
+        /// </summary>
+        /// <typeparam name="TObject">
+        ///     The type containing the property.
+        /// </typeparam>
+        /// <typeparam name="TProperty">
+        ///     The type of the property.
+        /// </typeparam>
+        /// <param name="propertyGetterExpression">
+        ///     The lambda expression in the following form: <c>(SomeType x) =&gt; x.Property</c>.
+        /// </param>
+        /// <returns>
+        ///     The name of the property in the following form: <c>SomeType.Property</c>.
+        /// </returns>
+        public static string GetQualifiedPropertyName<TObject, TProperty>(
+            Expression<Func<TObject, TProperty>> propertyGetterExpression)
+        {
+            return For<TObject>.GetQualifiedPropertyName(propertyGetterExpression);
+        }
+
+        /// <summary>
         ///     Gets the <see cref="PropertyInfo"/> of the static property specified by the lambda expression.
         /// </summary>
         /// <typeparam name="TProperty">
@@ -772,6 +835,7 @@ namespace Omnifactotum
                 return true;
             }
 
+            // ReSharper disable once LoopCanBeConvertedToQuery - More readable in 'foreach' style
             foreach (var item in items)
             {
                 var processResult = ProcessRecursivelyInternal(item, getItems, processItem, itemsBeingProcessed);
@@ -1134,6 +1198,7 @@ namespace Omnifactotum
                     return actualType.IsValueType || ReferenceEquals(valueA, valueB);
                 }
 
+                // ReSharper disable once LoopCanBeConvertedToQuery - More readable in 'foreach' style
                 foreach (var field in fields)
                 {
                     var fieldValueA = field.GetValue(valueA);
@@ -1284,7 +1349,10 @@ namespace Omnifactotum
                     if ((accessor == null) || !accessor.IsStatic || (result.ReflectedType != objectType))
                     {
                         throw new ArgumentException(
-                            string.Format(InvalidExpressionMessageFormat, objectType.FullName, propertyGetterExpression),
+                            string.Format(
+                                InvalidExpressionMessageFormat,
+                                objectType.FullName,
+                                propertyGetterExpression),
                             "propertyGetterExpression");
                     }
                 }
@@ -1295,7 +1363,10 @@ namespace Omnifactotum
                         (parameterExpression.Type != typeof(TObject)))
                     {
                         throw new ArgumentException(
-                            string.Format(InvalidExpressionMessageFormat, objectType.FullName, propertyGetterExpression),
+                            string.Format(
+                                InvalidExpressionMessageFormat,
+                                objectType.FullName,
+                                propertyGetterExpression),
                             "propertyGetterExpression");
                     }
                 }

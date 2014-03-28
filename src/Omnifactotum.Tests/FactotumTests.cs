@@ -251,6 +251,88 @@ namespace Omnifactotum.Tests
 
         #endregion
 
+        #region Tests: Properties
+
+        [Test]
+        public void TestGetPropertyInfoForInstanceProperty()
+        {
+            var propertyInfo = Factotum.GetPropertyInfo((TestObject obj) => obj.InstanceProperty);
+
+            Assert.That(propertyInfo, Is.Not.Null);
+            Assert.That(propertyInfo.DeclaringType, Is.EqualTo(typeof(TestObjectBase)));
+            Assert.That(propertyInfo.Name, Is.EqualTo("InstanceProperty"));
+
+            var propertyInfoCopy = Factotum.For<TestObject>.GetPropertyInfo(obj => obj.InstanceProperty);
+            Assert.That(propertyInfoCopy, Is.SameAs(propertyInfo));
+        }
+
+        [Test]
+        public void TestGetPropertyNameForInstanceProperty()
+        {
+            var name = Factotum.GetPropertyName((TestObject obj) => obj.InstanceProperty);
+
+            Assert.That(name, Is.EqualTo("InstanceProperty"));
+
+            var nameCopy = Factotum.For<TestObject>.GetPropertyName(obj => obj.InstanceProperty);
+            Assert.That(nameCopy, Is.EqualTo(name));
+        }
+
+        [Test]
+        public void TestGetQualifiedPropertyNameForInstanceProperty()
+        {
+            var name = Factotum.GetQualifiedPropertyName((TestObject obj) => obj.InstanceProperty);
+
+            Assert.That(
+                name,
+                Is.EqualTo(
+                    string.Format(
+                        CultureInfo.InvariantCulture,
+                        "{0}.{1}.InstanceProperty",
+                        typeof(FactotumTests).Name,
+                        typeof(TestObject).Name)));
+
+            var nameCopy = Factotum.For<TestObject>.GetQualifiedPropertyName(obj => obj.InstanceProperty);
+            Assert.That(nameCopy, Is.EqualTo(name));
+        }
+
+        [Test]
+        public void TestGetPropertyInfoForStaticProperty()
+        {
+            // ReSharper disable once AccessToStaticMemberViaDerivedType - By design for this specific test case
+            var propertyInfo = Factotum.GetPropertyInfo(() => TestObject.StaticProperty);
+
+            Assert.That(propertyInfo, Is.Not.Null);
+            Assert.That(propertyInfo.DeclaringType, Is.EqualTo(typeof(TestObjectBase)));
+            Assert.That(propertyInfo.Name, Is.EqualTo("StaticProperty"));
+        }
+
+        [Test]
+        public void TestGetPropertyNameForStaticProperty()
+        {
+            // ReSharper disable once AccessToStaticMemberViaDerivedType - By design for this specific test case
+            var name = Factotum.GetPropertyName(() => TestObject.StaticProperty);
+
+            Assert.That(name, Is.EqualTo("StaticProperty"));
+        }
+
+        [Test]
+        public void TestGetQualifiedPropertyNameForStaticProperty()
+        {
+            // ReSharper disable once AccessToStaticMemberViaDerivedType - By design for this specific test case
+            var name = Factotum.GetQualifiedPropertyName(() => TestObject.StaticProperty);
+
+            Assert.That(
+                name,
+                Is.EqualTo(
+                    string.Format(
+                        CultureInfo.InvariantCulture,
+                        "{0}.{1}.StaticProperty",
+                        typeof(FactotumTests).Name,
+                        typeof(TestObjectBase).Name)));
+        }
+
+        #endregion
+
         #region RecursiveNode Class
 
         private sealed class RecursiveNode
@@ -549,6 +631,38 @@ namespace Omnifactotum.Tests
             }
 
             #endregion
+        }
+
+        #endregion
+
+        #region TestObjectBase Class
+
+        public abstract class TestObjectBase
+        {
+            #region Public Properties
+
+            public static string StaticProperty
+            {
+                get;
+                set;
+            }
+
+            public string InstanceProperty
+            {
+                get;
+                set;
+            }
+
+            #endregion
+        }
+
+        #endregion
+
+        #region TestObject Class
+
+        public sealed class TestObject : TestObjectBase
+        {
+            // No members
         }
 
         #endregion
