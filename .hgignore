@@ -15,3 +15,4 @@ glob:*.DotSettings.user
 glob:StyleCop.Cache
 glob:Generated.*
 glob:SolutionItems/Omnifactotum.pfx
+glob:published/
