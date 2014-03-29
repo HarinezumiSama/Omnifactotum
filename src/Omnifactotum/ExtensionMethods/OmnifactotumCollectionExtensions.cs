@@ -454,20 +454,6 @@ namespace System.Collections.Generic
             return source ?? Enumerable.Empty<T>();
         }
 
-        public static T[] ToArraySmart<T>(this IEnumerable<T> collection)
-        {
-            #region Argument Check
-
-            if (collection == null)
-            {
-                throw new ArgumentNullException("collection");
-            }
-
-            #endregion
-
-            return collection as T[] ?? collection.ToArray();
-        }
-
         /// <summary>
         ///     Creates a new instance of the <see cref="HashSet{T}"/> class that uses the specified equality comparer
         ///     for the set type, contains elements copied from the specified collection, and has sufficient capacity
