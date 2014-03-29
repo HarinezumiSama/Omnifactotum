@@ -5,7 +5,8 @@ namespace Omnifactotum
 {
     /// <summary>
     ///     Represents the recursive processing result used
-    ///     in the <see cref="Factotum.ProcessRecursively{T}"/> method(s).
+    ///     in the <see cref="Factotum.ProcessRecursively{T}(T,Func{T,IEnumerable{T}},Func{T,RecursiveProcessingDirective})"/>
+    ///     method.
     /// </summary>
     public enum RecursiveProcessingDirective
     {

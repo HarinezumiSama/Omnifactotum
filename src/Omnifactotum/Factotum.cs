@@ -1294,9 +1294,6 @@ namespace Omnifactotum
             /// <summary>
             ///     Gets the <see cref="PropertyInfo"/> of the property specified by the lambda expression.
             /// </summary>
-            /// <typeparam name="TObject">
-            ///     The type containing the property.
-            /// </typeparam>
             /// <typeparam name="TProperty">
             ///     The type of the property.
             /// </typeparam>
@@ -1377,9 +1374,6 @@ namespace Omnifactotum
             /// <summary>
             ///     Gets the name of the property specified by the lambda expression.
             /// </summary>
-            /// <typeparam name="TObject">
-            ///     The type containing the property.
-            /// </typeparam>
             /// <typeparam name="TProperty">
             ///     The type of the property.
             /// </typeparam>
@@ -1399,9 +1393,6 @@ namespace Omnifactotum
             /// <summary>
             ///     Gets the type-qualified name of the property specified by the lambda expression.
             /// </summary>
-            /// <typeparam name="TObject">
-            ///     The type containing the property.
-            /// </typeparam>
             /// <typeparam name="TProperty">
             ///     The type of the property.
             /// </typeparam>

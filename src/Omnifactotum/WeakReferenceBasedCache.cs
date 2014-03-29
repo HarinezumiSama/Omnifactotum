@@ -90,6 +90,9 @@ namespace Omnifactotum
             }
         }
 
+        /// <summary>
+        ///     Gets the number of the items in the cache.
+        /// </summary>
         public int Count
         {
             [DebuggerNonUserCode]
@@ -102,6 +105,15 @@ namespace Omnifactotum
             }
         }
 
+        /// <summary>
+        ///     Gets a value associated with the specified key.
+        /// </summary>
+        /// <param name="key">
+        ///     The key to get a value for.
+        /// </param>
+        /// <returns>
+        ///     A value associated with the specified key.
+        /// </returns>
         [NotNull]
         public TValue this[TKey key]
         {
@@ -141,6 +153,9 @@ namespace Omnifactotum
 
         #region Public Methods
 
+        /// <summary>
+        ///     Clears the cache.
+        /// </summary>
         public void Clear()
         {
             lock (_dictionary)
@@ -149,6 +164,15 @@ namespace Omnifactotum
             }
         }
 
+        /// <summary>
+        ///     Removes the value associated with the specified key.
+        /// </summary>
+        /// <param name="key">
+        ///     The key to remove.
+        /// </param>
+        /// <returns>
+        ///     <b>true</b> if the element is successfully found and removed; otherwise, <b>false</b>.
+        /// </returns>
         public bool Remove([NotNull] TKey key)
         {
             #region Argument Check
