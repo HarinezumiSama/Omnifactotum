@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Globalization;
 using System.Linq;
+using Omnifactotum.Annotations;
 
 namespace Omnifactotum
 {
@@ -134,6 +135,7 @@ namespace Omnifactotum
         ///     <b>true</b> if the specified <see cref="System.Object"/> is equal to this instance;
         ///     otherwise, <b>false</b>.
         /// </returns>
+        [Pure]
         public override bool Equals(object obj)
         {
             return obj is ValueRange<T> && Equals((ValueRange<T>)obj);
@@ -145,6 +147,7 @@ namespace Omnifactotum
         /// <returns>
         ///     A 32-bit signed integer that is the hash code for this instance.
         /// </returns>
+        [Pure]
         public override int GetHashCode()
         {
             return _lower.CombineHashCodes(_upper);
@@ -156,6 +159,7 @@ namespace Omnifactotum
         /// <returns>
         ///     A <see cref="System.String"/> that represents this <see cref="ValueRange{T}"/>.
         /// </returns>
+        [Pure]
         public override string ToString()
         {
             return string.Format(CultureInfo.InvariantCulture, "[{0}; {1}]", _lower, _upper);
@@ -170,6 +174,7 @@ namespace Omnifactotum
         /// <returns>
         ///     <b>true</b> if the current range contains the specified value; otherwise, <b>false</b>.
         /// </returns>
+        [Pure]
         public bool Contains(T value)
         {
             return ValueComparer.Compare(value, _lower) >= 0 && ValueComparer.Compare(value, _upper) <= 0;
@@ -185,6 +190,7 @@ namespace Omnifactotum
         /// <returns>
         ///     <b>true</b> if the current range contains the whole specified range; otherwise, <b>false</b>.
         /// </returns>
+        [Pure]
         public bool Contains(ValueRange<T> other)
         {
             return Contains(other._lower) && Contains(other._upper);
@@ -199,6 +205,7 @@ namespace Omnifactotum
         /// <returns>
         ///     <b>true</b> if the current range intersects with the specified other range; otherwise, <b>false</b>.
         /// </returns>
+        [Pure]
         public bool IntersectsWith(ValueRange<T> other)
         {
             return Contains(other._lower) || Contains(other._upper)
@@ -219,6 +226,7 @@ namespace Omnifactotum
         ///     <b>true</b> if the current object is equal to the <paramref name="other"/> parameter;
         ///     otherwise, <b>false</b>.
         /// </returns>
+        [Pure]
         public bool Equals(ValueRange<T> other)
         {
             return ValueEqualityComparer.Equals(other._lower, _lower)
