@@ -48,8 +48,8 @@ namespace Omnifactotum
 
             #endregion
 
-            this.Value = value;
             this.SyncObject = syncObject;
+            _value = value;
         }
 
         /// <summary>

@@ -260,5 +260,50 @@ namespace Omnifactotum.NUnit
         }
 
         #endregion
+
+        #region For<TObject> Class
+
+        /// <summary>
+        ///     Provides a convenient access to helper methods for the specified type.
+        /// </summary>
+        /// <typeparam name="TObject">
+        ///     The type that the helper methods are provided for.
+        /// </typeparam>
+        public static class For<TObject>
+        {
+            #region Public Methods
+
+            /// <summary>
+            ///     Asserts the readability and writability of the specified property.
+            /// </summary>
+            /// <typeparam name="TProperty">
+            ///     The type of the property to check.
+            /// </typeparam>
+            /// <param name="propertyGetterExpression">
+            ///     The lambda expression specifying the property to check,
+            ///     in the following form: (SomeType x) => x.Property.
+            /// </param>
+            /// <param name="expectedAccessMode">
+            ///     The expected readability and writability of the specified property.
+            /// </param>
+            /// <param name="visibleAccessorAttribute">
+            ///     The attribute from <see cref="MethodAttributes.MemberAccessMask"/> specifying the visibility of the
+            ///     accessors.
+            /// </param>
+            public static void AssertReadableWritable<TProperty>(
+                Expression<Func<TObject, TProperty>> propertyGetterExpression,
+                PropertyAccessMode expectedAccessMode,
+                MethodAttributes visibleAccessorAttribute = MethodAttributes.Public)
+            {
+                AssertReadableWritable<TObject, TProperty>(
+                    propertyGetterExpression,
+                    expectedAccessMode,
+                    visibleAccessorAttribute);
+            }
+
+            #endregion
+        }
+
+        #endregion
     }
 }
