@@ -97,6 +97,10 @@
     <Compile Include="ExtensionMethods\OmnifactotumExpressionExtensions.cs" />
     <Compile Include="Validation\Constraints\BaseMemberConstraintAttribute.cs" />
     <Compile Include="Validation\Constraints\BaseValidatableMemberAttribute.cs" />
+    <Compile Include="Validation\Constraints\NotNullConstraint{T}.cs" />
+    <Compile Include="Validation\Constraints\IgnoredConstraint.cs" />
+    <Compile Include="Validation\Constraints\TypedMemberConstraintBase.cs" />
+    <Compile Include="Validation\Constraints\KeyValuePairConstraint.cs" />
     <Compile Include="Validation\Constraints\MemberItemConstraintAttribute.cs" />
     <Compile Include="Validation\Constraints\NotNullOrWhiteSpaceStringConstraint.cs" />
     <Compile Include="Validation\Constraints\NotNullOrEmptyStringConstraint.cs" />
@@ -110,6 +114,8 @@
     <Compile Include="Validation\ObjectValidationException.cs" />
     <Compile Include="Validation\ObjectValidationResult.cs" />
     <Compile Include="Validation\ObjectValidator.cs" />
+    <Compile Include="Validation\ObjectValidatorContext.cs" />
+    <Compile Include="Validation\ValidationFactotum.cs" />
     <Compile Include="ValueCapsule.cs" />
     <Compile Include="SyncValueContainer.cs" />
     <Compile Include="DirectedGraph.cs" />

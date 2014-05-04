@@ -113,6 +113,45 @@ namespace Omnifactotum.Tests
             Assert.That(() => lambdaExpression.Compile().Invoke(data), Is.EqualTo(data.Data.StartDate));
         }
 
+        [Test]
+        public void TestDictionaryValidation()
+        {
+            var container = new MapContainer
+            {
+                Properties = new Dictionary<string, object>
+                {
+                    { "", 0 },
+                    { "abc", 3 },
+                    { "x", null }
+                }
+            };
+
+            var validationResult = ObjectValidator.Validate(container);
+
+            Assert.That(validationResult, Is.Not.Null);
+            Assert.That(validationResult.Errors.Count, Is.EqualTo(2));
+            Assert.That(validationResult.IsObjectValid, Is.False);
+
+            var validationException = validationResult.GetException();
+            Assert.That(validationException, Is.Not.Null & Is.TypeOf<ObjectValidationException>());
+            Assert.That(validationException.EnsureNotNull().ValidationResult, Is.SameAs(validationResult));
+
+            var notNullOrEmptyError =
+                validationResult.Errors.Single(
+                    obj => obj.FailedConstraintType == typeof(NotNullOrEmptyStringConstraint));
+
+            Assert.That(
+                notNullOrEmptyError.Context.Expression.ToString(),
+                Is.EqualTo(MakeExpressionString("Convert(Convert({0}.Properties).Cast().First()).Key")));
+
+            var notNullError =
+                validationResult.Errors.Single(obj => obj.FailedConstraintType == typeof(NotNullConstraint));
+
+            Assert.That(
+                notNullError.Context.Expression.ToString(),
+                Is.EqualTo(MakeExpressionString("Convert(Convert({0}.Properties).Cast().Skip(2).First()).Value")));
+        }
+
         #endregion
 
         #region Private Methods
@@ -282,12 +321,13 @@ namespace Omnifactotum.Tests
 
         private sealed class UtcDateConstraint : MemberConstraintBase
         {
-            protected override MemberConstraintValidationError ValidateInternal(
+            protected override MemberConstraintValidationError[] ValidateValue(
+                ObjectValidatorContext objectValidatorContext,
                 MemberConstraintValidationContext context,
                 object value)
             {
                 var dateTime = (DateTime)value;
-                return dateTime.Kind == DateTimeKind.Utc ? null : CreateDefaultError(context);
+                return dateTime.Kind == DateTimeKind.Utc ? null : CreateDefaultError(context).AsArray();
             }
         }
 
@@ -297,7 +337,8 @@ namespace Omnifactotum.Tests
 
         private sealed class NeverCalledConstraint : MemberConstraintBase
         {
-            protected override MemberConstraintValidationError ValidateInternal(
+            protected override MemberConstraintValidationError[] ValidateValue(
+                ObjectValidatorContext objectValidatorContext,
                 MemberConstraintValidationContext context,
                 object value)
             {
@@ -306,6 +347,28 @@ namespace Omnifactotum.Tests
                 Assert.Fail(Message);
                 throw new InvalidOperationException(Message);
             }
+        }
+
+        #endregion
+
+        #region MapContainer Class
+
+        private sealed class MapContainer
+        {
+            #region Public Properties
+
+            [MemberConstraint(typeof(NotNullConstraint))]
+            [MemberItemConstraint(
+                typeof(KeyValuePairConstraint<string, object, NotNullOrEmptyStringConstraint, NotNullConstraint>))]
+            public IEnumerable<KeyValuePair<string, object>> Properties
+            {
+                [UsedImplicitly]
+                get;
+
+                set;
+            }
+
+            #endregion
         }
 
         #endregion

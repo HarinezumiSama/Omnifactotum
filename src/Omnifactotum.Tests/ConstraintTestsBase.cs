@@ -20,6 +20,11 @@ namespace Omnifactotum.Tests
 
         #region Protected Methods
 
+        protected ObjectValidatorContext CreateObjectValidatorContext()
+        {
+            return new ObjectValidatorContext();
+        }
+
         protected MemberConstraintValidationContext CreateTestValidationContext()
         {
             var parameterExpression = Expression.Parameter(GetType(), ObjectValidator.RootObjectParameterName);
@@ -32,7 +37,7 @@ namespace Omnifactotum.Tests
                 this,
                 this,
                 expression,
-                Expression.Lambda(expression, parameterExpression));
+                parameterExpression);
         }
 
         #endregion

@@ -5,6 +5,8 @@ using System.Linq;
 
 namespace Omnifactotum
 {
+    //// TODO [vmcl] Rename EnumHelper to EnumFactotum
+
     /// <summary>
     ///     Provides utility methods for enumerations.
     /// </summary>

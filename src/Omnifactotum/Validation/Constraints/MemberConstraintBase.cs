@@ -6,16 +6,19 @@ using Omnifactotum.Annotations;
 namespace Omnifactotum.Validation.Constraints
 {
     /// <summary>
-    ///     The basic implementation of the <see cref="IMemberConstraint"/> interface.
-    ///     NOTE to implementers: implementation has to be stateless.
+    ///     <para>Represents the basic implementation of the <see cref="IMemberConstraint"/> interface.</para>
+    ///     <para><b>NOTE to implementers</b>: implementation has to be stateless.</para>
     /// </summary>
     public abstract class MemberConstraintBase : IMemberConstraint
     {
         #region IMemberConstraint Members
 
         /// <summary>
-        ///     Validates the specified value is scope of the specified context.
+        ///     Validates the specified value in scope of the specified context.
         /// </summary>
+        /// <param name="objectValidatorContext">
+        ///     The context of the <see cref="ObjectValidator"/>.
+        /// </param>
         /// <param name="context">
         ///     The context of validation.
         /// </param>
@@ -26,7 +29,10 @@ namespace Omnifactotum.Validation.Constraints
         ///     <b>null</b> if validation succeeded; or a <see cref="MemberConstraintValidationError"/> instance
         ///     describing the validation error, if validation failed.
         /// </returns>
-        public MemberConstraintValidationError Validate(MemberConstraintValidationContext context, object value)
+        public MemberConstraintValidationError[] Validate(
+            ObjectValidatorContext objectValidatorContext,
+            MemberConstraintValidationContext context,
+            object value)
         {
             #region Argument Check
 
@@ -37,7 +43,7 @@ namespace Omnifactotum.Validation.Constraints
 
             #endregion
 
-            return ValidateInternal(context, value);
+            return ValidateValue(objectValidatorContext, context, value);
         }
 
         #endregion
@@ -47,6 +53,9 @@ namespace Omnifactotum.Validation.Constraints
         /// <summary>
         ///     Validates the specified value is scope of the specified context.
         /// </summary>
+        /// <param name="objectValidatorContext">
+        ///     The context of the <see cref="ObjectValidator"/>.
+        /// </param>
         /// <param name="context">
         ///     The context of validation.
         /// </param>
@@ -54,10 +63,16 @@ namespace Omnifactotum.Validation.Constraints
         ///     The value to validate.
         /// </param>
         /// <returns>
-        ///     <b>null</b> if validation succeeded; or a <see cref="MemberConstraintValidationError"/> instance
-        ///     describing the validation error, if validation failed.
+        ///     <list type="bullet">
+        ///         <item><b>null</b> or an empty array, if validation succeeded;</item>
+        ///         <item>
+        ///             or an array of <see cref="MemberConstraintValidationError"/> instances describing
+        ///             validation errors, if validation failed.
+        ///         </item>
+        ///     </list>
         /// </returns>
-        protected abstract MemberConstraintValidationError ValidateInternal(
+        protected abstract MemberConstraintValidationError[] ValidateValue(
+            [NotNull] ObjectValidatorContext objectValidatorContext,
             [NotNull] MemberConstraintValidationContext context,
             object value);
 

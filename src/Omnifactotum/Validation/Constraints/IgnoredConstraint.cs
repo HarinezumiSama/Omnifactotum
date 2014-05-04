@@ -1,12 +1,15 @@
-﻿using System;
+using System;
 using System.Linq;
 
 namespace Omnifactotum.Validation.Constraints
 {
     /// <summary>
-    ///     Specifies that the annotated member of type <see cref="String"/> should not be <b>null</b> or empty.
+    ///     Represents the strongly-typed constraint that ignores validation.
     /// </summary>
-    public sealed class NotNullOrWhiteSpaceStringConstraint : TypedMemberConstraintBase<string>
+    /// <typeparam name="T">
+    ///     The type of the value to validate.
+    /// </typeparam>
+    public sealed class IgnoredConstraint<T> : TypedMemberConstraintBase<T>
     {
         #region Protected Methods
 
@@ -34,15 +37,9 @@ namespace Omnifactotum.Validation.Constraints
         protected override MemberConstraintValidationError[] ValidateTypedValue(
             ObjectValidatorContext objectValidatorContext,
             MemberConstraintValidationContext context,
-            string value)
+            T value)
         {
-            if (!string.IsNullOrWhiteSpace(value))
-            {
-                return null;
-            }
-
-            return CreateError(context, "The value must not be null or an empty string or a whitespace-only string.")
-                .AsArray();
+            return null;
         }
 
         #endregion

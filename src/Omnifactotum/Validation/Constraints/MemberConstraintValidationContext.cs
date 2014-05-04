@@ -24,14 +24,14 @@ namespace Omnifactotum.Validation.Constraints
         /// <param name="expression">
         ///     The expression describing the path to the value starting from the root object.
         /// </param>
-        /// <param name="lambdaExpression">
-        ///     The lambda expression describing the path to the value starting from the root object.
+        /// <param name="rootParameterExpression">
+        ///     The root parameter expression.
         /// </param>
         internal MemberConstraintValidationContext(
             [NotNull] object root,
             [NotNull] object container,
             [NotNull] Expression expression,
-            [NotNull] LambdaExpression lambdaExpression)
+            [NotNull] ParameterExpression rootParameterExpression)
         {
             #region Argument Check
 
@@ -50,9 +50,9 @@ namespace Omnifactotum.Validation.Constraints
                 throw new ArgumentNullException("expression");
             }
 
-            if (lambdaExpression == null)
+            if (rootParameterExpression == null)
             {
-                throw new ArgumentNullException("lambdaExpression");
+                throw new ArgumentNullException("rootParameterExpression");
             }
 
             #endregion
@@ -60,7 +60,8 @@ namespace Omnifactotum.Validation.Constraints
             this.Root = root;
             this.Container = container;
             this.Expression = expression;
-            this.LambdaExpression = lambdaExpression;
+            this.RootParameterExpression = rootParameterExpression;
+            this.LambdaExpression = Expression.Lambda(expression, rootParameterExpression);
         }
 
         #endregion
@@ -102,6 +103,15 @@ namespace Omnifactotum.Validation.Constraints
         ///     Gets the lambda expression describing the path to the value from the root object.
         /// </summary>
         internal LambdaExpression LambdaExpression
+        {
+            get;
+            private set;
+        }
+
+        /// <summary>
+        ///     Gets the root parameter expression.
+        /// </summary>
+        internal ParameterExpression RootParameterExpression
         {
             get;
             private set;

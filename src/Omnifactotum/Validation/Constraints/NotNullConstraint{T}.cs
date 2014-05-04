@@ -4,9 +4,10 @@ using System.Linq;
 namespace Omnifactotum.Validation.Constraints
 {
     /// <summary>
-    ///     Specifies that the annotated member of type <see cref="String"/> should not be <b>null</b> or empty.
+    ///     Specifies that the annotated member should not be <b>null</b>.
     /// </summary>
-    public sealed class NotNullOrWhiteSpaceStringConstraint : TypedMemberConstraintBase<string>
+    public class NotNullConstraint<T> : TypedMemberConstraintBase<T>
+        where T : class
     {
         #region Protected Methods
 
@@ -31,18 +32,12 @@ namespace Omnifactotum.Validation.Constraints
         ///         </item>
         ///     </list>
         /// </returns>
-        protected override MemberConstraintValidationError[] ValidateTypedValue(
+        protected sealed override MemberConstraintValidationError[] ValidateTypedValue(
             ObjectValidatorContext objectValidatorContext,
             MemberConstraintValidationContext context,
-            string value)
+            T value)
         {
-            if (!string.IsNullOrWhiteSpace(value))
-            {
-                return null;
-            }
-
-            return CreateError(context, "The value must not be null or an empty string or a whitespace-only string.")
-                .AsArray();
+            return value == null ? CreateError(context, "The value cannot be null.").AsArray() : null;
         }
 
         #endregion

@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
@@ -20,6 +21,26 @@ namespace Omnifactotum.Validation
         ///     The root object parameter name (used in expressions).
         /// </summary>
         internal const string RootObjectParameterName = "instance";
+
+        private static readonly MethodInfo EnumerableCastBaseMethodInfo =
+            new Func<IEnumerable, object>(Enumerable.Cast<object>).Method.GetGenericMethodDefinition();
+
+        private static readonly MethodInfo EnumerableCastToObjectMethodInfo =
+            EnumerableCastBaseMethodInfo.MakeGenericMethod(typeof(object));
+
+        private static readonly MethodInfo EnumerableSkipBaseMethodInfo =
+            new Func<IEnumerable<object>, int, IEnumerable<object>>(Enumerable.Skip)
+                .Method
+                .GetGenericMethodDefinition();
+
+        private static readonly MethodInfo EnumerableSkipOfObjectMethodInfo =
+            EnumerableSkipBaseMethodInfo.MakeGenericMethod(typeof(object));
+
+        private static readonly MethodInfo EnumerableFirstBaseMethodInfo =
+            new Func<IEnumerable<object>, object>(Enumerable.First).Method.GetGenericMethodDefinition();
+
+        private static readonly MethodInfo EnumerableFirstOfObjectMethodInfo =
+            EnumerableFirstBaseMethodInfo.MakeGenericMethod(typeof(object));
 
         #endregion
 
@@ -52,12 +73,12 @@ namespace Omnifactotum.Validation
             var validationErrors = new List<MemberConstraintValidationError>();
 
             var rootMemberData = new MemberData(parameterExpression, null, instance, null, null);
-            var constraintCache = new Dictionary<Type, IMemberConstraint>();
+            var objectValidatorContext = new ObjectValidatorContext();
 
             Factotum.ProcessRecursively(
                 rootMemberData,
                 GetMembers,
-                obj => ValidateInternal(instance, parameterExpression, obj, constraintCache, validationErrors));
+                obj => ValidateInternal(instance, parameterExpression, obj, objectValidatorContext, validationErrors));
 
             return new ObjectValidationResult(validationErrors);
         }
@@ -106,19 +127,6 @@ namespace Omnifactotum.Validation
             return property.GetValue(instance, null);
         }
 
-        private static Expression ConvertTypeAuto(Expression expression, object value)
-        {
-            if (value == null)
-            {
-                return expression;
-            }
-
-            var valueType = value.GetType();
-            var expressionType = expression.Type.GetCollectionElementType() ?? expression.Type;
-
-            return expressionType == valueType ? expression : Expression.Convert(expression, valueType);
-        }
-
         private static IEnumerable<MemberData> GetMembers(MemberData parentMemberData)
         {
             #region Argument Check
@@ -160,14 +168,14 @@ namespace Omnifactotum.Validation
             var memberDatas = internalMemberDatas
                 .Select(
                     obj => new MemberData(
-                        Expression.MakeMemberAccess(ConvertTypeAuto(parentExpression, instance), obj.Member),
+                        Expression.MakeMemberAccess(
+                            ValidationFactotum.ConvertTypeAuto(parentExpression, instance),
+                            obj.Member),
                         instance,
                         GetMemberValue(instance, obj.Member),
                         obj.Attributes,
                         obj.Attributes.FilterBy<MemberConstraintAttribute>()))
                 .ToList();
-
-            //// TODO [vmcl] Support IEnumerable (not only 1-dimensional array)
 
             if (parentExpression.Type.IsArray && parentExpression.Type.GetArrayRank() == 1)
             {
@@ -176,7 +184,7 @@ namespace Omnifactotum.Validation
                 {
                     var item = array.GetValue(index);
 
-                    var expression = ConvertTypeAuto(
+                    var expression = ValidationFactotum.ConvertTypeAuto(
                         Expression.ArrayIndex(parentExpression, Expression.Constant(index)),
                         item);
 
@@ -191,6 +199,45 @@ namespace Omnifactotum.Validation
                 }
             }
 
+            if (parentExpression.Type.IsGenericType
+                && typeof(IEnumerable<>).IsAssignableFrom(parentExpression.Type.GetGenericTypeDefinition()))
+            {
+                //// TODO [vmcl] Support IEnumerable<T>
+            }
+
+            if (typeof(IEnumerable).IsAssignableFrom(parentExpression.Type))
+            {
+                var enumerable = (IEnumerable)instance;
+
+                var enumerablepParentExpression = Expression.Call(
+                    EnumerableCastToObjectMethodInfo,
+                    ValidationFactotum.ConvertTypeAuto(parentExpression, typeof(IEnumerable)));
+
+                var index = 0;
+                foreach (var item in enumerable)
+                {
+                    var optionalSkipExpression = index == 0
+                        ? enumerablepParentExpression
+                        : Expression.Call(
+                            EnumerableSkipOfObjectMethodInfo,
+                            enumerablepParentExpression,
+                            Expression.Constant(index));
+
+                    var firstExpression = Expression.Call(EnumerableFirstOfObjectMethodInfo, optionalSkipExpression);
+
+                    var itemData = new MemberData(
+                        firstExpression,
+                        instance,
+                        item,
+                        parentMemberData.Attributes,
+                        parentMemberData.Attributes.FilterBy<MemberItemConstraintAttribute>());
+
+                    memberDatas.Add(itemData);
+
+                    index++;
+                }
+            }
+
             return memberDatas;
         }
 
@@ -198,7 +245,7 @@ namespace Omnifactotum.Validation
             object root,
             ParameterExpression parameterExpression,
             MemberData memberData,
-            IDictionary<Type, IMemberConstraint> constraintCache,
+            ObjectValidatorContext objectValidatorContext,
             ICollection<MemberConstraintValidationError> outputErrors)
         {
             #region Argument Check
@@ -206,7 +253,7 @@ namespace Omnifactotum.Validation
             root.EnsureNotNull();
             parameterExpression.EnsureNotNull();
             memberData.EnsureNotNull();
-            constraintCache.EnsureNotNull();
+            objectValidatorContext.EnsureNotNull();
             outputErrors.EnsureNotNull();
 
             #endregion
@@ -219,20 +266,24 @@ namespace Omnifactotum.Validation
 
             foreach (var constraintAttribute in effectiveAttributes)
             {
-                var constraint = constraintCache.GetValueOrCreate(
-                    constraintAttribute.ConstraintType,
-                    constraintType => (IMemberConstraint)Activator.CreateInstance(constraintType));
+                var constraint = objectValidatorContext.ResolveConstraint(constraintAttribute.ConstraintType);
 
                 var context = new MemberConstraintValidationContext(
                     root,
                     memberData.Container,
                     memberData.Expression,
-                    Expression.Lambda(memberData.Expression, parameterExpression));
+                    parameterExpression);
 
-                var validationError = constraint.Validate(context, memberData.Value);
-                if (validationError != null)
+                var validationErrors = constraint.Validate(objectValidatorContext, context, memberData.Value);
+                if (validationErrors == null || validationErrors.Length == 0)
                 {
-                    outputErrors.Add(validationError);
+                    continue;
+                }
+
+                var filteredErrors = validationErrors.Where(validationError => validationError != null);
+                foreach (var filteredError in filteredErrors)
+                {
+                    outputErrors.Add(filteredError);
                 }
             }
         }

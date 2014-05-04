@@ -180,7 +180,7 @@ namespace Omnifactotum
         {
             lock (_syncLock)
             {
-                //// TODO [vmaklai] Use disposable instead of try/finally (?)
+                //// TODO [vmcl] Use disposable instead of try/finally (?)
 
                 ChangeColor(TraceEventType.Error);
                 try
