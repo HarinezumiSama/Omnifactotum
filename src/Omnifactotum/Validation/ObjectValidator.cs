@@ -198,14 +198,13 @@ namespace Omnifactotum.Validation
                     memberDatas.Add(itemData);
                 }
             }
-
-            if (parentExpression.Type.IsGenericType
-                && typeof(IEnumerable<>).IsAssignableFrom(parentExpression.Type.GetGenericTypeDefinition()))
-            {
-                //// TODO [vmcl] Support IEnumerable<T>
-            }
-
-            if (typeof(IEnumerable).IsAssignableFrom(parentExpression.Type))
+                ////////TODO [vmcl] Support IEnumerable<T>
+                ////else if (parentExpression.Type.IsGenericType
+                ////    && typeof(IEnumerable<>).IsAssignableFrom(parentExpression.Type.GetGenericTypeDefinition()))
+                ////{
+                ////    throw new NotImplementedException();
+                ////}
+            else if (typeof(IEnumerable).IsAssignableFrom(parentExpression.Type))
             {
                 var enumerable = (IEnumerable)instance;
 
