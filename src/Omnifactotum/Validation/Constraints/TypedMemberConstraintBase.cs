@@ -197,8 +197,8 @@ namespace Omnifactotum.Validation.Constraints
                     valueContext.LambdaExpression.Parameters.Single());
 
                 var combinedExpressions = lambda
-                    .CombineWith(memberGetterExpression)
-                    .CombineWith(error.Context.LambdaExpression);
+                    .InjectInto(memberGetterExpression)
+                    .InjectInto(error.Context.LambdaExpression);
 
                 var newContext = new MemberConstraintValidationContext(
                     valueContext.Root,

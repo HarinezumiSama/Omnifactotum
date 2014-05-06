@@ -155,11 +155,11 @@ namespace Omnifactotum.Validation.Constraints
 
             var combined = Expression
                 .Lambda(Expression.Convert(parameterExpression, rootType), parameterExpression)
-                .CombineWith(this.LambdaExpression);
+                .InjectInto(this.LambdaExpression);
 
             var temporaryParameterExpression = Expression.Parameter(combined.ReturnType, "x");
 
-            var result = combined.CombineWith(
+            var result = combined.InjectInto(
                 Expression.Lambda(
                     Expression.Convert(temporaryParameterExpression, typeof(object)),
                     temporaryParameterExpression));
