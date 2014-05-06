@@ -126,7 +126,7 @@
     <Compile Include="DirectedGraphNodeCollection.cs" />
     <Compile Include="DirectedGraphNodeCollectionBase.cs" />
     <Compile Include="DirectedGraphOwnerRelation.cs" />
-    <Compile Include="EnumHelper.cs" />
+    <Compile Include="EnumFactotum.cs" />
     <Compile Include="ExtensionMethods\OmnifactotumDisposableExtensions.cs" />
     <Compile Include="ExtensionMethods\OmnifactotumArrayExtensions.cs" />
     <Compile Include="ExtensionMethods\OmnifactotumAssemblyExtensions.cs" />

@@ -55,7 +55,7 @@
     <Compile Include="ValueContainerTests.cs" />
     <Compile Include="NotNullOrWhiteSpaceStringConstraintTests.cs" />
     <Compile Include="DirectedGraphTests.cs" />
-    <Compile Include="EnumHelperTests.cs" />
+    <Compile Include="EnumFactotumTests.cs" />
     <Compile Include="FactotumTests.cs" />
     <Compile Include="NotNullConstraintTests.cs" />
     <Compile Include="NotNullOrEmptyStringConstraintTests.cs" />

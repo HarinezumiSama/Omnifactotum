@@ -7,7 +7,7 @@ using Omnifactotum.Annotations;
 namespace Omnifactotum.Tests
 {
     [TestFixture]
-    public sealed class EnumHelperTests
+    public sealed class EnumFactotumTests
     {
         #region Tests
 
@@ -18,57 +18,57 @@ namespace Omnifactotum.Tests
             var enumValueString = EnumValue.ToString();
             var enumValueStringLower = enumValueString.ToLowerInvariant();
 
-            Assert.That(() => EnumHelper.GetValue<int>(enumValueString), Throws.ArgumentException);
+            Assert.That(() => EnumFactotum.GetValue<int>(enumValueString), Throws.ArgumentException);
 
-            Assert.That(() => EnumHelper.GetValue<FileMode>(enumValueString), Is.EqualTo(EnumValue));
-            Assert.That(() => EnumHelper.GetValue<FileMode>(enumValueString, false), Is.EqualTo(EnumValue));
-            Assert.That(() => EnumHelper.GetValue<FileMode>(enumValueString, true), Is.EqualTo(EnumValue));
+            Assert.That(() => EnumFactotum.GetValue<FileMode>(enumValueString), Is.EqualTo(EnumValue));
+            Assert.That(() => EnumFactotum.GetValue<FileMode>(enumValueString, false), Is.EqualTo(EnumValue));
+            Assert.That(() => EnumFactotum.GetValue<FileMode>(enumValueString, true), Is.EqualTo(EnumValue));
 
-            Assert.That(() => EnumHelper.GetValue<FileMode>(null), Throws.ArgumentException);
-            Assert.That(() => EnumHelper.GetValue<FileMode>(string.Empty), Throws.ArgumentException);
-            Assert.That(() => EnumHelper.GetValue<FileMode>(enumValueStringLower), Throws.ArgumentException);
-            Assert.That(() => EnumHelper.GetValue<FileMode>(enumValueStringLower, false), Throws.ArgumentException);
-            Assert.That(() => EnumHelper.GetValue<FileMode>(enumValueStringLower, true), Is.EqualTo(EnumValue));
+            Assert.That(() => EnumFactotum.GetValue<FileMode>(null), Throws.ArgumentException);
+            Assert.That(() => EnumFactotum.GetValue<FileMode>(string.Empty), Throws.ArgumentException);
+            Assert.That(() => EnumFactotum.GetValue<FileMode>(enumValueStringLower), Throws.ArgumentException);
+            Assert.That(() => EnumFactotum.GetValue<FileMode>(enumValueStringLower, false), Throws.ArgumentException);
+            Assert.That(() => EnumFactotum.GetValue<FileMode>(enumValueStringLower, true), Is.EqualTo(EnumValue));
         }
 
         [Test]
         public void TestGetAllValues()
         {
-            Assert.That(() => EnumHelper.GetAllValues<int>(), Throws.ArgumentException);
+            Assert.That(() => EnumFactotum.GetAllValues<int>(), Throws.ArgumentException);
 
             Assert.That(
-                () => EnumHelper.GetAllValues<FileMode>(),
+                () => EnumFactotum.GetAllValues<FileMode>(),
                 Is.EquivalentTo(Enum.GetValues(typeof(FileMode))));
 
             Assert.That(
-                () => EnumHelper.GetAllValues<FileAttributes>(),
+                () => EnumFactotum.GetAllValues<FileAttributes>(),
                 Is.EquivalentTo(Enum.GetValues(typeof(FileAttributes))));
         }
 
         [Test]
         public void TestGetAllFlagValues()
         {
-            Assert.That(() => EnumHelper.GetAllFlagValues<int>(), Throws.ArgumentException);
+            Assert.That(() => EnumFactotum.GetAllFlagValues<int>(), Throws.ArgumentException);
 
-            Assert.That(() => EnumHelper.GetAllFlagValues<FileMode>(), Throws.ArgumentException);
+            Assert.That(() => EnumFactotum.GetAllFlagValues<FileMode>(), Throws.ArgumentException);
 
             Assert.That(
-                () => EnumHelper.GetAllFlagValues<FileAttributes>(),
+                () => EnumFactotum.GetAllFlagValues<FileAttributes>(),
                 Is.EquivalentTo(Enum.GetValues(typeof(FileAttributes))));
 
             Assert.That(
-                () => EnumHelper.GetAllFlagValues<FileShare>(),
+                () => EnumFactotum.GetAllFlagValues<FileShare>(),
                 Is.EquivalentTo(
                     Enum.GetValues(typeof(FileShare))
                         .Cast<FileShare>()
                         .Except(new[] { FileShare.None, FileShare.ReadWrite })));
 
             Assert.That(
-                () => EnumHelper.GetAllFlagValues<FlagsInt64>(),
+                () => EnumFactotum.GetAllFlagValues<FlagsInt64>(),
                 Is.EquivalentTo(new[] { FlagsInt64.Bit0, FlagsInt64.Bit32, FlagsInt64.Bit49, FlagsInt64.Bit63 }));
 
             Assert.That(
-                () => EnumHelper.GetAllFlagValues<FlagsUInt64>(),
+                () => EnumFactotum.GetAllFlagValues<FlagsUInt64>(),
                 Is.EquivalentTo(new[] { FlagsUInt64.Bit0, FlagsUInt64.Bit35, FlagsUInt64.Bit53, FlagsUInt64.Bit63 }));
         }
 
