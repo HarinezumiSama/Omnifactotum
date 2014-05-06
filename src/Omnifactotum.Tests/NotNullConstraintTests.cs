@@ -28,9 +28,12 @@ namespace Omnifactotum.Tests
             var objectValidatorContext = CreateObjectValidatorContext();
             var constraint = new NotNullConstraint();
             var validationContext = CreateTestValidationContext();
-            var validationErrors = constraint.Validate(objectValidatorContext, validationContext, new object());
 
-            Assert.That(validationErrors, Is.Null);
+            constraint.Validate(objectValidatorContext, validationContext, new object());
+            var validationErrors = objectValidatorContext.Errors.Items;
+
+            Assert.That(validationErrors, Is.Not.Null);
+            Assert.That(validationErrors, Is.Empty);
         }
 
         [Test]
@@ -39,8 +42,9 @@ namespace Omnifactotum.Tests
             var objectValidatorContext = CreateObjectValidatorContext();
             var constraint = new NotNullConstraint();
             var validationContext = CreateTestValidationContext();
-            var validationErrors = constraint.Validate(objectValidatorContext, validationContext, null);
-            var validationError = validationErrors.Single();
+
+            constraint.Validate(objectValidatorContext, validationContext, null);
+            var validationError = objectValidatorContext.Errors.Items.Single();
 
             Assert.That(validationError, Is.Not.Null);
             Assert.That(validationError.FailedConstraintType, Is.EqualTo(constraint.GetType()));

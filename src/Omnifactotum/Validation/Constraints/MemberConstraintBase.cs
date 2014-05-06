@@ -14,13 +14,13 @@ namespace Omnifactotum.Validation.Constraints
         #region IMemberConstraint Members
 
         /// <summary>
-        ///     Validates the specified value in scope of the specified context.
+        ///     Validates the specified value in scope of the specified memberContext.
         /// </summary>
-        /// <param name="objectValidatorContext">
+        /// <param name="validatorContext">
         ///     The context of the <see cref="ObjectValidator"/>.
         /// </param>
-        /// <param name="context">
-        ///     The context of validation.
+        /// <param name="memberContext">
+        ///     The context of the validated member.
         /// </param>
         /// <param name="value">
         ///     The value to validate.
@@ -29,21 +29,26 @@ namespace Omnifactotum.Validation.Constraints
         ///     <b>null</b> if validation succeeded; or a <see cref="MemberConstraintValidationError"/> instance
         ///     describing the validation error, if validation failed.
         /// </returns>
-        public MemberConstraintValidationError[] Validate(
-            ObjectValidatorContext objectValidatorContext,
-            MemberConstraintValidationContext context,
+        public void Validate(
+            ObjectValidatorContext validatorContext,
+            MemberConstraintValidationContext memberContext,
             object value)
         {
             #region Argument Check
 
-            if (context == null)
+            if (validatorContext == null)
             {
-                throw new ArgumentNullException("context");
+                throw new ArgumentNullException("validatorContext");
+            }
+
+            if (memberContext == null)
+            {
+                throw new ArgumentNullException("memberContext");
             }
 
             #endregion
 
-            return ValidateValue(objectValidatorContext, context, value);
+            ValidateValue(validatorContext, memberContext, value);
         }
 
         #endregion
@@ -51,29 +56,20 @@ namespace Omnifactotum.Validation.Constraints
         #region Protected Methods
 
         /// <summary>
-        ///     Validates the specified value is scope of the specified context.
+        ///     Validates the specified value is scope of the specified memberContext.
         /// </summary>
-        /// <param name="objectValidatorContext">
+        /// <param name="validatorContext">
         ///     The context of the <see cref="ObjectValidator"/>.
         /// </param>
-        /// <param name="context">
-        ///     The context of validation.
+        /// <param name="memberContext">
+        ///     The context of the validated member.
         /// </param>
         /// <param name="value">
         ///     The value to validate.
         /// </param>
-        /// <returns>
-        ///     <list type="bullet">
-        ///         <item><b>null</b> or an empty array, if validation succeeded;</item>
-        ///         <item>
-        ///             or an array of <see cref="MemberConstraintValidationError"/> instances describing
-        ///             validation errors, if validation failed.
-        ///         </item>
-        ///     </list>
-        /// </returns>
-        protected abstract MemberConstraintValidationError[] ValidateValue(
-            [NotNull] ObjectValidatorContext objectValidatorContext,
-            [NotNull] MemberConstraintValidationContext context,
+        protected abstract void ValidateValue(
+            [NotNull] ObjectValidatorContext validatorContext,
+            [NotNull] MemberConstraintValidationContext memberContext,
             object value);
 
         /// <summary>
@@ -108,26 +104,28 @@ namespace Omnifactotum.Validation.Constraints
         }
 
         /// <summary>
-        ///     Creates a <see cref="MemberConstraintValidationError"/> instance using the specified arguments.
+        ///     Creates a new <see cref="MemberConstraintValidationError"/> instance using the specified member context
+        ///     and failure message and then adds the created error to the validator context.
         /// </summary>
-        /// <param name="context">
-        ///     The context of validation.
+        /// <param name="validatorContext">
+        ///     The context of the <see cref="ObjectValidator"/>.
+        /// </param>
+        /// <param name="memberContext">
+        ///     The context of the validated member to create an error for.
         /// </param>
         /// <param name="failureMessage">
-        ///     The error message.
+        ///     The message describing the validation error.
         /// </param>
-        /// <returns>
-        ///     A created <see cref="MemberConstraintValidationError"/> instance.
-        /// </returns>
-        protected MemberConstraintValidationError CreateError(
-            [NotNull] MemberConstraintValidationContext context,
+        protected void AddError(
+            [NotNull] ObjectValidatorContext validatorContext,
+            [NotNull] MemberConstraintValidationContext memberContext,
             [NotNull] string failureMessage)
         {
             #region Argument Check
 
-            if (context == null)
+            if (memberContext == null)
             {
-                throw new ArgumentNullException("context");
+                throw new ArgumentNullException("memberContext");
             }
 
             if (string.IsNullOrWhiteSpace(failureMessage))
@@ -139,26 +137,29 @@ namespace Omnifactotum.Validation.Constraints
 
             #endregion
 
-            return new MemberConstraintValidationError(context, GetType(), failureMessage);
+            var error = new MemberConstraintValidationError(memberContext, GetType(), failureMessage);
+            validatorContext.Errors.Add(error);
         }
 
         /// <summary>
-        ///     Creates a <see cref="MemberConstraintValidationError"/> instance using the specified arguments.
+        ///     Creates a new <see cref="MemberConstraintValidationError"/> instance using the specified member context
+        ///     and default failure message and then adds the created error to the validator context.
         /// </summary>
-        /// <param name="context">
-        ///     The context of validation.
+        /// <param name="validatorContext">
+        ///     The context of the <see cref="ObjectValidator"/>.
         /// </param>
-        /// <returns>
-        ///     A created <see cref="MemberConstraintValidationError"/> instance.
-        /// </returns>
-        protected MemberConstraintValidationError CreateDefaultError(
-            [NotNull] MemberConstraintValidationContext context)
+        /// <param name="memberContext">
+        ///     The context of the validated member to create an error for.
+        /// </param>
+        protected void AddDefaultError(
+            [NotNull] ObjectValidatorContext validatorContext,
+            [NotNull] MemberConstraintValidationContext memberContext)
         {
             #region Argument Check
 
-            if (context == null)
+            if (memberContext == null)
             {
-                throw new ArgumentNullException("context");
+                throw new ArgumentNullException("memberContext");
             }
 
             #endregion
@@ -168,7 +169,7 @@ namespace Omnifactotum.Validation.Constraints
                 @"Validation of the constraint '{0}' failed.",
                 GetType().GetQualifiedName());
 
-            return CreateError(context, failureMessage);
+            AddError(validatorContext, memberContext, failureMessage);
         }
 
         #endregion

@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Globalization;
 using System.Linq;
+using Omnifactotum.Annotations;
 
 namespace Omnifactotum.Validation.Constraints
 {
@@ -14,12 +15,6 @@ namespace Omnifactotum.Validation.Constraints
     public abstract class BaseMemberConstraintAttribute : BaseValidatableMemberAttribute
 #pragma warning restore 3015
     {
-        #region Constants and Fields
-
-        private static readonly Type CompatibleMemberConstraintType = typeof(IMemberConstraint);
-
-        #endregion
-
         #region Constructors
 
         /// <summary>
@@ -30,28 +25,9 @@ namespace Omnifactotum.Validation.Constraints
         ///     the member annotated with this <see cref="BaseMemberConstraintAttribute"/> attribute. The type must
         ///     have parameterless constructor.
         /// </param>
-        internal BaseMemberConstraintAttribute(Type constraintType)
+        internal BaseMemberConstraintAttribute([NotNull] Type constraintType)
         {
-            #region Argument Check
-
-            if (constraintType == null)
-            {
-                throw new ArgumentNullException("constraintType");
-            }
-
-            if (!CompatibleMemberConstraintType.IsAssignableFrom(constraintType) || constraintType.IsInterface)
-            {
-                var message = string.Format(
-                    CultureInfo.InvariantCulture,
-                    @"The specified type is not a valid constraint type (must implement '{0}').",
-                    CompatibleMemberConstraintType.GetFullName());
-
-                throw new ArgumentException(message, "constraintType");
-            }
-
-            #endregion
-
-            this.ConstraintType = constraintType;
+            this.ConstraintType = constraintType.EnsureValidMemberConstraintType();
         }
 
         #endregion

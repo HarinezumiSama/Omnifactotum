@@ -321,13 +321,18 @@ namespace Omnifactotum.Tests
 
         private sealed class UtcDateConstraint : MemberConstraintBase
         {
-            protected override MemberConstraintValidationError[] ValidateValue(
-                ObjectValidatorContext objectValidatorContext,
+            protected override void ValidateValue(
+                ObjectValidatorContext validatorContext,
                 MemberConstraintValidationContext context,
                 object value)
             {
                 var dateTime = (DateTime)value;
-                return dateTime.Kind == DateTimeKind.Utc ? null : CreateDefaultError(context).AsArray();
+                if (dateTime.Kind == DateTimeKind.Utc)
+                {
+                    return;
+                }
+
+                AddDefaultError(validatorContext, context);
             }
         }
 
@@ -337,8 +342,8 @@ namespace Omnifactotum.Tests
 
         private sealed class NeverCalledConstraint : MemberConstraintBase
         {
-            protected override MemberConstraintValidationError[] ValidateValue(
-                ObjectValidatorContext objectValidatorContext,
+            protected override void ValidateValue(
+                ObjectValidatorContext validatorContext,
                 MemberConstraintValidationContext context,
                 object value)
             {

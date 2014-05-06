@@ -27,22 +27,18 @@ namespace Omnifactotum.Validation.Constraints
         /// <summary>
         ///     Validates the specified value in scope of the specified context.
         /// </summary>
-        /// <param name="objectValidatorContext">
+        /// <param name="validatorContext">
         ///     The context of the <see cref="ObjectValidator"/>.
         /// </param>
-        /// <param name="context">
+        /// <param name="memberContext">
         ///     The context of validation.
         /// </param>
         /// <param name="value">
         ///     The value to validate.
         /// </param>
-        /// <returns>
-        ///     <b>null</b> if validation succeeded; or a <see cref="MemberConstraintValidationError"/> instance
-        ///     describing the validation error, if validation failed.
-        /// </returns>
-        MemberConstraintValidationError[] Validate(
-            [NotNull] ObjectValidatorContext objectValidatorContext,
-            [NotNull] MemberConstraintValidationContext context,
+        void Validate(
+            [NotNull] ObjectValidatorContext validatorContext,
+            [NotNull] MemberConstraintValidationContext memberContext,
             object value);
 
         #endregion

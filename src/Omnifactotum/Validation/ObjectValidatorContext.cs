@@ -25,6 +25,20 @@ namespace Omnifactotum.Validation
         internal ObjectValidatorContext()
         {
             _constraintCache = new Dictionary<Type, IMemberConstraint>();
+            this.Errors = new ValidationErrorCollection();
+        }
+
+        #endregion
+
+        #region Public Properties
+
+        /// <summary>
+        ///     Gets the collection of errors.
+        /// </summary>
+        public ValidationErrorCollection Errors
+        {
+            get;
+            private set;
         }
 
         #endregion
@@ -41,14 +55,11 @@ namespace Omnifactotum.Validation
         ///     An <see cref="IMemberConstraint"/> instance representing the resolved constraint.
         /// </returns>
         [NotNull]
-        public IMemberConstraint ResolveConstraint(Type constraintType)
+        public IMemberConstraint ResolveConstraint([NotNull] Type constraintType)
         {
             #region Argument Check
 
-            if (constraintType == null)
-            {
-                throw new ArgumentNullException("constraintType");
-            }
+            constraintType.EnsureValidMemberConstraintType();
 
             #endregion
 

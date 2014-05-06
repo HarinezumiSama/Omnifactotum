@@ -38,35 +38,24 @@ namespace Omnifactotum.Validation.Constraints
         /// <param name="value">
         ///     The value to validate.
         /// </param>
-        /// <returns>
-        ///     <list type="bullet">
-        ///         <item><b>null</b> or an empty array, if validation succeeded;</item>
-        ///         <item>
-        ///             or an array of <see cref="MemberConstraintValidationError"/> instances describing
-        ///             validation errors, if validation failed.
-        ///         </item>
-        ///     </list>
-        /// </returns>
-        protected override MemberConstraintValidationError[] ValidateTypedValue(
+        protected override void ValidateTypedValue(
             ObjectValidatorContext objectValidatorContext,
             MemberConstraintValidationContext context,
             KeyValuePair<TKey, TValue> value)
         {
-            var keyErrors = ValidateMember(
+            ValidateMember(
                 objectValidatorContext,
                 context,
                 value,
                 pair => pair.Key,
                 typeof(TKeyConstraint));
 
-            var valueErrors = ValidateMember(
+            ValidateMember(
                 objectValidatorContext,
                 context,
                 value,
                 pair => pair.Value,
                 typeof(TValueConstraint));
-
-            return keyErrors.AvoidNull().Concat(valueErrors.AvoidNull()).ToArray();
         }
 
         #endregion

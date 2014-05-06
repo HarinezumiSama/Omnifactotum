@@ -19,59 +19,41 @@ namespace Omnifactotum.Validation.Constraints
         #region Protected Methods
 
         /// <summary>
-        ///     Validates the specified value is scope of the specified context.
+        ///     Validates the specified value is scope of the specified memberContext.
         /// </summary>
-        /// <param name="objectValidatorContext">
+        /// <param name="validatorContext">
         ///     The context of the <see cref="ObjectValidator"/>.
         /// </param>
-        /// <param name="context">
-        ///     The context of validation.
+        /// <param name="memberContext">
+        ///     The context of the validated member.
         /// </param>
         /// <param name="value">
         ///     The value to validate.
         /// </param>
-        /// <returns>
-        ///     <list type="bullet">
-        ///         <item><b>null</b> or an empty array, if validation succeeded;</item>
-        ///         <item>
-        ///             or an array of <see cref="MemberConstraintValidationError"/> instances describing
-        ///             validation errors, if validation failed.
-        ///         </item>
-        ///     </list>
-        /// </returns>
-        protected override sealed MemberConstraintValidationError[] ValidateValue(
-            ObjectValidatorContext objectValidatorContext,
-            MemberConstraintValidationContext context,
+        protected override sealed void ValidateValue(
+            ObjectValidatorContext validatorContext,
+            MemberConstraintValidationContext memberContext,
             object value)
         {
             var typedValue = CastTo<T>(value);
-            return ValidateTypedValue(objectValidatorContext, context, typedValue);
+            ValidateTypedValue(validatorContext, memberContext, typedValue);
         }
 
         /// <summary>
-        ///     Validates the specified strongly-typed value is scope of the specified context.
+        ///     Validates the specified strongly-typed value is scope of the specified memberContext.
         /// </summary>
-        /// <param name="objectValidatorContext">
+        /// <param name="validatorContext">
         ///     The context of the <see cref="ObjectValidator"/>.
         /// </param>
-        /// <param name="context">
-        ///     The context of validation.
+        /// <param name="memberContext">
+        ///     The context of the validated member.
         /// </param>
         /// <param name="value">
         ///     The value to validate.
         /// </param>
-        /// <returns>
-        ///     <list type="bullet">
-        ///         <item><b>null</b> or an empty array, if validation succeeded;</item>
-        ///         <item>
-        ///             or an array of <see cref="MemberConstraintValidationError"/> instances describing
-        ///             validation errors, if validation failed.
-        ///         </item>
-        ///     </list>
-        /// </returns>
-        protected abstract MemberConstraintValidationError[] ValidateTypedValue(
-            ObjectValidatorContext objectValidatorContext,
-            [NotNull] MemberConstraintValidationContext context,
+        protected abstract void ValidateTypedValue(
+            ObjectValidatorContext validatorContext,
+            [NotNull] MemberConstraintValidationContext memberContext,
             T value);
 
         /// <summary>
@@ -81,8 +63,8 @@ namespace Omnifactotum.Validation.Constraints
         /// <typeparam name="TMember">
         ///     The type of the member.
         /// </typeparam>
-        /// <param name="parentContext">
-        ///     The parent context.
+        /// <param name="valueContext">
+        ///     The parent memberContext.
         /// </param>
         /// <param name="value">
         ///     The value which member is accessed.
@@ -95,15 +77,15 @@ namespace Omnifactotum.Validation.Constraints
         ///     by the lambda expression.
         /// </returns>
         protected MemberConstraintValidationContext CreateMemberContext<TMember>(
-            [NotNull] MemberConstraintValidationContext parentContext,
+            [NotNull] MemberConstraintValidationContext valueContext,
             T value,
             [NotNull] Expression<Func<T, TMember>> memberGetterExpression)
         {
             #region Argument Check
 
-            if (parentContext == null)
+            if (valueContext == null)
             {
-                throw new ArgumentNullException("parentContext");
+                throw new ArgumentNullException("valueContext");
             }
 
             if (ReferenceEquals(value, null))
@@ -121,14 +103,14 @@ namespace Omnifactotum.Validation.Constraints
             var memberInfo = Factotum.For<T>.GetFieldOrPropertyInfo(memberGetterExpression);
 
             var memberExpression = Expression.MakeMemberAccess(
-                ValidationFactotum.ConvertTypeAuto(parentContext.Expression, value),
+                ValidationFactotum.ConvertTypeAuto(valueContext.Expression, value),
                 memberInfo);
 
             var result = new MemberConstraintValidationContext(
-                parentContext.Root,
+                valueContext.Root,
                 value,
                 memberExpression,
-                parentContext.RootParameterExpression);
+                valueContext.RootParameterExpression);
 
             return result;
         }
@@ -140,10 +122,10 @@ namespace Omnifactotum.Validation.Constraints
         ///     The type of the member.
         /// </typeparam>
         /// <param name="objectValidatorContext">
-        ///     The object validator context.
+        ///     The object validator memberContext.
         /// </param>
         /// <param name="valueContext">
-        ///     The context of the value.
+        ///     The memberContext of the value.
         /// </param>
         /// <param name="value">
         ///     The value containing the member.
@@ -154,10 +136,7 @@ namespace Omnifactotum.Validation.Constraints
         /// <param name="constraintType">
         ///     The type of the constraint.
         /// </param>
-        /// <returns>
-        ///     
-        /// </returns>
-        protected MemberConstraintValidationError[] ValidateMember<TMember>(
+        protected void ValidateMember<TMember>(
             ObjectValidatorContext objectValidatorContext,
             [NotNull] MemberConstraintValidationContext valueContext,
             T value,
@@ -192,8 +171,7 @@ namespace Omnifactotum.Validation.Constraints
             var constraint = objectValidatorContext.ResolveConstraint(constraintType);
             var memberValue = memberGetterExpression.Compile().Invoke(value);
 
-            var result = constraint.Validate(objectValidatorContext, memberContext, memberValue);
-            return result;
+            constraint.Validate(objectValidatorContext, memberContext, memberValue);
         }
 
         #endregion

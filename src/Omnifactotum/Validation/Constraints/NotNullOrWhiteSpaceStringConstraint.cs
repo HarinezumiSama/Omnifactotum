@@ -13,36 +13,29 @@ namespace Omnifactotum.Validation.Constraints
         /// <summary>
         ///     Validates the specified strongly-typed value is scope of the specified context.
         /// </summary>
-        /// <param name="objectValidatorContext">
+        /// <param name="validatorContext">
         ///     The context of the <see cref="ObjectValidator"/>.
         /// </param>
-        /// <param name="context">
+        /// <param name="memberContext">
         ///     The context of validation.
         /// </param>
         /// <param name="value">
         ///     The value to validate.
         /// </param>
-        /// <returns>
-        ///     <list type="bullet">
-        ///         <item><b>null</b> or an empty array, if validation succeeded;</item>
-        ///         <item>
-        ///             or an array of <see cref="MemberConstraintValidationError"/> instances describing
-        ///             validation errors, if validation failed.
-        ///         </item>
-        ///     </list>
-        /// </returns>
-        protected override MemberConstraintValidationError[] ValidateTypedValue(
-            ObjectValidatorContext objectValidatorContext,
-            MemberConstraintValidationContext context,
+        protected override void ValidateTypedValue(
+            ObjectValidatorContext validatorContext,
+            MemberConstraintValidationContext memberContext,
             string value)
         {
             if (!string.IsNullOrWhiteSpace(value))
             {
-                return null;
+                return;
             }
 
-            return CreateError(context, "The value must not be null or an empty string or a whitespace-only string.")
-                .AsArray();
+            AddError(
+                validatorContext,
+                memberContext,
+                "The value must not be null or an empty string or a whitespace-only string.");
         }
 
         #endregion

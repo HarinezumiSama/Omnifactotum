@@ -115,6 +115,7 @@
     <Compile Include="Validation\ObjectValidationResult.cs" />
     <Compile Include="Validation\ObjectValidator.cs" />
     <Compile Include="Validation\ObjectValidatorContext.cs" />
+    <Compile Include="Validation\ValidationErrorCollection.cs" />
     <Compile Include="Validation\ValidationFactotum.cs" />
     <Compile Include="ValueCapsule.cs" />
     <Compile Include="SyncValueContainer.cs" />

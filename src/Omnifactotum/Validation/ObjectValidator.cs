@@ -70,7 +70,6 @@ namespace Omnifactotum.Validation
             #endregion
 
             var parameterExpression = Expression.Parameter(instance.GetType(), RootObjectParameterName);
-            var validationErrors = new List<MemberConstraintValidationError>();
 
             var rootMemberData = new MemberData(parameterExpression, null, instance, null, null);
             var objectValidatorContext = new ObjectValidatorContext();
@@ -78,9 +77,9 @@ namespace Omnifactotum.Validation
             Factotum.ProcessRecursively(
                 rootMemberData,
                 GetMembers,
-                obj => ValidateInternal(instance, parameterExpression, obj, objectValidatorContext, validationErrors));
+                obj => ValidateInternal(instance, parameterExpression, obj, objectValidatorContext));
 
-            return new ObjectValidationResult(validationErrors);
+            return new ObjectValidationResult(objectValidatorContext.Errors.Items);
         }
 
         #endregion
@@ -244,8 +243,7 @@ namespace Omnifactotum.Validation
             object root,
             ParameterExpression parameterExpression,
             MemberData memberData,
-            ObjectValidatorContext objectValidatorContext,
-            ICollection<MemberConstraintValidationError> outputErrors)
+            ObjectValidatorContext objectValidatorContext)
         {
             #region Argument Check
 
@@ -253,7 +251,6 @@ namespace Omnifactotum.Validation
             parameterExpression.EnsureNotNull();
             memberData.EnsureNotNull();
             objectValidatorContext.EnsureNotNull();
-            outputErrors.EnsureNotNull();
 
             #endregion
 
@@ -273,17 +270,7 @@ namespace Omnifactotum.Validation
                     memberData.Expression,
                     parameterExpression);
 
-                var validationErrors = constraint.Validate(objectValidatorContext, context, memberData.Value);
-                if (validationErrors == null || validationErrors.Length == 0)
-                {
-                    continue;
-                }
-
-                var filteredErrors = validationErrors.Where(validationError => validationError != null);
-                foreach (var filteredError in filteredErrors)
-                {
-                    outputErrors.Add(filteredError);
-                }
+                constraint.Validate(objectValidatorContext, context, memberData.Value);
             }
         }
 
