@@ -97,6 +97,7 @@
     <Compile Include="ExtensionMethods\OmnifactotumExpressionExtensions.cs" />
     <Compile Include="Validation\Constraints\BaseMemberConstraintAttribute.cs" />
     <Compile Include="Validation\Constraints\BaseValidatableMemberAttribute.cs" />
+    <Compile Include="Validation\Constraints\KeyValuePairConstraintBase.cs" />
     <Compile Include="Validation\Constraints\NotNullConstraint{T}.cs" />
     <Compile Include="Validation\Constraints\IgnoredConstraint.cs" />
     <Compile Include="Validation\Constraints\TypedMemberConstraintBase.cs" />
