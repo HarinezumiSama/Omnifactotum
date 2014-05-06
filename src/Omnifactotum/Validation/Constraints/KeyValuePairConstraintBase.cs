@@ -19,8 +19,7 @@ namespace Omnifactotum.Validation.Constraints
         #region Constructors
 
         /// <summary>
-        ///     Initializes a new instance of
-        ///     the <see cref="KeyValuePairConstraintBase{TKey,TValue}" /> class.
+        ///     Initializes a new instance of the <see cref="KeyValuePairConstraintBase{TKey,TValue}" /> class.
         /// </summary>
         /// <param name="keyConstraintType">
         ///     The type specifying the key constraint.
