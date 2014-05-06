@@ -30,7 +30,7 @@ namespace Omnifactotum.Validation.Constraints
         /// <param name="value">
         ///     The value to validate.
         /// </param>
-        protected override sealed void ValidateValue(
+        protected sealed override void ValidateValue(
             ObjectValidatorContext validatorContext,
             MemberConstraintValidationContext memberContext,
             object value)
