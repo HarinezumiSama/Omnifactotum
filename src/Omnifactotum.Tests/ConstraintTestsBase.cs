@@ -5,7 +5,7 @@ using Omnifactotum.Validation.Constraints;
 
 namespace Omnifactotum.Tests
 {
-    public abstract class ConstraintTestsBase
+    internal abstract class ConstraintTestsBase
     {
         #region Protected Properties
 
@@ -20,9 +20,10 @@ namespace Omnifactotum.Tests
 
         #region Protected Methods
 
-        protected ObjectValidatorContext CreateObjectValidatorContext()
+        protected ObjectValidatorContext CreateObjectValidatorContext(
+            [CanBeNull] RecursiveProcessingContext<MemberData> recursiveProcessingContext = null)
         {
-            return new ObjectValidatorContext();
+            return new ObjectValidatorContext(recursiveProcessingContext);
         }
 
         protected MemberConstraintValidationContext CreateTestValidationContext()

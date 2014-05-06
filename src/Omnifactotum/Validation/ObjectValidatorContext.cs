@@ -22,10 +22,17 @@ namespace Omnifactotum.Validation
         /// <summary>
         ///     Initializes a new instance of the <see cref="ObjectValidatorContext"/> class.
         /// </summary>
-        internal ObjectValidatorContext()
+        /// <param name="recursiveProcessingContext">
+        ///     The context of the recursive processing, or <b>null</b> to use a new context.
+        /// </param>
+        internal ObjectValidatorContext([CanBeNull] RecursiveProcessingContext<MemberData> recursiveProcessingContext)
         {
+            var actualRecursiveProcessingContext = recursiveProcessingContext
+                ?? new RecursiveProcessingContext<MemberData>(InternalMemberDataEqualityComparer.Instance);
+
             _constraintCache = new Dictionary<Type, IMemberConstraint>();
             this.Errors = new ValidationErrorCollection();
+            this.RecursiveProcessingContext = actualRecursiveProcessingContext;
         }
 
         #endregion
@@ -36,6 +43,16 @@ namespace Omnifactotum.Validation
         ///     Gets the collection of errors.
         /// </summary>
         public ValidationErrorCollection Errors
+        {
+            get;
+            private set;
+        }
+
+        #endregion
+
+        #region Internal Properties
+
+        internal RecursiveProcessingContext<MemberData> RecursiveProcessingContext
         {
             get;
             private set;

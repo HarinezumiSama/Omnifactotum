@@ -444,6 +444,51 @@ namespace Omnifactotum
             return id.ToHexString();
         }
 
+        /// <summary>
+        ///     <para>Gets the local path of the process executable.</para>
+        ///     <para><b>NOTE</b>: The entry assembly is used to determine the executable path.
+        ///     If the entry assembly is not available, the calling assembly is used.</para>
+        /// </summary>
+        /// <returns>
+        ///     The local path of the process executable.
+        /// </returns>
+        /// <exception cref="InvalidOperationException">
+        ///     The entry assembly (or the calling assembly) does not have a local path.
+        /// </exception>
+        [MethodImpl(MethodImplOptions.NoInlining)]
+        public static string GetExecutableLocalPath()
+        {
+            //// TODO [vmcl] Cache the result
+
+            var assembly = Assembly.GetEntryAssembly() ?? Assembly.GetCallingAssembly();
+            return assembly.GetLocalPath();
+        }
+
+        /// <summary>
+        ///     <para>Gets the directory of the process executable.</para>
+        ///     <para><b>NOTE</b>: The entry assembly is used to determine the executable directory.
+        ///     If the entry assembly is not available, the calling assembly is used.</para>
+        /// </summary>
+        /// <returns>
+        ///     The directory of the process executable.
+        /// </returns>
+        /// <exception cref="InvalidOperationException">
+        ///     The entry assembly (or the calling assembly) does not have a local path.
+        /// </exception>
+        [MethodImpl(MethodImplOptions.NoInlining)]
+        public static string GetExecutableDirectory()
+        {
+            //// [vmcl] GetExecutableLocalPath() method cannot be re-used in order to keep
+            //// the correct stack for Assembly.GetCallingAssembly()
+
+            //// TODO [vmcl] Cache the result
+
+            var assembly = Assembly.GetEntryAssembly() ?? Assembly.GetCallingAssembly();
+            var path = assembly.GetLocalPath();
+
+            return Path.GetDirectoryName(path).EnsureNotNull();
+        }
+
         #endregion
 
         #region Public Methods: Fields/Properties
@@ -721,6 +766,9 @@ namespace Omnifactotum
         /// <param name="processItem">
         ///     A reference to the method that processes each single item.
         /// </param>
+        /// <param name="processingContext">
+        ///     The context of the recursive processing, or <b>null</b> to use a new context.
+        /// </param>
         /// <exception cref="ArgumentNullException">
         ///     <para>
         ///         <paramref name="getItems"/> is <b>null</b>.
@@ -731,9 +779,10 @@ namespace Omnifactotum
         ///     </para>
         /// </exception>
         public static void ProcessRecursively<T>(
-            T instance,
-            Func<T, IEnumerable<T>> getItems,
-            Func<T, RecursiveProcessingDirective> processItem)
+            [CanBeNull] T instance,
+            [NotNull] Func<T, IEnumerable<T>> getItems,
+            [NotNull] Func<T, RecursiveProcessingDirective> processItem,
+            [CanBeNull] RecursiveProcessingContext<T> processingContext)
         {
             #region Argument Check
 
@@ -754,12 +803,8 @@ namespace Omnifactotum
                 return;
             }
 
-            var type = typeof(T);
-
-            var itemsBeingProcessed = type.IsValueType
-                ? null
-                : new HashSet<T>(ByReferenceEqualityComparer<T>.Instance);
-            ProcessRecursivelyInternal(instance, getItems, processItem, itemsBeingProcessed);
+            var actualProcessingContext = processingContext ?? new RecursiveProcessingContext<T>();
+            ProcessRecursivelyInternal(instance, getItems, processItem, actualProcessingContext);
         }
 
         /// <summary>
@@ -789,15 +834,47 @@ namespace Omnifactotum
         /// </exception>
         public static void ProcessRecursively<T>(
             T instance,
-            Func<T, IEnumerable<T>> getItems,
-            Action<T> processItem)
+            [NotNull] Func<T, IEnumerable<T>> getItems,
+            [NotNull] Func<T, RecursiveProcessingDirective> processItem)
+        {
+            ProcessRecursively(instance, getItems, processItem, null);
+        }
+
+        /// <summary>
+        ///     Processes the specified instance recursively.
+        /// </summary>
+        /// <typeparam name="T">
+        ///     The type of the instances to process.
+        /// </typeparam>
+        /// <param name="instance">
+        ///     The instance to process. Can be <b>null</b>.
+        /// </param>
+        /// <param name="getItems">
+        ///     A reference to the method that maps <paramref name="instance"/> to the collection of associated objects
+        ///     to process them recursively.
+        /// </param>
+        /// <param name="processItem">
+        ///     A reference to the method that processes each single item.
+        /// </param>
+        /// <param name="processingContext">
+        ///     The context of the recursive processing, or <b>null</b> to use a new context.
+        /// </param>
+        /// <exception cref="ArgumentNullException">
+        ///     <para>
+        ///         <paramref name="getItems"/> is <b>null</b>.
+        ///     </para>
+        ///     <para>-or-</para>
+        ///     <para>
+        ///         <paramref name="processItem"/> is <b>null</b>.
+        ///     </para>
+        /// </exception>
+        public static void ProcessRecursively<T>(
+            T instance,
+            [NotNull] Func<T, IEnumerable<T>> getItems,
+            [NotNull] Action<T> processItem,
+            [CanBeNull] RecursiveProcessingContext<T> processingContext)
         {
             #region Argument Check
-
-            if (getItems == null)
-            {
-                throw new ArgumentNullException("getItems");
-            }
 
             if (processItem == null)
             {
@@ -813,52 +890,41 @@ namespace Omnifactotum
                 {
                     processItem(item);
                     return RecursiveProcessingDirective.Continue;
-                });
+                },
+                processingContext);
         }
 
         /// <summary>
-        ///     <para>Gets the local path of the process executable.</para>
-        ///     <para><b>NOTE</b>: The entry assembly is used to determine the executable path.
-        ///     If the entry assembly is not available, the calling assembly is used.</para>
+        ///     Processes the specified instance recursively.
         /// </summary>
-        /// <returns>
-        ///     The local path of the process executable.
-        /// </returns>
-        /// <exception cref="InvalidOperationException">
-        ///     The entry assembly (or the calling assembly) does not have a local path.
+        /// <typeparam name="T">
+        ///     The type of the instances to process.
+        /// </typeparam>
+        /// <param name="instance">
+        ///     The instance to process. Can be <b>null</b>.
+        /// </param>
+        /// <param name="getItems">
+        ///     A reference to the method that maps <paramref name="instance"/> to the collection of associated objects
+        ///     to process them recursively.
+        /// </param>
+        /// <param name="processItem">
+        ///     A reference to the method that processes each single item.
+        /// </param>
+        /// <exception cref="ArgumentNullException">
+        ///     <para>
+        ///         <paramref name="getItems"/> is <b>null</b>.
+        ///     </para>
+        ///     <para>-or-</para>
+        ///     <para>
+        ///         <paramref name="processItem"/> is <b>null</b>.
+        ///     </para>
         /// </exception>
-        [MethodImpl(MethodImplOptions.NoInlining)]
-        public static string GetExecutableLocalPath()
+        public static void ProcessRecursively<T>(
+            T instance,
+            [NotNull] Func<T, IEnumerable<T>> getItems,
+            [NotNull] Action<T> processItem)
         {
-            //// TODO [vmcl] Cache the result
-
-            var assembly = Assembly.GetEntryAssembly() ?? Assembly.GetCallingAssembly();
-            return assembly.GetLocalPath();
-        }
-
-        /// <summary>
-        ///     <para>Gets the directory of the process executable.</para>
-        ///     <para><b>NOTE</b>: The entry assembly is used to determine the executable directory.
-        ///     If the entry assembly is not available, the calling assembly is used.</para>
-        /// </summary>
-        /// <returns>
-        ///     The directory of the process executable.
-        /// </returns>
-        /// <exception cref="InvalidOperationException">
-        ///     The entry assembly (or the calling assembly) does not have a local path.
-        /// </exception>
-        [MethodImpl(MethodImplOptions.NoInlining)]
-        public static string GetExecutableDirectory()
-        {
-            //// [vmcl] GetExecutableLocalPath() method cannot be re-used in order to keep
-            //// the correct stack for Assembly.GetCallingAssembly()
-
-            //// TODO [vmcl] Cache the result
-
-            var assembly = Assembly.GetEntryAssembly() ?? Assembly.GetCallingAssembly();
-            var path = assembly.GetLocalPath();
-
-            return Path.GetDirectoryName(path).EnsureNotNull();
+            ProcessRecursively(instance, getItems, processItem, null);
         }
 
         #endregion
@@ -890,21 +956,21 @@ namespace Omnifactotum
             T instance,
             Func<T, IEnumerable<T>> getItems,
             Func<T, RecursiveProcessingDirective> processItem,
-            ISet<T> itemsBeingProcessed)
+            RecursiveProcessingContext<T> processingContext)
         {
             if (ReferenceEquals(instance, null))
             {
                 return true;
             }
 
-            if (itemsBeingProcessed != null)
+            if (processingContext.ItemsBeingProcessed != null)
             {
-                if (itemsBeingProcessed.Contains(instance))
+                if (processingContext.ItemsBeingProcessed.Contains(instance))
                 {
                     return true;
                 }
 
-                itemsBeingProcessed.Add(instance);
+                processingContext.ItemsBeingProcessed.Add(instance);
             }
 
             var processingResult = processItem(instance);
@@ -933,7 +999,7 @@ namespace Omnifactotum
             // ReSharper disable once LoopCanBeConvertedToQuery - More readable in 'foreach' style
             foreach (var item in items)
             {
-                var processResult = ProcessRecursivelyInternal(item, getItems, processItem, itemsBeingProcessed);
+                var processResult = ProcessRecursivelyInternal(item, getItems, processItem, processingContext);
                 if (!processResult)
                 {
                     return false;

@@ -95,6 +95,7 @@
     <Compile Include="EquatableObjectBase.cs" />
     <Compile Include="EquatableValueCapsule.cs" />
     <Compile Include="ExtensionMethods\OmnifactotumExpressionExtensions.cs" />
+    <Compile Include="RecursiveProcessingContext.cs" />
     <Compile Include="Validation\Constraints\BaseMemberConstraintAttribute.cs" />
     <Compile Include="Validation\Constraints\BaseValidatableMemberAttribute.cs" />
     <Compile Include="Validation\Constraints\KeyValuePairConstraintBase.cs" />
@@ -112,6 +113,8 @@
     <Compile Include="Validation\Constraints\MemberConstraintValidationError.cs" />
     <Compile Include="Validation\Constraints\NotNullConstraint.cs" />
     <Compile Include="Validation\Constraints\ValidatableMemberAttribute.cs" />
+    <Compile Include="Validation\InternalMemberDataEqualityComparer.cs" />
+    <Compile Include="Validation\MemberData.cs" />
     <Compile Include="Validation\ObjectValidationException.cs" />
     <Compile Include="Validation\ObjectValidationResult.cs" />
     <Compile Include="Validation\ObjectValidator.cs" />

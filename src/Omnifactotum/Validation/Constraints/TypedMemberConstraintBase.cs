@@ -178,9 +178,10 @@ namespace Omnifactotum.Validation.Constraints
                 return;
             }
 
-            //// TODO [vmcl] Consider cyclic dependency (Validator is called separately, therefore there are different internal tables of processed objects)
+            var memberValidationResult = ObjectValidator.Validate(
+                memberValue,
+                validatorContext.RecursiveProcessingContext);
 
-            var memberValidationResult = ObjectValidator.Validate(memberValue);
             if (memberValidationResult.IsObjectValid)
             {
                 return;

@@ -60,6 +60,32 @@ namespace Omnifactotum.Validation
         /// </returns>
         public static ObjectValidationResult Validate<T>(T instance)
         {
+            return Validate(instance, null);
+        }
+
+        #endregion
+
+        #region Internal Methods
+
+        /// <summary>
+        ///     Validates the specified instance.
+        /// </summary>
+        /// <typeparam name="T">
+        ///     The type of the instance to validate.
+        /// </typeparam>
+        /// <param name="instance">
+        ///     The instance to validate.
+        /// </param>
+        /// <param name="recursiveProcessingContext">
+        ///     The context of the recursive processing, or <b>null</b> to use a new context.
+        /// </param>
+        /// <returns>
+        ///     An <see cref="ObjectValidationResult"/> representing the validation result.
+        /// </returns>
+        internal static ObjectValidationResult Validate<T>(
+            [NotNull] T instance,
+            [CanBeNull] RecursiveProcessingContext<MemberData> recursiveProcessingContext)
+        {
             #region Argument Check
 
             if (ReferenceEquals(instance, null))
@@ -70,9 +96,9 @@ namespace Omnifactotum.Validation
             #endregion
 
             var parameterExpression = Expression.Parameter(instance.GetType(), RootObjectParameterName);
-
             var rootMemberData = new MemberData(parameterExpression, null, instance, null, null);
-            var objectValidatorContext = new ObjectValidatorContext();
+
+            var objectValidatorContext = new ObjectValidatorContext(recursiveProcessingContext);
 
             Factotum.ProcessRecursively(
                 rootMemberData,
@@ -272,110 +298,6 @@ namespace Omnifactotum.Validation
 
                 constraint.Validate(objectValidatorContext, context, memberData.Value);
             }
-        }
-
-        #endregion
-
-        #region MemberData Class
-
-        /// <summary>
-        ///     Represents the member data.
-        /// </summary>
-        private sealed class MemberData
-        {
-            #region Constructors
-
-            /// <summary>
-            ///     Initializes a new instance of the <see cref="MemberData"/> class.
-            /// </summary>
-            /// <param name="expression">
-            ///     The expression.
-            /// </param>
-            /// <param name="container">
-            ///     The object containing the value that is being validated. Can be <b>null</b>.
-            /// </param>
-            /// <param name="value">
-            ///     The member value.
-            /// </param>
-            /// <param name="attributes">
-            ///     The constraint attributes.
-            /// </param>
-            /// <param name="effectiveAttributes">
-            ///     The effective constraint attributes.
-            /// </param>
-            internal MemberData(
-                [NotNull] Expression expression,
-                [CanBeNull] object container,
-                [CanBeNull] object value,
-                [CanBeNull] BaseValidatableMemberAttribute[] attributes,
-                [CanBeNull] BaseMemberConstraintAttribute[] effectiveAttributes)
-            {
-                #region Argument Check
-
-                if (expression == null)
-                {
-                    throw new ArgumentNullException("expression");
-                }
-
-                #endregion
-
-                this.Expression = expression;
-                this.Container = container;
-                this.Value = value;
-                this.Attributes = attributes;
-                this.EffectiveAttributes = effectiveAttributes;
-            }
-
-            #endregion
-
-            #region Public Properties
-
-            /// <summary>
-            ///     Gets the expression.
-            /// </summary>
-            public Expression Expression
-            {
-                get;
-                private set;
-            }
-
-            /// <summary>
-            ///     Gets the object containing the value that is being, or was, validated.
-            /// </summary>
-            public object Container
-            {
-                get;
-                private set;
-            }
-
-            /// <summary>
-            ///     Gets the value.
-            /// </summary>
-            public object Value
-            {
-                get;
-                private set;
-            }
-
-            /// <summary>
-            ///     Gets the constraint attributes.
-            /// </summary>
-            public BaseValidatableMemberAttribute[] Attributes
-            {
-                get;
-                private set;
-            }
-
-            /// <summary>
-            ///     Gets the effective constraint attributes.
-            /// </summary>
-            public BaseMemberConstraintAttribute[] EffectiveAttributes
-            {
-                get;
-                private set;
-            }
-
-            #endregion
         }
 
         #endregion

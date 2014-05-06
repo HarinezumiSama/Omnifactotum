@@ -6,7 +6,7 @@ using Omnifactotum.Validation.Constraints;
 namespace Omnifactotum.Tests
 {
     [TestFixture]
-    public sealed class NotNullOrEmptyStringConstraintTests : ConstraintTestsBase
+    internal sealed class NotNullOrEmptyStringConstraintTests : ConstraintTestsBase
     {
         #region Tests
 
