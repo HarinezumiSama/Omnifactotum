@@ -446,7 +446,7 @@ namespace Omnifactotum
 
         #endregion
 
-        #region Public Methods: Properties
+        #region Public Methods: Fields/Properties
 
         /// <summary>
         ///     Gets the <see cref="MemberInfo"/> of the field or property specified by the lambda expression.

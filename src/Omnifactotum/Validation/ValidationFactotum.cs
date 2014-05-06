@@ -7,6 +7,9 @@ using Omnifactotum.Validation.Constraints;
 
 namespace Omnifactotum.Validation
 {
+    /// <summary>
+    ///     Represents the internal helper for the <see cref="ObjectValidator"/>.
+    /// </summary>
     internal static class ValidationFactotum
     {
         #region Constants and Fields
@@ -17,6 +20,18 @@ namespace Omnifactotum.Validation
 
         #region Public Methods
 
+        /// <summary>
+        ///     Converts the type of the expression, if needed.
+        /// </summary>
+        /// <param name="expression">
+        ///     The expression to convert.
+        /// </param>
+        /// <param name="valueType">
+        ///     The type of the value.
+        /// </param>
+        /// <returns>
+        ///     An original expression, if conversion was not needed; otherwise, a converted expression.
+        /// </returns>
         public static Expression ConvertTypeAuto([NotNull] Expression expression, [NotNull] Type valueType)
         {
             #region Argument Check
@@ -39,11 +54,35 @@ namespace Omnifactotum.Validation
             return result;
         }
 
+        /// <summary>
+        ///     Converts the type of the expression, if needed.
+        /// </summary>
+        /// <param name="expression">
+        ///     The expression to convert.
+        /// </param>
+        /// <param name="value">
+        ///     The value to which type to convert the expression.
+        /// </param>
+        /// <returns>
+        ///     An original expression, if conversion was not needed; otherwise, a converted expression.
+        /// </returns>
         public static Expression ConvertTypeAuto([NotNull] Expression expression, object value)
         {
             return value == null ? expression : ConvertTypeAuto(expression, value.GetType());
         }
 
+        /// <summary>
+        ///     Determines whether the specified constraint type is a valid member constraint type.
+        /// </summary>
+        /// <param name="constraintType">
+        ///     The type of the constraint to check.
+        /// </param>
+        /// <returns>
+        ///     <b>true</b> if specified constraint type is a valid member constraint type; otherwise, <b>false</b>.
+        /// </returns>
+        /// <exception cref="ArgumentNullException">
+        ///     <paramref name="constraintType"/> is <b>null</b>.
+        /// </exception>
         public static bool IsValidMemberConstraintType([NotNull] this Type constraintType)
         {
             #region Argument Check
@@ -58,6 +97,21 @@ namespace Omnifactotum.Validation
             return !constraintType.IsInterface && CompatibleMemberConstraintType.IsAssignableFrom(constraintType);
         }
 
+        /// <summary>
+        ///     Ensures that the specified constraint type is a valid member constraint type.
+        /// </summary>
+        /// <param name="constraintType">
+        ///     The type of the constraint to check.
+        /// </param>
+        /// <returns>
+        ///     The input constraint type, if it is a valid member constraint type. 
+        /// </returns>
+        /// <exception cref="ArgumentNullException">
+        ///     <paramref name="constraintType"/> is <b>null</b>.
+        /// </exception>
+        /// <exception cref="System.ArgumentException">
+        ///     The specified constraint type is not a valid member constraint type.
+        /// </exception>
         public static Type EnsureValidMemberConstraintType([NotNull] this Type constraintType)
         {
             if (IsValidMemberConstraintType(constraintType))

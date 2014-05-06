@@ -25,10 +25,6 @@ namespace Omnifactotum.Validation.Constraints
         /// <param name="value">
         ///     The value to validate.
         /// </param>
-        /// <returns>
-        ///     <b>null</b> if validation succeeded; or a <see cref="MemberConstraintValidationError"/> instance
-        ///     describing the validation error, if validation failed.
-        /// </returns>
         public void Validate(
             ObjectValidatorContext validatorContext,
             MemberConstraintValidationContext memberContext,
