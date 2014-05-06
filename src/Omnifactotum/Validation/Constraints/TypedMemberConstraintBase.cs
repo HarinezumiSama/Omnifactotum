@@ -121,7 +121,7 @@ namespace Omnifactotum.Validation.Constraints
         /// <typeparam name="TMember">
         ///     The type of the member.
         /// </typeparam>
-        /// <param name="objectValidatorContext">
+        /// <param name="validatorContext">
         ///     The object validator memberContext.
         /// </param>
         /// <param name="valueContext">
@@ -137,7 +137,7 @@ namespace Omnifactotum.Validation.Constraints
         ///     The type of the constraint.
         /// </param>
         protected void ValidateMember<TMember>(
-            ObjectValidatorContext objectValidatorContext,
+            ObjectValidatorContext validatorContext,
             [NotNull] MemberConstraintValidationContext valueContext,
             T value,
             [NotNull] Expression<Func<T, TMember>> memberGetterExpression,
@@ -168,10 +168,50 @@ namespace Omnifactotum.Validation.Constraints
             #endregion
 
             var memberContext = CreateMemberContext(valueContext, value, memberGetterExpression);
-            var constraint = objectValidatorContext.ResolveConstraint(constraintType);
+            var constraint = validatorContext.ResolveConstraint(constraintType);
             var memberValue = memberGetterExpression.Compile().Invoke(value);
 
-            constraint.Validate(objectValidatorContext, memberContext, memberValue);
+            constraint.Validate(validatorContext, memberContext, memberValue);
+
+            if (ReferenceEquals(memberValue, null))
+            {
+                return;
+            }
+
+            //// TODO [vmcl] Consider cyclic dependency (Validator is called separately, therefore there are different internal tables of processed objects)
+
+            var memberValidationResult = ObjectValidator.Validate(memberValue);
+            if (memberValidationResult.IsObjectValid)
+            {
+                return;
+            }
+
+            foreach (var error in memberValidationResult.Errors)
+            {
+                var funcType = Expression.GetFuncType(valueContext.Root.GetType(), typeof(T));
+
+                var lambda = Expression.Lambda(
+                    funcType,
+                    Expression.Convert(valueContext.Expression, typeof(T)),
+                    valueContext.LambdaExpression.Parameters.Single());
+
+                var combinedExpressions = lambda
+                    .CombineWith(memberGetterExpression)
+                    .CombineWith(error.Context.LambdaExpression);
+
+                var newContext = new MemberConstraintValidationContext(
+                    valueContext.Root,
+                    error.Context.Container,
+                    combinedExpressions.Body,
+                    valueContext.RootParameterExpression);
+
+                var newError = new MemberConstraintValidationError(
+                    newContext,
+                    error.FailedConstraintType,
+                    error.ErrorMessage);
+
+                validatorContext.Errors.Add(newError);
+            }
         }
 
         #endregion

@@ -152,14 +152,19 @@ namespace Omnifactotum.Validation.Constraints
             var rootType = this.Root.GetTypeSafely();
 
             parameterExpression = Expression.Parameter(typeof(object), parameterName);
-            var proxyExpression = Expression.Convert(
-                Expression.Invoke(
-                    this.LambdaExpression,
-                    Expression.Convert(parameterExpression, rootType)),
-                typeof(object));
 
-            var result = Expression.Lambda<Func<object, object>>(proxyExpression, parameterExpression);
-            return result;
+            var combined = Expression
+                .Lambda(Expression.Convert(parameterExpression, rootType), parameterExpression)
+                .CombineWith(this.LambdaExpression);
+
+            var temporaryParameterExpression = Expression.Parameter(combined.ReturnType, "x");
+
+            var result = combined.CombineWith(
+                Expression.Lambda(
+                    Expression.Convert(temporaryParameterExpression, typeof(object)),
+                    temporaryParameterExpression));
+
+            return (Expression<Func<object, object>>)result;
         }
 
         /// <summary>
@@ -176,6 +181,21 @@ namespace Omnifactotum.Validation.Constraints
         {
             ParameterExpression parameterExpression;
             return CreateLambdaExpression(parameterName, out parameterExpression);
+        }
+
+        /// <summary>
+        ///     Creates a lambda expression, using the default parameter name, based on the expression describing
+        ///     the path to the value from the root object.
+        /// </summary>
+        /// <param name="parameterExpression">
+        ///     When this method returns, contains the parameter expression used in the created lambda expression.
+        /// </param>
+        /// <returns>
+        ///     A lambda expression based on the expression describing the path to the value from the root object.
+        /// </returns>
+        public Expression<Func<object, object>> CreateLambdaExpression(out ParameterExpression parameterExpression)
+        {
+            return CreateLambdaExpression(ObjectValidator.RootObjectParameterName, out parameterExpression);
         }
 
         /// <summary>

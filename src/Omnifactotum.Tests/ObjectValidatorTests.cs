@@ -116,17 +116,17 @@ namespace Omnifactotum.Tests
         [Test]
         public void TestDictionaryValidation()
         {
-            var container = new MapContainer
+            var mapContainer = new MapContainer
             {
-                Properties = new Dictionary<string, object>
+                Properties = new Dictionary<string, SimpleContainer<int?>>
                 {
-                    { "", 0 },
-                    { "abc", 3 },
-                    { "x", null }
+                    { "", new SimpleContainer<int?> { ContainedValue = 0 } },
+                    { "abc", new SimpleContainer<int?> { ContainedValue = 3 } },
+                    { "x", new SimpleContainer<int?> { ContainedValue = null } },
                 }
             };
 
-            var validationResult = ObjectValidator.Validate(container);
+            var validationResult = ObjectValidator.Validate(mapContainer);
 
             Assert.That(validationResult, Is.Not.Null);
             Assert.That(validationResult.Errors.Count, Is.EqualTo(2));
@@ -144,12 +144,24 @@ namespace Omnifactotum.Tests
                 notNullOrEmptyError.Context.Expression.ToString(),
                 Is.EqualTo(MakeExpressionString("Convert(Convert({0}.Properties).Cast().First()).Key")));
 
+            var emptyKey =
+                (string)notNullOrEmptyError.Context.CreateLambdaExpression("key").Compile().Invoke(mapContainer);
+
+            Assert.That(emptyKey, Is.EqualTo(string.Empty));
+
             var notNullError =
                 validationResult.Errors.Single(obj => obj.FailedConstraintType == typeof(NotNullConstraint));
 
             Assert.That(
                 notNullError.Context.Expression.ToString(),
-                Is.EqualTo(MakeExpressionString("Convert(Convert({0}.Properties).Cast().Skip(2).First()).Value")));
+                Is.EqualTo(
+                    MakeExpressionString(
+                        "Convert(Convert({0}.Properties).Cast().Skip(2).First()).Value.ContainedValue")));
+
+            var nullContainedValue =
+                (int?)notNullError.Context.CreateLambdaExpression("value").Compile().Invoke(mapContainer);
+
+            Assert.That(nullContainedValue.HasValue, Is.False);
         }
 
         #endregion
@@ -356,6 +368,42 @@ namespace Omnifactotum.Tests
 
         #endregion
 
+        #region SimpleContainer Class
+
+        public sealed class SimpleContainer<T>
+        {
+            #region Public Properties
+
+            [MemberConstraint(typeof(NotNullConstraint))]
+            public T ContainedValue
+            {
+                get;
+                set;
+            }
+
+            #endregion
+        }
+
+        #endregion
+
+        #region MapContainerPropertiesPairConstraint Class
+
+        public sealed class MapContainerPropertiesPairConstraint
+            : KeyValuePairConstraintBase<string, SimpleContainer<int?>>
+        {
+            #region Constructors
+
+            public MapContainerPropertiesPairConstraint()
+                : base(typeof(NotNullOrEmptyStringConstraint), typeof(NotNullConstraint<SimpleContainer<int?>>))
+            {
+                // Nothing to do
+            }
+
+            #endregion
+        }
+
+        #endregion
+
         #region MapContainer Class
 
         private sealed class MapContainer
@@ -363,9 +411,8 @@ namespace Omnifactotum.Tests
             #region Public Properties
 
             [MemberConstraint(typeof(NotNullConstraint))]
-            [MemberItemConstraint(
-                typeof(KeyValuePairConstraint<string, object, NotNullOrEmptyStringConstraint, NotNullConstraint>))]
-            public IEnumerable<KeyValuePair<string, object>> Properties
+            [MemberItemConstraint(typeof(MapContainerPropertiesPairConstraint))]
+            public IEnumerable<KeyValuePair<string, SimpleContainer<int?>>> Properties
             {
                 [UsedImplicitly]
                 get;
