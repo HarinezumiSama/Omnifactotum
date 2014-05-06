@@ -16,18 +16,18 @@ namespace Omnifactotum.Validation.Constraints
         /// <summary>
         ///     Validates the specified strongly-typed value is scope of the specified context.
         /// </summary>
-        /// <param name="objectValidatorContext">
+        /// <param name="validatorContext">
         ///     The context of the <see cref="ObjectValidator"/>.
         /// </param>
-        /// <param name="context">
+        /// <param name="memberContext">
         ///     The context of validation.
         /// </param>
         /// <param name="value">
         ///     The value to validate.
         /// </param>
         protected override void ValidateTypedValue(
-            ObjectValidatorContext objectValidatorContext,
-            MemberConstraintValidationContext context,
+            ObjectValidatorContext validatorContext,
+            MemberConstraintValidationContext memberContext,
             T value)
         {
             // Nothing to do
