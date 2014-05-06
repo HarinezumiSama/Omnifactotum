@@ -4,7 +4,7 @@ using System.Linq;
 using System.Reflection;
 using Omnifactotum.Annotations;
 
-//// ReSharper disable CheckNamespace - Namespace is intentionally root and not default to simplify usage in other solutions
+//// ReSharper disable CheckNamespace
 
 namespace System.Linq.Expressions
 {
@@ -156,44 +156,66 @@ namespace System.Linq.Expressions
 
         #region ReplaceExpressionVisitor Class
 
+        /// <summary>
+        ///     Represents the expression visitor that replaces one expression to another.
+        /// </summary>
         private sealed class ReplaceExpressionVisitor : ExpressionVisitor
         {
             #region Constants and Fields
 
-            private readonly Expression _from;
-            private readonly Expression _to;
+            private readonly Expression _sourceExpression;
+            private readonly Expression _targetExpression;
 
             #endregion
 
             #region Constructors
 
-            public ReplaceExpressionVisitor(Expression from, Expression to)
+            /// <summary>
+            ///     Initializes a new instance of the <see cref="ReplaceExpressionVisitor"/> class.
+            /// </summary>
+            /// <param name="sourceExpression">
+            ///     The expression to replace with the target expression.
+            /// </param>
+            /// <param name="targetExpression">
+            ///     The expression to replace the source expression with.
+            /// </param>
+            public ReplaceExpressionVisitor(Expression sourceExpression, Expression targetExpression)
             {
                 #region Argument Check
 
-                if (from == null)
+                if (sourceExpression == null)
                 {
-                    throw new ArgumentNullException("from");
+                    throw new ArgumentNullException("sourceExpression");
                 }
 
-                if (to == null)
+                if (targetExpression == null)
                 {
-                    throw new ArgumentNullException("to");
+                    throw new ArgumentNullException("targetExpression");
                 }
 
                 #endregion
 
-                _from = from;
-                _to = to;
+                _sourceExpression = sourceExpression;
+                _targetExpression = targetExpression;
             }
 
             #endregion
 
             #region Public Methods
 
+            /// <summary>
+            ///     Dispatches the expression to one of the more specialized visit methods in this class.
+            /// </summary>
+            /// <param name="node">
+            ///     The expression to visit.
+            /// </param>
+            /// <returns>
+            ///     The modified expression, if it or any subexpression was modified;
+            ///     otherwise, returns the original expression.
+            /// </returns>
             public override Expression Visit(Expression node)
             {
-                return node == _from ? _to : base.Visit(node);
+                return node == _sourceExpression ? _targetExpression : base.Visit(node);
             }
 
             #endregion

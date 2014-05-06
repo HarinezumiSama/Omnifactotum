@@ -8,6 +8,9 @@ namespace Omnifactotum.Validation
     {
         #region Constants and Fields
 
+        /// <summary>
+        ///     The sole instance of the <see cref="InternalMemberDataEqualityComparer"/> class.
+        /// </summary>
         public static readonly InternalMemberDataEqualityComparer Instance = new InternalMemberDataEqualityComparer();
 
         #endregion
