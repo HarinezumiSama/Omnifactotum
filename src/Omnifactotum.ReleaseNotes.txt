@@ -1,0 +1,4 @@
+--- Changes in 0.3.0.74 (since 0.2.0.59) ---
+* [Breaking change] Object Validation: Redesign and support of IEnumerable.
+* [Breaking change] Renamed EnumHelper to EnumFactotum.
+* [Breaking change] OmnifactotumExpressionExtensions is now in the namespace System.Linq.Expressions (instead of System).
