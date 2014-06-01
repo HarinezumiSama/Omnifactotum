@@ -8,6 +8,7 @@ using Omnifactotum.Annotations;
 
 //// Namespace is intentionally named so in order to simplify usage of extension methods
 //// ReSharper disable once CheckNamespace
+
 namespace System
 {
     /// <summary>
@@ -34,8 +35,7 @@ namespace System
         ///     <paramref name="value"/> is <b>null</b>.
         /// </exception>
         [NotNull]
-        [DebuggerNonUserCode]
-        public static T EnsureNotNull<T>(this T value)
+        public static T EnsureNotNull<T>([CanBeNull] this T value)
             where T : class
         {
             #region Argument Check
@@ -67,8 +67,7 @@ namespace System
         ///     A <see cref="System.String"/> that represents the specified value, or the value of
         ///     the <paramref name="nullValueString"/> parameter if <paramref name="value"/> is <b>null</b>.
         /// </returns>
-        [DebuggerNonUserCode]
-        public static string ToStringSafely<T>(this T value, string nullValueString)
+        public static string ToStringSafely<T>([CanBeNull] this T value, [CanBeNull] string nullValueString)
         {
             return ReferenceEquals(value, null) ? nullValueString : value.ToString();
         }
@@ -87,8 +86,7 @@ namespace System
         ///     A <see cref="System.String"/> that represents the specified value it is not <b>null</b>;
         ///     otherwise, the empty string.
         /// </returns>
-        [DebuggerNonUserCode]
-        public static string ToStringSafely<T>(this T value)
+        public static string ToStringSafely<T>([CanBeNull] this T value)
         {
             return ToStringSafely(value, string.Empty);
         }
@@ -110,8 +108,7 @@ namespace System
         ///     A <see cref="System.String"/> that represents the specified value, or the value of
         ///     the <paramref name="nullValueString"/> parameter if <paramref name="value"/> is <b>null</b>.
         /// </returns>
-        [DebuggerNonUserCode]
-        public static string ToStringSafelyInvariant<T>(this T value, string nullValueString)
+        public static string ToStringSafelyInvariant<T>([CanBeNull] this T value, [CanBeNull] string nullValueString)
         {
             if (ReferenceEquals(value, null))
             {
@@ -137,8 +134,7 @@ namespace System
         ///     A <see cref="System.String"/> that represents the specified value it is not <b>null</b>;
         ///     otherwise, the empty string.
         /// </returns>
-        [DebuggerNonUserCode]
-        public static string ToStringSafelyInvariant<T>(this T value)
+        public static string ToStringSafelyInvariant<T>([CanBeNull] this T value)
         {
             return ToStringSafelyInvariant(value, string.Empty);
         }
@@ -160,8 +156,7 @@ namespace System
         ///     if it is not <b>null</b>; otherwise, the value specified in the <paramref name="nullValueHashCode"/>
         ///     parameter.
         /// </returns>
-        [DebuggerNonUserCode]
-        public static int GetHashCodeSafely<T>(this T value, int nullValueHashCode)
+        public static int GetHashCodeSafely<T>([CanBeNull] this T value, int nullValueHashCode)
         {
             return ReferenceEquals(value, null) ? nullValueHashCode : value.GetHashCode();
         }
@@ -179,8 +174,7 @@ namespace System
         ///     A hash code of the specified value obtained by calling <see cref="object.GetHashCode"/> for this value
         ///     if it is not <b>null</b>; otherwise, <b>0</b>.
         /// </returns>
-        [DebuggerNonUserCode]
-        public static int GetHashCodeSafely<T>(this T value)
+        public static int GetHashCodeSafely<T>([CanBeNull] this T value)
         {
             return GetHashCodeSafely(value, 0);
         }
@@ -198,8 +192,7 @@ namespace System
         /// <returns>
         ///     The actual type of the value if it is not <b>null</b>; otherwise, <typeparamref name="T"/>.
         /// </returns>
-        [DebuggerNonUserCode]
-        public static Type GetTypeSafely<T>(this T value)
+        public static Type GetTypeSafely<T>([CanBeNull] this T value)
         {
             return ReferenceEquals(value, null) ? typeof(T) : value.GetType();
         }
@@ -216,8 +209,8 @@ namespace System
         /// <returns>
         ///     An array containing the specified value as its sole element.
         /// </returns>
-        [DebuggerNonUserCode]
-        public static T[] AsArray<T>(this T value)
+        [NotNull]
+        public static T[] AsArray<T>([CanBeNull] this T value)
         {
             return new[] { value };
         }
@@ -234,8 +227,8 @@ namespace System
         /// <returns>
         ///     A strongly-typed list containing the specified value as its sole element.
         /// </returns>
-        [DebuggerNonUserCode]
-        public static List<T> AsList<T>(this T value)
+        [NotNull]
+        public static List<T> AsList<T>([CanBeNull] this T value)
         {
             return new List<T> { value };
         }
@@ -252,8 +245,8 @@ namespace System
         /// <returns>
         ///     A strongly-typed collection containing the specified value as its sole element.
         /// </returns>
-        [DebuggerNonUserCode]
-        public static IEnumerable<T> AsCollection<T>(this T value)
+        [NotNull]
+        public static IEnumerable<T> AsCollection<T>([CanBeNull] this T value)
         {
             yield return value;
         }
@@ -275,7 +268,8 @@ namespace System
         ///     The string value if it is not <b>null</b>; otherwise, the value returned from call to
         ///     <paramref name="getDefault"/> method.
         /// </returns>
-        public static T AvoidNull<T>(this T source, Func<T> getDefault)
+        [NotNull]
+        public static T AvoidNull<T>([CanBeNull] this T source, Func<T> getDefault)
             where T : class
         {
             #region Argument Check
@@ -309,8 +303,7 @@ namespace System
         /// <returns>
         ///     The UI representation of the specified nullable value.
         /// </returns>
-        [DebuggerNonUserCode]
-        public static string ToUIString<T>(this T? value)
+        public static string ToUIString<T>([CanBeNull] this T? value)
             where T : struct
         {
             return value.HasValue ? value.Value.ToString() : OmnifactotumStringExtensions.NullString;
@@ -332,8 +325,7 @@ namespace System
         /// <returns>
         ///     The UI representation of the specified nullable value.
         /// </returns>
-        [DebuggerNonUserCode]
-        public static string ToUIString<T>(this T? value, IFormatProvider formatProvider)
+        public static string ToUIString<T>([CanBeNull] this T? value, IFormatProvider formatProvider)
             where T : struct, IFormattable
         {
             return value.HasValue
@@ -356,7 +348,7 @@ namespace System
         /// <returns>
         ///     A string representing the properties of the specified object.
         /// </returns>
-        public static string ToPropertyString<T>(this T obj, ToPropertyStringOptions options)
+        public static string ToPropertyString<T>([CanBeNull] this T obj, [CanBeNull] ToPropertyStringOptions options)
         {
             return Factotum.ToPropertyString(obj, options);
         }
@@ -373,7 +365,7 @@ namespace System
         /// <returns>
         ///     A string representing the properties of the specified object.
         /// </returns>
-        public static string ToPropertyString<T>(this T obj)
+        public static string ToPropertyString<T>([CanBeNull] this T obj)
         {
             return Factotum.ToPropertyString(obj, null);
         }
@@ -399,7 +391,7 @@ namespace System
         /// <returns>
         ///     <b>true</b> if the contents of the two specified objects are equal; otherwise, <b>false</b>.
         /// </returns>
-        public static bool IsEqualByContentsTo<T>(this T obj, T other)
+        public static bool IsEqualByContentsTo<T>([CanBeNull] this T obj, [CanBeNull] T other)
         {
             return Factotum.AreEqualByContents(obj, other);
         }
@@ -423,7 +415,7 @@ namespace System
         /// <exception cref="System.ArgumentNullException">
         ///     <paramref name="predicate"/> is <b>null</b>.
         /// </exception>
-        public static T Affirm<T>(this T value, Func<T, bool> predicate)
+        public static T Affirm<T>([CanBeNull] this T value, [NotNull] Func<T, bool> predicate)
             where T : class
         {
             #region Argument Check
@@ -458,7 +450,7 @@ namespace System
         /// <exception cref="System.ArgumentNullException">
         ///     <paramref name="predicate"/> is <b>null</b>.
         /// </exception>
-        public static bool ComputePredicate<T>(this T value, Func<T, bool> predicate)
+        public static bool ComputePredicate<T>([CanBeNull] this T value, [NotNull] Func<T, bool> predicate)
             where T : class
         {
             #region Argument Check
@@ -501,9 +493,9 @@ namespace System
         ///     <paramref name="transform"/> is <b>null</b>.
         /// </exception>
         public static TOutput Morph<TInput, TOutput>(
-            this TInput input,
-            Func<TInput, TOutput> transform,
-            TOutput defaultOutput)
+            [CanBeNull] this TInput input,
+            [NotNull] Func<TInput, TOutput> transform,
+            [CanBeNull] TOutput defaultOutput)
             where TInput : class
         {
             #region Argument Check
@@ -543,8 +535,8 @@ namespace System
         ///     <paramref name="transform"/> is <b>null</b>.
         /// </exception>
         public static TOutput Morph<TInput, TOutput>(
-            this TInput input,
-            Func<TInput, TOutput> transform)
+            [CanBeNull] this TInput input,
+            [NotNull] Func<TInput, TOutput> transform)
             where TInput : class
         {
             return Morph(input, transform, default(TOutput));

@@ -92,7 +92,7 @@ namespace Omnifactotum
         /// <param name="disposable">
         ///     A reference to an object to dispose and set to <b>null</b>.
         /// </param>
-        public static void DisposeAndNull<T>(ref T disposable)
+        public static void DisposeAndNull<T>([CanBeNull] ref T disposable)
             where T : class, IDisposable
         {
             if (ReferenceEquals(disposable, null))
@@ -117,7 +117,7 @@ namespace Omnifactotum
         ///     The second value to exchange with the first value.
         /// </param>
         [DebuggerNonUserCode]
-        public static void Exchange<T>(ref T value1, ref T value2)
+        public static void Exchange<T>([CanBeNull] ref T value1, [CanBeNull] ref T value2)
         {
             var temporary = value1;
             value1 = value2;
@@ -137,7 +137,7 @@ namespace Omnifactotum
         /// <returns>
         ///     The instance passed as an argument.
         /// </returns>
-        public static T Identity<T>(T obj)
+        public static T Identity<T>([CanBeNull] T obj)
         {
             return obj;
         }
@@ -158,7 +158,7 @@ namespace Omnifactotum
         ///     The input object.
         /// </returns>
         [DebuggerNonUserCode]
-        public static T SetDefaultValues<T>(T obj)
+        public static T SetDefaultValues<T>([NotNull] T obj)
             where T : class
         {
             #region Argument Check
@@ -211,7 +211,7 @@ namespace Omnifactotum
         /// <returns>
         ///     A string representing the properties of the specified object.
         /// </returns>
-        public static string ToPropertyString<T>(T obj, ToPropertyStringOptions options)
+        public static string ToPropertyString<T>([CanBeNull] T obj, [CanBeNull] ToPropertyStringOptions options)
         {
             var actualOptions = options ?? new ToPropertyStringOptions();
 
@@ -271,7 +271,7 @@ namespace Omnifactotum
         /// <returns>
         ///     <b>true</b> if the contents of the two specified objects are equal; otherwise, <b>false</b>.
         /// </returns>
-        public static bool AreEqualByContents<T>(T valueA, T valueB)
+        public static bool AreEqualByContents<T>([CanBeNull] T valueA, [CanBeNull] T valueB)
         {
             return AreEqualByContentsInternal(valueA, valueB);
         }
@@ -833,7 +833,7 @@ namespace Omnifactotum
         ///     </para>
         /// </exception>
         public static void ProcessRecursively<T>(
-            T instance,
+            [CanBeNull] T instance,
             [NotNull] Func<T, IEnumerable<T>> getItems,
             [NotNull] Func<T, RecursiveProcessingDirective> processItem)
         {
@@ -869,7 +869,7 @@ namespace Omnifactotum
         ///     </para>
         /// </exception>
         public static void ProcessRecursively<T>(
-            T instance,
+            [CanBeNull] T instance,
             [NotNull] Func<T, IEnumerable<T>> getItems,
             [NotNull] Action<T> processItem,
             [CanBeNull] RecursiveProcessingContext<T> processingContext)
