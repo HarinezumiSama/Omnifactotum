@@ -21,7 +21,7 @@ namespace Omnifactotum
     /// <typeparam name="TDeterminant">
     ///     The type of the determinant. See <see cref="FixedSizeDictionaryDeterminant{TKey}"/>.
     /// </typeparam>
-    internal class FixedSizeDictionary<TKey, TValue, TDeterminant> : IDictionary<TKey, TValue>
+    public class FixedSizeDictionary<TKey, TValue, TDeterminant> : IDictionary<TKey, TValue>
         where TDeterminant : FixedSizeDictionaryDeterminant<TKey>, new()
     {
         #region Constants and Fields
@@ -170,6 +170,10 @@ namespace Omnifactotum
 
         #region ICollection<KeyValuePair<TKey, TValue>> Members: Properties
 
+        /// <summary>
+        ///     Gets the number of elements contained in
+        ///     the <see cref="FixedSizeDictionary{TKey,TValue,TDeterminant}" />.
+        /// </summary>
         public int Count
         {
             [DebuggerStepThrough]
@@ -179,6 +183,10 @@ namespace Omnifactotum
             }
         }
 
+        /// <summary>
+        ///     Gets a value indicating whether
+        ///     the <see cref="FixedSizeDictionary{TKey,TValue,TDeterminant}" /> is read-only.
+        /// </summary>
         public bool IsReadOnly
         {
             get
@@ -457,9 +465,9 @@ namespace Omnifactotum
         private void SetItemInternal([NotNull] TKey key, TValue value, bool replaceExisting)
         {
             var index = Determinant.GetIndex(key);
-            var item = _items[index];
+            var previousItem = _items[index];
 
-            if (item.IsSet)
+            if (previousItem.IsSet)
             {
                 if (!replaceExisting)
                 {
@@ -474,7 +482,7 @@ namespace Omnifactotum
 
             _items[index] = new DictionaryValueHolder { IsSet = true, Value = value };
 
-            if (!item.IsSet)
+            if (!previousItem.IsSet)
             {
                 _count++;
             }
