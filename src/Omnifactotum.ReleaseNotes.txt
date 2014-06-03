@@ -1,3 +1,6 @@
+--- Changes in 0.3.0.80 (since 0.3.0.79) ---
+* EnumFixedSizeDictionary: Fix in determining the size
+
 --- Changes in 0.3.0.79 (since 0.3.0.74) ---
 * FixedSizeDictionary and EnumFixedSizeDictionary have been introduced.
 * Applied Omnifactotum Annotations to the Factotum and OmnifactotumGenericObjectExtensions classes.

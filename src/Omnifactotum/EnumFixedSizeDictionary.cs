@@ -106,20 +106,20 @@ namespace Omnifactotum
                 var minObject = values.Min();
                 var maxObject = values.Max();
 
-                int? size;
+                int? upperBound;
                 if (Enum.GetUnderlyingType(type) == typeof(ulong))
                 {
                     var max = Convert.ToUInt64(maxObject);
-                    size = max <= MaxValue ? Convert.ToInt32(max) : (int?)null;
+                    upperBound = max <= MaxValue ? Convert.ToInt32(max) : (int?)null;
                 }
                 else
                 {
                     var min = Convert.ToInt64(minObject);
                     var max = Convert.ToInt64(maxObject);
-                    size = min >= MinValue && max <= MaxValue ? Convert.ToInt32(max) : (int?)null;
+                    upperBound = min >= MinValue && max <= MaxValue ? Convert.ToInt32(max) : (int?)null;
                 }
 
-                if (!size.HasValue)
+                if (!upperBound.HasValue)
                 {
                     throw new InvalidOperationException(
                         string.Format(
@@ -130,7 +130,7 @@ namespace Omnifactotum
                             MaxValue));
                 }
 
-                _size = size.Value;
+                _size = upperBound.Value + 1;
                 _getIndex = CreateConversionMethod<TKey, int>();
                 _getKey = CreateConversionMethod<int, TKey>();
             }
