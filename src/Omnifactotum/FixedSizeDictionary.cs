@@ -498,7 +498,6 @@ namespace Omnifactotum
 
             private readonly TDeterminant _determinant;
             private readonly int _size;
-            private readonly ValueRange<int> _indexRange;
 
             #endregion
 
@@ -518,8 +517,6 @@ namespace Omnifactotum
                             typeof(TDeterminant).GetFullName(),
                             _size));
                 }
-
-                _indexRange = ValueRange.Create(0, _size - 1);
             }
 
             #endregion
@@ -542,18 +539,6 @@ namespace Omnifactotum
             public override int GetIndex(TKey key)
             {
                 var index = _determinant.GetIndex(key);
-                if (!_indexRange.Contains(index))
-                {
-                    throw new InvalidOperationException(
-                        string.Format(
-                            CultureInfo.InvariantCulture,
-                            "The determinant '{0}' returned the index {1} which is out of the range of"
-                                + " valid indexes {2}.",
-                            typeof(TDeterminant).GetFullName(),
-                            index,
-                            _indexRange));
-                }
-
                 return index;
             }
 
