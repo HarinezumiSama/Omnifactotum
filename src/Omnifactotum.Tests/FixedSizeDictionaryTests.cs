@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using NUnit.Framework;
+using Omnifactotum.NUnit;
 
 namespace Omnifactotum.Tests
 {
@@ -34,6 +35,7 @@ namespace Omnifactotum.Tests
             Assert.That(dictionary.ContainsKey(true), Is.False);
             Assert.That(() => dictionary[false], Throws.TypeOf<KeyNotFoundException>());
             Assert.That(() => dictionary[true], Throws.TypeOf<KeyNotFoundException>());
+            AssertEnumerating(dictionary);
 
             dictionary.Add(true, TrueValue);
             Assert.That(dictionary.Count, Is.EqualTo(1));
@@ -48,6 +50,7 @@ namespace Omnifactotum.Tests
             Assert.That(dictionary.ContainsKey(true), Is.True);
             Assert.That(() => dictionary[false], Throws.TypeOf<KeyNotFoundException>());
             Assert.That(dictionary[true], Is.EqualTo(TrueValue));
+            AssertEnumerating(dictionary, KeyValuePair.Create(true, TrueValue));
 
             dictionary[true] = AnotherTrueValue;
             Assert.That(dictionary.Count, Is.EqualTo(1));
@@ -62,6 +65,7 @@ namespace Omnifactotum.Tests
             Assert.That(dictionary.ContainsKey(true), Is.True);
             Assert.That(() => dictionary[false], Throws.TypeOf<KeyNotFoundException>());
             Assert.That(dictionary[true], Is.EqualTo(AnotherTrueValue));
+            AssertEnumerating(dictionary, KeyValuePair.Create(true, AnotherTrueValue));
 
             Assert.That(() => dictionary.Add(true, TrueValue), Throws.ArgumentException);
             Assert.That(() => dictionary.Add(true, AnotherTrueValue), Throws.ArgumentException);
@@ -80,6 +84,10 @@ namespace Omnifactotum.Tests
             Assert.That(dictionary.ContainsKey(true), Is.True);
             Assert.That(dictionary[false], Is.EqualTo(FalseValue));
             Assert.That(dictionary[true], Is.EqualTo(AnotherTrueValue));
+            AssertEnumerating(
+                dictionary,
+                KeyValuePair.Create(false, FalseValue),
+                KeyValuePair.Create(true, AnotherTrueValue));
 
             var removed = dictionary.Remove(true);
             Assert.That(removed, Is.True);
@@ -95,6 +103,7 @@ namespace Omnifactotum.Tests
             Assert.That(dictionary.ContainsKey(true), Is.False);
             Assert.That(() => dictionary[true], Throws.TypeOf<KeyNotFoundException>());
             Assert.That(dictionary[false], Is.EqualTo(FalseValue));
+            AssertEnumerating(dictionary, KeyValuePair.Create(false, FalseValue));
 
             dictionary.Clear();
             Assert.That(dictionary.Count, Is.EqualTo(0));
@@ -111,6 +120,7 @@ namespace Omnifactotum.Tests
             Assert.That(dictionary.ContainsKey(true), Is.False);
             Assert.That(() => dictionary[false], Throws.TypeOf<KeyNotFoundException>());
             Assert.That(() => dictionary[true], Throws.TypeOf<KeyNotFoundException>());
+            AssertEnumerating(dictionary);
 
             dictionary[true] = TrueValue;
             Assert.That(dictionary.Count, Is.EqualTo(1));
@@ -125,6 +135,29 @@ namespace Omnifactotum.Tests
             Assert.That(dictionary.ContainsKey(true), Is.True);
             Assert.That(() => dictionary[false], Throws.TypeOf<KeyNotFoundException>());
             Assert.That(dictionary[true], Is.EqualTo(TrueValue));
+            AssertEnumerating(dictionary, KeyValuePair.Create(true, TrueValue));
+        }
+
+        #endregion
+
+        #region Private Methods
+
+        private static void AssertEnumerating<TKey, TValue, TDeterminant>(
+            FixedSizeDictionary<TKey, TValue, TDeterminant> dictionary,
+            params KeyValuePair<TKey, TValue>[] expectedPairs)
+            where TDeterminant : FixedSizeDictionaryDeterminant<TKey>, new()
+        {
+            dictionary.AssertNotNull();
+
+            var actualPairs = new List<KeyValuePair<TKey, TValue>>(dictionary.Count);
+
+            // ReSharper disable once LoopCanBeConvertedToQuery - Explicitly testing enumerator
+            foreach (var pair in dictionary)
+            {
+                actualPairs.Add(pair);
+            }
+
+            Assert.That(actualPairs, Is.EquivalentTo(expectedPairs.AssertNotNull()));
         }
 
         #endregion

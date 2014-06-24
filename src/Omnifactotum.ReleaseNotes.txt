@@ -1,3 +1,7 @@
+--- Changes in 0.3.0.83 (since 0.3.0.82) ---
+* FixedSizeDictionary: Improved annotations
+* FixedSizeDictionary: Implemented version verification in the enumerator
+
 --- Changes in 0.3.0.82 (since 0.3.0.80) ---
 * FixedSizeDictionary: Removed index verification in the internal determinant since this verification highly affected performance
 

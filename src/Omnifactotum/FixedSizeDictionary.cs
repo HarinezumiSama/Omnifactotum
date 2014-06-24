@@ -30,6 +30,7 @@ namespace Omnifactotum
 
         private readonly DictionaryValueHolder[] _items;
         private int _count;
+        private int _version;
 
         #endregion
 
@@ -141,7 +142,6 @@ namespace Omnifactotum
         /// <exception cref="KeyNotFoundException">
         ///     An element with the specified key was not found.
         /// </exception>
-        [CanBeNull]
         public TValue this[[NotNull] TKey key]
         {
             get
@@ -216,7 +216,7 @@ namespace Omnifactotum
         ///     An element with the same key already exists in
         ///     the <see cref="FixedSizeDictionary{TKey,TValue,TDeterminant}"/>.
         /// </exception>
-        public void Add([NotNull] TKey key, TValue value)
+        public void Add([NotNull] TKey key, [CanBeNull] TValue value)
         {
             SetItemInternal(key, value, false);
         }
@@ -254,6 +254,7 @@ namespace Omnifactotum
             var index = Determinant.GetIndex(key);
 
             var result = _items[index].IsSet;
+            _version++;
             _items[index] = new DictionaryValueHolder();
 
             if (result)
@@ -280,7 +281,7 @@ namespace Omnifactotum
         ///     with the specified key; otherwise, <b>false</b>.
         /// </returns>
         // ReSharper disable once AnnotationRedundanceInHierarchy - To emphasize
-        public bool TryGetValue([NotNull] TKey key, out TValue value)
+        public bool TryGetValue([NotNull] TKey key, [CanBeNull] out TValue value)
         {
             var index = Determinant.GetIndex(key);
             var item = _items[index];
@@ -310,6 +311,8 @@ namespace Omnifactotum
         /// </summary>
         public void Clear()
         {
+            _version++;
+
             for (var index = 0; index < _items.Length; index++)
             {
                 _items[index] = new DictionaryValueHolder();
@@ -432,14 +435,7 @@ namespace Omnifactotum
         /// </returns>
         public IEnumerator<KeyValuePair<TKey, TValue>> GetEnumerator()
         {
-            for (var index = 0; index < Determinant.Size; index++)
-            {
-                var item = _items[index];
-                if (item.IsSet)
-                {
-                    yield return new KeyValuePair<TKey, TValue>(Determinant.GetKey(index), item.Value);
-                }
-            }
+            return new Enumerator(this);
         }
 
         #endregion
@@ -462,7 +458,7 @@ namespace Omnifactotum
 
         #region Private Methods
 
-        private void SetItemInternal([NotNull] TKey key, TValue value, bool replaceExisting)
+        private void SetItemInternal([NotNull] TKey key, [CanBeNull] TValue value, bool replaceExisting)
         {
             var index = Determinant.GetIndex(key);
             var previousItem = _items[index];
@@ -480,6 +476,7 @@ namespace Omnifactotum
                 }
             }
 
+            _version++;
             _items[index] = new DictionaryValueHolder { IsSet = true, Value = value };
 
             if (!previousItem.IsSet)
@@ -774,6 +771,134 @@ namespace Omnifactotum
             IEnumerator IEnumerable.GetEnumerator()
             {
                 return GetEnumerator();
+            }
+
+            #endregion
+        }
+
+        #endregion
+
+        #region Enumerator Class
+
+        private sealed class Enumerator : IEnumerator<KeyValuePair<TKey, TValue>>
+        {
+            #region Constants and Fields
+
+            private readonly FixedSizeDictionary<TKey, TValue, TDeterminant> _dictionary;
+            private readonly int _initialVersion;
+            private readonly int _size;
+            private readonly int _initialCount;
+            private int _index;
+
+            #endregion
+
+            #region Constructors
+
+            internal Enumerator([NotNull] FixedSizeDictionary<TKey, TValue, TDeterminant> dictionary)
+            {
+                #region Argument Check
+
+                if (dictionary == null)
+                {
+                    throw new ArgumentNullException("dictionary");
+                }
+
+                #endregion
+
+                _dictionary = dictionary;
+                _initialVersion = dictionary._version;
+                _size = Determinant.Size;
+                _initialCount = dictionary._count;
+                ResetInternal();
+            }
+
+            #endregion
+
+            #region IEnumerator<KeyValuePair<TKey,TValue>> Members
+
+            public KeyValuePair<TKey, TValue> Current
+            {
+                get
+                {
+                    EnsureVersionConsistency();
+
+                    if (_index < 0 || _index >= _size)
+                    {
+                        throw new InvalidOperationException("The enumerator is not positioned properly.");
+                    }
+
+                    var item = _dictionary._items[_index];
+                    if (!item.IsSet)
+                    {
+                        throw new InvalidOperationException("Internal logic error.");
+                    }
+
+                    return new KeyValuePair<TKey, TValue>(Determinant.GetKey(_index), item.Value);
+                }
+            }
+
+            #endregion
+
+            #region IDisposable Members
+
+            public void Dispose()
+            {
+                // Nothing to do
+            }
+
+            #endregion
+
+            #region IEnumerator Members
+
+            object IEnumerator.Current
+            {
+                get
+                {
+                    return this.Current;
+                }
+            }
+
+            public bool MoveNext()
+            {
+                EnsureVersionConsistency();
+
+                if (_index >= _size)
+                {
+                    return false;
+                }
+
+                while (++_index < _size)
+                {
+                    var item = _dictionary._items[_index];
+                    if (item.IsSet)
+                    {
+                        return true;
+                    }
+                }
+
+                return false;
+            }
+
+            public void Reset()
+            {
+                ResetInternal();
+            }
+
+            #endregion
+
+            #region Private Methods
+
+            private void ResetInternal()
+            {
+                _index = -1;
+            }
+
+            private void EnsureVersionConsistency()
+            {
+                if (_dictionary._version != _initialVersion || _dictionary._count != _initialCount)
+                {
+                    throw new InvalidOperationException("Cannot enumerate the modified collection.");
+                }
             }
 
             #endregion
