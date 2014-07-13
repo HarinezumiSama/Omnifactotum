@@ -1,5 +1,7 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Diagnostics;
+using System.Globalization;
 using System.Linq;
 
 namespace Omnifactotum
@@ -11,7 +13,8 @@ namespace Omnifactotum
     ///     The type of an encapsulated value.
     /// </typeparam>
     [Serializable]
-    public sealed class SyncValueContainer<T>
+    [DebuggerDisplay(@"\{Value = {_value}\}")]
+    public sealed class SyncValueContainer<T> : IEquatable<SyncValueContainer<T>>
     {
         #region Constants and Fields
 
@@ -110,6 +113,127 @@ namespace Omnifactotum
                     _value = value;
                 }
             }
+        }
+
+        #endregion
+
+        #region Operators
+
+        /// <summary>
+        ///     Determines whether the two specified <see cref="SyncValueContainer{T}"/> instances are equal.
+        /// </summary>
+        /// <param name="left">
+        ///     The first <see cref="SyncValueContainer{T}"/> instance to compare.
+        /// </param>
+        /// <param name="right">
+        ///     The second <see cref="SyncValueContainer{T}"/> instance to compare.
+        /// </param>
+        /// <returns>
+        ///     <b>true</b> if the two specified <see cref="SyncValueContainer{T}"/> instances are equal;
+        ///     otherwise, <b>false</b>.
+        /// </returns>
+        public static bool operator ==(SyncValueContainer<T> left, SyncValueContainer<T> right)
+        {
+            return Equals(left, right);
+        }
+
+        /// <summary>
+        ///     Determines whether the two specified <see cref="SyncValueContainer{T}"/> instances are not equal.
+        /// </summary>
+        /// <param name="left">
+        ///     The first <see cref="SyncValueContainer{T}"/> instance to compare.
+        /// </param>
+        /// <param name="right">
+        ///     The second <see cref="SyncValueContainer{T}"/> instance to compare.
+        /// </param>
+        /// <returns>
+        ///     <b>true</b> if the two specified <see cref="SyncValueContainer{T}"/> instances are not equal;
+        ///     otherwise, <b>false</b>.
+        /// </returns>
+        public static bool operator !=(SyncValueContainer<T> left, SyncValueContainer<T> right)
+        {
+            return !(left == right);
+        }
+
+        #endregion
+
+        #region Public Methods
+
+        /// <summary>
+        ///     Returns a <see cref="String" /> that represents this <see cref="SyncValueContainer{T}"/> instance.
+        /// </summary>
+        /// <returns>
+        ///     A <see cref="String" /> that represents this <see cref="SyncValueContainer{T}"/> instance.
+        /// </returns>
+        public override string ToString()
+        {
+            return string.Format(CultureInfo.InvariantCulture, "{{ Value = {0} }}", this.Value.ToStringSafely());
+        }
+
+        /// <summary>
+        ///     Determines whether the specified <see cref="Object" /> is equal to
+        ///     this <see cref="SyncValueContainer{T}"/> instance.
+        /// </summary>
+        /// <param name="obj">
+        ///     The <see cref="System.Object" /> to compare with this <see cref="SyncValueContainer{T}"/> instance.
+        /// </param>
+        /// <returns>
+        ///     <b>true</b> if the specified <see cref="Object" /> is equal to
+        ///     this <see cref="SyncValueContainer{T}"/> instance; otherwise, <b>false</b>.
+        /// </returns>
+        public override bool Equals(object obj)
+        {
+            return Equals(obj as SyncValueContainer<T>);
+        }
+
+        /// <summary>
+        ///     Returns a hash code for this <see cref="SyncValueContainer{T}"/> instance.
+        /// </summary>
+        /// <returns>
+        ///     A hash code for this <see cref="SyncValueContainer{T}"/> instance.
+        /// </returns>
+        public override int GetHashCode()
+        {
+            return this.Value.GetHashCodeSafely();
+        }
+
+        #endregion
+
+        #region IEquatable<SyncValueContainer<T>> Members
+
+        /// <summary>
+        ///     Determines whether the current <see cref="SyncValueContainer{T}"/> instance is equal to another instance
+        ///     of the same type.
+        /// </summary>
+        /// <param name="other">
+        ///     An object to compare with this <see cref="SyncValueContainer{T}"/> instance.
+        /// </param>
+        /// <returns>
+        ///     <b>true</b> if the current <see cref="SyncValueContainer{T}"/> instance is equal to
+        ///     the <paramref name="other" /> parameter; otherwise, <b>false</b>.
+        /// </returns>
+        public bool Equals(SyncValueContainer<T> other)
+        {
+            return Equals(this, other);
+        }
+
+        #endregion
+
+        #region Private Methods
+
+        private static bool Equals(SyncValueContainer<T> left, SyncValueContainer<T> right)
+        {
+            if (ReferenceEquals(left, right))
+            {
+                return true;
+            }
+
+            if (ReferenceEquals(left, null) || ReferenceEquals(right, null))
+            {
+                return false;
+            }
+
+            return EqualityComparer<T>.Default.Equals(left.Value, right.Value);
         }
 
         #endregion
