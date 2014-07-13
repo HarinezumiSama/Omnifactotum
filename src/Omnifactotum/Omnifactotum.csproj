@@ -95,6 +95,7 @@
     <Compile Include="EnumFixedSizeDictionary.cs" />
     <Compile Include="EquatableObjectBase.cs" />
     <Compile Include="EquatableValueCapsule.cs" />
+    <Compile Include="ExtensionMethods\OmnifactotumMathExtensions.cs" />
     <Compile Include="ExtensionMethods\OmnifactotumExpressionExtensions.cs" />
     <Compile Include="FixedSizeDictionaryDeterminant.cs" />
     <Compile Include="FixedSizeDictionary.cs" />
