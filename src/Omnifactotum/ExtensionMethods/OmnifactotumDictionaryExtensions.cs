@@ -39,8 +39,8 @@ namespace System.Collections.Generic
         /// </returns>
         [DebuggerNonUserCode]
         public static TValue GetValueOrDefault<TKey, TValue>(
-            this IDictionary<TKey, TValue> dictionary,
-            TKey key,
+            [NotNull] this IDictionary<TKey, TValue> dictionary,
+            [NotNull] TKey key,
             TValue defaultValue)
         {
             #region Argument Check
@@ -88,7 +88,9 @@ namespace System.Collections.Generic
         ///     the type of the value parameter.
         /// </returns>
         [DebuggerNonUserCode]
-        public static TValue GetValueOrDefault<TKey, TValue>(this IDictionary<TKey, TValue> dictionary, TKey key)
+        public static TValue GetValueOrDefault<TKey, TValue>(
+            [NotNull] this IDictionary<TKey, TValue> dictionary,
+            [NotNull] TKey key)
         {
             return GetValueOrDefault(dictionary, key, default(TValue));
         }
@@ -116,7 +118,7 @@ namespace System.Collections.Generic
         /// <returns>
         ///     A value that was associated with the specified key, or has been associated if it was not.
         /// </returns>
-        public static TValue GetValueOrCreate<TKey, TValue>(
+        public static TValue GetOrCreateValue<TKey, TValue>(
             [NotNull] this IDictionary<TKey, TValue> dictionary,
             [NotNull] TKey key,
             [NotNull] Func<TKey, TValue> valueFactory)
@@ -172,35 +174,12 @@ namespace System.Collections.Generic
         /// <returns>
         ///     A value that was associated with the specified key, or has been associated if it was not.
         /// </returns>
-        public static TValue GetValueOrCreate<TKey, TValue>(
+        public static TValue GetOrCreateValue<TKey, TValue>(
             [NotNull] this IDictionary<TKey, TValue> dictionary,
             [NotNull] TKey key)
             where TValue : new()
         {
-            #region Argument Check
-
-            if (dictionary == null)
-            {
-                throw new ArgumentNullException("dictionary");
-            }
-
-            if (ReferenceEquals(key, null))
-            {
-                throw new ArgumentNullException("key");
-            }
-
-            #endregion
-
-            TValue result;
-            if (dictionary.TryGetValue(key, out result))
-            {
-                return result;
-            }
-
-            result = new TValue();
-            dictionary.Add(key, result);
-
-            return result;
+            return GetOrCreateValue(dictionary, key, obj => new TValue());
         }
 
         /// <summary>

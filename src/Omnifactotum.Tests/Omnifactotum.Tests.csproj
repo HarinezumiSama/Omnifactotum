@@ -54,6 +54,7 @@
     <Compile Include="ConstraintTestsBase.cs" />
     <Compile Include="EnumFixedSizeDictionaryTests.cs" />
     <Compile Include="FixedSizeDictionaryTests.cs" />
+    <Compile Include="OmnifactotumDictionaryExtensionsTests.cs" />
     <Compile Include="ValueContainerTests.cs" />
     <Compile Include="NotNullOrWhiteSpaceStringConstraintTests.cs" />
     <Compile Include="DirectedGraphTests.cs" />

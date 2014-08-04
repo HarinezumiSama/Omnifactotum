@@ -6,6 +6,7 @@ using System.Linq;
 using System.Linq.Expressions;
 using System.Reflection;
 using NUnit.Framework;
+using Omnifactotum.Annotations;
 
 namespace Omnifactotum.NUnit
 {
@@ -37,7 +38,7 @@ namespace Omnifactotum.NUnit
         ///     accessors.
         /// </param>
         public static void AssertReadableWritable<TObject, TProperty>(
-            Expression<Func<TObject, TProperty>> propertyGetterExpression,
+            [NotNull] Expression<Func<TObject, TProperty>> propertyGetterExpression,
             PropertyAccessMode expectedAccessMode,
             MethodAttributes visibleAccessorAttribute = MethodAttributes.Public)
         {
@@ -138,8 +139,8 @@ namespace Omnifactotum.NUnit
         ///     A list of the test cases generated.
         /// </returns>
         public static List<TestCaseData> GenerateCombinatorialTestCases(
-            Action<TestCaseData> processTestCase,
-            params object[] arguments)
+            [CanBeNull] Action<TestCaseData> processTestCase,
+            [NotNull] params object[] arguments)
         {
             Assert.That(arguments, Is.Not.Null);
             CollectionAssert.IsNotEmpty(arguments);
@@ -204,7 +205,7 @@ namespace Omnifactotum.NUnit
         /// <returns>
         ///     A list of the test cases generated.
         /// </returns>
-        public static List<TestCaseData> GenerateCombinatorialTestCases(params object[] arguments)
+        public static List<TestCaseData> GenerateCombinatorialTestCases([NotNull] params object[] arguments)
         {
             return GenerateCombinatorialTestCases(null, arguments);
         }
@@ -291,7 +292,7 @@ namespace Omnifactotum.NUnit
             ///     accessors.
             /// </param>
             public static void AssertReadableWritable<TProperty>(
-                Expression<Func<TObject, TProperty>> propertyGetterExpression,
+                [NotNull] Expression<Func<TObject, TProperty>> propertyGetterExpression,
                 PropertyAccessMode expectedAccessMode,
                 MethodAttributes visibleAccessorAttribute = MethodAttributes.Public)
             {

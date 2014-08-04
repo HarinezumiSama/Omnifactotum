@@ -82,7 +82,7 @@ namespace Omnifactotum.Validation
 
             lock (_constraintCache)
             {
-                var result = _constraintCache.GetValueOrCreate(
+                var result = _constraintCache.GetOrCreateValue(
                     constraintType,
                     obj => (IMemberConstraint)Activator.CreateInstance(obj));
 
