@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using Omnifactotum.Annotations;
 
 //// Namespace is intentionally named so in order to simplify usage of extension methods
 //// ReSharper disable once CheckNamespace
@@ -34,7 +35,7 @@ namespace System.Reflection
         ///     <paramref name="provider"/> is <b>null</b>.
         /// </exception>
         public static TAttribute[] GetCustomAttributes<TAttribute>(
-            this ICustomAttributeProvider provider,
+            [NotNull] this ICustomAttributeProvider provider,
             bool inherit)
             where TAttribute : Attribute
         {
@@ -87,7 +88,7 @@ namespace System.Reflection
         ///     or is applied more than once.
         /// </exception>
         public static TAttribute GetSingleCustomAttribute<TAttribute>(
-            this ICustomAttributeProvider provider,
+            [NotNull] this ICustomAttributeProvider provider,
             bool inherit)
             where TAttribute : Attribute
         {
@@ -118,7 +119,7 @@ namespace System.Reflection
         ///     The specified attribute is applied more than once.
         /// </exception>
         public static TAttribute GetSingleOrDefaultCustomAttribute<TAttribute>(
-            this ICustomAttributeProvider provider,
+            [NotNull] this ICustomAttributeProvider provider,
             bool inherit)
             where TAttribute : Attribute
         {

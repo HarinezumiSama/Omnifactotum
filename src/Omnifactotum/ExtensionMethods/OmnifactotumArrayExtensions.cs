@@ -4,6 +4,8 @@ using System.Diagnostics;
 using System.Text;
 
 //// Namespace is intentionally named so in order to simplify usage of extension methods
+using Omnifactotum.Annotations;
+
 //// ReSharper disable once CheckNamespace
 namespace System
 {
@@ -26,7 +28,8 @@ namespace System
         /// <returns>
         ///     A shallow copy of the specified array, or <b>null</b> if this array is <b>null</b>.
         /// </returns>
-        public static T[] Copy<T>(this T[] array)
+        [CanBeNull]
+        public static T[] Copy<T>([CanBeNull] this T[] array)
         {
             return array == null ? null : (T[])array.Clone();
         }
@@ -46,7 +49,7 @@ namespace System
         ///     the first parameter represents the previous value of the element;
         ///     the second parameter represents the index of the element in the array.
         /// </param>
-        public static void Initialize<T>(this T[] array, Func<T, int, T> getElementValue)
+        public static void Initialize<T>([NotNull] this T[] array, [NotNull] Func<T, int, T> getElementValue)
         {
             #region Argument Check
 
@@ -82,7 +85,7 @@ namespace System
         ///     A reference to a method that returns a new value for each array's element;
         ///     the parameter represents the index of the element in the array.
         /// </param>
-        public static void Initialize<T>(this T[] array, Func<int, T> getElementValue)
+        public static void Initialize<T>([NotNull] this T[] array, [NotNull] Func<int, T> getElementValue)
         {
             #region Argument Check
 
@@ -109,7 +112,8 @@ namespace System
         /// <returns>
         ///     The source array if it is not <b>null</b>; otherwise, empty array.
         /// </returns>
-        public static T[] AvoidNull<T>(this T[] source)
+        [NotNull]
+        public static T[] AvoidNull<T>([CanBeNull] this T[] source)
         {
             return source ?? StrongTypeHelper<T>.EmptyArray;
         }
@@ -126,7 +130,8 @@ namespace System
         /// <returns>
         ///     A read-only wrapper for the specified array.
         /// </returns>
-        public static ReadOnlyCollection<T> AsReadOnly<T>(this T[] array)
+        [NotNull]
+        public static ReadOnlyCollection<T> AsReadOnly<T>([NotNull] this T[] array)
         {
             #region Argument Check
 
@@ -153,7 +158,8 @@ namespace System
         /// <returns>
         ///     A hexadecimal string.
         /// </returns>
-        public static string ToHexString(this byte[] byteArray, bool useUpperCase)
+        [NotNull]
+        public static string ToHexString([NotNull] this byte[] byteArray, bool useUpperCase)
         {
             #region Argument Check
 
@@ -189,7 +195,8 @@ namespace System
         /// <returns>
         ///     A hexadecimal string (in lower case).
         /// </returns>
-        public static string ToHexString(this byte[] byteArray)
+        [NotNull]
+        public static string ToHexString([NotNull] this byte[] byteArray)
         {
             return ToHexString(byteArray, false);
         }
@@ -211,7 +218,7 @@ namespace System
             /// <summary>
             ///     The empty array.
             /// </summary>
-            private static T[] _emptyArray;
+            private static volatile T[] _emptyArray;
 
             #endregion
 
@@ -220,6 +227,7 @@ namespace System
             /// <summary>
             ///     Gets the empty array.
             /// </summary>
+            [NotNull]
             public static T[] EmptyArray
             {
                 [DebuggerNonUserCode]

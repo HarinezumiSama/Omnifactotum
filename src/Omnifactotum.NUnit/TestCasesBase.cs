@@ -12,18 +12,6 @@ namespace Omnifactotum.NUnit
     /// </summary>
     public abstract class TestCasesBase : IEnumerable<TestCaseData>
     {
-        #region Constructors
-
-        /// <summary>
-        ///     Initializes a new instance of the <see cref="TestCasesBase"/> class.
-        /// </summary>
-        protected TestCasesBase()
-        {
-            // Nothing to do
-        }
-
-        #endregion
-
         #region IEnumerable<TestCaseData> Members
 
         /// <summary>

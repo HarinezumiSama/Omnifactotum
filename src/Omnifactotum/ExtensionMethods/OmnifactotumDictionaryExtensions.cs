@@ -197,9 +197,10 @@ namespace System.Collections.Generic
         /// <returns>
         ///     A read-only wrapper for the specified dictionary.
         /// </returns>
+        [NotNull]
         [DebuggerNonUserCode]
         public static ReadOnlyDictionary<TKey, TValue> AsReadOnly<TKey, TValue>(
-            this IDictionary<TKey, TValue> dictionary)
+            [NotNull] this IDictionary<TKey, TValue> dictionary)
         {
             return new ReadOnlyDictionary<TKey, TValue>(dictionary);
         }

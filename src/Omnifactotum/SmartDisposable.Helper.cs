@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
+using Omnifactotum.Annotations;
 
 namespace Omnifactotum
 {
@@ -27,7 +28,7 @@ namespace Omnifactotum
         /// <returns>
         ///     A new <see cref="SmartDisposable{T}"/> instance.
         /// </returns>
-        public static SmartDisposable<T> Create<T>(T instance)
+        public static SmartDisposable<T> Create<T>([CanBeNull] T instance)
         {
             return new SmartDisposable<T>(instance);
         }

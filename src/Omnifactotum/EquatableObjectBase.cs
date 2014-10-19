@@ -64,7 +64,7 @@ namespace Omnifactotum
         ///     <b>true</b> if the specified <see cref="System.Object"/> is equal to
         ///     this <see cref="EquatableObjectBase"/>; otherwise, <b>false</b>.
         /// </returns>
-        public sealed override bool Equals(object obj)
+        public sealed override bool Equals([CanBeNull] object obj)
         {
             return Equals(obj as EquatableObjectBase);
         }

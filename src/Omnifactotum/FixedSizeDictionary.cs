@@ -908,7 +908,7 @@ namespace Omnifactotum
 
         #region DictionaryValueHolder Class
 
-        internal struct DictionaryValueHolder
+        private struct DictionaryValueHolder
         {
             #region Public Properties
 

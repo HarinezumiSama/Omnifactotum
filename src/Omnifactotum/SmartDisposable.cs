@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
+using Omnifactotum.Annotations;
 
 namespace Omnifactotum
 {
@@ -22,7 +23,7 @@ namespace Omnifactotum
         /// <param name="instance">
         ///     The object to dispose of.
         /// </param>
-        public SmartDisposable(T instance)
+        public SmartDisposable([CanBeNull] T instance)
         {
             this.Instance = instance;
         }
@@ -32,7 +33,7 @@ namespace Omnifactotum
         #region Public Properties
 
         /// <summary>
-        ///     Gets the object to dispose of, if it is disposable.
+        ///     Gets the underlying object.
         /// </summary>
         public T Instance
         {

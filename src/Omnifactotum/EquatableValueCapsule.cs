@@ -69,7 +69,9 @@ namespace Omnifactotum
         ///     <b>true</b> if the two specified <see cref="EquatableValueCapsule{T}"/> instances are equal;
         ///     otherwise, <b>false</b>.
         /// </returns>
-        public static bool operator ==([CanBeNull] EquatableValueCapsule<T> left, [CanBeNull] EquatableValueCapsule<T> right)
+        public static bool operator ==(
+            [CanBeNull] EquatableValueCapsule<T> left,
+            [CanBeNull] EquatableValueCapsule<T> right)
         {
             return EqualityComparer<EquatableValueCapsule<T>>.Default.Equals(left, right);
         }
@@ -87,7 +89,9 @@ namespace Omnifactotum
         ///     <b>true</b> if the two specified <see cref="EquatableValueCapsule{T}"/> instances are not equal;
         ///     otherwise, <b>false</b>.
         /// </returns>
-        public static bool operator !=([CanBeNull] EquatableValueCapsule<T> left, [CanBeNull] EquatableValueCapsule<T> right)
+        public static bool operator !=(
+            [CanBeNull] EquatableValueCapsule<T> left,
+            [CanBeNull] EquatableValueCapsule<T> right)
         {
             return !(left == right);
         }

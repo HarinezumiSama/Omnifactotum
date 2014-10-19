@@ -1,8 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Globalization;
 using System.Linq;
 using System.Reflection;
+using Omnifactotum.Annotations;
 
 namespace Omnifactotum
 {
@@ -15,6 +17,8 @@ namespace Omnifactotum
 
         private const string LogName = "Application";
 
+        private static volatile string _defaultSource;
+
         #endregion
 
         #region Public Properties
@@ -25,8 +29,17 @@ namespace Omnifactotum
         /// </summary>
         public static string DefaultSource
         {
-            get;
-            set;
+            [DebuggerStepThrough]
+            get
+            {
+                return _defaultSource;
+            }
+
+            [DebuggerStepThrough]
+            set
+            {
+                _defaultSource = value;
+            }
         }
 
         #endregion
@@ -34,7 +47,7 @@ namespace Omnifactotum
         #region Public Methods
 
         /// <summary>
-        ///     Writes the specified message to the Windows Event Log.
+        ///     Writes the specified message to the <b>Windows Event Log</b>.
         /// </summary>
         /// <param name="source">
         ///     The source by which the application is registered on the specified computer.
@@ -45,7 +58,7 @@ namespace Omnifactotum
         /// <param name="message">
         ///     The message to write to the event log.
         /// </param>
-        public static void Write(string source, EventLogEntryType type, string message)
+        public static void Write([NotNull] string source, EventLogEntryType type, [NotNull] string message)
         {
             #region Argument Check
 
@@ -92,7 +105,36 @@ namespace Omnifactotum
         }
 
         /// <summary>
-        ///     Writes the specified message to the Windows Event Log using <see cref="WinEventLog.DefaultSource"/>.
+        ///     Writes the message to the <b>Windows Event Log</b>, using the specified array of objects and
+        ///     formatting information.
+        /// </summary>
+        /// <param name="source">
+        ///     The source by which the application is registered on the specified computer.
+        /// </param>
+        /// <param name="type">
+        ///     The type of the event log entry.
+        /// </param>
+        /// <param name="format">
+        ///     A format string that contains zero or more format items, which correspond to objects in
+        ///     the <paramref name="args"/> array.
+        /// </param>
+        /// <param name="args">
+        ///     An object array containing zero or more objects to format.
+        /// </param>
+        [StringFormatMethod("format")]
+        public static void Write(
+            [NotNull] string source,
+            EventLogEntryType type,
+            [NotNull] string format,
+            [NotNull] params object[] args)
+        {
+            var message = string.Format(CultureInfo.InvariantCulture, format, args);
+            Write(source, type, message);
+        }
+
+        /// <summary>
+        ///     Writes the specified message to the <b>Windows Event Log</b>
+        ///     using <see cref="WinEventLog.DefaultSource"/>.
         ///     If <see cref="WinEventLog.DefaultSource"/> is <b>null</b> or empty, the entry assembly name is used.
         /// </summary>
         /// <param name="type">
@@ -101,24 +143,53 @@ namespace Omnifactotum
         /// <param name="message">
         ///     The message to write to the event log.
         /// </param>
-        public static void Write(EventLogEntryType type, string message)
+        public static void Write(EventLogEntryType type, [NotNull] string message)
         {
             var source = GetDefaultSource();
             Write(source, type, message);
+        }
+
+        /// <summary>
+        ///     Writes the message to the <b>Windows Event Log</b>
+        ///     using <see cref="WinEventLog.DefaultSource"/> and the specified array of objects and
+        ///     formatting information.
+        ///     If <see cref="WinEventLog.DefaultSource"/> is <b>null</b> or empty, the entry assembly name is used.
+        /// </summary>
+        /// <param name="type">
+        ///     The type of the event log entry.
+        /// </param>
+        /// <param name="format">
+        ///     A format string that contains zero or more format items, which correspond to objects in
+        ///     the <paramref name="args"/> array.
+        /// </param>
+        /// <param name="args">
+        ///     An object array containing zero or more objects to format.
+        /// </param>
+        [StringFormatMethod("format")]
+        public static void Write(
+            EventLogEntryType type,
+            [NotNull] string format,
+            [NotNull] params object[] args)
+        {
+            var message = string.Format(CultureInfo.InvariantCulture, format, args);
+            Write(type, message);
         }
 
         #endregion
 
         #region Private Methods
 
+        [NotNull]
         private static string GetDefaultSource()
         {
-            var result = DefaultSource.TrimSafely();
-            if (result.IsNullOrEmpty())
+            var result = _defaultSource.TrimSafely();
+            if (!result.IsNullOrWhiteSpace())
             {
-                var assembly = Assembly.GetEntryAssembly() ?? Assembly.GetExecutingAssembly();
-                result = assembly.GetName().Name;
+                return result;
             }
+
+            var assembly = Assembly.GetEntryAssembly() ?? Assembly.GetExecutingAssembly();
+            result = assembly.GetName().Name;
 
             return result;
         }

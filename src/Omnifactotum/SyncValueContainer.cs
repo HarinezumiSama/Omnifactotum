@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Globalization;
 using System.Linq;
+using Omnifactotum.Annotations;
 
 namespace Omnifactotum
 {
@@ -35,7 +36,7 @@ namespace Omnifactotum
         ///     The synchronization object used for thread-safe access.
         ///     Cannot be <b>null</b> and must be of a reference type.
         /// </param>
-        public SyncValueContainer(T value, object syncObject)
+        public SyncValueContainer([CanBeNull] T value, [NotNull] object syncObject)
         {
             #region Argument Check
 
@@ -62,7 +63,7 @@ namespace Omnifactotum
         /// <param name="value">
         ///     The value to initialize this instance with.
         /// </param>
-        public SyncValueContainer(T value)
+        public SyncValueContainer([CanBeNull] T value)
             : this(value, new object())
         {
             // Nothing to do
@@ -85,6 +86,7 @@ namespace Omnifactotum
         /// <summary>
         ///     Gets the synchronization object used for thread-safe access.
         /// </summary>
+        [NotNull]
         public object SyncObject
         {
             get;
@@ -94,6 +96,7 @@ namespace Omnifactotum
         /// <summary>
         ///     Gets or sets the contained value.
         /// </summary>
+        [CanBeNull]
         public T Value
         {
             [DebuggerNonUserCode]

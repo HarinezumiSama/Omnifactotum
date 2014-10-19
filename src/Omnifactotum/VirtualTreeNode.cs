@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Globalization;
+using Omnifactotum.Annotations;
 
 namespace Omnifactotum
 {
@@ -18,7 +19,6 @@ namespace Omnifactotum
         #region Constants and Fields
 
         private VirtualTreeNodeBase<T> _owner;
-        private T _value;
 
         #endregion
 
@@ -39,10 +39,10 @@ namespace Omnifactotum
         /// <param name="value">
         ///     A value to initialize the <see cref="VirtualTreeNode{T}"/> instance with.
         /// </param>
-        public VirtualTreeNode(T value)
+        public VirtualTreeNode([CanBeNull] T value)
             : this()
         {
-            _value = value;
+            this.Value = value;
         }
 
         /// <summary>
@@ -52,7 +52,7 @@ namespace Omnifactotum
         /// <param name="children">
         ///     The children to initialize the <see cref="VirtualTreeNode{T}"/> instance with.
         /// </param>
-        public VirtualTreeNode(ICollection<VirtualTreeNode<T>> children)
+        public VirtualTreeNode([NotNull] ICollection<VirtualTreeNode<T>> children)
             : base(children)
         {
             // Nothing to do
@@ -68,10 +68,10 @@ namespace Omnifactotum
         /// <param name="children">
         ///     The children to initialize the <see cref="VirtualTreeNode{T}"/> instance with.
         /// </param>
-        public VirtualTreeNode(T value, ICollection<VirtualTreeNode<T>> children)
+        public VirtualTreeNode([CanBeNull] T value, [NotNull] ICollection<VirtualTreeNode<T>> children)
             : this(children)
         {
-            _value = value;
+            this.Value = value;
         }
 
         #endregion
@@ -81,6 +81,7 @@ namespace Omnifactotum
         /// <summary>
         ///     Gets the parent node of the current node, or <b>null</b> if the node does not have a parent.
         /// </summary>
+        [CanBeNull]
         public VirtualTreeNodeBase<T> Parent
         {
             [DebuggerStepThrough]
@@ -99,19 +100,11 @@ namespace Omnifactotum
         /// <summary>
         ///     Gets or sets the value associated with the current node.
         /// </summary>
+        [CanBeNull]
         public T Value
         {
-            [DebuggerStepThrough]
-            get
-            {
-                return _value;
-            }
-
-            [DebuggerStepThrough]
-            set
-            {
-                _value = value;
-            }
+            get;
+            set;
         }
 
         #endregion

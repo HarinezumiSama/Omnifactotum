@@ -1,4 +1,5 @@
 ﻿using System.Diagnostics;
+using Omnifactotum.Annotations;
 
 //// Namespace is intentionally named so in order to simplify usage of extension methods
 //// ReSharper disable once CheckNamespace
@@ -31,7 +32,7 @@ namespace System.Collections.Generic
         /// <returns>
         ///     A new <see cref="KeyValuePair{TKey,TValue}"/> having the specified key and value set.
         /// </returns>
-        public static KeyValuePair<TKey, TValue> Create<TKey, TValue>(TKey key, TValue value)
+        public static KeyValuePair<TKey, TValue> Create<TKey, TValue>([CanBeNull] TKey key, [CanBeNull] TValue value)
         {
             return new KeyValuePair<TKey, TValue>(key, value);
         }

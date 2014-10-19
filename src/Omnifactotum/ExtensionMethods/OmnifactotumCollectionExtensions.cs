@@ -28,7 +28,7 @@ namespace System.Collections.Generic
         ///     The number of elements in the specified collection if it was possible to determine it without
         ///     enumerating collection's elements; otherwise, <b>null</b>.
         /// </returns>
-        public static int? GetFastCount<T>(this IEnumerable<T> collection)
+        public static int? GetFastCount<T>([CanBeNull] this IEnumerable<T> collection)
         {
             if (collection == null)
             {
@@ -68,7 +68,7 @@ namespace System.Collections.Generic
         ///     <para>-or-</para>
         ///     <para><paramref name="action"/> is <b>null</b>.</para>
         /// </exception>
-        public static void DoForEach<T>(this IEnumerable<T> collection, Action<T> action)
+        public static void DoForEach<T>([NotNull] this IEnumerable<T> collection, [NotNull] Action<T> action)
         {
             #region Argument Check
 
@@ -109,7 +109,7 @@ namespace System.Collections.Generic
         ///     <para>-or-</para>
         ///     <para><paramref name="action"/> is <b>null</b>.</para>
         /// </exception>
-        public static void DoForEach<T>(this IEnumerable<T> collection, Action<T, int> action)
+        public static void DoForEach<T>([NotNull] this IEnumerable<T> collection, [NotNull] Action<T, int> action)
         {
             #region Argument Check
 
@@ -146,7 +146,7 @@ namespace System.Collections.Generic
         /// <param name="items">
         ///     The items to put to the collection.
         /// </param>
-        public static void SetItems<T>(this ICollection<T> collection, IEnumerable<T> items)
+        public static void SetItems<T>([NotNull] this ICollection<T> collection, [NotNull] IEnumerable<T> items)
         {
             #region Argument Check
 
@@ -195,9 +195,9 @@ namespace System.Collections.Generic
         ///     they both are <b>null</b>; otherwise, <b>false</b>.
         /// </returns>
         public static bool CollectionsEquivalent<T>(
-            this IEnumerable<T> collection,
-            IEnumerable<T> otherCollection,
-            IEqualityComparer<T> comparer)
+            [CanBeNull] this IEnumerable<T> collection,
+            [CanBeNull] IEnumerable<T> otherCollection,
+            [CanBeNull] IEqualityComparer<T> comparer)
         {
             //// ReSharper disable PossibleMultipleEnumeration - the method is optimized accordingly
             var fastResult = CheckReferenceAndCountEquality(collection, otherCollection);
@@ -207,10 +207,13 @@ namespace System.Collections.Generic
                 return fastResult.Value;
             }
 
-            //// ReSharper disable PossibleMultipleEnumeration - the method is optimized accordingly
+            //// ReSharper disable once PossibleMultipleEnumeration - the method is optimized accordingly
+            //// ReSharper disable once AssignNullToNotNullAttribute - the method is optimized accordingly
             var map = CreateCountMap(collection, comparer);
+
+            //// ReSharper disable once PossibleMultipleEnumeration - the method is optimized accordingly
+            //// ReSharper disable once AssignNullToNotNullAttribute - the method is optimized accordingly
             var otherMap = CreateCountMap(otherCollection, comparer);
-            //// ReSharper restore PossibleMultipleEnumeration
 
             if (map.Count != otherMap.Count)
             {
@@ -246,7 +249,9 @@ namespace System.Collections.Generic
         ///     <b>true</b> if two specified collections contain identical items in any order or
         ///     they both are <b>null</b>; otherwise, <b>false</b>.
         /// </returns>
-        public static bool CollectionsEquivalent<T>(this IEnumerable<T> collection, IEnumerable<T> otherCollection)
+        public static bool CollectionsEquivalent<T>(
+            [CanBeNull] this IEnumerable<T> collection,
+            [CanBeNull] IEnumerable<T> otherCollection)
         {
             return CollectionsEquivalent(collection, otherCollection, null);
         }
@@ -272,9 +277,9 @@ namespace System.Collections.Generic
         ///     they both are <b>null</b>; otherwise, <b>false</b>.
         /// </returns>
         public static bool CollectionsEqual<T>(
-            this IEnumerable<T> collection,
-            IEnumerable<T> otherCollection,
-            IEqualityComparer<T> comparer)
+            [CanBeNull] this IEnumerable<T> collection,
+            [CanBeNull] IEnumerable<T> otherCollection,
+            [CanBeNull] IEqualityComparer<T> comparer)
         {
             //// ReSharper disable PossibleMultipleEnumeration - the method is optimized accordingly
             var fastResult = CheckReferenceAndCountEquality(collection, otherCollection);
@@ -286,11 +291,13 @@ namespace System.Collections.Generic
 
             var actualComparer = comparer ?? EqualityComparer<T>.Default;
             //// ReSharper disable PossibleMultipleEnumeration - the method is optimized accordingly
+            //// ReSharper disable PossibleNullReferenceException - the method is optimized accordingly
             using (var enumerator = collection.GetEnumerator())
             {
                 using (var otherEnumerator = otherCollection.GetEnumerator())
                 {
                     //// ReSharper restore PossibleMultipleEnumeration
+                    //// ReSharper restore PossibleNullReferenceException
 
                     while (enumerator.MoveNext())
                     {
@@ -328,7 +335,9 @@ namespace System.Collections.Generic
         ///     <b>true</b> if two specified collections contain identical items in the same order or
         ///     they both are <b>null</b>; otherwise, <b>false</b>.
         /// </returns>
-        public static bool CollectionsEqual<T>(this IEnumerable<T> collection, IEnumerable<T> otherCollection)
+        public static bool CollectionsEqual<T>(
+            [CanBeNull] this IEnumerable<T> collection,
+            [CanBeNull] IEnumerable<T> otherCollection)
         {
             return CollectionsEqual(collection, otherCollection, null);
         }
@@ -357,10 +366,11 @@ namespace System.Collections.Generic
         ///     A dictionary in which a key is a duplicated key from the source collection keys and a value is
         ///     the list of the corresponding duplicated items from the source collection.
         /// </returns>
+        [NotNull]
         public static Dictionary<TKey, List<T>> FindDuplicates<T, TKey>(
-            this IEnumerable<T> collection,
-            Func<T, TKey> keySelector,
-            IEqualityComparer<TKey> comparer)
+            [NotNull] this IEnumerable<T> collection,
+            [NotNull] Func<T, TKey> keySelector,
+            [CanBeNull] IEqualityComparer<TKey> comparer)
         {
             #region Argument Check
 
@@ -377,6 +387,7 @@ namespace System.Collections.Generic
             #endregion
 
             var actualComparer = comparer ?? EqualityComparer<TKey>.Default;
+
             return collection
                 .GroupBy(keySelector, actualComparer)
                 .Where(group => group.Count() > 1)
@@ -405,9 +416,10 @@ namespace System.Collections.Generic
         ///     A dictionary in which a key is a duplicated key from the source collection keys and a value is
         ///     the list of the corresponding duplicated items from the source collection.
         /// </returns>
+        [NotNull]
         public static Dictionary<TKey, List<T>> FindDuplicates<T, TKey>(
-            this IEnumerable<T> collection,
-            Func<T, TKey> keySelector)
+            [NotNull] this IEnumerable<T> collection,
+            [NotNull] Func<T, TKey> keySelector)
         {
             return FindDuplicates(collection, keySelector, null);
         }
@@ -422,7 +434,8 @@ namespace System.Collections.Generic
         ///     A collection of disposable elements.
         /// </param>
         /// <seealso cref="OmnifactotumDisposableExtensions.DisposeSafely{T}"/>
-        public static void DisposeCollectionItemsSafely<TDisposable>(this IEnumerable<TDisposable> collection)
+        public static void DisposeCollectionItemsSafely<TDisposable>(
+            [CanBeNull] this IEnumerable<TDisposable> collection)
             where TDisposable : IDisposable
         {
             if (collection == null)
@@ -449,6 +462,7 @@ namespace System.Collections.Generic
         /// <returns>
         ///     The source collection if it is not <b>null</b>; otherwise, empty collection.
         /// </returns>
+        [NotNull]
         public static IEnumerable<T> AvoidNull<T>([CanBeNull] this IEnumerable<T> source)
         {
             return source ?? Enumerable.Empty<T>();
@@ -471,6 +485,7 @@ namespace System.Collections.Generic
         /// <returns>
         ///     A created hash set.
         /// </returns>
+        [NotNull]
         public static HashSet<T> ToHashSet<T>(
             [NotNull] this IEnumerable<T> collection,
             [CanBeNull] IEqualityComparer<T> comparer)
@@ -501,6 +516,7 @@ namespace System.Collections.Generic
         /// <returns>
         ///     A created hash set.
         /// </returns>
+        [NotNull]
         public static HashSet<T> ToHashSet<T>([NotNull] this IEnumerable<T> collection)
         {
             return ToHashSet(collection, null);
@@ -518,7 +534,7 @@ namespace System.Collections.Generic
         /// <returns>
         ///     An object that can be used to synchronize access to the specified collection.
         /// </returns>
-        public static object GetSyncRoot<T>(this T collection)
+        public static object GetSyncRoot<T>([NotNull] this T collection)
             where T : ICollection
         {
             #region Argument Check
@@ -553,8 +569,8 @@ namespace System.Collections.Generic
         ///     The result of the check.
         /// </returns>
         private static bool? CheckReferenceAndCountEquality<T>(
-            IEnumerable<T> collection,
-            IEnumerable<T> otherCollection)
+            [CanBeNull] IEnumerable<T> collection,
+            [CanBeNull] IEnumerable<T> otherCollection)
         {
             if (ReferenceEquals(collection, otherCollection))
             {
@@ -593,7 +609,9 @@ namespace System.Collections.Generic
         /// <returns>
         ///     The count map.
         /// </returns>
-        private static Dictionary<T, int> CreateCountMap<T>(IEnumerable<T> collection, IEqualityComparer<T> comparer)
+        private static Dictionary<T, int> CreateCountMap<T>(
+            [NotNull] IEnumerable<T> collection,
+            [CanBeNull] IEqualityComparer<T> comparer)
         {
             return collection
                 .GroupBy(item => item, comparer)

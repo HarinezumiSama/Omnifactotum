@@ -115,7 +115,7 @@ namespace Omnifactotum
         ///     A value associated with the specified key.
         /// </returns>
         [NotNull]
-        public TValue this[TKey key]
+        public TValue this[[NotNull] TKey key]
         {
             get
             {

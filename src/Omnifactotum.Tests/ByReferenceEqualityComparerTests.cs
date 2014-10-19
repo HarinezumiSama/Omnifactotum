@@ -61,7 +61,7 @@ namespace Omnifactotum.Tests
 
             public string Value
             {
-                get;
+                private get;
                 set;
             }
 
@@ -101,7 +101,7 @@ namespace Omnifactotum.Tests
 
             public string Value
             {
-                get;
+                private get;
                 set;
             }
 

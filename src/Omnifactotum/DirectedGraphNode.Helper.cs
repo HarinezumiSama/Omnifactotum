@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
+using Omnifactotum.Annotations;
 
 namespace Omnifactotum
 {
@@ -25,7 +26,7 @@ namespace Omnifactotum
         /// <returns>
         ///     A new instance of the <see cref="DirectedGraphNode{T}"/> class.
         /// </returns>
-        public static DirectedGraphNode<T> Create<T>(T value)
+        public static DirectedGraphNode<T> Create<T>([CanBeNull] T value)
         {
             return new DirectedGraphNode<T>(value);
         }

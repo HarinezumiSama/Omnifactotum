@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
+using Omnifactotum.Annotations;
 
 namespace Omnifactotum
 {
@@ -60,7 +61,7 @@ namespace Omnifactotum
         /// <param name="item">
         ///     An item to add to this collection.
         /// </param>
-        public void Add(DirectedGraphNode<T> item)
+        public void Add([NotNull] DirectedGraphNode<T> item)
         {
             AddInternal(item);
             OnItemAdded(item);
@@ -89,7 +90,7 @@ namespace Omnifactotum
         /// <returns>
         ///     <b>true</b> if <paramref name="item"/> is found in this collection; otherwise, <b>false</b>.
         /// </returns>
-        public bool Contains(DirectedGraphNode<T> item)
+        public bool Contains([CanBeNull] DirectedGraphNode<T> item)
         {
             return item != null && _items.Contains(item);
         }
@@ -120,10 +121,10 @@ namespace Omnifactotum
         ///     <b>true</b> if <paramref name="item"/> was removed from this collection;
         ///     otherwise, <b>false</b>.
         /// </returns>
-        public bool Remove(DirectedGraphNode<T> item)
+        public bool Remove([CanBeNull] DirectedGraphNode<T> item)
         {
             var result = RemoveInternal(item);
-            if (result)
+            if (result && item != null)
             {
                 OnItemRemoved(item);
             }
@@ -165,6 +166,7 @@ namespace Omnifactotum
 
         #region Internal Properties
 
+        [CanBeNull]
         internal abstract DirectedGraph<T> Graph
         {
             get;
@@ -180,7 +182,7 @@ namespace Omnifactotum
             _items.Clear();
         }
 
-        internal void AddInternal(DirectedGraphNode<T> item)
+        internal void AddInternal([NotNull] DirectedGraphNode<T> item)
         {
             #region Argument Check
 
@@ -226,7 +228,7 @@ namespace Omnifactotum
             }
         }
 
-        internal bool RemoveInternal(DirectedGraphNode<T> item)
+        internal bool RemoveInternal([CanBeNull] DirectedGraphNode<T> item)
         {
             return item != null && _items.Remove(item);
         }
@@ -241,7 +243,7 @@ namespace Omnifactotum
         /// <param name="item">
         ///     The item that has been added.
         /// </param>
-        protected virtual void OnItemAdded(DirectedGraphNode<T> item)
+        protected virtual void OnItemAdded([NotNull] DirectedGraphNode<T> item)
         {
             // Nothing to do; for overriding only
         }
@@ -252,7 +254,7 @@ namespace Omnifactotum
         /// <param name="item">
         ///     The item that has been removed.
         /// </param>
-        protected virtual void OnItemRemoved(DirectedGraphNode<T> item)
+        protected virtual void OnItemRemoved([NotNull] DirectedGraphNode<T> item)
         {
             // Nothing to do; for overriding only
         }

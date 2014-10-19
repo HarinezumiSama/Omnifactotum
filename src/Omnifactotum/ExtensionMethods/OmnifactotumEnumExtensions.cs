@@ -6,6 +6,8 @@ using System.Globalization;
 using System.Linq;
 
 //// Namespace is intentionally named so in order to simplify usage of extension methods
+using Omnifactotum.Annotations;
+
 //// ReSharper disable once CheckNamespace
 namespace System
 {
@@ -35,7 +37,7 @@ namespace System
         /// <returns>
         ///     The name of the specified enumeration value.
         /// </returns>
-        public static string GetName(this Enum value)
+        public static string GetName([NotNull] this Enum value)
         {
             return GetNameInternal(value, null);
         }
@@ -50,7 +52,7 @@ namespace System
         /// <returns>
         ///     The qualified name of the specified enumeration value.
         /// </returns>
-        public static string GetQualifiedName(this Enum value)
+        public static string GetQualifiedName([NotNull] this Enum value)
         {
             return GetNameInternal(value, false);
         }
@@ -65,7 +67,7 @@ namespace System
         /// <returns>
         ///     The full name of the specified enumeration value.
         /// </returns>
-        public static string GetFullName(this Enum value)
+        public static string GetFullName([NotNull] this Enum value)
         {
             return GetNameInternal(value, true);
         }
@@ -228,7 +230,7 @@ namespace System
         /// <exception cref="System.ArgumentNullException">
         ///     <paramref name="enumerationValue"/> is <b>null</b>.
         /// </exception>
-        public static bool IsDefined(this Enum enumerationValue)
+        public static bool IsDefined([NotNull] this Enum enumerationValue)
         {
             #region Argument Check
 
@@ -255,7 +257,7 @@ namespace System
         /// <exception cref="System.ComponentModel.InvalidEnumArgumentException">
         ///     <paramref name="enumerationValue"/> is not defined in the corresponding enumeration.
         /// </exception>
-        public static void EnsureDefined(this Enum enumerationValue)
+        public static void EnsureDefined([NotNull] this Enum enumerationValue)
         {
             #region Argument Check
 
@@ -286,7 +288,8 @@ namespace System
         ///     A <see cref="System.NotImplementedException"/> with the descriptive message regarding
         ///     the specified enumeration value.
         /// </returns>
-        public static NotImplementedException CreateEnumValueNotImplementedException(this Enum enumerationValue)
+        public static NotImplementedException CreateEnumValueNotImplementedException(
+            [NotNull] this Enum enumerationValue)
         {
             #region Argument Check
 
@@ -315,7 +318,7 @@ namespace System
         ///     A <see cref="System.NotSupportedException"/> with the descriptive message regarding
         ///     the specified enumeration value.
         /// </returns>
-        public static NotSupportedException CreateEnumValueNotSupportedException(this Enum enumerationValue)
+        public static NotSupportedException CreateEnumValueNotSupportedException([NotNull] this Enum enumerationValue)
         {
             #region Argument Check
 
@@ -350,7 +353,7 @@ namespace System
         ///     The name of the enumeration value.
         /// </returns>
         [DebuggerNonUserCode]
-        private static string GetNameInternal(Enum value, bool? fullEnumName)
+        private static string GetNameInternal([NotNull] Enum value, bool? fullEnumName)
         {
             #region Argument Check
 

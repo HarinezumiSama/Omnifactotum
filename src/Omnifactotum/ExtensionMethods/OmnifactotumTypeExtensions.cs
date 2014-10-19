@@ -8,6 +8,8 @@ using System.Text;
 using Microsoft.CSharp;
 
 //// Namespace is intentionally named so in order to simplify usage of extension methods
+using Omnifactotum.Annotations;
+
 //// ReSharper disable once CheckNamespace
 namespace System
 {
@@ -52,7 +54,7 @@ namespace System
         /// <exception cref="System.ArgumentException">
         ///     <paramref name="name"/> is <b>null</b> or an empty string (<see cref="String.Empty"/>).
         /// </exception>
-        public static Stream GetManifestResourceStream(this Type type, string name)
+        public static Stream GetManifestResourceStream([NotNull] this Type type, [NotNull] string name)
         {
             #region Argument Check
 
@@ -117,7 +119,7 @@ namespace System
         ///         </item>
         ///     </list>
         /// </example>
-        public static string GetQualifiedName(this Type type)
+        public static string GetQualifiedName([NotNull] this Type type)
         {
             return GetNameInternal(type, false);
         }
@@ -170,7 +172,7 @@ namespace System
         ///         </item>
         ///     </list>
         /// </example>
-        public static string GetFullName(this Type type)
+        public static string GetFullName([NotNull] this Type type)
         {
             return GetNameInternal(type, true);
         }
@@ -185,7 +187,7 @@ namespace System
         ///     <b>true</b> if the specified type is <see cref="Nullable{T}"/> for a certain type T;
         ///     otherwise, <b>false</b>.
         /// </returns>
-        public static bool IsNullable(this Type type)
+        public static bool IsNullable([NotNull] this Type type)
         {
             #region Argument Check
 
@@ -215,7 +217,7 @@ namespace System
         /// <returns>
         ///     The type of the elements in the collection represented by the specified type.
         /// </returns>
-        public static Type GetCollectionElementType(this Type type)
+        public static Type GetCollectionElementType([NotNull] this Type type)
         {
             #region Argument Check
 
@@ -313,10 +315,10 @@ namespace System
         ///     The generic parameter offset. This value is passed by reference.
         /// </param>
         private static void GetNameInternal(
-            StringBuilder resultBuilder,
-            Type type,
+            [NotNull] StringBuilder resultBuilder,
+            [NotNull] Type type,
             bool fullName,
-            List<Type> genericParameters,
+            [CanBeNull] List<Type> genericParameters,
             ref int genericParameterOffset)
         {
             #region Argument Check
@@ -419,7 +421,7 @@ namespace System
         /// <returns>
         ///     The name of the specified type.
         /// </returns>
-        private static string GetNameInternal(Type type, bool fullName)
+        private static string GetNameInternal([NotNull] Type type, bool fullName)
         {
             var resultBuilder = new StringBuilder();
             var offset = 0;

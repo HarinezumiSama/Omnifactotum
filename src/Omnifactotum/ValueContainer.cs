@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Globalization;
 using System.Linq;
+using Omnifactotum.Annotations;
 
 namespace Omnifactotum
 {
@@ -25,7 +26,7 @@ namespace Omnifactotum
         /// <param name="value">
         ///     The value to initialize this instance with.
         /// </param>
-        public ValueContainer(T value)
+        public ValueContainer([CanBeNull] T value)
         {
             this.Value = value;
         }
@@ -47,6 +48,7 @@ namespace Omnifactotum
         /// <summary>
         ///     Gets or sets the encapsulated value.
         /// </summary>
+        [CanBeNull]
         public T Value
         {
             get;

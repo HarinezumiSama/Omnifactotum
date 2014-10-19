@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
+using Omnifactotum.Annotations;
 
 namespace Omnifactotum
 {
@@ -32,7 +33,7 @@ namespace Omnifactotum
         /// <param name="set">
         ///     The set to wrap.
         /// </param>
-        public ReadOnlySet(ISet<T> set)
+        public ReadOnlySet([NotNull] ISet<T> set)
         {
             #region Argument Check
 
@@ -63,7 +64,7 @@ namespace Omnifactotum
         /// <exception cref="System.NotSupportedException">
         ///     The set is read-only.
         /// </exception>
-        bool ISet<T>.Add(T item)
+        bool ISet<T>.Add([CanBeNull] T item)
         {
             throw new NotSupportedException(ReadOnlyMessage);
         }
@@ -267,7 +268,7 @@ namespace Omnifactotum
         /// <exception cref="System.NotSupportedException">
         ///     The set is read-only.
         /// </exception>
-        void ICollection<T>.Add(T item)
+        void ICollection<T>.Add([CanBeNull] T item)
         {
             throw new NotSupportedException(ReadOnlyMessage);
         }
@@ -297,7 +298,7 @@ namespace Omnifactotum
         /// <exception cref="System.NotSupportedException">
         ///     The set is read-only.
         /// </exception>
-        bool ICollection<T>.Remove(T item)
+        bool ICollection<T>.Remove([CanBeNull] T item)
         {
             throw new NotSupportedException(ReadOnlyMessage);
         }
@@ -311,7 +312,7 @@ namespace Omnifactotum
         /// <returns>
         ///     <b>true</b> if <paramref name="item"/> is found in the set; otherwise, <b>false</b>.
         /// </returns>
-        public bool Contains(T item)
+        public bool Contains([CanBeNull] T item)
         {
             return _set.Contains(item);
         }

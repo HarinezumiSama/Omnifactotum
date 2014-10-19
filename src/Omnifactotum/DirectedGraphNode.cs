@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Globalization;
 using System.Linq;
+using Omnifactotum.Annotations;
 
 namespace Omnifactotum
 {
@@ -23,7 +24,7 @@ namespace Omnifactotum
         /// <param name="value">
         ///     The value associated with the graph node.
         /// </param>
-        public DirectedGraphNode(T value)
+        public DirectedGraphNode([CanBeNull] T value)
         {
             this.Heads = new DirectedGraphNodeCollection<T>(this, DirectedGraphOwnerRelation.Tail);
             this.Tails = new DirectedGraphNodeCollection<T>(this, DirectedGraphOwnerRelation.Head);
@@ -47,6 +48,7 @@ namespace Omnifactotum
         /// <summary>
         ///     Gets the graph which this node belongs to.
         /// </summary>
+        [CanBeNull]
         public DirectedGraph<T> Graph
         {
             get;
@@ -56,6 +58,7 @@ namespace Omnifactotum
         /// <summary>
         ///     Gets or sets the value associated with this <see cref="DirectedGraphNode{T}"/>.
         /// </summary>
+        [CanBeNull]
         public T Value
         {
             get;
@@ -65,6 +68,7 @@ namespace Omnifactotum
         /// <summary>
         ///     Gets the collection of the heads of this node, that is, the nodes to which this node is directed to.
         /// </summary>
+        [NotNull]
         public DirectedGraphNodeCollection<T> Heads
         {
             get;
@@ -74,6 +78,7 @@ namespace Omnifactotum
         /// <summary>
         ///     Gets the collection of the tails of this node, that is, the nodes which are directed to this node.
         /// </summary>
+        [NotNull]
         public DirectedGraphNodeCollection<T> Tails
         {
             get;
@@ -102,7 +107,7 @@ namespace Omnifactotum
 
         #region Internal Methods
 
-        internal void AssignGraph(DirectedGraph<T> graph)
+        internal void AssignGraph([CanBeNull] DirectedGraph<T> graph)
         {
             if (graph == null)
             {
@@ -112,26 +117,26 @@ namespace Omnifactotum
             Factotum.ProcessRecursively(
                 this,
                 item => item.Heads.Concat(item.Tails),
-                obj =>
+                node =>
                 {
-                    if (obj.Graph == graph)
+                    if (node.Graph == graph)
                     {
                         return RecursiveProcessingDirective.NoRecursionForItem;
                     }
 
-                    if (obj.Graph != null)
+                    if (node.Graph != null)
                     {
                         throw new InvalidOperationException(
                             string.Format(
                                 CultureInfo.InvariantCulture,
                                 "The directed graph node {{{0}}} belongs to another graph.",
-                                obj));
+                                node));
                     }
 
-                    obj.Graph = graph;
-                    if (!graph.Contains(obj))
+                    node.Graph = graph;
+                    if (!graph.Contains(node))
                     {
-                        graph.AddInternal(obj);
+                        graph.AddInternal(node);
                     }
 
                     return RecursiveProcessingDirective.Continue;

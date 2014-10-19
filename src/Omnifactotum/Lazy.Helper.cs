@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Diagnostics;
 using System.Threading;
+using Omnifactotum.Annotations;
 
 //// Namespace is intentionally named so in order to simplify usage of extension methods
 //// ReSharper disable once CheckNamespace
@@ -31,7 +32,7 @@ namespace System
         /// <exception cref="System.ArgumentNullException">
         ///     <paramref name="valueFactory"/> is <b>null</b>.
         /// </exception>
-        public static Lazy<T> Create<T>(Func<T> valueFactory)
+        public static Lazy<T> Create<T>([NotNull] Func<T> valueFactory)
         {
             return new Lazy<T>(valueFactory);
         }
@@ -56,7 +57,7 @@ namespace System
         /// <exception cref="System.ArgumentNullException">
         ///     <paramref name="valueFactory"/> is <b>null</b>.
         /// </exception>
-        public static Lazy<T> Create<T>(Func<T> valueFactory, bool isThreadSafe)
+        public static Lazy<T> Create<T>([NotNull] Func<T> valueFactory, bool isThreadSafe)
         {
             return new Lazy<T>(valueFactory, isThreadSafe);
         }
@@ -83,7 +84,7 @@ namespace System
         /// <exception cref="System.ArgumentOutOfRangeException">
         ///     <paramref name="mode"/> contains an invalid value.
         /// </exception>
-        public static Lazy<T> Create<T>(Func<T> valueFactory, LazyThreadSafetyMode mode)
+        public static Lazy<T> Create<T>([NotNull] Func<T> valueFactory, LazyThreadSafetyMode mode)
         {
             return new Lazy<T>(valueFactory, mode);
         }

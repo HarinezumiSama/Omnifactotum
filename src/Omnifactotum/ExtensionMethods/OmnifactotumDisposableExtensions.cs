@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Diagnostics;
+using Omnifactotum.Annotations;
 
 //// Namespace is intentionally named so in order to simplify usage of extension methods
 //// ReSharper disable once CheckNamespace
@@ -23,7 +24,7 @@ namespace System
         /// <param name="disposable">
         ///     A reference to an object to dispose.
         /// </param>
-        public static void DisposeSafely<T>(this T disposable)
+        public static void DisposeSafely<T>([CanBeNull] this T disposable)
             where T : IDisposable
         {
             if (!ReferenceEquals(disposable, null))

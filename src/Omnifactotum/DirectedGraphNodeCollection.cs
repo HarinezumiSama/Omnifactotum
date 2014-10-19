@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Globalization;
 using System.Linq;
+using Omnifactotum.Annotations;
 
 namespace Omnifactotum
 {
@@ -34,7 +35,9 @@ namespace Omnifactotum
         /// <param name="ownerRelation">
         ///     The relation of the owner node to the items contained in this collection.
         /// </param>
-        internal DirectedGraphNodeCollection(DirectedGraphNode<T> owner, DirectedGraphOwnerRelation ownerRelation)
+        internal DirectedGraphNodeCollection(
+            [NotNull] DirectedGraphNode<T> owner,
+            DirectedGraphOwnerRelation ownerRelation)
         {
             #region Argument Check
 
@@ -103,7 +106,7 @@ namespace Omnifactotum
 
         #region Private Methods
 
-        private DirectedGraphNodeCollection<T> GetRelatedCollection(DirectedGraphNode<T> item)
+        private DirectedGraphNodeCollection<T> GetRelatedCollection([NotNull] DirectedGraphNode<T> item)
         {
             switch (_ownerRelation)
             {
@@ -117,7 +120,7 @@ namespace Omnifactotum
                     throw new NotSupportedException(
                         string.Format(
                             CultureInfo.InvariantCulture,
-                            "The case for enumeration value {0} is not supported.",
+                            "The case for enumeration value '{0}' is not supported.",
                             _ownerRelation.GetQualifiedName()));
             }
         }

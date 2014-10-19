@@ -4,6 +4,8 @@ using System.Globalization;
 using System.Text;
 
 //// Namespace is intentionally named so in order to simplify usage of extension methods
+using Omnifactotum.Annotations;
+
 //// ReSharper disable once CheckNamespace
 namespace System.Reflection
 {
@@ -43,7 +45,7 @@ namespace System.Reflection
         /// <returns>
         ///     The full name of the <paramref name="method"/>.
         /// </returns>
-        public static string GetFullName(this MethodBase method)
+        public static string GetFullName([NotNull] this MethodBase method)
         {
             #region Argument Check
 
@@ -66,7 +68,7 @@ namespace System.Reflection
         /// <returns>
         ///     The qualified name of the <paramref name="method"/>.
         /// </returns>
-        public static string GetQualifiedName(this MethodBase method)
+        public static string GetQualifiedName([NotNull] this MethodBase method)
         {
             #region Argument Check
 
@@ -90,7 +92,7 @@ namespace System.Reflection
         /// <returns>
         ///     The string representation of the method signature.
         /// </returns>
-        public static string GetSignature(this MethodBase method)
+        public static string GetSignature([NotNull] this MethodBase method)
         {
             #region Argument Check
 
@@ -114,7 +116,7 @@ namespace System.Reflection
         /// <returns>
         ///     The string representation of the method signature.
         /// </returns>
-        public static string GetFullSignature(this MethodBase method)
+        public static string GetFullSignature([NotNull] this MethodBase method)
         {
             #region Argument Check
 
@@ -141,7 +143,7 @@ namespace System.Reflection
         /// <returns>
         ///     The type containing the method.
         /// </returns>
-        private static Type GetMethodType(MethodBase method)
+        private static Type GetMethodType([NotNull] MethodBase method)
         {
             return method.DeclaringType ?? method.ReflectedType;
         }
@@ -158,7 +160,7 @@ namespace System.Reflection
         /// <returns>
         ///     The signature of the method.
         /// </returns>
-        private static string GetSignatureInternal(MethodBase method, bool fullNames)
+        private static string GetSignatureInternal([NotNull] MethodBase method, bool fullNames)
         {
             var resultBuilder = new StringBuilder();
 
@@ -186,7 +188,7 @@ namespace System.Reflection
             {
                 resultBuilder.Append("<");
 
-                for (int index = 0; index < genericArguments.Length; index++)
+                for (var index = 0; index < genericArguments.Length; index++)
                 {
                     if (index > 0)
                     {
@@ -202,7 +204,7 @@ namespace System.Reflection
             var parameters = method.GetParameters();
             resultBuilder.Append("(");
 
-            for (int index = 0; index < parameters.Length; index++)
+            for (var index = 0; index < parameters.Length; index++)
             {
                 if (index > 0)
                 {
@@ -239,7 +241,7 @@ namespace System.Reflection
         /// <returns>
         ///     The name of the method.
         /// </returns>
-        private static string GetNameInternal(MethodBase method, bool fullName)
+        private static string GetNameInternal([NotNull] MethodBase method, bool fullName)
         {
             var type = GetMethodType(method);
             return (type == null ? string.Empty : (fullName ? type.FullName : type.Name) + TypeDelimiter)

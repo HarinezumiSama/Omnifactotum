@@ -2,6 +2,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.Diagnostics;
+using Omnifactotum.Annotations;
 
 namespace Omnifactotum
 {
@@ -40,7 +41,7 @@ namespace Omnifactotum
         /// <param name="dictionary">
         ///     The original dictionary to wrap.
         /// </param>
-        public ReadOnlyDictionary(IDictionary<TKey, TValue> dictionary)
+        public ReadOnlyDictionary([NotNull] IDictionary<TKey, TValue> dictionary)
         {
             #region Argument Check
 
@@ -67,7 +68,10 @@ namespace Omnifactotum
         public ICollection<TKey> Keys
         {
             [DebuggerStepThrough]
-            get { return _dictionary.Keys; }
+            get
+            {
+                return _dictionary.Keys;
+            }
         }
 
         /// <summary>
@@ -79,7 +83,10 @@ namespace Omnifactotum
         public ICollection<TValue> Values
         {
             [DebuggerStepThrough]
-            get { return _dictionary.Values; }
+            get
+            {
+                return _dictionary.Values;
+            }
         }
 
         /// <summary>
@@ -104,7 +111,7 @@ namespace Omnifactotum
         /// <exception cref="System.Collections.Generic.KeyNotFoundException">
         ///     The property is retrieved and key is not found.
         /// </exception>
-        public TValue this[TKey key]
+        public TValue this[[NotNull] TKey key]
         {
             [DebuggerNonUserCode]
             get
@@ -133,7 +140,7 @@ namespace Omnifactotum
         ///     The object to use as the value of the element to add.
         /// </param>
         [DebuggerNonUserCode]
-        void IDictionary<TKey, TValue>.Add(TKey key, TValue value)
+        void IDictionary<TKey, TValue>.Add([NotNull] TKey key, TValue value)
         {
             throw new NotSupportedException(ReadOnlyMessage);
         }
@@ -152,7 +159,7 @@ namespace Omnifactotum
         ///     <b>true</b> if the element is successfully removed; otherwise, <b>false</b>.
         /// </returns>
         [DebuggerNonUserCode]
-        bool IDictionary<TKey, TValue>.Remove(TKey key)
+        bool IDictionary<TKey, TValue>.Remove([NotNull] TKey key)
         {
             throw new NotSupportedException(ReadOnlyMessage);
         }
@@ -168,7 +175,7 @@ namespace Omnifactotum
         ///     with the specified key; otherwise, <b>false</b>.
         /// </returns>
         [DebuggerNonUserCode]
-        public bool ContainsKey(TKey key)
+        public bool ContainsKey([NotNull] TKey key)
         {
             return _dictionary.ContainsKey(key);
         }
@@ -207,7 +214,10 @@ namespace Omnifactotum
         public int Count
         {
             [DebuggerNonUserCode]
-            get { return _dictionary.Count; }
+            get
+            {
+                return _dictionary.Count;
+            }
         }
 
         /// <summary>
@@ -219,7 +229,10 @@ namespace Omnifactotum
         public bool IsReadOnly
         {
             [DebuggerStepThrough]
-            get { return true; }
+            get
+            {
+                return true;
+            }
         }
 
         /// <summary>

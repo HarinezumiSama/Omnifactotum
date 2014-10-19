@@ -93,10 +93,12 @@
     <Compile Include="ComparableObjectBase.cs" />
     <Compile Include="ComparableValueCapsule.cs" />
     <Compile Include="EnumFixedSizeDictionary.cs" />
+    <Compile Include="EnumFixedSizeDictionaryDeterminant.cs" />
     <Compile Include="EquatableObjectBase.cs" />
     <Compile Include="EquatableValueCapsule.cs" />
     <Compile Include="ExtensionMethods\OmnifactotumMathExtensions.cs" />
     <Compile Include="ExtensionMethods\OmnifactotumExpressionExtensions.cs" />
+    <Compile Include="Factotum.For.cs" />
     <Compile Include="FixedSizeDictionaryDeterminant.cs" />
     <Compile Include="FixedSizeDictionary.cs" />
     <Compile Include="RecursiveProcessingContext.cs" />

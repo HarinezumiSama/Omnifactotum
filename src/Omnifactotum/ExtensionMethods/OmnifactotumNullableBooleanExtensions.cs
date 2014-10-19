@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using Omnifactotum.Annotations;
 
 //// Namespace is intentionally named so in order to simplify usage of extension methods
 //// ReSharper disable once CheckNamespace
@@ -33,7 +34,7 @@ namespace System
         ///     The string representation of the specified nullable Boolean value.
         /// </returns>
         public static string ToString(
-            this bool? value,
+            [CanBeNull] this bool? value,
             string noValueString,
             string trueValueString,
             string falseValueString)

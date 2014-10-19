@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
+using Omnifactotum.Annotations;
 
 namespace Omnifactotum
 {
@@ -30,7 +31,7 @@ namespace Omnifactotum
         /// <param name="nodes">
         ///     The collection of nodes to initialize the <see cref="DirectedGraph{T}"/> with.
         /// </param>
-        public DirectedGraph(IEnumerable<DirectedGraphNode<T>> nodes)
+        public DirectedGraph([NotNull] IEnumerable<DirectedGraphNode<T>> nodes)
             : this()
         {
             #region Argument Check
@@ -58,7 +59,7 @@ namespace Omnifactotum
         /// <returns>
         ///     A created node.
         /// </returns>
-        public DirectedGraphNode<T> AddNode(T nodeValue)
+        public DirectedGraphNode<T> AddNode([CanBeNull] T nodeValue)
         {
             var node = new DirectedGraphNode<T>(nodeValue);
             Add(node);
@@ -75,7 +76,8 @@ namespace Omnifactotum
         /// <returns>
         ///     An array of the nodes sorted topologically.
         /// </returns>
-        public DirectedGraphNode<T>[] SortTopologically(Comparison<DirectedGraphNode<T>> compareEquipollentNodes)
+        public DirectedGraphNode<T>[] SortTopologically(
+            [CanBeNull] Comparison<DirectedGraphNode<T>> compareEquipollentNodes)
         {
             var internalNodeMap = new Dictionary<DirectedGraphNode<T>, InternalNode<T>>(this.Count);
 
@@ -222,10 +224,6 @@ namespace Omnifactotum
             }
 
             #endregion
-
-            #region Public Methods
-
-            #endregion
         }
 
         #endregion
@@ -245,7 +243,7 @@ namespace Omnifactotum
             /// <summary>
             ///     Initializes a new instance of the <see cref="NodeComparer{TValue}"/> class.
             /// </summary>
-            public NodeComparer(Comparison<DirectedGraphNode<TValue>> comparison)
+            public NodeComparer([CanBeNull] Comparison<DirectedGraphNode<TValue>> comparison)
             {
                 _comparison = comparison ?? ((x, y) => Comparer<TValue>.Default.Compare(x.Value, y.Value));
             }

@@ -2,6 +2,8 @@
 using System.Threading;
 
 //// Namespace is intentionally named so in order to simplify usage of extension methods
+using Omnifactotum.Annotations;
+
 //// ReSharper disable once CheckNamespace
 namespace System
 {
@@ -22,7 +24,7 @@ namespace System
         ///     <b>true</b> if the specified exception should NOT be handled by a user code; otherwise, <b>false</b>.
         /// </returns>
         [DebuggerNonUserCode]
-        public static bool IsFatal(this Exception exception)
+        public static bool IsFatal([CanBeNull] this Exception exception)
         {
             return exception is ThreadAbortException
                 || exception is OperationCanceledException

@@ -2,6 +2,7 @@
 using System.Diagnostics;
 using System.Linq;
 using Omnifactotum;
+using Omnifactotum.Annotations;
 
 //// Namespace is intentionally named so in order to simplify usage of extension methods
 //// ReSharper disable once CheckNamespace
@@ -26,7 +27,8 @@ namespace System.Collections.Generic
         /// <returns>
         ///     A read-only wrapper for the specified set.
         /// </returns>
-        public static ReadOnlySet<T> AsReadOnly<T>(this ISet<T> set)
+        [NotNull]
+        public static ReadOnlySet<T> AsReadOnly<T>([NotNull] this ISet<T> set)
         {
             #region Argument Check
 

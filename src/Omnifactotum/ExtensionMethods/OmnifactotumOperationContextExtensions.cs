@@ -4,6 +4,7 @@ using System.Diagnostics;
 using System.IdentityModel.Claims;
 using System.Linq;
 using System.Security.Cryptography.X509Certificates;
+using Omnifactotum.Annotations;
 
 //// Namespace is intentionally named so in order to simplify usage of extension methods
 //// ReSharper disable once CheckNamespace
@@ -25,6 +26,7 @@ namespace System.ServiceModel
         /// <returns>
         ///     An <see cref="X509Certificate2"/> if the client has provided its certificate, or <b>null</b> otherwise.
         /// </returns>
+        [CanBeNull]
         public static X509Certificate2 GetClientCertificate(this OperationContext operationContext)
         {
             var certificates = GetAllClientCertificates(operationContext);
@@ -35,6 +37,7 @@ namespace System.ServiceModel
 
         #region Private Methods
 
+        [NotNull]
         private static IEnumerable<X509Certificate2> GetAllClientCertificates(OperationContext operationContext)
         {
             if (operationContext == null || operationContext.ServiceSecurityContext == null

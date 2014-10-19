@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
+using Omnifactotum.Annotations;
 
 //// Namespace is intentionally named so in order to simplify usage of extension methods
 //// ReSharper disable once CheckNamespace
@@ -57,7 +58,9 @@ namespace System
         /// <returns>
         ///     A new hash code produced from the hash codes obtained from the specified instances.
         /// </returns>
-        public static int CombineHashCodes<TPreviuos, TNext>(this TPreviuos previous, TNext next)
+        public static int CombineHashCodes<TPreviuos, TNext>(
+            [CanBeNull] this TPreviuos previous,
+            [CanBeNull] TNext next)
         {
             return CombineHashCodeValues(previous.GetHashCodeSafely(), next.GetHashCodeSafely());
         }
@@ -79,7 +82,7 @@ namespace System
         ///     A new hash code produced from a hash code obtained at a previous step and a hash code of
         ///     the specified instance.
         /// </returns>
-        public static int CombineHashCodes<TNext>(this int previousHashCode, TNext next)
+        public static int CombineHashCodes<TNext>(this int previousHashCode, [CanBeNull] TNext next)
         {
             return CombineHashCodeValues(previousHashCode, next.GetHashCodeSafely());
         }

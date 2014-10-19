@@ -3,6 +3,8 @@ using System.Diagnostics;
 using System.Globalization;
 
 //// Namespace is intentionally named so in order to simplify usage of extension methods
+using Omnifactotum.Annotations;
+
 //// ReSharper disable once CheckNamespace
 namespace System.Reflection
 {
@@ -26,7 +28,7 @@ namespace System.Reflection
         ///     The specified assembly does not have a local path.
         /// </exception>
         [DebuggerNonUserCode]
-        public static string GetLocalPath(this Assembly assembly)
+        public static string GetLocalPath([NotNull] this Assembly assembly)
         {
             #region Argument Check
 

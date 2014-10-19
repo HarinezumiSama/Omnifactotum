@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Globalization;
 using System.Linq;
+using Omnifactotum.Annotations;
 
 namespace Omnifactotum
 {
@@ -31,7 +32,7 @@ namespace Omnifactotum
         /// <param name="owner">
         ///     The owner of the <see cref="VirtualTreeNodeCollection{T}"/>.
         /// </param>
-        internal VirtualTreeNodeCollection(VirtualTreeNodeBase<T> owner)
+        internal VirtualTreeNodeCollection([NotNull] VirtualTreeNodeBase<T> owner)
         {
             #region Argument Check
 
@@ -56,7 +57,9 @@ namespace Omnifactotum
         /// <param name="collection">
         ///     The collection of the nodes to initialize the current collection with.
         /// </param>
-        internal VirtualTreeNodeCollection(VirtualTreeNodeBase<T> owner, IEnumerable<VirtualTreeNode<T>> collection)
+        internal VirtualTreeNodeCollection(
+            [NotNull] VirtualTreeNodeBase<T> owner,
+            [NotNull] IEnumerable<VirtualTreeNode<T>> collection)
             : this(owner)
         {
             AddRange(collection);
@@ -98,7 +101,7 @@ namespace Omnifactotum
         ///     An item within the specified <paramref name="collection"/> already belongs to this or
         ///     another collection.
         /// </exception>
-        public void AddRange(IEnumerable<VirtualTreeNode<T>> collection)
+        public void AddRange([NotNull] IEnumerable<VirtualTreeNode<T>> collection)
         {
             #region Argument Check
 
@@ -131,6 +134,7 @@ namespace Omnifactotum
         /// <exception cref="System.ArgumentOutOfRangeException">
         ///     <paramref name="index"/> is not a valid index.
         /// </exception>
+        [NotNull]
         public VirtualTreeNode<T> this[int index]
         {
             [DebuggerNonUserCode]
@@ -174,7 +178,7 @@ namespace Omnifactotum
         /// <returns>
         ///     The index of <paramref name="item"/> if found; otherwise, <b>-1</b>.
         /// </returns>
-        public int IndexOf(VirtualTreeNode<T> item)
+        public int IndexOf([CanBeNull] VirtualTreeNode<T> item)
         {
             return item == null ? -1 : _list.IndexOf(item);
         }
@@ -197,7 +201,7 @@ namespace Omnifactotum
         /// <exception cref="System.ArgumentException">
         ///     <paramref name="item"/> already belongs to this or another collection.
         /// </exception>
-        public void Insert(int index, VirtualTreeNode<T> item)
+        public void Insert(int index, [NotNull] VirtualTreeNode<T> item)
         {
             #region Argument Check
 
@@ -235,7 +239,10 @@ namespace Omnifactotum
         public int Count
         {
             [DebuggerStepThrough]
-            get { return _list.Count; }
+            get
+            {
+                return _list.Count;
+            }
         }
 
         /// <summary>
@@ -247,7 +254,10 @@ namespace Omnifactotum
         public bool IsReadOnly
         {
             [DebuggerStepThrough]
-            get { return false; }
+            get
+            {
+                return false;
+            }
         }
 
         /// <summary>
@@ -262,7 +272,7 @@ namespace Omnifactotum
         /// <exception cref="System.ArgumentException">
         ///     <paramref name="item"/> already belongs to this or another collection.
         /// </exception>
-        public void Add(VirtualTreeNode<T> item)
+        public void Add([NotNull] VirtualTreeNode<T> item)
         {
             #region Argument Check
 
@@ -297,7 +307,7 @@ namespace Omnifactotum
         ///     <b>true</b> if <paramref name="item"/> is found in the <see cref="VirtualTreeNodeCollection{T}"/>;
         ///     otherwise, <b>false</b>.
         /// </returns>
-        public bool Contains(VirtualTreeNode<T> item)
+        public bool Contains([CanBeNull] VirtualTreeNode<T> item)
         {
             return item != null && _list.Contains(item);
         }
@@ -342,14 +352,14 @@ namespace Omnifactotum
         ///     <b>true</b> if <paramref name="item"/> was successfully removed from
         ///     the <see cref="VirtualTreeNodeCollection{T}"/>; otherwise, <b>false</b>.
         /// </returns>
-        public bool Remove(VirtualTreeNode<T> item)
+        public bool Remove([CanBeNull] VirtualTreeNode<T> item)
         {
             if (item == null)
             {
                 return false;
             }
 
-            bool result = _list.Remove(item);
+            var result = _list.Remove(item);
             if (result)
             {
                 item.Parent = null;
@@ -392,7 +402,7 @@ namespace Omnifactotum
 
         #region Private Methods
 
-        private void CheckItemBeingAdded(VirtualTreeNode<T> item)
+        private void CheckItemBeingAdded([NotNull] VirtualTreeNode<T> item)
         {
             if (item == null)
             {

@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Globalization;
 using System.Linq;
+using Omnifactotum.Annotations;
 
 namespace Omnifactotum
 {
@@ -39,7 +40,7 @@ namespace Omnifactotum
         /// <param name="children">
         ///     The children to initialize the <see cref="VirtualTreeNodeBase{T}"/> instance with.
         /// </param>
-        protected VirtualTreeNodeBase(ICollection<VirtualTreeNode<T>> children)
+        protected VirtualTreeNodeBase([NotNull] ICollection<VirtualTreeNode<T>> children)
             : this()
         {
             #region Argument Check
@@ -66,6 +67,7 @@ namespace Omnifactotum
         /// <summary>
         ///     Gets the collection of the child nodes.
         /// </summary>
+        [NotNull]
         public VirtualTreeNodeCollection<T> Children
         {
             [DebuggerNonUserCode]

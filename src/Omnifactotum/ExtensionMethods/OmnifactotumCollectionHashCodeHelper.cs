@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Diagnostics;
 using System.Linq;
+using Omnifactotum.Annotations;
 
 //// Namespace is intentionally named so in order to simplify usage of extension methods
 //// ReSharper disable once CheckNamespace
@@ -26,7 +27,7 @@ namespace System.Collections.Generic
         /// <returns>
         ///     A hash code of the specified collection.
         /// </returns>
-        public static int ComputeCollectionHashCode<T>(this IEnumerable<T> collection)
+        public static int ComputeCollectionHashCode<T>([CanBeNull] this IEnumerable<T> collection)
         {
             if (collection == null)
             {

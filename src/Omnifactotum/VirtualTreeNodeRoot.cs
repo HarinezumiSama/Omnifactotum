@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using Omnifactotum.Annotations;
 
 namespace Omnifactotum
 {
@@ -30,7 +31,7 @@ namespace Omnifactotum
         /// <param name="children">
         ///     The children to initialize the <see cref="VirtualTreeNodeRoot{T}"/> instance with.
         /// </param>
-        public VirtualTreeNodeRoot(ICollection<VirtualTreeNode<T>> children)
+        public VirtualTreeNodeRoot([NotNull] ICollection<VirtualTreeNode<T>> children)
             : base(children)
         {
             // Nothing to do

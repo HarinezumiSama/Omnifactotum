@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using Omnifactotum.Annotations;
 
 namespace Omnifactotum
 {
@@ -27,7 +28,9 @@ namespace Omnifactotum
         ///     The equality comparer to use when comparing objects' keys; or <b>null</b> to use the default
         ///     equality comparer for type <typeparamref name="TKey"/>.
         /// </param>
-        public KeyedEqualityComparer(Func<T, TKey> keySelector, IEqualityComparer<TKey> keyComparer)
+        public KeyedEqualityComparer(
+            [NotNull] Func<T, TKey> keySelector,
+            [CanBeNull] IEqualityComparer<TKey> keyComparer)
         {
             #region Argument Check
 
@@ -49,7 +52,7 @@ namespace Omnifactotum
         /// <param name="keySelector">
         ///     A reference to a method that provides a key for an object being compared.
         /// </param>
-        public KeyedEqualityComparer(Func<T, TKey> keySelector)
+        public KeyedEqualityComparer([NotNull] Func<T, TKey> keySelector)
             : this(keySelector, null)
         {
             // Nothing to do
@@ -62,6 +65,7 @@ namespace Omnifactotum
         /// <summary>
         ///     Gets a reference to a method that provides a key for an object being compared.
         /// </summary>
+        [NotNull]
         public Func<T, TKey> KeySelector
         {
             get;
@@ -71,6 +75,7 @@ namespace Omnifactotum
         /// <summary>
         ///     Gets the equality comparer to use when comparing objects' keys.
         /// </summary>
+        [NotNull]
         public IEqualityComparer<TKey> KeyComparer
         {
             get;
