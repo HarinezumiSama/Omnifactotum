@@ -15,7 +15,7 @@ namespace Omnifactotum
     /// </typeparam>
     [Serializable]
     [DebuggerDisplay(@"\{Value = {_value}\}")]
-    public sealed class SyncValueContainer<T> : IEquatable<SyncValueContainer<T>>
+    public sealed class SyncValueContainer<T> : IValueContainer<T>, IEquatable<SyncValueContainer<T>>
     {
         #region Constants and Fields
 
@@ -93,10 +93,13 @@ namespace Omnifactotum
             private set;
         }
 
+        #endregion
+
+        #region IValueContainer<T> Members
+
         /// <summary>
         ///     Gets or sets the contained value.
         /// </summary>
-        [CanBeNull]
         public T Value
         {
             [DebuggerNonUserCode]

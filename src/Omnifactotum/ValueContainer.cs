@@ -15,7 +15,7 @@ namespace Omnifactotum
     /// </typeparam>
     [Serializable]
     [DebuggerDisplay(@"\{Value = {Value}\}")]
-    public sealed class ValueContainer<T> : IEquatable<ValueContainer<T>>
+    public sealed class ValueContainer<T> : IValueContainer<T>, IEquatable<ValueContainer<T>>
     {
         #region Constructors
 
@@ -43,12 +43,11 @@ namespace Omnifactotum
 
         #endregion
 
-        #region Public Properties
+        #region IValueContainer<T> Members
 
         /// <summary>
         ///     Gets or sets the encapsulated value.
         /// </summary>
-        [CanBeNull]
         public T Value
         {
             get;

@@ -38,6 +38,12 @@ namespace Omnifactotum.Tests
         #region Tests
 
         [Test]
+        public void TestSupportedInterfaces()
+        {
+            Assert.That(typeof(IValueContainer<T>).IsAssignableFrom(typeof(SyncValueContainer<T>)), Is.True);
+        }
+
+        [Test]
         public void TestPropertyAccess()
         {
             NUnitHelper.For<SyncValueContainer<T>>.AssertReadableWritable(
