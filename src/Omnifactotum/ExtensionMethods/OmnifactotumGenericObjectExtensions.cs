@@ -51,6 +51,41 @@ namespace System
         }
 
         /// <summary>
+        ///     Returns the value which underlies the specified nullable value, if it is not <c>null</c>
+        ///     (that is, if its <see cref="Nullable{T}.HasValue"/> property is <c>true</c>);
+        ///     otherwise, throws <see cref="System.ArgumentNullException"/>.
+        /// </summary>
+        /// <typeparam name="T">
+        ///     The type which underlies the nullable type of the value to check.
+        /// </typeparam>
+        /// <param name="value">
+        ///     The value to check.
+        /// </param>
+        /// <returns>
+        ///     The value which underlies the specified nullable value, if it is not <c>null</c>
+        ///     (that is, if its <see cref="Nullable{T}.HasValue"/> property is <c>true</c>).
+        /// </returns>
+        /// <exception cref="System.ArgumentNullException">
+        ///     <paramref name="value"/> is <c>null</c>, that is, its <see cref="Nullable{T}.HasValue"/> property is
+        ///     <c>false</c>.
+        /// </exception>
+        [DebuggerStepThrough]
+        public static T EnsureNotNull<T>([CanBeNull] this T? value)
+            where T : struct
+        {
+            #region Argument Check
+
+            if (!value.HasValue)
+            {
+                throw new ArgumentNullException("value");
+            }
+
+            #endregion
+
+            return value.Value;
+        }
+
+        /// <summary>
         ///     Returns a <see cref="System.String"/> that represents the specified value, considering that this value
         ///     may be <c>null</c>.
         /// </summary>

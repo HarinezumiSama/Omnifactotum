@@ -5,6 +5,7 @@ using System.Diagnostics;
 using System.Globalization;
 using System.Linq;
 using System.Reflection;
+using System.Threading.Tasks;
 using Moq;
 using NUnit.Framework;
 using Omnifactotum.Annotations;
@@ -247,6 +248,30 @@ namespace Omnifactotum.Tests
             var id = Factotum.GenerateId(size, modes);
             Assert.That(id, Has.Length.EqualTo(size));
             Assert.That(id.Count(b => b == 0), Is.LessThan(Factotum.MinimumGeneratedIdPartSize));
+        }
+
+        [Test]
+        public void TestCreateEmptyCompletedTask()
+        {
+            using (var task = Factotum.CreateEmptyCompletedTask())
+            {
+                Assert.That(task, Is.Not.Null);
+                Assert.That(task.Status, Is.EqualTo(TaskStatus.RanToCompletion));
+                Assert.That(task.Exception, Is.Null);
+            }
+        }
+
+        [Test]
+        public void TestCreateEmptyFaultedTask()
+        {
+            var exception = new InvalidOperationException();
+
+            using (var task = Factotum.CreateEmptyFaultedTask(exception))
+            {
+                Assert.That(task, Is.Not.Null);
+                Assert.That(task.Status, Is.EqualTo(TaskStatus.Faulted));
+                Assert.That(task.Exception.EnsureNotNull().InnerExceptions.Single(), Is.SameAs(exception));
+            }
         }
 
         #endregion

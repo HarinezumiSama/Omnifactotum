@@ -65,6 +65,7 @@
     <Compile Include="KeyedEqualityComparerTests.cs" />
     <Compile Include="OmnifactotumCustomAttributeProviderExtensionsTests.cs" />
     <Compile Include="OmnifactotumDictionaryExtensionsTests.cs" />
+    <Compile Include="OmnifactotumGenericObjectExtensionsTests.cs" />
     <Compile Include="ValueContainerTests.cs" />
     <Compile Include="NotNullOrWhiteSpaceStringConstraintTests.cs" />
     <Compile Include="DirectedGraphTests.cs" />

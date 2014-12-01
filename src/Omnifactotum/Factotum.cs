@@ -12,6 +12,7 @@ using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 using System.Security.Cryptography;
 using System.Text;
+using System.Threading.Tasks;
 using Omnifactotum.Annotations;
 
 namespace Omnifactotum
@@ -487,6 +488,41 @@ namespace Omnifactotum
             var path = assembly.GetLocalPath();
 
             return Path.GetDirectoryName(path).EnsureNotNull();
+        }
+
+        /// <summary>
+        ///     Creates a task that does nothing and whose status is <see cref="TaskStatus.RanToCompletion"/>.
+        /// </summary>
+        /// <returns>
+        ///     An empty completed task.
+        /// </returns>
+        public static Task CreateEmptyCompletedTask()
+        {
+            var taskCompletionSource = new TaskCompletionSource<int>();
+            taskCompletionSource.SetResult(0);
+            return taskCompletionSource.Task;
+        }
+
+        /// <summary>
+        ///     Creates a task that does nothing and whose status is <see cref="TaskStatus.Faulted"/>.
+        /// </summary>
+        /// <returns>
+        ///     An empty faulted task.
+        /// </returns>
+        public static Task CreateEmptyFaultedTask([NotNull] Exception exception)
+        {
+            #region Argument Check
+
+            if (exception == null)
+            {
+                throw new ArgumentNullException("exception");
+            }
+
+            #endregion
+
+            var taskCompletionSource = new TaskCompletionSource<int>();
+            taskCompletionSource.SetException(exception);
+            return taskCompletionSource.Task;
         }
 
         #endregion
