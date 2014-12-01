@@ -1,3 +1,6 @@
+--- Changes in 0.3.0.90 (since 0.3.0.86) ---
+* [BREAKING CHANGE] OmnifactotumCustomAttributeProviderExtensions: GetCustomAttributes -> GetCustomAttributeArray (for compatibility with FW 4.5+)
+
 --- Changes in 0.3.0.86 (since 0.3.0.83) ---
 * [BREAKING CHANGE] OmnifactotumDictionaryExtensions: The method GetValueOrCreate has been renamed to GetOrCreateValue for readablity and in order to avoid confusion with GetValueOrDefault
 * OmnifactotumDictionaryExtensions: Improved annotations
