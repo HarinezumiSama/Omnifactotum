@@ -99,6 +99,7 @@
     <Compile Include="Factotum.For.cs" />
     <Compile Include="FixedSizeDictionaryDeterminant.cs" />
     <Compile Include="FixedSizeDictionary.cs" />
+    <Compile Include="KeyedEqualityComparer.Helper.cs" />
     <Compile Include="RecursiveProcessingContext.cs" />
     <Compile Include="Validation\Constraints\BaseMemberConstraintAttribute.cs" />
     <Compile Include="Validation\Constraints\BaseValidatableMemberAttribute.cs" />

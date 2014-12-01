@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using Omnifactotum.Annotations;
 
@@ -13,7 +14,7 @@ namespace Omnifactotum
     /// <typeparam name="TKey">
     ///     The type of the comparison key.
     /// </typeparam>
-    public sealed class KeyedEqualityComparer<T, TKey> : IEqualityComparer<T>
+    public sealed class KeyedEqualityComparer<T, TKey> : IEqualityComparer<T>, IEqualityComparer
     {
         #region Constructors
 
@@ -47,7 +48,7 @@ namespace Omnifactotum
 
         /// <summary>
         ///     Initializes a new instance of the <see cref="KeyedEqualityComparer{T,TKey}"/> class
-        ///     with the specified key selector and default equality comparer.
+        ///     with the specified key selector and default key equality comparer.
         /// </summary>
         /// <param name="keySelector">
         ///     A reference to a method that provides a key for an object being compared.
@@ -98,8 +99,21 @@ namespace Omnifactotum
         /// <returns>
         ///     <b>true</b> if the keys of the specified objects are equal; otherwise, <b>false</b>.
         /// </returns>
-        public bool Equals(T x, T y)
+        public bool Equals([CanBeNull] T x, [CanBeNull] T y)
         {
+            if (!typeof(T).IsValueType)
+            {
+                if (ReferenceEquals(x, y))
+                {
+                    return true;
+                }
+
+                if (ReferenceEquals(x, null) || ReferenceEquals(y, null))
+                {
+                    return false;
+                }
+            }
+
             var keyX = this.KeySelector(x);
             var keyY = this.KeySelector(y);
 
@@ -110,15 +124,80 @@ namespace Omnifactotum
         ///     Returns a hash code for the key of the specified object.
         /// </summary>
         /// <param name="obj">
-        ///     The object of type <typeparamref name="T"/> for which a hash code is to be returned.
+        ///     The object of type <typeparamref name="T"/> for which key a hash code is to be returned.
         /// </param>
         /// <returns>
         ///     A hash code for the key of the specified object.
         /// </returns>
-        public int GetHashCode(T obj)
+        public int GetHashCode([CanBeNull] T obj)
         {
+            if (!typeof(T).IsValueType && ReferenceEquals(obj, null))
+            {
+                return 0;
+            }
+
             var key = this.KeySelector(obj);
             return ReferenceEquals(key, null) ? 0 : this.KeyComparer.GetHashCode(key);
+        }
+
+        #endregion
+
+        #region IEqualityComparer Members
+
+        /// <summary>
+        ///     Determines whether the specified objects are equal.
+        /// </summary>
+        /// <returns>
+        ///     <b>true</b> if the specified objects are equal; otherwise, <b>false</b>.
+        /// </returns>
+        /// <param name="x">
+        ///     The first object to compare.
+        /// </param>
+        /// <param name="y">
+        ///     The second object to compare.
+        /// </param>
+        bool IEqualityComparer.Equals([CanBeNull] object x, [CanBeNull] object y)
+        {
+            if (ReferenceEquals(x, y))
+            {
+                return true;
+            }
+
+            if (ReferenceEquals(x, null) || ReferenceEquals(y, null))
+            {
+                return false;
+            }
+
+            if ((x is T) && (y is T))
+            {
+                return Equals((T)x, (T)y);
+            }
+
+            throw new ArgumentException("Invalid argument type.");
+        }
+
+        /// <summary>
+        ///     Returns a hash code for the key of the specified object.
+        /// </summary>
+        /// <param name="obj">
+        ///     The object for which key a hash code is to be returned.
+        /// </param>
+        /// <returns>
+        ///     A hash code for the key of the specified object.
+        /// </returns>
+        int IEqualityComparer.GetHashCode([CanBeNull] object obj)
+        {
+            if (ReferenceEquals(obj, null))
+            {
+                return 0;
+            }
+
+            if (obj is T)
+            {
+                return GetHashCode((T)obj);
+            }
+
+            throw new ArgumentException("Invalid argument type.", "obj");
         }
 
         #endregion

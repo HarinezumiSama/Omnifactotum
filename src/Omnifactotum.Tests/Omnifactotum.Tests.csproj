@@ -61,6 +61,8 @@
     <Compile Include="ConstraintTestsBase.cs" />
     <Compile Include="EnumFixedSizeDictionaryTests.cs" />
     <Compile Include="FixedSizeDictionaryTests.cs" />
+    <Compile Include="KeyedEqualityComparerHelperTests.cs" />
+    <Compile Include="KeyedEqualityComparerTests.cs" />
     <Compile Include="OmnifactotumCustomAttributeProviderExtensionsTests.cs" />
     <Compile Include="OmnifactotumDictionaryExtensionsTests.cs" />
     <Compile Include="ValueContainerTests.cs" />
