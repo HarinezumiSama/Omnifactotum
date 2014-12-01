@@ -90,6 +90,7 @@
     <Compile Include="ColoredConsoleTraceListener.cs" />
     <Compile Include="ComparableObjectBase.cs" />
     <Compile Include="ComparableValueCapsule.cs" />
+    <Compile Include="ValueContainer.Helper.cs" />
     <Compile Include="EnumFixedSizeDictionary.cs" />
     <Compile Include="EnumFixedSizeDictionaryDeterminant.cs" />
     <Compile Include="EquatableObjectBase.cs" />
@@ -102,6 +103,7 @@
     <Compile Include="IValueContainer.cs" />
     <Compile Include="KeyedEqualityComparer.Helper.cs" />
     <Compile Include="RecursiveProcessingContext.cs" />
+    <Compile Include="SyncValueContainer.Helper.cs" />
     <Compile Include="Validation\Constraints\BaseMemberConstraintAttribute.cs" />
     <Compile Include="Validation\Constraints\BaseValidatableMemberAttribute.cs" />
     <Compile Include="Validation\Constraints\KeyValuePairConstraintBase.cs" />

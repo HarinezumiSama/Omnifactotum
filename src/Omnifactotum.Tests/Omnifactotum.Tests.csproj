@@ -59,6 +59,8 @@
     </None>
     <Compile Include="ByReferenceEqualityComparerTests.cs" />
     <Compile Include="ConstraintTestsBase.cs" />
+    <Compile Include="ValueContainerHelperTests.cs" />
+    <Compile Include="SyncValueContainerHelperTests.cs" />
     <Compile Include="EnumFixedSizeDictionaryTests.cs" />
     <Compile Include="FixedSizeDictionaryTests.cs" />
     <Compile Include="KeyedEqualityComparerHelperTests.cs" />
