@@ -185,7 +185,7 @@ namespace Omnifactotum.Validation
                         new
                         {
                             Member = obj,
-                            Attributes = obj.GetCustomAttributes<BaseValidatableMemberAttribute>(true)
+                            Attributes = obj.GetCustomAttributeArray<BaseValidatableMemberAttribute>(true)
                         })
                 .Where(obj => obj.Attributes.Length != 0)
                 .ToArray();

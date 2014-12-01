@@ -34,7 +34,7 @@ namespace System.Reflection
         /// <exception cref="System.ArgumentNullException">
         ///     <paramref name="provider"/> is <b>null</b>.
         /// </exception>
-        public static TAttribute[] GetCustomAttributes<TAttribute>(
+        public static TAttribute[] GetCustomAttributeArray<TAttribute>(
             [NotNull] this ICustomAttributeProvider provider,
             bool inherit)
             where TAttribute : Attribute
@@ -65,6 +65,37 @@ namespace System.Reflection
         }
 
         /// <summary>
+        ///     Gets the list of the attributes, of the specified type, applied to the specified provider of
+        ///     custom attributes.
+        /// </summary>
+        /// <typeparam name="TAttribute">
+        ///     The type of the attribute.
+        /// </typeparam>
+        /// <param name="provider">
+        ///     The provider of custom attributes to get the attribute list of.
+        /// </param>
+        /// <param name="inherit">
+        ///     <b>true</b> to look up the hierarchy chain for the inherited custom attribute;
+        ///     otherwise, <b>false</b>.
+        /// </param>
+        /// <returns>
+        ///     The list of the attributes of the specified type.
+        /// </returns>
+        /// <exception cref="System.ArgumentNullException">
+        ///     <paramref name="provider"/> is <b>null</b>.
+        /// </exception>
+        [Obsolete(
+            "For compatibility with FW 4.5+: use OmnifactotumCustomAttributeProviderExtensions.GetCustomAttributeArray.",
+            true)]
+        public static TAttribute[] GetCustomAttributes<TAttribute>(
+            [NotNull] this ICustomAttributeProvider provider,
+            bool inherit)
+            where TAttribute : Attribute
+        {
+            return GetCustomAttributeArray<TAttribute>(provider, inherit);
+        }
+
+        /// <summary>
         ///     Gets the sole specified attribute applied to the specified provider of custom attributes.
         /// </summary>
         /// <typeparam name="TAttribute">
@@ -92,7 +123,7 @@ namespace System.Reflection
             bool inherit)
             where TAttribute : Attribute
         {
-            return GetSingleCustomAttributeInternal<TAttribute>(provider, inherit, Enumerable.Single);
+            return GetCustomAttributeArray<TAttribute>(provider, inherit).Single();
         }
 
         /// <summary>
@@ -123,48 +154,7 @@ namespace System.Reflection
             bool inherit)
             where TAttribute : Attribute
         {
-            return GetSingleCustomAttributeInternal<TAttribute>(provider, inherit, Enumerable.SingleOrDefault);
-        }
-
-        #endregion
-
-        #region Private Methods
-
-        /// <summary>
-        ///     Gets the single custom attribute.
-        /// </summary>
-        /// <typeparam name="TAttribute">
-        ///     The type of the attribute.
-        /// </typeparam>
-        /// <param name="provider">
-        ///     The attribute provider.
-        /// </param>
-        /// <param name="inherit">
-        ///     <b>true</b> to look up the hierarchy chain for the inherited custom attribute;
-        ///     otherwise, <b>false</b>.
-        /// </param>
-        /// <param name="getSingle">
-        ///     A reference to a method obtaining the single element.
-        /// </param>
-        /// <returns>
-        ///     A single attribute.
-        /// </returns>
-        private static TAttribute GetSingleCustomAttributeInternal<TAttribute>(
-            ICustomAttributeProvider provider,
-            bool inherit,
-            Func<IEnumerable<TAttribute>, TAttribute> getSingle)
-            where TAttribute : Attribute
-        {
-            #region Argument Check
-
-            if (provider == null)
-            {
-                throw new ArgumentNullException("provider");
-            }
-
-            #endregion
-
-            return getSingle(GetCustomAttributes<TAttribute>(provider, inherit));
+            return GetCustomAttributeArray<TAttribute>(provider, inherit).SingleOrDefault();
         }
 
         #endregion
