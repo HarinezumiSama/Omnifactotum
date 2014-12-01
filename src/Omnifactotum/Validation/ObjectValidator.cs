@@ -77,7 +77,7 @@ namespace Omnifactotum.Validation
         ///     The instance to validate.
         /// </param>
         /// <param name="recursiveProcessingContext">
-        ///     The context of the recursive processing, or <b>null</b> to use a new context.
+        ///     The context of the recursive processing, or <c>null</c> to use a new context.
         /// </param>
         /// <returns>
         ///     An <see cref="ObjectValidationResult"/> representing the validation result.
@@ -223,12 +223,12 @@ namespace Omnifactotum.Validation
                     memberDatas.Add(itemData);
                 }
             }
-                ////////TODO [vmcl] Support IEnumerable<T>
-                ////else if (parentExpression.Type.IsGenericType
-                ////    && typeof(IEnumerable<>).IsAssignableFrom(parentExpression.Type.GetGenericTypeDefinition()))
-                ////{
-                ////    throw new NotImplementedException();
-                ////}
+            //////// TODO [vmcl] Support IEnumerable<T>
+            ////else if (parentExpression.Type.IsGenericType
+            ////    && typeof(IEnumerable<>).IsAssignableFrom(parentExpression.Type.GetGenericTypeDefinition()))
+            ////{
+            ////    throw new NotImplementedException();
+            ////}
             else if (typeof(IEnumerable).IsAssignableFrom(parentExpression.Type))
             {
                 var enumerable = (IEnumerable)instance;

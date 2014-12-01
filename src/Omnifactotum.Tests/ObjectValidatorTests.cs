@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using System.Globalization;
 using System.Linq;
 using NUnit.Framework;
@@ -69,7 +70,7 @@ namespace Omnifactotum.Tests
             Assert.That(validationException.EnsureNotNull().ValidationResult, Is.SameAs(validationResult));
 
             Assert.That(
-                () => validationResult.EnsureSucceeded(),
+                validationResult.EnsureSucceeded,
                 Throws
                     .TypeOf<ObjectValidationException>()
                     .With
@@ -120,7 +121,7 @@ namespace Omnifactotum.Tests
             {
                 Properties = new Dictionary<string, SimpleContainer<int?>>
                 {
-                    { "", new SimpleContainer<int?> { ContainedValue = 0 } },
+                    { string.Empty, new SimpleContainer<int?> { ContainedValue = 0 } },
                     { "abc", new SimpleContainer<int?> { ContainedValue = 3 } },
                     { "x", new SimpleContainer<int?> { ContainedValue = null } },
                 }
@@ -184,7 +185,7 @@ namespace Omnifactotum.Tests
             Assert.That(validationResult.Errors.Count, Is.EqualTo(0));
             Assert.That(validationResult.IsObjectValid, Is.True);
             Assert.That(validationResult.GetException(), Is.Null);
-            Assert.That(() => validationResult.EnsureSucceeded(), Throws.Nothing);
+            Assert.That(validationResult.EnsureSucceeded, Throws.Nothing);
         }
 
         #endregion
@@ -195,6 +196,8 @@ namespace Omnifactotum.Tests
         {
             #region Constants and Fields
 
+            [SuppressMessage("StyleCop.CSharp.MaintainabilityRules", "SA1401:FieldsMustBePrivate",
+                Justification = "OK in the unit test.")]
             [MemberConstraint(typeof(UtcDateConstraint))]
             public DateTime StartDate;
 
@@ -329,6 +332,42 @@ namespace Omnifactotum.Tests
 
         #endregion
 
+        #region SimpleContainer Class
+
+        public sealed class SimpleContainer<T>
+        {
+            #region Public Properties
+
+            [MemberConstraint(typeof(NotNullConstraint))]
+            public T ContainedValue
+            {
+                get;
+                set;
+            }
+
+            #endregion
+        }
+
+        #endregion
+
+        #region MapContainerPropertiesPairConstraint Class
+
+        public sealed class MapContainerPropertiesPairConstraint
+            : KeyValuePairConstraintBase<string, SimpleContainer<int?>>
+        {
+            #region Constructors
+
+            public MapContainerPropertiesPairConstraint()
+                : base(typeof(NotNullOrEmptyStringConstraint), typeof(NotNullConstraint<SimpleContainer<int?>>))
+            {
+                // Nothing to do
+            }
+
+            #endregion
+        }
+
+        #endregion
+
         #region UtcDateConstraint Class
 
         private sealed class UtcDateConstraint : MemberConstraintBase
@@ -364,42 +403,6 @@ namespace Omnifactotum.Tests
                 Assert.Fail(Message);
                 throw new InvalidOperationException(Message);
             }
-        }
-
-        #endregion
-
-        #region SimpleContainer Class
-
-        public sealed class SimpleContainer<T>
-        {
-            #region Public Properties
-
-            [MemberConstraint(typeof(NotNullConstraint))]
-            public T ContainedValue
-            {
-                get;
-                set;
-            }
-
-            #endregion
-        }
-
-        #endregion
-
-        #region MapContainerPropertiesPairConstraint Class
-
-        public sealed class MapContainerPropertiesPairConstraint
-            : KeyValuePairConstraintBase<string, SimpleContainer<int?>>
-        {
-            #region Constructors
-
-            public MapContainerPropertiesPairConstraint()
-                : base(typeof(NotNullOrEmptyStringConstraint), typeof(NotNullConstraint<SimpleContainer<int?>>))
-            {
-                // Nothing to do
-            }
-
-            #endregion
         }
 
         #endregion

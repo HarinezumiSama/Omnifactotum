@@ -93,9 +93,9 @@ namespace Omnifactotum
         ///     The collection whose elements should be added
         /// </param>
         /// <exception cref="System.ArgumentNullException">
-        ///     <para><paramref name="collection"/> is <b>null</b>.</para>
+        ///     <para><paramref name="collection"/> is <c>null</c>.</para>
         ///     <para>-or-</para>
-        ///     <para>An item within the specified <paramref name="collection"/> is <b>null</b>.</para>
+        ///     <para>An item within the specified <paramref name="collection"/> is <c>null</c>.</para>
         /// </exception>
         /// <exception cref="System.ArgumentException">
         ///     An item within the specified <paramref name="collection"/> already belongs to this or
@@ -176,7 +176,7 @@ namespace Omnifactotum
         ///     The object to locate.
         /// </param>
         /// <returns>
-        ///     The index of <paramref name="item"/> if found; otherwise, <b>-1</b>.
+        ///     The index of <paramref name="item"/> if found; otherwise, <c>-1</c>.
         /// </returns>
         public int IndexOf([CanBeNull] VirtualTreeNode<T> item)
         {
@@ -196,7 +196,7 @@ namespace Omnifactotum
         ///     <paramref name="index"/> is not a valid index in the <see cref="VirtualTreeNodeCollection{T}"/>.
         /// </exception>
         /// <exception cref="System.ArgumentNullException">
-        ///     <paramref name="item"/> is <b>null</b>.
+        ///     <paramref name="item"/> is <c>null</c>.
         /// </exception>
         /// <exception cref="System.ArgumentException">
         ///     <paramref name="item"/> already belongs to this or another collection.
@@ -249,7 +249,7 @@ namespace Omnifactotum
         ///     Gets a value indicating whether the <see cref="VirtualTreeNodeCollection{T}"/> is read-only.
         /// </summary>
         /// <returns>
-        ///     The implementation of <see cref="VirtualTreeNodeCollection{T}"/> returns <b>false</b>.
+        ///     The implementation of <see cref="VirtualTreeNodeCollection{T}"/> returns <c>false</c>.
         /// </returns>
         public bool IsReadOnly
         {
@@ -267,7 +267,7 @@ namespace Omnifactotum
         ///     The object to add to the <see cref="VirtualTreeNodeCollection{T}"/>.
         /// </param>
         /// <exception cref="System.ArgumentNullException">
-        ///     <paramref name="item"/> is <b>null</b>.
+        ///     <paramref name="item"/> is <c>null</c>.
         /// </exception>
         /// <exception cref="System.ArgumentException">
         ///     <paramref name="item"/> already belongs to this or another collection.
@@ -304,8 +304,8 @@ namespace Omnifactotum
         ///     The object to locate in the <see cref="VirtualTreeNodeCollection{T}"/>.
         /// </param>
         /// <returns>
-        ///     <b>true</b> if <paramref name="item"/> is found in the <see cref="VirtualTreeNodeCollection{T}"/>;
-        ///     otherwise, <b>false</b>.
+        ///     <c>true</c> if <paramref name="item"/> is found in the <see cref="VirtualTreeNodeCollection{T}"/>;
+        ///     otherwise, <c>false</c>.
         /// </returns>
         public bool Contains([CanBeNull] VirtualTreeNode<T> item)
         {
@@ -325,7 +325,7 @@ namespace Omnifactotum
         ///     The zero-based index in array at which copying begins.
         /// </param>
         /// <exception cref="System.ArgumentNullException">
-        ///     <paramref name="array"/> is <b>null</b>.
+        ///     <paramref name="array"/> is <c>null</c>.
         /// </exception>
         public void CopyTo(VirtualTreeNode<T>[] array, int arrayIndex)
         {
@@ -349,8 +349,8 @@ namespace Omnifactotum
         ///     The object to remove from the <see cref="VirtualTreeNodeCollection{T}"/>.
         /// </param>
         /// <returns>
-        ///     <b>true</b> if <paramref name="item"/> was successfully removed from
-        ///     the <see cref="VirtualTreeNodeCollection{T}"/>; otherwise, <b>false</b>.
+        ///     <c>true</c> if <paramref name="item"/> was successfully removed from
+        ///     the <see cref="VirtualTreeNodeCollection{T}"/>; otherwise, <c>false</c>.
         /// </returns>
         public bool Remove([CanBeNull] VirtualTreeNode<T> item)
         {

@@ -7,7 +7,7 @@ namespace Omnifactotum.Annotations
     /// Indicates that the value of the marked type (or its derivatives)
     /// cannot be compared using '==' or '!=' operators and <c>Equals()</c>
     /// should be used instead. However, using '==' or '!=' for comparison
-    /// with <b>null</b> is always permitted.
+    /// with <c>null</c> is always permitted.
     /// </summary>
     /// <example><code>
     /// [CannotApplyEqualityOperator]

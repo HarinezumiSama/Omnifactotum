@@ -78,18 +78,18 @@ namespace Omnifactotum.Validation
 
         /// <summary>
         ///     <para>Gets the validation exception based on the validation result.</para>
-        ///     <para>If validation succeeded, this method returns <b>null</b>.</para>
+        ///     <para>If validation succeeded, this method returns <c>null</c>.</para>
         /// </summary>
         /// <param name="getErrorDescription">
         ///     A reference to a method the retrieves the description for a specified validation error.
         /// </param>
         /// <param name="errorDescriptionSeparator">
         ///     The string value that is used to separate a list of validation error descriptions.
-        ///     Can be <b>null</b> (in which case an empty string is used).
+        ///     Can be <c>null</c> (in which case an empty string is used).
         /// </param>
         /// <returns>
         ///     An <see cref="ObjectValidationException"/> if validation failed;
-        ///     or <b>null</b> if validation succeeded.
+        ///     or <c>null</c> if validation succeeded.
         /// </returns>
         [CanBeNull]
         public ObjectValidationException GetException(
@@ -121,12 +121,12 @@ namespace Omnifactotum.Validation
         ///         <see cref="Environment.NewLine"/> separator.
         ///     </para>
         ///     <para>
-        ///         If validation succeeded, this method returns <b>null</b>.
+        ///         If validation succeeded, this method returns <c>null</c>.
         ///     </para>
         /// </summary>
         /// <returns>
         ///     An <see cref="ObjectValidationException"/> if validation failed;
-        ///     or <b>null</b> if validation succeeded.
+        ///     or <c>null</c> if validation succeeded.
         /// </returns>
         [CanBeNull]
         public ObjectValidationException GetException()

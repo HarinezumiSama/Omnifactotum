@@ -21,7 +21,7 @@ namespace System
         ///     The exception to check.
         /// </param>
         /// <returns>
-        ///     <b>true</b> if the specified exception should NOT be handled by a user code; otherwise, <b>false</b>.
+        ///     <c>true</c> if the specified exception should NOT be handled by a user code; otherwise, <c>false</c>.
         /// </returns>
         [DebuggerNonUserCode]
         public static bool IsFatal([CanBeNull] this Exception exception)

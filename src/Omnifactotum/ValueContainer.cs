@@ -69,8 +69,8 @@ namespace Omnifactotum
         ///     The second <see cref="ValueContainer{T}"/> instance to compare.
         /// </param>
         /// <returns>
-        ///     <b>true</b> if the two specified <see cref="ValueContainer{T}"/> instances are equal;
-        ///     otherwise, <b>false</b>.
+        ///     <c>true</c> if the two specified <see cref="ValueContainer{T}"/> instances are equal;
+        ///     otherwise, <c>false</c>.
         /// </returns>
         public static bool operator ==(ValueContainer<T> left, ValueContainer<T> right)
         {
@@ -87,8 +87,8 @@ namespace Omnifactotum
         ///     The second <see cref="ValueContainer{T}"/> instance to compare.
         /// </param>
         /// <returns>
-        ///     <b>true</b> if the two specified <see cref="ValueContainer{T}"/> instances are not equal;
-        ///     otherwise, <b>false</b>.
+        ///     <c>true</c> if the two specified <see cref="ValueContainer{T}"/> instances are not equal;
+        ///     otherwise, <c>false</c>.
         /// </returns>
         public static bool operator !=(ValueContainer<T> left, ValueContainer<T> right)
         {
@@ -118,8 +118,8 @@ namespace Omnifactotum
         ///     The <see cref="System.Object" /> to compare with this <see cref="ValueContainer{T}"/> instance.
         /// </param>
         /// <returns>
-        ///     <b>true</b> if the specified <see cref="Object" /> is equal to
-        ///     this <see cref="ValueContainer{T}"/> instance; otherwise, <b>false</b>.
+        ///     <c>true</c> if the specified <see cref="Object" /> is equal to
+        ///     this <see cref="ValueContainer{T}"/> instance; otherwise, <c>false</c>.
         /// </returns>
         public override bool Equals(object obj)
         {
@@ -149,8 +149,8 @@ namespace Omnifactotum
         ///     An object to compare with this <see cref="ValueContainer{T}"/> instance.
         /// </param>
         /// <returns>
-        ///     <b>true</b> if the current <see cref="ValueContainer{T}"/> instance is equal to
-        ///     the <paramref name="other" /> parameter; otherwise, <b>false</b>.
+        ///     <c>true</c> if the current <see cref="ValueContainer{T}"/> instance is equal to
+        ///     the <paramref name="other" /> parameter; otherwise, <c>false</c>.
         /// </returns>
         public bool Equals(ValueContainer<T> other)
         {

@@ -79,7 +79,7 @@ namespace Omnifactotum
         #region Public Properties
 
         /// <summary>
-        ///     Gets the parent node of the current node, or <b>null</b> if the node does not have a parent.
+        ///     Gets the parent node of the current node, or <c>null</c> if the node does not have a parent.
         /// </summary>
         [CanBeNull]
         public VirtualTreeNodeBase<T> Parent

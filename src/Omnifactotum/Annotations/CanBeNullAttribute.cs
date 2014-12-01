@@ -4,8 +4,8 @@ using System.Linq;
 namespace Omnifactotum.Annotations
 {
     /// <summary>
-    /// Indicates that the value of the marked element could be <b>null</b> sometimes,
-    /// so the check for <b>null</b> is necessary before its usage
+    /// Indicates that the value of the marked element could be <c>null</c> sometimes,
+    /// so the check for <c>null</c> is necessary before its usage
     /// </summary>
     /// <example><code>
     /// [CanBeNull] public object Test() { return null; }

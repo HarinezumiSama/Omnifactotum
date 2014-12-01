@@ -85,8 +85,8 @@ namespace System
         ///     The combination of the bit flags to check.
         /// </param>
         /// <returns>
-        ///     <b>true</b> if all bits specified in <paramref name="flags"/> are set
-        ///     in <paramref name="enumerationValue"/>; otherwise, <b>false</b>.
+        ///     <c>true</c> if all bits specified in <paramref name="flags"/> are set
+        ///     in <paramref name="enumerationValue"/>; otherwise, <c>false</c>.
         /// </returns>
         /// <exception cref="System.ArgumentException">
         ///     <para>
@@ -119,8 +119,8 @@ namespace System
         ///     The combination of the bit flags to check.
         /// </param>
         /// <returns>
-        ///     <b>true</b> if any of flags specified by the <paramref name="flags"/> parameter is set
-        ///     in <paramref name="enumerationValue"/>; otherwise, <b>false</b>.
+        ///     <c>true</c> if any of flags specified by the <paramref name="flags"/> parameter is set
+        ///     in <paramref name="enumerationValue"/>; otherwise, <c>false</c>.
         /// </returns>
         /// <exception cref="System.ArgumentException">
         ///     <para>
@@ -154,14 +154,14 @@ namespace System
         ///     The collection of values to compare <paramref name="enumerationValue"/> to.
         /// </param>
         /// <returns>
-        ///     <b>true</b> if any of values specified by the <paramref name="otherValues"/> equals to
-        ///     <paramref name="enumerationValue"/>; otherwise, <b>false</b>.
+        ///     <c>true</c> if any of values specified by the <paramref name="otherValues"/> equals to
+        ///     <paramref name="enumerationValue"/>; otherwise, <c>false</c>.
         /// </returns>
         /// <exception cref="System.ArgumentException">
         ///     <typeparamref name="TEnum"/> is not an enumeration type.
         /// </exception>
         /// <exception cref="System.ArgumentNullException">
-        ///     <paramref name="otherValues"/> is <b>null</b>.
+        ///     <paramref name="otherValues"/> is <c>null</c>.
         /// </exception>
         public static bool IsOneOf<TEnum>(this TEnum enumerationValue, IEnumerable<TEnum> otherValues)
             where TEnum : struct
@@ -201,14 +201,14 @@ namespace System
         ///     An array of values to compare <paramref name="enumerationValue"/> to.
         /// </param>
         /// <returns>
-        ///     <b>true</b> if any of values specified by the <paramref name="otherValues"/> equals to
-        ///     <paramref name="enumerationValue"/>; otherwise, <b>false</b>.
+        ///     <c>true</c> if any of values specified by the <paramref name="otherValues"/> equals to
+        ///     <paramref name="enumerationValue"/>; otherwise, <c>false</c>.
         /// </returns>
         /// <exception cref="System.ArgumentException">
         ///     <typeparamref name="TEnum"/> is not an enumeration type.
         /// </exception>
         /// <exception cref="System.ArgumentNullException">
-        ///     <paramref name="otherValues"/> is <b>null</b>.
+        ///     <paramref name="otherValues"/> is <c>null</c>.
         /// </exception>
         public static bool IsOneOf<TEnum>(this TEnum enumerationValue, params TEnum[] otherValues)
             where TEnum : struct
@@ -224,11 +224,11 @@ namespace System
         ///     The enumeration value to check.
         /// </param>
         /// <returns>
-        ///     <b>true</b> if the specified enumeration value is defined in the corresponding enumeration;
-        ///     otherwise, <b>false</b>.
+        ///     <c>true</c> if the specified enumeration value is defined in the corresponding enumeration;
+        ///     otherwise, <c>false</c>.
         /// </returns>
         /// <exception cref="System.ArgumentNullException">
-        ///     <paramref name="enumerationValue"/> is <b>null</b>.
+        ///     <paramref name="enumerationValue"/> is <c>null</c>.
         /// </exception>
         public static bool IsDefined([NotNull] this Enum enumerationValue)
         {
@@ -252,7 +252,7 @@ namespace System
         ///     The enumeration value to check.
         /// </param>
         /// <exception cref="System.ArgumentNullException">
-        ///     <paramref name="enumerationValue"/> is <b>null</b>.
+        ///     <paramref name="enumerationValue"/> is <c>null</c>.
         /// </exception>
         /// <exception cref="System.ComponentModel.InvalidEnumArgumentException">
         ///     <paramref name="enumerationValue"/> is not defined in the corresponding enumeration.

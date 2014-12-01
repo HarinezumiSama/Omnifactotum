@@ -60,7 +60,7 @@ namespace Omnifactotum.NUnit
                 expectedReadability,
                 actualReadability,
                 "The property '{0}{1}{2}' MUST {3}be readable.",
-                propertyInfo.DeclaringType.GetFullName(),
+                propertyInfo.DeclaringType.EnsureNotNull().GetFullName(),
                 Type.Delimiter,
                 propertyInfo.Name,
                 expectedReadability ? string.Empty : "NOT ");
@@ -72,7 +72,7 @@ namespace Omnifactotum.NUnit
                 expectedWritability,
                 actualWritability,
                 "The property '{0}{1}{2}' MUST {3}be writable.",
-                propertyInfo.DeclaringType.GetFullName(),
+                propertyInfo.DeclaringType.EnsureNotNull().GetFullName(),
                 Type.Delimiter,
                 propertyInfo.Name,
                 expectedWritability ? string.Empty : "NOT ");
@@ -221,10 +221,10 @@ namespace Omnifactotum.NUnit
         ///     The value to check.
         /// </param>
         /// <returns>
-        ///     The specified value if is not <b>null</b>.
+        ///     The specified value if is not <c>null</c>.
         /// </returns>
         /// <exception cref="AssertionException">
-        ///     <paramref name="value"/> is <b>null</b>.
+        ///     <paramref name="value"/> is <c>null</c>.
         /// </exception>
         public static T AssertNotNull<T>(this T value)
             where T : class
@@ -247,8 +247,8 @@ namespace Omnifactotum.NUnit
         ///     The expected access attribute value.
         /// </param>
         /// <returns>
-        ///     <b>true</b> if the access attribute of the specified method matches the specified attribute;
-        ///     otherwise, <b>false</b>.
+        ///     <c>true</c> if the access attribute of the specified method matches the specified attribute;
+        ///     otherwise, <c>false</c>.
         /// </returns>
         private static bool AccessAttributesMatch(MethodInfo method, MethodAttributes expectedAttribute)
         {

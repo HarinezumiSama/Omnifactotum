@@ -24,8 +24,8 @@ namespace Omnifactotum
         ///     The second <see cref="ComparableObjectBase"/> instance to compare.
         /// </param>
         /// <returns>
-        ///     <b>true</b> if the left <see cref="ComparableObjectBase"/> instance is less than
-        ///     the right <see cref="ComparableObjectBase"/> instance; otherwise, <b>false</b>.
+        ///     <c>true</c> if the left <see cref="ComparableObjectBase"/> instance is less than
+        ///     the right <see cref="ComparableObjectBase"/> instance; otherwise, <c>false</c>.
         /// </returns>
         public static bool operator <([CanBeNull] ComparableObjectBase left, [CanBeNull] ComparableObjectBase right)
         {
@@ -43,8 +43,8 @@ namespace Omnifactotum
         ///     The second <see cref="ComparableObjectBase"/> instance to compare.
         /// </param>
         /// <returns>
-        ///     <b>true</b> if the left <see cref="ComparableObjectBase"/> instance is less than or equal to
-        ///     the right <see cref="ComparableObjectBase"/> instance; otherwise, <b>false</b>.
+        ///     <c>true</c> if the left <see cref="ComparableObjectBase"/> instance is less than or equal to
+        ///     the right <see cref="ComparableObjectBase"/> instance; otherwise, <c>false</c>.
         /// </returns>
         public static bool operator <=([CanBeNull] ComparableObjectBase left, [CanBeNull] ComparableObjectBase right)
         {
@@ -62,8 +62,8 @@ namespace Omnifactotum
         ///     The second <see cref="ComparableObjectBase"/> instance to compare.
         /// </param>
         /// <returns>
-        ///     <b>true</b> if the left <see cref="ComparableObjectBase"/> instance is greater than
-        ///     the right <see cref="ComparableObjectBase"/> instance; otherwise, <b>false</b>.
+        ///     <c>true</c> if the left <see cref="ComparableObjectBase"/> instance is greater than
+        ///     the right <see cref="ComparableObjectBase"/> instance; otherwise, <c>false</c>.
         /// </returns>
         public static bool operator >([CanBeNull] ComparableObjectBase left, [CanBeNull] ComparableObjectBase right)
         {
@@ -81,8 +81,8 @@ namespace Omnifactotum
         ///     The second <see cref="ComparableObjectBase"/> instance to compare.
         /// </param>
         /// <returns>
-        ///     <b>true</b> if the left <see cref="ComparableObjectBase"/> instance is greater than or equal to
-        ///     the right <see cref="ComparableObjectBase"/> instance; otherwise, <b>false</b>.
+        ///     <c>true</c> if the left <see cref="ComparableObjectBase"/> instance is greater than or equal to
+        ///     the right <see cref="ComparableObjectBase"/> instance; otherwise, <c>false</c>.
         /// </returns>
         public static bool operator >=([CanBeNull] ComparableObjectBase left, [CanBeNull] ComparableObjectBase right)
         {
@@ -137,11 +137,11 @@ namespace Omnifactotum
         /// </summary>
         /// <param name="other">
         ///     An object to compare with this object. The parameter is checked prior to calling this method, therefore
-        ///     it is never <b>null</b> and can also be safely cast to an actual derived type.
+        ///     it is never <c>null</c> and can also be safely cast to an actual derived type.
         /// </param>
         /// <returns>
-        ///     <b>true</b> if the current object is equal to the <paramref name="other"/> parameter;
-        ///     otherwise, <b>false</b>.
+        ///     <c>true</c> if the current object is equal to the <paramref name="other"/> parameter;
+        ///     otherwise, <c>false</c>.
         /// </returns>
         protected override bool EqualsInternal(EquatableObjectBase other)
         {

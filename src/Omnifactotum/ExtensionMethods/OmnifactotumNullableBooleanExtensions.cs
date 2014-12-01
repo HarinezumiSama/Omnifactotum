@@ -22,13 +22,13 @@ namespace System
         ///     The value to get the string representation of.
         /// </param>
         /// <param name="noValueString">
-        ///     Specifies the string to return if <paramref name="value"/> is <b>null</b>, that is, has no inner value.
+        ///     Specifies the string to return if <paramref name="value"/> is <c>null</c>, that is, has no inner value.
         /// </param>
         /// <param name="trueValueString">
-        ///     Specifies the string to return if <paramref name="value"/> is <b>true</b>.
+        ///     Specifies the string to return if <paramref name="value"/> is <c>true</c>.
         /// </param>
         /// <param name="falseValueString">
-        ///     Specifies the string to return if <paramref name="value"/> is <b>false</b>.
+        ///     Specifies the string to return if <paramref name="value"/> is <c>false</c>.
         /// </param>
         /// <returns>
         ///     The string representation of the specified nullable Boolean value.

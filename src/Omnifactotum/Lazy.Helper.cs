@@ -30,7 +30,7 @@ namespace System
         ///     A new <see cref="System.Lazy{T}"/> instance.
         /// </returns>
         /// <exception cref="System.ArgumentNullException">
-        ///     <paramref name="valueFactory"/> is <b>null</b>.
+        ///     <paramref name="valueFactory"/> is <c>null</c>.
         /// </exception>
         public static Lazy<T> Create<T>([NotNull] Func<T> valueFactory)
         {
@@ -48,14 +48,14 @@ namespace System
         ///     The delegate that is invoked to produce the lazily initialized value when it is needed.
         /// </param>
         /// <param name="isThreadSafe">
-        ///     <b>true</b> to make this instance usable concurrently by multiple threads; <b>false</b>
+        ///     <c>true</c> to make this instance usable concurrently by multiple threads; <c>false</c>
         ///     to make this instance usable by only one thread at a time.
         /// </param>
         /// <returns>
         ///     A new <see cref="System.Lazy{T}"/> instance.
         /// </returns>
         /// <exception cref="System.ArgumentNullException">
-        ///     <paramref name="valueFactory"/> is <b>null</b>.
+        ///     <paramref name="valueFactory"/> is <c>null</c>.
         /// </exception>
         public static Lazy<T> Create<T>([NotNull] Func<T> valueFactory, bool isThreadSafe)
         {
@@ -79,7 +79,7 @@ namespace System
         ///     A new <see cref="System.Lazy{T}"/> instance.
         /// </returns>
         /// <exception cref="System.ArgumentNullException">
-        ///     <paramref name="valueFactory"/> is <b>null</b>.
+        ///     <paramref name="valueFactory"/> is <c>null</c>.
         /// </exception>
         /// <exception cref="System.ArgumentOutOfRangeException">
         ///     <paramref name="mode"/> contains an invalid value.

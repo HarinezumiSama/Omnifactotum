@@ -15,7 +15,7 @@ namespace System
 
         /// <summary>
         ///     Returns the square of the specified number.
-        ///     NOTE: This method <b>suppresses</b> overflow-checking.
+        ///     This method SUPPRESSES overflow-checking.
         /// </summary>
         /// <param name="value">
         ///     The value to compute the square of.
@@ -30,7 +30,7 @@ namespace System
 
         /// <summary>
         ///     Returns the square of the specified number.
-        ///     NOTE: This method <b>suppresses</b> overflow-checking.
+        ///     This method SUPPRESSES overflow-checking.
         /// </summary>
         /// <param name="value">
         ///     The value to compute the square of.
@@ -46,7 +46,7 @@ namespace System
 
         /// <summary>
         ///     Returns the square of the specified number.
-        ///     NOTE: This method <b>suppresses</b> overflow-checking.
+        ///     This method SUPPRESSES overflow-checking.
         /// </summary>
         /// <param name="value">
         ///     The value to compute the square of.
@@ -61,7 +61,7 @@ namespace System
 
         /// <summary>
         ///     Returns the square of the specified number.
-        ///     NOTE: This method <b>suppresses</b> overflow-checking.
+        ///     This method SUPPRESSES overflow-checking.
         /// </summary>
         /// <param name="value">
         ///     The value to compute the square of.
@@ -77,7 +77,7 @@ namespace System
 
         /// <summary>
         ///     Returns the square of the specified number.
-        ///     NOTE: This method <b>suppresses</b> overflow-checking.
+        ///     This method SUPPRESSES overflow-checking.
         /// </summary>
         /// <param name="value">
         ///     The value to compute the square of.
@@ -92,7 +92,7 @@ namespace System
 
         /// <summary>
         ///     Returns the square of the specified number.
-        ///     NOTE: This method <b>suppresses</b> overflow-checking.
+        ///     This method SUPPRESSES overflow-checking.
         /// </summary>
         /// <param name="value">
         ///     The value to compute the square of.
@@ -107,7 +107,7 @@ namespace System
 
         /// <summary>
         ///     Returns the square of the specified number.
-        ///     NOTE: This method <b>suppresses</b> overflow-checking.
+        ///     This method SUPPRESSES overflow-checking.
         /// </summary>
         /// <param name="value">
         ///     The value to compute the square of.
@@ -122,7 +122,7 @@ namespace System
 
         /// <summary>
         ///     Returns the square of the specified number.
-        ///     NOTE: This method <b>enforces</b> overflow-checking.
+        ///     This method ENFORCES overflow-checking.
         /// </summary>
         /// <param name="value">
         ///     The value to compute the square of.
@@ -137,7 +137,7 @@ namespace System
 
         /// <summary>
         ///     Returns the square of the specified number.
-        ///     NOTE: This method <b>enforces</b> overflow-checking.
+        ///     This method ENFORCES overflow-checking.
         /// </summary>
         /// <param name="value">
         ///     The value to compute the square of.
@@ -153,7 +153,7 @@ namespace System
 
         /// <summary>
         ///     Returns the square of the specified number.
-        ///     NOTE: This method <b>enforces</b> overflow-checking.
+        ///     This method ENFORCES overflow-checking.
         /// </summary>
         /// <param name="value">
         ///     The value to compute the square of.
@@ -168,7 +168,7 @@ namespace System
 
         /// <summary>
         ///     Returns the square of the specified number.
-        ///     NOTE: This method <b>enforces</b> overflow-checking.
+        ///     This method ENFORCES overflow-checking.
         /// </summary>
         /// <param name="value">
         ///     The value to compute the square of.
@@ -184,7 +184,7 @@ namespace System
 
         /// <summary>
         ///     Returns the square of the specified number.
-        ///     NOTE: This method <b>enforces</b> overflow-checking.
+        ///     This method ENFORCES overflow-checking.
         /// </summary>
         /// <param name="value">
         ///     The value to compute the square of.
@@ -199,7 +199,7 @@ namespace System
 
         /// <summary>
         ///     Returns the square of the specified number.
-        ///     NOTE: This method <b>enforces</b> overflow-checking.
+        ///     This method ENFORCES overflow-checking.
         /// </summary>
         /// <param name="value">
         ///     The value to compute the square of.
@@ -214,7 +214,7 @@ namespace System
 
         /// <summary>
         ///     Returns the square of the specified number.
-        ///     NOTE: This method <b>enforces</b> overflow-checking.
+        ///     This method ENFORCES overflow-checking.
         /// </summary>
         /// <param name="value">
         ///     The value to compute the square of.

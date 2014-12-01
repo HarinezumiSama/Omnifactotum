@@ -7,9 +7,8 @@ using Omnifactotum.NUnit;
 
 namespace Omnifactotum.Tests
 {
-    /// <summary>
-    ///     Contains tests for <see cref="ReadOnlySet{T}"/> class.
-    /// </summary>
+    //// ReSharper disable AssignNullToNotNullAttribute - for negative test cases
+
     [TestFixture]
     public sealed class ReadOnlySetTests
     {
@@ -160,7 +159,7 @@ namespace Omnifactotum.Tests
             assertNoChanges();
 
             Assert.That(
-                () => collection.Clear(),
+                collection.Clear,
                 Throws.TypeOf<NotSupportedException>());
             assertNoChanges();
 

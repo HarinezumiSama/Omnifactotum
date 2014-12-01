@@ -16,7 +16,7 @@ namespace System.Collections.Generic
 
         /// <summary>
         ///     Get the number of elements in the specified collection without enumerating all
-        ///     its elements. If it's not possible to do so, <b>null</b> is returned.
+        ///     its elements. If it's not possible to do so, <c>null</c> is returned.
         /// </summary>
         /// <typeparam name="T">
         ///     The type of the elements in the collection.
@@ -26,7 +26,7 @@ namespace System.Collections.Generic
         /// </param>
         /// <returns>
         ///     The number of elements in the specified collection if it was possible to determine it without
-        ///     enumerating collection's elements; otherwise, <b>null</b>.
+        ///     enumerating collection's elements; otherwise, <c>null</c>.
         /// </returns>
         public static int? GetFastCount<T>([CanBeNull] this IEnumerable<T> collection)
         {
@@ -64,9 +64,9 @@ namespace System.Collections.Generic
         ///     the parameter represents the item to perform the action on.
         /// </param>
         /// <exception cref="System.ArgumentNullException">
-        ///     <para><paramref name="collection"/> is <b>null</b>.</para>
+        ///     <para><paramref name="collection"/> is <c>null</c>.</para>
         ///     <para>-or-</para>
-        ///     <para><paramref name="action"/> is <b>null</b>.</para>
+        ///     <para><paramref name="action"/> is <c>null</c>.</para>
         /// </exception>
         public static void DoForEach<T>([NotNull] this IEnumerable<T> collection, [NotNull] Action<T> action)
         {
@@ -105,9 +105,9 @@ namespace System.Collections.Generic
         ///     the second parameter represents the zero-based index of the element in the collection.
         /// </param>
         /// <exception cref="System.ArgumentNullException">
-        ///     <para><paramref name="collection"/> is <b>null</b>.</para>
+        ///     <para><paramref name="collection"/> is <c>null</c>.</para>
         ///     <para>-or-</para>
-        ///     <para><paramref name="action"/> is <b>null</b>.</para>
+        ///     <para><paramref name="action"/> is <c>null</c>.</para>
         /// </exception>
         public static void DoForEach<T>([NotNull] this IEnumerable<T> collection, [NotNull] Action<T, int> action)
         {
@@ -188,11 +188,11 @@ namespace System.Collections.Generic
         /// </param>
         /// <param name="comparer">
         ///     An <see cref="System.Collections.Generic.IEqualityComparer{T}"/> to compare elements in the
-        ///     collections, or <b>null</b> to use the default equality comparer for the type <typeparamref name="T"/>.
+        ///     collections, or <c>null</c> to use the default equality comparer for the type <typeparamref name="T"/>.
         /// </param>
         /// <returns>
-        ///     <b>true</b> if two specified collections contain identical items in any order or
-        ///     they both are <b>null</b>; otherwise, <b>false</b>.
+        ///     <c>true</c> if two specified collections contain identical items in any order or
+        ///     they both are <c>null</c>; otherwise, <c>false</c>.
         /// </returns>
         public static bool CollectionsEquivalent<T>(
             [CanBeNull] this IEnumerable<T> collection,
@@ -246,8 +246,8 @@ namespace System.Collections.Generic
         ///     The another collection to compare.
         /// </param>
         /// <returns>
-        ///     <b>true</b> if two specified collections contain identical items in any order or
-        ///     they both are <b>null</b>; otherwise, <b>false</b>.
+        ///     <c>true</c> if two specified collections contain identical items in any order or
+        ///     they both are <c>null</c>; otherwise, <c>false</c>.
         /// </returns>
         public static bool CollectionsEquivalent<T>(
             [CanBeNull] this IEnumerable<T> collection,
@@ -270,11 +270,11 @@ namespace System.Collections.Generic
         /// </param>
         /// <param name="comparer">
         ///     An <see cref="System.Collections.Generic.IEqualityComparer{T}"/> to compare elements in the
-        ///     collections, or <b>null</b> to use the default equality comparer for the type <typeparamref name="T"/>.
+        ///     collections, or <c>null</c> to use the default equality comparer for the type <typeparamref name="T"/>.
         /// </param>
         /// <returns>
-        ///     <b>true</b> if two specified collections contain identical items in the same order or
-        ///     they both are <b>null</b>; otherwise, <b>false</b>.
+        ///     <c>true</c> if two specified collections contain identical items in the same order or
+        ///     they both are <c>null</c>; otherwise, <c>false</c>.
         /// </returns>
         public static bool CollectionsEqual<T>(
             [CanBeNull] this IEnumerable<T> collection,
@@ -332,8 +332,8 @@ namespace System.Collections.Generic
         ///     The another collection to compare.
         /// </param>
         /// <returns>
-        ///     <b>true</b> if two specified collections contain identical items in the same order or
-        ///     they both are <b>null</b>; otherwise, <b>false</b>.
+        ///     <c>true</c> if two specified collections contain identical items in the same order or
+        ///     they both are <c>null</c>; otherwise, <c>false</c>.
         /// </returns>
         public static bool CollectionsEqual<T>(
             [CanBeNull] this IEnumerable<T> collection,
@@ -450,17 +450,17 @@ namespace System.Collections.Generic
         }
 
         /// <summary>
-        ///     Avoids the specified collection to be a <b>null</b> reference: returns the specified collection
-        ///     if it is not <b>null</b> or an empty collection otherwise.
+        ///     Avoids the specified collection to be a <c>null</c> reference: returns the specified collection
+        ///     if it is not <c>null</c> or an empty collection otherwise.
         /// </summary>
         /// <typeparam name="T">
         ///     The type of elements in the collection.
         /// </typeparam>
         /// <param name="source">
-        ///     The collection to secure from a <b>null</b> reference.
+        ///     The collection to secure from a <c>null</c> reference.
         /// </param>
         /// <returns>
-        ///     The source collection if it is not <b>null</b>; otherwise, empty collection.
+        ///     The source collection if it is not <c>null</c>; otherwise, empty collection.
         /// </returns>
         [NotNull]
         public static IEnumerable<T> AvoidNull<T>([CanBeNull] this IEnumerable<T> source)

@@ -333,6 +333,38 @@ namespace Omnifactotum.Tests
 
         #endregion
 
+        #region TestObjectBase Class
+
+        public abstract class TestObjectBase
+        {
+            #region Public Properties
+
+            public static string StaticProperty
+            {
+                get;
+                set;
+            }
+
+            public string InstanceProperty
+            {
+                get;
+                set;
+            }
+
+            #endregion
+        }
+
+        #endregion
+
+        #region TestObject Class
+
+        public sealed class TestObject : TestObjectBase
+        {
+            // No members
+        }
+
+        #endregion
+
         #region RecursiveNode Class
 
         private sealed class RecursiveNode
@@ -631,38 +663,6 @@ namespace Omnifactotum.Tests
             }
 
             #endregion
-        }
-
-        #endregion
-
-        #region TestObjectBase Class
-
-        public abstract class TestObjectBase
-        {
-            #region Public Properties
-
-            public static string StaticProperty
-            {
-                get;
-                set;
-            }
-
-            public string InstanceProperty
-            {
-                get;
-                set;
-            }
-
-            #endregion
-        }
-
-        #endregion
-
-        #region TestObject Class
-
-        public sealed class TestObject : TestObjectBase
-        {
-            // No members
         }
 
         #endregion

@@ -23,10 +23,10 @@ namespace System
         ///     The type of the elements in the array.
         /// </typeparam>
         /// <param name="array">
-        ///     The array to copy. Can be <b>null</b>.
+        ///     The array to copy. Can be <c>null</c>.
         /// </param>
         /// <returns>
-        ///     A shallow copy of the specified array, or <b>null</b> if this array is <b>null</b>.
+        ///     A shallow copy of the specified array, or <c>null</c> if this array is <c>null</c>.
         /// </returns>
         [CanBeNull]
         public static T[] Copy<T>([CanBeNull] this T[] array)
@@ -100,17 +100,17 @@ namespace System
         }
 
         /// <summary>
-        ///     Avoids the specified array to be a <b>null</b> reference: returns the specified array
-        ///     if it is not <b>null</b> or an empty array otherwise.
+        ///     Avoids the specified array to be a <c>null</c> reference: returns the specified array
+        ///     if it is not <c>null</c> or an empty array otherwise.
         /// </summary>
         /// <typeparam name="T">
         ///     The type of elements in the array.
         /// </typeparam>
         /// <param name="source">
-        ///     The array to secure from a <b>null</b> reference.
+        ///     The array to secure from a <c>null</c> reference.
         /// </param>
         /// <returns>
-        ///     The source array if it is not <b>null</b>; otherwise, empty array.
+        ///     The source array if it is not <c>null</c>; otherwise, empty array.
         /// </returns>
         [NotNull]
         public static T[] AvoidNull<T>([CanBeNull] this T[] source)
@@ -152,8 +152,8 @@ namespace System
         ///     The byte array to convert.
         /// </param>
         /// <param name="useUpperCase">
-        ///     <b>true</b> to use upper case letter in the resulting hexadecimal string;
-        ///     <b>false</b> to use lower case letter in the resulting hexadecimal string.
+        ///     <c>true</c> to use upper case letter in the resulting hexadecimal string;
+        ///     <c>false</c> to use lower case letter in the resulting hexadecimal string.
         /// </param>
         /// <returns>
         ///     A hexadecimal string.

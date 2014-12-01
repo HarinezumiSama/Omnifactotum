@@ -9,7 +9,7 @@ using Omnifactotum.Annotations;
 namespace System.Linq.Expressions
 {
     /// <summary>
-    ///     Contains extension methods for the classes in the <b>System.Linq.Expressions</b> namespace.
+    ///     Contains extension methods for the classes in the <c>System.Linq.Expressions</c> namespace.
     /// </summary>
     public static class OmnifactotumExpressionExtensions
     {
@@ -25,7 +25,7 @@ namespace System.Linq.Expressions
         ///     The expression to get the last called method of.
         /// </param>
         /// <returns>
-        ///     The last called method, or <b>null</b> if the last element in the expression is not a method call.
+        ///     The last called method, or <c>null</c> if the last element in the expression is not a method call.
         /// </returns>
         public static MethodInfo GetLastMethod<TDelegate>([NotNull] this Expression<TDelegate> expression)
         {

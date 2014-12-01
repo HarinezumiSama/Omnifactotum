@@ -26,7 +26,7 @@ namespace Omnifactotum
         ///     A reference to a method that provides a key for an object being compared.
         /// </param>
         /// <param name="keyComparer">
-        ///     The equality comparer to use when comparing objects' keys; or <b>null</b> to use the default
+        ///     The equality comparer to use when comparing objects' keys; or <c>null</c> to use the default
         ///     equality comparer for type <typeparamref name="TKey"/>.
         /// </param>
         public KeyedEqualityComparer(
@@ -97,7 +97,7 @@ namespace Omnifactotum
         ///     The second object of type <typeparamref name="T"/> to compare.
         /// </param>
         /// <returns>
-        ///     <b>true</b> if the keys of the specified objects are equal; otherwise, <b>false</b>.
+        ///     <c>true</c> if the keys of the specified objects are equal; otherwise, <c>false</c>.
         /// </returns>
         public bool Equals([CanBeNull] T x, [CanBeNull] T y)
         {
@@ -148,7 +148,7 @@ namespace Omnifactotum
         ///     Determines whether the specified objects are equal.
         /// </summary>
         /// <returns>
-        ///     <b>true</b> if the specified objects are equal; otherwise, <b>false</b>.
+        ///     <c>true</c> if the specified objects are equal; otherwise, <c>false</c>.
         /// </returns>
         /// <param name="x">
         ///     The first object to compare.

@@ -7,9 +7,8 @@ using Omnifactotum.NUnit;
 
 namespace Omnifactotum.Tests
 {
-    /// <summary>
-    ///     Contains tests for <see cref="ReadOnlyDictionary{TKey,TValue}"/> class.
-    /// </summary>
+    //// ReSharper disable AssignNullToNotNullAttribute - for negative test cases
+
     [TestFixture]
     public sealed class ReadOnlyDictionaryTests
     {
@@ -172,7 +171,7 @@ namespace Omnifactotum.Tests
             Assert.That(rodCollection.Count, Is.EqualTo(count));
             Assert.That(rodCollection, Is.EquivalentTo(_dictionary));
 
-            Assert.That(() => rodCollection.Clear(), Throws.TypeOf<NotSupportedException>());
+            Assert.That(rodCollection.Clear, Throws.TypeOf<NotSupportedException>());
             Assert.That(rod.Count, Is.EqualTo(count));
             Assert.That(rodCollection.Count, Is.EqualTo(count));
             Assert.That(rodCollection, Is.EquivalentTo(_dictionary));

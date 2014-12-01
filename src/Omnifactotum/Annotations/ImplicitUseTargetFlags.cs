@@ -4,27 +4,30 @@ using System.Linq;
 namespace Omnifactotum.Annotations
 {
     /// <summary>
-    /// Specify what is considered used implicitly
-    /// when marked with <see cref="MeansImplicitUseAttribute"/>
-    /// or <see cref="UsedImplicitlyAttribute"/>
+    ///     Specify what is considered used implicitly when marked with <see cref="MeansImplicitUseAttribute"/>
+    ///     or <see cref="UsedImplicitlyAttribute"/>.
     /// </summary>
     [Flags]
     public enum ImplicitUseTargetFlags
     {
         /// <summary>
-        /// The default.
+        ///     The default set of the flags.
         /// </summary>
         Default = Itself,
 
         /// <summary>
-        /// The itself.
+        ///     The entity marked with the attribute is considered used.
         /// </summary>
         Itself = 1,
 
-        /// <summary>Members of entity marked with attribute are considered used</summary>
+        /// <summary>
+        ///     The members of the entity marked with the attribute are considered used.
+        /// </summary>
         Members = 2,
 
-        /// <summary>Entity marked with attribute and all its members considered used</summary>
+        /// <summary>
+        ///     The entity marked with the attribute and all its members are considered used.
+        /// </summary>
         WithMembers = Itself | Members
     }
 }

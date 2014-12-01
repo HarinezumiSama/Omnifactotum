@@ -66,8 +66,8 @@ namespace Omnifactotum
         ///     The second <see cref="EquatableValueCapsule{T}"/> instance to compare.
         /// </param>
         /// <returns>
-        ///     <b>true</b> if the two specified <see cref="EquatableValueCapsule{T}"/> instances are equal;
-        ///     otherwise, <b>false</b>.
+        ///     <c>true</c> if the two specified <see cref="EquatableValueCapsule{T}"/> instances are equal;
+        ///     otherwise, <c>false</c>.
         /// </returns>
         public static bool operator ==(
             [CanBeNull] EquatableValueCapsule<T> left,
@@ -86,8 +86,8 @@ namespace Omnifactotum
         ///     The second <see cref="EquatableValueCapsule{T}"/> instance to compare.
         /// </param>
         /// <returns>
-        ///     <b>true</b> if the two specified <see cref="EquatableValueCapsule{T}"/> instances are not equal;
-        ///     otherwise, <b>false</b>.
+        ///     <c>true</c> if the two specified <see cref="EquatableValueCapsule{T}"/> instances are not equal;
+        ///     otherwise, <c>false</c>.
         /// </returns>
         public static bool operator !=(
             [CanBeNull] EquatableValueCapsule<T> left,
@@ -108,8 +108,8 @@ namespace Omnifactotum
         ///     The <see cref="Object"/> to compare with this instance.
         /// </param>
         /// <returns>
-        ///     <b>true</b> if the specified <see cref="System.Object"/> is equal to
-        ///     this <see cref="EquatableValueCapsule{T}"/>; otherwise, <b>false</b>.
+        ///     <c>true</c> if the specified <see cref="System.Object"/> is equal to
+        ///     this <see cref="EquatableValueCapsule{T}"/>; otherwise, <c>false</c>.
         /// </returns>
         public sealed override bool Equals([CanBeNull] object obj)
         {
@@ -139,8 +139,8 @@ namespace Omnifactotum
         ///     An object to compare with this object.
         /// </param>
         /// <returns>
-        ///     <b>true</b> if the current object is equal to the <paramref name="other"/> parameter;
-        ///     otherwise, <b>false</b>.
+        ///     <c>true</c> if the current object is equal to the <paramref name="other"/> parameter;
+        ///     otherwise, <c>false</c>.
         /// </returns>
         public bool Equals([CanBeNull] EquatableValueCapsule<T> other)
         {

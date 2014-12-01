@@ -88,7 +88,7 @@ namespace Omnifactotum
         ///     The object to locate in this collection.
         /// </param>
         /// <returns>
-        ///     <b>true</b> if <paramref name="item"/> is found in this collection; otherwise, <b>false</b>.
+        ///     <c>true</c> if <paramref name="item"/> is found in this collection; otherwise, <c>false</c>.
         /// </returns>
         public bool Contains([CanBeNull] DirectedGraphNode<T> item)
         {
@@ -118,8 +118,8 @@ namespace Omnifactotum
         ///     The object to remove from this collection.
         /// </param>
         /// <returns>
-        ///     <b>true</b> if <paramref name="item"/> was removed from this collection;
-        ///     otherwise, <b>false</b>.
+        ///     <c>true</c> if <paramref name="item"/> was removed from this collection;
+        ///     otherwise, <c>false</c>.
         /// </returns>
         public bool Remove([CanBeNull] DirectedGraphNode<T> item)
         {

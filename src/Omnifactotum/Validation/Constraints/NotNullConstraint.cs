@@ -4,7 +4,7 @@ using System.Linq;
 namespace Omnifactotum.Validation.Constraints
 {
     /// <summary>
-    ///     Specifies that the annotated member should not be <b>null</b>.
+    ///     Specifies that the annotated member should not be <c>null</c>.
     /// </summary>
     public sealed class NotNullConstraint : NotNullConstraint<object>
     {

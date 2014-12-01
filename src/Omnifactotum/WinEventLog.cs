@@ -27,6 +27,7 @@ namespace Omnifactotum
         ///     Gets or sets the default source for the entries written
         ///     using <see cref="WinEventLog.Write(EventLogEntryType,string)"/>.
         /// </summary>
+        [CanBeNull]
         public static string DefaultSource
         {
             [DebuggerStepThrough]
@@ -135,7 +136,7 @@ namespace Omnifactotum
         /// <summary>
         ///     Writes the specified message to the <b>Windows Event Log</b>
         ///     using <see cref="WinEventLog.DefaultSource"/>.
-        ///     If <see cref="WinEventLog.DefaultSource"/> is <b>null</b> or empty, the entry assembly name is used.
+        ///     If <see cref="WinEventLog.DefaultSource"/> is <c>null</c> or empty, the entry assembly name is used.
         /// </summary>
         /// <param name="type">
         ///     The type of the event log entry.
@@ -153,7 +154,7 @@ namespace Omnifactotum
         ///     Writes the message to the <b>Windows Event Log</b>
         ///     using <see cref="WinEventLog.DefaultSource"/> and the specified array of objects and
         ///     formatting information.
-        ///     If <see cref="WinEventLog.DefaultSource"/> is <b>null</b> or empty, the entry assembly name is used.
+        ///     If <see cref="WinEventLog.DefaultSource"/> is <c>null</c> or empty, the entry assembly name is used.
         /// </summary>
         /// <param name="type">
         ///     The type of the event log entry.
@@ -185,7 +186,7 @@ namespace Omnifactotum
             var result = _defaultSource.TrimSafely();
             if (!result.IsNullOrWhiteSpace())
             {
-                return result;
+                return result.EnsureNotNull();
             }
 
             var assembly = Assembly.GetEntryAssembly() ?? Assembly.GetExecutingAssembly();

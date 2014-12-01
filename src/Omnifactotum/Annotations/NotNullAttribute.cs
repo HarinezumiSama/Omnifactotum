@@ -4,7 +4,7 @@ using System.Linq;
 namespace Omnifactotum.Annotations
 {
     /// <summary>
-    /// Indicates that the value of the marked element could never be <b>null</b>
+    /// Indicates that the value of the marked element could never be <c>null</c>
     /// </summary>
     /// <example><code>
     /// [NotNull] public object Foo() {

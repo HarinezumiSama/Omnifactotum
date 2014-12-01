@@ -36,7 +36,7 @@ namespace Omnifactotum.Validation
         ///     The second object of type <see cref="MemberData"/> to compare.
         /// </param>
         /// <returns>
-        ///     <b>true</b> if the specified objects are equal; otherwise, <b>false</b>.
+        ///     <c>true</c> if the specified objects are equal; otherwise, <c>false</c>.
         /// </returns>
         public bool Equals(MemberData x, MemberData y)
         {

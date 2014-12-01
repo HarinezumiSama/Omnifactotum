@@ -17,7 +17,7 @@ namespace System
         #region Constants
 
         /// <summary>
-        ///     The <b>null</b> string representation.
+        ///     The <c>null</c> string representation.
         /// </summary>
         internal const string NullString = "null";
 
@@ -31,14 +31,14 @@ namespace System
         #region Public Methods
 
         /// <summary>
-        ///     Determines whether the specified string is <b>null</b> or an <see cref="String.Empty"/> string.
+        ///     Determines whether the specified string is <c>null</c> or an <see cref="String.Empty"/> string.
         /// </summary>
         /// <param name="value">
         ///     The string value to check.
         /// </param>
         /// <returns>
-        ///     <b>true</b> if the specified string is <b>null</b> or an <see cref="String.Empty"/> string;
-        ///     otherwise, <b>false</b>.
+        ///     <c>true</c> if the specified string is <c>null</c> or an <see cref="String.Empty"/> string;
+        ///     otherwise, <c>false</c>.
         /// </returns>
         [DebuggerNonUserCode]
         public static bool IsNullOrEmpty([CanBeNull] this string value)
@@ -47,15 +47,15 @@ namespace System
         }
 
         /// <summary>
-        ///     Determines whether a specified string is <b>null</b>, <see cref="String.Empty"/>,
+        ///     Determines whether a specified string is <c>null</c>, <see cref="String.Empty"/>,
         ///     or consists only of white-space characters.
         /// </summary>
         /// <param name="value">
         ///     The string value to check.
         /// </param>
         /// <returns>
-        ///     <b>true</b> if the specified value is <b>null</b> or <see cref="String.Empty"/>, or if it consists
-        ///     exclusively of white-space characters; otherwise, <b>false</b>.
+        ///     <c>true</c> if the specified value is <c>null</c> or <see cref="String.Empty"/>, or if it consists
+        ///     exclusively of white-space characters; otherwise, <c>false</c>.
         /// </returns>
         [DebuggerNonUserCode]
         public static bool IsNullOrWhiteSpace([CanBeNull] this string value)
@@ -65,10 +65,10 @@ namespace System
 
         /// <summary>
         ///     Converts the specified string value to an equivalent <see cref="Boolean"/> value.
-        ///     If the specified string value cannot be converted, <b>null</b> is returned.
+        ///     If the specified string value cannot be converted, <c>null</c> is returned.
         /// </summary>
         /// <param name="value">
-        ///     The string value to convert. Can be <b>null</b>.
+        ///     The string value to convert. Can be <c>null</c>.
         /// </param>
         /// <returns>
         ///     The <see cref="Nullable{Boolean}"/> representation of the specified string value.
@@ -128,7 +128,7 @@ namespace System
         /// </param>
         /// <param name="separator">
         ///     The separator to insert between each element of the <see cref="System.String"/> collection.
-        ///     Can be <b>null</b>.
+        ///     Can be <c>null</c>.
         /// </param>
         /// <returns>
         ///     A <see cref="System.String"/> consisting of the elements of <paramref name="values"/> delimited
@@ -151,14 +151,14 @@ namespace System
         }
 
         /// <summary>
-        ///     Avoids the specified string value to be a <b>null</b> reference: returns the specified string value
-        ///     if it is not <b>null</b> or an empty string otherwise.
+        ///     Avoids the specified string value to be a <c>null</c> reference: returns the specified string value
+        ///     if it is not <c>null</c> or an empty string otherwise.
         /// </summary>
         /// <param name="source">
-        ///     The string value to secure from a <b>null</b> reference.
+        ///     The string value to secure from a <c>null</c> reference.
         /// </param>
         /// <returns>
-        ///     The source string value if it is not <b>null</b>; otherwise, empty string.
+        ///     The source string value if it is not <c>null</c>; otherwise, empty string.
         /// </returns>
         [NotNull]
         [DebuggerNonUserCode]
@@ -191,15 +191,15 @@ namespace System
         ///     from the specified <see cref="System.String"/> object.
         /// </summary>
         /// <param name="value">
-        ///     The <see cref="System.String"/> value to trim. Can be <b>null</b>.
+        ///     The <see cref="System.String"/> value to trim. Can be <c>null</c>.
         /// </param>
         /// <param name="trimChars">
-        ///     An array of Unicode characters to remove, or <b>null</b>.
+        ///     An array of Unicode characters to remove, or <c>null</c>.
         /// </param>
         /// <returns>
         ///     The string that remains after all occurrences of the characters in the <paramref name="trimChars"/>
         ///     parameter are removed from the start and end of the specified string.
-        ///     If <paramref name="trimChars"/> is <b>null</b> or an empty array, Unicode white-space characters
+        ///     If <paramref name="trimChars"/> is <c>null</c> or an empty array, Unicode white-space characters
         ///     are removed instead.
         /// </returns>
         [CanBeNull]
@@ -223,15 +223,15 @@ namespace System
         ///     from the specified <see cref="System.String"/> object.
         /// </summary>
         /// <param name="value">
-        ///     The <see cref="System.String"/> value to trim. Can be <b>null</b>.
+        ///     The <see cref="System.String"/> value to trim. Can be <c>null</c>.
         /// </param>
         /// <param name="trimChars">
-        ///     An array of Unicode characters to remove, or <b>null</b>.
+        ///     An array of Unicode characters to remove, or <c>null</c>.
         /// </param>
         /// <returns>
         ///     The string that remains after all occurrences of the characters in the <paramref name="trimChars"/>
         ///     parameter are removed from the start of the specified string.
-        ///     If <paramref name="trimChars"/> is <b>null</b> or an empty array, Unicode white-space characters
+        ///     If <paramref name="trimChars"/> is <c>null</c> or an empty array, Unicode white-space characters
         ///     are removed instead.
         /// </returns>
         [CanBeNull]
@@ -255,15 +255,15 @@ namespace System
         ///     from the specified <see cref="System.String"/> object.
         /// </summary>
         /// <param name="value">
-        ///     The <see cref="System.String"/> value to trim. Can be <b>null</b>.
+        ///     The <see cref="System.String"/> value to trim. Can be <c>null</c>.
         /// </param>
         /// <param name="trimChars">
-        ///     An array of Unicode characters to remove, or <b>null</b>.
+        ///     An array of Unicode characters to remove, or <c>null</c>.
         /// </param>
         /// <returns>
         ///     The string that remains after all occurrences of the characters in the <paramref name="trimChars"/>
         ///     parameter are removed from the end of the specified string.
-        ///     If <paramref name="trimChars"/> is <b>null</b> or an empty array, Unicode white-space characters
+        ///     If <paramref name="trimChars"/> is <c>null</c> or an empty array, Unicode white-space characters
         ///     are removed instead.
         /// </returns>
         [CanBeNull]
@@ -286,7 +286,7 @@ namespace System
         ///     Shortens the specified <see cref="System.String"/> value if its length exceeds the specified length.
         /// </summary>
         /// <param name="value">
-        ///     The <see cref="System.String"/> value to shorten. Can be <b>null</b>.
+        ///     The <see cref="System.String"/> value to shorten. Can be <c>null</c>.
         /// </param>
         /// <param name="maximumLength">
         ///     The maximum length of the resulting string.
@@ -332,14 +332,14 @@ namespace System
         ///     Replicates the specified string value the specified number of times.
         /// </summary>
         /// <param name="value">
-        ///     The value to replicate. Can be <b>null</b>.
+        ///     The value to replicate. Can be <c>null</c>.
         /// </param>
         /// <param name="count">
         ///     The number of times to replicate the specified string value.
         /// </param>
         /// <returns>
         ///     The specified value repeated the specified number of times, or <see cref="String.Empty"/> if
-        ///     <paramref name="value"/> is <b>null</b> or an empty string or <paramref name="count"/> is zero.
+        ///     <paramref name="value"/> is <c>null</c> or an empty string or <paramref name="count"/> is zero.
         /// </returns>
         [NotNull]
         [DebuggerNonUserCode]

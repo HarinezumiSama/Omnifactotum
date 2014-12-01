@@ -78,10 +78,10 @@ namespace Omnifactotum.Validation
         ///     The type of the constraint to check.
         /// </param>
         /// <returns>
-        ///     <b>true</b> if specified constraint type is a valid member constraint type; otherwise, <b>false</b>.
+        ///     <c>true</c> if specified constraint type is a valid member constraint type; otherwise, <c>false</c>.
         /// </returns>
         /// <exception cref="ArgumentNullException">
-        ///     <paramref name="constraintType"/> is <b>null</b>.
+        ///     <paramref name="constraintType"/> is <c>null</c>.
         /// </exception>
         public static bool IsValidMemberConstraintType([NotNull] this Type constraintType)
         {
@@ -107,7 +107,7 @@ namespace Omnifactotum.Validation
         ///     The input constraint type, if it is a valid member constraint type.
         /// </returns>
         /// <exception cref="ArgumentNullException">
-        ///     <paramref name="constraintType"/> is <b>null</b>.
+        ///     <paramref name="constraintType"/> is <c>null</c>.
         /// </exception>
         /// <exception cref="System.ArgumentException">
         ///     The specified constraint type is not a valid member constraint type.

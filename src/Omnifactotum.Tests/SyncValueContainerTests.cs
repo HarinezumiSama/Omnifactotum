@@ -7,6 +7,8 @@ using Omnifactotum.NUnit;
 
 namespace Omnifactotum.Tests
 {
+    //// ReSharper disable AssignNullToNotNullAttribute - for negative test cases
+
     [TestFixture(typeof(int), 1, int.MaxValue)]
     [TestFixture(typeof(string), "Some value", "Another value")]
     public sealed class SyncValueContainerTests<T>

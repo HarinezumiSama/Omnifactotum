@@ -17,19 +17,10 @@ namespace System.Reflection
     {
         #region Constants and Fields
 
-        /// <summary>
-        ///     The type delimiter.
-        /// </summary>
         private static readonly string TypeDelimiter = Type.Delimiter.ToString(CultureInfo.InvariantCulture);
 
-        /// <summary>
-        ///     The <b>void</b> type.
-        /// </summary>
         private static readonly Type VoidType = typeof(void);
 
-        /// <summary>
-        ///     The <b>void</b> type name.
-        /// </summary>
         private static readonly string VoidTypeName = OmnifactotumTypeExtensions.GetShortTypeNameInternal(VoidType);
 
         #endregion
@@ -134,32 +125,11 @@ namespace System.Reflection
 
         #region Private Methods
 
-        /// <summary>
-        ///     Gets the type containing the method.
-        /// </summary>
-        /// <param name="method">
-        ///     The method.
-        /// </param>
-        /// <returns>
-        ///     The type containing the method.
-        /// </returns>
         private static Type GetMethodType([NotNull] MethodBase method)
         {
             return method.DeclaringType ?? method.ReflectedType;
         }
 
-        /// <summary>
-        ///     Gets the signature of the method.
-        /// </summary>
-        /// <param name="method">
-        ///     The method to get the signature of.
-        /// </param>
-        /// <param name="fullNames">
-        ///     Specifies whether to get the full type names.
-        /// </param>
-        /// <returns>
-        ///     The signature of the method.
-        /// </returns>
         private static string GetSignatureInternal([NotNull] MethodBase method, bool fullNames)
         {
             var resultBuilder = new StringBuilder();
@@ -229,18 +199,6 @@ namespace System.Reflection
             return resultBuilder.ToString();
         }
 
-        /// <summary>
-        ///     Gets the name of the method.
-        /// </summary>
-        /// <param name="method">
-        ///     The method to get the name of.
-        /// </param>
-        /// <param name="fullName">
-        ///     Specifies whether to get the full type name.
-        /// </param>
-        /// <returns>
-        ///     The name of the method.
-        /// </returns>
         private static string GetNameInternal([NotNull] MethodBase method, bool fullName)
         {
             var type = GetMethodType(method);
