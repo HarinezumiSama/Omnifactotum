@@ -27,6 +27,9 @@ if exist "!REL_NOTES_PATH!" (
     for /f "usebackq Tokens=* Delims=" %%A in ("!REL_NOTES_PATH!") do set PkgReleaseNotes=!PkgReleaseNotes!!CR!!LF!%%A
 )
 
+::set PkgReleaseNotes=!PkgReleaseNotes:^<=^&lt^;!
+::set PkgReleaseNotes=!PkgReleaseNotes:^>=^&gt^;!
+
 ::echo !PkgReleaseNotes!
 ::goto :EOF
 
