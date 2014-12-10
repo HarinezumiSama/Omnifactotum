@@ -1,4 +1,4 @@
---- Changes in 0.3.0.99 (since 0.3.0.90) ---
+--- Changes in 0.3.0.101 (since 0.3.0.90) ---
 * KeyedEqualityComparer{T,TKey}: Fixes and improvements
 * KeyedEqualityComparer static helper class has been introduced
 * Factotum: CreateEmptyCompletedTask and CreateEmptyFaultedTask methods have been introduced
