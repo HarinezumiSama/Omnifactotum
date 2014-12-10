@@ -1,3 +1,13 @@
+--- Changes in 0.3.0.98 (since 0.3.0.90) ---
+* KeyedEqualityComparer<T,TKey>: Fixes and improvements
+* KeyedEqualityComparer static helper class has been introduced
+* Factotum: CreateEmptyCompletedTask and CreateEmptyFaultedTask methods have been introduced
+* OmnifactotumGenericObjectExtensions: EnsureNotNull (for nullable) has been introduced
+* IValueContainer<T> has been introduced for ValueContainer<T> and SyncValueContainer<T>
+* ValueContainer and SyncValueContainer helper static classes have been introduced
+* Improvements and fixes in OmnifactotumMethodBaseExtensions and OmnifactotumTypeExtensions
+* OmnifactotumStringExtensions: TrimSafely, TrimStartSafely, TrimEndSafely and Shorten methods now never return null
+
 --- Changes in 0.3.0.90 (since 0.3.0.86) ---
 * [BREAKING CHANGE] OmnifactotumCustomAttributeProviderExtensions: GetCustomAttributes -> GetCustomAttributeArray (for compatibility with FW 4.5+)
 
