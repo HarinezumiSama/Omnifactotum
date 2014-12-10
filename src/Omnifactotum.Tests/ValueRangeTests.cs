@@ -68,7 +68,7 @@ namespace Omnifactotum.Tests
         [Category(TestCategory.Positive)]
         public void TestEquality(ValueRange<int> range1, ValueRange<int> range2, bool equal)
         {
-            NUnitHelper.AssertEquality(
+            NUnitFactotum.AssertEquality(
                 range1,
                 range2,
                 equal ? AssertEqualityExpectation.EqualAndMayBeSame : AssertEqualityExpectation.NotEqual);

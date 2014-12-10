@@ -2,10 +2,9 @@
 using System.Collections.ObjectModel;
 using System.Diagnostics;
 using System.Text;
-
-//// Namespace is intentionally named so in order to simplify usage of extension methods
 using Omnifactotum.Annotations;
 
+//// Namespace is intentionally named so in order to simplify usage of extension methods
 //// ReSharper disable once CheckNamespace
 namespace System
 {

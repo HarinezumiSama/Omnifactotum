@@ -64,7 +64,7 @@
     </Compile>
     <Compile Include="PropertyAccessMode.cs" />
     <Compile Include="TestCasesBase.cs" />
-    <Compile Include="NUnitHelper.cs" />
+    <Compile Include="NUnitFactotum.cs" />
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>

@@ -13,7 +13,7 @@ namespace Omnifactotum.NUnit
     /// <summary>
     ///     Provides helper methods and properties for common use in the NUnit tests.
     /// </summary>
-    public static class NUnitHelper
+    public static class NUnitFactotum
     {
         #region Public Methods
 
@@ -226,11 +226,12 @@ namespace Omnifactotum.NUnit
         /// <exception cref="AssertionException">
         ///     <paramref name="value"/> is <c>null</c>.
         /// </exception>
-        public static T AssertNotNull<T>(this T value)
+        [NotNull]
+        public static T AssertNotNull<T>([CanBeNull] this T value)
             where T : class
         {
             Assert.That(value, Is.Not.Null);
-            return value;
+            return value.EnsureNotNull();
         }
 
         #endregion

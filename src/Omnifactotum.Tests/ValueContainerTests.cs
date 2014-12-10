@@ -46,7 +46,7 @@ namespace Omnifactotum.Tests
         [Test]
         public void TestPropertyAccess()
         {
-            NUnitHelper.For<ValueContainer<T>>.AssertReadableWritable(
+            NUnitFactotum.For<ValueContainer<T>>.AssertReadableWritable(
                 obj => obj.Value,
                 PropertyAccessMode.ReadWrite);
         }

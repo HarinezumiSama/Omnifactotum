@@ -6,7 +6,7 @@ namespace Omnifactotum.NUnit
     //// TODO [vmcl] Think about IResolveConstraint for the expectations
 
     /// <summary>
-    ///     Represents the equality expectation used in the <see cref="NUnitHelper.AssertEquality{T}"/> method.
+    ///     Represents the equality expectation used in the <see cref="NUnitFactotum.AssertEquality{T}"/> method.
     /// </summary>
     public enum AssertEqualityExpectation
     {

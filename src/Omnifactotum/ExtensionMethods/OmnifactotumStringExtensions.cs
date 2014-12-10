@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Globalization;
 using System.Linq;
 using System.Text;
 using Omnifactotum.Annotations;
@@ -40,7 +41,6 @@ namespace System
         ///     <c>true</c> if the specified string is <c>null</c> or an <see cref="String.Empty"/> string;
         ///     otherwise, <c>false</c>.
         /// </returns>
-        [DebuggerNonUserCode]
         public static bool IsNullOrEmpty([CanBeNull] this string value)
         {
             return string.IsNullOrEmpty(value);
@@ -57,7 +57,6 @@ namespace System
         ///     <c>true</c> if the specified value is <c>null</c> or <see cref="String.Empty"/>, or if it consists
         ///     exclusively of white-space characters; otherwise, <c>false</c>.
         /// </returns>
-        [DebuggerNonUserCode]
         public static bool IsNullOrWhiteSpace([CanBeNull] this string value)
         {
             return string.IsNullOrWhiteSpace(value);
@@ -73,7 +72,6 @@ namespace System
         /// <returns>
         ///     The <see cref="Nullable{Boolean}"/> representation of the specified string value.
         /// </returns>
-        [DebuggerNonUserCode]
         [CanBeNull]
         public static bool? ToNullableBoolean([CanBeNull] this string value)
         {
@@ -89,7 +87,7 @@ namespace System
             }
 
             int intResult;
-            if (int.TryParse(value, out intResult))
+            if (int.TryParse(value, NumberStyles.Integer, CultureInfo.InvariantCulture, out intResult))
             {
                 return intResult != 0;
             }
@@ -107,7 +105,6 @@ namespace System
         /// <returns>
         ///     The <see cref="System.Boolean"/> representation of the specified string value.
         /// </returns>
-        [DebuggerNonUserCode]
         public static bool ToBoolean(this string value)
         {
             var proxyResult = ToNullableBoolean(value);
@@ -135,7 +132,6 @@ namespace System
         ///     by the <paramref name="separator"/> string.
         /// </returns>
         [NotNull]
-        [DebuggerNonUserCode]
         public static string Join([NotNull] this IEnumerable<string> values, [CanBeNull] string separator)
         {
             #region Argument Check
@@ -161,7 +157,6 @@ namespace System
         ///     The source string value if it is not <c>null</c>; otherwise, empty string.
         /// </returns>
         [NotNull]
-        [DebuggerNonUserCode]
         public static string AvoidNull([CanBeNull] this string source)
         {
             return source ?? string.Empty;
@@ -177,10 +172,10 @@ namespace System
         ///     The UI representation of the specified string.
         /// </returns>
         [NotNull]
-        [DebuggerNonUserCode]
         public static string ToUIString([CanBeNull] this string value)
         {
             const string DoubleDoubleQuote = DoubleQuote + DoubleQuote;
+
             return value == null
                 ? NullString
                 : DoubleQuote + value.Replace(DoubleQuote, DoubleDoubleQuote) + DoubleQuote;
@@ -202,20 +197,10 @@ namespace System
         ///     If <paramref name="trimChars"/> is <c>null</c> or an empty array, Unicode white-space characters
         ///     are removed instead.
         /// </returns>
-        [CanBeNull]
-        [DebuggerNonUserCode]
-        public static string TrimSafely([CanBeNull] this string value, [NotNull] params char[] trimChars)
+        [NotNull]
+        public static string TrimSafely([CanBeNull] this string value, [CanBeNull] params char[] trimChars)
         {
-            #region Argument Check
-
-            if (trimChars == null)
-            {
-                throw new ArgumentNullException("trimChars");
-            }
-
-            #endregion
-
-            return value == null ? null : value.Trim(trimChars);
+            return value == null ? string.Empty : value.Trim(trimChars);
         }
 
         /// <summary>
@@ -234,20 +219,10 @@ namespace System
         ///     If <paramref name="trimChars"/> is <c>null</c> or an empty array, Unicode white-space characters
         ///     are removed instead.
         /// </returns>
-        [CanBeNull]
-        [DebuggerNonUserCode]
-        public static string TrimStartSafely([CanBeNull] this string value, [NotNull] params char[] trimChars)
+        [NotNull]
+        public static string TrimStartSafely([CanBeNull] this string value, [CanBeNull] params char[] trimChars)
         {
-            #region Argument Check
-
-            if (trimChars == null)
-            {
-                throw new ArgumentNullException("trimChars");
-            }
-
-            #endregion
-
-            return value == null ? null : value.TrimStart(trimChars);
+            return value == null ? string.Empty : value.TrimStart(trimChars);
         }
 
         /// <summary>
@@ -266,20 +241,10 @@ namespace System
         ///     If <paramref name="trimChars"/> is <c>null</c> or an empty array, Unicode white-space characters
         ///     are removed instead.
         /// </returns>
-        [CanBeNull]
-        [DebuggerNonUserCode]
-        public static string TrimEndSafely([CanBeNull] this string value, [NotNull] params char[] trimChars)
+        [NotNull]
+        public static string TrimEndSafely([CanBeNull] this string value, [CanBeNull] params char[] trimChars)
         {
-            #region Argument Check
-
-            if (trimChars == null)
-            {
-                throw new ArgumentNullException("trimChars");
-            }
-
-            #endregion
-
-            return value == null ? null : value.TrimEnd(trimChars);
+            return value == null ? string.Empty : value.TrimEnd(trimChars);
         }
 
         /// <summary>
@@ -299,8 +264,7 @@ namespace System
         /// <exception cref="ArgumentOutOfRangeException">
         ///     <paramref name="maximumLength"/> is less than zero.
         /// </exception>
-        [CanBeNull]
-        [DebuggerNonUserCode]
+        [NotNull]
         public static string Shorten([CanBeNull] this string value, int maximumLength)
         {
             #region Argument Check
@@ -315,12 +279,7 @@ namespace System
 
             #endregion
 
-            if (string.IsNullOrEmpty(value))
-            {
-                return value;
-            }
-
-            if (maximumLength == 0)
+            if (string.IsNullOrEmpty(value) || maximumLength == 0)
             {
                 return string.Empty;
             }
@@ -342,7 +301,6 @@ namespace System
         ///     <paramref name="value"/> is <c>null</c> or an empty string or <paramref name="count"/> is zero.
         /// </returns>
         [NotNull]
-        [DebuggerNonUserCode]
         public static string Replicate([CanBeNull] this string value, int count)
         {
             #region Argument Check

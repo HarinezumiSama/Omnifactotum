@@ -59,15 +59,17 @@
     </None>
     <Compile Include="ByReferenceEqualityComparerTests.cs" />
     <Compile Include="ConstraintTestsBase.cs" />
+    <Compile Include="Extensions\OmnifactotumArrayExtensionsTests.cs" />
+    <Compile Include="Extensions\OmnifactotumStringExtensionsTests.cs" />
     <Compile Include="ValueContainerHelperTests.cs" />
     <Compile Include="SyncValueContainerHelperTests.cs" />
     <Compile Include="EnumFixedSizeDictionaryTests.cs" />
     <Compile Include="FixedSizeDictionaryTests.cs" />
     <Compile Include="KeyedEqualityComparerHelperTests.cs" />
     <Compile Include="KeyedEqualityComparerTests.cs" />
-    <Compile Include="OmnifactotumCustomAttributeProviderExtensionsTests.cs" />
-    <Compile Include="OmnifactotumDictionaryExtensionsTests.cs" />
-    <Compile Include="OmnifactotumGenericObjectExtensionsTests.cs" />
+    <Compile Include="Extensions\OmnifactotumCustomAttributeProviderExtensionsTests.cs" />
+    <Compile Include="Extensions\OmnifactotumDictionaryExtensionsTests.cs" />
+    <Compile Include="Extensions\OmnifactotumGenericObjectExtensionsTests.cs" />
     <Compile Include="ValueContainerTests.cs" />
     <Compile Include="NotNullOrWhiteSpaceStringConstraintTests.cs" />
     <Compile Include="DirectedGraphTests.cs" />
@@ -76,7 +78,7 @@
     <Compile Include="NotNullConstraintTests.cs" />
     <Compile Include="NotNullOrEmptyStringConstraintTests.cs" />
     <Compile Include="ObjectValidatorTests.cs" />
-    <Compile Include="OmnifactotumExpressionExtensionsTests.cs" />
+    <Compile Include="Extensions\OmnifactotumExpressionExtensionsTests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="..\SolutionItems\CommonAssemblyInfo.cs">
       <Link>Properties\CommonAssemblyInfo.cs</Link>

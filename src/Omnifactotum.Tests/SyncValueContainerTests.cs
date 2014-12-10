@@ -46,11 +46,11 @@ namespace Omnifactotum.Tests
         [Test]
         public void TestPropertyAccess()
         {
-            NUnitHelper.For<SyncValueContainer<T>>.AssertReadableWritable(
+            NUnitFactotum.For<SyncValueContainer<T>>.AssertReadableWritable(
                 obj => obj.SyncObject,
                 PropertyAccessMode.ReadOnly);
 
-            NUnitHelper.For<SyncValueContainer<T>>.AssertReadableWritable(
+            NUnitFactotum.For<SyncValueContainer<T>>.AssertReadableWritable(
                 obj => obj.Value,
                 PropertyAccessMode.ReadWrite);
         }
