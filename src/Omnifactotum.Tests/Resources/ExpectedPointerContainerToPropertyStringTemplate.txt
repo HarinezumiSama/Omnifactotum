@@ -1,1 +1,1 @@
-﻿FactotumTests.PointerContainer :: IntPointer:Int32* = {{Pointer :: {0}}}, IntPtr:IntPtr = {{IntPtr :: {0}}}, Value:String = {{String :: "SomePointer"}}
+﻿FactotumTests.PointerContainer :: IntPointer:int* = {{Pointer :: {0}}}, IntPtr:IntPtr = {{IntPtr :: {0}}}, Value:string = {{string :: "SomePointer"}}

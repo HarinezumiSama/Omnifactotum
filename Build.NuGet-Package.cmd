@@ -4,6 +4,11 @@ verify invalid params >nul
 setlocal enableextensions enabledelayedexpansion
 if errorlevel 1 goto EXT_ERROR
 
+if "%SIGN_OMNIFACTOTUM%" neq "1" (
+    echo *** ERROR: The assembly signing is not enabled. The NuGet package will not be created.
+    exit /b 100
+)
+
 set EnableNuGetPackageRestore=true
 
 set SRC_PROJECT_PATH=%~dp0\src\Omnifactotum\Omnifactotum.csproj
@@ -29,6 +34,8 @@ echo Building project...
 "%SystemRoot%\Microsoft.NET\Framework\v4.0.30319\MSBuild.exe" "%SRC_PROJECT_PATH%" /target:Rebuild /p:Configuration=Release /p:Platform=AnyCPU || exit /b 1
 echo Building project - DONE.
 
+:: TODO: Run unit tests before creating package
+
 echo.
 echo (Re)creating directory for the package '%PKG_PATH%'...
 if exist "%PKG_PATH%" (
@@ -53,7 +60,7 @@ goto :EOF
 
 :EXT_ERROR
 echo.
-echo * ERROR: Unable to turn on Command Shell extensions.
+echo *** ERROR: Unable to turn on Command Shell extensions.
 goto ERROR
 
 :: ----------------------------------------------------------------------------------------------------

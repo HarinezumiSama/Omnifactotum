@@ -1,11 +1,9 @@
 ﻿using System;
 using System.Diagnostics;
-using System.Globalization;
 using System.Text;
-
-//// Namespace is intentionally named so in order to simplify usage of extension methods
 using Omnifactotum.Annotations;
 
+//// Namespace is intentionally named so in order to simplify usage of extension methods
 //// ReSharper disable once CheckNamespace
 namespace System.Reflection
 {
@@ -16,8 +14,6 @@ namespace System.Reflection
     public static class OmnifactotumMethodBaseExtensions
     {
         #region Constants and Fields
-
-        private static readonly string TypeDelimiter = Type.Delimiter.ToString(CultureInfo.InvariantCulture);
 
         private static readonly Type VoidType = typeof(void);
 
@@ -134,10 +130,7 @@ namespace System.Reflection
         {
             var resultBuilder = new StringBuilder();
 
-            Func<Type, string> getTypeName =
-                type => type == VoidType
-                    ? VoidTypeName
-                    : (fullNames ? type.GetFullName() : OmnifactotumTypeExtensions.GetShortTypeNameInternal(type));
+            Func<Type, string> getTypeName = type => GetTypeNameInternal(type, fullNames);
 
             //// MethodInfo specific code
             {
@@ -199,11 +192,49 @@ namespace System.Reflection
             return resultBuilder.ToString();
         }
 
+        private static string GetTypeNameInternal([NotNull] Type type, bool fullName)
+        {
+            return type == VoidType
+                ? VoidTypeName
+                : (fullName ? type.GetFullName() : OmnifactotumTypeExtensions.GetShortTypeNameInternal(type));
+        }
+
         private static string GetNameInternal([NotNull] MethodBase method, bool fullName)
         {
+            var resultBuilder = new StringBuilder();
+
             var type = GetMethodType(method);
-            return (type == null ? string.Empty : (fullName ? type.FullName : type.Name) + TypeDelimiter)
-                + method.Name;
+            if (type != null)
+            {
+                var typeName = fullName ? type.GetFullName() : type.GetQualifiedName();
+                resultBuilder.Append(typeName);
+                resultBuilder.Append(Type.Delimiter);
+            }
+
+            resultBuilder.Append(method.Name);
+
+            if (method.IsGenericMethod || method.IsGenericMethodDefinition)
+            {
+                var genericArguments = method.GetGenericArguments();
+                if (genericArguments.Length > 0)
+                {
+                    resultBuilder.Append("<");
+
+                    for (var index = 0; index < genericArguments.Length; index++)
+                    {
+                        if (index > 0)
+                        {
+                            resultBuilder.Append(", ");
+                        }
+
+                        resultBuilder.Append(GetTypeNameInternal(genericArguments[index], fullName));
+                    }
+
+                    resultBuilder.Append(">");
+                }
+            }
+
+            return resultBuilder.ToString();
         }
 
         #endregion

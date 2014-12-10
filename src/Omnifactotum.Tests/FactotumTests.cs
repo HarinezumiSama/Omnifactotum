@@ -471,7 +471,7 @@ namespace Omnifactotum.Tests
                     typeof(string),
                     null,
                     new ToPropertyStringOptions().SetAllFlags(true),
-                    "String :: <null>")
+                    "string :: <null>")
                     .SetName("Null string, all flags");
 
                 yield return new TestCaseData(
@@ -485,7 +485,7 @@ namespace Omnifactotum.Tests
                     typeof(int),
                     15789632,
                     new ToPropertyStringOptions().SetAllFlags(true),
-                    "Int32 :: 15789632")
+                    "int :: 15789632")
                     .SetName("Int32, all flags");
 
                 {
@@ -617,7 +617,7 @@ namespace Omnifactotum.Tests
                         typeof(Delegate),
                         new Func<string>(typeof(object).ToString),
                         new ToPropertyStringOptions().SetAllFlags(true),
-                        "Func<String> :: System.Func`1[System.String]")
+                        "Func<string> :: System.Func`1[System.String]")
                         .SetName("Delegate");
             }
         }

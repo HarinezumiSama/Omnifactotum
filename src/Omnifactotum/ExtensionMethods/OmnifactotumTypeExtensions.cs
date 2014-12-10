@@ -1,4 +1,5 @@
-﻿using System.CodeDom;
+﻿using System;
+using System.CodeDom;
 using System.Collections;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -6,10 +7,9 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using Microsoft.CSharp;
-
-//// Namespace is intentionally named so in order to simplify usage of extension methods
 using Omnifactotum.Annotations;
 
+//// Namespace is intentionally named so in order to simplify usage of extension methods
 //// ReSharper disable once CheckNamespace
 namespace System
 {
@@ -283,6 +283,57 @@ namespace System
                 return type.Name;
             }
 
+            if (type.IsNullable())
+            {
+                var underlyingTypeName = GetShortTypeNameInternal(Nullable.GetUnderlyingType(type));
+                return underlyingTypeName + "?";
+            }
+
+            if (type.HasElementType)
+            {
+                if (type.IsPointer)
+                {
+                    var elementType = type.GetElementType();
+                    var elementTypeName = GetShortTypeNameInternal(elementType);
+                    return elementTypeName + "*";
+                }
+
+                if (type.IsArray)
+                {
+                    var elementType = type.GetElementType();
+                    var elementTypeName = GetShortTypeNameInternal(elementType);
+                    return elementTypeName + "[]";
+                }
+            }
+
+            if (type.IsGenericType || type.IsGenericTypeDefinition)
+            {
+                var resultBuilder = new StringBuilder();
+                resultBuilder.Append(GetGenericTypeNameBase(type));
+                resultBuilder.Append("<");
+
+                var genericArguments = type.GetGenericArguments();
+                for (var index = 0; index < genericArguments.Length; index++)
+                {
+                    if (index > 0)
+                    {
+                        resultBuilder.Append(", ");
+                    }
+
+                    var shortName = GetShortTypeNameInternal(genericArguments[index]);
+                    resultBuilder.Append(shortName);
+                }
+
+                resultBuilder.Append(">");
+
+                return resultBuilder.ToString();
+            }
+
+            if (type.IsNested || type.DeclaringType != null)
+            {
+                return type.Name;
+            }
+
             var result = CSharpCodeProviderInstance.GetTypeOutput(new CodeTypeReference(type));
             if (result == type.FullName)
             {
@@ -296,24 +347,6 @@ namespace System
 
         #region Private Methods
 
-        /// <summary>
-        ///     Gets the name of the specified type.
-        /// </summary>
-        /// <param name="resultBuilder">
-        ///     The resulting <see cref="StringBuilder"/>.
-        /// </param>
-        /// <param name="type">
-        ///     The type to process.
-        /// </param>
-        /// <param name="fullName">
-        ///     Specifies whether to get the full name.
-        /// </param>
-        /// <param name="genericParameters">
-        ///     The list of the generic parameters.
-        /// </param>
-        /// <param name="genericParameterOffset">
-        ///     The generic parameter offset. This value is passed by reference.
-        /// </param>
         private static void GetNameInternal(
             [NotNull] StringBuilder resultBuilder,
             [NotNull] Type type,
@@ -347,7 +380,7 @@ namespace System
 
             if (type.DeclaringType == null)
             {
-                if (fullName)
+                if (fullName && !type.Namespace.IsNullOrEmpty())
                 {
                     resultBuilder.Append(type.Namespace);
                     resultBuilder.Append(Type.Delimiter);
@@ -364,69 +397,102 @@ namespace System
                 resultBuilder.Append(Type.Delimiter);
             }
 
-            //// Generic type specific
+            if (type.HasElementType)
             {
-                var name = type.Name;
-                var index = name.IndexOf(GenericArgumentDelimiter);
-                if (index >= 0)
+                var elementType = type.GetElementType();
+
+                if (type.IsPointer)
                 {
-                    name = name.Substring(0, index);
+                    GetNameInternal(
+                        resultBuilder,
+                        elementType,
+                        fullName,
+                        genericParameters,
+                        ref genericParameterOffset);
+
+                    resultBuilder.Append('*');
+                    return;
                 }
 
-                resultBuilder.Append(name);
-            }
-
-            if (type.IsGenericType)
-            {
-                var argumentCount = type.GetGenericArguments().Length - genericParameterOffset;
-                if (argumentCount > 0)
+                if (type.IsArray)
                 {
-                    if (genericParameters == null)
-                    {
-                        throw new InvalidOperationException();
-                    }
+                    GetNameInternal(
+                        resultBuilder,
+                        elementType,
+                        fullName,
+                        genericParameters,
+                        ref genericParameterOffset);
 
-                    resultBuilder.Append('<');
-
-                    var genericArguments = genericParameters
-                        .Skip(genericParameterOffset)
-                        .Take(argumentCount)
-                        .ToArray();
-                    genericParameterOffset += argumentCount;
-                    for (var index = 0; index < argumentCount; index++)
-                    {
-                        if (index > 0)
-                        {
-                            resultBuilder.Append(", ");
-                        }
-
-                        var offset = 0;
-                        GetNameInternal(resultBuilder, genericArguments[index], fullName, null, ref offset);
-                    }
-
-                    resultBuilder.Append('>');
+                    resultBuilder.Append("[]");
+                    return;
                 }
             }
+
+            if (!fullName && (type.IsNullable() || (!type.IsGenericType && !type.IsGenericTypeDefinition)))
+            {
+                var shortTypeName = GetShortTypeNameInternal(type);
+                resultBuilder.Append(shortTypeName);
+                return;
+            }
+
+            resultBuilder.Append(GetGenericTypeNameBase(type));
+
+            if (!type.IsGenericType)
+            {
+                return;
+            }
+
+            var argumentCount = type.GetGenericArguments().Length - genericParameterOffset;
+            if (argumentCount <= 0)
+            {
+                return;
+            }
+
+            if (genericParameters == null)
+            {
+                throw new InvalidOperationException();
+            }
+
+            resultBuilder.Append('<');
+
+            var genericArguments = genericParameters
+                .Skip(genericParameterOffset)
+                .Take(argumentCount)
+                .ToArray();
+            genericParameterOffset += argumentCount;
+            for (var index = 0; index < argumentCount; index++)
+            {
+                if (index > 0)
+                {
+                    resultBuilder.Append(", ");
+                }
+
+                var offset = 0;
+                GetNameInternal(resultBuilder, genericArguments[index], fullName, null, ref offset);
+            }
+
+            resultBuilder.Append('>');
         }
 
-        /// <summary>
-        ///     Gets the name of the specified type.
-        /// </summary>
-        /// <param name="type">
-        ///     The type to process.
-        /// </param>
-        /// <param name="fullName">
-        ///     Specifies whether to get the full name.
-        /// </param>
-        /// <returns>
-        ///     The name of the specified type.
-        /// </returns>
-        private static string GetNameInternal([NotNull] Type type, bool fullName)
+        private static string GetNameInternal(Type type, bool fullName)
         {
             var resultBuilder = new StringBuilder();
             var offset = 0;
             GetNameInternal(resultBuilder, type, fullName, null, ref offset);
             return resultBuilder.ToString();
+        }
+
+        private static string GetGenericTypeNameBase([NotNull] Type type)
+        {
+            var result = type.Name;
+
+            var index = result.IndexOf(GenericArgumentDelimiter);
+            if (index >= 0)
+            {
+                result = result.Substring(0, index);
+            }
+
+            return result;
         }
 
         #endregion
