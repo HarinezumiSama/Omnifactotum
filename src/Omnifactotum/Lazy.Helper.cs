@@ -5,13 +5,13 @@ using Omnifactotum.Annotations;
 
 //// Namespace is intentionally named so in order to simplify usage of extension methods
 //// ReSharper disable once CheckNamespace
+
 namespace System
 {
     /// <summary>
     ///     Provides helper functionality for creating instances of the <see cref="System.Lazy{T}"/> type using
     ///     type inference in a friendly way.
     /// </summary>
-    [DebuggerNonUserCode]
     public static class Lazy
     {
         #region Public Methods

@@ -25,7 +25,6 @@ namespace System
         /// <returns>
         ///     A string representation of the specified <see cref="DateTime"/> value.
         /// </returns>
-        [DebuggerNonUserCode]
         public static string ToFixedString(this DateTime value)
         {
             // Converting to a string similar to 2013-09-16 14:45:10
@@ -42,7 +41,6 @@ namespace System
         /// <returns>
         ///     A precise string representation of the specified <see cref="DateTime"/> value.
         /// </returns>
-        [DebuggerNonUserCode]
         public static string ToPreciseFixedString(this DateTime value)
         {
             // Converting to a string similar to 2013-09-16 14:45:10.7654321

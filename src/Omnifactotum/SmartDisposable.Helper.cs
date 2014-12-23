@@ -10,7 +10,6 @@ namespace Omnifactotum
     ///     Provides helper functionality for creating instances of the <see cref="SmartDisposable{T}"/> type
     ///     using type inference in a friendly way.
     /// </summary>
-    [DebuggerNonUserCode]
     public static class SmartDisposable
     {
         #region Public Methods

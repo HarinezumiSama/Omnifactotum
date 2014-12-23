@@ -240,7 +240,6 @@ namespace Omnifactotum
         /// </summary>
         public int Count
         {
-            [DebuggerNonUserCode]
             get
             {
                 return _set.Count;

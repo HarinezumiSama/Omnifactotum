@@ -137,13 +137,11 @@ namespace Omnifactotum
         [NotNull]
         public VirtualTreeNode<T> this[int index]
         {
-            [DebuggerNonUserCode]
             get
             {
                 return _list[index];
             }
 
-            [DebuggerNonUserCode]
             set
             {
                 #region Argument Check

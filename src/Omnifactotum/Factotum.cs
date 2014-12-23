@@ -117,7 +117,6 @@ namespace Omnifactotum
         /// <param name="value2">
         ///     The second value to exchange with the first value.
         /// </param>
-        [DebuggerNonUserCode]
         public static void Exchange<T>([CanBeNull] ref T value1, [CanBeNull] ref T value2)
         {
             var temporary = value1;
@@ -158,7 +157,6 @@ namespace Omnifactotum
         /// <returns>
         ///     The input object.
         /// </returns>
-        [DebuggerNonUserCode]
         public static T SetDefaultValues<T>([NotNull] T obj)
             where T : class
         {
@@ -1311,6 +1309,7 @@ namespace Omnifactotum
                             "{{ Error getting property value: [{0}] {1}) }}",
                             ex.GetType().Name,
                             (ex.GetBaseException() ?? ex).Message);
+
                         continue;
                     }
 

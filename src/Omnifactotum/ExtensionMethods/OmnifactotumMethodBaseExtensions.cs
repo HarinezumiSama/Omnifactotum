@@ -10,7 +10,6 @@ namespace System.Reflection
     /// <summary>
     ///     Contains extension methods for the <see cref="System.Reflection.MethodBase"/> class.
     /// </summary>
-    [DebuggerNonUserCode]
     public static class OmnifactotumMethodBaseExtensions
     {
         #region Constants and Fields

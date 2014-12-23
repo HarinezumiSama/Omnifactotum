@@ -6,6 +6,7 @@ using Omnifactotum.Annotations;
 
 //// Namespace is intentionally named so in order to simplify usage of extension methods
 //// ReSharper disable once CheckNamespace
+
 namespace System.Collections.Generic
 {
     /// <summary>
@@ -37,7 +38,6 @@ namespace System.Collections.Generic
         ///     The value associated with the specified key if the key is found; otherwise, the default value for
         ///     the type of the value parameter.
         /// </returns>
-        [DebuggerNonUserCode]
         public static TValue GetValueOrDefault<TKey, TValue>(
             [NotNull] this IDictionary<TKey, TValue> dictionary,
             [NotNull] TKey key,
@@ -87,7 +87,6 @@ namespace System.Collections.Generic
         ///     The value associated with the specified key if the key is found; otherwise, the default value for
         ///     the type of the value parameter.
         /// </returns>
-        [DebuggerNonUserCode]
         public static TValue GetValueOrDefault<TKey, TValue>(
             [NotNull] this IDictionary<TKey, TValue> dictionary,
             [NotNull] TKey key)
@@ -198,7 +197,6 @@ namespace System.Collections.Generic
         ///     A read-only wrapper for the specified dictionary.
         /// </returns>
         [NotNull]
-        [DebuggerNonUserCode]
         public static ReadOnlyDictionary<TKey, TValue> AsReadOnly<TKey, TValue>(
             [NotNull] this IDictionary<TKey, TValue> dictionary)
         {

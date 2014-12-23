@@ -113,13 +113,11 @@ namespace Omnifactotum
         /// </exception>
         public TValue this[[NotNull] TKey key]
         {
-            [DebuggerNonUserCode]
             get
             {
                 return _dictionary[key];
             }
 
-            [DebuggerNonUserCode]
             set
             {
                 throw new NotSupportedException(ReadOnlyMessage);
@@ -139,7 +137,6 @@ namespace Omnifactotum
         /// <param name="value">
         ///     The object to use as the value of the element to add.
         /// </param>
-        [DebuggerNonUserCode]
         void IDictionary<TKey, TValue>.Add([NotNull] TKey key, TValue value)
         {
             throw new NotSupportedException(ReadOnlyMessage);
@@ -158,7 +155,6 @@ namespace Omnifactotum
         /// <returns>
         ///     <c>true</c> if the element is successfully removed; otherwise, <c>false</c>.
         /// </returns>
-        [DebuggerNonUserCode]
         bool IDictionary<TKey, TValue>.Remove([NotNull] TKey key)
         {
             throw new NotSupportedException(ReadOnlyMessage);
@@ -174,7 +170,6 @@ namespace Omnifactotum
         ///     <c>true</c> if the current dictionary contains an element
         ///     with the specified key; otherwise, <c>false</c>.
         /// </returns>
-        [DebuggerNonUserCode]
         public bool ContainsKey([NotNull] TKey key)
         {
             return _dictionary.ContainsKey(key);
@@ -195,7 +190,6 @@ namespace Omnifactotum
         ///     <c>true</c> if the current dictionary contains an element with the specified key;
         ///     otherwise, <c>false</c>.
         /// </returns>
-        [DebuggerNonUserCode]
         public bool TryGetValue(TKey key, out TValue value)
         {
             return _dictionary.TryGetValue(key, out value);
@@ -213,7 +207,6 @@ namespace Omnifactotum
         /// </returns>
         public int Count
         {
-            [DebuggerNonUserCode]
             get
             {
                 return _dictionary.Count;

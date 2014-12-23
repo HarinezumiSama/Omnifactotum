@@ -1,11 +1,11 @@
-using System;
+﻿using System;
 using System.Diagnostics;
 using System.Globalization;
-
-//// Namespace is intentionally named so in order to simplify usage of extension methods
 using Omnifactotum.Annotations;
 
+//// Namespace is intentionally named so in order to simplify usage of extension methods
 //// ReSharper disable once CheckNamespace
+
 namespace System.Reflection
 {
     /// <summary>
@@ -27,7 +27,6 @@ namespace System.Reflection
         /// <exception cref="System.InvalidOperationException">
         ///     The specified assembly does not have a local path.
         /// </exception>
-        [DebuggerNonUserCode]
         public static string GetLocalPath([NotNull] this Assembly assembly)
         {
             #region Argument Check

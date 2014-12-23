@@ -4,17 +4,16 @@ using System.ComponentModel;
 using System.Diagnostics;
 using System.Globalization;
 using System.Linq;
-
-//// Namespace is intentionally named so in order to simplify usage of extension methods
 using Omnifactotum.Annotations;
 
+//// Namespace is intentionally named so in order to simplify usage of extension methods
 //// ReSharper disable once CheckNamespace
+
 namespace System
 {
     /// <summary>
     ///     Contains extension methods for enumerations.
     /// </summary>
-    [DebuggerNonUserCode]
     public static class OmnifactotumEnumExtensions
     {
         #region Constants and Fields
@@ -352,7 +351,6 @@ namespace System
         /// <returns>
         ///     The name of the enumeration value.
         /// </returns>
-        [DebuggerNonUserCode]
         private static string GetNameInternal([NotNull] Enum value, bool? fullEnumName)
         {
             #region Argument Check
@@ -390,7 +388,6 @@ namespace System
         /// <returns>
         ///   A <see cref="System.Boolean"/> value.
         /// </returns>
-        [DebuggerNonUserCode]
         private static bool IsSetInternal<TEnum>(this TEnum enumerationValue, TEnum flags, bool all)
             where TEnum : struct
         {
