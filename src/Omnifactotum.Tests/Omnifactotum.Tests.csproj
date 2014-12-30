@@ -60,6 +60,7 @@
     <Compile Include="ByReferenceEqualityComparerTests.cs" />
     <Compile Include="ConstraintTestsBase.cs" />
     <Compile Include="Extensions\OmnifactotumArrayExtensionsTests.cs" />
+    <Compile Include="Extensions\OmnifactotumAssemblyExtensionsTests.cs" />
     <Compile Include="Extensions\OmnifactotumStringExtensionsTests.cs" />
     <Compile Include="ValueContainerHelperTests.cs" />
     <Compile Include="SyncValueContainerHelperTests.cs" />

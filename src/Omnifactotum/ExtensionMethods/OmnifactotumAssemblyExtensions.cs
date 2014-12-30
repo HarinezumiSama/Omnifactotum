@@ -5,7 +5,6 @@ using Omnifactotum.Annotations;
 
 //// Namespace is intentionally named so in order to simplify usage of extension methods
 //// ReSharper disable once CheckNamespace
-
 namespace System.Reflection
 {
     /// <summary>
@@ -36,19 +35,43 @@ namespace System.Reflection
                 throw new ArgumentNullException("assembly");
             }
 
+            if (assembly.IsDynamic)
+            {
+                throw new ArgumentException(
+                    string.Format(
+                        CultureInfo.InvariantCulture,
+                        "The assembly {{ {0} }} is dynamic.",
+                        assembly.FullName),
+                    "assembly");
+            }
+
             #endregion
+
+            if (string.IsNullOrEmpty(assembly.Location))
+            {
+                throw CreateNoLocalPathException(assembly);
+            }
 
             var uri = new Uri(assembly.CodeBase);
             if (!uri.IsFile)
             {
-                throw new InvalidOperationException(
-                    string.Format(
-                        CultureInfo.InvariantCulture,
-                        "The path of the assembly {{{0}}} is not local.",
-                        assembly.FullName));
+                throw CreateNoLocalPathException(assembly);
             }
 
             return uri.LocalPath.EnsureNotNull();
+        }
+
+        #endregion
+
+        #region Private Methods
+
+        private static InvalidOperationException CreateNoLocalPathException(Assembly assembly)
+        {
+            return new InvalidOperationException(
+                string.Format(
+                    CultureInfo.InvariantCulture,
+                    "The assembly {{ {0} }} does not have a local path.",
+                    assembly.FullName));
         }
 
         #endregion
