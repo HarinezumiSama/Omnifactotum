@@ -10,6 +10,7 @@ using Moq;
 using NUnit.Framework;
 using Omnifactotum.Annotations;
 using Omnifactotum.NUnit;
+using Omnifactotum.Tests.Auxiliary;
 using Omnifactotum.Tests.Properties;
 
 namespace Omnifactotum.Tests
@@ -29,7 +30,7 @@ namespace Omnifactotum.Tests
         #region Tests: General
 
         [Test]
-        public void TestDisposeAndNull()
+        public void TestDisposeAndNullOfReferenceType()
         {
             var disposableMock = new Mock<IDisposable>(MockBehavior.Strict);
             disposableMock.Setup(obj => obj.Dispose()).Verifiable();
@@ -39,11 +40,34 @@ namespace Omnifactotum.Tests
 
             Factotum.DisposeAndNull(ref disposableCopy);
             Assert.That(disposableCopy, Is.Null);
+            Assert.That(disposable, Is.Not.Null);
             disposableMock.Verify(obj => obj.Dispose(), Times.Once);
 
             Factotum.DisposeAndNull(ref disposableCopy);
             Assert.That(disposableCopy, Is.Null);
+            Assert.That(disposable, Is.Not.Null);
             disposableMock.Verify(obj => obj.Dispose(), Times.Once);
+        }
+
+        [Test]
+        public void TestDisposeAndNullOfNullableType()
+        {
+            var disposeCallCount = 0L;
+            var disposableStruct = new DisposableStruct();
+            disposableStruct.OnDispose += () => disposeCallCount++;
+
+            var disposable = new DisposableStruct?(disposableStruct);
+            var disposableCopy = disposable;
+
+            Factotum.DisposeAndNull(ref disposableCopy);
+            Assert.That(disposableCopy, Is.Null);
+            Assert.That(disposable, Is.Not.Null);
+            Assert.That(disposeCallCount, Is.EqualTo(1));
+
+            Factotum.DisposeAndNull(ref disposableCopy);
+            Assert.That(disposableCopy, Is.Null);
+            Assert.That(disposable, Is.Not.Null);
+            Assert.That(disposeCallCount, Is.EqualTo(1));
         }
 
         [Test]

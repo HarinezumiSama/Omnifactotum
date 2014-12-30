@@ -425,7 +425,8 @@ namespace System.Collections.Generic
         }
 
         /// <summary>
-        ///     Safely disposes of each element of the specified collection.
+        ///     Safely disposes of each element in the specified collection.
+        ///     If the collection is <c>null</c>, nothing is done.
         /// </summary>
         /// <typeparam name="TDisposable">
         ///     The type of the disposable elements in the collection.
@@ -433,10 +434,36 @@ namespace System.Collections.Generic
         /// <param name="collection">
         ///     A collection of disposable elements.
         /// </param>
-        /// <seealso cref="OmnifactotumDisposableExtensions.DisposeSafely{T}"/>
+        /// <seealso cref="OmnifactotumDisposableExtensions.DisposeSafely{T}(T)"/>
         public static void DisposeCollectionItemsSafely<TDisposable>(
             [CanBeNull] this IEnumerable<TDisposable> collection)
-            where TDisposable : IDisposable
+            where TDisposable : class, IDisposable
+        {
+            if (collection == null)
+            {
+                return;
+            }
+
+            foreach (var item in collection)
+            {
+                item.DisposeSafely();
+            }
+        }
+
+        /// <summary>
+        ///     Safely disposes of each element in the specified collection.
+        ///     If the collection is <c>null</c>, nothing is done.
+        /// </summary>
+        /// <typeparam name="TDisposable">
+        ///     The type of the disposable elements in the collection.
+        /// </typeparam>
+        /// <param name="collection">
+        ///     A collection of disposable elements.
+        /// </param>
+        /// <seealso cref="OmnifactotumDisposableExtensions.DisposeSafely{T}(System.Nullable{T})"/>
+        public static void DisposeCollectionItemsSafely<TDisposable>(
+            [CanBeNull] this IEnumerable<TDisposable?> collection)
+            where TDisposable : struct, IDisposable
         {
             if (collection == null)
             {
@@ -519,7 +546,7 @@ namespace System.Collections.Generic
         [NotNull]
         public static HashSet<T> ToHashSet<T>([NotNull] this IEnumerable<T> collection)
         {
-            return ToHashSet(collection, null);
+            return new HashSet<T>(collection);
         }
 
         /// <summary>

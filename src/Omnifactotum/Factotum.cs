@@ -82,10 +82,18 @@ namespace Omnifactotum
         #region Public Methods: General
 
         /// <summary>
-        ///     Calls the <see cref="IDisposable.Dispose"/> method of the instance, passed by reference, implementing
-        ///     the <see cref="IDisposable"/> interface and sets the reference to this object to <c>null</c>.
-        ///     If the <see cref="IDisposable.Dispose"/> method implementation throws an exception,
-        ///     the reference to the instance remains unchanged.
+        ///     <para>
+        ///         Calls the <see cref="IDisposable.Dispose"/> method of the specified reference type instance,
+        ///         passed by reference, implementing the <see cref="IDisposable"/> interface and
+        ///         sets the reference to this object to <c>null</c>.
+        ///     </para>
+        ///     <para>
+        ///         If the specified instance is already <c>null</c>, nothing is done.
+        ///     </para>
+        ///     <para>
+        ///         If the <see cref="IDisposable.Dispose"/> method implementation throws an exception,
+        ///         the reference to the instance remains unchanged.
+        ///     </para>
         /// </summary>
         /// <typeparam name="T">
         ///     The type of the disposable instance.
@@ -103,6 +111,39 @@ namespace Omnifactotum
 
             disposable.Dispose();
             disposable = null;
+        }
+
+        /// <summary>
+        ///     <para>
+        ///         Calls the <see cref="IDisposable.Dispose"/> method of the specified nullable instance,
+        ///         passed by reference, implementing the <see cref="IDisposable"/> interface and
+        ///         sets the reference to this object to <c>null</c>.
+        ///     </para>
+        ///     <para>
+        ///         If the specified instance is already <c>null</c> (that is, <see cref="Nullable{T}.HasValue"/> is
+        ///         <c>false</c>), nothing is done.
+        ///     </para>
+        ///     <para>
+        ///         If the <see cref="IDisposable.Dispose"/> method implementation throws an exception,
+        ///         the reference to the instance remains unchanged.
+        ///     </para>
+        /// </summary>
+        /// <typeparam name="T">
+        ///     The type of the disposable instance.
+        /// </typeparam>
+        /// <param name="disposable">
+        ///     A reference to an object to dispose and set to <c>null</c>.
+        /// </param>
+        public static void DisposeAndNull<T>([CanBeNull] ref T? disposable)
+            where T : struct, IDisposable
+        {
+            if (!disposable.HasValue)
+            {
+                return;
+            }
+
+            disposable.Value.Dispose();
+            disposable = default(T?);
         }
 
         /// <summary>

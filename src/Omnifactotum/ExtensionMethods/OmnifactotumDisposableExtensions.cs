@@ -25,11 +25,31 @@ namespace System
         ///     A reference to an object to dispose.
         /// </param>
         public static void DisposeSafely<T>([CanBeNull] this T disposable)
-            where T : IDisposable
+            where T : class, IDisposable
         {
             if (!ReferenceEquals(disposable, null))
             {
                 disposable.Dispose();
+            }
+        }
+
+        /// <summary>
+        ///     Calls the <see cref="IDisposable.Dispose"/> method of the specified instance implementing
+        ///     the <see cref="IDisposable"/> interface, if this instance is not <c>null</c>;
+        ///     otherwise, does nothing.
+        /// </summary>
+        /// <typeparam name="T">
+        ///     The type of the disposable instance.
+        /// </typeparam>
+        /// <param name="disposable">
+        ///     A reference to an object to dispose.
+        /// </param>
+        public static void DisposeSafely<T>([CanBeNull] this T? disposable)
+            where T : struct, IDisposable
+        {
+            if (disposable.HasValue)
+            {
+                disposable.Value.Dispose();
             }
         }
 

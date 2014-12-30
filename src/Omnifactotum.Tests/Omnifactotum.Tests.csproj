@@ -57,12 +57,14 @@
     <None Include="..\SolutionItems\Omnifactotum.snk">
       <Link>Properties\Omnifactotum.snk</Link>
     </None>
+    <Compile Include="Auxiliary\DisposableStruct.cs" />
     <Compile Include="ByReferenceEqualityComparerTests.cs" />
     <Compile Include="ConstraintTestsBase.cs" />
     <Compile Include="ExtensionMethods\OmnifactotumArrayExtensionsTests.cs" />
     <Compile Include="ExtensionMethods\OmnifactotumAssemblyExtensionsTests.cs" />
     <Compile Include="ExtensionMethods\OmnifactotumDateTimeExtensionsTests.cs" />
     <Compile Include="ExtensionMethods\OmnifactotumDateTimeOffsetExtensionsTests.cs" />
+    <Compile Include="ExtensionMethods\OmnifactotumDisposableExtensionsTests.cs" />
     <Compile Include="ExtensionMethods\OmnifactotumStringExtensionsTests.cs" />
     <Compile Include="ValueContainerHelperTests.cs" />
     <Compile Include="SyncValueContainerHelperTests.cs" />
