@@ -2,7 +2,7 @@
 using System.Linq;
 using NUnit.Framework;
 
-namespace Omnifactotum.Tests.Extensions
+namespace Omnifactotum.Tests.ExtensionMethods
 {
     //// ReSharper disable ExpressionIsAlwaysNull - Intentionally for unit tests
 

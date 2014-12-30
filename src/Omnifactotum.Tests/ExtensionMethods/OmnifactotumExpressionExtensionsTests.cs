@@ -4,7 +4,7 @@ using System.Linq.Expressions;
 using System.Reflection;
 using NUnit.Framework;
 
-namespace Omnifactotum.Tests.Extensions
+namespace Omnifactotum.Tests.ExtensionMethods
 {
     [TestFixture]
     public sealed class OmnifactotumExpressionExtensionsTests

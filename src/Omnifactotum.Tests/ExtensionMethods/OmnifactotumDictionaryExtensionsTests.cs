@@ -4,7 +4,7 @@ using System.Linq;
 using NUnit.Framework;
 using Omnifactotum.Annotations;
 
-namespace Omnifactotum.Tests.Extensions
+namespace Omnifactotum.Tests.ExtensionMethods
 {
     [TestFixture]
     public sealed class OmnifactotumDictionaryExtensionsTests

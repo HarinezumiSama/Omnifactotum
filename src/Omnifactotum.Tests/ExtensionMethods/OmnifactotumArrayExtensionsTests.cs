@@ -6,7 +6,7 @@ using NUnit.Framework;
 using Omnifactotum.Annotations;
 using Omnifactotum.NUnit;
 
-namespace Omnifactotum.Tests.Extensions
+namespace Omnifactotum.Tests.ExtensionMethods
 {
     //// ReSharper disable AssignNullToNotNullAttribute - Intentionally for tests
 
