@@ -18,7 +18,7 @@ using Omnifactotum.Annotations;
 namespace Omnifactotum
 {
     /// <summary>
-    ///     Provides helper methods and properties for common use.
+    ///     Provides helper methods for common use.
     /// </summary>
     public static partial class Factotum
     {

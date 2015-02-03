@@ -86,10 +86,15 @@
     <Compile Include="Annotations\RazorSectionAttribute.cs" />
     <Compile Include="Annotations\StringFormatMethodAttribute.cs" />
     <Compile Include="Annotations\UsedImplicitlyAttribute.cs" />
+    <Compile Include="AsyncFactotum.ExecuteAsync-8.cs" />
+    <Compile Include="AsyncFactotum.ComputeAsync-8.cs" />
+    <Compile Include="AsyncFactotum.cs" />
     <Compile Include="ByReferenceEqualityComparer.cs" />
     <Compile Include="ColoredConsoleTraceListener.cs" />
     <Compile Include="ComparableObjectBase.cs" />
     <Compile Include="ComparableValueCapsule.cs" />
+    <Compile Include="AsyncOptions.cs" />
+    <Compile Include="AsyncOptionsExtensions.cs" />
     <Compile Include="ValueContainer.Helper.cs" />
     <Compile Include="EnumFixedSizeDictionary.cs" />
     <Compile Include="EnumFixedSizeDictionaryDeterminant.cs" />
