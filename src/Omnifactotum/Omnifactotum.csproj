@@ -86,7 +86,9 @@
     <Compile Include="Annotations\RazorSectionAttribute.cs" />
     <Compile Include="Annotations\StringFormatMethodAttribute.cs" />
     <Compile Include="Annotations\UsedImplicitlyAttribute.cs" />
+    <Compile Include="AsyncFactotum.ComputeAsync-6.cs" />
     <Compile Include="AsyncFactotum.ComputeAsync-7.cs" />
+    <Compile Include="AsyncFactotum.ExecuteAsync-6.cs" />
     <Compile Include="AsyncFactotum.ExecuteAsync-7.cs" />
     <Compile Include="AsyncFactotum.ExecuteAsync-8.cs" />
     <Compile Include="AsyncFactotum.ComputeAsync-8.cs" />
