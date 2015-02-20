@@ -1,0 +1,95 @@
+﻿<#@ assembly name="System.Core" #>
+<#@ import namespace="System" #>
+<#@ import namespace="System.Collections.Generic" #>
+<#@ import namespace="System.Globalization" #>
+<#@ import namespace="System.Linq" #>
+<#@ import namespace="System.Text" #><#+
+    private const int MaxParameterCount = 16;
+    
+    private static string ToNumeral(int number)
+    {
+        const string DefaultSuffix = "th";
+
+        var rem100 = Math.Abs(number) % 100;
+        var isTeen = rem100 >= 11 && rem100 <= 19;
+        var rem10 = Math.Abs(number) % 10;
+
+        string suffix;
+        switch (rem10)
+        {
+            case 1:
+                suffix = isTeen ? DefaultSuffix : "st";
+                break;
+
+            case 2:
+                suffix = isTeen ? DefaultSuffix : "nd";
+                break;
+
+            case 3:
+                suffix = isTeen ? DefaultSuffix : "rd";
+                break;
+
+            default:
+                suffix = DefaultSuffix;
+                break;
+        }
+
+        return string.Format(CultureInfo.InvariantCulture, "{0}{1}", number, suffix);
+    }
+
+    private static string EnumerateTypeArgs(int count)
+    {
+        return EnumeratePrefixedValues("T{0}", ", ", false, count, true);
+    }
+
+    private static string EnumerateFormalArgs(int count)
+    {
+        return EnumeratePrefixedValues(
+            "T{0} arg{0}",
+            "," + Environment.NewLine + "            ",
+            true,
+            count,
+            false);
+    }
+
+    private static string EnumerateActualArgs(int count)
+    {
+        return EnumeratePrefixedValues("arg{0}", ", ", false, count, false);
+    }
+
+    private static string EnumeratePrefixedValues(
+        string template,
+        string separator,
+        bool addStartSeparator,
+        int count,
+        bool addEndSeparator)
+    {
+        if (count == 0)
+        {
+            return string.Empty;
+        }
+
+        var sb = new StringBuilder();
+        if (addStartSeparator)
+        {
+            sb.Append(separator);
+        }
+
+        for (var i = 1; i <= count; i++)
+        {
+            if (i > 1)
+            {
+                sb.Append(separator);
+            }
+
+            sb.AppendFormat(CultureInfo.InvariantCulture, template, i);
+        }
+
+        if (addEndSeparator)
+        {
+            sb.Append(separator);
+        }
+
+        return sb.ToString();
+    }
+#>

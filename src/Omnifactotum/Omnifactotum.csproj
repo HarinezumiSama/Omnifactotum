@@ -86,19 +86,19 @@
     <Compile Include="Annotations\RazorSectionAttribute.cs" />
     <Compile Include="Annotations\StringFormatMethodAttribute.cs" />
     <Compile Include="Annotations\UsedImplicitlyAttribute.cs" />
-    <Compile Include="AsyncFactotum.ComputeAsync-6.cs" />
-    <Compile Include="AsyncFactotum.ComputeAsync-7.cs" />
     <Compile Include="AsyncFactotum.ExecuteAsync-6.cs" />
     <Compile Include="AsyncFactotum.ExecuteAsync-7.cs" />
     <Compile Include="AsyncFactotum.ExecuteAsync-8.cs" />
-    <Compile Include="AsyncFactotum.ComputeAsync-8.cs" />
     <Compile Include="AsyncFactotum.cs" />
+    <Compile Include="AsyncFactotum.ComputeAsync.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>AsyncFactotum.ComputeAsync.tt</DependentUpon>
+    </Compile>
     <Compile Include="ByReferenceEqualityComparer.cs" />
     <Compile Include="ColoredConsoleTraceListener.cs" />
     <Compile Include="ComparableObjectBase.cs" />
     <Compile Include="ComparableValueCapsule.cs" />
-    <Compile Include="AsyncOptions.cs" />
-    <Compile Include="AsyncOptionsExtensions.cs" />
     <Compile Include="ValueContainer.Helper.cs" />
     <Compile Include="EnumFixedSizeDictionary.cs" />
     <Compile Include="EnumFixedSizeDictionaryDeterminant.cs" />
@@ -202,9 +202,16 @@
     </None>
   </ItemGroup>
   <ItemGroup>
+    <None Include="AsyncFactotum.Common.ttinclude" />
+    <None Include="AsyncFactotum.ComputeAsync.tt">
+      <Generator>TextTemplatingFileGenerator</Generator>
+      <LastGenOutput>AsyncFactotum.ComputeAsync.cs</LastGenOutput>
+    </None>
     <None Include="ExtensionMethods\__ReadMe.txt" />
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <Service Include="{508349B6-6B84-4DF5-91F0-309BEEBAD82D}" />
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
     <CompileDependsOn>UpdateGlobalVersion;$(CompileDependsOn)</CompileDependsOn>

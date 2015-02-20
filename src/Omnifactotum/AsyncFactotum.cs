@@ -49,6 +49,10 @@ namespace Omnifactotum
 
         #region Private Methods
 
+        /// <summary>
+        ///     Wraps the <see cref="Trace.TraceError(string)"/> method since it is conditional and thus cannot be
+        ///     used directly as a delegate.
+        /// </summary>
         private static void TraceErrorInternal(string message)
         {
             Trace.TraceError(message);
@@ -61,34 +65,26 @@ namespace Omnifactotum
 
         private static Task<TResult> CreateAndStartComputeTask<TResult, TLoggingMethod>(
             [NotNull] this Func<TResult> taskFunction,
-            [CanBeNull] AsyncOptions options,
             [NotNull] MethodBase method,
             [NotNull] TLoggingMethod logError,
             [NotNull] Action<Task, MethodBase, TLoggingMethod> attachErrorLoggingTask)
         {
-            var task = new Task<TResult>(taskFunction, options.GetCancellationToken());
-
+            var task = new Task<TResult>(taskFunction);
             attachErrorLoggingTask(task, method, logError);
-
-            var taskScheduler = options.GetTaskScheduler();
-            task.Start(taskScheduler);
+            task.Start();
 
             return task;
         }
 
         private static Task CreateAndStartExecuteTask<TLoggingMethod>(
             [NotNull] this Action taskFunction,
-            [CanBeNull] AsyncOptions options,
             [NotNull] MethodBase method,
             [NotNull] TLoggingMethod logError,
             [NotNull] Action<Task, MethodBase, TLoggingMethod> attachErrorLoggingTask)
         {
-            var task = new Task(taskFunction, options.GetCancellationToken());
-
+            var task = new Task(taskFunction);
             attachErrorLoggingTask(task, method, logError);
-
-            var taskScheduler = options.GetTaskScheduler();
-            task.Start(taskScheduler);
+            task.Start();
 
             return task;
         }
@@ -115,6 +111,7 @@ namespace Omnifactotum
 
         private static void AttachErrorLoggingTask(
             [NotNull] Task task,
+            //// ReSharper disable once UnusedParameter.Local - Used to keep the method signature template the same
             [NotNull] MethodBase method,
             [NotNull] LogErrorWithException logError)
         {

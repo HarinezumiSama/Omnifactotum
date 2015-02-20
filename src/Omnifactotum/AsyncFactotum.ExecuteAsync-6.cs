@@ -571,6 +571,83 @@ namespace Omnifactotum
             return task;
         }
 
+        /// <summary>
+        ///     Executes the specified method asynchronously using the default options.
+        ///     This method uses <see cref="Trace"/> to log asynchronous operation errors.
+        /// </summary>
+        /// <typeparam name="T1">
+        ///     The type of the 1st argument of the method.
+        /// </typeparam>
+        /// <typeparam name="T2">
+        ///     The type of the 2nd argument of the method.
+        /// </typeparam>
+        /// <typeparam name="T3">
+        ///     The type of the 3rd argument of the method.
+        /// </typeparam>
+        /// <typeparam name="T4">
+        ///     The type of the 4th argument of the method.
+        /// </typeparam>
+        /// <typeparam name="T5">
+        ///     The type of the 5th argument of the method.
+        /// </typeparam>
+        /// <typeparam name="T6">
+        ///     The type of the 6th argument of the method.
+        /// </typeparam>
+        /// <param name="callee">
+        ///     The method that is run asynchronously.
+        /// </param>
+        /// <param name="arg1">
+        ///     The 1st argument of the method.
+        /// </param>
+        /// <param name="arg2">
+        ///     The 2nd argument of the method.
+        /// </param>
+        /// <param name="arg3">
+        ///     The 3rd argument of the method.
+        /// </param>
+        /// <param name="arg4">
+        ///     The 4th argument of the method.
+        /// </param>
+        /// <param name="arg5">
+        ///     The 5th argument of the method.
+        /// </param>
+        /// <param name="arg6">
+        ///     The 6th argument of the method.
+        /// </param>
+        /// <returns>
+        ///     A task that is executing or has executed the specified method asynchronously.
+        /// </returns>
+        /// <exception cref="System.ArgumentNullException">
+        ///     <paramref name="callee"/> is <c>null</c>.
+        /// </exception>
+        public static Task ExecuteAsync<T1, T2, T3, T4, T5, T6>(
+            [NotNull] Action<T1, T2, T3, T4, T5, T6> callee,
+            T1 arg1,
+            T2 arg2,
+            T3 arg3,
+            T4 arg4,
+            T5 arg5,
+            T6 arg6)
+        {
+            #region Argument Check
+
+            if (callee == null)
+            {
+                throw new ArgumentNullException("callee");
+            }
+
+            #endregion
+
+            var task = CreateAndStartExecuteTask(
+                () => callee(arg1, arg2, arg3, arg4, arg5, arg6),
+                null,
+                callee.Method,
+                (LogErrorWithMessage)TraceErrorInternal,
+                AttachErrorLoggingTask);
+
+            return task;
+        }
+
         #endregion
     }
 }
