@@ -86,9 +86,11 @@
     <Compile Include="Annotations\RazorSectionAttribute.cs" />
     <Compile Include="Annotations\StringFormatMethodAttribute.cs" />
     <Compile Include="Annotations\UsedImplicitlyAttribute.cs" />
-    <Compile Include="AsyncFactotum.ExecuteAsync-6.cs" />
-    <Compile Include="AsyncFactotum.ExecuteAsync-7.cs" />
-    <Compile Include="AsyncFactotum.ExecuteAsync-8.cs" />
+    <Compile Include="AsyncFactotum.ExecuteAsync.cs">
+      <DependentUpon>AsyncFactotum.ExecuteAsync.tt</DependentUpon>
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+    </Compile>
     <Compile Include="AsyncFactotum.cs" />
     <Compile Include="AsyncFactotum.ComputeAsync.cs">
       <AutoGen>True</AutoGen>
@@ -203,6 +205,10 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="AsyncFactotum.Common.ttinclude" />
+    <None Include="AsyncFactotum.ExecuteAsync.tt">
+      <Generator>TextTemplatingFileGenerator</Generator>
+      <LastGenOutput>AsyncFactotum.ExecuteAsync.cs</LastGenOutput>
+    </None>
     <None Include="AsyncFactotum.ComputeAsync.tt">
       <Generator>TextTemplatingFileGenerator</Generator>
       <LastGenOutput>AsyncFactotum.ComputeAsync.cs</LastGenOutput>

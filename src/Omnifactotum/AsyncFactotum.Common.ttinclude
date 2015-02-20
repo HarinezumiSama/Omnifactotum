@@ -37,9 +37,16 @@
         return string.Format(CultureInfo.InvariantCulture, "{0}{1}", number, suffix);
     }
 
-    private static string EnumerateTypeArgs(int count)
+    private static string EnumerateFuncTypeArgs(int count)
     {
         return EnumeratePrefixedValues("T{0}", ", ", false, count, true);
+    }
+
+    private static string EnumerateActionTypeArgs(int count)
+    {
+        return (count == 0 ? string.Empty : "<")
+            + EnumeratePrefixedValues("T{0}", ", ", false, count, false)
+            + (count == 0 ? string.Empty : ">");
     }
 
     private static string EnumerateFormalArgs(int count)

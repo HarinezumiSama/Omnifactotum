@@ -19,19 +19,16 @@ namespace Omnifactotum
     public static partial class AsyncFactotum
     {
 <# for (var index = 0; index <= MaxParameterCount; index++) { #>
-        #region Public Methods: ComputeAsync[<#= index.ToString(CultureInfo.InvariantCulture) #>]
+        #region Public Methods: ExecuteAsync[<#= index.ToString(CultureInfo.InvariantCulture) #>]
 
         /// <summary>
-        ///     Computes a result of the specified method asynchronously using the specified exception logging method.
+        ///     Executes the specified method asynchronously using the specified exception logging method.
         /// </summary>
 <# for (var typeIndex = 1; typeIndex <= index; typeIndex++) { #>
         /// <typeparam name="T<#= typeIndex.ToString(CultureInfo.InvariantCulture) #>">
         ///     The type of the <#= ToNumeral(typeIndex) #> argument of the method.
         /// </typeparam>
 <# } #>
-        /// <typeparam name="TResult">
-        ///     The type of the result of the method.
-        /// </typeparam>
         /// <param name="callee">
         ///     The method that is run asynchronously.
         /// </param>
@@ -52,8 +49,8 @@ namespace Omnifactotum
         ///     <para>- or -</para>
         ///     <para><paramref name="logError"/> is <c>null</c>.</para>
         /// </exception>
-        public static Task<TResult> ComputeAsync<<#= EnumerateFuncTypeArgs(index) #>TResult>(
-            [NotNull] Func<<#= EnumerateFuncTypeArgs(index) #>TResult> callee,
+        public static Task ExecuteAsync<#= EnumerateActionTypeArgs(index) #>(
+            [NotNull] Action<#= EnumerateActionTypeArgs(index) #> callee,
             [NotNull] LogErrorWithExceptionAndMessage logError<#= EnumerateFormalArgs(index) #>)
         {
             #region Argument Check
@@ -70,7 +67,7 @@ namespace Omnifactotum
 
             #endregion
 
-            var task = CreateAndStartComputeTask(
+            var task = CreateAndStartExecuteTask(
                 <# if (index == 0) { #>callee<# } else { #>() => callee(<#= EnumerateActualArgs(index) #>)<# } #>,
                 callee.Method,
                 logError,
@@ -80,16 +77,13 @@ namespace Omnifactotum
         }
 
         /// <summary>
-        ///     Computes a result of the specified method asynchronously using the specified exception logging method.
+        ///     Executes the specified method asynchronously using the specified exception logging method.
         /// </summary>
 <# for (var typeIndex = 1; typeIndex <= index; typeIndex++) { #>
         /// <typeparam name="T<#= typeIndex.ToString(CultureInfo.InvariantCulture) #>">
         ///     The type of the <#= ToNumeral(typeIndex) #> argument of the method.
         /// </typeparam>
 <# } #>
-        /// <typeparam name="TResult">
-        ///     The type of the result of the method.
-        /// </typeparam>
         /// <param name="callee">
         ///     The method that is run asynchronously.
         /// </param>
@@ -110,8 +104,8 @@ namespace Omnifactotum
         ///     <para>- or -</para>
         ///     <para><paramref name="logError"/> is <c>null</c>.</para>
         /// </exception>
-        public static Task<TResult> ComputeAsync<<#= EnumerateFuncTypeArgs(index) #>TResult>(
-            [NotNull] Func<<#= EnumerateFuncTypeArgs(index) #>TResult> callee,
+        public static Task ExecuteAsync<#= EnumerateActionTypeArgs(index) #>(
+            [NotNull] Action<#= EnumerateActionTypeArgs(index) #> callee,
             [NotNull] LogErrorWithException logError<#= EnumerateFormalArgs(index) #>)
         {
             #region Argument Check
@@ -128,7 +122,7 @@ namespace Omnifactotum
 
             #endregion
 
-            var task = CreateAndStartComputeTask(
+            var task = CreateAndStartExecuteTask(
                 <# if (index == 0) { #>callee<# } else { #>() => callee(<#= EnumerateActualArgs(index) #>)<# } #>,
                 callee.Method,
                 logError,
@@ -138,16 +132,13 @@ namespace Omnifactotum
         }
 
         /// <summary>
-        ///     Computes a result of the specified method asynchronously using the specified exception logging method.
+        ///     Executes the specified method asynchronously using the specified exception logging method.
         /// </summary>
 <# for (var typeIndex = 1; typeIndex <= index; typeIndex++) { #>
         /// <typeparam name="T<#= typeIndex.ToString(CultureInfo.InvariantCulture) #>">
         ///     The type of the <#= ToNumeral(typeIndex) #> argument of the method.
         /// </typeparam>
 <# } #>
-        /// <typeparam name="TResult">
-        ///     The type of the result of the method.
-        /// </typeparam>
         /// <param name="callee">
         ///     The method that is run asynchronously.
         /// </param>
@@ -168,8 +159,8 @@ namespace Omnifactotum
         ///     <para>- or -</para>
         ///     <para><paramref name="logError"/> is <c>null</c>.</para>
         /// </exception>
-        public static Task<TResult> ComputeAsync<<#= EnumerateFuncTypeArgs(index) #>TResult>(
-            [NotNull] Func<<#= EnumerateFuncTypeArgs(index) #>TResult> callee,
+        public static Task ExecuteAsync<#= EnumerateActionTypeArgs(index) #>(
+            [NotNull] Action<#= EnumerateActionTypeArgs(index) #> callee,
             [NotNull] LogErrorWithMessage logError<#= EnumerateFormalArgs(index) #>)
         {
             #region Argument Check
@@ -186,7 +177,7 @@ namespace Omnifactotum
 
             #endregion
 
-            var task = CreateAndStartComputeTask(
+            var task = CreateAndStartExecuteTask(
                 <# if (index == 0) { #>callee<# } else { #>() => callee(<#= EnumerateActualArgs(index) #>)<# } #>,
                 callee.Method,
                 logError,
@@ -196,7 +187,7 @@ namespace Omnifactotum
         }
 
         /// <summary>
-        ///     Computes a result of the specified method asynchronously using the default options.
+        ///     Executes the specified method asynchronously.
         ///     This method uses <see cref="Trace"/> to log asynchronous operation errors.
         /// </summary>
 <# for (var typeIndex = 1; typeIndex <= index; typeIndex++) { #>
@@ -204,9 +195,6 @@ namespace Omnifactotum
         ///     The type of the <#= ToNumeral(typeIndex) #> argument of the method.
         /// </typeparam>
 <# } #>
-        /// <typeparam name="TResult">
-        ///     The type of the result of the method.
-        /// </typeparam>
         /// <param name="callee">
         ///     The method that is run asynchronously.
         /// </param>
@@ -221,8 +209,8 @@ namespace Omnifactotum
         /// <exception cref="System.ArgumentNullException">
         ///     <para><paramref name="callee"/> is <c>null</c>.</para>
         /// </exception>
-        public static Task<TResult> ComputeAsync<<#= EnumerateFuncTypeArgs(index) #>TResult>(
-            [NotNull] Func<<#= EnumerateFuncTypeArgs(index) #>TResult> callee<#= EnumerateFormalArgs(index) #>)
+        public static Task ExecuteAsync<#= EnumerateActionTypeArgs(index) #>(
+            [NotNull] Action<#= EnumerateActionTypeArgs(index) #> callee<#= EnumerateFormalArgs(index) #>)
         {
             #region Argument Check
 
@@ -233,7 +221,7 @@ namespace Omnifactotum
 
             #endregion
 
-            var task = CreateAndStartComputeTask(
+            var task = CreateAndStartExecuteTask(
                 <# if (index == 0) { #>callee<# } else { #>() => callee(<#= EnumerateActualArgs(index) #>)<# } #>,
                 callee.Method,
                 (LogErrorWithMessage)TraceErrorInternal,
