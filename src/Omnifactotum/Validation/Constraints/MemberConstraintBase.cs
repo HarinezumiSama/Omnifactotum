@@ -66,7 +66,7 @@ namespace Omnifactotum.Validation.Constraints
         protected abstract void ValidateValue(
             [NotNull] ObjectValidatorContext validatorContext,
             [NotNull] MemberConstraintValidationContext memberContext,
-            object value);
+            [CanBeNull] object value);
 
         /// <summary>
         ///     Tries to cast the specified value to the specified target type and
@@ -81,10 +81,10 @@ namespace Omnifactotum.Validation.Constraints
         /// <returns>
         ///     The value cast to the specified target type.
         /// </returns>
-        protected TTarget CastTo<TTarget>(object value)
+        protected TTarget CastTo<TTarget>([CanBeNull] object value)
         {
             var targetType = typeof(TTarget);
-            if (value is TTarget || (!targetType.IsValueType && value == null))
+            if (value is TTarget || ((!targetType.IsValueType || targetType.IsNullable()) && value == null))
             {
                 return (TTarget)value;
             }

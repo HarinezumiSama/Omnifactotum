@@ -67,6 +67,7 @@
     <Compile Include="ExtensionMethods\OmnifactotumDateTimeOffsetExtensionsTests.cs" />
     <Compile Include="ExtensionMethods\OmnifactotumDisposableExtensionsTests.cs" />
     <Compile Include="ExtensionMethods\OmnifactotumStringExtensionsTests.cs" />
+    <Compile Include="Validation\Constraints\MemberConstraintBaseTests.cs" />
     <Compile Include="ValueContainerHelperTests.cs" />
     <Compile Include="SyncValueContainerHelperTests.cs" />
     <Compile Include="EnumFixedSizeDictionaryTests.cs" />
@@ -77,13 +78,13 @@
     <Compile Include="ExtensionMethods\OmnifactotumDictionaryExtensionsTests.cs" />
     <Compile Include="ExtensionMethods\OmnifactotumGenericObjectExtensionsTests.cs" />
     <Compile Include="ValueContainerTests.cs" />
-    <Compile Include="NotNullOrWhiteSpaceStringConstraintTests.cs" />
+    <Compile Include="Validation\Constraints\NotNullOrWhiteSpaceStringConstraintTests.cs" />
     <Compile Include="DirectedGraphTests.cs" />
     <Compile Include="EnumFactotumTests.cs" />
     <Compile Include="FactotumTests.cs" />
-    <Compile Include="NotNullConstraintTests.cs" />
-    <Compile Include="NotNullOrEmptyStringConstraintTests.cs" />
-    <Compile Include="ObjectValidatorTests.cs" />
+    <Compile Include="Validation\Constraints\NotNullConstraintTests.cs" />
+    <Compile Include="Validation\Constraints\NotNullOrEmptyStringConstraintTests.cs" />
+    <Compile Include="Validation\ObjectValidatorTests.cs" />
     <Compile Include="ExtensionMethods\OmnifactotumExpressionExtensionsTests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="..\SolutionItems\CommonAssemblyInfo.cs">
@@ -140,7 +141,7 @@
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
-    <PostBuildEvent>"$(ProjectDir)\..\SolutionItems\sign.cmd" "$(TargetPath)"</PostBuildEvent>
+    <PostBuildEvent>"$(ProjectDir)\..\SolutionItems\sign.cmd" "$(TargetPath)" || exit /b 1</PostBuildEvent>
   </PropertyGroup>
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

@@ -3,7 +3,7 @@ using System.Linq;
 using NUnit.Framework;
 using Omnifactotum.Validation.Constraints;
 
-namespace Omnifactotum.Tests
+namespace Omnifactotum.Tests.Validation.Constraints
 {
     [TestFixture]
     internal sealed class NotNullOrWhiteSpaceStringConstraintTests : ConstraintTestsBase

@@ -39,7 +39,7 @@ namespace Omnifactotum.Validation.Constraints
         void Validate(
             [NotNull] ObjectValidatorContext validatorContext,
             [NotNull] MemberConstraintValidationContext memberContext,
-            object value);
+            [CanBeNull] object value);
 
         #endregion
     }

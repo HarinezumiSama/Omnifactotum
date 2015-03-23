@@ -8,7 +8,7 @@ using Omnifactotum.Annotations;
 using Omnifactotum.Validation;
 using Omnifactotum.Validation.Constraints;
 
-namespace Omnifactotum.Tests
+namespace Omnifactotum.Tests.Validation
 {
     [TestFixture]
     public sealed class ObjectValidatorTests

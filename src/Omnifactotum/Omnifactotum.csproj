@@ -225,7 +225,7 @@
     <BuildDependsOn>UpdateGlobalVersion;$(BuildDependsOn)</BuildDependsOn>
   </PropertyGroup>
   <PropertyGroup>
-    <PostBuildEvent>"$(ProjectDir)\..\SolutionItems\sign.cmd" "$(TargetPath)"</PostBuildEvent>
+    <PostBuildEvent>"$(ProjectDir)\..\SolutionItems\sign.cmd" "$(TargetPath)" || exit /b 1</PostBuildEvent>
   </PropertyGroup>
   <Target Name="UpdateGlobalVersion">
     <PropertyGroup>

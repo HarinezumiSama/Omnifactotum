@@ -58,7 +58,8 @@ namespace Omnifactotum.Validation
         /// <returns>
         ///     An <see cref="ObjectValidationResult"/> representing the validation result.
         /// </returns>
-        public static ObjectValidationResult Validate<T>(T instance)
+        [NotNull]
+        public static ObjectValidationResult Validate<T>([NotNull] T instance)
         {
             return Validate(instance, null);
         }
@@ -82,6 +83,7 @@ namespace Omnifactotum.Validation
         /// <returns>
         ///     An <see cref="ObjectValidationResult"/> representing the validation result.
         /// </returns>
+        [NotNull]
         internal static ObjectValidationResult Validate<T>(
             [NotNull] T instance,
             [CanBeNull] RecursiveProcessingContext<MemberData> recursiveProcessingContext)
