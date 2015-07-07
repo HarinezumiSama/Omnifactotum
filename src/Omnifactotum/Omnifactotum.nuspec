@@ -12,7 +12,7 @@
     <requireLicenseAcceptance>true</requireLicenseAcceptance>
     <description>$description$</description>
     <releaseNotes>$PkgReleaseNotes$</releaseNotes>
-    <copyright>Copyright 2013-2014 Vitalii Maklai</copyright>
+    <copyright>Copyright 2013-2015 Vitalii Maklai</copyright>
     <tags>omnifactotum omni factotum aid assistant extension extensions helper common C#</tags>
   </metadata>
 </package>

@@ -1,4 +1,4 @@
---- Changes in 0.3.0.118 (since 0.3.0.117) ---
+--- Changes in 0.3.0.119 (since 0.3.0.117) ---
 * Omnifactotum: Removed NuGet dependency to MSBuildTasks package since it is only used for development
 
 --- Changes in 0.3.0.117 (since 0.3.0.114) ---
