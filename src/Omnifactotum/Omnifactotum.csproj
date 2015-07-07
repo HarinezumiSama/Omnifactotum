@@ -202,6 +202,7 @@
     <None Include="..\SolutionItems\Omnifactotum.snk">
       <Link>Properties\Omnifactotum.snk</Link>
     </None>
+    <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
     <None Include="AsyncFactotum.Common.ttinclude" />
@@ -227,26 +228,39 @@
   <PropertyGroup>
     <PostBuildEvent>"$(ProjectDir)\..\SolutionItems\sign.cmd" "$(TargetPath)" || exit /b 1</PostBuildEvent>
   </PropertyGroup>
+  <PropertyGroup>
+    <MSBuildCommunityTasksPath>$(SolutionDir)\.build</MSBuildCommunityTasksPath>
+  </PropertyGroup>
+  <Import Project="$(MSBuildCommunityTasksPath)\MSBuild.Community.Tasks.targets" />
   <Target Name="UpdateGlobalVersion">
     <PropertyGroup>
       <BaseVersionFile>$(ProjectDir)\..\SolutionItems\BaseVersion.txt</BaseVersionFile>
       <RevisionFile>$(ProjectDir)\..\SolutionItems\Generated.Revision.txt</RevisionFile>
+      <RevisionIdFile>$(ProjectDir)\..\SolutionItems\Generated.RevisionId.txt</RevisionIdFile>
     </PropertyGroup>
     <Message Importance="high" Text="* Reading base version from '$(BaseVersionFile)'..." />
     <ReadLinesFromFile File="$(BaseVersionFile)">
       <Output TaskParameter="Lines" PropertyName="BaseVersion" />
     </ReadLinesFromFile>
     <Message Importance="high" Text="* Base version: '$(BaseVersion)'" />
-    <Exec Command="&quot;$(ProjectDir)\..\SolutionItems\hg.cmd&quot; identify -n -r tip &gt;&quot;$(RevisionFile)&quot;" />
+    <Exec Command="&quot;$(ProjectDir)\..\SolutionItems\hg.cmd&quot; identify --num &gt;&quot;$(RevisionFile)&quot;" />
+    <Exec Command="&quot;$(ProjectDir)\..\SolutionItems\hg.cmd&quot; identify --id &gt;&quot;$(RevisionIdFile)&quot;" />
     <Message Importance="high" Text="* Reading HG revision number from '$(RevisionFile)'..." />
     <ReadLinesFromFile File="$(RevisionFile)">
-      <Output TaskParameter="Lines" PropertyName="Revision" />
+      <Output TaskParameter="Lines" PropertyName="RevisionRaw" />
     </ReadLinesFromFile>
-    <Message Importance="high" Text="* Revision number: '$(Revision)'" />
+    <RegexReplace Input="$(RevisionRaw)" Expression="\+" Replacement="" Count="1">
+      <Output PropertyName="Revision" TaskParameter="Output" />
+    </RegexReplace>
+    <Message Importance="high" Text="* Revision number: '$(Revision)' (raw '$(RevisionRaw)')." />
     <PropertyGroup>
       <GlobalVersion>$(BaseVersion).0.$(Revision)</GlobalVersion>
     </PropertyGroup>
-    <Message Importance="high" Text="* Global version: '$(GlobalVersion)'" />
+    <Message Importance="high" Text="* Reading HG revision ID from '$(RevisionIdFile)'..." />
+    <ReadLinesFromFile File="$(RevisionIdFile)">
+      <Output TaskParameter="Lines" PropertyName="RevisionId" />
+    </ReadLinesFromFile>
+    <Message Importance="high" Text="* Revision ID: '$(RevisionId)'" />
     <ItemGroup>
       <AssemblyVersion Include="global::System.Reflection.AssemblyVersion">
         <_Parameter1>$(GlobalVersion)</_Parameter1>
@@ -254,8 +268,11 @@
       <AssemblyFileVersion Include="global::System.Reflection.AssemblyFileVersion">
         <_Parameter1>$(GlobalVersion)</_Parameter1>
       </AssemblyFileVersion>
+      <AssemblyInformationalVersion Include="global::System.Reflection.AssemblyInformationalVersion">
+        <_Parameter1>$(GlobalVersion) (rev. $(RevisionId))</_Parameter1>
+      </AssemblyInformationalVersion>
     </ItemGroup>
-    <WriteCodeFragment Language="C#" OutputFile="$(ProjectDir)\..\SolutionItems\Generated.GlobalVersion.cs" AssemblyAttributes="@(AssemblyVersion);@(AssemblyFileVersion)" />
+    <WriteCodeFragment Language="C#" OutputFile="$(ProjectDir)\..\SolutionItems\Generated.GlobalVersion.cs" AssemblyAttributes="@(AssemblyVersion);@(AssemblyFileVersion);@(AssemblyInformationalVersion)" />
   </Target>
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

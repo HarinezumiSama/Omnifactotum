@@ -32,7 +32,7 @@ namespace Omnifactotum
             /// </returns>
             [NotNull]
             public static MemberInfo GetFieldOrPropertyInfo<TMember>(
-                Expression<Func<TObject, TMember>> memberGetterExpression)
+                [NotNull] Expression<Func<TObject, TMember>> memberGetterExpression)
             {
                 var result = GetDataMemberInfo(memberGetterExpression);
                 return result;
@@ -52,7 +52,7 @@ namespace Omnifactotum
             /// </returns>
             [NotNull]
             public static FieldInfo GetFieldInfo<TField>(
-                Expression<Func<TObject, TField>> fieldGetterExpression)
+                [NotNull] Expression<Func<TObject, TField>> fieldGetterExpression)
             {
                 var memberInfo = GetDataMemberInfo(fieldGetterExpression);
 
@@ -84,7 +84,7 @@ namespace Omnifactotum
             /// </returns>
             [NotNull]
             public static string GetFieldName<TField>(
-                Expression<Func<TObject, TField>> fieldGetterExpression)
+                [NotNull] Expression<Func<TObject, TField>> fieldGetterExpression)
             {
                 var fieldInfo = GetFieldInfo(fieldGetterExpression);
                 return fieldInfo.Name;
@@ -104,7 +104,7 @@ namespace Omnifactotum
             /// </returns>
             [NotNull]
             public static string GetQualifiedFieldName<TField>(
-                Expression<Func<TObject, TField>> fieldGetterExpression)
+                [NotNull] Expression<Func<TObject, TField>> fieldGetterExpression)
             {
                 var fieldInfo = GetFieldInfo(fieldGetterExpression);
                 return typeof(TObject).GetQualifiedName() + Type.Delimiter + fieldInfo.Name;
@@ -124,7 +124,7 @@ namespace Omnifactotum
             /// </returns>
             [NotNull]
             public static PropertyInfo GetPropertyInfo<TProperty>(
-                Expression<Func<TObject, TProperty>> propertyGetterExpression)
+                [NotNull] Expression<Func<TObject, TProperty>> propertyGetterExpression)
             {
                 var memberInfo = GetDataMemberInfo(propertyGetterExpression);
 
@@ -156,7 +156,7 @@ namespace Omnifactotum
             /// </returns>
             [NotNull]
             public static string GetPropertyName<TProperty>(
-                Expression<Func<TObject, TProperty>> propertyGetterExpression)
+                [NotNull] Expression<Func<TObject, TProperty>> propertyGetterExpression)
             {
                 var propertyInfo = GetPropertyInfo(propertyGetterExpression);
                 return propertyInfo.Name;
@@ -176,7 +176,7 @@ namespace Omnifactotum
             /// </returns>
             [NotNull]
             public static string GetQualifiedPropertyName<TProperty>(
-                Expression<Func<TObject, TProperty>> propertyGetterExpression)
+                [NotNull] Expression<Func<TObject, TProperty>> propertyGetterExpression)
             {
                 var propertyInfo = GetPropertyInfo(propertyGetterExpression);
                 return typeof(TObject).GetQualifiedName() + Type.Delimiter + propertyInfo.Name;
@@ -188,7 +188,7 @@ namespace Omnifactotum
 
             [NotNull]
             private static MemberInfo GetDataMemberInfo<TMember>(
-                Expression<Func<TObject, TMember>> memberGetterExpression)
+                [NotNull] Expression<Func<TObject, TMember>> memberGetterExpression)
             {
                 #region Argument Check
 

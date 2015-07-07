@@ -5,6 +5,7 @@ using System.Globalization;
 using System.Linq;
 using NUnit.Framework;
 using Omnifactotum.Annotations;
+using Omnifactotum.NUnit;
 using Omnifactotum.Validation;
 using Omnifactotum.Validation.Constraints;
 
@@ -377,7 +378,7 @@ namespace Omnifactotum.Tests.Validation
                 MemberConstraintValidationContext context,
                 object value)
             {
-                var dateTime = (DateTime)value;
+                var dateTime = (DateTime)value.AssertNotNull();
                 if (dateTime.Kind == DateTimeKind.Utc)
                 {
                     return;

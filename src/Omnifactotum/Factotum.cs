@@ -535,6 +535,7 @@ namespace Omnifactotum
         /// <returns>
         ///     An empty completed task.
         /// </returns>
+        [NotNull]
         public static Task CreateEmptyCompletedTask()
         {
             var taskCompletionSource = new TaskCompletionSource<int>();
@@ -548,6 +549,7 @@ namespace Omnifactotum
         /// <returns>
         ///     An empty faulted task.
         /// </returns>
+        [NotNull]
         public static Task CreateEmptyFaultedTask([NotNull] Exception exception)
         {
             #region Argument Check
@@ -585,7 +587,7 @@ namespace Omnifactotum
         /// </returns>
         [NotNull]
         public static MemberInfo GetFieldOrPropertyInfo<TObject, TMember>(
-            Expression<Func<TObject, TMember>> memberGetterExpression)
+            [NotNull] Expression<Func<TObject, TMember>> memberGetterExpression)
         {
             return For<TObject>.GetFieldOrPropertyInfo(memberGetterExpression);
         }
@@ -607,7 +609,7 @@ namespace Omnifactotum
         /// </returns>
         [NotNull]
         public static FieldInfo GetFieldInfo<TObject, TField>(
-            Expression<Func<TObject, TField>> fieldGetterExpression)
+            [NotNull] Expression<Func<TObject, TField>> fieldGetterExpression)
         {
             return For<TObject>.GetFieldInfo(fieldGetterExpression);
         }
@@ -629,7 +631,7 @@ namespace Omnifactotum
         /// </returns>
         [NotNull]
         public static string GetFieldName<TObject, TField>(
-            Expression<Func<TObject, TField>> fieldGetterExpression)
+            [NotNull] Expression<Func<TObject, TField>> fieldGetterExpression)
         {
             return For<TObject>.GetFieldName(fieldGetterExpression);
         }
@@ -651,7 +653,7 @@ namespace Omnifactotum
         /// </returns>
         [NotNull]
         public static string GetQualifiedFieldName<TObject, TField>(
-            Expression<Func<TObject, TField>> fieldGetterExpression)
+            [NotNull] Expression<Func<TObject, TField>> fieldGetterExpression)
         {
             return For<TObject>.GetQualifiedFieldName(fieldGetterExpression);
         }
@@ -673,7 +675,7 @@ namespace Omnifactotum
         /// </returns>
         [NotNull]
         public static PropertyInfo GetPropertyInfo<TObject, TProperty>(
-            Expression<Func<TObject, TProperty>> propertyGetterExpression)
+            [NotNull] Expression<Func<TObject, TProperty>> propertyGetterExpression)
         {
             return For<TObject>.GetPropertyInfo(propertyGetterExpression);
         }
@@ -695,7 +697,7 @@ namespace Omnifactotum
         /// </returns>
         [NotNull]
         public static string GetPropertyName<TObject, TProperty>(
-            Expression<Func<TObject, TProperty>> propertyGetterExpression)
+            [NotNull] Expression<Func<TObject, TProperty>> propertyGetterExpression)
         {
             return For<TObject>.GetPropertyName(propertyGetterExpression);
         }
@@ -717,7 +719,7 @@ namespace Omnifactotum
         /// </returns>
         [NotNull]
         public static string GetQualifiedPropertyName<TObject, TProperty>(
-            Expression<Func<TObject, TProperty>> propertyGetterExpression)
+            [NotNull] Expression<Func<TObject, TProperty>> propertyGetterExpression)
         {
             return For<TObject>.GetQualifiedPropertyName(propertyGetterExpression);
         }
@@ -735,7 +737,8 @@ namespace Omnifactotum
         ///     The <see cref="PropertyInfo"/> containing information about the required static property.
         /// </returns>
         [NotNull]
-        public static PropertyInfo GetPropertyInfo<TProperty>(Expression<Func<TProperty>> propertyGetterExpression)
+        public static PropertyInfo GetPropertyInfo<TProperty>(
+            [NotNull] Expression<Func<TProperty>> propertyGetterExpression)
         {
             #region Argument Check
 
@@ -796,7 +799,8 @@ namespace Omnifactotum
         ///     The name of the static property.
         /// </returns>
         [NotNull]
-        public static string GetPropertyName<TProperty>(Expression<Func<TProperty>> propertyGetterExpression)
+        public static string GetPropertyName<TProperty>(
+            [NotNull] Expression<Func<TProperty>> propertyGetterExpression)
         {
             var propertyInfo = GetPropertyInfo(propertyGetterExpression);
             return propertyInfo.Name;
@@ -815,7 +819,8 @@ namespace Omnifactotum
         ///     The type-qualified name of the static property.
         /// </returns>
         [NotNull]
-        public static string GetQualifiedPropertyName<TProperty>(Expression<Func<TProperty>> propertyGetterExpression)
+        public static string GetQualifiedPropertyName<TProperty>(
+            [NotNull] Expression<Func<TProperty>> propertyGetterExpression)
         {
             var propertyInfo = GetPropertyInfo(propertyGetterExpression);
             return propertyInfo.DeclaringType.EnsureNotNull().GetQualifiedName() + Type.Delimiter + propertyInfo.Name;

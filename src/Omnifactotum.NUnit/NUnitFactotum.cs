@@ -234,6 +234,32 @@ namespace Omnifactotum.NUnit
             return value.EnsureNotNull();
         }
 
+        /// <summary>
+        ///     Returns the value which underlies the specified nullable value, if it is not <c>null</c>
+        ///     (that is, if its <see cref="Nullable{T}.HasValue"/> property is <c>true</c>);
+        ///     otherwise, throws <see cref="AssertionException"/>.
+        /// </summary>
+        /// <typeparam name="T">
+        ///     The type which underlies the nullable type of the value to check.
+        /// </typeparam>
+        /// <param name="value">
+        ///     The value to check.
+        /// </param>
+        /// <returns>
+        ///     The value which underlies the specified nullable value, if it is not <c>null</c>
+        ///     (that is, if its <see cref="Nullable{T}.HasValue"/> property is <c>true</c>).
+        /// </returns>
+        /// <exception cref="AssertionException">
+        ///     <paramref name="value"/> is <c>null</c>, that is, its <see cref="Nullable{T}.HasValue"/> property is
+        ///     <c>false</c>.
+        /// </exception>
+        public static T AssertNotNull<T>([CanBeNull] this T? value)
+            where T : struct
+        {
+            Assert.That(value.HasValue, Is.True, "The specified nullable value is unexpectedly null.");
+            return value.EnsureNotNull();
+        }
+
         #endregion
 
         #region Private Methods
@@ -251,7 +277,7 @@ namespace Omnifactotum.NUnit
         ///     <c>true</c> if the access attribute of the specified method matches the specified attribute;
         ///     otherwise, <c>false</c>.
         /// </returns>
-        private static bool AccessAttributesMatch(MethodInfo method, MethodAttributes expectedAttribute)
+        private static bool AccessAttributesMatch([NotNull] MethodInfo method, MethodAttributes expectedAttribute)
         {
             Assert.That(method, Is.Not.Null);
 
