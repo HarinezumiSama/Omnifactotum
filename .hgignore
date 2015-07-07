@@ -16,3 +16,4 @@ glob:StyleCop.Cache
 glob:Generated.*
 glob:SolutionItems/Omnifactotum.pfx
 glob:published/
+glob:*.GhostDoc.xml
