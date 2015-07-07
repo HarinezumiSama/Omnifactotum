@@ -1,3 +1,7 @@
+--- Changes in 0.3.0.117 (since 0.3.0.114) ---
+
+* Omnifactotum: Factotum and Factotum.For{TObject}: Improved annotations
+
 --- Changes in 0.3.0.114 (since 0.3.0.101) ---
 
 * OmnifactotumAssemblyExtensions: Improvements
