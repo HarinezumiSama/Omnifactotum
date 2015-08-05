@@ -23,8 +23,6 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = ".build", ".build", "{34003F
 		.build\MSBuild.Community.Tasks.targets = .build\MSBuild.Community.Tasks.targets
 	EndProjectSection
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Omnifactotum.Wpf", "Omnifactotum.Wpf\Omnifactotum.Wpf.csproj", "{B122C8F7-C350-4B51-ABF0-A303FE8E7455}"
-EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -39,10 +37,6 @@ Global
 		{A6A92B13-8AF3-453B-B6AA-137312AE0CCB}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{A6A92B13-8AF3-453B-B6AA-137312AE0CCB}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{A6A92B13-8AF3-453B-B6AA-137312AE0CCB}.Release|Any CPU.Build.0 = Release|Any CPU
-		{B122C8F7-C350-4B51-ABF0-A303FE8E7455}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{B122C8F7-C350-4B51-ABF0-A303FE8E7455}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{B122C8F7-C350-4B51-ABF0-A303FE8E7455}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{B122C8F7-C350-4B51-ABF0-A303FE8E7455}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
