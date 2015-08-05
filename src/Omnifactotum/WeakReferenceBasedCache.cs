@@ -93,6 +93,7 @@ namespace Omnifactotum
         /// <summary>
         ///     Gets the number of the items in the cache.
         /// </summary>
+        [DebuggerBrowsable(DebuggerBrowsableState.Never)]
         public int Count
         {
             [DebuggerNonUserCode]
@@ -114,6 +115,7 @@ namespace Omnifactotum
         /// <returns>
         ///     A value associated with the specified key.
         /// </returns>
+        [DebuggerBrowsable(DebuggerBrowsableState.Never)]
         [NotNull]
         public TValue this[[NotNull] TKey key]
         {

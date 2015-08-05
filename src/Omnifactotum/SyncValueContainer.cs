@@ -100,6 +100,7 @@ namespace Omnifactotum
         /// <summary>
         ///     Gets or sets the contained value.
         /// </summary>
+        [DebuggerBrowsable(DebuggerBrowsableState.Never)]
         public T Value
         {
             [DebuggerNonUserCode]

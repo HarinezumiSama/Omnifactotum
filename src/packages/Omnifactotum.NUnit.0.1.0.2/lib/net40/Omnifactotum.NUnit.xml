@@ -1,0 +1,229 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>Omnifactotum.NUnit</name>
+    </assembly>
+    <members>
+        <member name="T:Omnifactotum.NUnit.AssertEqualityExpectation">
+            <summary>
+                Represents the equality expectation used in the <see cref="M:Omnifactotum.NUnit.NUnitFactotum.AssertEquality``1(``0,``0,Omnifactotum.NUnit.AssertEqualityExpectation)"/> method.
+            </summary>
+        </member>
+        <member name="F:Omnifactotum.NUnit.AssertEqualityExpectation.NotEqual">
+            <summary>
+                The values must be not equal.
+            </summary>
+        </member>
+        <member name="F:Omnifactotum.NUnit.AssertEqualityExpectation.EqualAndMayBeSame">
+            <summary>
+                The values must be equal and may be the same reference.
+            </summary>
+        </member>
+        <member name="F:Omnifactotum.NUnit.AssertEqualityExpectation.EqualAndCannotBeSame">
+            <summary>
+                The values must be equal and cannot be the same reference.
+            </summary>
+        </member>
+        <member name="T:Omnifactotum.NUnit.PropertyAccessMode">
+            <summary>
+                Represents the property access mode.
+            </summary>
+        </member>
+        <member name="F:Omnifactotum.NUnit.PropertyAccessMode.ReadOnly">
+            <summary>
+                The property is read-only.
+            </summary>
+        </member>
+        <member name="F:Omnifactotum.NUnit.PropertyAccessMode.WriteOnly">
+            <summary>
+                The property is write-only.
+            </summary>
+        </member>
+        <member name="F:Omnifactotum.NUnit.PropertyAccessMode.ReadWrite">
+            <summary>
+                The property can be read and written.
+            </summary>
+        </member>
+        <member name="T:Omnifactotum.NUnit.TestCasesBase">
+            <summary>
+                Represents the base class providing test cases for a test.
+            </summary>
+        </member>
+        <member name="M:Omnifactotum.NUnit.TestCasesBase.GetEnumerator">
+            <summary>
+                Returns an enumerator that iterates through the collection.
+            </summary>
+            <returns>
+                A <see cref="T:System.Collections.Generic.IEnumerator`1"/> that can be used to iterate through the collection.
+            </returns>
+        </member>
+        <member name="M:Omnifactotum.NUnit.TestCasesBase.System#Collections#IEnumerable#GetEnumerator">
+            <summary>
+                Returns an enumerator that iterates through a collection.
+            </summary>
+            <returns>
+                An <see cref="T:System.Collections.IEnumerator"/> object that can be used to iterate through the collection.
+            </returns>
+        </member>
+        <member name="M:Omnifactotum.NUnit.TestCasesBase.GetCases">
+            <summary>
+                Gets the collection of test cases.
+            </summary>
+            <returns>
+                The collection of test cases.
+            </returns>
+        </member>
+        <member name="T:Omnifactotum.NUnit.NUnitFactotum">
+            <summary>
+                Provides helper methods and properties for common use in the NUnit tests.
+            </summary>
+        </member>
+        <member name="M:Omnifactotum.NUnit.NUnitFactotum.AssertReadableWritable``2(System.Linq.Expressions.Expression{System.Func{``0,``1}},Omnifactotum.NUnit.PropertyAccessMode,System.Reflection.MethodAttributes)">
+            <summary>
+                Asserts the readability and writability of the specified property.
+            </summary>
+            <typeparam name="TObject">
+                The type of the object whose property to check.
+            </typeparam>
+            <typeparam name="TProperty">
+                The type of the property to check.
+            </typeparam>
+            <param name="propertyGetterExpression">
+                The lambda expression specifying the property to check,
+                in the following form: (SomeType x) =&gt; x.Property.
+            </param>
+            <param name="expectedAccessMode">
+                The expected readability and writability of the specified property.
+            </param>
+            <param name="visibleAccessorAttribute">
+                The attribute from <see cref="F:System.Reflection.MethodAttributes.MemberAccessMask"/> specifying the visibility of the
+                accessors.
+            </param>
+        </member>
+        <member name="M:Omnifactotum.NUnit.NUnitFactotum.AssertEquality``1(``0,``0,Omnifactotum.NUnit.AssertEqualityExpectation)">
+            <summary>
+                Asserts the equality of two specified values as well as ensures that they are not the same reference.
+            </summary>
+            <typeparam name="T">
+                The type of the values.
+            </typeparam>
+            <param name="value1">
+                The first value to compare.
+            </param>
+            <param name="value2">
+                The second value to compare.
+            </param>
+            <param name="equalityExpectation">
+                The equality expectation for the specified values.
+            </param>
+        </member>
+        <member name="M:Omnifactotum.NUnit.NUnitFactotum.GenerateCombinatorialTestCases(System.Action{NUnit.Framework.TestCaseData},System.Object[])">
+            <summary>
+                Generates the combinatorial test cases using the specified arguments.
+            </summary>
+            <param name="processTestCase">
+                A reference to a method that may modify a generated <see cref="T:NUnit.Framework.TestCaseData"/>.
+            </param>
+            <param name="arguments">
+                The arguments to produce the combinatorial test cases from. Each argument may be a single value or
+                a collection of the values.
+            </param>
+            <returns>
+                A list of the test cases generated.
+            </returns>
+        </member>
+        <member name="M:Omnifactotum.NUnit.NUnitFactotum.GenerateCombinatorialTestCases(System.Object[])">
+            <summary>
+                Generates the combinatorial test cases using the specified arguments.
+            </summary>
+            <param name="arguments">
+                The arguments to produce the combinatorial test cases from. Each argument may be a single value or
+                a collection of the values.
+            </param>
+            <returns>
+                A list of the test cases generated.
+            </returns>
+        </member>
+        <member name="M:Omnifactotum.NUnit.NUnitFactotum.AssertNotNull``1(``0)">
+            <summary>
+                Returns the specified value if is not null;
+                otherwise, throws <see cref="T:NUnit.Framework.AssertionException"/>.
+            </summary>
+            <typeparam name="T">
+                The reference type of the value to check.
+            </typeparam>
+            <param name="value">
+                The value to check.
+            </param>
+            <returns>
+                The specified value if is not <c>null</c>.
+            </returns>
+            <exception cref="T:NUnit.Framework.AssertionException">
+                <paramref name="value"/> is <c>null</c>.
+            </exception>
+        </member>
+        <member name="M:Omnifactotum.NUnit.NUnitFactotum.AssertNotNull``1(System.Nullable{``0})">
+            <summary>
+                Returns the value which underlies the specified nullable value, if it is not <c>null</c>
+                (that is, if its <see cref="P:System.Nullable`1.HasValue"/> property is <c>true</c>);
+                otherwise, throws <see cref="T:NUnit.Framework.AssertionException"/>.
+            </summary>
+            <typeparam name="T">
+                The type which underlies the nullable type of the value to check.
+            </typeparam>
+            <param name="value">
+                The value to check.
+            </param>
+            <returns>
+                The value which underlies the specified nullable value, if it is not <c>null</c>
+                (that is, if its <see cref="P:System.Nullable`1.HasValue"/> property is <c>true</c>).
+            </returns>
+            <exception cref="T:NUnit.Framework.AssertionException">
+                <paramref name="value"/> is <c>null</c>, that is, its <see cref="P:System.Nullable`1.HasValue"/> property is
+                <c>false</c>.
+            </exception>
+        </member>
+        <member name="M:Omnifactotum.NUnit.NUnitFactotum.AccessAttributesMatch(System.Reflection.MethodInfo,System.Reflection.MethodAttributes)">
+            <summary>
+                Determines if the access attribute of the specified method matches the specified attribute.
+            </summary>
+            <param name="method">
+                The method whose access attribute to check.
+            </param>
+            <param name="expectedAttribute">
+                The expected access attribute value.
+            </param>
+            <returns>
+                <c>true</c> if the access attribute of the specified method matches the specified attribute;
+                otherwise, <c>false</c>.
+            </returns>
+        </member>
+        <member name="T:Omnifactotum.NUnit.NUnitFactotum.For`1">
+            <summary>
+                Provides a convenient access to helper methods for the specified type.
+            </summary>
+            <typeparam name="TObject">
+                The type that the helper methods are provided for.
+            </typeparam>
+        </member>
+        <member name="M:Omnifactotum.NUnit.NUnitFactotum.For`1.AssertReadableWritable``1(System.Linq.Expressions.Expression{System.Func{`0,``0}},Omnifactotum.NUnit.PropertyAccessMode,System.Reflection.MethodAttributes)">
+            <summary>
+                Asserts the readability and writability of the specified property.
+            </summary>
+            <typeparam name="TProperty">
+                The type of the property to check.
+            </typeparam>
+            <param name="propertyGetterExpression">
+                The lambda expression specifying the property to check,
+                in the following form: (SomeType x) =&gt; x.Property.
+            </param>
+            <param name="expectedAccessMode">
+                The expected readability and writability of the specified property.
+            </param>
+            <param name="visibleAccessorAttribute">
+                The attribute from <see cref="F:System.Reflection.MethodAttributes.MemberAccessMask"/> specifying the visibility of the
+                accessors.
+            </param>
+        </member>
+    </members>
+</doc>

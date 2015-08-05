@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 2013
-VisualStudioVersion = 12.0.31101.0
+VisualStudioVersion = 12.0.40629.0
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Omnifactotum", "Omnifactotum\Omnifactotum.csproj", "{1054B8A0-40D7-4FBC-A658-9AC9179035F8}"
 EndProject
@@ -15,8 +15,6 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "SolutionItems", "SolutionIt
 		Settings.StyleCop = Settings.StyleCop
 		SolutionItems\sign.cmd = SolutionItems\sign.cmd
 	EndProjectSection
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Omnifactotum.NUnit", "Omnifactotum.NUnit\Omnifactotum.NUnit.csproj", "{6D235396-E672-405D-824B-D91CE8C8EC99}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = ".build", ".build", "{34003F43-DF6F-45FD-993C-1DDDA9456105}"
 	ProjectSection(SolutionItems) = preProject
@@ -41,10 +39,6 @@ Global
 		{A6A92B13-8AF3-453B-B6AA-137312AE0CCB}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{A6A92B13-8AF3-453B-B6AA-137312AE0CCB}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{A6A92B13-8AF3-453B-B6AA-137312AE0CCB}.Release|Any CPU.Build.0 = Release|Any CPU
-		{6D235396-E672-405D-824B-D91CE8C8EC99}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{6D235396-E672-405D-824B-D91CE8C8EC99}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{6D235396-E672-405D-824B-D91CE8C8EC99}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{6D235396-E672-405D-824B-D91CE8C8EC99}.Release|Any CPU.Build.0 = Release|Any CPU
 		{B122C8F7-C350-4B51-ABF0-A303FE8E7455}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{B122C8F7-C350-4B51-ABF0-A303FE8E7455}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{B122C8F7-C350-4B51-ABF0-A303FE8E7455}.Release|Any CPU.ActiveCfg = Release|Any CPU
