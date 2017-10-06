@@ -2,7 +2,6 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.Diagnostics;
-using System.Linq;
 using Omnifactotum.Annotations;
 
 namespace Omnifactotum
@@ -16,15 +15,9 @@ namespace Omnifactotum
     [Serializable]
     public sealed class ReadOnlySet<T> : ISet<T>
     {
-        #region Constants and Fields
-
         private const string ReadOnlyMessage = "The set is read-only and cannot be modified.";
 
         private readonly ISet<T> _set;
-
-        #endregion
-
-        #region Constructors
 
         /// <summary>
         ///     Initializes a new instance of the <see cref="ReadOnlySet{T}"/> class that is a
@@ -35,21 +28,13 @@ namespace Omnifactotum
         /// </param>
         public ReadOnlySet([NotNull] ISet<T> set)
         {
-            #region Argument Check
-
             if (set == null)
             {
                 throw new ArgumentNullException("set");
             }
 
-            #endregion
-
             _set = set;
         }
-
-        #endregion
-
-        #region ISet<T> Members
 
         /// <summary>
         ///     Adds an element to the current set and returns a value to indicate if the
@@ -231,10 +216,6 @@ namespace Omnifactotum
             return _set.SetEquals(other);
         }
 
-        #endregion
-
-        #region ICollection<T> Members
-
         /// <summary>
         ///     Gets the number of elements contained in the current set.
         /// </summary>
@@ -332,10 +313,6 @@ namespace Omnifactotum
             _set.CopyTo(array, arrayIndex);
         }
 
-        #endregion
-
-        #region IEnumerable<T> Members
-
         /// <summary>
         ///     Returns an enumerator that iterates through the collection.
         /// </summary>
@@ -347,10 +324,6 @@ namespace Omnifactotum
             return _set.GetEnumerator();
         }
 
-        #endregion
-
-        #region IEnumerable Members
-
         /// <summary>
         ///     Returns an enumerator that iterates through a collection.
         /// </summary>
@@ -361,7 +334,5 @@ namespace Omnifactotum
         {
             return _set.GetEnumerator();
         }
-
-        #endregion
     }
 }

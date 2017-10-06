@@ -1,8 +1,4 @@
-﻿using System.Collections.Generic;
-using System.Diagnostics;
-using System.Linq;
-
-//// Namespace is intentionally named so in order to simplify usage of extension methods
+﻿//// Namespace is intentionally named so in order to simplify usage of extension methods
 //// ReSharper disable once CheckNamespace
 namespace System
 {
@@ -11,8 +7,6 @@ namespace System
     /// </summary>
     public static class OmnifactotumTimeSpanExtensions
     {
-        #region Public Methods
-
         /// <summary>
         ///     Multiplies the specified <see cref="TimeSpan"/> by the specified coefficient.
         /// </summary>
@@ -44,18 +38,12 @@ namespace System
         /// </returns>
         public static TimeSpan Divide(this TimeSpan value, decimal divisor)
         {
-            #region Argument Check
-
             if (divisor == 0m)
             {
                 throw new ArgumentException("The divisor cannot be zero.", "divisor");
             }
 
-            #endregion
-
             return TimeSpan.FromTicks(Convert.ToInt64(value.Ticks / divisor));
         }
-
-        #endregion
     }
 }

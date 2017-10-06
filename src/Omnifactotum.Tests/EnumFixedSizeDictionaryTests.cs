@@ -8,10 +8,8 @@ using Omnifactotum.NUnit;
 namespace Omnifactotum.Tests
 {
     [TestFixture]
-    public sealed class EnumFixedSizeDictionaryTests
+    internal sealed class EnumFixedSizeDictionaryTests
     {
-        #region Tests
-
         [Test]
         [TestCaseSource(typeof(BasicScenarioCases))]
         public void TestBasicScenario(FileMode fileMode)
@@ -28,22 +26,12 @@ namespace Omnifactotum.Tests
             Assert.That(dictionary.Values.ToArray(), Is.EquivalentTo(Value.AsArray()));
         }
 
-        #endregion
-
-        #region BasicScenarioCases Class
-
-        public sealed class BasicScenarioCases : TestCasesBase
+        internal sealed class BasicScenarioCases : TestCasesBase
         {
-            #region Protected Methods
-
             protected override IEnumerable<TestCaseData> GetCases()
             {
                 return EnumFactotum.GetAllValues<FileMode>().Select(item => new TestCaseData(item));
             }
-
-            #endregion
         }
-
-        #endregion
     }
 }

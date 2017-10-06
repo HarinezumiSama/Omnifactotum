@@ -16,13 +16,7 @@ namespace Omnifactotum
     [Serializable]
     public sealed class VirtualTreeNode<T> : VirtualTreeNodeBase<T>
     {
-        #region Constants and Fields
-
         private VirtualTreeNodeBase<T> _owner;
-
-        #endregion
-
-        #region Constructors
 
         /// <summary>
         ///     Initializes a new instance of the <see cref="VirtualTreeNode{T}"/> class.
@@ -42,7 +36,7 @@ namespace Omnifactotum
         public VirtualTreeNode([CanBeNull] T value)
             : this()
         {
-            this.Value = value;
+            Value = value;
         }
 
         /// <summary>
@@ -71,12 +65,8 @@ namespace Omnifactotum
         public VirtualTreeNode([CanBeNull] T value, [NotNull] ICollection<VirtualTreeNode<T>> children)
             : this(children)
         {
-            this.Value = value;
+            Value = value;
         }
-
-        #endregion
-
-        #region Public Properties
 
         /// <summary>
         ///     Gets the parent node of the current node, or <c>null</c> if the node does not have a parent.
@@ -107,10 +97,6 @@ namespace Omnifactotum
             set;
         }
 
-        #endregion
-
-        #region Public Methods
-
         /// <summary>
         ///     Returns a <see cref="System.String"/> that represents this <see cref="VirtualTreeNode{T}"/>.
         /// </summary>
@@ -122,11 +108,9 @@ namespace Omnifactotum
             return string.Format(
                 CultureInfo.InvariantCulture,
                 "{0}. Children.Count = {1}, Value = {2}",
-                this.GetType().GetQualifiedName(),
-                this.Children.Count,
-                this.Value);
+                GetType().GetQualifiedName(),
+                Children.Count,
+                Value);
         }
-
-        #endregion
     }
 }

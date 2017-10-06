@@ -1,7 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using System.Linq;
 using Omnifactotum.Annotations;
 using Omnifactotum.Validation.Constraints;
 
@@ -12,13 +10,7 @@ namespace Omnifactotum.Validation
     /// </summary>
     public sealed class ValidationErrorCollection
     {
-        #region Constants and Fields
-
         private readonly List<MemberConstraintValidationError> _innerItems;
-
-        #endregion
-
-        #region Constructors
 
         /// <summary>
         ///     Initializes a new instance of the <see cref="ValidationErrorCollection"/> class.
@@ -26,22 +18,14 @@ namespace Omnifactotum.Validation
         internal ValidationErrorCollection()
         {
             _innerItems = new List<MemberConstraintValidationError>();
-            this.Items = new ReadOnlyCollection<MemberConstraintValidationError>(_innerItems);
+            Items = new ReadOnlyCollection<MemberConstraintValidationError>(_innerItems);
         }
-
-        #endregion
-
-        #region Internal Properties
 
         internal ReadOnlyCollection<MemberConstraintValidationError> Items
         {
             get;
             private set;
         }
-
-        #endregion
-
-        #region Public Methods
 
         /// <summary>
         ///     Adds the specified error to the collection.
@@ -83,7 +67,5 @@ namespace Omnifactotum.Validation
                 Add(error);
             }
         }
-
-        #endregion
     }
 }

@@ -12,8 +12,6 @@ namespace Omnifactotum
     /// </summary>
     public sealed class ToPropertyStringOptions : ICloneable
     {
-        #region Constants and Fields
-
         /// <summary>
         ///     The default value of the <see cref="ToPropertyStringOptions.MaxCollectionItemCount"/> property.
         /// </summary>
@@ -32,22 +30,14 @@ namespace Omnifactotum
         private int _maxCollectionItemCount;
         private int _maxRecursionLevel;
 
-        #endregion
-
-        #region Constructors
-
         /// <summary>
         ///     Initializes a new instance of the <see cref="ToPropertyStringOptions"/> class.
         /// </summary>
         public ToPropertyStringOptions()
         {
-            this.MaxCollectionItemCount = DefaultMaxCollectionItemCount;
-            this.MaxRecursionLevel = DefaultMaxRecursionLevel;
+            MaxCollectionItemCount = DefaultMaxCollectionItemCount;
+            MaxRecursionLevel = DefaultMaxRecursionLevel;
         }
-
-        #endregion
-
-        #region Public Properties
 
         /// <summary>
         ///     Gets or sets a value indicating whether the actual type of the root object should be rendered..
@@ -123,14 +113,10 @@ namespace Omnifactotum
             [DebuggerNonUserCode]
             set
             {
-                #region Argument Check
-
                 if (value < 0)
                 {
                     throw new ArgumentOutOfRangeException("value", value, "The value cannot be negative.");
                 }
-
-                #endregion
 
                 _maxCollectionItemCount = value;
             }
@@ -150,22 +136,14 @@ namespace Omnifactotum
             [DebuggerNonUserCode]
             set
             {
-                #region Argument Check
-
                 if (value <= 0)
                 {
                     throw new ArgumentOutOfRangeException("value", value, @"The value must be positive.");
                 }
 
-                #endregion
-
                 _maxRecursionLevel = value;
             }
         }
-
-        #endregion
-
-        #region Public Methods
 
         /// <summary>
         ///     Creates a new <see cref="ToPropertyStringOptions"/> that is a copy of this instance.
@@ -193,10 +171,6 @@ namespace Omnifactotum
             return this;
         }
 
-        #endregion
-
-        #region ICloneable Members
-
         /// <summary>
         ///     Creates a new object that is a copy of the current instance.
         /// </summary>
@@ -207,7 +181,5 @@ namespace Omnifactotum
         {
             return Clone();
         }
-
-        #endregion
     }
 }

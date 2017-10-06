@@ -1,6 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
 using NUnit.Framework;
 using NUnit.Framework.Constraints;
 using Omnifactotum.NUnit;
@@ -14,15 +12,9 @@ namespace Omnifactotum.Tests
     public sealed class SyncValueContainerTests<T>
         where T : IEquatable<T>
     {
-        #region Constants and Fields
-
         private readonly T _value;
         private readonly T _anotherValue;
         private readonly T[] _values;
-
-        #endregion
-
-        #region Constructors
 
         public SyncValueContainerTests(T value, T anotherValue)
         {
@@ -32,10 +24,6 @@ namespace Omnifactotum.Tests
             _anotherValue = anotherValue;
             _values = new[] { value, anotherValue, default(T) };
         }
-
-        #endregion
-
-        #region Tests
 
         [Test]
         public void TestSupportedInterfaces()
@@ -121,7 +109,5 @@ namespace Omnifactotum.Tests
                 container.Value,
                 typeof(T).IsValueType ? (IResolveConstraint)Is.EqualTo(_anotherValue) : Is.SameAs(_anotherValue));
         }
-
-        #endregion
     }
 }

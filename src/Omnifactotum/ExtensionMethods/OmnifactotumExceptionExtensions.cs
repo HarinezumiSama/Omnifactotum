@@ -12,8 +12,6 @@ namespace System
     /// </summary>
     public static class OmnifactotumExceptionExtensions
     {
-        #region Public Methods
-
         /// <summary>
         ///     Determines whether the specified exception should NOT be handled by a user code.
         /// </summary>
@@ -31,7 +29,5 @@ namespace System
                 || exception is OutOfMemoryException
                 || exception is StackOverflowException;
         }
-
-        #endregion
     }
 }

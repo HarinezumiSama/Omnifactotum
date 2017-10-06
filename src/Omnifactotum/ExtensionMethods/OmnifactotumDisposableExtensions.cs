@@ -1,6 +1,4 @@
-﻿using System;
-using System.Diagnostics;
-using Omnifactotum.Annotations;
+﻿using Omnifactotum.Annotations;
 
 //// Namespace is intentionally named so in order to simplify usage of extension methods
 //// ReSharper disable once CheckNamespace
@@ -11,8 +9,6 @@ namespace System
     /// </summary>
     public static class OmnifactotumDisposableExtensions
     {
-        #region Public Methods
-
         /// <summary>
         ///     Calls the <see cref="IDisposable.Dispose"/> method of the specified instance implementing
         ///     the <see cref="IDisposable"/> interface, if this instance is not <c>null</c>;
@@ -52,7 +48,5 @@ namespace System
                 disposable.Value.Dispose();
             }
         }
-
-        #endregion
     }
 }

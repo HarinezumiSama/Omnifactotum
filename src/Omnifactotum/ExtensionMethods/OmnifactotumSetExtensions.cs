@@ -1,7 +1,4 @@
-﻿using System;
-using System.Diagnostics;
-using System.Linq;
-using Omnifactotum;
+﻿using Omnifactotum;
 using Omnifactotum.Annotations;
 
 //// Namespace is intentionally named so in order to simplify usage of extension methods
@@ -13,8 +10,6 @@ namespace System.Collections.Generic
     /// </summary>
     public static class OmnifactotumSetExtensions
     {
-        #region Public Methods
-
         /// <summary>
         ///     Returns a read-only wrapper for the specified set.
         /// </summary>
@@ -30,18 +25,12 @@ namespace System.Collections.Generic
         [NotNull]
         public static ReadOnlySet<T> AsReadOnly<T>([NotNull] this ISet<T> set)
         {
-            #region Argument Check
-
             if (set == null)
             {
                 throw new ArgumentNullException("set");
             }
 
-            #endregion
-
             return new ReadOnlySet<T>(set);
         }
-
-        #endregion
     }
 }

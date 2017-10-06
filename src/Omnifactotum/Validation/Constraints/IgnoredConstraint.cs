@@ -1,6 +1,3 @@
-using System;
-using System.Linq;
-
 namespace Omnifactotum.Validation.Constraints
 {
     /// <summary>
@@ -11,8 +8,6 @@ namespace Omnifactotum.Validation.Constraints
     /// </typeparam>
     public sealed class IgnoredConstraint<T> : TypedMemberConstraintBase<T>
     {
-        #region Protected Methods
-
         /// <summary>
         ///     Validates the specified strongly-typed value is scope of the specified context.
         /// </summary>
@@ -32,7 +27,5 @@ namespace Omnifactotum.Validation.Constraints
         {
             // Nothing to do
         }
-
-        #endregion
     }
 }

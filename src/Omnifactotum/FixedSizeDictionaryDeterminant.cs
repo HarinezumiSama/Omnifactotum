@@ -1,6 +1,4 @@
-﻿using System;
-using System.Linq;
-using Omnifactotum.Annotations;
+﻿using Omnifactotum.Annotations;
 
 namespace Omnifactotum
 {
@@ -13,8 +11,6 @@ namespace Omnifactotum
     /// </typeparam>
     public abstract class FixedSizeDictionaryDeterminant<TKey>
     {
-        #region Public Properties
-
         /// <summary>
         ///     Gets the constant size of an internal array used in
         ///     the <see cref="FixedSizeDictionary{TKey,TValue,TDeterminant}"/>.
@@ -23,10 +19,6 @@ namespace Omnifactotum
         {
             get;
         }
-
-        #endregion
-
-        #region Public Methods
 
         /// <summary>
         ///     Gets the internal index corresponding to the specified key.
@@ -49,7 +41,5 @@ namespace Omnifactotum
         ///     The key corresponding to the specified internal index.
         /// </returns>
         public abstract TKey GetKey(int index);
-
-        #endregion
     }
 }

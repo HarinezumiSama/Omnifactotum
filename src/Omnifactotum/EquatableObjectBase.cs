@@ -1,7 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Diagnostics;
-using System.Linq;
 using Omnifactotum.Annotations;
 
 namespace Omnifactotum
@@ -11,8 +9,6 @@ namespace Omnifactotum
     /// </summary>
     public abstract class EquatableObjectBase : IEquatable<EquatableObjectBase>
     {
-        #region Operators
-
         /// <summary>
         ///     Determines whether the two specified <see cref="EquatableObjectBase"/> instances are equal.
         /// </summary>
@@ -49,10 +45,6 @@ namespace Omnifactotum
             return !(left == right);
         }
 
-        #endregion
-
-        #region Public Methods
-
         /// <summary>
         ///     Determines whether the specified <see cref="Object"/> is equal to
         ///     this <see cref="EquatableObjectBase"/>.
@@ -81,10 +73,6 @@ namespace Omnifactotum
             return GetHashCodeInternal();
         }
 
-        #endregion
-
-        #region IEquatable<EquatableObjectBase> Members
-
         /// <summary>
         ///     Determines whether the current object is equal to another object of the same type.
         /// </summary>
@@ -110,10 +98,6 @@ namespace Omnifactotum
             return EqualsInternal(other);
         }
 
-        #endregion
-
-        #region Protected Methods
-
         /// <summary>
         ///     Returns a hash code for this <see cref="EquatableObjectBase"/>.
         /// </summary>
@@ -135,7 +119,5 @@ namespace Omnifactotum
         ///     otherwise, <c>false</c>.
         /// </returns>
         protected abstract bool EqualsInternal([NotNull] EquatableObjectBase other);
-
-        #endregion
     }
 }

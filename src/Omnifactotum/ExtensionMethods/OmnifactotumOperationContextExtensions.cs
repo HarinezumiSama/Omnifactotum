@@ -1,6 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Diagnostics;
+﻿using System.Collections.Generic;
 using System.IdentityModel.Claims;
 using System.Linq;
 using System.Security.Cryptography.X509Certificates;
@@ -15,8 +13,6 @@ namespace System.ServiceModel
     /// </summary>
     public static class OmnifactotumOperationContextExtensions
     {
-        #region Public Methods
-
         /// <summary>
         ///     Gets the client certificate for the specified operation context.
         /// </summary>
@@ -32,10 +28,6 @@ namespace System.ServiceModel
             var certificates = GetAllClientCertificates(operationContext);
             return certificates.FirstOrDefault();
         }
-
-        #endregion
-
-        #region Private Methods
 
         [NotNull]
         private static IEnumerable<X509Certificate2> GetAllClientCertificates(OperationContext operationContext)
@@ -58,7 +50,5 @@ namespace System.ServiceModel
                 .Where(certificate => certificate != null)
                 .ToArray();
         }
-
-        #endregion
     }
 }

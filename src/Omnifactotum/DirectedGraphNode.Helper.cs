@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Diagnostics;
-using System.Linq;
-using Omnifactotum.Annotations;
+﻿using Omnifactotum.Annotations;
 
 namespace Omnifactotum
 {
@@ -12,8 +8,6 @@ namespace Omnifactotum
     /// </summary>
     public static class DirectedGraphNode
     {
-        #region Public Methods
-
         /// <summary>
         ///     Creates a new instance of the <see cref="DirectedGraphNode{T}"/> class using the specified value.
         /// </summary>
@@ -30,7 +24,5 @@ namespace Omnifactotum
         {
             return new DirectedGraphNode<T>(value);
         }
-
-        #endregion
     }
 }

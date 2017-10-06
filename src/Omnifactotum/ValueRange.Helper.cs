@@ -1,7 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Diagnostics;
-using System.Linq;
 
 namespace Omnifactotum
 {
@@ -11,8 +8,6 @@ namespace Omnifactotum
     /// </summary>
     public static class ValueRange
     {
-        #region Public Methods
-
         /// <summary>
         ///     Creates a new instance of the <see cref="ValueRange{T}"/> structure using the specified values.
         /// </summary>
@@ -33,7 +28,5 @@ namespace Omnifactotum
         {
             return new ValueRange<T>(lower, upper);
         }
-
-        #endregion
     }
 }

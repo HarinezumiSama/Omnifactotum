@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Linq;
 using System.Runtime.Serialization;
 
 namespace Omnifactotum.Validation
@@ -10,8 +9,6 @@ namespace Omnifactotum.Validation
     [Serializable]
     public sealed class ObjectValidationException : Exception
     {
-        #region Constructors
-
         /// <summary>
         ///     Initializes a new instance of the <see cref="ObjectValidationException"/> class.
         /// </summary>
@@ -24,7 +21,7 @@ namespace Omnifactotum.Validation
         internal ObjectValidationException(ObjectValidationResult validationResult, string message)
             : base(message)
         {
-            this.ValidationResult = validationResult;
+            ValidationResult = validationResult;
         }
 
         private ObjectValidationException(SerializationInfo info, StreamingContext context)
@@ -32,10 +29,6 @@ namespace Omnifactotum.Validation
         {
             // Nothing to do
         }
-
-        #endregion
-
-        #region Public Properties
 
         /// <summary>
         ///     Gets the validation result caused this exception.
@@ -45,7 +38,5 @@ namespace Omnifactotum.Validation
             get;
             private set;
         }
-
-        #endregion
     }
 }

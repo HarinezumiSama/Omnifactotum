@@ -1,6 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
 using NUnit.Framework;
 using NUnit.Framework.Constraints;
 
@@ -11,13 +9,7 @@ namespace Omnifactotum.Tests
     public sealed class ValueContainerHelperTests<T>
         where T : IEquatable<T>
     {
-        #region Constants and Fields
-
         private readonly T[] _values;
-
-        #endregion
-
-        #region Constructors
 
         public ValueContainerHelperTests(T value, T anotherValue)
         {
@@ -27,10 +19,6 @@ namespace Omnifactotum.Tests
 
             _values = new[] { value, anotherValue, default(T) };
         }
-
-        #endregion
-
-        #region Tests
 
         [Test]
         public void TestCreateWithValue()
@@ -44,7 +32,5 @@ namespace Omnifactotum.Tests
                     typeof(T).IsValueType ? (IResolveConstraint)Is.EqualTo(value) : Is.SameAs(value));
             }
         }
-
-        #endregion
     }
 }

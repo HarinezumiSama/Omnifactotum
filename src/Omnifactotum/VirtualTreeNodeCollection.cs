@@ -3,7 +3,6 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Globalization;
-using System.Linq;
 using Omnifactotum.Annotations;
 
 namespace Omnifactotum
@@ -17,14 +16,8 @@ namespace Omnifactotum
     [Serializable]
     public sealed class VirtualTreeNodeCollection<T> : IList<VirtualTreeNode<T>>
     {
-        #region Constants and Fields
-
         private readonly VirtualTreeNodeBase<T> _owner;
         private readonly List<VirtualTreeNode<T>> _list;
-
-        #endregion
-
-        #region Constructors
 
         /// <summary>
         ///     Initializes a new instance of the <see cref="VirtualTreeNodeCollection{T}"/> class.
@@ -34,14 +27,10 @@ namespace Omnifactotum
         /// </param>
         internal VirtualTreeNodeCollection([NotNull] VirtualTreeNodeBase<T> owner)
         {
-            #region Argument Check
-
             if (owner == null)
             {
                 throw new ArgumentNullException("owner");
             }
-
-            #endregion
 
             _owner = owner;
             _list = new List<VirtualTreeNode<T>>();
@@ -65,10 +54,6 @@ namespace Omnifactotum
             AddRange(collection);
         }
 
-        #endregion
-
-        #region Public Methods
-
         /// <summary>
         ///     Returns a <see cref="System.String"/> that represents
         ///     this <see cref="VirtualTreeNodeCollection{T}"/>.
@@ -81,8 +66,8 @@ namespace Omnifactotum
             return string.Format(
                 CultureInfo.InvariantCulture,
                 "{0}. Count = {1}",
-                this.GetType().GetQualifiedName(),
-                this.Count);
+                GetType().GetQualifiedName(),
+                Count);
         }
 
         /// <summary>
@@ -103,24 +88,16 @@ namespace Omnifactotum
         /// </exception>
         public void AddRange([NotNull] IEnumerable<VirtualTreeNode<T>> collection)
         {
-            #region Argument Check
-
             if (collection == null)
             {
                 throw new ArgumentNullException("collection");
             }
-
-            #endregion
 
             foreach (var item in collection)
             {
                 Add(item);
             }
         }
-
-        #endregion
-
-        #region IList<VirtualTreeNode<T>> Members
 
         /// <summary>
         ///     Gets or sets the element at the specified index.
@@ -144,8 +121,6 @@ namespace Omnifactotum
 
             set
             {
-                #region Argument Check
-
                 if (value == null)
                 {
                     throw new ArgumentNullException("value");
@@ -160,8 +135,6 @@ namespace Omnifactotum
                 {
                     CheckItemBeingAdded(value);
                 }
-
-                #endregion
 
                 _list[index] = value;
             }
@@ -201,11 +174,7 @@ namespace Omnifactotum
         /// </exception>
         public void Insert(int index, [NotNull] VirtualTreeNode<T> item)
         {
-            #region Argument Check
-
             CheckItemBeingAdded(item);
-
-            #endregion
 
             _list.Insert(index, item);
             item.Parent = _owner;
@@ -226,10 +195,6 @@ namespace Omnifactotum
             _list.RemoveAt(index);
             item.Parent = null;
         }
-
-        #endregion
-
-        #region ICollection<VirtualTreeNode<T>> Members
 
         /// <summary>
         ///     Gets the number of elements contained in the <see cref="VirtualTreeNodeCollection{T}"/>.
@@ -272,11 +237,7 @@ namespace Omnifactotum
         /// </exception>
         public void Add([NotNull] VirtualTreeNode<T> item)
         {
-            #region Argument Check
-
             CheckItemBeingAdded(item);
-
-            #endregion
 
             _list.Add(item);
             item.Parent = _owner;
@@ -327,14 +288,10 @@ namespace Omnifactotum
         /// </exception>
         public void CopyTo(VirtualTreeNode<T>[] array, int arrayIndex)
         {
-            #region Argument Check
-
             if (array == null)
             {
                 throw new ArgumentNullException("array");
             }
-
-            #endregion
 
             _list.CopyTo(array, arrayIndex);
         }
@@ -366,10 +323,6 @@ namespace Omnifactotum
             return result;
         }
 
-        #endregion
-
-        #region IEnumerable<VirtualTreeNode<T>> Members
-
         /// <summary>
         ///     Returns an enumerator that iterates through the collection.
         /// </summary>
@@ -381,10 +334,6 @@ namespace Omnifactotum
             return _list.GetEnumerator();
         }
 
-        #endregion
-
-        #region IEnumerable Members
-
         /// <summary>
         ///     Returns an enumerator that iterates through a collection.
         /// </summary>
@@ -395,10 +344,6 @@ namespace Omnifactotum
         {
             return GetEnumerator();
         }
-
-        #endregion
-
-        #region Private Methods
 
         private void CheckItemBeingAdded([NotNull] VirtualTreeNode<T> item)
         {
@@ -419,7 +364,5 @@ namespace Omnifactotum
 
             throw new ArgumentException("The item already belongs to another collection.", "item");
         }
-
-        #endregion
     }
 }

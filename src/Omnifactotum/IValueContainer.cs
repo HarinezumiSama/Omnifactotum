@@ -1,6 +1,4 @@
-﻿using System;
-using System.Linq;
-using Omnifactotum.Annotations;
+﻿using Omnifactotum.Annotations;
 
 namespace Omnifactotum
 {
@@ -12,8 +10,6 @@ namespace Omnifactotum
     /// </typeparam>
     public interface IValueContainer<T>
     {
-        #region Properties
-
         /// <summary>
         ///     Gets or sets the encapsulated value.
         /// </summary>
@@ -22,8 +18,6 @@ namespace Omnifactotum
         {
             get;
             set;
-        } 
-
-        #endregion
+        }
     }
 }

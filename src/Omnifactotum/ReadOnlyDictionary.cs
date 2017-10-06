@@ -19,8 +19,6 @@ namespace Omnifactotum
     /// </typeparam>
     public sealed class ReadOnlyDictionary<TKey, TValue> : IDictionary<TKey, TValue>
     {
-        #region Constants and Fields
-
         /// <summary>
         ///     The read-only message.
         /// </summary>
@@ -31,10 +29,6 @@ namespace Omnifactotum
         /// </summary>
         private readonly IDictionary<TKey, TValue> _dictionary;
 
-        #endregion
-
-        #region Constructors
-
         /// <summary>
         ///     Initializes a new instance of the <see cref="ReadOnlyDictionary{TKey,TValue}"/> class.
         /// </summary>
@@ -43,21 +37,13 @@ namespace Omnifactotum
         /// </param>
         public ReadOnlyDictionary([NotNull] IDictionary<TKey, TValue> dictionary)
         {
-            #region Argument Check
-
             if (dictionary == null)
             {
                 throw new ArgumentNullException("dictionary");
             }
 
-            #endregion
-
             _dictionary = dictionary;
         }
-
-        #endregion
-
-        #region IDictionary<TKey, TValue> Members
 
         /// <summary>
         ///     Gets a collection containing the keys of the current dictionary.
@@ -195,10 +181,6 @@ namespace Omnifactotum
             return _dictionary.TryGetValue(key, out value);
         }
 
-        #endregion
-
-        #region ICollection<KeyValuePair<TKey, TValue>> Members
-
         /// <summary>
         ///     Gets the number of elements contained in the current collection.
         /// </summary>
@@ -312,10 +294,6 @@ namespace Omnifactotum
             _dictionary.CopyTo(array, arrayIndex);
         }
 
-        #endregion
-
-        #region IEnumerable<KeyValuePair<TKey, TValue>> Members
-
         /// <summary>
         ///     Returns an enumerator that iterates through the collection.
         /// </summary>
@@ -328,10 +306,6 @@ namespace Omnifactotum
             return _dictionary.GetEnumerator();
         }
 
-        #endregion
-
-        #region IEnumerable Members
-
         /// <summary>
         ///     Returns an enumerator that iterates through a collection.
         /// </summary>
@@ -343,7 +317,5 @@ namespace Omnifactotum
         {
             return _dictionary.GetEnumerator();
         }
-
-        #endregion
     }
 }

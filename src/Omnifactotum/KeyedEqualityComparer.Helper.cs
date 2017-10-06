@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
 using Omnifactotum.Annotations;
 
 namespace Omnifactotum
@@ -11,8 +10,6 @@ namespace Omnifactotum
     /// </summary>
     public static class KeyedEqualityComparer
     {
-        #region For<T> Class
-
         /// <summary>
         ///     Provides methods for creating instances of the <see cref="KeyedEqualityComparer{T,TKey}"/> class
         ///     for the specified type <typeparamref name="T"/>.
@@ -22,8 +19,6 @@ namespace Omnifactotum
         /// </typeparam>
         public static class For<T>
         {
-            #region Public Methods
-
             /// <summary>
             ///     Creates and initializes a new instance of the <see cref="KeyedEqualityComparer{T,TKey}"/>
             ///     class with the specified key selector and key equality comparer.
@@ -59,10 +54,6 @@ namespace Omnifactotum
             {
                 return new KeyedEqualityComparer<T, TKey>(keySelector);
             }
-
-            #endregion
         }
-
-        #endregion
     }
 }

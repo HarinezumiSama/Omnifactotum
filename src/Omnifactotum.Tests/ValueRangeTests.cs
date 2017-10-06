@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Diagnostics;
-using System.Linq;
+﻿using System.Collections.Generic;
 using NUnit.Framework;
 using Omnifactotum.NUnit;
 
@@ -10,8 +7,6 @@ namespace Omnifactotum.Tests
     [TestFixture]
     public sealed class ValueRangeTests
     {
-        #region Tests
-
         [Test]
         [Category(TestCategory.Negative)]
         public void TestInvalidConstruction()
@@ -85,10 +80,6 @@ namespace Omnifactotum.Tests
             var actualString = range.ToString();
             Assert.That(actualString, Is.EqualTo(expectedString));
         }
-
-        #endregion
-
-        #region Nested Types: Test Cases
 
         private sealed class ConstructionCases : TestCasesBase
         {
@@ -175,7 +166,5 @@ namespace Omnifactotum.Tests
                 yield return new TestCaseData(new ValueRange<int>(-5, 4), "[-5; 4]");
             }
         }
-
-        #endregion
     }
 }

@@ -8,8 +8,6 @@ namespace Omnifactotum.Tests.Validation.Constraints
     [TestFixture]
     internal sealed class NotNullOrWhiteSpaceStringConstraintTests : ConstraintTestsBase
     {
-        #region Tests
-
         [Test]
         public void TestValidateNegativeContextNull()
         {
@@ -65,7 +63,5 @@ namespace Omnifactotum.Tests.Validation.Constraints
             Assert.That(validationError.FailedConstraintType, Is.EqualTo(constraint.GetType()));
             Assert.That(validationError.Context, Is.SameAs(validationContext));
         }
-
-        #endregion
     }
 }

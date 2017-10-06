@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Globalization;
-using System.Linq;
 using Omnifactotum.Annotations;
 
 namespace Omnifactotum.Validation.Constraints
@@ -11,8 +10,6 @@ namespace Omnifactotum.Validation.Constraints
     /// </summary>
     public abstract class MemberConstraintBase : IMemberConstraint
     {
-        #region IMemberConstraint Members
-
         /// <summary>
         ///     Validates the specified value in scope of the specified memberContext.
         /// </summary>
@@ -30,8 +27,6 @@ namespace Omnifactotum.Validation.Constraints
             MemberConstraintValidationContext memberContext,
             object value)
         {
-            #region Argument Check
-
             if (validatorContext == null)
             {
                 throw new ArgumentNullException("validatorContext");
@@ -42,14 +37,8 @@ namespace Omnifactotum.Validation.Constraints
                 throw new ArgumentNullException("memberContext");
             }
 
-            #endregion
-
             ValidateValue(validatorContext, memberContext, value);
         }
-
-        #endregion
-
-        #region Protected Methods
 
         /// <summary>
         ///     Validates the specified value is scope of the specified memberContext.
@@ -117,8 +106,6 @@ namespace Omnifactotum.Validation.Constraints
             [NotNull] MemberConstraintValidationContext memberContext,
             [NotNull] string failureMessage)
         {
-            #region Argument Check
-
             if (memberContext == null)
             {
                 throw new ArgumentNullException("memberContext");
@@ -130,8 +117,6 @@ namespace Omnifactotum.Validation.Constraints
                     @"The value can be neither empty nor whitespace-only string nor null.",
                     "failureMessage");
             }
-
-            #endregion
 
             var error = new MemberConstraintValidationError(memberContext, GetType(), failureMessage);
             validatorContext.Errors.Add(error);
@@ -151,14 +136,10 @@ namespace Omnifactotum.Validation.Constraints
             [NotNull] ObjectValidatorContext validatorContext,
             [NotNull] MemberConstraintValidationContext memberContext)
         {
-            #region Argument Check
-
             if (memberContext == null)
             {
                 throw new ArgumentNullException("memberContext");
             }
-
-            #endregion
 
             var failureMessage = string.Format(
                 CultureInfo.InvariantCulture,
@@ -167,7 +148,5 @@ namespace Omnifactotum.Validation.Constraints
 
             AddError(validatorContext, memberContext, failureMessage);
         }
-
-        #endregion
     }
 }

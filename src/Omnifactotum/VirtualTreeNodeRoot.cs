@@ -14,8 +14,6 @@ namespace Omnifactotum
     [Serializable]
     public sealed class VirtualTreeNodeRoot<T> : VirtualTreeNodeBase<T>
     {
-        #region Constructors
-
         /// <summary>
         ///     Initializes a new instance of the <see cref="VirtualTreeNodeRoot{T}"/> class.
         /// </summary>
@@ -36,7 +34,5 @@ namespace Omnifactotum
         {
             // Nothing to do
         }
-
-        #endregion
     }
 }

@@ -1,6 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
 using NUnit.Framework;
 using NUnit.Framework.Constraints;
 
@@ -13,26 +11,17 @@ namespace Omnifactotum.Tests
     public sealed class SyncValueContainerHelperTests<T>
         where T : IEquatable<T>
     {
-        #region Constants and Fields
-
         private readonly T _value;
         private readonly T[] _values;
-
-        #endregion
-
-        #region Constructors
 
         public SyncValueContainerHelperTests(T value, T anotherValue)
         {
             Assert.That(value, Is.Not.EqualTo(default(T)));
+            Assert.That(anotherValue, Is.Not.EqualTo(default(T)));
 
             _value = value;
             _values = new[] { value, anotherValue, default(T) };
         }
-
-        #endregion
-
-        #region Tests
 
         [Test]
         public void TestCreateWithValue()
@@ -72,7 +61,5 @@ namespace Omnifactotum.Tests
 
             Assert.That(() => SyncValueContainer.Create(_value, 123), Throws.TypeOf<ArgumentException>());
         }
-
-        #endregion
     }
 }

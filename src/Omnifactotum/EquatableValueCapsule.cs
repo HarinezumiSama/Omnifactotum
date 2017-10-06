@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
-using System.Linq;
 using Omnifactotum.Annotations;
 
 namespace Omnifactotum
@@ -21,8 +20,6 @@ namespace Omnifactotum
     /// </typeparam>
     public abstract class EquatableValueCapsule<T> : ValueCapsule<T>, IEquatable<EquatableValueCapsule<T>>
     {
-        #region Constructors
-
         /// <summary>
         ///     Initializes a new instance of the <see cref="EquatableValueCapsule{T}"/> class
         ///     using the specified value.
@@ -36,10 +33,6 @@ namespace Omnifactotum
             // Nothing to do
         }
 
-        #endregion
-
-        #region Public Properties
-
         /// <summary>
         ///     Gets the <see cref="IEqualityComparer{T}"/> used for comparing contained values for equality.
         /// </summary>
@@ -51,10 +44,6 @@ namespace Omnifactotum
                 return GetValueEqualityComparer().EnsureNotNull();
             }
         }
-
-        #endregion
-
-        #region Operators
 
         /// <summary>
         ///     Determines whether the two specified <see cref="EquatableValueCapsule{T}"/> instances are equal.
@@ -96,10 +85,6 @@ namespace Omnifactotum
             return !(left == right);
         }
 
-        #endregion
-
-        #region Public Methods
-
         /// <summary>
         ///     Determines whether the specified <see cref="Object"/> is equal to
         ///     this <see cref="EquatableValueCapsule{T}"/>.
@@ -125,12 +110,8 @@ namespace Omnifactotum
         /// </returns>
         public sealed override int GetHashCode()
         {
-            return ReferenceEquals(this.Value, null) ? 0 : this.ValueEqualityComparer.GetHashCode(this.Value);
+            return ReferenceEquals(Value, null) ? 0 : ValueEqualityComparer.GetHashCode(Value);
         }
-
-        #endregion
-
-        #region IEquatable<EquatableValueCapsule<T>> Members
 
         /// <summary>
         ///     Determines whether the current object is equal to another object of the same type.
@@ -154,12 +135,8 @@ namespace Omnifactotum
                 return true;
             }
 
-            return this.ValueEqualityComparer.Equals(other.Value, this.Value);
+            return ValueEqualityComparer.Equals(other.Value, Value);
         }
-
-        #endregion
-
-        #region Protected Methods
 
         /// <summary>
         ///     Gets the <see cref="IEqualityComparer{T}"/> used for comparing contained values for equality.
@@ -173,7 +150,5 @@ namespace Omnifactotum
         {
             return EqualityComparer<T>.Default;
         }
-
-        #endregion
     }
 }

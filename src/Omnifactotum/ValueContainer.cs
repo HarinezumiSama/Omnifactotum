@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Globalization;
-using System.Linq;
 using Omnifactotum.Annotations;
 
 namespace Omnifactotum
@@ -17,8 +16,6 @@ namespace Omnifactotum
     [DebuggerDisplay(@"\{Value = {Value}\}")]
     public sealed class ValueContainer<T> : IValueContainer<T>, IEquatable<ValueContainer<T>>
     {
-        #region Constructors
-
         /// <summary>
         ///     Initializes a new instance of the <see cref="ValueContainer{T}"/> class
         ///     using the specified value.
@@ -28,7 +25,7 @@ namespace Omnifactotum
         /// </param>
         public ValueContainer([CanBeNull] T value)
         {
-            this.Value = value;
+            Value = value;
         }
 
         /// <summary>
@@ -41,10 +38,6 @@ namespace Omnifactotum
             // Nothing to do
         }
 
-        #endregion
-
-        #region IValueContainer<T> Members
-
         /// <summary>
         ///     Gets or sets the encapsulated value.
         /// </summary>
@@ -53,10 +46,6 @@ namespace Omnifactotum
             get;
             set;
         }
-
-        #endregion
-
-        #region Operators
 
         /// <summary>
         ///     Determines whether the two specified <see cref="ValueContainer{T}"/> instances are equal.
@@ -94,10 +83,6 @@ namespace Omnifactotum
             return !(left == right);
         }
 
-        #endregion
-
-        #region Public Methods
-
         /// <summary>
         ///     Returns a <see cref="String" /> that represents this <see cref="ValueContainer{T}"/> instance.
         /// </summary>
@@ -106,7 +91,7 @@ namespace Omnifactotum
         /// </returns>
         public override string ToString()
         {
-            return string.Format(CultureInfo.InvariantCulture, "{{ Value = {0} }}", this.Value.ToStringSafely());
+            return string.Format(CultureInfo.InvariantCulture, "{{ Value = {0} }}", Value.ToStringSafely());
         }
 
         /// <summary>
@@ -133,12 +118,8 @@ namespace Omnifactotum
         /// </returns>
         public override int GetHashCode()
         {
-            return this.Value.GetHashCodeSafely();
+            return Value.GetHashCodeSafely();
         }
-
-        #endregion
-
-        #region IEquatable<ValueContainer<T>> Members
 
         /// <summary>
         ///     Determines whether the current <see cref="ValueContainer{T}"/> instance is equal to another instance
@@ -156,10 +137,6 @@ namespace Omnifactotum
             return Equals(this, other);
         }
 
-        #endregion
-
-        #region Private Methods
-
         private static bool Equals(ValueContainer<T> left, ValueContainer<T> right)
         {
             if (ReferenceEquals(left, right))
@@ -174,7 +151,5 @@ namespace Omnifactotum
 
             return EqualityComparer<T>.Default.Equals(left.Value, right.Value);
         }
-
-        #endregion
     }
 }

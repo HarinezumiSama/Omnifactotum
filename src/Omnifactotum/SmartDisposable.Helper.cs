@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Diagnostics;
-using System.Linq;
-using Omnifactotum.Annotations;
+﻿using Omnifactotum.Annotations;
 
 namespace Omnifactotum
 {
@@ -12,8 +8,6 @@ namespace Omnifactotum
     /// </summary>
     public static class SmartDisposable
     {
-        #region Public Methods
-
         /// <summary>
         ///     Creates a new instance of the <see cref="SmartDisposable{T}"/>
         ///     using the specified underlying object.
@@ -31,7 +25,5 @@ namespace Omnifactotum
         {
             return new SmartDisposable<T>(instance);
         }
-
-        #endregion
     }
 }

@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Linq;
 using NUnit.Framework;
 
 namespace Omnifactotum.Tests
@@ -7,8 +6,6 @@ namespace Omnifactotum.Tests
     [TestFixture]
     public sealed class ByReferenceEqualityComparerTests
     {
-        #region Tests
-
         [Test]
         public void TestReferenceType()
         {
@@ -51,23 +48,13 @@ namespace Omnifactotum.Tests
             Assert.That(equalityComparer.GetHashCode(objA1), Is.Not.EqualTo(equalityComparer.GetHashCode(objB)));
         }
 
-        #endregion
-
-        #region SomeReferenceType Class
-
         private sealed class SomeReferenceType : IEquatable<SomeReferenceType>
         {
-            #region Public Properties
-
             public string Value
             {
                 private get;
                 set;
             }
-
-            #endregion
-
-            #region Public Methods
 
             public override bool Equals(object obj)
             {
@@ -79,35 +66,19 @@ namespace Omnifactotum.Tests
                 return this.Value == null ? 0 : StringComparer.Ordinal.GetHashCode(this.Value);
             }
 
-            #endregion
-
-            #region IEquatable<SomeReferenceType> Members
-
             public bool Equals(SomeReferenceType other)
             {
                 return other != null && StringComparer.Ordinal.Equals(this.Value, other.Value);
             }
-
-            #endregion
         }
-
-        #endregion
-
-        #region SomeValueType Class
 
         private struct SomeValueType : IEquatable<SomeValueType>
         {
-            #region Public Properties
-
             public string Value
             {
                 private get;
                 set;
             }
-
-            #endregion
-
-            #region Public Methods
 
             public override bool Equals(object obj)
             {
@@ -119,18 +90,10 @@ namespace Omnifactotum.Tests
                 return this.Value == null ? 0 : StringComparer.Ordinal.GetHashCode(this.Value);
             }
 
-            #endregion
-
-            #region IEquatable<SomeReferenceType> Members
-
             public bool Equals(SomeValueType other)
             {
                 return StringComparer.Ordinal.Equals(this.Value, other.Value);
             }
-
-            #endregion
         }
-
-        #endregion
     }
 }

@@ -1,6 +1,4 @@
-﻿using System;
-using System.Linq;
-using Omnifactotum.Annotations;
+﻿using Omnifactotum.Annotations;
 
 namespace Omnifactotum.Validation.Constraints
 {
@@ -22,8 +20,6 @@ namespace Omnifactotum.Validation.Constraints
     /// </summary>
     public interface IMemberConstraint
     {
-        #region Methods
-
         /// <summary>
         ///     Validates the specified value in scope of the specified context.
         /// </summary>
@@ -40,7 +36,5 @@ namespace Omnifactotum.Validation.Constraints
             [NotNull] ObjectValidatorContext validatorContext,
             [NotNull] MemberConstraintValidationContext memberContext,
             [CanBeNull] object value);
-
-        #endregion
     }
 }

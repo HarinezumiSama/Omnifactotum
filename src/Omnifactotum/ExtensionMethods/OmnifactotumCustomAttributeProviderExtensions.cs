@@ -1,6 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
+﻿using System.Linq;
 using Omnifactotum.Annotations;
 
 //// Namespace is intentionally named so in order to simplify usage of extension methods
@@ -12,8 +10,6 @@ namespace System.Reflection
     /// </summary>
     public static class OmnifactotumCustomAttributeProviderExtensions
     {
-        #region Public Methods
-
         /// <summary>
         ///     Gets the list of the attributes, of the specified type, applied to the specified provider of
         ///     custom attributes.
@@ -39,14 +35,10 @@ namespace System.Reflection
             bool inherit)
             where TAttribute : Attribute
         {
-            #region Argument Check
-
             if (provider == null)
             {
                 throw new ArgumentNullException("provider");
             }
-
-            #endregion
 
             //// As per MSDN:
             ////    Calling ICustomAttributeProvider.GetCustomAttributes on PropertyInfo or EventInfo when the inherit
@@ -156,7 +148,5 @@ namespace System.Reflection
         {
             return GetCustomAttributeArray<TAttribute>(provider, inherit).SingleOrDefault();
         }
-
-        #endregion
     }
 }

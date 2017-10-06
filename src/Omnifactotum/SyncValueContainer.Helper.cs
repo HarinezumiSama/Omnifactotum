@@ -1,6 +1,4 @@
-﻿using System;
-using System.Linq;
-using Omnifactotum.Annotations;
+﻿using Omnifactotum.Annotations;
 
 namespace Omnifactotum
 {
@@ -10,8 +8,6 @@ namespace Omnifactotum
     /// </summary>
     public static class SyncValueContainer
     {
-        #region Public Methods
-
         /// <summary>
         ///     Creates and initializes a new instance of the <see cref="SyncValueContainer{T}" /> class
         ///     using the specified value and synchronization object.
@@ -45,7 +41,5 @@ namespace Omnifactotum
         {
             return new SyncValueContainer<T>(value);
         }
-
-        #endregion
     }
 }

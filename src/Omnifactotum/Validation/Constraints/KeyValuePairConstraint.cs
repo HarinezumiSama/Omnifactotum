@@ -1,6 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
+﻿using System.Collections.Generic;
 
 namespace Omnifactotum.Validation.Constraints
 {
@@ -24,8 +22,6 @@ namespace Omnifactotum.Validation.Constraints
         where TKeyConstraint : TypedMemberConstraintBase<TKey>
         where TValueConstraint : TypedMemberConstraintBase<TValue>
     {
-        #region Constructors
-
         /// <summary>
         ///     Initializes a new instance of
         ///     the <see cref="KeyValuePairConstraint{TKey,TValue,TKeyConstraint,TValueConstraint}"/> class.
@@ -35,7 +31,5 @@ namespace Omnifactotum.Validation.Constraints
         {
             // Nothing to do
         }
-
-        #endregion
     }
 }

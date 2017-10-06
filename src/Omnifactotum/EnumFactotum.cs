@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.Linq;
 
 namespace Omnifactotum
@@ -10,8 +9,6 @@ namespace Omnifactotum
     /// </summary>
     public static class EnumFactotum
     {
-        #region Public Methods
-
         /// <summary>
         ///     Gets the value of the enumeration of the specified type
         ///     by the string representation of an enumeration value.
@@ -31,23 +28,18 @@ namespace Omnifactotum
         public static TEnum GetValue<TEnum>(string enumValueName, bool ignoreCase)
             where TEnum : struct
         {
-            #region Argument Check
-
             if (string.IsNullOrEmpty(enumValueName))
             {
-                throw new ArgumentException("The value can be neither empty string nor null.", "enumValueName");
+                throw new ArgumentException("The value can be neither empty string nor null.", nameof(enumValueName));
             }
 
             var enumType = typeof(TEnum);
             if (!enumType.IsEnum)
             {
                 throw new ArgumentException(
-                    string.Format("The type must be an enumeration ({0}).", enumType.FullName),
-                    //// ReSharper disable once NotResolvedInText
-                    "TEnum");
+                    $@"The type {enumType.GetFullName().ToUIString()} is not an enumeration.",
+                    nameof(TEnum));
             }
-
-            #endregion
 
             return (TEnum)Enum.Parse(enumType, enumValueName, ignoreCase);
         }
@@ -83,20 +75,15 @@ namespace Omnifactotum
         public static TEnum[] GetAllValues<TEnum>()
             where TEnum : struct
         {
-            #region Argument Check
-
             var enumType = typeof(TEnum);
             if (!enumType.IsEnum)
             {
                 throw new ArgumentException(
-                    string.Format("The type is not an enumeration ({0}).", enumType.FullName),
-                    //// ReSharper disable once NotResolvedInText
-                    "TEnum");
+                    $@"The type {enumType.GetFullName().ToUIString()} is not an enumeration.",
+                    nameof(TEnum));
             }
 
-            #endregion
-
-            return (TEnum[])Enum.GetValues(typeof(TEnum));
+            return (TEnum[])Enum.GetValues(enumType);
         }
 
         /// <summary>
@@ -111,18 +98,13 @@ namespace Omnifactotum
         public static TEnum[] GetAllFlagValues<TEnum>()
             where TEnum : struct
         {
-            #region Argument Check
-
             var enumType = typeof(TEnum);
             if (!enumType.IsEnum || !enumType.IsDefined(typeof(FlagsAttribute), false))
             {
                 throw new ArgumentException(
-                    string.Format("The type is not a flag enumeration ({0}).", enumType.FullName),
-                    //// ReSharper disable once NotResolvedInText
-                    "TEnum");
+                    $@"The type {enumType.GetFullName().ToUIString()} is not a bit-field enumeration.",
+                    nameof(TEnum));
             }
-
-            #endregion
 
             const int MaxBitCount = sizeof(ulong) * 8;
 
@@ -155,7 +137,5 @@ namespace Omnifactotum
             var result = resultList.Distinct().OrderBy(Factotum.Identity).ToArray();
             return result;
         }
-
-        #endregion
     }
 }

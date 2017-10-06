@@ -1,7 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Diagnostics;
-using System.Linq;
 using Omnifactotum.Annotations;
 
 namespace Omnifactotum
@@ -15,8 +12,6 @@ namespace Omnifactotum
     /// </typeparam>
     public sealed class SmartDisposable<T> : IDisposable
     {
-        #region Constructors
-
         /// <summary>
         ///     Initializes a new instance of the <see cref="SmartDisposable{T}"/> class.
         /// </summary>
@@ -25,12 +20,8 @@ namespace Omnifactotum
         /// </param>
         public SmartDisposable([CanBeNull] T instance)
         {
-            this.Instance = instance;
+            Instance = instance;
         }
-
-        #endregion
-
-        #region Public Properties
 
         /// <summary>
         ///     Gets the underlying object.
@@ -41,19 +32,13 @@ namespace Omnifactotum
             private set;
         }
 
-        #endregion
-
-        #region IDisposable Members
-
         /// <summary>
         ///     Calls <see cref="IDisposable.Dispose"/> for the underlying object,
         ///     if it implements <see cref="IDisposable"/>; otherwise, does nothing.
         /// </summary>
         public void Dispose()
         {
-            (this.Instance as IDisposable).DisposeSafely();
+            (Instance as IDisposable).DisposeSafely();
         }
-
-        #endregion
     }
 }

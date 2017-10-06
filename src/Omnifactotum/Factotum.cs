@@ -22,8 +22,6 @@ namespace Omnifactotum
     /// </summary>
     public static partial class Factotum
     {
-        #region Constants and Fields
-
         /// <summary>
         ///     The minimum size of a generated identifier part (see <see cref="Factotum.GenerateId"/> and
         ///     <see cref="IdGenerationModes"/>).
@@ -65,10 +63,6 @@ namespace Omnifactotum
         [ThreadStatic]
         private static HashSet<PairReferenceHolder> _assertEqualityByContentsObjectsBeingProcessed;
 
-        #endregion
-
-        #region Delegates
-
         private delegate void ToPropertyStringInternalMethodStub(
             object obj,
             bool isRoot,
@@ -76,10 +70,6 @@ namespace Omnifactotum
             Func<Type, PropertyInfo[]> getProperties,
             StringBuilder resultBuilder,
             int recursionLevel);
-
-        #endregion
-
-        #region Public Methods: General
 
         /// <summary>
         ///     <para>
@@ -201,14 +191,10 @@ namespace Omnifactotum
         public static T SetDefaultValues<T>([NotNull] T obj)
             where T : class
         {
-            #region Argument Check
-
             if (obj == null)
             {
                 throw new ArgumentNullException("obj");
             }
-
-            #endregion
 
             var propertyRecords = obj.GetType()
                 .GetProperties(BindingFlags.Public | BindingFlags.Instance)
@@ -400,8 +386,6 @@ namespace Omnifactotum
                 minimumSize += MinimumGeneratedIdPartSize;
             }
 
-            #region Argument Check
-
             if (!generateUniquePart && !generateRandomPart)
             {
                 throw new ArgumentException("There is nothing to generate.", "modes");
@@ -415,8 +399,6 @@ namespace Omnifactotum
                     minimumSize);
                 throw new ArgumentOutOfRangeException("size", size, errorMessage);
             }
-
-            #endregion
 
             var result = new byte[size];
 
@@ -552,23 +534,15 @@ namespace Omnifactotum
         [NotNull]
         public static Task CreateEmptyFaultedTask([NotNull] Exception exception)
         {
-            #region Argument Check
-
             if (exception == null)
             {
                 throw new ArgumentNullException("exception");
             }
 
-            #endregion
-
             var taskCompletionSource = new TaskCompletionSource<int>();
             taskCompletionSource.SetException(exception);
             return taskCompletionSource.Task;
         }
-
-        #endregion
-
-        #region Public Methods: Fields/Properties
 
         /// <summary>
         ///     Gets the <see cref="MemberInfo"/> of the field or property specified by the lambda expression.
@@ -740,14 +714,10 @@ namespace Omnifactotum
         public static PropertyInfo GetPropertyInfo<TProperty>(
             [NotNull] Expression<Func<TProperty>> propertyGetterExpression)
         {
-            #region Argument Check
-
             if (propertyGetterExpression == null)
             {
                 throw new ArgumentNullException("propertyGetterExpression");
             }
-
-            #endregion
 
             var memberExpression = propertyGetterExpression.Body as MemberExpression;
             if ((memberExpression == null) || (memberExpression.NodeType != ExpressionType.MemberAccess))
@@ -826,10 +796,6 @@ namespace Omnifactotum
             return propertyInfo.DeclaringType.EnsureNotNull().GetQualifiedName() + Type.Delimiter + propertyInfo.Name;
         }
 
-        #endregion
-
-        #region Public Methods: Recursive Processing
-
         /// <summary>
         ///     Processes the specified instance recursively.
         /// </summary>
@@ -864,8 +830,6 @@ namespace Omnifactotum
             [NotNull] Func<T, RecursiveProcessingDirective> processItem,
             [CanBeNull] RecursiveProcessingContext<T> processingContext)
         {
-            #region Argument Check
-
             if (getItems == null)
             {
                 throw new ArgumentNullException("getItems");
@@ -875,8 +839,6 @@ namespace Omnifactotum
             {
                 throw new ArgumentNullException("processItem");
             }
-
-            #endregion
 
             if (ReferenceEquals(instance, null))
             {
@@ -954,14 +916,10 @@ namespace Omnifactotum
             [NotNull] Action<T> processItem,
             [CanBeNull] RecursiveProcessingContext<T> processingContext)
         {
-            #region Argument Check
-
             if (processItem == null)
             {
                 throw new ArgumentNullException("processItem");
             }
-
-            #endregion
 
             ProcessRecursively(
                 instance,
@@ -1007,20 +965,12 @@ namespace Omnifactotum
             ProcessRecursively(instance, getItems, processItem, null);
         }
 
-        #endregion
-
-        #region Private Methods
-
         private static bool IsSimpleTypeInternal([NotNull] this Type type)
         {
-            #region Argument Check
-
             if (type == null)
             {
                 throw new ArgumentNullException("type");
             }
-
-            #endregion
 
             return type.IsPrimitive
                 || type.IsEnum
@@ -1469,30 +1419,16 @@ namespace Omnifactotum
             return true;
         }
 
-        #endregion
-
-        #region PairReferenceHolder Class
-
         private struct PairReferenceHolder : IEquatable<PairReferenceHolder>
         {
-            #region Constants and Fields
-
             private readonly object _valueA;
             private readonly object _valueB;
-
-            #endregion
-
-            #region Constructors
 
             internal PairReferenceHolder(object valueA, object valueB)
             {
                 _valueA = valueA;
                 _valueB = valueB;
             }
-
-            #endregion
-
-            #region Public Methods
 
             public override bool Equals(object obj)
             {
@@ -1503,22 +1439,14 @@ namespace Omnifactotum
             {
                 var equalityComparer = ByReferenceEqualityComparer<object>.Instance;
 
-                return equalityComparer.GetHashCode(this._valueA)
-                    .CombineHashCodeValues(equalityComparer.GetHashCode(this._valueB));
+                return equalityComparer.GetHashCode(_valueA)
+                    .CombineHashCodeValues(equalityComparer.GetHashCode(_valueB));
             }
-
-            #endregion
-
-            #region IEquatable<PairReferenceHolder> Members
 
             public bool Equals(PairReferenceHolder other)
             {
                 return ReferenceEquals(_valueA, other._valueA) && ReferenceEquals(_valueB, other._valueB);
             }
-
-            #endregion
         }
-
-        #endregion
     }
 }

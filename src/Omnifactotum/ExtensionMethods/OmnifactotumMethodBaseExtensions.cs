@@ -1,6 +1,4 @@
-﻿using System;
-using System.Diagnostics;
-using System.Text;
+﻿using System.Text;
 using Omnifactotum.Annotations;
 
 //// Namespace is intentionally named so in order to simplify usage of extension methods
@@ -12,15 +10,9 @@ namespace System.Reflection
     /// </summary>
     public static class OmnifactotumMethodBaseExtensions
     {
-        #region Constants and Fields
-
         private static readonly Type VoidType = typeof(void);
 
         private static readonly string VoidTypeName = OmnifactotumTypeExtensions.GetShortTypeNameInternal(VoidType);
-
-        #endregion
-
-        #region Public Methods
 
         /// <summary>
         ///     Gets the full name of the specified method in the form &quot;Namespace.DeclaringType.MethodName&quot;
@@ -33,14 +25,10 @@ namespace System.Reflection
         /// </returns>
         public static string GetFullName([NotNull] this MethodBase method)
         {
-            #region Argument Check
-
             if (method == null)
             {
                 throw new ArgumentNullException("method");
             }
-
-            #endregion
 
             return GetNameInternal(method, true);
         }
@@ -56,14 +44,10 @@ namespace System.Reflection
         /// </returns>
         public static string GetQualifiedName([NotNull] this MethodBase method)
         {
-            #region Argument Check
-
             if (method == null)
             {
                 throw new ArgumentNullException("method");
             }
-
-            #endregion
 
             return GetNameInternal(method, false);
         }
@@ -80,14 +64,10 @@ namespace System.Reflection
         /// </returns>
         public static string GetSignature([NotNull] this MethodBase method)
         {
-            #region Argument Check
-
             if (method == null)
             {
                 throw new ArgumentNullException("method");
             }
-
-            #endregion
 
             return GetSignatureInternal(method, false);
         }
@@ -104,21 +84,13 @@ namespace System.Reflection
         /// </returns>
         public static string GetFullSignature([NotNull] this MethodBase method)
         {
-            #region Argument Check
-
             if (method == null)
             {
                 throw new ArgumentNullException("method");
             }
 
-            #endregion
-
             return GetSignatureInternal(method, true);
         }
-
-        #endregion
-
-        #region Private Methods
 
         private static Type GetMethodType([NotNull] MethodBase method)
         {
@@ -235,7 +207,5 @@ namespace System.Reflection
 
             return resultBuilder.ToString();
         }
-
-        #endregion
     }
 }

@@ -2,7 +2,6 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.Globalization;
-using System.Linq;
 using NUnit.Framework;
 
 namespace Omnifactotum.Tests
@@ -12,9 +11,7 @@ namespace Omnifactotum.Tests
     [TestFixture]
     public sealed class KeyedEqualityComparerTests
     {
-        #region SetUp/TearDown
-
-        [TestFixtureSetUp]
+        [OneTimeSetUp]
         public void TestFixtureSetUp()
         {
             var absValueIntEqualityComparer = new AbsValueIntEqualityComparer();
@@ -25,10 +22,6 @@ namespace Omnifactotum.Tests
                 absValueIntEqualityComparer.GetHashCode(-1),
                 Is.EqualTo(absValueIntEqualityComparer.GetHashCode(1)));
         }
-
-        #endregion
-
-        #region Tests
 
         [Test]
         public void TestConstruction()
@@ -196,14 +189,8 @@ namespace Omnifactotum.Tests
             Assert.That(() => testee.GetHashCode(1), Throws.ArgumentException);
         }
 
-        #endregion
-
-        #region AbsValueIntEqualityComparer Class
-
         private sealed class AbsValueIntEqualityComparer : IEqualityComparer<int>
         {
-            #region IEqualityComparer<int> Members
-
             public bool Equals(int x, int y)
             {
                 return Math.Abs(x) == Math.Abs(y);
@@ -213,10 +200,6 @@ namespace Omnifactotum.Tests
             {
                 return Math.Abs(obj).GetHashCode();
             }
-
-            #endregion
         }
-
-        #endregion
     }
 }

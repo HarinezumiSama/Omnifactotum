@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
 using NUnit.Framework;
 using Omnifactotum.NUnit;
 
@@ -9,8 +8,6 @@ namespace Omnifactotum.Tests
     [TestFixture]
     public sealed class FixedSizeDictionaryTests
     {
-        #region Tests
-
         [Test]
         public void TestBasicScenario()
         {
@@ -138,10 +135,6 @@ namespace Omnifactotum.Tests
             AssertEnumerating(dictionary, KeyValuePair.Create(true, TrueValue));
         }
 
-        #endregion
-
-        #region Private Methods
-
         private static void AssertEnumerating<TKey, TValue, TDeterminant>(
             FixedSizeDictionary<TKey, TValue, TDeterminant> dictionary,
             params KeyValuePair<TKey, TValue>[] expectedPairs)
@@ -160,14 +153,8 @@ namespace Omnifactotum.Tests
             Assert.That(actualPairs, Is.EquivalentTo(expectedPairs.AssertNotNull()));
         }
 
-        #endregion
-
-        #region BooleanDeterminant Class
-
         private sealed class BooleanDeterminant : FixedSizeDictionaryDeterminant<bool>
         {
-            #region Public Properties
-
             public override int Size
             {
                 get
@@ -175,10 +162,6 @@ namespace Omnifactotum.Tests
                     return 2;
                 }
             }
-
-            #endregion
-
-            #region Public Methods
 
             public override int GetIndex(bool key)
             {
@@ -199,10 +182,6 @@ namespace Omnifactotum.Tests
                         throw new InvalidOperationException();
                 }
             }
-
-            #endregion
         }
-
-        #endregion
     }
 }

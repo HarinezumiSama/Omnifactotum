@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Globalization;
-using System.Linq;
 using Omnifactotum.Annotations;
 
 namespace Omnifactotum
@@ -17,17 +16,11 @@ namespace Omnifactotum
     public struct ValueRange<T> : IEquatable<ValueRange<T>>
         where T : IComparable
     {
-        #region Constants and Fields
-
         private static readonly IComparer<T> ValueComparer = Comparer<T>.Default;
         private static readonly IEqualityComparer<T> ValueEqualityComparer = EqualityComparer<T>.Default;
 
         private readonly T _lower;
         private readonly T _upper;
-
-        #endregion
-
-        #region Constructors
 
         /// <summary>
         ///     Initializes a new instance of the <see cref="ValueRange{T}"/> structure.
@@ -40,22 +33,14 @@ namespace Omnifactotum
         /// </param>
         public ValueRange(T lower, T upper)
         {
-            #region Argument Check
-
             if (ValueComparer.Compare(lower, upper) > 0)
             {
                 throw new ArgumentException("The lower boundary cannot be greater than the upper one.");
             }
 
-            #endregion
-
             _lower = lower;
             _upper = upper;
         }
-
-        #endregion
-
-        #region Public Properties
 
         /// <summary>
         ///     Gets the lower boundary of the range.
@@ -80,10 +65,6 @@ namespace Omnifactotum
                 return _upper;
             }
         }
-
-        #endregion
-
-        #region Operators
 
         /// <summary>
         ///     Determines if the two specified <see cref="ValueRange{T}"/> instances are equal.
@@ -120,10 +101,6 @@ namespace Omnifactotum
         {
             return !left.Equals(right);
         }
-
-        #endregion
-
-        #region Public Methods
 
         /// <summary>
         ///     Determines whether the specified <see cref="System.Object"/> is equal to this instance.
@@ -212,10 +189,6 @@ namespace Omnifactotum
                 || other.Contains(_lower) || other.Contains(_upper);
         }
 
-        #endregion
-
-        #region IEquatable<ValueRange<T>> Members
-
         /// <summary>
         ///     Indicates whether the current object is equal to another object of the same type.
         /// </summary>
@@ -232,7 +205,5 @@ namespace Omnifactotum
             return ValueEqualityComparer.Equals(other._lower, _lower)
                 && ValueEqualityComparer.Equals(other._upper, _upper);
         }
-
-        #endregion
     }
 }

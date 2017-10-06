@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 using NUnit.Framework;
@@ -11,8 +10,6 @@ namespace Omnifactotum.Tests.ExtensionMethods
     [TestFixture]
     public sealed class OmnifactotumCustomAttributeProviderExtensionsTests
     {
-        #region Tests
-
         [Test]
         public void TestGetCustomAttributeArray()
         {
@@ -97,10 +94,6 @@ namespace Omnifactotum.Tests.ExtensionMethods
                 Throws.InvalidOperationException);
         }
 
-        #endregion
-
-        #region Nested Classes
-
         private sealed class NoAttributesAppliedTestClass
         {
         }
@@ -115,7 +108,5 @@ namespace Omnifactotum.Tests.ExtensionMethods
         private sealed class MultipleAttributesAppliedTestClass
         {
         }
-
-        #endregion
     }
 }

@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Diagnostics;
 using System.IO;
-using System.Linq;
 using System.Runtime.CompilerServices;
 
 namespace Omnifactotum
@@ -11,8 +10,6 @@ namespace Omnifactotum
     /// </summary>
     public sealed class ColoredConsoleTraceListener : TextWriterTraceListener
     {
-        #region Constants and Fields
-
         private const TraceEventType DefaultEventType = TraceEventType.Verbose;
 
         private readonly object _syncLock;
@@ -23,10 +20,6 @@ namespace Omnifactotum
         private uint _colorChangedCount;
         private ConsoleColor? _originalForegroundColor;
 
-        #endregion
-
-        #region Constructors
-
         /// <summary>
         ///     Initializes a new instance of the <see cref="ColoredConsoleTraceListener"/> class.
         /// </summary>
@@ -34,17 +27,13 @@ namespace Omnifactotum
             : base(CreateSynchronizedWrapper(Console.Out))
         {
             // In .NET Framework, a synchronized TextWriter locks on itself
-            _syncLock = this.Writer;
+            _syncLock = Writer;
 
-            this.ErrorColor = ConsoleColor.Red;
-            this.WarningColor = ConsoleColor.Yellow;
-            this.InformationColor = ConsoleColor.DarkGreen;
-            this.MessageColor = ConsoleColor.DarkYellow;
+            ErrorColor = ConsoleColor.Red;
+            WarningColor = ConsoleColor.Yellow;
+            InformationColor = ConsoleColor.DarkGreen;
+            MessageColor = ConsoleColor.DarkYellow;
         }
-
-        #endregion
-
-        #region Public Properties
 
         /// <summary>
         ///     Gets a value indicating whether the trace listener is thread safe.
@@ -155,10 +144,6 @@ namespace Omnifactotum
                 }
             }
         }
-
-        #endregion
-
-        #region Public Methods
 
         /// <summary>
         ///     Closes the <see cref="TextWriterTraceListener.Writer"/> so that it no longer receives tracing or
@@ -653,10 +638,6 @@ namespace Omnifactotum
             }
         }
 
-        #endregion
-
-        #region Protected Methods
-
         /// <summary>
         ///     Writes the indent to the listener you create when you implement this class, and resets
         ///     the <see cref="TraceListener.NeedIndent"/> property to <c>false</c>.
@@ -676,10 +657,6 @@ namespace Omnifactotum
                 }
             }
         }
-
-        #endregion
-
-        #region Private Methods
 
         private static TextWriter CreateSynchronizedWrapper(TextWriter textWriter)
         {
@@ -701,19 +678,19 @@ namespace Omnifactotum
             {
                 case TraceEventType.Critical:
                 case TraceEventType.Error:
-                    color = this.ErrorColor;
+                    color = ErrorColor;
                     break;
 
                 case TraceEventType.Warning:
-                    color = this.WarningColor;
+                    color = WarningColor;
                     break;
 
                 case TraceEventType.Information:
-                    color = this.InformationColor;
+                    color = InformationColor;
                     break;
 
                 default:
-                    color = this.MessageColor;
+                    color = MessageColor;
                     break;
             }
 
@@ -767,7 +744,5 @@ namespace Omnifactotum
                 }
             }
         }
-
-        #endregion
     }
 }

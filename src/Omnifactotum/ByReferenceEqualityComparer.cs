@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
-using System.Linq;
 using System.Runtime.CompilerServices;
 
 namespace Omnifactotum
@@ -16,15 +15,9 @@ namespace Omnifactotum
     /// </typeparam>
     public sealed class ByReferenceEqualityComparer<T> : IEqualityComparer<T>
     {
-        #region Constants and Fields
-
         private static readonly ByReferenceEqualityComparer<T> InstanceField = new ByReferenceEqualityComparer<T>();
 
         private readonly bool _isReferenceType = !typeof(T).IsValueType;
-
-        #endregion
-
-        #region Constructors
 
         /// <summary>
         ///     Prevents a default instance of the <see cref="ByReferenceEqualityComparer{T}"/> class
@@ -34,10 +27,6 @@ namespace Omnifactotum
         {
             // Nothing to do
         }
-
-        #endregion
-
-        #region Public Properties
 
         /// <summary>
         ///     Gets the sole instance of the <see cref="ByReferenceEqualityComparer{T}"/> class.
@@ -50,10 +39,6 @@ namespace Omnifactotum
                 return InstanceField;
             }
         }
-
-        #endregion
-
-        #region IEqualityComparer<T> Members
 
         /// <summary>
         ///     Determines whether the specified objects are equal by reference.
@@ -85,7 +70,5 @@ namespace Omnifactotum
         {
             return _isReferenceType ? RuntimeHelpers.GetHashCode(obj) : obj.GetHashCodeSafely();
         }
-
-        #endregion
     }
 }

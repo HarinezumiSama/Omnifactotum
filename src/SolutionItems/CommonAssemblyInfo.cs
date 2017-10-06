@@ -5,7 +5,7 @@ using System.Runtime.InteropServices;
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("Vitalii Maklai")]
 [assembly: AssemblyProduct("Omnifactotum")]
-[assembly: AssemblyCopyright("Copyright © Vitalii Maklai 2013-2015")]
+[assembly: AssemblyCopyright("Copyright (C) Vitalii Maklai 2013-2017")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
 

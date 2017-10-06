@@ -24,17 +24,11 @@ namespace Omnifactotum
     public class FixedSizeDictionary<TKey, TValue, TDeterminant> : IDictionary<TKey, TValue>
         where TDeterminant : FixedSizeDictionaryDeterminant<TKey>, new()
     {
-        #region Constants and Fields
-
         private static readonly FixedSizeDictionaryDeterminant<TKey> Determinant = new SafeDeterminant();
 
         private readonly DictionaryValueHolder[] _items;
         private int _count;
         private int _version;
-
-        #endregion
-
-        #region Constructors
 
         /// <summary>
         ///     Initializes a new instance of the <see cref="FixedSizeDictionary{TKey, TValue, TDeterminant}"/> class.
@@ -59,14 +53,10 @@ namespace Omnifactotum
         public FixedSizeDictionary([NotNull] IDictionary<TKey, TValue> dictionary)
             : this()
         {
-            #region Argument Check
-
             if (dictionary == null)
             {
                 throw new ArgumentNullException("dictionary");
             }
-
-            #endregion
 
             foreach (var pair in dictionary)
             {
@@ -99,13 +89,9 @@ namespace Omnifactotum
         {
             _items = items.EnsureNotNull();
 
-            this.Keys = new KeyCollection(this);
-            this.Values = new ValueCollection(this);
+            Keys = new KeyCollection(this);
+            Values = new ValueCollection(this);
         }
-
-        #endregion
-
-        #region IDictionary<TKey, TValue> Members: Properties
 
         /// <summary>
         ///     Gets an <see cref="ICollection{TKey}" /> containing the keys of
@@ -166,10 +152,6 @@ namespace Omnifactotum
             }
         }
 
-        #endregion
-
-        #region ICollection<KeyValuePair<TKey, TValue>> Members: Properties
-
         /// <summary>
         ///     Gets the number of elements contained in
         ///     the <see cref="FixedSizeDictionary{TKey,TValue,TDeterminant}" />.
@@ -194,10 +176,6 @@ namespace Omnifactotum
                 return false;
             }
         }
-
-        #endregion
-
-        #region IDictionary<TKey, TValue> Members: Methods
 
         /// <summary>
         ///     Adds an element with the specified key and value to
@@ -291,10 +269,6 @@ namespace Omnifactotum
             return result;
         }
 
-        #endregion
-
-        #region ICollection<KeyValuePair<TKey, TValue>> Members: Methods
-
         /// <summary>
         ///     Adds an item to the <see cref="ICollection{T}"/>.
         /// </summary>
@@ -362,8 +336,6 @@ namespace Omnifactotum
             KeyValuePair<TKey, TValue>[] array,
             int arrayIndex)
         {
-            #region Argument Check
-
             if (array == null)
             {
                 throw new ArgumentNullException("array");
@@ -377,14 +349,12 @@ namespace Omnifactotum
                     @"The value cannot be negative.");
             }
 
-            if (arrayIndex + this.Count > array.Length)
+            if (arrayIndex + Count > array.Length)
             {
                 throw new ArgumentException(
                     "The number of elements is greater than the available space from the array index to the end"
                         + " of the destination array.");
             }
-
-            #endregion
 
             var currentArrayIndex = arrayIndex;
             for (var index = 0; index < _items.Length; index++)
@@ -422,10 +392,6 @@ namespace Omnifactotum
             return Remove(item.Key);
         }
 
-        #endregion
-
-        #region IEnumerable<KeyValuePair<TKey, TValue>> Members
-
         /// <summary>
         ///     Returns an enumerator that iterates through
         ///     the <see cref="FixedSizeDictionary{TKey,TValue,TDeterminant}"/>.
@@ -438,10 +404,6 @@ namespace Omnifactotum
             return new Enumerator(this);
         }
 
-        #endregion
-
-        #region IEnumerable Members
-
         /// <summary>
         ///     Returns an enumerator that iterates through
         ///     the <see cref="FixedSizeDictionary{TKey,TValue,TDeterminant}"/>..
@@ -453,10 +415,6 @@ namespace Omnifactotum
         {
             return GetEnumerator();
         }
-
-        #endregion
-
-        #region Private Methods
 
         private void SetItemInternal([NotNull] TKey key, [CanBeNull] TValue value, bool replaceExisting)
         {
@@ -485,20 +443,10 @@ namespace Omnifactotum
             }
         }
 
-        #endregion
-
-        #region SafeDeterminant Class
-
         private sealed class SafeDeterminant : FixedSizeDictionaryDeterminant<TKey>
         {
-            #region Constants and Fields
-
             private readonly TDeterminant _determinant;
             private readonly int _size;
-
-            #endregion
-
-            #region Constructors
 
             internal SafeDeterminant()
             {
@@ -516,10 +464,6 @@ namespace Omnifactotum
                 }
             }
 
-            #endregion
-
-            #region Public Properties
-
             public override int Size
             {
                 [DebuggerStepThrough]
@@ -528,10 +472,6 @@ namespace Omnifactotum
                     return _size;
                 }
             }
-
-            #endregion
-
-            #region Public Methods
 
             public override int GetIndex(TKey key)
             {
@@ -543,32 +483,16 @@ namespace Omnifactotum
             {
                 return _determinant.GetKey(index);
             }
-
-            #endregion
         }
-
-        #endregion
-
-        #region KeyCollection Class
 
         private sealed class KeyCollection : ICollection<TKey>
         {
-            #region Constants and Fields
-
             private readonly FixedSizeDictionary<TKey, TValue, TDeterminant> _dictionary;
-
-            #endregion
-
-            #region Constructors
 
             internal KeyCollection(FixedSizeDictionary<TKey, TValue, TDeterminant> dictionary)
             {
                 _dictionary = dictionary.EnsureNotNull();
             }
-
-            #endregion
-
-            #region ICollection<TKey> Members
 
             public int Count
             {
@@ -603,8 +527,6 @@ namespace Omnifactotum
 
             public void CopyTo(TKey[] array, int arrayIndex)
             {
-                #region Constants and Fields
-
                 if (array == null)
                 {
                     throw new ArgumentNullException("array");
@@ -618,14 +540,12 @@ namespace Omnifactotum
                         @"The value cannot be negative.");
                 }
 
-                if (arrayIndex + this.Count > array.Length)
+                if (arrayIndex + Count > array.Length)
                 {
                     throw new ArgumentException(
                         "The number of elements is greater than the available space from the array index to the end"
                             + " of the destination array.");
                 }
-
-                #endregion
 
                 var index = arrayIndex;
                 foreach (var item in this)
@@ -640,49 +560,25 @@ namespace Omnifactotum
                 throw new NotSupportedException();
             }
 
-            #endregion
-
-            #region IEnumerable<TKey> Members
-
             public IEnumerator<TKey> GetEnumerator()
             {
                 return _dictionary.Select(pair => pair.Key).GetEnumerator();
             }
 
-            #endregion
-
-            #region IEnumerable Members
-
             IEnumerator IEnumerable.GetEnumerator()
             {
                 return GetEnumerator();
             }
-
-            #endregion
         }
-
-        #endregion
-
-        #region ValueCollection Class
 
         private sealed class ValueCollection : ICollection<TValue>
         {
-            #region Constants and Fields
-
             private readonly FixedSizeDictionary<TKey, TValue, TDeterminant> _dictionary;
-
-            #endregion
-
-            #region Constructors
 
             internal ValueCollection(FixedSizeDictionary<TKey, TValue, TDeterminant> dictionary)
             {
                 _dictionary = dictionary.EnsureNotNull();
             }
-
-            #endregion
-
-            #region ICollection<TValue> Members
 
             public int Count
             {
@@ -718,8 +614,6 @@ namespace Omnifactotum
 
             public void CopyTo(TValue[] array, int arrayIndex)
             {
-                #region Constants and Fields
-
                 if (array == null)
                 {
                     throw new ArgumentNullException("array");
@@ -733,14 +627,12 @@ namespace Omnifactotum
                         @"The value cannot be negative.");
                 }
 
-                if (arrayIndex + this.Count > array.Length)
+                if (arrayIndex + Count > array.Length)
                 {
                     throw new ArgumentException(
                         "The number of elements is greater than the available space from the array index to the end"
                             + " of the destination array.");
                 }
-
-                #endregion
 
                 var index = arrayIndex;
                 foreach (var item in this)
@@ -755,55 +647,31 @@ namespace Omnifactotum
                 throw new NotSupportedException();
             }
 
-            #endregion
-
-            #region IEnumerable<TValue> Members
-
             public IEnumerator<TValue> GetEnumerator()
             {
                 return _dictionary.Select(pair => pair.Value).GetEnumerator();
             }
 
-            #endregion
-
-            #region IEnumerable Members
-
             IEnumerator IEnumerable.GetEnumerator()
             {
                 return GetEnumerator();
             }
-
-            #endregion
         }
-
-        #endregion
-
-        #region Enumerator Class
 
         private sealed class Enumerator : IEnumerator<KeyValuePair<TKey, TValue>>
         {
-            #region Constants and Fields
-
             private readonly FixedSizeDictionary<TKey, TValue, TDeterminant> _dictionary;
             private readonly int _initialVersion;
             private readonly int _size;
             private readonly int _initialCount;
             private int _index;
 
-            #endregion
-
-            #region Constructors
-
             internal Enumerator([NotNull] FixedSizeDictionary<TKey, TValue, TDeterminant> dictionary)
             {
-                #region Argument Check
-
                 if (dictionary == null)
                 {
                     throw new ArgumentNullException("dictionary");
                 }
-
-                #endregion
 
                 _dictionary = dictionary;
                 _initialVersion = dictionary._version;
@@ -811,10 +679,6 @@ namespace Omnifactotum
                 _initialCount = dictionary._count;
                 ResetInternal();
             }
-
-            #endregion
-
-            #region IEnumerator<KeyValuePair<TKey,TValue>> Members
 
             public KeyValuePair<TKey, TValue> Current
             {
@@ -837,24 +701,16 @@ namespace Omnifactotum
                 }
             }
 
-            #endregion
-
-            #region IDisposable Members
-
             public void Dispose()
             {
                 // Nothing to do
             }
 
-            #endregion
-
-            #region IEnumerator Members
-
             object IEnumerator.Current
             {
                 get
                 {
-                    return this.Current;
+                    return Current;
                 }
             }
 
@@ -884,10 +740,6 @@ namespace Omnifactotum
                 ResetInternal();
             }
 
-            #endregion
-
-            #region Private Methods
-
             private void ResetInternal()
             {
                 _index = -1;
@@ -900,18 +752,10 @@ namespace Omnifactotum
                     throw new InvalidOperationException("Cannot enumerate the modified collection.");
                 }
             }
-
-            #endregion
         }
-
-        #endregion
-
-        #region DictionaryValueHolder Class
 
         private struct DictionaryValueHolder
         {
-            #region Public Properties
-
             public bool IsSet
             {
                 get;
@@ -923,10 +767,6 @@ namespace Omnifactotum
                 get;
                 set;
             }
-
-            #endregion
         }
-
-        #endregion
     }
 }

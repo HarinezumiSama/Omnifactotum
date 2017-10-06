@@ -1,8 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Diagnostics;
+﻿using System.Collections.Generic;
 using System.Globalization;
-using System.Linq;
 using System.Text;
 using Omnifactotum.Annotations;
 
@@ -15,8 +12,6 @@ namespace System
     /// </summary>
     public static class OmnifactotumStringExtensions
     {
-        #region Constants
-
         /// <summary>
         ///     The <c>null</c> string representation.
         /// </summary>
@@ -26,10 +21,6 @@ namespace System
         ///     The double quote symbol.
         /// </summary>
         private const string DoubleQuote = "\"";
-
-        #endregion
-
-        #region Public Methods
 
         /// <summary>
         ///     Determines whether the specified string is <c>null</c> or an <see cref="String.Empty"/> string.
@@ -134,14 +125,10 @@ namespace System
         [NotNull]
         public static string Join([NotNull] this IEnumerable<string> values, [CanBeNull] string separator)
         {
-            #region Argument Check
-
             if (values == null)
             {
                 throw new ArgumentNullException("values");
             }
-
-            #endregion
 
             return string.Join(separator, values);
         }
@@ -267,8 +254,6 @@ namespace System
         [NotNull]
         public static string Shorten([CanBeNull] this string value, int maximumLength)
         {
-            #region Argument Check
-
             if (maximumLength < 0)
             {
                 throw new ArgumentOutOfRangeException(
@@ -276,8 +261,6 @@ namespace System
                     maximumLength,
                     "The length must be a non-negative value.");
             }
-
-            #endregion
 
             if (string.IsNullOrEmpty(value) || maximumLength == 0)
             {
@@ -303,8 +286,6 @@ namespace System
         [NotNull]
         public static string Replicate([CanBeNull] this string value, int count)
         {
-            #region Argument Check
-
             if (count < 0)
             {
                 throw new ArgumentOutOfRangeException(
@@ -313,8 +294,6 @@ namespace System
                     "The count must be a non-negative value.");
             }
 
-            #endregion
-
             if (string.IsNullOrEmpty(value) || count == 0)
             {
                 return string.Empty;
@@ -322,7 +301,5 @@ namespace System
 
             return new StringBuilder(checked(value.Length * count)).Insert(0, value, count).ToString();
         }
-
-        #endregion
     }
 }

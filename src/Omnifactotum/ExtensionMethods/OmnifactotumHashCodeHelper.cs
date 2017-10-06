@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Diagnostics;
-using System.Linq;
-using Omnifactotum.Annotations;
+﻿using Omnifactotum.Annotations;
 
 //// Namespace is intentionally named so in order to simplify usage of extension methods
 //// ReSharper disable once CheckNamespace
@@ -13,13 +9,7 @@ namespace System
     /// </summary>
     public static class OmnifactotumHashCodeHelper
     {
-        #region Constants and Fields
-
         private const int HashCodeMagicMultiplier = 397;
-
-        #endregion
-
-        #region Public Methods
 
         /// <summary>
         ///     Combines two specified hash code values into a new hash code.
@@ -86,7 +76,5 @@ namespace System
         {
             return CombineHashCodeValues(previousHashCode, next.GetHashCodeSafely());
         }
-
-        #endregion
     }
 }

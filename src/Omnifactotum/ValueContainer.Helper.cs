@@ -1,6 +1,4 @@
-﻿using System;
-using System.Linq;
-using Omnifactotum.Annotations;
+﻿using Omnifactotum.Annotations;
 
 namespace Omnifactotum
 {
@@ -10,8 +8,6 @@ namespace Omnifactotum
     /// </summary>
     public static class ValueContainer
     {
-        #region Public Methods
-
         /// <summary>
         ///     Creates and initializes a new instance of the <see cref="ValueContainer{T}"/> class
         ///     using the specified value.
@@ -26,7 +22,5 @@ namespace Omnifactotum
         {
             return new ValueContainer<T>(value);
         }
-
-        #endregion
     }
 }

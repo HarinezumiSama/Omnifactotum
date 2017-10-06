@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Diagnostics;
-using Omnifactotum.Annotations;
+﻿using Omnifactotum.Annotations;
 
 //// Namespace is intentionally named so in order to simplify usage of extension methods
 //// ReSharper disable once CheckNamespace
@@ -13,8 +10,6 @@ namespace System
     /// </summary>
     public static class OmnifactotumNullableBooleanExtensions
     {
-        #region Public Methods
-
         /// <summary>
         ///     Gets the string representation of the specified nullable Boolean value.
         /// </summary>
@@ -41,7 +36,5 @@ namespace System
         {
             return value.HasValue ? (value.Value ? trueValueString : falseValueString) : noValueString;
         }
-
-        #endregion
     }
 }

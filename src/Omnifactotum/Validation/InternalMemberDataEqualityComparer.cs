@@ -1,30 +1,18 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
+﻿using System.Collections.Generic;
 
 namespace Omnifactotum.Validation
 {
     internal sealed class InternalMemberDataEqualityComparer : IEqualityComparer<MemberData>
     {
-        #region Constants and Fields
-
         /// <summary>
         ///     The sole instance of the <see cref="InternalMemberDataEqualityComparer"/> class.
         /// </summary>
         public static readonly InternalMemberDataEqualityComparer Instance = new InternalMemberDataEqualityComparer();
 
-        #endregion
-
-        #region Constructors
-
         private InternalMemberDataEqualityComparer()
         {
             // Nothing to do
         }
-
-        #endregion
-
-        #region IEqualityComparer<MemberData> Members
 
         /// <summary>
         ///     Determines whether the specified objects are equal.
@@ -66,7 +54,5 @@ namespace Omnifactotum.Validation
         {
             return obj == null ? 0 : ByReferenceEqualityComparer<object>.Instance.GetHashCode(obj.Value);
         }
-
-        #endregion
     }
 }

@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel;
-using System.Diagnostics;
 using System.Globalization;
 using System.Linq;
 using System.Reflection;
@@ -18,16 +17,10 @@ namespace Omnifactotum.Tests
     [TestFixture]
     public unsafe sealed class FactotumTests
     {
-        #region Constants and Fields
-
         private static readonly MethodInfo ToPropertyStringMethodDefinition =
             new Func<object, ToPropertyStringOptions, string>(Factotum.ToPropertyString)
                 .Method
                 .GetGenericMethodDefinition();
-
-        #endregion
-
-        #region Tests: General
 
         [Test]
         public void TestDisposeAndNullOfReferenceType()
@@ -298,10 +291,6 @@ namespace Omnifactotum.Tests
             }
         }
 
-        #endregion
-
-        #region Tests: Properties
-
         [Test]
         public void TestGetPropertyInfoForInstanceProperty()
         {
@@ -380,14 +369,8 @@ namespace Omnifactotum.Tests
                         typeof(TestObjectBase).Name)));
         }
 
-        #endregion
-
-        #region TestObjectBase Class
-
         public abstract class TestObjectBase
         {
-            #region Public Properties
-
             public static string StaticProperty
             {
                 get;
@@ -399,27 +382,15 @@ namespace Omnifactotum.Tests
                 get;
                 set;
             }
-
-            #endregion
         }
-
-        #endregion
-
-        #region TestObject Class
 
         public sealed class TestObject : TestObjectBase
         {
             // No members
         }
 
-        #endregion
-
-        #region RecursiveNode Class
-
         private sealed class RecursiveNode
         {
-            #region Public Properties
-
             public string Value
             {
                 [UsedImplicitly]
@@ -435,18 +406,10 @@ namespace Omnifactotum.Tests
 
                 set;
             }
-
-            #endregion
         }
-
-        #endregion
-
-        #region PointerContainer Class
 
         private sealed class PointerContainer
         {
-            #region Public Properties
-
             public string Value
             {
                 [UsedImplicitly]
@@ -470,13 +433,7 @@ namespace Omnifactotum.Tests
 
                 set;
             }
-
-            #endregion
         }
-
-        #endregion
-
-        #region ToPropertyStringCases Class
 
         private sealed class ToPropertyStringCases : TestCasesBase
         {
@@ -646,20 +603,10 @@ namespace Omnifactotum.Tests
             }
         }
 
-        #endregion
-
-        #region SetDefaultValuesTestClass Class
-
         private sealed class SetDefaultValuesTestClass
         {
-            #region Constants and Fields
-
             public const string DefaultStringValue = "DefaultStringValue";
             public const string NonDefaultStringValue = "NonDefaultStringValue";
-
-            #endregion
-
-            #region Public Properties
 
             [DefaultValue(DefaultStringValue)]
             public static string StaticStringValueWithDefault
@@ -710,10 +657,6 @@ namespace Omnifactotum.Tests
                     throw new NotSupportedException();
                 }
             }
-
-            #endregion
         }
-
-        #endregion
     }
 }

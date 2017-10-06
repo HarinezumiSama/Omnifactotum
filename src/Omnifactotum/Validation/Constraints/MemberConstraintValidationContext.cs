@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Linq;
 using System.Linq.Expressions;
 using Omnifactotum.Annotations;
 
@@ -10,8 +9,6 @@ namespace Omnifactotum.Validation.Constraints
     /// </summary>
     public sealed class MemberConstraintValidationContext
     {
-        #region Constructors
-
         /// <summary>
         ///     Initializes a new instance of the <see cref="MemberConstraintValidationContext"/> class.
         /// </summary>
@@ -33,8 +30,6 @@ namespace Omnifactotum.Validation.Constraints
             [NotNull] Expression expression,
             [NotNull] ParameterExpression rootParameterExpression)
         {
-            #region Argument Check
-
             if (root == null)
             {
                 throw new ArgumentNullException("root");
@@ -55,18 +50,12 @@ namespace Omnifactotum.Validation.Constraints
                 throw new ArgumentNullException("rootParameterExpression");
             }
 
-            #endregion
-
-            this.Root = root;
-            this.Container = container;
-            this.Expression = expression;
-            this.RootParameterExpression = rootParameterExpression;
-            this.LambdaExpression = Expression.Lambda(expression, rootParameterExpression);
+            Root = root;
+            Container = container;
+            Expression = expression;
+            RootParameterExpression = rootParameterExpression;
+            LambdaExpression = Expression.Lambda(expression, rootParameterExpression);
         }
-
-        #endregion
-
-        #region Public Properties
 
         /// <summary>
         ///     Gets the root object that is being, or was, checked.
@@ -95,10 +84,6 @@ namespace Omnifactotum.Validation.Constraints
             private set;
         }
 
-        #endregion
-
-        #region Internal Properties
-
         /// <summary>
         ///     Gets the lambda expression describing the path to the value from the root object.
         /// </summary>
@@ -117,10 +102,6 @@ namespace Omnifactotum.Validation.Constraints
             private set;
         }
 
-        #endregion
-
-        #region Public Methods
-
         /// <summary>
         ///     Creates a lambda expression, using the specified parameter name, based on the expression describing
         ///     the path to the value from the root object.
@@ -138,8 +119,6 @@ namespace Omnifactotum.Validation.Constraints
             string parameterName,
             out ParameterExpression parameterExpression)
         {
-            #region Argument Check
-
             if (string.IsNullOrWhiteSpace(parameterName))
             {
                 throw new ArgumentException(
@@ -147,15 +126,13 @@ namespace Omnifactotum.Validation.Constraints
                     "parameterName");
             }
 
-            #endregion
-
-            var rootType = this.Root.GetTypeSafely();
+            var rootType = Root.GetTypeSafely();
 
             parameterExpression = Expression.Parameter(typeof(object), parameterName);
 
             var combined = Expression
                 .Lambda(Expression.Convert(parameterExpression, rootType), parameterExpression)
-                .InjectInto(this.LambdaExpression);
+                .InjectInto(LambdaExpression);
 
             var temporaryParameterExpression = Expression.Parameter(combined.ReturnType, "x");
 
@@ -209,7 +186,5 @@ namespace Omnifactotum.Validation.Constraints
         {
             return CreateLambdaExpression(ObjectValidator.RootObjectParameterName);
         }
-
-        #endregion
     }
 }

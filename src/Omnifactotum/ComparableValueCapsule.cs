@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
-using System.Linq;
 using Omnifactotum.Annotations;
 
 namespace Omnifactotum
@@ -21,8 +20,6 @@ namespace Omnifactotum
     /// </typeparam>
     public abstract class ComparableValueCapsule<T> : EquatableValueCapsule<T>, IComparable<ComparableValueCapsule<T>>
     {
-        #region Constructors
-
         /// <summary>
         ///     Initializes a new instance of the <see cref="ComparableValueCapsule{T}"/> class
         ///     using the specified value.
@@ -36,10 +33,6 @@ namespace Omnifactotum
             // Nothing to do
         }
 
-        #endregion
-
-        #region Public Properties
-
         /// <summary>
         ///     Gets the <see cref="IComparer{T}"/> used for comparing contained values.
         /// </summary>
@@ -51,10 +44,6 @@ namespace Omnifactotum
                 return GetValueComparer().EnsureNotNull();
             }
         }
-
-        #endregion
-
-        #region Operators
 
         /// <summary>
         ///     Determines whether the left <see cref="ComparableValueCapsule{T}"/> instance is less than
@@ -132,10 +121,6 @@ namespace Omnifactotum
             return Comparer<ComparableValueCapsule<T>>.Default.Compare(left, right) >= 0;
         }
 
-        #endregion
-
-        #region IComparable<ComparableValueCapsule<T>> Members
-
         /// <summary>
         ///     Compares the current object with another object of the same type.
         /// </summary>
@@ -161,12 +146,8 @@ namespace Omnifactotum
                 throw new ArgumentException("Incompatible comparand type.");
             }
 
-            return this.ValueComparer.Compare(this.Value, other.Value);
+            return ValueComparer.Compare(Value, other.Value);
         }
-
-        #endregion
-
-        #region Protected Methods
 
         /// <summary>
         ///     Gets the <see cref="IComparer{T}"/> used for comparing contained values.
@@ -180,7 +161,5 @@ namespace Omnifactotum
         {
             return Comparer<T>.Default;
         }
-
-        #endregion
     }
 }

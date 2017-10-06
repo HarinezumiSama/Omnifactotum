@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Linq;
 using NUnit.Framework;
 using Omnifactotum.Validation;
 using Omnifactotum.Validation.Constraints;
@@ -9,8 +8,6 @@ namespace Omnifactotum.Tests.Validation.Constraints
     [TestFixture]
     public sealed class MemberConstraintBaseTests
     {
-        #region Tests
-
         [Test]
         [TestCase(null)]
         [TestCase(int.MinValue)]
@@ -43,10 +40,6 @@ namespace Omnifactotum.Tests.Validation.Constraints
             Assert.That(() => testee.CallCastTo<int>(null), Throws.InvalidOperationException);
         }
 
-        #endregion
-
-        #region ExposedMemberConstraintBase Class
-
         private sealed class ExposedMemberConstraintBase : MemberConstraintBase
         {
             public TTarget CallCastTo<TTarget>(object value)
@@ -62,7 +55,5 @@ namespace Omnifactotum.Tests.Validation.Constraints
                 throw new NotImplementedException();
             }
         }
-
-        #endregion
     }
 }

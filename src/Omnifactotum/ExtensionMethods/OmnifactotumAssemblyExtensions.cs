@@ -1,6 +1,4 @@
-﻿using System;
-using System.Diagnostics;
-using System.Globalization;
+﻿using System.Globalization;
 using Omnifactotum.Annotations;
 
 //// Namespace is intentionally named so in order to simplify usage of extension methods
@@ -12,8 +10,6 @@ namespace System.Reflection
     /// </summary>
     public static class OmnifactotumAssemblyExtensions
     {
-        #region Public Methods
-
         /// <summary>
         ///     Gets the local path of the assembly.
         /// </summary>
@@ -28,8 +24,6 @@ namespace System.Reflection
         /// </exception>
         public static string GetLocalPath([NotNull] this Assembly assembly)
         {
-            #region Argument Check
-
             if (assembly == null)
             {
                 throw new ArgumentNullException("assembly");
@@ -45,8 +39,6 @@ namespace System.Reflection
                     "assembly");
             }
 
-            #endregion
-
             if (string.IsNullOrEmpty(assembly.Location))
             {
                 throw CreateNoLocalPathException(assembly);
@@ -61,10 +53,6 @@ namespace System.Reflection
             return uri.LocalPath.EnsureNotNull();
         }
 
-        #endregion
-
-        #region Private Methods
-
         private static InvalidOperationException CreateNoLocalPathException(Assembly assembly)
         {
             return new InvalidOperationException(
@@ -73,7 +61,5 @@ namespace System.Reflection
                     "The assembly {{ {0} }} does not have a local path.",
                     assembly.FullName));
         }
-
-        #endregion
     }
 }

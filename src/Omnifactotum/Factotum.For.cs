@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Linq;
 using System.Linq.Expressions;
 using System.Reflection;
 using Omnifactotum.Annotations;
@@ -16,8 +15,6 @@ namespace Omnifactotum
         /// </typeparam>
         public static class For<TObject>
         {
-            #region Public Methods
-
             /// <summary>
             ///     Gets the <see cref="MemberInfo"/> of the field or property specified by the lambda expression.
             /// </summary>
@@ -182,22 +179,14 @@ namespace Omnifactotum
                 return typeof(TObject).GetQualifiedName() + Type.Delimiter + propertyInfo.Name;
             }
 
-            #endregion
-
-            #region Private Methods
-
             [NotNull]
             private static MemberInfo GetDataMemberInfo<TMember>(
                 [NotNull] Expression<Func<TObject, TMember>> memberGetterExpression)
             {
-                #region Argument Check
-
                 if (memberGetterExpression == null)
                 {
                     throw new ArgumentNullException("memberGetterExpression");
                 }
-
-                #endregion
 
                 var objectType = typeof(TObject);
 
@@ -270,8 +259,6 @@ namespace Omnifactotum
 
                 return result;
             }
-
-            #endregion
         }
     }
 }

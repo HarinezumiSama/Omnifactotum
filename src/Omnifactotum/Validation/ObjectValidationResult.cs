@@ -13,14 +13,8 @@ namespace Omnifactotum.Validation
     /// </summary>
     public sealed class ObjectValidationResult
     {
-        #region Constants and Fields
-
         internal static readonly ObjectValidationResult SuccessfulResult =
             new ObjectValidationResult(new MemberConstraintValidationError[0]);
-
-        #endregion
-
-        #region Constructors
 
         /// <summary>
         ///     Initializes a new instance of the <see cref="ObjectValidationResult"/> class.
@@ -30,8 +24,6 @@ namespace Omnifactotum.Validation
         /// </param>
         internal ObjectValidationResult(ICollection<MemberConstraintValidationError> errors)
         {
-            #region Argument Check
-
             if (errors == null)
             {
                 throw new ArgumentNullException("errors");
@@ -42,14 +34,8 @@ namespace Omnifactotum.Validation
                 throw new ArgumentException(@"The collection contains a null element.", "errors");
             }
 
-            #endregion
-
-            this.Errors = errors.ToArray().AsReadOnly();
+            Errors = errors.ToArray().AsReadOnly();
         }
-
-        #endregion
-
-        #region Public Properties
 
         /// <summary>
         ///     Gets a value indicating whether the object checked is valid.
@@ -59,7 +45,7 @@ namespace Omnifactotum.Validation
             [DebuggerNonUserCode]
             get
             {
-                return this.Errors.Count == 0;
+                return Errors.Count == 0;
             }
         }
 
@@ -71,10 +57,6 @@ namespace Omnifactotum.Validation
             get;
             private set;
         }
-
-        #endregion
-
-        #region Public Methods
 
         /// <summary>
         ///     <para>Gets the validation exception based on the validation result.</para>
@@ -96,21 +78,17 @@ namespace Omnifactotum.Validation
             Func<MemberConstraintValidationError, string> getErrorDescription,
             string errorDescriptionSeparator)
         {
-            #region Argument Check
-
             if (getErrorDescription == null)
             {
                 throw new ArgumentNullException("getErrorDescription");
             }
 
-            #endregion
-
-            if (this.IsObjectValid)
+            if (IsObjectValid)
             {
                 return null;
             }
 
-            var message = this.Errors.Select(getErrorDescription).Join(errorDescriptionSeparator);
+            var message = Errors.Select(getErrorDescription).Join(errorDescriptionSeparator);
             return new ObjectValidationException(this, message);
         }
 
@@ -147,7 +125,5 @@ namespace Omnifactotum.Validation
 
             throw exception;
         }
-
-        #endregion
     }
 }

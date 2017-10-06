@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
 using NUnit.Framework;
 using Omnifactotum.Annotations;
 
@@ -9,8 +8,6 @@ namespace Omnifactotum.Tests.ExtensionMethods
     [TestFixture]
     public sealed class OmnifactotumDictionaryExtensionsTests
     {
-        #region Constants and Fields
-
         private const int Key1 = 1;
         private const int Key2 = 2;
         private const Dictionary<int?, Version> NullDictionary = null;
@@ -21,11 +18,7 @@ namespace Omnifactotum.Tests.ExtensionMethods
         private Dictionary<int?, Version> _dictionary;
         private int _initialCount;
 
-        #endregion
-
-        #region SetUp/TearDown
-
-        [TestFixtureSetUp]
+        [OneTimeSetUp]
         public void TestFixtureSetUp()
         {
             Assert.That(new[] { Key1, Key2 }, Is.Unique);
@@ -37,10 +30,6 @@ namespace Omnifactotum.Tests.ExtensionMethods
         {
             _dictionary = null;
         }
-
-        #endregion
-
-        #region Tests
 
         [Test]
         public void TestGetValueOrDefaultNegative()
@@ -121,10 +110,6 @@ namespace Omnifactotum.Tests.ExtensionMethods
             Assert.That(readOnlyDictionary, Is.InstanceOf<ReadOnlyDictionary<int?, Version>>());
         }
 
-        #endregion
-
-        #region Private Methods
-
         private void RecreateDictionary()
         {
             _dictionary = new Dictionary<int?, Version>
@@ -152,7 +137,5 @@ namespace Omnifactotum.Tests.ExtensionMethods
             Assert.That(_dictionary[Key1], Is.EqualTo(Value1));
             Assert.That(_dictionary[Key2], Is.EqualTo(expectedValue));
         }
-
-        #endregion
     }
 }

@@ -7,7 +7,6 @@
 
 using System;
 using System.Diagnostics;
-using System.Linq;
 using System.Threading.Tasks;
 using Omnifactotum.Annotations;
 
@@ -15,11 +14,14 @@ namespace Omnifactotum
 {
     public static partial class AsyncFactotum
     {
-        #region Public Methods: ExecuteAsync[0]
+        #region Public Methods: ComputeAsync[0]
 
         /// <summary>
-        ///     Executes the specified method asynchronously using the specified exception logging method.
+        ///     Computes a result of the specified method asynchronously using the specified exception logging method.
         /// </summary>
+        /// <typeparam name="TResult">
+        ///     The type of the result of the method.
+        /// </typeparam>
         /// <param name="callee">
         ///     The method that is run asynchronously.
         /// </param>
@@ -35,25 +37,21 @@ namespace Omnifactotum
         ///     <para>- or -</para>
         ///     <para><paramref name="logError"/> is <c>null</c>.</para>
         /// </exception>
-        public static Task ExecuteAsync(
-            [NotNull] Action callee,
+        public static Task<TResult> ComputeAsync<TResult>(
+            [NotNull] Func<TResult> callee,
             [NotNull] LogErrorWithExceptionAndMessage logError)
         {
-            #region Argument Check
-
             if (callee == null)
             {
-                throw new ArgumentNullException("callee");
+                throw new ArgumentNullException(nameof(callee));
             }
 
             if (logError == null)
             {
-                throw new ArgumentNullException("logError");
+                throw new ArgumentNullException(nameof(logError));
             }
 
-            #endregion
-
-            var task = CreateAndStartExecuteTask(
+            var task = CreateAndStartComputeTask(
                 callee,
                 callee.Method,
                 logError,
@@ -63,8 +61,11 @@ namespace Omnifactotum
         }
 
         /// <summary>
-        ///     Executes the specified method asynchronously using the specified exception logging method.
+        ///     Computes a result of the specified method asynchronously using the specified exception logging method.
         /// </summary>
+        /// <typeparam name="TResult">
+        ///     The type of the result of the method.
+        /// </typeparam>
         /// <param name="callee">
         ///     The method that is run asynchronously.
         /// </param>
@@ -80,25 +81,21 @@ namespace Omnifactotum
         ///     <para>- or -</para>
         ///     <para><paramref name="logError"/> is <c>null</c>.</para>
         /// </exception>
-        public static Task ExecuteAsync(
-            [NotNull] Action callee,
+        public static Task<TResult> ComputeAsync<TResult>(
+            [NotNull] Func<TResult> callee,
             [NotNull] LogErrorWithException logError)
         {
-            #region Argument Check
-
             if (callee == null)
             {
-                throw new ArgumentNullException("callee");
+                throw new ArgumentNullException(nameof(callee));
             }
 
             if (logError == null)
             {
-                throw new ArgumentNullException("logError");
+                throw new ArgumentNullException(nameof(logError));
             }
 
-            #endregion
-
-            var task = CreateAndStartExecuteTask(
+            var task = CreateAndStartComputeTask(
                 callee,
                 callee.Method,
                 logError,
@@ -108,8 +105,11 @@ namespace Omnifactotum
         }
 
         /// <summary>
-        ///     Executes the specified method asynchronously using the specified exception logging method.
+        ///     Computes a result of the specified method asynchronously using the specified exception logging method.
         /// </summary>
+        /// <typeparam name="TResult">
+        ///     The type of the result of the method.
+        /// </typeparam>
         /// <param name="callee">
         ///     The method that is run asynchronously.
         /// </param>
@@ -125,25 +125,21 @@ namespace Omnifactotum
         ///     <para>- or -</para>
         ///     <para><paramref name="logError"/> is <c>null</c>.</para>
         /// </exception>
-        public static Task ExecuteAsync(
-            [NotNull] Action callee,
+        public static Task<TResult> ComputeAsync<TResult>(
+            [NotNull] Func<TResult> callee,
             [NotNull] LogErrorWithMessage logError)
         {
-            #region Argument Check
-
             if (callee == null)
             {
-                throw new ArgumentNullException("callee");
+                throw new ArgumentNullException(nameof(callee));
             }
 
             if (logError == null)
             {
-                throw new ArgumentNullException("logError");
+                throw new ArgumentNullException(nameof(logError));
             }
 
-            #endregion
-
-            var task = CreateAndStartExecuteTask(
+            var task = CreateAndStartComputeTask(
                 callee,
                 callee.Method,
                 logError,
@@ -153,9 +149,12 @@ namespace Omnifactotum
         }
 
         /// <summary>
-        ///     Executes the specified method asynchronously.
+        ///     Computes a result of the specified method asynchronously using the default options.
         ///     This method uses <see cref="Trace"/> to log asynchronous operation errors.
         /// </summary>
+        /// <typeparam name="TResult">
+        ///     The type of the result of the method.
+        /// </typeparam>
         /// <param name="callee">
         ///     The method that is run asynchronously.
         /// </param>
@@ -165,19 +164,15 @@ namespace Omnifactotum
         /// <exception cref="System.ArgumentNullException">
         ///     <para><paramref name="callee"/> is <c>null</c>.</para>
         /// </exception>
-        public static Task ExecuteAsync(
-            [NotNull] Action callee)
+        public static Task<TResult> ComputeAsync<TResult>(
+            [NotNull] Func<TResult> callee)
         {
-            #region Argument Check
-
             if (callee == null)
             {
-                throw new ArgumentNullException("callee");
+                throw new ArgumentNullException(nameof(callee));
             }
 
-            #endregion
-
-            var task = CreateAndStartExecuteTask(
+            var task = CreateAndStartComputeTask(
                 callee,
                 callee.Method,
                 (LogErrorWithMessage)TraceErrorInternal,
@@ -188,13 +183,16 @@ namespace Omnifactotum
 
         #endregion
 
-        #region Public Methods: ExecuteAsync[1]
+        #region Public Methods: ComputeAsync[1]
 
         /// <summary>
-        ///     Executes the specified method asynchronously using the specified exception logging method.
+        ///     Computes a result of the specified method asynchronously using the specified exception logging method.
         /// </summary>
         /// <typeparam name="T1">
         ///     The type of the 1st argument of the method.
+        /// </typeparam>
+        /// <typeparam name="TResult">
+        ///     The type of the result of the method.
         /// </typeparam>
         /// <param name="callee">
         ///     The method that is run asynchronously.
@@ -214,26 +212,22 @@ namespace Omnifactotum
         ///     <para>- or -</para>
         ///     <para><paramref name="logError"/> is <c>null</c>.</para>
         /// </exception>
-        public static Task ExecuteAsync<T1>(
-            [NotNull] Action<T1> callee,
+        public static Task<TResult> ComputeAsync<T1, TResult>(
+            [NotNull] Func<T1, TResult> callee,
             [NotNull] LogErrorWithExceptionAndMessage logError,
             T1 arg1)
         {
-            #region Argument Check
-
             if (callee == null)
             {
-                throw new ArgumentNullException("callee");
+                throw new ArgumentNullException(nameof(callee));
             }
 
             if (logError == null)
             {
-                throw new ArgumentNullException("logError");
+                throw new ArgumentNullException(nameof(logError));
             }
 
-            #endregion
-
-            var task = CreateAndStartExecuteTask(
+            var task = CreateAndStartComputeTask(
                 () => callee(arg1),
                 callee.Method,
                 logError,
@@ -243,10 +237,13 @@ namespace Omnifactotum
         }
 
         /// <summary>
-        ///     Executes the specified method asynchronously using the specified exception logging method.
+        ///     Computes a result of the specified method asynchronously using the specified exception logging method.
         /// </summary>
         /// <typeparam name="T1">
         ///     The type of the 1st argument of the method.
+        /// </typeparam>
+        /// <typeparam name="TResult">
+        ///     The type of the result of the method.
         /// </typeparam>
         /// <param name="callee">
         ///     The method that is run asynchronously.
@@ -266,26 +263,22 @@ namespace Omnifactotum
         ///     <para>- or -</para>
         ///     <para><paramref name="logError"/> is <c>null</c>.</para>
         /// </exception>
-        public static Task ExecuteAsync<T1>(
-            [NotNull] Action<T1> callee,
+        public static Task<TResult> ComputeAsync<T1, TResult>(
+            [NotNull] Func<T1, TResult> callee,
             [NotNull] LogErrorWithException logError,
             T1 arg1)
         {
-            #region Argument Check
-
             if (callee == null)
             {
-                throw new ArgumentNullException("callee");
+                throw new ArgumentNullException(nameof(callee));
             }
 
             if (logError == null)
             {
-                throw new ArgumentNullException("logError");
+                throw new ArgumentNullException(nameof(logError));
             }
 
-            #endregion
-
-            var task = CreateAndStartExecuteTask(
+            var task = CreateAndStartComputeTask(
                 () => callee(arg1),
                 callee.Method,
                 logError,
@@ -295,10 +288,13 @@ namespace Omnifactotum
         }
 
         /// <summary>
-        ///     Executes the specified method asynchronously using the specified exception logging method.
+        ///     Computes a result of the specified method asynchronously using the specified exception logging method.
         /// </summary>
         /// <typeparam name="T1">
         ///     The type of the 1st argument of the method.
+        /// </typeparam>
+        /// <typeparam name="TResult">
+        ///     The type of the result of the method.
         /// </typeparam>
         /// <param name="callee">
         ///     The method that is run asynchronously.
@@ -318,26 +314,22 @@ namespace Omnifactotum
         ///     <para>- or -</para>
         ///     <para><paramref name="logError"/> is <c>null</c>.</para>
         /// </exception>
-        public static Task ExecuteAsync<T1>(
-            [NotNull] Action<T1> callee,
+        public static Task<TResult> ComputeAsync<T1, TResult>(
+            [NotNull] Func<T1, TResult> callee,
             [NotNull] LogErrorWithMessage logError,
             T1 arg1)
         {
-            #region Argument Check
-
             if (callee == null)
             {
-                throw new ArgumentNullException("callee");
+                throw new ArgumentNullException(nameof(callee));
             }
 
             if (logError == null)
             {
-                throw new ArgumentNullException("logError");
+                throw new ArgumentNullException(nameof(logError));
             }
 
-            #endregion
-
-            var task = CreateAndStartExecuteTask(
+            var task = CreateAndStartComputeTask(
                 () => callee(arg1),
                 callee.Method,
                 logError,
@@ -347,12 +339,15 @@ namespace Omnifactotum
         }
 
         /// <summary>
-        ///     Executes the specified method asynchronously.
+        ///     Computes a result of the specified method asynchronously using the default options.
         ///     This method uses <see cref="Trace"/> to log asynchronous operation errors.
         /// </summary>
         /// <typeparam name="T1">
         ///     The type of the 1st argument of the method.
         /// </typeparam>
+        /// <typeparam name="TResult">
+        ///     The type of the result of the method.
+        /// </typeparam>
         /// <param name="callee">
         ///     The method that is run asynchronously.
         /// </param>
@@ -365,20 +360,16 @@ namespace Omnifactotum
         /// <exception cref="System.ArgumentNullException">
         ///     <para><paramref name="callee"/> is <c>null</c>.</para>
         /// </exception>
-        public static Task ExecuteAsync<T1>(
-            [NotNull] Action<T1> callee,
+        public static Task<TResult> ComputeAsync<T1, TResult>(
+            [NotNull] Func<T1, TResult> callee,
             T1 arg1)
         {
-            #region Argument Check
-
             if (callee == null)
             {
-                throw new ArgumentNullException("callee");
+                throw new ArgumentNullException(nameof(callee));
             }
 
-            #endregion
-
-            var task = CreateAndStartExecuteTask(
+            var task = CreateAndStartComputeTask(
                 () => callee(arg1),
                 callee.Method,
                 (LogErrorWithMessage)TraceErrorInternal,
@@ -389,16 +380,19 @@ namespace Omnifactotum
 
         #endregion
 
-        #region Public Methods: ExecuteAsync[2]
+        #region Public Methods: ComputeAsync[2]
 
         /// <summary>
-        ///     Executes the specified method asynchronously using the specified exception logging method.
+        ///     Computes a result of the specified method asynchronously using the specified exception logging method.
         /// </summary>
         /// <typeparam name="T1">
         ///     The type of the 1st argument of the method.
         /// </typeparam>
         /// <typeparam name="T2">
         ///     The type of the 2nd argument of the method.
+        /// </typeparam>
+        /// <typeparam name="TResult">
+        ///     The type of the result of the method.
         /// </typeparam>
         /// <param name="callee">
         ///     The method that is run asynchronously.
@@ -421,27 +415,23 @@ namespace Omnifactotum
         ///     <para>- or -</para>
         ///     <para><paramref name="logError"/> is <c>null</c>.</para>
         /// </exception>
-        public static Task ExecuteAsync<T1, T2>(
-            [NotNull] Action<T1, T2> callee,
+        public static Task<TResult> ComputeAsync<T1, T2, TResult>(
+            [NotNull] Func<T1, T2, TResult> callee,
             [NotNull] LogErrorWithExceptionAndMessage logError,
             T1 arg1,
             T2 arg2)
         {
-            #region Argument Check
-
             if (callee == null)
             {
-                throw new ArgumentNullException("callee");
+                throw new ArgumentNullException(nameof(callee));
             }
 
             if (logError == null)
             {
-                throw new ArgumentNullException("logError");
+                throw new ArgumentNullException(nameof(logError));
             }
 
-            #endregion
-
-            var task = CreateAndStartExecuteTask(
+            var task = CreateAndStartComputeTask(
                 () => callee(arg1, arg2),
                 callee.Method,
                 logError,
@@ -451,13 +441,16 @@ namespace Omnifactotum
         }
 
         /// <summary>
-        ///     Executes the specified method asynchronously using the specified exception logging method.
+        ///     Computes a result of the specified method asynchronously using the specified exception logging method.
         /// </summary>
         /// <typeparam name="T1">
         ///     The type of the 1st argument of the method.
         /// </typeparam>
         /// <typeparam name="T2">
         ///     The type of the 2nd argument of the method.
+        /// </typeparam>
+        /// <typeparam name="TResult">
+        ///     The type of the result of the method.
         /// </typeparam>
         /// <param name="callee">
         ///     The method that is run asynchronously.
@@ -480,27 +473,23 @@ namespace Omnifactotum
         ///     <para>- or -</para>
         ///     <para><paramref name="logError"/> is <c>null</c>.</para>
         /// </exception>
-        public static Task ExecuteAsync<T1, T2>(
-            [NotNull] Action<T1, T2> callee,
+        public static Task<TResult> ComputeAsync<T1, T2, TResult>(
+            [NotNull] Func<T1, T2, TResult> callee,
             [NotNull] LogErrorWithException logError,
             T1 arg1,
             T2 arg2)
         {
-            #region Argument Check
-
             if (callee == null)
             {
-                throw new ArgumentNullException("callee");
+                throw new ArgumentNullException(nameof(callee));
             }
 
             if (logError == null)
             {
-                throw new ArgumentNullException("logError");
+                throw new ArgumentNullException(nameof(logError));
             }
 
-            #endregion
-
-            var task = CreateAndStartExecuteTask(
+            var task = CreateAndStartComputeTask(
                 () => callee(arg1, arg2),
                 callee.Method,
                 logError,
@@ -510,13 +499,16 @@ namespace Omnifactotum
         }
 
         /// <summary>
-        ///     Executes the specified method asynchronously using the specified exception logging method.
+        ///     Computes a result of the specified method asynchronously using the specified exception logging method.
         /// </summary>
         /// <typeparam name="T1">
         ///     The type of the 1st argument of the method.
         /// </typeparam>
         /// <typeparam name="T2">
         ///     The type of the 2nd argument of the method.
+        /// </typeparam>
+        /// <typeparam name="TResult">
+        ///     The type of the result of the method.
         /// </typeparam>
         /// <param name="callee">
         ///     The method that is run asynchronously.
@@ -539,27 +531,23 @@ namespace Omnifactotum
         ///     <para>- or -</para>
         ///     <para><paramref name="logError"/> is <c>null</c>.</para>
         /// </exception>
-        public static Task ExecuteAsync<T1, T2>(
-            [NotNull] Action<T1, T2> callee,
+        public static Task<TResult> ComputeAsync<T1, T2, TResult>(
+            [NotNull] Func<T1, T2, TResult> callee,
             [NotNull] LogErrorWithMessage logError,
             T1 arg1,
             T2 arg2)
         {
-            #region Argument Check
-
             if (callee == null)
             {
-                throw new ArgumentNullException("callee");
+                throw new ArgumentNullException(nameof(callee));
             }
 
             if (logError == null)
             {
-                throw new ArgumentNullException("logError");
+                throw new ArgumentNullException(nameof(logError));
             }
 
-            #endregion
-
-            var task = CreateAndStartExecuteTask(
+            var task = CreateAndStartComputeTask(
                 () => callee(arg1, arg2),
                 callee.Method,
                 logError,
@@ -569,7 +557,7 @@ namespace Omnifactotum
         }
 
         /// <summary>
-        ///     Executes the specified method asynchronously.
+        ///     Computes a result of the specified method asynchronously using the default options.
         ///     This method uses <see cref="Trace"/> to log asynchronous operation errors.
         /// </summary>
         /// <typeparam name="T1">
@@ -578,6 +566,9 @@ namespace Omnifactotum
         /// <typeparam name="T2">
         ///     The type of the 2nd argument of the method.
         /// </typeparam>
+        /// <typeparam name="TResult">
+        ///     The type of the result of the method.
+        /// </typeparam>
         /// <param name="callee">
         ///     The method that is run asynchronously.
         /// </param>
@@ -593,21 +584,17 @@ namespace Omnifactotum
         /// <exception cref="System.ArgumentNullException">
         ///     <para><paramref name="callee"/> is <c>null</c>.</para>
         /// </exception>
-        public static Task ExecuteAsync<T1, T2>(
-            [NotNull] Action<T1, T2> callee,
+        public static Task<TResult> ComputeAsync<T1, T2, TResult>(
+            [NotNull] Func<T1, T2, TResult> callee,
             T1 arg1,
             T2 arg2)
         {
-            #region Argument Check
-
             if (callee == null)
             {
-                throw new ArgumentNullException("callee");
+                throw new ArgumentNullException(nameof(callee));
             }
 
-            #endregion
-
-            var task = CreateAndStartExecuteTask(
+            var task = CreateAndStartComputeTask(
                 () => callee(arg1, arg2),
                 callee.Method,
                 (LogErrorWithMessage)TraceErrorInternal,
@@ -618,10 +605,10 @@ namespace Omnifactotum
 
         #endregion
 
-        #region Public Methods: ExecuteAsync[3]
+        #region Public Methods: ComputeAsync[3]
 
         /// <summary>
-        ///     Executes the specified method asynchronously using the specified exception logging method.
+        ///     Computes a result of the specified method asynchronously using the specified exception logging method.
         /// </summary>
         /// <typeparam name="T1">
         ///     The type of the 1st argument of the method.
@@ -631,6 +618,9 @@ namespace Omnifactotum
         /// </typeparam>
         /// <typeparam name="T3">
         ///     The type of the 3rd argument of the method.
+        /// </typeparam>
+        /// <typeparam name="TResult">
+        ///     The type of the result of the method.
         /// </typeparam>
         /// <param name="callee">
         ///     The method that is run asynchronously.
@@ -656,28 +646,24 @@ namespace Omnifactotum
         ///     <para>- or -</para>
         ///     <para><paramref name="logError"/> is <c>null</c>.</para>
         /// </exception>
-        public static Task ExecuteAsync<T1, T2, T3>(
-            [NotNull] Action<T1, T2, T3> callee,
+        public static Task<TResult> ComputeAsync<T1, T2, T3, TResult>(
+            [NotNull] Func<T1, T2, T3, TResult> callee,
             [NotNull] LogErrorWithExceptionAndMessage logError,
             T1 arg1,
             T2 arg2,
             T3 arg3)
         {
-            #region Argument Check
-
             if (callee == null)
             {
-                throw new ArgumentNullException("callee");
+                throw new ArgumentNullException(nameof(callee));
             }
 
             if (logError == null)
             {
-                throw new ArgumentNullException("logError");
+                throw new ArgumentNullException(nameof(logError));
             }
 
-            #endregion
-
-            var task = CreateAndStartExecuteTask(
+            var task = CreateAndStartComputeTask(
                 () => callee(arg1, arg2, arg3),
                 callee.Method,
                 logError,
@@ -687,7 +673,7 @@ namespace Omnifactotum
         }
 
         /// <summary>
-        ///     Executes the specified method asynchronously using the specified exception logging method.
+        ///     Computes a result of the specified method asynchronously using the specified exception logging method.
         /// </summary>
         /// <typeparam name="T1">
         ///     The type of the 1st argument of the method.
@@ -697,6 +683,9 @@ namespace Omnifactotum
         /// </typeparam>
         /// <typeparam name="T3">
         ///     The type of the 3rd argument of the method.
+        /// </typeparam>
+        /// <typeparam name="TResult">
+        ///     The type of the result of the method.
         /// </typeparam>
         /// <param name="callee">
         ///     The method that is run asynchronously.
@@ -722,28 +711,24 @@ namespace Omnifactotum
         ///     <para>- or -</para>
         ///     <para><paramref name="logError"/> is <c>null</c>.</para>
         /// </exception>
-        public static Task ExecuteAsync<T1, T2, T3>(
-            [NotNull] Action<T1, T2, T3> callee,
+        public static Task<TResult> ComputeAsync<T1, T2, T3, TResult>(
+            [NotNull] Func<T1, T2, T3, TResult> callee,
             [NotNull] LogErrorWithException logError,
             T1 arg1,
             T2 arg2,
             T3 arg3)
         {
-            #region Argument Check
-
             if (callee == null)
             {
-                throw new ArgumentNullException("callee");
+                throw new ArgumentNullException(nameof(callee));
             }
 
             if (logError == null)
             {
-                throw new ArgumentNullException("logError");
+                throw new ArgumentNullException(nameof(logError));
             }
 
-            #endregion
-
-            var task = CreateAndStartExecuteTask(
+            var task = CreateAndStartComputeTask(
                 () => callee(arg1, arg2, arg3),
                 callee.Method,
                 logError,
@@ -753,7 +738,7 @@ namespace Omnifactotum
         }
 
         /// <summary>
-        ///     Executes the specified method asynchronously using the specified exception logging method.
+        ///     Computes a result of the specified method asynchronously using the specified exception logging method.
         /// </summary>
         /// <typeparam name="T1">
         ///     The type of the 1st argument of the method.
@@ -763,6 +748,9 @@ namespace Omnifactotum
         /// </typeparam>
         /// <typeparam name="T3">
         ///     The type of the 3rd argument of the method.
+        /// </typeparam>
+        /// <typeparam name="TResult">
+        ///     The type of the result of the method.
         /// </typeparam>
         /// <param name="callee">
         ///     The method that is run asynchronously.
@@ -788,28 +776,24 @@ namespace Omnifactotum
         ///     <para>- or -</para>
         ///     <para><paramref name="logError"/> is <c>null</c>.</para>
         /// </exception>
-        public static Task ExecuteAsync<T1, T2, T3>(
-            [NotNull] Action<T1, T2, T3> callee,
+        public static Task<TResult> ComputeAsync<T1, T2, T3, TResult>(
+            [NotNull] Func<T1, T2, T3, TResult> callee,
             [NotNull] LogErrorWithMessage logError,
             T1 arg1,
             T2 arg2,
             T3 arg3)
         {
-            #region Argument Check
-
             if (callee == null)
             {
-                throw new ArgumentNullException("callee");
+                throw new ArgumentNullException(nameof(callee));
             }
 
             if (logError == null)
             {
-                throw new ArgumentNullException("logError");
+                throw new ArgumentNullException(nameof(logError));
             }
 
-            #endregion
-
-            var task = CreateAndStartExecuteTask(
+            var task = CreateAndStartComputeTask(
                 () => callee(arg1, arg2, arg3),
                 callee.Method,
                 logError,
@@ -819,7 +803,7 @@ namespace Omnifactotum
         }
 
         /// <summary>
-        ///     Executes the specified method asynchronously.
+        ///     Computes a result of the specified method asynchronously using the default options.
         ///     This method uses <see cref="Trace"/> to log asynchronous operation errors.
         /// </summary>
         /// <typeparam name="T1">
@@ -831,6 +815,9 @@ namespace Omnifactotum
         /// <typeparam name="T3">
         ///     The type of the 3rd argument of the method.
         /// </typeparam>
+        /// <typeparam name="TResult">
+        ///     The type of the result of the method.
+        /// </typeparam>
         /// <param name="callee">
         ///     The method that is run asynchronously.
         /// </param>
@@ -849,22 +836,18 @@ namespace Omnifactotum
         /// <exception cref="System.ArgumentNullException">
         ///     <para><paramref name="callee"/> is <c>null</c>.</para>
         /// </exception>
-        public static Task ExecuteAsync<T1, T2, T3>(
-            [NotNull] Action<T1, T2, T3> callee,
+        public static Task<TResult> ComputeAsync<T1, T2, T3, TResult>(
+            [NotNull] Func<T1, T2, T3, TResult> callee,
             T1 arg1,
             T2 arg2,
             T3 arg3)
         {
-            #region Argument Check
-
             if (callee == null)
             {
-                throw new ArgumentNullException("callee");
+                throw new ArgumentNullException(nameof(callee));
             }
 
-            #endregion
-
-            var task = CreateAndStartExecuteTask(
+            var task = CreateAndStartComputeTask(
                 () => callee(arg1, arg2, arg3),
                 callee.Method,
                 (LogErrorWithMessage)TraceErrorInternal,
@@ -875,10 +858,10 @@ namespace Omnifactotum
 
         #endregion
 
-        #region Public Methods: ExecuteAsync[4]
+        #region Public Methods: ComputeAsync[4]
 
         /// <summary>
-        ///     Executes the specified method asynchronously using the specified exception logging method.
+        ///     Computes a result of the specified method asynchronously using the specified exception logging method.
         /// </summary>
         /// <typeparam name="T1">
         ///     The type of the 1st argument of the method.
@@ -891,6 +874,9 @@ namespace Omnifactotum
         /// </typeparam>
         /// <typeparam name="T4">
         ///     The type of the 4th argument of the method.
+        /// </typeparam>
+        /// <typeparam name="TResult">
+        ///     The type of the result of the method.
         /// </typeparam>
         /// <param name="callee">
         ///     The method that is run asynchronously.
@@ -919,29 +905,25 @@ namespace Omnifactotum
         ///     <para>- or -</para>
         ///     <para><paramref name="logError"/> is <c>null</c>.</para>
         /// </exception>
-        public static Task ExecuteAsync<T1, T2, T3, T4>(
-            [NotNull] Action<T1, T2, T3, T4> callee,
+        public static Task<TResult> ComputeAsync<T1, T2, T3, T4, TResult>(
+            [NotNull] Func<T1, T2, T3, T4, TResult> callee,
             [NotNull] LogErrorWithExceptionAndMessage logError,
             T1 arg1,
             T2 arg2,
             T3 arg3,
             T4 arg4)
         {
-            #region Argument Check
-
             if (callee == null)
             {
-                throw new ArgumentNullException("callee");
+                throw new ArgumentNullException(nameof(callee));
             }
 
             if (logError == null)
             {
-                throw new ArgumentNullException("logError");
+                throw new ArgumentNullException(nameof(logError));
             }
 
-            #endregion
-
-            var task = CreateAndStartExecuteTask(
+            var task = CreateAndStartComputeTask(
                 () => callee(arg1, arg2, arg3, arg4),
                 callee.Method,
                 logError,
@@ -951,7 +933,7 @@ namespace Omnifactotum
         }
 
         /// <summary>
-        ///     Executes the specified method asynchronously using the specified exception logging method.
+        ///     Computes a result of the specified method asynchronously using the specified exception logging method.
         /// </summary>
         /// <typeparam name="T1">
         ///     The type of the 1st argument of the method.
@@ -964,6 +946,9 @@ namespace Omnifactotum
         /// </typeparam>
         /// <typeparam name="T4">
         ///     The type of the 4th argument of the method.
+        /// </typeparam>
+        /// <typeparam name="TResult">
+        ///     The type of the result of the method.
         /// </typeparam>
         /// <param name="callee">
         ///     The method that is run asynchronously.
@@ -992,29 +977,25 @@ namespace Omnifactotum
         ///     <para>- or -</para>
         ///     <para><paramref name="logError"/> is <c>null</c>.</para>
         /// </exception>
-        public static Task ExecuteAsync<T1, T2, T3, T4>(
-            [NotNull] Action<T1, T2, T3, T4> callee,
+        public static Task<TResult> ComputeAsync<T1, T2, T3, T4, TResult>(
+            [NotNull] Func<T1, T2, T3, T4, TResult> callee,
             [NotNull] LogErrorWithException logError,
             T1 arg1,
             T2 arg2,
             T3 arg3,
             T4 arg4)
         {
-            #region Argument Check
-
             if (callee == null)
             {
-                throw new ArgumentNullException("callee");
+                throw new ArgumentNullException(nameof(callee));
             }
 
             if (logError == null)
             {
-                throw new ArgumentNullException("logError");
+                throw new ArgumentNullException(nameof(logError));
             }
 
-            #endregion
-
-            var task = CreateAndStartExecuteTask(
+            var task = CreateAndStartComputeTask(
                 () => callee(arg1, arg2, arg3, arg4),
                 callee.Method,
                 logError,
@@ -1024,7 +1005,7 @@ namespace Omnifactotum
         }
 
         /// <summary>
-        ///     Executes the specified method asynchronously using the specified exception logging method.
+        ///     Computes a result of the specified method asynchronously using the specified exception logging method.
         /// </summary>
         /// <typeparam name="T1">
         ///     The type of the 1st argument of the method.
@@ -1037,6 +1018,9 @@ namespace Omnifactotum
         /// </typeparam>
         /// <typeparam name="T4">
         ///     The type of the 4th argument of the method.
+        /// </typeparam>
+        /// <typeparam name="TResult">
+        ///     The type of the result of the method.
         /// </typeparam>
         /// <param name="callee">
         ///     The method that is run asynchronously.
@@ -1065,29 +1049,25 @@ namespace Omnifactotum
         ///     <para>- or -</para>
         ///     <para><paramref name="logError"/> is <c>null</c>.</para>
         /// </exception>
-        public static Task ExecuteAsync<T1, T2, T3, T4>(
-            [NotNull] Action<T1, T2, T3, T4> callee,
+        public static Task<TResult> ComputeAsync<T1, T2, T3, T4, TResult>(
+            [NotNull] Func<T1, T2, T3, T4, TResult> callee,
             [NotNull] LogErrorWithMessage logError,
             T1 arg1,
             T2 arg2,
             T3 arg3,
             T4 arg4)
         {
-            #region Argument Check
-
             if (callee == null)
             {
-                throw new ArgumentNullException("callee");
+                throw new ArgumentNullException(nameof(callee));
             }
 
             if (logError == null)
             {
-                throw new ArgumentNullException("logError");
+                throw new ArgumentNullException(nameof(logError));
             }
 
-            #endregion
-
-            var task = CreateAndStartExecuteTask(
+            var task = CreateAndStartComputeTask(
                 () => callee(arg1, arg2, arg3, arg4),
                 callee.Method,
                 logError,
@@ -1097,7 +1077,7 @@ namespace Omnifactotum
         }
 
         /// <summary>
-        ///     Executes the specified method asynchronously.
+        ///     Computes a result of the specified method asynchronously using the default options.
         ///     This method uses <see cref="Trace"/> to log asynchronous operation errors.
         /// </summary>
         /// <typeparam name="T1">
@@ -1112,6 +1092,9 @@ namespace Omnifactotum
         /// <typeparam name="T4">
         ///     The type of the 4th argument of the method.
         /// </typeparam>
+        /// <typeparam name="TResult">
+        ///     The type of the result of the method.
+        /// </typeparam>
         /// <param name="callee">
         ///     The method that is run asynchronously.
         /// </param>
@@ -1133,23 +1116,19 @@ namespace Omnifactotum
         /// <exception cref="System.ArgumentNullException">
         ///     <para><paramref name="callee"/> is <c>null</c>.</para>
         /// </exception>
-        public static Task ExecuteAsync<T1, T2, T3, T4>(
-            [NotNull] Action<T1, T2, T3, T4> callee,
+        public static Task<TResult> ComputeAsync<T1, T2, T3, T4, TResult>(
+            [NotNull] Func<T1, T2, T3, T4, TResult> callee,
             T1 arg1,
             T2 arg2,
             T3 arg3,
             T4 arg4)
         {
-            #region Argument Check
-
             if (callee == null)
             {
-                throw new ArgumentNullException("callee");
+                throw new ArgumentNullException(nameof(callee));
             }
 
-            #endregion
-
-            var task = CreateAndStartExecuteTask(
+            var task = CreateAndStartComputeTask(
                 () => callee(arg1, arg2, arg3, arg4),
                 callee.Method,
                 (LogErrorWithMessage)TraceErrorInternal,
@@ -1160,10 +1139,10 @@ namespace Omnifactotum
 
         #endregion
 
-        #region Public Methods: ExecuteAsync[5]
+        #region Public Methods: ComputeAsync[5]
 
         /// <summary>
-        ///     Executes the specified method asynchronously using the specified exception logging method.
+        ///     Computes a result of the specified method asynchronously using the specified exception logging method.
         /// </summary>
         /// <typeparam name="T1">
         ///     The type of the 1st argument of the method.
@@ -1179,6 +1158,9 @@ namespace Omnifactotum
         /// </typeparam>
         /// <typeparam name="T5">
         ///     The type of the 5th argument of the method.
+        /// </typeparam>
+        /// <typeparam name="TResult">
+        ///     The type of the result of the method.
         /// </typeparam>
         /// <param name="callee">
         ///     The method that is run asynchronously.
@@ -1210,8 +1192,8 @@ namespace Omnifactotum
         ///     <para>- or -</para>
         ///     <para><paramref name="logError"/> is <c>null</c>.</para>
         /// </exception>
-        public static Task ExecuteAsync<T1, T2, T3, T4, T5>(
-            [NotNull] Action<T1, T2, T3, T4, T5> callee,
+        public static Task<TResult> ComputeAsync<T1, T2, T3, T4, T5, TResult>(
+            [NotNull] Func<T1, T2, T3, T4, T5, TResult> callee,
             [NotNull] LogErrorWithExceptionAndMessage logError,
             T1 arg1,
             T2 arg2,
@@ -1219,21 +1201,17 @@ namespace Omnifactotum
             T4 arg4,
             T5 arg5)
         {
-            #region Argument Check
-
             if (callee == null)
             {
-                throw new ArgumentNullException("callee");
+                throw new ArgumentNullException(nameof(callee));
             }
 
             if (logError == null)
             {
-                throw new ArgumentNullException("logError");
+                throw new ArgumentNullException(nameof(logError));
             }
 
-            #endregion
-
-            var task = CreateAndStartExecuteTask(
+            var task = CreateAndStartComputeTask(
                 () => callee(arg1, arg2, arg3, arg4, arg5),
                 callee.Method,
                 logError,
@@ -1243,7 +1221,7 @@ namespace Omnifactotum
         }
 
         /// <summary>
-        ///     Executes the specified method asynchronously using the specified exception logging method.
+        ///     Computes a result of the specified method asynchronously using the specified exception logging method.
         /// </summary>
         /// <typeparam name="T1">
         ///     The type of the 1st argument of the method.
@@ -1259,6 +1237,9 @@ namespace Omnifactotum
         /// </typeparam>
         /// <typeparam name="T5">
         ///     The type of the 5th argument of the method.
+        /// </typeparam>
+        /// <typeparam name="TResult">
+        ///     The type of the result of the method.
         /// </typeparam>
         /// <param name="callee">
         ///     The method that is run asynchronously.
@@ -1290,8 +1271,8 @@ namespace Omnifactotum
         ///     <para>- or -</para>
         ///     <para><paramref name="logError"/> is <c>null</c>.</para>
         /// </exception>
-        public static Task ExecuteAsync<T1, T2, T3, T4, T5>(
-            [NotNull] Action<T1, T2, T3, T4, T5> callee,
+        public static Task<TResult> ComputeAsync<T1, T2, T3, T4, T5, TResult>(
+            [NotNull] Func<T1, T2, T3, T4, T5, TResult> callee,
             [NotNull] LogErrorWithException logError,
             T1 arg1,
             T2 arg2,
@@ -1299,21 +1280,17 @@ namespace Omnifactotum
             T4 arg4,
             T5 arg5)
         {
-            #region Argument Check
-
             if (callee == null)
             {
-                throw new ArgumentNullException("callee");
+                throw new ArgumentNullException(nameof(callee));
             }
 
             if (logError == null)
             {
-                throw new ArgumentNullException("logError");
+                throw new ArgumentNullException(nameof(logError));
             }
 
-            #endregion
-
-            var task = CreateAndStartExecuteTask(
+            var task = CreateAndStartComputeTask(
                 () => callee(arg1, arg2, arg3, arg4, arg5),
                 callee.Method,
                 logError,
@@ -1323,7 +1300,7 @@ namespace Omnifactotum
         }
 
         /// <summary>
-        ///     Executes the specified method asynchronously using the specified exception logging method.
+        ///     Computes a result of the specified method asynchronously using the specified exception logging method.
         /// </summary>
         /// <typeparam name="T1">
         ///     The type of the 1st argument of the method.
@@ -1339,6 +1316,9 @@ namespace Omnifactotum
         /// </typeparam>
         /// <typeparam name="T5">
         ///     The type of the 5th argument of the method.
+        /// </typeparam>
+        /// <typeparam name="TResult">
+        ///     The type of the result of the method.
         /// </typeparam>
         /// <param name="callee">
         ///     The method that is run asynchronously.
@@ -1370,8 +1350,8 @@ namespace Omnifactotum
         ///     <para>- or -</para>
         ///     <para><paramref name="logError"/> is <c>null</c>.</para>
         /// </exception>
-        public static Task ExecuteAsync<T1, T2, T3, T4, T5>(
-            [NotNull] Action<T1, T2, T3, T4, T5> callee,
+        public static Task<TResult> ComputeAsync<T1, T2, T3, T4, T5, TResult>(
+            [NotNull] Func<T1, T2, T3, T4, T5, TResult> callee,
             [NotNull] LogErrorWithMessage logError,
             T1 arg1,
             T2 arg2,
@@ -1379,21 +1359,17 @@ namespace Omnifactotum
             T4 arg4,
             T5 arg5)
         {
-            #region Argument Check
-
             if (callee == null)
             {
-                throw new ArgumentNullException("callee");
+                throw new ArgumentNullException(nameof(callee));
             }
 
             if (logError == null)
             {
-                throw new ArgumentNullException("logError");
+                throw new ArgumentNullException(nameof(logError));
             }
 
-            #endregion
-
-            var task = CreateAndStartExecuteTask(
+            var task = CreateAndStartComputeTask(
                 () => callee(arg1, arg2, arg3, arg4, arg5),
                 callee.Method,
                 logError,
@@ -1403,7 +1379,7 @@ namespace Omnifactotum
         }
 
         /// <summary>
-        ///     Executes the specified method asynchronously.
+        ///     Computes a result of the specified method asynchronously using the default options.
         ///     This method uses <see cref="Trace"/> to log asynchronous operation errors.
         /// </summary>
         /// <typeparam name="T1">
@@ -1421,6 +1397,9 @@ namespace Omnifactotum
         /// <typeparam name="T5">
         ///     The type of the 5th argument of the method.
         /// </typeparam>
+        /// <typeparam name="TResult">
+        ///     The type of the result of the method.
+        /// </typeparam>
         /// <param name="callee">
         ///     The method that is run asynchronously.
         /// </param>
@@ -1445,24 +1424,20 @@ namespace Omnifactotum
         /// <exception cref="System.ArgumentNullException">
         ///     <para><paramref name="callee"/> is <c>null</c>.</para>
         /// </exception>
-        public static Task ExecuteAsync<T1, T2, T3, T4, T5>(
-            [NotNull] Action<T1, T2, T3, T4, T5> callee,
+        public static Task<TResult> ComputeAsync<T1, T2, T3, T4, T5, TResult>(
+            [NotNull] Func<T1, T2, T3, T4, T5, TResult> callee,
             T1 arg1,
             T2 arg2,
             T3 arg3,
             T4 arg4,
             T5 arg5)
         {
-            #region Argument Check
-
             if (callee == null)
             {
-                throw new ArgumentNullException("callee");
+                throw new ArgumentNullException(nameof(callee));
             }
 
-            #endregion
-
-            var task = CreateAndStartExecuteTask(
+            var task = CreateAndStartComputeTask(
                 () => callee(arg1, arg2, arg3, arg4, arg5),
                 callee.Method,
                 (LogErrorWithMessage)TraceErrorInternal,
@@ -1473,10 +1448,10 @@ namespace Omnifactotum
 
         #endregion
 
-        #region Public Methods: ExecuteAsync[6]
+        #region Public Methods: ComputeAsync[6]
 
         /// <summary>
-        ///     Executes the specified method asynchronously using the specified exception logging method.
+        ///     Computes a result of the specified method asynchronously using the specified exception logging method.
         /// </summary>
         /// <typeparam name="T1">
         ///     The type of the 1st argument of the method.
@@ -1495,6 +1470,9 @@ namespace Omnifactotum
         /// </typeparam>
         /// <typeparam name="T6">
         ///     The type of the 6th argument of the method.
+        /// </typeparam>
+        /// <typeparam name="TResult">
+        ///     The type of the result of the method.
         /// </typeparam>
         /// <param name="callee">
         ///     The method that is run asynchronously.
@@ -1529,8 +1507,8 @@ namespace Omnifactotum
         ///     <para>- or -</para>
         ///     <para><paramref name="logError"/> is <c>null</c>.</para>
         /// </exception>
-        public static Task ExecuteAsync<T1, T2, T3, T4, T5, T6>(
-            [NotNull] Action<T1, T2, T3, T4, T5, T6> callee,
+        public static Task<TResult> ComputeAsync<T1, T2, T3, T4, T5, T6, TResult>(
+            [NotNull] Func<T1, T2, T3, T4, T5, T6, TResult> callee,
             [NotNull] LogErrorWithExceptionAndMessage logError,
             T1 arg1,
             T2 arg2,
@@ -1539,21 +1517,17 @@ namespace Omnifactotum
             T5 arg5,
             T6 arg6)
         {
-            #region Argument Check
-
             if (callee == null)
             {
-                throw new ArgumentNullException("callee");
+                throw new ArgumentNullException(nameof(callee));
             }
 
             if (logError == null)
             {
-                throw new ArgumentNullException("logError");
+                throw new ArgumentNullException(nameof(logError));
             }
 
-            #endregion
-
-            var task = CreateAndStartExecuteTask(
+            var task = CreateAndStartComputeTask(
                 () => callee(arg1, arg2, arg3, arg4, arg5, arg6),
                 callee.Method,
                 logError,
@@ -1563,7 +1537,7 @@ namespace Omnifactotum
         }
 
         /// <summary>
-        ///     Executes the specified method asynchronously using the specified exception logging method.
+        ///     Computes a result of the specified method asynchronously using the specified exception logging method.
         /// </summary>
         /// <typeparam name="T1">
         ///     The type of the 1st argument of the method.
@@ -1582,6 +1556,9 @@ namespace Omnifactotum
         /// </typeparam>
         /// <typeparam name="T6">
         ///     The type of the 6th argument of the method.
+        /// </typeparam>
+        /// <typeparam name="TResult">
+        ///     The type of the result of the method.
         /// </typeparam>
         /// <param name="callee">
         ///     The method that is run asynchronously.
@@ -1616,8 +1593,8 @@ namespace Omnifactotum
         ///     <para>- or -</para>
         ///     <para><paramref name="logError"/> is <c>null</c>.</para>
         /// </exception>
-        public static Task ExecuteAsync<T1, T2, T3, T4, T5, T6>(
-            [NotNull] Action<T1, T2, T3, T4, T5, T6> callee,
+        public static Task<TResult> ComputeAsync<T1, T2, T3, T4, T5, T6, TResult>(
+            [NotNull] Func<T1, T2, T3, T4, T5, T6, TResult> callee,
             [NotNull] LogErrorWithException logError,
             T1 arg1,
             T2 arg2,
@@ -1626,21 +1603,17 @@ namespace Omnifactotum
             T5 arg5,
             T6 arg6)
         {
-            #region Argument Check
-
             if (callee == null)
             {
-                throw new ArgumentNullException("callee");
+                throw new ArgumentNullException(nameof(callee));
             }
 
             if (logError == null)
             {
-                throw new ArgumentNullException("logError");
+                throw new ArgumentNullException(nameof(logError));
             }
 
-            #endregion
-
-            var task = CreateAndStartExecuteTask(
+            var task = CreateAndStartComputeTask(
                 () => callee(arg1, arg2, arg3, arg4, arg5, arg6),
                 callee.Method,
                 logError,
@@ -1650,7 +1623,7 @@ namespace Omnifactotum
         }
 
         /// <summary>
-        ///     Executes the specified method asynchronously using the specified exception logging method.
+        ///     Computes a result of the specified method asynchronously using the specified exception logging method.
         /// </summary>
         /// <typeparam name="T1">
         ///     The type of the 1st argument of the method.
@@ -1669,6 +1642,9 @@ namespace Omnifactotum
         /// </typeparam>
         /// <typeparam name="T6">
         ///     The type of the 6th argument of the method.
+        /// </typeparam>
+        /// <typeparam name="TResult">
+        ///     The type of the result of the method.
         /// </typeparam>
         /// <param name="callee">
         ///     The method that is run asynchronously.
@@ -1703,8 +1679,8 @@ namespace Omnifactotum
         ///     <para>- or -</para>
         ///     <para><paramref name="logError"/> is <c>null</c>.</para>
         /// </exception>
-        public static Task ExecuteAsync<T1, T2, T3, T4, T5, T6>(
-            [NotNull] Action<T1, T2, T3, T4, T5, T6> callee,
+        public static Task<TResult> ComputeAsync<T1, T2, T3, T4, T5, T6, TResult>(
+            [NotNull] Func<T1, T2, T3, T4, T5, T6, TResult> callee,
             [NotNull] LogErrorWithMessage logError,
             T1 arg1,
             T2 arg2,
@@ -1713,21 +1689,17 @@ namespace Omnifactotum
             T5 arg5,
             T6 arg6)
         {
-            #region Argument Check
-
             if (callee == null)
             {
-                throw new ArgumentNullException("callee");
+                throw new ArgumentNullException(nameof(callee));
             }
 
             if (logError == null)
             {
-                throw new ArgumentNullException("logError");
+                throw new ArgumentNullException(nameof(logError));
             }
 
-            #endregion
-
-            var task = CreateAndStartExecuteTask(
+            var task = CreateAndStartComputeTask(
                 () => callee(arg1, arg2, arg3, arg4, arg5, arg6),
                 callee.Method,
                 logError,
@@ -1737,7 +1709,7 @@ namespace Omnifactotum
         }
 
         /// <summary>
-        ///     Executes the specified method asynchronously.
+        ///     Computes a result of the specified method asynchronously using the default options.
         ///     This method uses <see cref="Trace"/> to log asynchronous operation errors.
         /// </summary>
         /// <typeparam name="T1">
@@ -1758,6 +1730,9 @@ namespace Omnifactotum
         /// <typeparam name="T6">
         ///     The type of the 6th argument of the method.
         /// </typeparam>
+        /// <typeparam name="TResult">
+        ///     The type of the result of the method.
+        /// </typeparam>
         /// <param name="callee">
         ///     The method that is run asynchronously.
         /// </param>
@@ -1785,8 +1760,8 @@ namespace Omnifactotum
         /// <exception cref="System.ArgumentNullException">
         ///     <para><paramref name="callee"/> is <c>null</c>.</para>
         /// </exception>
-        public static Task ExecuteAsync<T1, T2, T3, T4, T5, T6>(
-            [NotNull] Action<T1, T2, T3, T4, T5, T6> callee,
+        public static Task<TResult> ComputeAsync<T1, T2, T3, T4, T5, T6, TResult>(
+            [NotNull] Func<T1, T2, T3, T4, T5, T6, TResult> callee,
             T1 arg1,
             T2 arg2,
             T3 arg3,
@@ -1794,16 +1769,12 @@ namespace Omnifactotum
             T5 arg5,
             T6 arg6)
         {
-            #region Argument Check
-
             if (callee == null)
             {
-                throw new ArgumentNullException("callee");
+                throw new ArgumentNullException(nameof(callee));
             }
 
-            #endregion
-
-            var task = CreateAndStartExecuteTask(
+            var task = CreateAndStartComputeTask(
                 () => callee(arg1, arg2, arg3, arg4, arg5, arg6),
                 callee.Method,
                 (LogErrorWithMessage)TraceErrorInternal,
@@ -1814,10 +1785,10 @@ namespace Omnifactotum
 
         #endregion
 
-        #region Public Methods: ExecuteAsync[7]
+        #region Public Methods: ComputeAsync[7]
 
         /// <summary>
-        ///     Executes the specified method asynchronously using the specified exception logging method.
+        ///     Computes a result of the specified method asynchronously using the specified exception logging method.
         /// </summary>
         /// <typeparam name="T1">
         ///     The type of the 1st argument of the method.
@@ -1839,6 +1810,9 @@ namespace Omnifactotum
         /// </typeparam>
         /// <typeparam name="T7">
         ///     The type of the 7th argument of the method.
+        /// </typeparam>
+        /// <typeparam name="TResult">
+        ///     The type of the result of the method.
         /// </typeparam>
         /// <param name="callee">
         ///     The method that is run asynchronously.
@@ -1876,8 +1850,8 @@ namespace Omnifactotum
         ///     <para>- or -</para>
         ///     <para><paramref name="logError"/> is <c>null</c>.</para>
         /// </exception>
-        public static Task ExecuteAsync<T1, T2, T3, T4, T5, T6, T7>(
-            [NotNull] Action<T1, T2, T3, T4, T5, T6, T7> callee,
+        public static Task<TResult> ComputeAsync<T1, T2, T3, T4, T5, T6, T7, TResult>(
+            [NotNull] Func<T1, T2, T3, T4, T5, T6, T7, TResult> callee,
             [NotNull] LogErrorWithExceptionAndMessage logError,
             T1 arg1,
             T2 arg2,
@@ -1887,21 +1861,17 @@ namespace Omnifactotum
             T6 arg6,
             T7 arg7)
         {
-            #region Argument Check
-
             if (callee == null)
             {
-                throw new ArgumentNullException("callee");
+                throw new ArgumentNullException(nameof(callee));
             }
 
             if (logError == null)
             {
-                throw new ArgumentNullException("logError");
+                throw new ArgumentNullException(nameof(logError));
             }
 
-            #endregion
-
-            var task = CreateAndStartExecuteTask(
+            var task = CreateAndStartComputeTask(
                 () => callee(arg1, arg2, arg3, arg4, arg5, arg6, arg7),
                 callee.Method,
                 logError,
@@ -1911,7 +1881,7 @@ namespace Omnifactotum
         }
 
         /// <summary>
-        ///     Executes the specified method asynchronously using the specified exception logging method.
+        ///     Computes a result of the specified method asynchronously using the specified exception logging method.
         /// </summary>
         /// <typeparam name="T1">
         ///     The type of the 1st argument of the method.
@@ -1933,6 +1903,9 @@ namespace Omnifactotum
         /// </typeparam>
         /// <typeparam name="T7">
         ///     The type of the 7th argument of the method.
+        /// </typeparam>
+        /// <typeparam name="TResult">
+        ///     The type of the result of the method.
         /// </typeparam>
         /// <param name="callee">
         ///     The method that is run asynchronously.
@@ -1970,8 +1943,8 @@ namespace Omnifactotum
         ///     <para>- or -</para>
         ///     <para><paramref name="logError"/> is <c>null</c>.</para>
         /// </exception>
-        public static Task ExecuteAsync<T1, T2, T3, T4, T5, T6, T7>(
-            [NotNull] Action<T1, T2, T3, T4, T5, T6, T7> callee,
+        public static Task<TResult> ComputeAsync<T1, T2, T3, T4, T5, T6, T7, TResult>(
+            [NotNull] Func<T1, T2, T3, T4, T5, T6, T7, TResult> callee,
             [NotNull] LogErrorWithException logError,
             T1 arg1,
             T2 arg2,
@@ -1981,21 +1954,17 @@ namespace Omnifactotum
             T6 arg6,
             T7 arg7)
         {
-            #region Argument Check
-
             if (callee == null)
             {
-                throw new ArgumentNullException("callee");
+                throw new ArgumentNullException(nameof(callee));
             }
 
             if (logError == null)
             {
-                throw new ArgumentNullException("logError");
+                throw new ArgumentNullException(nameof(logError));
             }
 
-            #endregion
-
-            var task = CreateAndStartExecuteTask(
+            var task = CreateAndStartComputeTask(
                 () => callee(arg1, arg2, arg3, arg4, arg5, arg6, arg7),
                 callee.Method,
                 logError,
@@ -2005,7 +1974,7 @@ namespace Omnifactotum
         }
 
         /// <summary>
-        ///     Executes the specified method asynchronously using the specified exception logging method.
+        ///     Computes a result of the specified method asynchronously using the specified exception logging method.
         /// </summary>
         /// <typeparam name="T1">
         ///     The type of the 1st argument of the method.
@@ -2027,6 +1996,9 @@ namespace Omnifactotum
         /// </typeparam>
         /// <typeparam name="T7">
         ///     The type of the 7th argument of the method.
+        /// </typeparam>
+        /// <typeparam name="TResult">
+        ///     The type of the result of the method.
         /// </typeparam>
         /// <param name="callee">
         ///     The method that is run asynchronously.
@@ -2064,8 +2036,8 @@ namespace Omnifactotum
         ///     <para>- or -</para>
         ///     <para><paramref name="logError"/> is <c>null</c>.</para>
         /// </exception>
-        public static Task ExecuteAsync<T1, T2, T3, T4, T5, T6, T7>(
-            [NotNull] Action<T1, T2, T3, T4, T5, T6, T7> callee,
+        public static Task<TResult> ComputeAsync<T1, T2, T3, T4, T5, T6, T7, TResult>(
+            [NotNull] Func<T1, T2, T3, T4, T5, T6, T7, TResult> callee,
             [NotNull] LogErrorWithMessage logError,
             T1 arg1,
             T2 arg2,
@@ -2075,21 +2047,17 @@ namespace Omnifactotum
             T6 arg6,
             T7 arg7)
         {
-            #region Argument Check
-
             if (callee == null)
             {
-                throw new ArgumentNullException("callee");
+                throw new ArgumentNullException(nameof(callee));
             }
 
             if (logError == null)
             {
-                throw new ArgumentNullException("logError");
+                throw new ArgumentNullException(nameof(logError));
             }
 
-            #endregion
-
-            var task = CreateAndStartExecuteTask(
+            var task = CreateAndStartComputeTask(
                 () => callee(arg1, arg2, arg3, arg4, arg5, arg6, arg7),
                 callee.Method,
                 logError,
@@ -2099,7 +2067,7 @@ namespace Omnifactotum
         }
 
         /// <summary>
-        ///     Executes the specified method asynchronously.
+        ///     Computes a result of the specified method asynchronously using the default options.
         ///     This method uses <see cref="Trace"/> to log asynchronous operation errors.
         /// </summary>
         /// <typeparam name="T1">
@@ -2123,6 +2091,9 @@ namespace Omnifactotum
         /// <typeparam name="T7">
         ///     The type of the 7th argument of the method.
         /// </typeparam>
+        /// <typeparam name="TResult">
+        ///     The type of the result of the method.
+        /// </typeparam>
         /// <param name="callee">
         ///     The method that is run asynchronously.
         /// </param>
@@ -2153,8 +2124,8 @@ namespace Omnifactotum
         /// <exception cref="System.ArgumentNullException">
         ///     <para><paramref name="callee"/> is <c>null</c>.</para>
         /// </exception>
-        public static Task ExecuteAsync<T1, T2, T3, T4, T5, T6, T7>(
-            [NotNull] Action<T1, T2, T3, T4, T5, T6, T7> callee,
+        public static Task<TResult> ComputeAsync<T1, T2, T3, T4, T5, T6, T7, TResult>(
+            [NotNull] Func<T1, T2, T3, T4, T5, T6, T7, TResult> callee,
             T1 arg1,
             T2 arg2,
             T3 arg3,
@@ -2163,16 +2134,12 @@ namespace Omnifactotum
             T6 arg6,
             T7 arg7)
         {
-            #region Argument Check
-
             if (callee == null)
             {
-                throw new ArgumentNullException("callee");
+                throw new ArgumentNullException(nameof(callee));
             }
 
-            #endregion
-
-            var task = CreateAndStartExecuteTask(
+            var task = CreateAndStartComputeTask(
                 () => callee(arg1, arg2, arg3, arg4, arg5, arg6, arg7),
                 callee.Method,
                 (LogErrorWithMessage)TraceErrorInternal,
@@ -2183,10 +2150,10 @@ namespace Omnifactotum
 
         #endregion
 
-        #region Public Methods: ExecuteAsync[8]
+        #region Public Methods: ComputeAsync[8]
 
         /// <summary>
-        ///     Executes the specified method asynchronously using the specified exception logging method.
+        ///     Computes a result of the specified method asynchronously using the specified exception logging method.
         /// </summary>
         /// <typeparam name="T1">
         ///     The type of the 1st argument of the method.
@@ -2211,6 +2178,9 @@ namespace Omnifactotum
         /// </typeparam>
         /// <typeparam name="T8">
         ///     The type of the 8th argument of the method.
+        /// </typeparam>
+        /// <typeparam name="TResult">
+        ///     The type of the result of the method.
         /// </typeparam>
         /// <param name="callee">
         ///     The method that is run asynchronously.
@@ -2251,8 +2221,8 @@ namespace Omnifactotum
         ///     <para>- or -</para>
         ///     <para><paramref name="logError"/> is <c>null</c>.</para>
         /// </exception>
-        public static Task ExecuteAsync<T1, T2, T3, T4, T5, T6, T7, T8>(
-            [NotNull] Action<T1, T2, T3, T4, T5, T6, T7, T8> callee,
+        public static Task<TResult> ComputeAsync<T1, T2, T3, T4, T5, T6, T7, T8, TResult>(
+            [NotNull] Func<T1, T2, T3, T4, T5, T6, T7, T8, TResult> callee,
             [NotNull] LogErrorWithExceptionAndMessage logError,
             T1 arg1,
             T2 arg2,
@@ -2263,21 +2233,17 @@ namespace Omnifactotum
             T7 arg7,
             T8 arg8)
         {
-            #region Argument Check
-
             if (callee == null)
             {
-                throw new ArgumentNullException("callee");
+                throw new ArgumentNullException(nameof(callee));
             }
 
             if (logError == null)
             {
-                throw new ArgumentNullException("logError");
+                throw new ArgumentNullException(nameof(logError));
             }
 
-            #endregion
-
-            var task = CreateAndStartExecuteTask(
+            var task = CreateAndStartComputeTask(
                 () => callee(arg1, arg2, arg3, arg4, arg5, arg6, arg7, arg8),
                 callee.Method,
                 logError,
@@ -2287,7 +2253,7 @@ namespace Omnifactotum
         }
 
         /// <summary>
-        ///     Executes the specified method asynchronously using the specified exception logging method.
+        ///     Computes a result of the specified method asynchronously using the specified exception logging method.
         /// </summary>
         /// <typeparam name="T1">
         ///     The type of the 1st argument of the method.
@@ -2312,6 +2278,9 @@ namespace Omnifactotum
         /// </typeparam>
         /// <typeparam name="T8">
         ///     The type of the 8th argument of the method.
+        /// </typeparam>
+        /// <typeparam name="TResult">
+        ///     The type of the result of the method.
         /// </typeparam>
         /// <param name="callee">
         ///     The method that is run asynchronously.
@@ -2352,8 +2321,8 @@ namespace Omnifactotum
         ///     <para>- or -</para>
         ///     <para><paramref name="logError"/> is <c>null</c>.</para>
         /// </exception>
-        public static Task ExecuteAsync<T1, T2, T3, T4, T5, T6, T7, T8>(
-            [NotNull] Action<T1, T2, T3, T4, T5, T6, T7, T8> callee,
+        public static Task<TResult> ComputeAsync<T1, T2, T3, T4, T5, T6, T7, T8, TResult>(
+            [NotNull] Func<T1, T2, T3, T4, T5, T6, T7, T8, TResult> callee,
             [NotNull] LogErrorWithException logError,
             T1 arg1,
             T2 arg2,
@@ -2364,21 +2333,17 @@ namespace Omnifactotum
             T7 arg7,
             T8 arg8)
         {
-            #region Argument Check
-
             if (callee == null)
             {
-                throw new ArgumentNullException("callee");
+                throw new ArgumentNullException(nameof(callee));
             }
 
             if (logError == null)
             {
-                throw new ArgumentNullException("logError");
+                throw new ArgumentNullException(nameof(logError));
             }
 
-            #endregion
-
-            var task = CreateAndStartExecuteTask(
+            var task = CreateAndStartComputeTask(
                 () => callee(arg1, arg2, arg3, arg4, arg5, arg6, arg7, arg8),
                 callee.Method,
                 logError,
@@ -2388,7 +2353,7 @@ namespace Omnifactotum
         }
 
         /// <summary>
-        ///     Executes the specified method asynchronously using the specified exception logging method.
+        ///     Computes a result of the specified method asynchronously using the specified exception logging method.
         /// </summary>
         /// <typeparam name="T1">
         ///     The type of the 1st argument of the method.
@@ -2413,6 +2378,9 @@ namespace Omnifactotum
         /// </typeparam>
         /// <typeparam name="T8">
         ///     The type of the 8th argument of the method.
+        /// </typeparam>
+        /// <typeparam name="TResult">
+        ///     The type of the result of the method.
         /// </typeparam>
         /// <param name="callee">
         ///     The method that is run asynchronously.
@@ -2453,8 +2421,8 @@ namespace Omnifactotum
         ///     <para>- or -</para>
         ///     <para><paramref name="logError"/> is <c>null</c>.</para>
         /// </exception>
-        public static Task ExecuteAsync<T1, T2, T3, T4, T5, T6, T7, T8>(
-            [NotNull] Action<T1, T2, T3, T4, T5, T6, T7, T8> callee,
+        public static Task<TResult> ComputeAsync<T1, T2, T3, T4, T5, T6, T7, T8, TResult>(
+            [NotNull] Func<T1, T2, T3, T4, T5, T6, T7, T8, TResult> callee,
             [NotNull] LogErrorWithMessage logError,
             T1 arg1,
             T2 arg2,
@@ -2465,21 +2433,17 @@ namespace Omnifactotum
             T7 arg7,
             T8 arg8)
         {
-            #region Argument Check
-
             if (callee == null)
             {
-                throw new ArgumentNullException("callee");
+                throw new ArgumentNullException(nameof(callee));
             }
 
             if (logError == null)
             {
-                throw new ArgumentNullException("logError");
+                throw new ArgumentNullException(nameof(logError));
             }
 
-            #endregion
-
-            var task = CreateAndStartExecuteTask(
+            var task = CreateAndStartComputeTask(
                 () => callee(arg1, arg2, arg3, arg4, arg5, arg6, arg7, arg8),
                 callee.Method,
                 logError,
@@ -2489,7 +2453,7 @@ namespace Omnifactotum
         }
 
         /// <summary>
-        ///     Executes the specified method asynchronously.
+        ///     Computes a result of the specified method asynchronously using the default options.
         ///     This method uses <see cref="Trace"/> to log asynchronous operation errors.
         /// </summary>
         /// <typeparam name="T1">
@@ -2516,6 +2480,9 @@ namespace Omnifactotum
         /// <typeparam name="T8">
         ///     The type of the 8th argument of the method.
         /// </typeparam>
+        /// <typeparam name="TResult">
+        ///     The type of the result of the method.
+        /// </typeparam>
         /// <param name="callee">
         ///     The method that is run asynchronously.
         /// </param>
@@ -2549,8 +2516,8 @@ namespace Omnifactotum
         /// <exception cref="System.ArgumentNullException">
         ///     <para><paramref name="callee"/> is <c>null</c>.</para>
         /// </exception>
-        public static Task ExecuteAsync<T1, T2, T3, T4, T5, T6, T7, T8>(
-            [NotNull] Action<T1, T2, T3, T4, T5, T6, T7, T8> callee,
+        public static Task<TResult> ComputeAsync<T1, T2, T3, T4, T5, T6, T7, T8, TResult>(
+            [NotNull] Func<T1, T2, T3, T4, T5, T6, T7, T8, TResult> callee,
             T1 arg1,
             T2 arg2,
             T3 arg3,
@@ -2560,16 +2527,12 @@ namespace Omnifactotum
             T7 arg7,
             T8 arg8)
         {
-            #region Argument Check
-
             if (callee == null)
             {
-                throw new ArgumentNullException("callee");
+                throw new ArgumentNullException(nameof(callee));
             }
 
-            #endregion
-
-            var task = CreateAndStartExecuteTask(
+            var task = CreateAndStartComputeTask(
                 () => callee(arg1, arg2, arg3, arg4, arg5, arg6, arg7, arg8),
                 callee.Method,
                 (LogErrorWithMessage)TraceErrorInternal,
@@ -2580,10 +2543,10 @@ namespace Omnifactotum
 
         #endregion
 
-        #region Public Methods: ExecuteAsync[9]
+        #region Public Methods: ComputeAsync[9]
 
         /// <summary>
-        ///     Executes the specified method asynchronously using the specified exception logging method.
+        ///     Computes a result of the specified method asynchronously using the specified exception logging method.
         /// </summary>
         /// <typeparam name="T1">
         ///     The type of the 1st argument of the method.
@@ -2611,6 +2574,9 @@ namespace Omnifactotum
         /// </typeparam>
         /// <typeparam name="T9">
         ///     The type of the 9th argument of the method.
+        /// </typeparam>
+        /// <typeparam name="TResult">
+        ///     The type of the result of the method.
         /// </typeparam>
         /// <param name="callee">
         ///     The method that is run asynchronously.
@@ -2654,8 +2620,8 @@ namespace Omnifactotum
         ///     <para>- or -</para>
         ///     <para><paramref name="logError"/> is <c>null</c>.</para>
         /// </exception>
-        public static Task ExecuteAsync<T1, T2, T3, T4, T5, T6, T7, T8, T9>(
-            [NotNull] Action<T1, T2, T3, T4, T5, T6, T7, T8, T9> callee,
+        public static Task<TResult> ComputeAsync<T1, T2, T3, T4, T5, T6, T7, T8, T9, TResult>(
+            [NotNull] Func<T1, T2, T3, T4, T5, T6, T7, T8, T9, TResult> callee,
             [NotNull] LogErrorWithExceptionAndMessage logError,
             T1 arg1,
             T2 arg2,
@@ -2667,21 +2633,17 @@ namespace Omnifactotum
             T8 arg8,
             T9 arg9)
         {
-            #region Argument Check
-
             if (callee == null)
             {
-                throw new ArgumentNullException("callee");
+                throw new ArgumentNullException(nameof(callee));
             }
 
             if (logError == null)
             {
-                throw new ArgumentNullException("logError");
+                throw new ArgumentNullException(nameof(logError));
             }
 
-            #endregion
-
-            var task = CreateAndStartExecuteTask(
+            var task = CreateAndStartComputeTask(
                 () => callee(arg1, arg2, arg3, arg4, arg5, arg6, arg7, arg8, arg9),
                 callee.Method,
                 logError,
@@ -2691,7 +2653,7 @@ namespace Omnifactotum
         }
 
         /// <summary>
-        ///     Executes the specified method asynchronously using the specified exception logging method.
+        ///     Computes a result of the specified method asynchronously using the specified exception logging method.
         /// </summary>
         /// <typeparam name="T1">
         ///     The type of the 1st argument of the method.
@@ -2719,6 +2681,9 @@ namespace Omnifactotum
         /// </typeparam>
         /// <typeparam name="T9">
         ///     The type of the 9th argument of the method.
+        /// </typeparam>
+        /// <typeparam name="TResult">
+        ///     The type of the result of the method.
         /// </typeparam>
         /// <param name="callee">
         ///     The method that is run asynchronously.
@@ -2762,8 +2727,8 @@ namespace Omnifactotum
         ///     <para>- or -</para>
         ///     <para><paramref name="logError"/> is <c>null</c>.</para>
         /// </exception>
-        public static Task ExecuteAsync<T1, T2, T3, T4, T5, T6, T7, T8, T9>(
-            [NotNull] Action<T1, T2, T3, T4, T5, T6, T7, T8, T9> callee,
+        public static Task<TResult> ComputeAsync<T1, T2, T3, T4, T5, T6, T7, T8, T9, TResult>(
+            [NotNull] Func<T1, T2, T3, T4, T5, T6, T7, T8, T9, TResult> callee,
             [NotNull] LogErrorWithException logError,
             T1 arg1,
             T2 arg2,
@@ -2775,21 +2740,17 @@ namespace Omnifactotum
             T8 arg8,
             T9 arg9)
         {
-            #region Argument Check
-
             if (callee == null)
             {
-                throw new ArgumentNullException("callee");
+                throw new ArgumentNullException(nameof(callee));
             }
 
             if (logError == null)
             {
-                throw new ArgumentNullException("logError");
+                throw new ArgumentNullException(nameof(logError));
             }
 
-            #endregion
-
-            var task = CreateAndStartExecuteTask(
+            var task = CreateAndStartComputeTask(
                 () => callee(arg1, arg2, arg3, arg4, arg5, arg6, arg7, arg8, arg9),
                 callee.Method,
                 logError,
@@ -2799,7 +2760,7 @@ namespace Omnifactotum
         }
 
         /// <summary>
-        ///     Executes the specified method asynchronously using the specified exception logging method.
+        ///     Computes a result of the specified method asynchronously using the specified exception logging method.
         /// </summary>
         /// <typeparam name="T1">
         ///     The type of the 1st argument of the method.
@@ -2827,6 +2788,9 @@ namespace Omnifactotum
         /// </typeparam>
         /// <typeparam name="T9">
         ///     The type of the 9th argument of the method.
+        /// </typeparam>
+        /// <typeparam name="TResult">
+        ///     The type of the result of the method.
         /// </typeparam>
         /// <param name="callee">
         ///     The method that is run asynchronously.
@@ -2870,8 +2834,8 @@ namespace Omnifactotum
         ///     <para>- or -</para>
         ///     <para><paramref name="logError"/> is <c>null</c>.</para>
         /// </exception>
-        public static Task ExecuteAsync<T1, T2, T3, T4, T5, T6, T7, T8, T9>(
-            [NotNull] Action<T1, T2, T3, T4, T5, T6, T7, T8, T9> callee,
+        public static Task<TResult> ComputeAsync<T1, T2, T3, T4, T5, T6, T7, T8, T9, TResult>(
+            [NotNull] Func<T1, T2, T3, T4, T5, T6, T7, T8, T9, TResult> callee,
             [NotNull] LogErrorWithMessage logError,
             T1 arg1,
             T2 arg2,
@@ -2883,21 +2847,17 @@ namespace Omnifactotum
             T8 arg8,
             T9 arg9)
         {
-            #region Argument Check
-
             if (callee == null)
             {
-                throw new ArgumentNullException("callee");
+                throw new ArgumentNullException(nameof(callee));
             }
 
             if (logError == null)
             {
-                throw new ArgumentNullException("logError");
+                throw new ArgumentNullException(nameof(logError));
             }
 
-            #endregion
-
-            var task = CreateAndStartExecuteTask(
+            var task = CreateAndStartComputeTask(
                 () => callee(arg1, arg2, arg3, arg4, arg5, arg6, arg7, arg8, arg9),
                 callee.Method,
                 logError,
@@ -2907,7 +2867,7 @@ namespace Omnifactotum
         }
 
         /// <summary>
-        ///     Executes the specified method asynchronously.
+        ///     Computes a result of the specified method asynchronously using the default options.
         ///     This method uses <see cref="Trace"/> to log asynchronous operation errors.
         /// </summary>
         /// <typeparam name="T1">
@@ -2937,6 +2897,9 @@ namespace Omnifactotum
         /// <typeparam name="T9">
         ///     The type of the 9th argument of the method.
         /// </typeparam>
+        /// <typeparam name="TResult">
+        ///     The type of the result of the method.
+        /// </typeparam>
         /// <param name="callee">
         ///     The method that is run asynchronously.
         /// </param>
@@ -2973,8 +2936,8 @@ namespace Omnifactotum
         /// <exception cref="System.ArgumentNullException">
         ///     <para><paramref name="callee"/> is <c>null</c>.</para>
         /// </exception>
-        public static Task ExecuteAsync<T1, T2, T3, T4, T5, T6, T7, T8, T9>(
-            [NotNull] Action<T1, T2, T3, T4, T5, T6, T7, T8, T9> callee,
+        public static Task<TResult> ComputeAsync<T1, T2, T3, T4, T5, T6, T7, T8, T9, TResult>(
+            [NotNull] Func<T1, T2, T3, T4, T5, T6, T7, T8, T9, TResult> callee,
             T1 arg1,
             T2 arg2,
             T3 arg3,
@@ -2985,16 +2948,12 @@ namespace Omnifactotum
             T8 arg8,
             T9 arg9)
         {
-            #region Argument Check
-
             if (callee == null)
             {
-                throw new ArgumentNullException("callee");
+                throw new ArgumentNullException(nameof(callee));
             }
 
-            #endregion
-
-            var task = CreateAndStartExecuteTask(
+            var task = CreateAndStartComputeTask(
                 () => callee(arg1, arg2, arg3, arg4, arg5, arg6, arg7, arg8, arg9),
                 callee.Method,
                 (LogErrorWithMessage)TraceErrorInternal,
@@ -3005,10 +2964,10 @@ namespace Omnifactotum
 
         #endregion
 
-        #region Public Methods: ExecuteAsync[10]
+        #region Public Methods: ComputeAsync[10]
 
         /// <summary>
-        ///     Executes the specified method asynchronously using the specified exception logging method.
+        ///     Computes a result of the specified method asynchronously using the specified exception logging method.
         /// </summary>
         /// <typeparam name="T1">
         ///     The type of the 1st argument of the method.
@@ -3039,6 +2998,9 @@ namespace Omnifactotum
         /// </typeparam>
         /// <typeparam name="T10">
         ///     The type of the 10th argument of the method.
+        /// </typeparam>
+        /// <typeparam name="TResult">
+        ///     The type of the result of the method.
         /// </typeparam>
         /// <param name="callee">
         ///     The method that is run asynchronously.
@@ -3085,8 +3047,8 @@ namespace Omnifactotum
         ///     <para>- or -</para>
         ///     <para><paramref name="logError"/> is <c>null</c>.</para>
         /// </exception>
-        public static Task ExecuteAsync<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10>(
-            [NotNull] Action<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10> callee,
+        public static Task<TResult> ComputeAsync<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, TResult>(
+            [NotNull] Func<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, TResult> callee,
             [NotNull] LogErrorWithExceptionAndMessage logError,
             T1 arg1,
             T2 arg2,
@@ -3099,21 +3061,17 @@ namespace Omnifactotum
             T9 arg9,
             T10 arg10)
         {
-            #region Argument Check
-
             if (callee == null)
             {
-                throw new ArgumentNullException("callee");
+                throw new ArgumentNullException(nameof(callee));
             }
 
             if (logError == null)
             {
-                throw new ArgumentNullException("logError");
+                throw new ArgumentNullException(nameof(logError));
             }
 
-            #endregion
-
-            var task = CreateAndStartExecuteTask(
+            var task = CreateAndStartComputeTask(
                 () => callee(arg1, arg2, arg3, arg4, arg5, arg6, arg7, arg8, arg9, arg10),
                 callee.Method,
                 logError,
@@ -3123,7 +3081,7 @@ namespace Omnifactotum
         }
 
         /// <summary>
-        ///     Executes the specified method asynchronously using the specified exception logging method.
+        ///     Computes a result of the specified method asynchronously using the specified exception logging method.
         /// </summary>
         /// <typeparam name="T1">
         ///     The type of the 1st argument of the method.
@@ -3154,6 +3112,9 @@ namespace Omnifactotum
         /// </typeparam>
         /// <typeparam name="T10">
         ///     The type of the 10th argument of the method.
+        /// </typeparam>
+        /// <typeparam name="TResult">
+        ///     The type of the result of the method.
         /// </typeparam>
         /// <param name="callee">
         ///     The method that is run asynchronously.
@@ -3200,8 +3161,8 @@ namespace Omnifactotum
         ///     <para>- or -</para>
         ///     <para><paramref name="logError"/> is <c>null</c>.</para>
         /// </exception>
-        public static Task ExecuteAsync<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10>(
-            [NotNull] Action<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10> callee,
+        public static Task<TResult> ComputeAsync<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, TResult>(
+            [NotNull] Func<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, TResult> callee,
             [NotNull] LogErrorWithException logError,
             T1 arg1,
             T2 arg2,
@@ -3214,21 +3175,17 @@ namespace Omnifactotum
             T9 arg9,
             T10 arg10)
         {
-            #region Argument Check
-
             if (callee == null)
             {
-                throw new ArgumentNullException("callee");
+                throw new ArgumentNullException(nameof(callee));
             }
 
             if (logError == null)
             {
-                throw new ArgumentNullException("logError");
+                throw new ArgumentNullException(nameof(logError));
             }
 
-            #endregion
-
-            var task = CreateAndStartExecuteTask(
+            var task = CreateAndStartComputeTask(
                 () => callee(arg1, arg2, arg3, arg4, arg5, arg6, arg7, arg8, arg9, arg10),
                 callee.Method,
                 logError,
@@ -3238,7 +3195,7 @@ namespace Omnifactotum
         }
 
         /// <summary>
-        ///     Executes the specified method asynchronously using the specified exception logging method.
+        ///     Computes a result of the specified method asynchronously using the specified exception logging method.
         /// </summary>
         /// <typeparam name="T1">
         ///     The type of the 1st argument of the method.
@@ -3269,6 +3226,9 @@ namespace Omnifactotum
         /// </typeparam>
         /// <typeparam name="T10">
         ///     The type of the 10th argument of the method.
+        /// </typeparam>
+        /// <typeparam name="TResult">
+        ///     The type of the result of the method.
         /// </typeparam>
         /// <param name="callee">
         ///     The method that is run asynchronously.
@@ -3315,8 +3275,8 @@ namespace Omnifactotum
         ///     <para>- or -</para>
         ///     <para><paramref name="logError"/> is <c>null</c>.</para>
         /// </exception>
-        public static Task ExecuteAsync<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10>(
-            [NotNull] Action<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10> callee,
+        public static Task<TResult> ComputeAsync<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, TResult>(
+            [NotNull] Func<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, TResult> callee,
             [NotNull] LogErrorWithMessage logError,
             T1 arg1,
             T2 arg2,
@@ -3329,21 +3289,17 @@ namespace Omnifactotum
             T9 arg9,
             T10 arg10)
         {
-            #region Argument Check
-
             if (callee == null)
             {
-                throw new ArgumentNullException("callee");
+                throw new ArgumentNullException(nameof(callee));
             }
 
             if (logError == null)
             {
-                throw new ArgumentNullException("logError");
+                throw new ArgumentNullException(nameof(logError));
             }
 
-            #endregion
-
-            var task = CreateAndStartExecuteTask(
+            var task = CreateAndStartComputeTask(
                 () => callee(arg1, arg2, arg3, arg4, arg5, arg6, arg7, arg8, arg9, arg10),
                 callee.Method,
                 logError,
@@ -3353,7 +3309,7 @@ namespace Omnifactotum
         }
 
         /// <summary>
-        ///     Executes the specified method asynchronously.
+        ///     Computes a result of the specified method asynchronously using the default options.
         ///     This method uses <see cref="Trace"/> to log asynchronous operation errors.
         /// </summary>
         /// <typeparam name="T1">
@@ -3386,6 +3342,9 @@ namespace Omnifactotum
         /// <typeparam name="T10">
         ///     The type of the 10th argument of the method.
         /// </typeparam>
+        /// <typeparam name="TResult">
+        ///     The type of the result of the method.
+        /// </typeparam>
         /// <param name="callee">
         ///     The method that is run asynchronously.
         /// </param>
@@ -3425,8 +3384,8 @@ namespace Omnifactotum
         /// <exception cref="System.ArgumentNullException">
         ///     <para><paramref name="callee"/> is <c>null</c>.</para>
         /// </exception>
-        public static Task ExecuteAsync<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10>(
-            [NotNull] Action<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10> callee,
+        public static Task<TResult> ComputeAsync<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, TResult>(
+            [NotNull] Func<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, TResult> callee,
             T1 arg1,
             T2 arg2,
             T3 arg3,
@@ -3438,16 +3397,12 @@ namespace Omnifactotum
             T9 arg9,
             T10 arg10)
         {
-            #region Argument Check
-
             if (callee == null)
             {
-                throw new ArgumentNullException("callee");
+                throw new ArgumentNullException(nameof(callee));
             }
 
-            #endregion
-
-            var task = CreateAndStartExecuteTask(
+            var task = CreateAndStartComputeTask(
                 () => callee(arg1, arg2, arg3, arg4, arg5, arg6, arg7, arg8, arg9, arg10),
                 callee.Method,
                 (LogErrorWithMessage)TraceErrorInternal,
@@ -3458,10 +3413,10 @@ namespace Omnifactotum
 
         #endregion
 
-        #region Public Methods: ExecuteAsync[11]
+        #region Public Methods: ComputeAsync[11]
 
         /// <summary>
-        ///     Executes the specified method asynchronously using the specified exception logging method.
+        ///     Computes a result of the specified method asynchronously using the specified exception logging method.
         /// </summary>
         /// <typeparam name="T1">
         ///     The type of the 1st argument of the method.
@@ -3495,6 +3450,9 @@ namespace Omnifactotum
         /// </typeparam>
         /// <typeparam name="T11">
         ///     The type of the 11th argument of the method.
+        /// </typeparam>
+        /// <typeparam name="TResult">
+        ///     The type of the result of the method.
         /// </typeparam>
         /// <param name="callee">
         ///     The method that is run asynchronously.
@@ -3544,8 +3502,8 @@ namespace Omnifactotum
         ///     <para>- or -</para>
         ///     <para><paramref name="logError"/> is <c>null</c>.</para>
         /// </exception>
-        public static Task ExecuteAsync<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11>(
-            [NotNull] Action<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11> callee,
+        public static Task<TResult> ComputeAsync<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, TResult>(
+            [NotNull] Func<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, TResult> callee,
             [NotNull] LogErrorWithExceptionAndMessage logError,
             T1 arg1,
             T2 arg2,
@@ -3559,21 +3517,17 @@ namespace Omnifactotum
             T10 arg10,
             T11 arg11)
         {
-            #region Argument Check
-
             if (callee == null)
             {
-                throw new ArgumentNullException("callee");
+                throw new ArgumentNullException(nameof(callee));
             }
 
             if (logError == null)
             {
-                throw new ArgumentNullException("logError");
+                throw new ArgumentNullException(nameof(logError));
             }
 
-            #endregion
-
-            var task = CreateAndStartExecuteTask(
+            var task = CreateAndStartComputeTask(
                 () => callee(arg1, arg2, arg3, arg4, arg5, arg6, arg7, arg8, arg9, arg10, arg11),
                 callee.Method,
                 logError,
@@ -3583,7 +3537,7 @@ namespace Omnifactotum
         }
 
         /// <summary>
-        ///     Executes the specified method asynchronously using the specified exception logging method.
+        ///     Computes a result of the specified method asynchronously using the specified exception logging method.
         /// </summary>
         /// <typeparam name="T1">
         ///     The type of the 1st argument of the method.
@@ -3617,6 +3571,9 @@ namespace Omnifactotum
         /// </typeparam>
         /// <typeparam name="T11">
         ///     The type of the 11th argument of the method.
+        /// </typeparam>
+        /// <typeparam name="TResult">
+        ///     The type of the result of the method.
         /// </typeparam>
         /// <param name="callee">
         ///     The method that is run asynchronously.
@@ -3666,8 +3623,8 @@ namespace Omnifactotum
         ///     <para>- or -</para>
         ///     <para><paramref name="logError"/> is <c>null</c>.</para>
         /// </exception>
-        public static Task ExecuteAsync<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11>(
-            [NotNull] Action<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11> callee,
+        public static Task<TResult> ComputeAsync<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, TResult>(
+            [NotNull] Func<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, TResult> callee,
             [NotNull] LogErrorWithException logError,
             T1 arg1,
             T2 arg2,
@@ -3681,21 +3638,17 @@ namespace Omnifactotum
             T10 arg10,
             T11 arg11)
         {
-            #region Argument Check
-
             if (callee == null)
             {
-                throw new ArgumentNullException("callee");
+                throw new ArgumentNullException(nameof(callee));
             }
 
             if (logError == null)
             {
-                throw new ArgumentNullException("logError");
+                throw new ArgumentNullException(nameof(logError));
             }
 
-            #endregion
-
-            var task = CreateAndStartExecuteTask(
+            var task = CreateAndStartComputeTask(
                 () => callee(arg1, arg2, arg3, arg4, arg5, arg6, arg7, arg8, arg9, arg10, arg11),
                 callee.Method,
                 logError,
@@ -3705,7 +3658,7 @@ namespace Omnifactotum
         }
 
         /// <summary>
-        ///     Executes the specified method asynchronously using the specified exception logging method.
+        ///     Computes a result of the specified method asynchronously using the specified exception logging method.
         /// </summary>
         /// <typeparam name="T1">
         ///     The type of the 1st argument of the method.
@@ -3739,6 +3692,9 @@ namespace Omnifactotum
         /// </typeparam>
         /// <typeparam name="T11">
         ///     The type of the 11th argument of the method.
+        /// </typeparam>
+        /// <typeparam name="TResult">
+        ///     The type of the result of the method.
         /// </typeparam>
         /// <param name="callee">
         ///     The method that is run asynchronously.
@@ -3788,8 +3744,8 @@ namespace Omnifactotum
         ///     <para>- or -</para>
         ///     <para><paramref name="logError"/> is <c>null</c>.</para>
         /// </exception>
-        public static Task ExecuteAsync<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11>(
-            [NotNull] Action<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11> callee,
+        public static Task<TResult> ComputeAsync<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, TResult>(
+            [NotNull] Func<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, TResult> callee,
             [NotNull] LogErrorWithMessage logError,
             T1 arg1,
             T2 arg2,
@@ -3803,21 +3759,17 @@ namespace Omnifactotum
             T10 arg10,
             T11 arg11)
         {
-            #region Argument Check
-
             if (callee == null)
             {
-                throw new ArgumentNullException("callee");
+                throw new ArgumentNullException(nameof(callee));
             }
 
             if (logError == null)
             {
-                throw new ArgumentNullException("logError");
+                throw new ArgumentNullException(nameof(logError));
             }
 
-            #endregion
-
-            var task = CreateAndStartExecuteTask(
+            var task = CreateAndStartComputeTask(
                 () => callee(arg1, arg2, arg3, arg4, arg5, arg6, arg7, arg8, arg9, arg10, arg11),
                 callee.Method,
                 logError,
@@ -3827,7 +3779,7 @@ namespace Omnifactotum
         }
 
         /// <summary>
-        ///     Executes the specified method asynchronously.
+        ///     Computes a result of the specified method asynchronously using the default options.
         ///     This method uses <see cref="Trace"/> to log asynchronous operation errors.
         /// </summary>
         /// <typeparam name="T1">
@@ -3863,6 +3815,9 @@ namespace Omnifactotum
         /// <typeparam name="T11">
         ///     The type of the 11th argument of the method.
         /// </typeparam>
+        /// <typeparam name="TResult">
+        ///     The type of the result of the method.
+        /// </typeparam>
         /// <param name="callee">
         ///     The method that is run asynchronously.
         /// </param>
@@ -3905,8 +3860,8 @@ namespace Omnifactotum
         /// <exception cref="System.ArgumentNullException">
         ///     <para><paramref name="callee"/> is <c>null</c>.</para>
         /// </exception>
-        public static Task ExecuteAsync<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11>(
-            [NotNull] Action<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11> callee,
+        public static Task<TResult> ComputeAsync<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, TResult>(
+            [NotNull] Func<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, TResult> callee,
             T1 arg1,
             T2 arg2,
             T3 arg3,
@@ -3919,16 +3874,12 @@ namespace Omnifactotum
             T10 arg10,
             T11 arg11)
         {
-            #region Argument Check
-
             if (callee == null)
             {
-                throw new ArgumentNullException("callee");
+                throw new ArgumentNullException(nameof(callee));
             }
 
-            #endregion
-
-            var task = CreateAndStartExecuteTask(
+            var task = CreateAndStartComputeTask(
                 () => callee(arg1, arg2, arg3, arg4, arg5, arg6, arg7, arg8, arg9, arg10, arg11),
                 callee.Method,
                 (LogErrorWithMessage)TraceErrorInternal,
@@ -3939,10 +3890,10 @@ namespace Omnifactotum
 
         #endregion
 
-        #region Public Methods: ExecuteAsync[12]
+        #region Public Methods: ComputeAsync[12]
 
         /// <summary>
-        ///     Executes the specified method asynchronously using the specified exception logging method.
+        ///     Computes a result of the specified method asynchronously using the specified exception logging method.
         /// </summary>
         /// <typeparam name="T1">
         ///     The type of the 1st argument of the method.
@@ -3979,6 +3930,9 @@ namespace Omnifactotum
         /// </typeparam>
         /// <typeparam name="T12">
         ///     The type of the 12th argument of the method.
+        /// </typeparam>
+        /// <typeparam name="TResult">
+        ///     The type of the result of the method.
         /// </typeparam>
         /// <param name="callee">
         ///     The method that is run asynchronously.
@@ -4031,8 +3985,8 @@ namespace Omnifactotum
         ///     <para>- or -</para>
         ///     <para><paramref name="logError"/> is <c>null</c>.</para>
         /// </exception>
-        public static Task ExecuteAsync<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12>(
-            [NotNull] Action<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12> callee,
+        public static Task<TResult> ComputeAsync<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, TResult>(
+            [NotNull] Func<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, TResult> callee,
             [NotNull] LogErrorWithExceptionAndMessage logError,
             T1 arg1,
             T2 arg2,
@@ -4047,21 +4001,17 @@ namespace Omnifactotum
             T11 arg11,
             T12 arg12)
         {
-            #region Argument Check
-
             if (callee == null)
             {
-                throw new ArgumentNullException("callee");
+                throw new ArgumentNullException(nameof(callee));
             }
 
             if (logError == null)
             {
-                throw new ArgumentNullException("logError");
+                throw new ArgumentNullException(nameof(logError));
             }
 
-            #endregion
-
-            var task = CreateAndStartExecuteTask(
+            var task = CreateAndStartComputeTask(
                 () => callee(arg1, arg2, arg3, arg4, arg5, arg6, arg7, arg8, arg9, arg10, arg11, arg12),
                 callee.Method,
                 logError,
@@ -4071,7 +4021,7 @@ namespace Omnifactotum
         }
 
         /// <summary>
-        ///     Executes the specified method asynchronously using the specified exception logging method.
+        ///     Computes a result of the specified method asynchronously using the specified exception logging method.
         /// </summary>
         /// <typeparam name="T1">
         ///     The type of the 1st argument of the method.
@@ -4108,6 +4058,9 @@ namespace Omnifactotum
         /// </typeparam>
         /// <typeparam name="T12">
         ///     The type of the 12th argument of the method.
+        /// </typeparam>
+        /// <typeparam name="TResult">
+        ///     The type of the result of the method.
         /// </typeparam>
         /// <param name="callee">
         ///     The method that is run asynchronously.
@@ -4160,8 +4113,8 @@ namespace Omnifactotum
         ///     <para>- or -</para>
         ///     <para><paramref name="logError"/> is <c>null</c>.</para>
         /// </exception>
-        public static Task ExecuteAsync<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12>(
-            [NotNull] Action<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12> callee,
+        public static Task<TResult> ComputeAsync<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, TResult>(
+            [NotNull] Func<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, TResult> callee,
             [NotNull] LogErrorWithException logError,
             T1 arg1,
             T2 arg2,
@@ -4176,21 +4129,17 @@ namespace Omnifactotum
             T11 arg11,
             T12 arg12)
         {
-            #region Argument Check
-
             if (callee == null)
             {
-                throw new ArgumentNullException("callee");
+                throw new ArgumentNullException(nameof(callee));
             }
 
             if (logError == null)
             {
-                throw new ArgumentNullException("logError");
+                throw new ArgumentNullException(nameof(logError));
             }
 
-            #endregion
-
-            var task = CreateAndStartExecuteTask(
+            var task = CreateAndStartComputeTask(
                 () => callee(arg1, arg2, arg3, arg4, arg5, arg6, arg7, arg8, arg9, arg10, arg11, arg12),
                 callee.Method,
                 logError,
@@ -4200,7 +4149,7 @@ namespace Omnifactotum
         }
 
         /// <summary>
-        ///     Executes the specified method asynchronously using the specified exception logging method.
+        ///     Computes a result of the specified method asynchronously using the specified exception logging method.
         /// </summary>
         /// <typeparam name="T1">
         ///     The type of the 1st argument of the method.
@@ -4237,6 +4186,9 @@ namespace Omnifactotum
         /// </typeparam>
         /// <typeparam name="T12">
         ///     The type of the 12th argument of the method.
+        /// </typeparam>
+        /// <typeparam name="TResult">
+        ///     The type of the result of the method.
         /// </typeparam>
         /// <param name="callee">
         ///     The method that is run asynchronously.
@@ -4289,8 +4241,8 @@ namespace Omnifactotum
         ///     <para>- or -</para>
         ///     <para><paramref name="logError"/> is <c>null</c>.</para>
         /// </exception>
-        public static Task ExecuteAsync<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12>(
-            [NotNull] Action<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12> callee,
+        public static Task<TResult> ComputeAsync<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, TResult>(
+            [NotNull] Func<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, TResult> callee,
             [NotNull] LogErrorWithMessage logError,
             T1 arg1,
             T2 arg2,
@@ -4305,21 +4257,17 @@ namespace Omnifactotum
             T11 arg11,
             T12 arg12)
         {
-            #region Argument Check
-
             if (callee == null)
             {
-                throw new ArgumentNullException("callee");
+                throw new ArgumentNullException(nameof(callee));
             }
 
             if (logError == null)
             {
-                throw new ArgumentNullException("logError");
+                throw new ArgumentNullException(nameof(logError));
             }
 
-            #endregion
-
-            var task = CreateAndStartExecuteTask(
+            var task = CreateAndStartComputeTask(
                 () => callee(arg1, arg2, arg3, arg4, arg5, arg6, arg7, arg8, arg9, arg10, arg11, arg12),
                 callee.Method,
                 logError,
@@ -4329,7 +4277,7 @@ namespace Omnifactotum
         }
 
         /// <summary>
-        ///     Executes the specified method asynchronously.
+        ///     Computes a result of the specified method asynchronously using the default options.
         ///     This method uses <see cref="Trace"/> to log asynchronous operation errors.
         /// </summary>
         /// <typeparam name="T1">
@@ -4368,6 +4316,9 @@ namespace Omnifactotum
         /// <typeparam name="T12">
         ///     The type of the 12th argument of the method.
         /// </typeparam>
+        /// <typeparam name="TResult">
+        ///     The type of the result of the method.
+        /// </typeparam>
         /// <param name="callee">
         ///     The method that is run asynchronously.
         /// </param>
@@ -4413,8 +4364,8 @@ namespace Omnifactotum
         /// <exception cref="System.ArgumentNullException">
         ///     <para><paramref name="callee"/> is <c>null</c>.</para>
         /// </exception>
-        public static Task ExecuteAsync<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12>(
-            [NotNull] Action<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12> callee,
+        public static Task<TResult> ComputeAsync<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, TResult>(
+            [NotNull] Func<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, TResult> callee,
             T1 arg1,
             T2 arg2,
             T3 arg3,
@@ -4428,16 +4379,12 @@ namespace Omnifactotum
             T11 arg11,
             T12 arg12)
         {
-            #region Argument Check
-
             if (callee == null)
             {
-                throw new ArgumentNullException("callee");
+                throw new ArgumentNullException(nameof(callee));
             }
 
-            #endregion
-
-            var task = CreateAndStartExecuteTask(
+            var task = CreateAndStartComputeTask(
                 () => callee(arg1, arg2, arg3, arg4, arg5, arg6, arg7, arg8, arg9, arg10, arg11, arg12),
                 callee.Method,
                 (LogErrorWithMessage)TraceErrorInternal,
@@ -4448,10 +4395,10 @@ namespace Omnifactotum
 
         #endregion
 
-        #region Public Methods: ExecuteAsync[13]
+        #region Public Methods: ComputeAsync[13]
 
         /// <summary>
-        ///     Executes the specified method asynchronously using the specified exception logging method.
+        ///     Computes a result of the specified method asynchronously using the specified exception logging method.
         /// </summary>
         /// <typeparam name="T1">
         ///     The type of the 1st argument of the method.
@@ -4491,6 +4438,9 @@ namespace Omnifactotum
         /// </typeparam>
         /// <typeparam name="T13">
         ///     The type of the 13th argument of the method.
+        /// </typeparam>
+        /// <typeparam name="TResult">
+        ///     The type of the result of the method.
         /// </typeparam>
         /// <param name="callee">
         ///     The method that is run asynchronously.
@@ -4546,8 +4496,8 @@ namespace Omnifactotum
         ///     <para>- or -</para>
         ///     <para><paramref name="logError"/> is <c>null</c>.</para>
         /// </exception>
-        public static Task ExecuteAsync<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13>(
-            [NotNull] Action<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13> callee,
+        public static Task<TResult> ComputeAsync<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, TResult>(
+            [NotNull] Func<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, TResult> callee,
             [NotNull] LogErrorWithExceptionAndMessage logError,
             T1 arg1,
             T2 arg2,
@@ -4563,21 +4513,17 @@ namespace Omnifactotum
             T12 arg12,
             T13 arg13)
         {
-            #region Argument Check
-
             if (callee == null)
             {
-                throw new ArgumentNullException("callee");
+                throw new ArgumentNullException(nameof(callee));
             }
 
             if (logError == null)
             {
-                throw new ArgumentNullException("logError");
+                throw new ArgumentNullException(nameof(logError));
             }
 
-            #endregion
-
-            var task = CreateAndStartExecuteTask(
+            var task = CreateAndStartComputeTask(
                 () => callee(arg1, arg2, arg3, arg4, arg5, arg6, arg7, arg8, arg9, arg10, arg11, arg12, arg13),
                 callee.Method,
                 logError,
@@ -4587,7 +4533,7 @@ namespace Omnifactotum
         }
 
         /// <summary>
-        ///     Executes the specified method asynchronously using the specified exception logging method.
+        ///     Computes a result of the specified method asynchronously using the specified exception logging method.
         /// </summary>
         /// <typeparam name="T1">
         ///     The type of the 1st argument of the method.
@@ -4627,6 +4573,9 @@ namespace Omnifactotum
         /// </typeparam>
         /// <typeparam name="T13">
         ///     The type of the 13th argument of the method.
+        /// </typeparam>
+        /// <typeparam name="TResult">
+        ///     The type of the result of the method.
         /// </typeparam>
         /// <param name="callee">
         ///     The method that is run asynchronously.
@@ -4682,8 +4631,8 @@ namespace Omnifactotum
         ///     <para>- or -</para>
         ///     <para><paramref name="logError"/> is <c>null</c>.</para>
         /// </exception>
-        public static Task ExecuteAsync<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13>(
-            [NotNull] Action<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13> callee,
+        public static Task<TResult> ComputeAsync<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, TResult>(
+            [NotNull] Func<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, TResult> callee,
             [NotNull] LogErrorWithException logError,
             T1 arg1,
             T2 arg2,
@@ -4699,21 +4648,17 @@ namespace Omnifactotum
             T12 arg12,
             T13 arg13)
         {
-            #region Argument Check
-
             if (callee == null)
             {
-                throw new ArgumentNullException("callee");
+                throw new ArgumentNullException(nameof(callee));
             }
 
             if (logError == null)
             {
-                throw new ArgumentNullException("logError");
+                throw new ArgumentNullException(nameof(logError));
             }
 
-            #endregion
-
-            var task = CreateAndStartExecuteTask(
+            var task = CreateAndStartComputeTask(
                 () => callee(arg1, arg2, arg3, arg4, arg5, arg6, arg7, arg8, arg9, arg10, arg11, arg12, arg13),
                 callee.Method,
                 logError,
@@ -4723,7 +4668,7 @@ namespace Omnifactotum
         }
 
         /// <summary>
-        ///     Executes the specified method asynchronously using the specified exception logging method.
+        ///     Computes a result of the specified method asynchronously using the specified exception logging method.
         /// </summary>
         /// <typeparam name="T1">
         ///     The type of the 1st argument of the method.
@@ -4763,6 +4708,9 @@ namespace Omnifactotum
         /// </typeparam>
         /// <typeparam name="T13">
         ///     The type of the 13th argument of the method.
+        /// </typeparam>
+        /// <typeparam name="TResult">
+        ///     The type of the result of the method.
         /// </typeparam>
         /// <param name="callee">
         ///     The method that is run asynchronously.
@@ -4818,8 +4766,8 @@ namespace Omnifactotum
         ///     <para>- or -</para>
         ///     <para><paramref name="logError"/> is <c>null</c>.</para>
         /// </exception>
-        public static Task ExecuteAsync<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13>(
-            [NotNull] Action<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13> callee,
+        public static Task<TResult> ComputeAsync<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, TResult>(
+            [NotNull] Func<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, TResult> callee,
             [NotNull] LogErrorWithMessage logError,
             T1 arg1,
             T2 arg2,
@@ -4835,21 +4783,17 @@ namespace Omnifactotum
             T12 arg12,
             T13 arg13)
         {
-            #region Argument Check
-
             if (callee == null)
             {
-                throw new ArgumentNullException("callee");
+                throw new ArgumentNullException(nameof(callee));
             }
 
             if (logError == null)
             {
-                throw new ArgumentNullException("logError");
+                throw new ArgumentNullException(nameof(logError));
             }
 
-            #endregion
-
-            var task = CreateAndStartExecuteTask(
+            var task = CreateAndStartComputeTask(
                 () => callee(arg1, arg2, arg3, arg4, arg5, arg6, arg7, arg8, arg9, arg10, arg11, arg12, arg13),
                 callee.Method,
                 logError,
@@ -4859,7 +4803,7 @@ namespace Omnifactotum
         }
 
         /// <summary>
-        ///     Executes the specified method asynchronously.
+        ///     Computes a result of the specified method asynchronously using the default options.
         ///     This method uses <see cref="Trace"/> to log asynchronous operation errors.
         /// </summary>
         /// <typeparam name="T1">
@@ -4901,6 +4845,9 @@ namespace Omnifactotum
         /// <typeparam name="T13">
         ///     The type of the 13th argument of the method.
         /// </typeparam>
+        /// <typeparam name="TResult">
+        ///     The type of the result of the method.
+        /// </typeparam>
         /// <param name="callee">
         ///     The method that is run asynchronously.
         /// </param>
@@ -4949,8 +4896,8 @@ namespace Omnifactotum
         /// <exception cref="System.ArgumentNullException">
         ///     <para><paramref name="callee"/> is <c>null</c>.</para>
         /// </exception>
-        public static Task ExecuteAsync<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13>(
-            [NotNull] Action<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13> callee,
+        public static Task<TResult> ComputeAsync<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, TResult>(
+            [NotNull] Func<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, TResult> callee,
             T1 arg1,
             T2 arg2,
             T3 arg3,
@@ -4965,16 +4912,12 @@ namespace Omnifactotum
             T12 arg12,
             T13 arg13)
         {
-            #region Argument Check
-
             if (callee == null)
             {
-                throw new ArgumentNullException("callee");
+                throw new ArgumentNullException(nameof(callee));
             }
 
-            #endregion
-
-            var task = CreateAndStartExecuteTask(
+            var task = CreateAndStartComputeTask(
                 () => callee(arg1, arg2, arg3, arg4, arg5, arg6, arg7, arg8, arg9, arg10, arg11, arg12, arg13),
                 callee.Method,
                 (LogErrorWithMessage)TraceErrorInternal,
@@ -4985,10 +4928,10 @@ namespace Omnifactotum
 
         #endregion
 
-        #region Public Methods: ExecuteAsync[14]
+        #region Public Methods: ComputeAsync[14]
 
         /// <summary>
-        ///     Executes the specified method asynchronously using the specified exception logging method.
+        ///     Computes a result of the specified method asynchronously using the specified exception logging method.
         /// </summary>
         /// <typeparam name="T1">
         ///     The type of the 1st argument of the method.
@@ -5031,6 +4974,9 @@ namespace Omnifactotum
         /// </typeparam>
         /// <typeparam name="T14">
         ///     The type of the 14th argument of the method.
+        /// </typeparam>
+        /// <typeparam name="TResult">
+        ///     The type of the result of the method.
         /// </typeparam>
         /// <param name="callee">
         ///     The method that is run asynchronously.
@@ -5089,8 +5035,8 @@ namespace Omnifactotum
         ///     <para>- or -</para>
         ///     <para><paramref name="logError"/> is <c>null</c>.</para>
         /// </exception>
-        public static Task ExecuteAsync<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, T14>(
-            [NotNull] Action<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, T14> callee,
+        public static Task<TResult> ComputeAsync<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, T14, TResult>(
+            [NotNull] Func<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, T14, TResult> callee,
             [NotNull] LogErrorWithExceptionAndMessage logError,
             T1 arg1,
             T2 arg2,
@@ -5107,21 +5053,17 @@ namespace Omnifactotum
             T13 arg13,
             T14 arg14)
         {
-            #region Argument Check
-
             if (callee == null)
             {
-                throw new ArgumentNullException("callee");
+                throw new ArgumentNullException(nameof(callee));
             }
 
             if (logError == null)
             {
-                throw new ArgumentNullException("logError");
+                throw new ArgumentNullException(nameof(logError));
             }
 
-            #endregion
-
-            var task = CreateAndStartExecuteTask(
+            var task = CreateAndStartComputeTask(
                 () => callee(arg1, arg2, arg3, arg4, arg5, arg6, arg7, arg8, arg9, arg10, arg11, arg12, arg13, arg14),
                 callee.Method,
                 logError,
@@ -5131,7 +5073,7 @@ namespace Omnifactotum
         }
 
         /// <summary>
-        ///     Executes the specified method asynchronously using the specified exception logging method.
+        ///     Computes a result of the specified method asynchronously using the specified exception logging method.
         /// </summary>
         /// <typeparam name="T1">
         ///     The type of the 1st argument of the method.
@@ -5174,6 +5116,9 @@ namespace Omnifactotum
         /// </typeparam>
         /// <typeparam name="T14">
         ///     The type of the 14th argument of the method.
+        /// </typeparam>
+        /// <typeparam name="TResult">
+        ///     The type of the result of the method.
         /// </typeparam>
         /// <param name="callee">
         ///     The method that is run asynchronously.
@@ -5232,8 +5177,8 @@ namespace Omnifactotum
         ///     <para>- or -</para>
         ///     <para><paramref name="logError"/> is <c>null</c>.</para>
         /// </exception>
-        public static Task ExecuteAsync<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, T14>(
-            [NotNull] Action<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, T14> callee,
+        public static Task<TResult> ComputeAsync<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, T14, TResult>(
+            [NotNull] Func<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, T14, TResult> callee,
             [NotNull] LogErrorWithException logError,
             T1 arg1,
             T2 arg2,
@@ -5250,21 +5195,17 @@ namespace Omnifactotum
             T13 arg13,
             T14 arg14)
         {
-            #region Argument Check
-
             if (callee == null)
             {
-                throw new ArgumentNullException("callee");
+                throw new ArgumentNullException(nameof(callee));
             }
 
             if (logError == null)
             {
-                throw new ArgumentNullException("logError");
+                throw new ArgumentNullException(nameof(logError));
             }
 
-            #endregion
-
-            var task = CreateAndStartExecuteTask(
+            var task = CreateAndStartComputeTask(
                 () => callee(arg1, arg2, arg3, arg4, arg5, arg6, arg7, arg8, arg9, arg10, arg11, arg12, arg13, arg14),
                 callee.Method,
                 logError,
@@ -5274,7 +5215,7 @@ namespace Omnifactotum
         }
 
         /// <summary>
-        ///     Executes the specified method asynchronously using the specified exception logging method.
+        ///     Computes a result of the specified method asynchronously using the specified exception logging method.
         /// </summary>
         /// <typeparam name="T1">
         ///     The type of the 1st argument of the method.
@@ -5317,6 +5258,9 @@ namespace Omnifactotum
         /// </typeparam>
         /// <typeparam name="T14">
         ///     The type of the 14th argument of the method.
+        /// </typeparam>
+        /// <typeparam name="TResult">
+        ///     The type of the result of the method.
         /// </typeparam>
         /// <param name="callee">
         ///     The method that is run asynchronously.
@@ -5375,8 +5319,8 @@ namespace Omnifactotum
         ///     <para>- or -</para>
         ///     <para><paramref name="logError"/> is <c>null</c>.</para>
         /// </exception>
-        public static Task ExecuteAsync<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, T14>(
-            [NotNull] Action<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, T14> callee,
+        public static Task<TResult> ComputeAsync<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, T14, TResult>(
+            [NotNull] Func<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, T14, TResult> callee,
             [NotNull] LogErrorWithMessage logError,
             T1 arg1,
             T2 arg2,
@@ -5393,21 +5337,17 @@ namespace Omnifactotum
             T13 arg13,
             T14 arg14)
         {
-            #region Argument Check
-
             if (callee == null)
             {
-                throw new ArgumentNullException("callee");
+                throw new ArgumentNullException(nameof(callee));
             }
 
             if (logError == null)
             {
-                throw new ArgumentNullException("logError");
+                throw new ArgumentNullException(nameof(logError));
             }
 
-            #endregion
-
-            var task = CreateAndStartExecuteTask(
+            var task = CreateAndStartComputeTask(
                 () => callee(arg1, arg2, arg3, arg4, arg5, arg6, arg7, arg8, arg9, arg10, arg11, arg12, arg13, arg14),
                 callee.Method,
                 logError,
@@ -5417,7 +5357,7 @@ namespace Omnifactotum
         }
 
         /// <summary>
-        ///     Executes the specified method asynchronously.
+        ///     Computes a result of the specified method asynchronously using the default options.
         ///     This method uses <see cref="Trace"/> to log asynchronous operation errors.
         /// </summary>
         /// <typeparam name="T1">
@@ -5462,6 +5402,9 @@ namespace Omnifactotum
         /// <typeparam name="T14">
         ///     The type of the 14th argument of the method.
         /// </typeparam>
+        /// <typeparam name="TResult">
+        ///     The type of the result of the method.
+        /// </typeparam>
         /// <param name="callee">
         ///     The method that is run asynchronously.
         /// </param>
@@ -5513,8 +5456,8 @@ namespace Omnifactotum
         /// <exception cref="System.ArgumentNullException">
         ///     <para><paramref name="callee"/> is <c>null</c>.</para>
         /// </exception>
-        public static Task ExecuteAsync<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, T14>(
-            [NotNull] Action<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, T14> callee,
+        public static Task<TResult> ComputeAsync<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, T14, TResult>(
+            [NotNull] Func<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, T14, TResult> callee,
             T1 arg1,
             T2 arg2,
             T3 arg3,
@@ -5530,16 +5473,12 @@ namespace Omnifactotum
             T13 arg13,
             T14 arg14)
         {
-            #region Argument Check
-
             if (callee == null)
             {
-                throw new ArgumentNullException("callee");
+                throw new ArgumentNullException(nameof(callee));
             }
 
-            #endregion
-
-            var task = CreateAndStartExecuteTask(
+            var task = CreateAndStartComputeTask(
                 () => callee(arg1, arg2, arg3, arg4, arg5, arg6, arg7, arg8, arg9, arg10, arg11, arg12, arg13, arg14),
                 callee.Method,
                 (LogErrorWithMessage)TraceErrorInternal,
@@ -5550,10 +5489,10 @@ namespace Omnifactotum
 
         #endregion
 
-        #region Public Methods: ExecuteAsync[15]
+        #region Public Methods: ComputeAsync[15]
 
         /// <summary>
-        ///     Executes the specified method asynchronously using the specified exception logging method.
+        ///     Computes a result of the specified method asynchronously using the specified exception logging method.
         /// </summary>
         /// <typeparam name="T1">
         ///     The type of the 1st argument of the method.
@@ -5599,6 +5538,9 @@ namespace Omnifactotum
         /// </typeparam>
         /// <typeparam name="T15">
         ///     The type of the 15th argument of the method.
+        /// </typeparam>
+        /// <typeparam name="TResult">
+        ///     The type of the result of the method.
         /// </typeparam>
         /// <param name="callee">
         ///     The method that is run asynchronously.
@@ -5660,8 +5602,8 @@ namespace Omnifactotum
         ///     <para>- or -</para>
         ///     <para><paramref name="logError"/> is <c>null</c>.</para>
         /// </exception>
-        public static Task ExecuteAsync<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, T14, T15>(
-            [NotNull] Action<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, T14, T15> callee,
+        public static Task<TResult> ComputeAsync<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, T14, T15, TResult>(
+            [NotNull] Func<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, T14, T15, TResult> callee,
             [NotNull] LogErrorWithExceptionAndMessage logError,
             T1 arg1,
             T2 arg2,
@@ -5679,21 +5621,17 @@ namespace Omnifactotum
             T14 arg14,
             T15 arg15)
         {
-            #region Argument Check
-
             if (callee == null)
             {
-                throw new ArgumentNullException("callee");
+                throw new ArgumentNullException(nameof(callee));
             }
 
             if (logError == null)
             {
-                throw new ArgumentNullException("logError");
+                throw new ArgumentNullException(nameof(logError));
             }
 
-            #endregion
-
-            var task = CreateAndStartExecuteTask(
+            var task = CreateAndStartComputeTask(
                 () => callee(arg1, arg2, arg3, arg4, arg5, arg6, arg7, arg8, arg9, arg10, arg11, arg12, arg13, arg14, arg15),
                 callee.Method,
                 logError,
@@ -5703,7 +5641,7 @@ namespace Omnifactotum
         }
 
         /// <summary>
-        ///     Executes the specified method asynchronously using the specified exception logging method.
+        ///     Computes a result of the specified method asynchronously using the specified exception logging method.
         /// </summary>
         /// <typeparam name="T1">
         ///     The type of the 1st argument of the method.
@@ -5749,6 +5687,9 @@ namespace Omnifactotum
         /// </typeparam>
         /// <typeparam name="T15">
         ///     The type of the 15th argument of the method.
+        /// </typeparam>
+        /// <typeparam name="TResult">
+        ///     The type of the result of the method.
         /// </typeparam>
         /// <param name="callee">
         ///     The method that is run asynchronously.
@@ -5810,8 +5751,8 @@ namespace Omnifactotum
         ///     <para>- or -</para>
         ///     <para><paramref name="logError"/> is <c>null</c>.</para>
         /// </exception>
-        public static Task ExecuteAsync<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, T14, T15>(
-            [NotNull] Action<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, T14, T15> callee,
+        public static Task<TResult> ComputeAsync<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, T14, T15, TResult>(
+            [NotNull] Func<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, T14, T15, TResult> callee,
             [NotNull] LogErrorWithException logError,
             T1 arg1,
             T2 arg2,
@@ -5829,21 +5770,17 @@ namespace Omnifactotum
             T14 arg14,
             T15 arg15)
         {
-            #region Argument Check
-
             if (callee == null)
             {
-                throw new ArgumentNullException("callee");
+                throw new ArgumentNullException(nameof(callee));
             }
 
             if (logError == null)
             {
-                throw new ArgumentNullException("logError");
+                throw new ArgumentNullException(nameof(logError));
             }
 
-            #endregion
-
-            var task = CreateAndStartExecuteTask(
+            var task = CreateAndStartComputeTask(
                 () => callee(arg1, arg2, arg3, arg4, arg5, arg6, arg7, arg8, arg9, arg10, arg11, arg12, arg13, arg14, arg15),
                 callee.Method,
                 logError,
@@ -5853,7 +5790,7 @@ namespace Omnifactotum
         }
 
         /// <summary>
-        ///     Executes the specified method asynchronously using the specified exception logging method.
+        ///     Computes a result of the specified method asynchronously using the specified exception logging method.
         /// </summary>
         /// <typeparam name="T1">
         ///     The type of the 1st argument of the method.
@@ -5899,6 +5836,9 @@ namespace Omnifactotum
         /// </typeparam>
         /// <typeparam name="T15">
         ///     The type of the 15th argument of the method.
+        /// </typeparam>
+        /// <typeparam name="TResult">
+        ///     The type of the result of the method.
         /// </typeparam>
         /// <param name="callee">
         ///     The method that is run asynchronously.
@@ -5960,8 +5900,8 @@ namespace Omnifactotum
         ///     <para>- or -</para>
         ///     <para><paramref name="logError"/> is <c>null</c>.</para>
         /// </exception>
-        public static Task ExecuteAsync<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, T14, T15>(
-            [NotNull] Action<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, T14, T15> callee,
+        public static Task<TResult> ComputeAsync<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, T14, T15, TResult>(
+            [NotNull] Func<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, T14, T15, TResult> callee,
             [NotNull] LogErrorWithMessage logError,
             T1 arg1,
             T2 arg2,
@@ -5979,21 +5919,17 @@ namespace Omnifactotum
             T14 arg14,
             T15 arg15)
         {
-            #region Argument Check
-
             if (callee == null)
             {
-                throw new ArgumentNullException("callee");
+                throw new ArgumentNullException(nameof(callee));
             }
 
             if (logError == null)
             {
-                throw new ArgumentNullException("logError");
+                throw new ArgumentNullException(nameof(logError));
             }
 
-            #endregion
-
-            var task = CreateAndStartExecuteTask(
+            var task = CreateAndStartComputeTask(
                 () => callee(arg1, arg2, arg3, arg4, arg5, arg6, arg7, arg8, arg9, arg10, arg11, arg12, arg13, arg14, arg15),
                 callee.Method,
                 logError,
@@ -6003,7 +5939,7 @@ namespace Omnifactotum
         }
 
         /// <summary>
-        ///     Executes the specified method asynchronously.
+        ///     Computes a result of the specified method asynchronously using the default options.
         ///     This method uses <see cref="Trace"/> to log asynchronous operation errors.
         /// </summary>
         /// <typeparam name="T1">
@@ -6051,6 +5987,9 @@ namespace Omnifactotum
         /// <typeparam name="T15">
         ///     The type of the 15th argument of the method.
         /// </typeparam>
+        /// <typeparam name="TResult">
+        ///     The type of the result of the method.
+        /// </typeparam>
         /// <param name="callee">
         ///     The method that is run asynchronously.
         /// </param>
@@ -6105,8 +6044,8 @@ namespace Omnifactotum
         /// <exception cref="System.ArgumentNullException">
         ///     <para><paramref name="callee"/> is <c>null</c>.</para>
         /// </exception>
-        public static Task ExecuteAsync<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, T14, T15>(
-            [NotNull] Action<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, T14, T15> callee,
+        public static Task<TResult> ComputeAsync<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, T14, T15, TResult>(
+            [NotNull] Func<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, T14, T15, TResult> callee,
             T1 arg1,
             T2 arg2,
             T3 arg3,
@@ -6123,16 +6062,12 @@ namespace Omnifactotum
             T14 arg14,
             T15 arg15)
         {
-            #region Argument Check
-
             if (callee == null)
             {
-                throw new ArgumentNullException("callee");
+                throw new ArgumentNullException(nameof(callee));
             }
 
-            #endregion
-
-            var task = CreateAndStartExecuteTask(
+            var task = CreateAndStartComputeTask(
                 () => callee(arg1, arg2, arg3, arg4, arg5, arg6, arg7, arg8, arg9, arg10, arg11, arg12, arg13, arg14, arg15),
                 callee.Method,
                 (LogErrorWithMessage)TraceErrorInternal,
@@ -6143,10 +6078,10 @@ namespace Omnifactotum
 
         #endregion
 
-        #region Public Methods: ExecuteAsync[16]
+        #region Public Methods: ComputeAsync[16]
 
         /// <summary>
-        ///     Executes the specified method asynchronously using the specified exception logging method.
+        ///     Computes a result of the specified method asynchronously using the specified exception logging method.
         /// </summary>
         /// <typeparam name="T1">
         ///     The type of the 1st argument of the method.
@@ -6195,6 +6130,9 @@ namespace Omnifactotum
         /// </typeparam>
         /// <typeparam name="T16">
         ///     The type of the 16th argument of the method.
+        /// </typeparam>
+        /// <typeparam name="TResult">
+        ///     The type of the result of the method.
         /// </typeparam>
         /// <param name="callee">
         ///     The method that is run asynchronously.
@@ -6259,8 +6197,8 @@ namespace Omnifactotum
         ///     <para>- or -</para>
         ///     <para><paramref name="logError"/> is <c>null</c>.</para>
         /// </exception>
-        public static Task ExecuteAsync<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, T14, T15, T16>(
-            [NotNull] Action<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, T14, T15, T16> callee,
+        public static Task<TResult> ComputeAsync<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, T14, T15, T16, TResult>(
+            [NotNull] Func<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, T14, T15, T16, TResult> callee,
             [NotNull] LogErrorWithExceptionAndMessage logError,
             T1 arg1,
             T2 arg2,
@@ -6279,21 +6217,17 @@ namespace Omnifactotum
             T15 arg15,
             T16 arg16)
         {
-            #region Argument Check
-
             if (callee == null)
             {
-                throw new ArgumentNullException("callee");
+                throw new ArgumentNullException(nameof(callee));
             }
 
             if (logError == null)
             {
-                throw new ArgumentNullException("logError");
+                throw new ArgumentNullException(nameof(logError));
             }
 
-            #endregion
-
-            var task = CreateAndStartExecuteTask(
+            var task = CreateAndStartComputeTask(
                 () => callee(arg1, arg2, arg3, arg4, arg5, arg6, arg7, arg8, arg9, arg10, arg11, arg12, arg13, arg14, arg15, arg16),
                 callee.Method,
                 logError,
@@ -6303,7 +6237,7 @@ namespace Omnifactotum
         }
 
         /// <summary>
-        ///     Executes the specified method asynchronously using the specified exception logging method.
+        ///     Computes a result of the specified method asynchronously using the specified exception logging method.
         /// </summary>
         /// <typeparam name="T1">
         ///     The type of the 1st argument of the method.
@@ -6352,6 +6286,9 @@ namespace Omnifactotum
         /// </typeparam>
         /// <typeparam name="T16">
         ///     The type of the 16th argument of the method.
+        /// </typeparam>
+        /// <typeparam name="TResult">
+        ///     The type of the result of the method.
         /// </typeparam>
         /// <param name="callee">
         ///     The method that is run asynchronously.
@@ -6416,8 +6353,8 @@ namespace Omnifactotum
         ///     <para>- or -</para>
         ///     <para><paramref name="logError"/> is <c>null</c>.</para>
         /// </exception>
-        public static Task ExecuteAsync<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, T14, T15, T16>(
-            [NotNull] Action<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, T14, T15, T16> callee,
+        public static Task<TResult> ComputeAsync<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, T14, T15, T16, TResult>(
+            [NotNull] Func<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, T14, T15, T16, TResult> callee,
             [NotNull] LogErrorWithException logError,
             T1 arg1,
             T2 arg2,
@@ -6436,21 +6373,17 @@ namespace Omnifactotum
             T15 arg15,
             T16 arg16)
         {
-            #region Argument Check
-
             if (callee == null)
             {
-                throw new ArgumentNullException("callee");
+                throw new ArgumentNullException(nameof(callee));
             }
 
             if (logError == null)
             {
-                throw new ArgumentNullException("logError");
+                throw new ArgumentNullException(nameof(logError));
             }
 
-            #endregion
-
-            var task = CreateAndStartExecuteTask(
+            var task = CreateAndStartComputeTask(
                 () => callee(arg1, arg2, arg3, arg4, arg5, arg6, arg7, arg8, arg9, arg10, arg11, arg12, arg13, arg14, arg15, arg16),
                 callee.Method,
                 logError,
@@ -6460,7 +6393,7 @@ namespace Omnifactotum
         }
 
         /// <summary>
-        ///     Executes the specified method asynchronously using the specified exception logging method.
+        ///     Computes a result of the specified method asynchronously using the specified exception logging method.
         /// </summary>
         /// <typeparam name="T1">
         ///     The type of the 1st argument of the method.
@@ -6509,6 +6442,9 @@ namespace Omnifactotum
         /// </typeparam>
         /// <typeparam name="T16">
         ///     The type of the 16th argument of the method.
+        /// </typeparam>
+        /// <typeparam name="TResult">
+        ///     The type of the result of the method.
         /// </typeparam>
         /// <param name="callee">
         ///     The method that is run asynchronously.
@@ -6573,8 +6509,8 @@ namespace Omnifactotum
         ///     <para>- or -</para>
         ///     <para><paramref name="logError"/> is <c>null</c>.</para>
         /// </exception>
-        public static Task ExecuteAsync<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, T14, T15, T16>(
-            [NotNull] Action<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, T14, T15, T16> callee,
+        public static Task<TResult> ComputeAsync<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, T14, T15, T16, TResult>(
+            [NotNull] Func<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, T14, T15, T16, TResult> callee,
             [NotNull] LogErrorWithMessage logError,
             T1 arg1,
             T2 arg2,
@@ -6593,21 +6529,17 @@ namespace Omnifactotum
             T15 arg15,
             T16 arg16)
         {
-            #region Argument Check
-
             if (callee == null)
             {
-                throw new ArgumentNullException("callee");
+                throw new ArgumentNullException(nameof(callee));
             }
 
             if (logError == null)
             {
-                throw new ArgumentNullException("logError");
+                throw new ArgumentNullException(nameof(logError));
             }
 
-            #endregion
-
-            var task = CreateAndStartExecuteTask(
+            var task = CreateAndStartComputeTask(
                 () => callee(arg1, arg2, arg3, arg4, arg5, arg6, arg7, arg8, arg9, arg10, arg11, arg12, arg13, arg14, arg15, arg16),
                 callee.Method,
                 logError,
@@ -6617,7 +6549,7 @@ namespace Omnifactotum
         }
 
         /// <summary>
-        ///     Executes the specified method asynchronously.
+        ///     Computes a result of the specified method asynchronously using the default options.
         ///     This method uses <see cref="Trace"/> to log asynchronous operation errors.
         /// </summary>
         /// <typeparam name="T1">
@@ -6668,6 +6600,9 @@ namespace Omnifactotum
         /// <typeparam name="T16">
         ///     The type of the 16th argument of the method.
         /// </typeparam>
+        /// <typeparam name="TResult">
+        ///     The type of the result of the method.
+        /// </typeparam>
         /// <param name="callee">
         ///     The method that is run asynchronously.
         /// </param>
@@ -6725,8 +6660,8 @@ namespace Omnifactotum
         /// <exception cref="System.ArgumentNullException">
         ///     <para><paramref name="callee"/> is <c>null</c>.</para>
         /// </exception>
-        public static Task ExecuteAsync<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, T14, T15, T16>(
-            [NotNull] Action<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, T14, T15, T16> callee,
+        public static Task<TResult> ComputeAsync<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, T14, T15, T16, TResult>(
+            [NotNull] Func<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, T14, T15, T16, TResult> callee,
             T1 arg1,
             T2 arg2,
             T3 arg3,
@@ -6744,16 +6679,12 @@ namespace Omnifactotum
             T15 arg15,
             T16 arg16)
         {
-            #region Argument Check
-
             if (callee == null)
             {
-                throw new ArgumentNullException("callee");
+                throw new ArgumentNullException(nameof(callee));
             }
 
-            #endregion
-
-            var task = CreateAndStartExecuteTask(
+            var task = CreateAndStartComputeTask(
                 () => callee(arg1, arg2, arg3, arg4, arg5, arg6, arg7, arg8, arg9, arg10, arg11, arg12, arg13, arg14, arg15, arg16),
                 callee.Method,
                 (LogErrorWithMessage)TraceErrorInternal,

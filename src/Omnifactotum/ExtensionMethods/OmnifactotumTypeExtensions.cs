@@ -1,8 +1,6 @@
-﻿using System;
-using System.CodeDom;
+﻿using System.CodeDom;
 using System.Collections;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Text;
@@ -18,8 +16,6 @@ namespace System
     /// </summary>
     public static class OmnifactotumTypeExtensions
     {
-        #region Constants and Fields
-
         /// <summary>
         ///     The generic argument delimiter.
         /// </summary>
@@ -29,10 +25,6 @@ namespace System
         ///     A reference to <see cref="CSharpCodeProvider"/> instance.
         /// </summary>
         private static readonly CSharpCodeProvider CSharpCodeProviderInstance = new CSharpCodeProvider();
-
-        #endregion
-
-        #region Public Methods
 
         /// <summary>
         ///     Loads the specified manifest resource, scoped by the namespace of the specified
@@ -56,8 +48,6 @@ namespace System
         /// </exception>
         public static Stream GetManifestResourceStream([NotNull] this Type type, [NotNull] string name)
         {
-            #region Argument Check
-
             if (type == null)
             {
                 throw new ArgumentNullException("type");
@@ -67,8 +57,6 @@ namespace System
             {
                 throw new ArgumentException("The value can be neither empty string nor null.", "name");
             }
-
-            #endregion
 
             return type.Assembly.GetManifestResourceStream(type, name);
         }
@@ -189,14 +177,10 @@ namespace System
         /// </returns>
         public static bool IsNullable([NotNull] this Type type)
         {
-            #region Argument Check
-
             if (type == null)
             {
                 throw new ArgumentNullException("type");
             }
-
-            #endregion
 
             return type.IsGenericType
                 && !type.IsGenericTypeDefinition
@@ -219,14 +203,10 @@ namespace System
         /// </returns>
         public static Type GetCollectionElementType([NotNull] this Type type)
         {
-            #region Argument Check
-
             if (type == null)
             {
                 throw new ArgumentNullException("type");
             }
-
-            #endregion
 
             if (type.HasElementType && type.IsArray)
             {
@@ -262,10 +242,6 @@ namespace System
 
             return typeof(IEnumerable).IsAssignableFrom(type) ? typeof(object) : null;
         }
-
-        #endregion
-
-        #region Internal Methods
 
         /// <summary>
         ///     Gets the short type name.
@@ -343,10 +319,6 @@ namespace System
             return result;
         }
 
-        #endregion
-
-        #region Private Methods
-
         private static void GetNameInternal(
             [NotNull] StringBuilder resultBuilder,
             [NotNull] Type type,
@@ -354,8 +326,6 @@ namespace System
             [CanBeNull] List<Type> genericParameters,
             ref int genericParameterOffset)
         {
-            #region Argument Check
-
             if (resultBuilder == null)
             {
                 throw new ArgumentNullException("resultBuilder");
@@ -370,8 +340,6 @@ namespace System
             {
                 throw new ArgumentOutOfRangeException("genericParameterOffset", genericParameterOffset, null);
             }
-
-            #endregion
 
             if (type.IsGenericType && (genericParameters == null))
             {
@@ -494,7 +462,5 @@ namespace System
 
             return result;
         }
-
-        #endregion
     }
 }

@@ -13,14 +13,8 @@ namespace Omnifactotum.Tests.ExtensionMethods
     [TestFixture]
     public sealed class OmnifactotumArrayExtensionsTests
     {
-        #region Constants and Fields
-
         private static readonly string[] NullArray = null;
         private static readonly byte[] NullByteArray = null;
-
-        #endregion
-
-        #region Tests
 
         [Test]
         public void TestCopyNull()
@@ -157,23 +151,13 @@ namespace Omnifactotum.Tests.ExtensionMethods
             Assert.That(hexString, Is.EqualTo(ExpectedValue));
         }
 
-        #endregion
-
-        #region CopyableObject Class
-
         private sealed class CopyableObject : ICloneable
         {
-            #region Public Properties
-
             public int Value
             {
                 private get;
                 set;
             }
-
-            #endregion
-
-            #region Public Methods
 
             [UsedImplicitly]
             public CopyableObject Copy()
@@ -181,18 +165,10 @@ namespace Omnifactotum.Tests.ExtensionMethods
                 return new CopyableObject { Value = this.Value };
             }
 
-            #endregion
-
-            #region ICloneable Members
-
             public object Clone()
             {
                 return Copy();
             }
-
-            #endregion
         }
-
-        #endregion
     }
 }

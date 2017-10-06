@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Linq;
 
 namespace Omnifactotum.Validation.Constraints
 {
@@ -8,8 +7,6 @@ namespace Omnifactotum.Validation.Constraints
     /// </summary>
     public sealed class NotNullOrEmptyStringConstraint : TypedMemberConstraintBase<string>
     {
-        #region Protected Methods
-
         /// <summary>
         ///     Validates the specified strongly-typed value is scope of the specified context.
         /// </summary>
@@ -34,7 +31,5 @@ namespace Omnifactotum.Validation.Constraints
 
             AddError(validatorContext, memberContext, "The value must not be null or an empty string.");
         }
-
-        #endregion
     }
 }

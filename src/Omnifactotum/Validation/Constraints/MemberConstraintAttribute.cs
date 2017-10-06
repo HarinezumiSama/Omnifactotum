@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Linq;
 
 namespace Omnifactotum.Validation.Constraints
 {
@@ -9,8 +8,6 @@ namespace Omnifactotum.Validation.Constraints
     [AttributeUsage(AttributeTargets.Field | AttributeTargets.Property, AllowMultiple = true, Inherited = true)]
     public sealed class MemberConstraintAttribute : BaseMemberConstraintAttribute
     {
-        #region Constructors
-
         /// <summary>
         ///     Initializes a new instance of the <see cref="MemberConstraintAttribute"/> class.
         /// </summary>
@@ -24,7 +21,5 @@ namespace Omnifactotum.Validation.Constraints
         {
             // Nothing to do
         }
-
-        #endregion
     }
 }

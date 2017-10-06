@@ -1,8 +1,6 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Diagnostics;
 using System.Globalization;
-using System.Linq;
 using System.Reflection;
 using Omnifactotum.Annotations;
 
@@ -13,15 +11,9 @@ namespace Omnifactotum
     /// </summary>
     public static class WinEventLog
     {
-        #region Constants and Fields
-
         private const string LogName = "Application";
 
         private static volatile string _defaultSource;
-
-        #endregion
-
-        #region Public Properties
 
         /// <summary>
         ///     Gets or sets the default source for the entries written
@@ -43,10 +35,6 @@ namespace Omnifactotum
             }
         }
 
-        #endregion
-
-        #region Public Methods
-
         /// <summary>
         ///     Writes the specified message to the <b>Windows Event Log</b>.
         /// </summary>
@@ -61,8 +49,6 @@ namespace Omnifactotum
         /// </param>
         public static void Write([NotNull] string source, EventLogEntryType type, [NotNull] string message)
         {
-            #region Argument Check
-
             if (string.IsNullOrWhiteSpace(source))
             {
                 throw new ArgumentException(
@@ -74,8 +60,6 @@ namespace Omnifactotum
             {
                 throw new ArgumentNullException("message");
             }
-
-            #endregion
 
             try
             {
@@ -176,10 +160,6 @@ namespace Omnifactotum
             Write(type, message);
         }
 
-        #endregion
-
-        #region Private Methods
-
         [NotNull]
         private static string GetDefaultSource()
         {
@@ -194,7 +174,5 @@ namespace Omnifactotum
 
             return result;
         }
-
-        #endregion
     }
 }

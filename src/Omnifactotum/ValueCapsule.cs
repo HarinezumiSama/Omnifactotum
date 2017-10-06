@@ -1,6 +1,4 @@
-﻿using System;
-using System.Linq;
-using Omnifactotum.Annotations;
+﻿using Omnifactotum.Annotations;
 
 namespace Omnifactotum
 {
@@ -12,8 +10,6 @@ namespace Omnifactotum
     /// </typeparam>
     public abstract class ValueCapsule<T>
     {
-        #region Constructors
-
         /// <summary>
         ///     Initializes a new instance of the <see cref="ValueCapsule{T}"/> class
         ///     using the specified value.
@@ -23,12 +19,8 @@ namespace Omnifactotum
         /// </param>
         protected ValueCapsule([CanBeNull] T value)
         {
-            this.Value = value;
+            Value = value;
         }
-
-        #endregion
-
-        #region Public Properties
 
         /// <summary>
         ///     Gets the contained value.
@@ -38,7 +30,5 @@ namespace Omnifactotum
             get;
             private set;
         }
-
-        #endregion
     }
 }

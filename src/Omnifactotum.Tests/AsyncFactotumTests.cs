@@ -1,6 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
 using NUnit.Framework;
 
 namespace Omnifactotum.Tests
@@ -8,15 +6,9 @@ namespace Omnifactotum.Tests
     [TestFixture]
     public sealed class AsyncFactotumTests
     {
-        #region Constants and Fields
-
         private const int ExpectedResult = 9;
 
         private static readonly TimeSpan TaskWaitTime = TimeSpan.FromSeconds(5);
-
-        #endregion
-
-        #region Tests
 
         [Test]
         public void TestComputeAsyncWith8ArgumentsWhenUnderlyingMethodSucceeds()
@@ -37,10 +29,6 @@ namespace Omnifactotum.Tests
 
             Assert.That(task.Exception, Is.Null);
         }
-
-        #endregion
-
-        #region Private Methods
 
         private static int Compute8(int arg1, int arg2, int arg3, int arg4, int arg5, int arg6, int arg7, int arg8)
         {
@@ -71,7 +59,5 @@ namespace Omnifactotum.Tests
 
             Assert.That(new[] { arg1, arg2, arg3, arg4, arg5, arg6, arg7, arg8 }, Is.Unique);
         }
-
-        #endregion
     }
 }

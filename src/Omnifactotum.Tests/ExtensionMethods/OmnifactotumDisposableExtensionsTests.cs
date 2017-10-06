@@ -1,6 +1,5 @@
 ﻿using System;
 using System.IO;
-using System.Linq;
 using Moq;
 using NUnit.Framework;
 using Omnifactotum.Tests.Auxiliary;
@@ -11,8 +10,6 @@ namespace Omnifactotum.Tests.ExtensionMethods
     [TestFixture]
     public sealed class OmnifactotumDisposableExtensionsTests
     {
-        #region Tests
-
         [Test]
         public void TestDisposeSafelyOfReferenceTypeNullInstance()
         {
@@ -57,7 +54,5 @@ namespace Omnifactotum.Tests.ExtensionMethods
             nullable.DisposeSafely();
             Assert.That(disposeCallCount, Is.EqualTo(2));
         }
-
-        #endregion
     }
 }

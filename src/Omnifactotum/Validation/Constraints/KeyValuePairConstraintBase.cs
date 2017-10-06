@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
 
 namespace Omnifactotum.Validation.Constraints
 {
@@ -16,8 +15,6 @@ namespace Omnifactotum.Validation.Constraints
     public abstract class KeyValuePairConstraintBase<TKey, TValue>
         : TypedMemberConstraintBase<KeyValuePair<TKey, TValue>>
     {
-        #region Constructors
-
         /// <summary>
         ///     Initializes a new instance of the <see cref="KeyValuePairConstraintBase{TKey,TValue}" /> class.
         /// </summary>
@@ -29,13 +26,9 @@ namespace Omnifactotum.Validation.Constraints
         /// </param>
         protected KeyValuePairConstraintBase(Type keyConstraintType, Type valueConstraintType)
         {
-            this.KeyConstraintType = keyConstraintType.EnsureValidMemberConstraintType();
-            this.ValueConstraintType = valueConstraintType.EnsureValidMemberConstraintType();
+            KeyConstraintType = keyConstraintType.EnsureValidMemberConstraintType();
+            ValueConstraintType = valueConstraintType.EnsureValidMemberConstraintType();
         }
-
-        #endregion
-
-        #region Protected Properties
 
         /// <summary>
         ///     Gets the type specifying the key constraint.
@@ -54,10 +47,6 @@ namespace Omnifactotum.Validation.Constraints
             get;
             private set;
         }
-
-        #endregion
-
-        #region Protected Methods
 
         /// <summary>
         ///     Validates the specified strongly-typed value is scope of the specified context.
@@ -81,16 +70,14 @@ namespace Omnifactotum.Validation.Constraints
                 memberContext,
                 value,
                 pair => pair.Key,
-                this.KeyConstraintType);
+                KeyConstraintType);
 
             ValidateMember(
                 validatorContext,
                 memberContext,
                 value,
                 pair => pair.Value,
-                this.ValueConstraintType);
+                ValueConstraintType);
         }
-
-        #endregion
     }
 }

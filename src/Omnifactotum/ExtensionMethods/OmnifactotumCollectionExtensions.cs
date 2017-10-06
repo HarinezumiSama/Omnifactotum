@@ -1,6 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
+﻿using System.Linq;
 using Omnifactotum.Annotations;
 
 //// Namespace is intentionally named so in order to simplify usage of extension methods
@@ -12,8 +10,6 @@ namespace System.Collections.Generic
     /// </summary>
     public static class OmnifactotumCollectionExtensions
     {
-        #region Public Methods
-
         /// <summary>
         ///     Get the number of elements in the specified collection without enumerating all
         ///     its elements. If it's not possible to do so, <c>null</c> is returned.
@@ -70,8 +66,6 @@ namespace System.Collections.Generic
         /// </exception>
         public static void DoForEach<T>([NotNull] this IEnumerable<T> collection, [NotNull] Action<T> action)
         {
-            #region Argument Check
-
             if (collection == null)
             {
                 throw new ArgumentNullException("collection");
@@ -81,8 +75,6 @@ namespace System.Collections.Generic
             {
                 throw new ArgumentNullException("action");
             }
-
-            #endregion
 
             foreach (var item in collection)
             {
@@ -111,8 +103,6 @@ namespace System.Collections.Generic
         /// </exception>
         public static void DoForEach<T>([NotNull] this IEnumerable<T> collection, [NotNull] Action<T, int> action)
         {
-            #region Argument Check
-
             if (collection == null)
             {
                 throw new ArgumentNullException("collection");
@@ -122,8 +112,6 @@ namespace System.Collections.Generic
             {
                 throw new ArgumentNullException("action");
             }
-
-            #endregion
 
             var index = 0;
             foreach (var item in collection)
@@ -148,8 +136,6 @@ namespace System.Collections.Generic
         /// </param>
         public static void SetItems<T>([NotNull] this ICollection<T> collection, [NotNull] IEnumerable<T> items)
         {
-            #region Argument Check
-
             if (collection == null)
             {
                 throw new ArgumentNullException("collection");
@@ -159,8 +145,6 @@ namespace System.Collections.Generic
             {
                 throw new ArgumentNullException("items");
             }
-
-            #endregion
 
             collection.Clear();
 
@@ -372,8 +356,6 @@ namespace System.Collections.Generic
             [NotNull] Func<T, TKey> keySelector,
             [CanBeNull] IEqualityComparer<TKey> comparer)
         {
-            #region Argument Check
-
             if (collection == null)
             {
                 throw new ArgumentNullException("collection");
@@ -383,8 +365,6 @@ namespace System.Collections.Generic
             {
                 throw new ArgumentNullException("keySelector");
             }
-
-            #endregion
 
             var actualComparer = comparer ?? EqualityComparer<TKey>.Default;
 
@@ -517,14 +497,10 @@ namespace System.Collections.Generic
             [NotNull] this IEnumerable<T> collection,
             [CanBeNull] IEqualityComparer<T> comparer)
         {
-            #region Argument Check
-
             if (collection == null)
             {
                 throw new ArgumentNullException("collection");
             }
-
-            #endregion
 
             return new HashSet<T>(collection, comparer);
         }
@@ -564,21 +540,13 @@ namespace System.Collections.Generic
         public static object GetSyncRoot<T>([NotNull] this T collection)
             where T : ICollection
         {
-            #region Argument Check
-
             if (ReferenceEquals(collection, null))
             {
                 throw new ArgumentNullException("collection");
             }
 
-            #endregion
-
             return collection.SyncRoot;
         }
-
-        #endregion
-
-        #region Private Methods
 
         /// <summary>
         ///     Checks the reference and count equality.
@@ -645,7 +613,5 @@ namespace System.Collections.Generic
                 .Select(group => new KeyValuePair<T, int>(group.Key, group.Count()))
                 .ToDictionary(item => item.Key, item => item.Value, comparer);
         }
-
-        #endregion
     }
 }

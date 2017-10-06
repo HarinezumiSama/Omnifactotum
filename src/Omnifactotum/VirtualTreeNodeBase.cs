@@ -17,13 +17,7 @@ namespace Omnifactotum
     [Serializable]
     public abstract class VirtualTreeNodeBase<T>
     {
-        #region Constants and Fields
-
         private VirtualTreeNodeCollection<T> _children;
-
-        #endregion
-
-        #region Constructors
 
         /// <summary>
         ///     Initializes a new instance of the <see cref="VirtualTreeNodeBase{T}"/> class.
@@ -43,8 +37,6 @@ namespace Omnifactotum
         protected VirtualTreeNodeBase([NotNull] ICollection<VirtualTreeNode<T>> children)
             : this()
         {
-            #region Argument Check
-
             if (children == null)
             {
                 throw new ArgumentNullException("children");
@@ -55,14 +47,8 @@ namespace Omnifactotum
                 throw new ArgumentException(@"The collection contains a null element.", "children");
             }
 
-            #endregion
-
             _children = new VirtualTreeNodeCollection<T>(this, children);
         }
-
-        #endregion
-
-        #region Public Properties
 
         /// <summary>
         ///     Gets the collection of the child nodes.
@@ -83,10 +69,6 @@ namespace Omnifactotum
             }
         }
 
-        #endregion
-
-        #region Public Methods
-
         /// <summary>
         ///     Returns a <see cref="System.String"/> that represents this <see cref="VirtualTreeNodeBase{T}"/>.
         /// </summary>
@@ -98,10 +80,8 @@ namespace Omnifactotum
             return string.Format(
                 CultureInfo.InvariantCulture,
                 "{0}. Children.Count = {1}",
-                this.GetType().GetQualifiedName(),
-                this.Children.Count);
+                GetType().GetQualifiedName(),
+                Children.Count);
         }
-
-        #endregion
     }
 }

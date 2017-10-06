@@ -9,8 +9,6 @@ namespace Omnifactotum.Tests
     [TestFixture]
     public sealed class EnumFactotumTests
     {
-        #region Tests
-
         [Test]
         public void TestGetValue()
         {
@@ -72,10 +70,6 @@ namespace Omnifactotum.Tests
                 Is.EquivalentTo(new[] { FlagsUInt64.Bit0, FlagsUInt64.Bit35, FlagsUInt64.Bit53, FlagsUInt64.Bit63 }));
         }
 
-        #endregion
-
-        #region FlagsInt64 Enumeration
-
         [Flags]
         private enum FlagsInt64 : long
         {
@@ -98,10 +92,6 @@ namespace Omnifactotum.Tests
             All = unchecked((long)0xFFFFFFFFFFFFFFFFUL)
         }
 
-        #endregion
-
-        #region FlagsUInt64 Enumeration
-
         [Flags]
         private enum FlagsUInt64 : ulong
         {
@@ -123,7 +113,5 @@ namespace Omnifactotum.Tests
             [UsedImplicitly]
             All = 0xFFFFFFFFFFFFFFFFUL
         }
-
-        #endregion
     }
 }

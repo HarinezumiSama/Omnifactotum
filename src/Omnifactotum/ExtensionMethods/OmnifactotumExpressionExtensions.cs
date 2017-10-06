@@ -1,7 +1,4 @@
-﻿using System;
-using System.Diagnostics;
-using System.Linq;
-using System.Reflection;
+﻿using System.Reflection;
 using Omnifactotum.Annotations;
 
 //// ReSharper disable CheckNamespace
@@ -13,8 +10,6 @@ namespace System.Linq.Expressions
     /// </summary>
     public static class OmnifactotumExpressionExtensions
     {
-        #region Public Methods
-
         /// <summary>
         ///     Gets the last method called in the expression.
         /// </summary>
@@ -29,14 +24,10 @@ namespace System.Linq.Expressions
         /// </returns>
         public static MethodInfo GetLastMethod<TDelegate>([NotNull] this Expression<TDelegate> expression)
         {
-            #region Argument Check
-
             if (expression == null)
             {
                 throw new ArgumentNullException("expression");
             }
-
-            #endregion
 
             var methodCallExpression = expression.Body as MethodCallExpression;
             return methodCallExpression == null ? null : methodCallExpression.Method.EnsureNotNull();
@@ -69,8 +60,6 @@ namespace System.Linq.Expressions
             [NotNull] this Expression<Func<TInput, TIntermediate>> sourceExpression,
             [NotNull] Expression<Func<TIntermediate, TResult>> targetExpression)
         {
-            #region Argument Check
-
             if (sourceExpression == null)
             {
                 throw new ArgumentNullException("sourceExpression");
@@ -80,8 +69,6 @@ namespace System.Linq.Expressions
             {
                 throw new ArgumentNullException("targetExpression");
             }
-
-            #endregion
 
             var parameterExpression = sourceExpression.Parameters.Single();
 
@@ -110,8 +97,6 @@ namespace System.Linq.Expressions
             [NotNull] this LambdaExpression sourceExpression,
             [NotNull] LambdaExpression targetExpression)
         {
-            #region Argument Check
-
             if (sourceExpression == null)
             {
                 throw new ArgumentNullException("sourceExpression");
@@ -138,8 +123,6 @@ namespace System.Linq.Expressions
                     "The type of the result of the source expression does not match the type of the sole input parameter of the target expression.");
             }
 
-            #endregion
-
             var parameterExpression = sourceExpression.Parameters.Single();
 
             var newSecondBody =
@@ -152,23 +135,13 @@ namespace System.Linq.Expressions
             return result;
         }
 
-        #endregion
-
-        #region ReplaceExpressionVisitor Class
-
         /// <summary>
         ///     Represents the expression visitor that replaces one expression to another.
         /// </summary>
         private sealed class ReplaceExpressionVisitor : ExpressionVisitor
         {
-            #region Constants and Fields
-
             private readonly Expression _sourceExpression;
             private readonly Expression _targetExpression;
-
-            #endregion
-
-            #region Constructors
 
             /// <summary>
             ///     Initializes a new instance of the <see cref="ReplaceExpressionVisitor"/> class.
@@ -181,8 +154,6 @@ namespace System.Linq.Expressions
             /// </param>
             public ReplaceExpressionVisitor(Expression sourceExpression, Expression targetExpression)
             {
-                #region Argument Check
-
                 if (sourceExpression == null)
                 {
                     throw new ArgumentNullException("sourceExpression");
@@ -193,15 +164,9 @@ namespace System.Linq.Expressions
                     throw new ArgumentNullException("targetExpression");
                 }
 
-                #endregion
-
                 _sourceExpression = sourceExpression;
                 _targetExpression = targetExpression;
             }
-
-            #endregion
-
-            #region Public Methods
 
             /// <summary>
             ///     Dispatches the expression to one of the more specialized visit methods in this class.
@@ -217,10 +182,6 @@ namespace System.Linq.Expressions
             {
                 return node == _sourceExpression ? _targetExpression : base.Visit(node);
             }
-
-            #endregion
         }
-
-        #endregion
     }
 }

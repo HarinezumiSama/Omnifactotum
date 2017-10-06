@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Linq;
 using NUnit.Framework;
 
 namespace Omnifactotum.Tests.ExtensionMethods
@@ -7,8 +6,6 @@ namespace Omnifactotum.Tests.ExtensionMethods
     [TestFixture]
     public sealed class OmnifactotumDateTimeOffsetExtensionsTests
     {
-        #region Tests
-
         [Test]
         public void TestToFixedString()
         {
@@ -26,7 +23,5 @@ namespace Omnifactotum.Tests.ExtensionMethods
             var actualResult = dateTimeOffset.ToPreciseFixedString();
             Assert.That(actualResult, Is.EqualTo("2001-02-03 07:08:09.1230000 UTC+02:30"));
         }
-
-        #endregion
     }
 }

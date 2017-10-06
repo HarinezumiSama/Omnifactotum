@@ -1,8 +1,8 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 2013
-VisualStudioVersion = 12.0.40629.0
-MinimumVisualStudioVersion = 10.0.40219.1
+# Visual Studio 15
+VisualStudioVersion = 15.0.26730.15
+MinimumVisualStudioVersion = 15.0.0.0
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Omnifactotum", "Omnifactotum\Omnifactotum.csproj", "{1054B8A0-40D7-4FBC-A658-9AC9179035F8}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Omnifactotum.Tests", "Omnifactotum.Tests\Omnifactotum.Tests.csproj", "{A6A92B13-8AF3-453B-B6AA-137312AE0CCB}"
@@ -10,7 +10,9 @@ EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "SolutionItems", "SolutionItems", "{D7C50C3D-0B8E-4412-AC1A-A6B92C792565}"
 	ProjectSection(SolutionItems) = preProject
 		SolutionItems\BaseVersion.txt = SolutionItems\BaseVersion.txt
+		..\Build.NuGet-Package.ps1 = ..\Build.NuGet-Package.ps1
 		SolutionItems\hg.cmd = SolutionItems\hg.cmd
+		Omnifactotum.sln.DotSettings = Omnifactotum.sln.DotSettings
 		SolutionItems\Omnifactotum.snk = SolutionItems\Omnifactotum.snk
 		Settings.StyleCop = Settings.StyleCop
 		SolutionItems\sign.cmd = SolutionItems\sign.cmd
@@ -40,5 +42,8 @@ Global
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {7A7FAD81-CE90-4495-AADB-D70E00F23EAD}
 	EndGlobalSection
 EndGlobal

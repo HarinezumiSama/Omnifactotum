@@ -1,7 +1,5 @@
 ﻿using System;
-using System.Diagnostics;
 using System.Globalization;
-using System.Linq;
 using Omnifactotum.Annotations;
 
 namespace Omnifactotum.Validation.Constraints
@@ -11,8 +9,6 @@ namespace Omnifactotum.Validation.Constraints
     /// </summary>
     public sealed class MemberConstraintValidationError
     {
-        #region Constructors
-
         /// <summary>
         ///     Initializes a new instance of the <see cref="MemberConstraintValidationError"/> class.
         /// </summary>
@@ -30,8 +26,6 @@ namespace Omnifactotum.Validation.Constraints
             Type failedConstraintType,
             string errorMessage)
         {
-            #region Argument Check
-
             if (context == null)
             {
                 throw new ArgumentNullException("context");
@@ -49,16 +43,10 @@ namespace Omnifactotum.Validation.Constraints
                     "errorMessage");
             }
 
-            #endregion
-
-            this.Context = context;
-            this.FailedConstraintType = failedConstraintType;
-            this.ErrorMessage = errorMessage;
+            Context = context;
+            FailedConstraintType = failedConstraintType;
+            ErrorMessage = errorMessage;
         }
-
-        #endregion
-
-        #region Public Properties
 
         /// <summary>
         ///     Gets the context of validation.
@@ -87,10 +75,6 @@ namespace Omnifactotum.Validation.Constraints
             private set;
         }
 
-        #endregion
-
-        #region Public Methods
-
         /// <summary>
         ///     Gets the default description of the specified validation error.
         /// </summary>
@@ -102,14 +86,10 @@ namespace Omnifactotum.Validation.Constraints
         /// </returns>
         public static string GetDefaultDescription([NotNull] MemberConstraintValidationError error)
         {
-            #region Argument Check
-
             if (error == null)
             {
                 throw new ArgumentNullException("error");
             }
-
-            #endregion
 
             return string.Format(
                 CultureInfo.InvariantCulture,
@@ -131,8 +111,8 @@ namespace Omnifactotum.Validation.Constraints
                 CultureInfo.InvariantCulture,
                 "{{{0}: Failed '{1}' for [{2}]}}",
                 GetType().GetQualifiedName(),
-                this.FailedConstraintType.GetQualifiedName(),
-                this.Context.Expression);
+                FailedConstraintType.GetQualifiedName(),
+                Context.Expression);
         }
 
         /// <summary>
@@ -145,7 +125,5 @@ namespace Omnifactotum.Validation.Constraints
         {
             return GetDefaultDescription(this);
         }
-
-        #endregion
     }
 }

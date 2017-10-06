@@ -17,13 +17,7 @@ namespace Omnifactotum
     [DebuggerDisplay("{GetType().Name,nq}. Count = {Count}")]
     public abstract class DirectedGraphNodeCollectionBase<T> : ICollection<DirectedGraphNode<T>>
     {
-        #region Constants and Fields
-
         private readonly HashSet<DirectedGraphNode<T>> _items;
-
-        #endregion
-
-        #region Constructors
 
         /// <summary>
         ///     Initializes a new instance of the <see cref="DirectedGraphNodeCollectionBase{T}"/> class.
@@ -32,10 +26,6 @@ namespace Omnifactotum
         {
             _items = new HashSet<DirectedGraphNode<T>>();
         }
-
-        #endregion
-
-        #region ICollection<DirectedGraphNode<T>> Members
 
         /// <summary>
         ///     Gets the number of elements contained in this collection.
@@ -132,10 +122,6 @@ namespace Omnifactotum
             return result;
         }
 
-        #endregion
-
-        #region IEnumerable<DirectedGraphNode<T>> Members
-
         /// <summary>
         ///     Returns an enumerator that iterates through the collection.
         /// </summary>
@@ -146,10 +132,6 @@ namespace Omnifactotum
         {
             return _items.GetEnumerator();
         }
-
-        #endregion
-
-        #region IEnumerable Members
 
         /// <summary>
         ///     Returns an enumerator that iterates through a collection.
@@ -162,20 +144,12 @@ namespace Omnifactotum
             return GetEnumerator();
         }
 
-        #endregion
-
-        #region Internal Properties
-
         [CanBeNull]
         internal abstract DirectedGraph<T> Graph
         {
             get;
             set;
         }
-
-        #endregion
-
-        #region Internal Methods
 
         internal void ClearInternal()
         {
@@ -184,19 +158,15 @@ namespace Omnifactotum
 
         internal void AddInternal([NotNull] DirectedGraphNode<T> item)
         {
-            #region Argument Check
-
             if (item == null)
             {
                 throw new ArgumentNullException("item");
             }
 
-            if (this.Graph != null && item.Graph != null && item.Graph != this.Graph)
+            if (Graph != null && item.Graph != null && item.Graph != Graph)
             {
                 throw new ArgumentException("The item is already associated with another graph.", "item");
             }
-
-            #endregion
 
             if (_items.Contains(item))
             {
@@ -213,7 +183,7 @@ namespace Omnifactotum
 
             _items.Add(item);
 
-            var graph = this.Graph ?? item.Graph;
+            var graph = Graph ?? item.Graph;
             if (graph != null)
             {
                 if (item.Graph == null)
@@ -221,9 +191,9 @@ namespace Omnifactotum
                     item.AssignGraph(graph);
                 }
 
-                if (this.Graph == null)
+                if (Graph == null)
                 {
-                    this.Graph = graph;
+                    Graph = graph;
                 }
             }
         }
@@ -232,10 +202,6 @@ namespace Omnifactotum
         {
             return item != null && _items.Remove(item);
         }
-
-        #endregion
-
-        #region Protected Methods
 
         /// <summary>
         ///     Called right after an item has been added to this collection.
@@ -258,7 +224,5 @@ namespace Omnifactotum
         {
             // Nothing to do; for overriding only
         }
-
-        #endregion
     }
 }

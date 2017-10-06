@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Globalization;
-using System.Linq;
 using Omnifactotum.Annotations;
 
 namespace Omnifactotum
@@ -17,13 +16,7 @@ namespace Omnifactotum
     [DebuggerDisplay(@"\{Value = {_value}\}")]
     public sealed class SyncValueContainer<T> : IValueContainer<T>, IEquatable<SyncValueContainer<T>>
     {
-        #region Constants and Fields
-
         private T _value;
-
-        #endregion
-
-        #region Constructors
 
         /// <summary>
         ///     Initializes a new instance of the <see cref="SyncValueContainer{T}" /> class
@@ -38,8 +31,6 @@ namespace Omnifactotum
         /// </param>
         public SyncValueContainer([CanBeNull] T value, [NotNull] object syncObject)
         {
-            #region Argument Check
-
             if (syncObject == null)
             {
                 throw new ArgumentNullException("syncObject");
@@ -50,9 +41,7 @@ namespace Omnifactotum
                 throw new ArgumentException("The synchronization object cannot be a value type object.");
             }
 
-            #endregion
-
-            this.SyncObject = syncObject;
+            SyncObject = syncObject;
             _value = value;
         }
 
@@ -79,10 +68,6 @@ namespace Omnifactotum
             // Nothing to do
         }
 
-        #endregion
-
-        #region Public Properties
-
         /// <summary>
         ///     Gets the synchronization object used for thread-safe access.
         /// </summary>
@@ -93,10 +78,6 @@ namespace Omnifactotum
             private set;
         }
 
-        #endregion
-
-        #region IValueContainer<T> Members
-
         /// <summary>
         ///     Gets or sets the contained value.
         /// </summary>
@@ -106,7 +87,7 @@ namespace Omnifactotum
             [DebuggerNonUserCode]
             get
             {
-                lock (this.SyncObject)
+                lock (SyncObject)
                 {
                     return _value;
                 }
@@ -115,16 +96,12 @@ namespace Omnifactotum
             [DebuggerNonUserCode]
             set
             {
-                lock (this.SyncObject)
+                lock (SyncObject)
                 {
                     _value = value;
                 }
             }
         }
-
-        #endregion
-
-        #region Operators
 
         /// <summary>
         ///     Determines whether the two specified <see cref="SyncValueContainer{T}"/> instances are equal.
@@ -162,10 +139,6 @@ namespace Omnifactotum
             return !(left == right);
         }
 
-        #endregion
-
-        #region Public Methods
-
         /// <summary>
         ///     Returns a <see cref="String" /> that represents this <see cref="SyncValueContainer{T}"/> instance.
         /// </summary>
@@ -174,7 +147,7 @@ namespace Omnifactotum
         /// </returns>
         public override string ToString()
         {
-            return string.Format(CultureInfo.InvariantCulture, "{{ Value = {0} }}", this.Value.ToStringSafely());
+            return string.Format(CultureInfo.InvariantCulture, "{{ Value = {0} }}", Value.ToStringSafely());
         }
 
         /// <summary>
@@ -201,12 +174,8 @@ namespace Omnifactotum
         /// </returns>
         public override int GetHashCode()
         {
-            return this.Value.GetHashCodeSafely();
+            return Value.GetHashCodeSafely();
         }
-
-        #endregion
-
-        #region IEquatable<SyncValueContainer<T>> Members
 
         /// <summary>
         ///     Determines whether the current <see cref="SyncValueContainer{T}"/> instance is equal to another instance
@@ -224,10 +193,6 @@ namespace Omnifactotum
             return Equals(this, other);
         }
 
-        #endregion
-
-        #region Private Methods
-
         private static bool Equals(SyncValueContainer<T> left, SyncValueContainer<T> right)
         {
             if (ReferenceEquals(left, right))
@@ -242,7 +207,5 @@ namespace Omnifactotum
 
             return EqualityComparer<T>.Default.Equals(left.Value, right.Value);
         }
-
-        #endregion
     }
 }

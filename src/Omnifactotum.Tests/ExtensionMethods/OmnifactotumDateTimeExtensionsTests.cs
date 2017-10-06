@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Linq;
 using NUnit.Framework;
 
 namespace Omnifactotum.Tests.ExtensionMethods
@@ -7,8 +6,6 @@ namespace Omnifactotum.Tests.ExtensionMethods
     [TestFixture]
     public sealed class OmnifactotumDateTimeExtensionsTests
     {
-        #region Tests
-
         [Test]
         [TestCase(DateTimeKind.Local)]
         [TestCase(DateTimeKind.Unspecified)]
@@ -32,7 +29,5 @@ namespace Omnifactotum.Tests.ExtensionMethods
             var actualResult = dateTime.ToPreciseFixedString();
             Assert.That(actualResult, Is.EqualTo("2001-02-03 07:08:09.1230000"));
         }
-
-        #endregion
     }
 }

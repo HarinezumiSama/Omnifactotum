@@ -7,18 +7,12 @@ namespace Omnifactotum.Tests
 {
     internal abstract class ConstraintTestsBase
     {
-        #region Protected Properties
-
         [UsedImplicitly]
         protected string DummyProperty
         {
             get;
             set;
         }
-
-        #endregion
-
-        #region Protected Methods
 
         protected ObjectValidatorContext CreateObjectValidatorContext(
             [CanBeNull] RecursiveProcessingContext<MemberData> recursiveProcessingContext = null)
@@ -40,7 +34,5 @@ namespace Omnifactotum.Tests
                 expression,
                 parameterExpression);
         }
-
-        #endregion
     }
 }

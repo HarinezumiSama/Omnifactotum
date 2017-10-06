@@ -11,8 +11,6 @@ namespace Omnifactotum.Tests.ExtensionMethods
     [TestFixture]
     public sealed class OmnifactotumStringExtensionsTests
     {
-        #region Tests
-
         [Test]
         [TestCase(null, true)]
         [TestCase("", true)]
@@ -59,7 +57,7 @@ namespace Omnifactotum.Tests.ExtensionMethods
                 ? (IResolveConstraint)Is.EqualTo(expectedResult.Value)
                 : Throws.ArgumentException;
 
-            Assert.That(() => value.ToBoolean(), constraint);
+            Assert.That(value.ToBoolean, constraint);
         }
 
         [Test]
@@ -209,7 +207,5 @@ namespace Omnifactotum.Tests.ExtensionMethods
             var actualResult = value.Replicate(count);
             Assert.That(actualResult, Is.EqualTo(expectedResult));
         }
-
-        #endregion
     }
 }

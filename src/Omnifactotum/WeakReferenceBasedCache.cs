@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
-using System.Linq;
 using Omnifactotum.Annotations;
 
 namespace Omnifactotum
@@ -19,14 +18,8 @@ namespace Omnifactotum
     public sealed class WeakReferenceBasedCache<TKey, TValue>
         where TValue : class
     {
-        #region Constants and Fields
-
         private readonly Func<TKey, TValue> _valueFactory;
         private readonly Dictionary<TKey, WeakReference> _dictionary;
-
-        #endregion
-
-        #region Constructors
 
         /// <summary>
         ///     Initializes a new instance of the <see cref="WeakReferenceBasedCache{TKey,TValue}"/> class
@@ -43,14 +36,10 @@ namespace Omnifactotum
             [NotNull] Func<TKey, TValue> valueFactory,
             [CanBeNull] IEqualityComparer<TKey> keyEqualityComparer)
         {
-            #region Argument Check
-
             if (valueFactory == null)
             {
                 throw new ArgumentNullException("valueFactory");
             }
-
-            #endregion
 
             _valueFactory = valueFactory;
             _dictionary = new Dictionary<TKey, WeakReference>(keyEqualityComparer);
@@ -69,10 +58,6 @@ namespace Omnifactotum
         {
             // Nothing to do
         }
-
-        #endregion
-
-        #region Public Properties
 
         /// <summary>
         ///     Gets the equality comparer used when comparing keys.
@@ -121,14 +106,10 @@ namespace Omnifactotum
         {
             get
             {
-                #region Argument Check
-
                 if (ReferenceEquals(key, null))
                 {
                     throw new ArgumentNullException("key");
                 }
-
-                #endregion
 
                 TValue result;
                 lock (_dictionary)
@@ -150,10 +131,6 @@ namespace Omnifactotum
                 return result;
             }
         }
-
-        #endregion
-
-        #region Public Methods
 
         /// <summary>
         ///     Clears the cache.
@@ -177,14 +154,10 @@ namespace Omnifactotum
         /// </returns>
         public bool Remove([NotNull] TKey key)
         {
-            #region Argument Check
-
             if (ReferenceEquals(key, null))
             {
                 throw new ArgumentNullException("key");
             }
-
-            #endregion
 
             lock (_dictionary)
             {
@@ -192,15 +165,9 @@ namespace Omnifactotum
             }
         }
 
-        #endregion
-
-        #region Private Methods
-
         private TValue CreateValue(TKey key)
         {
             return _valueFactory(key).EnsureNotNull();
         }
-
-        #endregion
     }
 }

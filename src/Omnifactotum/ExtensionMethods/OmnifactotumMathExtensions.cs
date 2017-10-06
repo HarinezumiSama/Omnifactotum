@@ -1,7 +1,4 @@
-﻿using System;
-using System.Linq;
-
-//// Namespace is intentionally named so in order to simplify usage of extension methods
+﻿//// Namespace is intentionally named so in order to simplify usage of extension methods
 //// ReSharper disable CheckNamespace
 
 namespace System
@@ -11,8 +8,6 @@ namespace System
     /// </summary>
     public static class OmnifactotumMathExtensions
     {
-        #region Public Methods: Square
-
         /// <summary>
         ///     Returns the square of the specified number.
         ///     This method SUPPRESSES overflow-checking.
@@ -227,10 +222,6 @@ namespace System
             return checked(value * value);
         }
 
-        #endregion
-
-        #region Public Methods: Square Root
-
         /// <summary>
         ///     Returns the square root of the specified number.
         /// </summary>
@@ -244,10 +235,6 @@ namespace System
         {
             return Math.Sqrt(value);
         }
-
-        #endregion
-
-        #region Public Methods: Absolute Value
 
         /// <summary>
         ///     Returns the absolute value of the specified number.
@@ -348,7 +335,5 @@ namespace System
         {
             return Math.Abs(value);
         }
-
-        #endregion
     }
 }

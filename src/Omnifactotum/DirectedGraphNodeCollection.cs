@@ -1,8 +1,6 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Diagnostics;
 using System.Globalization;
-using System.Linq;
 using Omnifactotum.Annotations;
 
 namespace Omnifactotum
@@ -17,14 +15,8 @@ namespace Omnifactotum
     [DebuggerDisplay("{GetType().Name,nq}. Count = {Count}")]
     public sealed class DirectedGraphNodeCollection<T> : DirectedGraphNodeCollectionBase<T>
     {
-        #region Constants and Fields
-
         private readonly DirectedGraphNode<T> _owner;
         private readonly DirectedGraphOwnerRelation _ownerRelation;
-
-        #endregion
-
-        #region Constructors
 
         /// <summary>
         ///     Initializes a new instance of the <see cref="DirectedGraphNodeCollection{T}"/> class.
@@ -39,8 +31,6 @@ namespace Omnifactotum
             [NotNull] DirectedGraphNode<T> owner,
             DirectedGraphOwnerRelation ownerRelation)
         {
-            #region Argument Check
-
             if (owner == null)
             {
                 throw new ArgumentNullException("owner");
@@ -48,15 +38,9 @@ namespace Omnifactotum
 
             ownerRelation.EnsureDefined();
 
-            #endregion
-
             _owner = owner;
             _ownerRelation = ownerRelation;
         }
-
-        #endregion
-
-        #region Internal Properties
 
         internal override DirectedGraph<T> Graph
         {
@@ -71,10 +55,6 @@ namespace Omnifactotum
                 _owner.AssignGraph(value);
             }
         }
-
-        #endregion
-
-        #region Protected Methods
 
         /// <summary>
         ///     Called right after an item has been added to this collection.
@@ -102,10 +82,6 @@ namespace Omnifactotum
             base.OnItemRemoved(item);
         }
 
-        #endregion
-
-        #region Private Methods
-
         private DirectedGraphNodeCollection<T> GetRelatedCollection([NotNull] DirectedGraphNode<T> item)
         {
             switch (_ownerRelation)
@@ -124,7 +100,5 @@ namespace Omnifactotum
                             _ownerRelation.GetQualifiedName()));
             }
         }
-
-        #endregion
     }
 }

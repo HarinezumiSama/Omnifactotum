@@ -16,8 +16,6 @@ namespace Omnifactotum
     /// </typeparam>
     public sealed class KeyedEqualityComparer<T, TKey> : IEqualityComparer<T>, IEqualityComparer
     {
-        #region Constructors
-
         /// <summary>
         ///     Initializes a new instance of the <see cref="KeyedEqualityComparer{T,TKey}"/> class
         ///     with the specified key selector and key equality comparer.
@@ -33,17 +31,13 @@ namespace Omnifactotum
             [NotNull] Func<T, TKey> keySelector,
             [CanBeNull] IEqualityComparer<TKey> keyComparer)
         {
-            #region Argument Check
-
             if (keySelector == null)
             {
                 throw new ArgumentNullException("keySelector");
             }
 
-            #endregion
-
-            this.KeySelector = keySelector;
-            this.KeyComparer = keyComparer ?? EqualityComparer<TKey>.Default;
+            KeySelector = keySelector;
+            KeyComparer = keyComparer ?? EqualityComparer<TKey>.Default;
         }
 
         /// <summary>
@@ -58,10 +52,6 @@ namespace Omnifactotum
         {
             // Nothing to do
         }
-
-        #endregion
-
-        #region Public Properties
 
         /// <summary>
         ///     Gets a reference to a method that provides a key for an object being compared.
@@ -82,10 +72,6 @@ namespace Omnifactotum
             get;
             private set;
         }
-
-        #endregion
-
-        #region IEqualityComparer<T> Members
 
         /// <summary>
         ///     Determines whether the keys of the specified objects are equal.
@@ -114,10 +100,10 @@ namespace Omnifactotum
                 }
             }
 
-            var keyX = this.KeySelector(x);
-            var keyY = this.KeySelector(y);
+            var keyX = KeySelector(x);
+            var keyY = KeySelector(y);
 
-            return this.KeyComparer.Equals(keyX, keyY);
+            return KeyComparer.Equals(keyX, keyY);
         }
 
         /// <summary>
@@ -136,13 +122,9 @@ namespace Omnifactotum
                 return 0;
             }
 
-            var key = this.KeySelector(obj);
-            return ReferenceEquals(key, null) ? 0 : this.KeyComparer.GetHashCode(key);
+            var key = KeySelector(obj);
+            return ReferenceEquals(key, null) ? 0 : KeyComparer.GetHashCode(key);
         }
-
-        #endregion
-
-        #region IEqualityComparer Members
 
         /// <summary>
         ///     Determines whether the specified objects are equal.
@@ -199,7 +181,5 @@ namespace Omnifactotum
 
             throw new ArgumentException("Invalid argument type.", "obj");
         }
-
-        #endregion
     }
 }

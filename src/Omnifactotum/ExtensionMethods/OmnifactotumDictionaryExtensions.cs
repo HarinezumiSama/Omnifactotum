@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Diagnostics;
-using Omnifactotum;
+﻿using Omnifactotum;
 using Omnifactotum.Annotations;
 
 //// Namespace is intentionally named so in order to simplify usage of extension methods
@@ -14,8 +11,6 @@ namespace System.Collections.Generic
     /// </summary>
     public static class OmnifactotumDictionaryExtensions
     {
-        #region Public Methods
-
         /// <summary>
         ///     Gets the value associated with the specified key from the specified dictionary.
         /// </summary>
@@ -43,8 +38,6 @@ namespace System.Collections.Generic
             [NotNull] TKey key,
             TValue defaultValue)
         {
-            #region Argument Check
-
             if (dictionary == null)
             {
                 throw new ArgumentNullException("dictionary");
@@ -54,8 +47,6 @@ namespace System.Collections.Generic
             {
                 throw new ArgumentNullException("key");
             }
-
-            #endregion
 
             TValue result;
             if (!dictionary.TryGetValue(key, out result))
@@ -122,8 +113,6 @@ namespace System.Collections.Generic
             [NotNull] TKey key,
             [NotNull] Func<TKey, TValue> valueFactory)
         {
-            #region Argument Check
-
             if (dictionary == null)
             {
                 throw new ArgumentNullException("dictionary");
@@ -138,8 +127,6 @@ namespace System.Collections.Generic
             {
                 throw new ArgumentNullException("valueFactory");
             }
-
-            #endregion
 
             TValue result;
             if (dictionary.TryGetValue(key, out result))
@@ -202,7 +189,5 @@ namespace System.Collections.Generic
         {
             return new ReadOnlyDictionary<TKey, TValue>(dictionary);
         }
-
-        #endregion
     }
 }

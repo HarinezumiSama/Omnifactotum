@@ -1,6 +1,5 @@
 ﻿using System;
 using System.CodeDom.Compiler;
-using System.Linq;
 using System.Reflection;
 using System.Reflection.Emit;
 using Microsoft.CSharp;
@@ -13,8 +12,6 @@ namespace Omnifactotum.Tests.ExtensionMethods
     [TestFixture]
     public sealed class OmnifactotumAssemblyExtensionsTests
     {
-        #region Tests
-
         [Test]
         public void TestGetLocalPathUsingNullAssemblyNegative()
         {
@@ -41,7 +38,5 @@ namespace Omnifactotum.Tests.ExtensionMethods
 
             Assert.That(() => assemblyBuilder.GetLocalPath(), Throws.TypeOf<ArgumentException>());
         }
-
-        #endregion
     }
 }

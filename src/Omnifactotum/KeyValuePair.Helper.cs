@@ -1,5 +1,4 @@
-﻿using System.Diagnostics;
-using Omnifactotum.Annotations;
+﻿using Omnifactotum.Annotations;
 
 //// Namespace is intentionally named so in order to simplify usage of extension methods
 //// ReSharper disable once CheckNamespace
@@ -12,8 +11,6 @@ namespace System.Collections.Generic
     /// </summary>
     public static class KeyValuePair
     {
-        #region Public Methods
-
         /// <summary>
         ///     Creates a new <see cref="KeyValuePair{TKey,TValue}"/> using the specified key and value.
         /// </summary>
@@ -36,7 +33,5 @@ namespace System.Collections.Generic
         {
             return new KeyValuePair<TKey, TValue>(key, value);
         }
-
-        #endregion
     }
 }

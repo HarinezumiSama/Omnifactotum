@@ -1,6 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
+﻿using System.Collections.Generic;
 using Omnifactotum.Annotations;
 
 namespace Omnifactotum
@@ -13,8 +11,6 @@ namespace Omnifactotum
     /// </typeparam>
     public sealed class RecursiveProcessingContext<T>
     {
-        #region Constructors
-
         /// <summary>
         ///     Initializes a new instance of the <see cref="RecursiveProcessingContext{T}"/> class
         ///     using the specified equality comparer for the instances being processed recursively.
@@ -26,7 +22,7 @@ namespace Omnifactotum
         public RecursiveProcessingContext([CanBeNull] IEqualityComparer<T> equalityComparer)
         {
             var actualComparer = equalityComparer ?? ByReferenceEqualityComparer<T>.Instance;
-            this.ItemsBeingProcessed = typeof(T).IsValueType ? null : new HashSet<T>(actualComparer);
+            ItemsBeingProcessed = typeof(T).IsValueType ? null : new HashSet<T>(actualComparer);
         }
 
         /// <summary>
@@ -40,16 +36,10 @@ namespace Omnifactotum
             // Nothing to do
         }
 
-        #endregion
-
-        #region Public Properties
-
         internal HashSet<T> ItemsBeingProcessed
         {
             get;
             private set;
         }
-
-        #endregion
     }
 }

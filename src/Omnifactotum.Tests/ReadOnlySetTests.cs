@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.Linq;
 using NUnit.Framework;
 using Omnifactotum.NUnit;
@@ -12,8 +11,6 @@ namespace Omnifactotum.Tests
     [TestFixture]
     public sealed class ReadOnlySetTests
     {
-        #region Constants and Fields
-
         private const int Value1 = 1;
         private const int Value2 = 2;
         private const int Value3 = 3;
@@ -21,10 +18,6 @@ namespace Omnifactotum.Tests
         private const int ValueExtra = 42;
 
         private HashSet<int> _set;
-
-        #endregion
-
-        #region SetUp/TearDown
 
         [SetUp]
         public void SetUp()
@@ -37,10 +30,6 @@ namespace Omnifactotum.Tests
         {
             _set = null;
         }
-
-        #endregion
-
-        #region Tests
 
         [Test]
         [Category(TestCategory.Negative)]
@@ -321,10 +310,6 @@ namespace Omnifactotum.Tests
             Assert.That(readOnlySet.SetEquals(_set.ToArray().Concat(ValueExtra.AsCollection())), Is.False);
         }
 
-        #endregion
-
-        #region Nested Types: Test Cases
-
         internal sealed class ConstructionCases : TestCasesBase
         {
             protected override IEnumerable<TestCaseData> GetCases()
@@ -336,7 +321,5 @@ namespace Omnifactotum.Tests
                     .SetName("Explicit creation");
             }
         }
-
-        #endregion
     }
 }

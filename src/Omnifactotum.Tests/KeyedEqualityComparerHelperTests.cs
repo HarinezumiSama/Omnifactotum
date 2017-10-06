@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Globalization;
-using System.Linq;
 using NUnit.Framework;
 
 namespace Omnifactotum.Tests
@@ -11,8 +10,6 @@ namespace Omnifactotum.Tests
     [TestFixture]
     public sealed class KeyedEqualityComparerHelperTests
     {
-        #region Tests
-
         [Test]
         public void TestConstruction()
         {
@@ -58,7 +55,5 @@ namespace Omnifactotum.Tests
                 () => KeyedEqualityComparer.For<int>.Create(null, StringComparer.Ordinal),
                 Throws.TypeOf<ArgumentNullException>());
         }
-
-        #endregion
     }
 }

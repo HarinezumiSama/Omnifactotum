@@ -1,7 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Diagnostics;
-using System.Linq;
 using Omnifactotum.Annotations;
 
 namespace Omnifactotum
@@ -11,8 +9,6 @@ namespace Omnifactotum
     /// </summary>
     public abstract class ComparableObjectBase : EquatableObjectBase, IComparable<ComparableObjectBase>
     {
-        #region Operators
-
         /// <summary>
         ///     Determines whether the left <see cref="ComparableObjectBase"/> instance is less than
         ///     the right <see cref="ComparableObjectBase"/> instance.
@@ -89,10 +85,6 @@ namespace Omnifactotum
             return Comparer<ComparableObjectBase>.Default.Compare(left, right) >= 0;
         }
 
-        #endregion
-
-        #region IComparable<ComparableObjectBase> Members
-
         /// <summary>
         ///     Compares the current object with another object of the same type.
         /// </summary>
@@ -120,10 +112,6 @@ namespace Omnifactotum
 
             return CompareToInternal(other);
         }
-
-        #endregion
-
-        #region Protected Methods
 
         /// <summary>
         ///     <para>
@@ -159,7 +147,5 @@ namespace Omnifactotum
         ///     See <see cref="IComparable{T}.CompareTo"/>.
         /// </returns>
         protected abstract int CompareToInternal([NotNull] ComparableObjectBase other);
-
-        #endregion
     }
 }

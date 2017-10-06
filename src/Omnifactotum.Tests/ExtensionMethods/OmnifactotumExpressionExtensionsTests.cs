@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Linq;
 using System.Linq.Expressions;
 using System.Reflection;
 using NUnit.Framework;
@@ -9,8 +8,6 @@ namespace Omnifactotum.Tests.ExtensionMethods
     [TestFixture]
     public sealed class OmnifactotumExpressionExtensionsTests
     {
-        #region Tests
-
         [Test]
         public void TestGetLastMethodLastIsToString()
         {
@@ -50,7 +47,5 @@ namespace Omnifactotum.Tests.ExtensionMethods
             var method = expression.GetLastMethod();
             Assert.That(method, Is.Null);
         }
-
-        #endregion
     }
 }

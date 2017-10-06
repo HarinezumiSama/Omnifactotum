@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Linq;
 using System.Linq.Expressions;
 using Omnifactotum.Annotations;
 using Omnifactotum.Validation.Constraints;
@@ -11,8 +10,6 @@ namespace Omnifactotum.Validation
     /// </summary>
     internal sealed class MemberData
     {
-        #region Constructors
-
         /// <summary>
         ///     Initializes a new instance of the <see cref="MemberData"/> class.
         /// </summary>
@@ -38,25 +35,17 @@ namespace Omnifactotum.Validation
             [CanBeNull] BaseValidatableMemberAttribute[] attributes,
             [CanBeNull] BaseMemberConstraintAttribute[] effectiveAttributes)
         {
-            #region Argument Check
-
             if (expression == null)
             {
                 throw new ArgumentNullException("expression");
             }
 
-            #endregion
-
-            this.Expression = expression;
-            this.Container = container;
-            this.Value = value;
-            this.Attributes = attributes;
-            this.EffectiveAttributes = effectiveAttributes;
+            Expression = expression;
+            Container = container;
+            Value = value;
+            Attributes = attributes;
+            EffectiveAttributes = effectiveAttributes;
         }
-
-        #endregion
-
-        #region Public Properties
 
         /// <summary>
         ///     Gets the expression.
@@ -102,7 +91,5 @@ namespace Omnifactotum.Validation
             get;
             private set;
         }
-
-        #endregion
     }
 }

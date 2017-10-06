@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Diagnostics;
 using System.Globalization;
-using System.Linq;
 using System.Reflection;
 using System.Threading.Tasks;
 using Omnifactotum.Annotations;
@@ -13,8 +12,6 @@ namespace Omnifactotum
     /// </summary>
     public static partial class AsyncFactotum
     {
-        #region Delegates
-
         /// <summary>
         ///     Encapsulates a method that logs the specified exception occurred during execution of an asynchronous
         ///     operation.
@@ -44,10 +41,6 @@ namespace Omnifactotum
         ///     The message to log.
         /// </param>
         public delegate void LogErrorWithMessage([NotNull] string message);
-
-        #endregion
-
-        #region Private Methods
 
         /// <summary>
         ///     Wraps the <see cref="Trace.TraceError(string)"/> method since it is conditional and thus cannot be
@@ -144,7 +137,5 @@ namespace Omnifactotum
                 },
                 TaskContinuationOptions.OnlyOnFaulted | TaskContinuationOptions.ExecuteSynchronously);
         }
-
-        #endregion
     }
 }

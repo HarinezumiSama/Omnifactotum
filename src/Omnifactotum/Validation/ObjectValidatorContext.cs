@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
 using Omnifactotum.Annotations;
 using Omnifactotum.Validation.Constraints;
 
@@ -11,13 +10,7 @@ namespace Omnifactotum.Validation
     /// </summary>
     public sealed class ObjectValidatorContext
     {
-        #region Constants and Fields
-
         private readonly Dictionary<Type, IMemberConstraint> _constraintCache;
-
-        #endregion
-
-        #region Constructors
 
         /// <summary>
         ///     Initializes a new instance of the <see cref="ObjectValidatorContext"/> class.
@@ -31,13 +24,9 @@ namespace Omnifactotum.Validation
                 ?? new RecursiveProcessingContext<MemberData>(InternalMemberDataEqualityComparer.Instance);
 
             _constraintCache = new Dictionary<Type, IMemberConstraint>();
-            this.Errors = new ValidationErrorCollection();
-            this.RecursiveProcessingContext = actualRecursiveProcessingContext;
+            Errors = new ValidationErrorCollection();
+            RecursiveProcessingContext = actualRecursiveProcessingContext;
         }
-
-        #endregion
-
-        #region Public Properties
 
         /// <summary>
         ///     Gets the collection of errors.
@@ -48,19 +37,11 @@ namespace Omnifactotum.Validation
             private set;
         }
 
-        #endregion
-
-        #region Internal Properties
-
         internal RecursiveProcessingContext<MemberData> RecursiveProcessingContext
         {
             get;
             private set;
         }
-
-        #endregion
-
-        #region Public Methods
 
         /// <summary>
         ///     Resolves the constraint with the specified type.
@@ -74,11 +55,7 @@ namespace Omnifactotum.Validation
         [NotNull]
         public IMemberConstraint ResolveConstraint([NotNull] Type constraintType)
         {
-            #region Argument Check
-
             constraintType.EnsureValidMemberConstraintType();
-
-            #endregion
 
             lock (_constraintCache)
             {
@@ -105,7 +82,5 @@ namespace Omnifactotum.Validation
         {
             return (TMemberConstraint)ResolveConstraint(typeof(TMemberConstraint));
         }
-
-        #endregion
     }
 }

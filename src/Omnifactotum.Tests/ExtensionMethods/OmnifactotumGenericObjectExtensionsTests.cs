@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Linq;
 using NUnit.Framework;
 
 namespace Omnifactotum.Tests.ExtensionMethods
@@ -9,8 +8,6 @@ namespace Omnifactotum.Tests.ExtensionMethods
     [TestFixture]
     public sealed class OmnifactotumGenericObjectExtensionsTests
     {
-        #region Tests
-
         [Test]
         public void TestEnsureNotNullForReferenceType()
         {
@@ -33,7 +30,5 @@ namespace Omnifactotum.Tests.ExtensionMethods
             int? nullValue = null;
             Assert.That(() => nullValue.EnsureNotNull(), Throws.TypeOf<ArgumentNullException>());
         }
-
-        #endregion
     }
 }

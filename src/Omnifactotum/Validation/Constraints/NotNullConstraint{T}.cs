@@ -1,7 +1,4 @@
-﻿using System;
-using System.Linq;
-
-namespace Omnifactotum.Validation.Constraints
+﻿namespace Omnifactotum.Validation.Constraints
 {
     /// <summary>
     ///     Specifies that the annotated member should not be <c>null</c>.
@@ -12,8 +9,6 @@ namespace Omnifactotum.Validation.Constraints
     public class NotNullConstraint<T> : TypedMemberConstraintBase<T>
         where T : class
     {
-        #region Protected Methods
-
         /// <summary>
         ///     Validates the specified strongly-typed value is scope of the specified context.
         /// </summary>
@@ -38,7 +33,5 @@ namespace Omnifactotum.Validation.Constraints
 
             AddError(validatorContext, memberContext, "The value cannot be null.");
         }
-
-        #endregion
     }
 }

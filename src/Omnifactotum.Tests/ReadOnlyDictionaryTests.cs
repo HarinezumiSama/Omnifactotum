@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.Linq;
 using NUnit.Framework;
 using Omnifactotum.NUnit;
@@ -12,8 +11,6 @@ namespace Omnifactotum.Tests
     [TestFixture]
     public sealed class ReadOnlyDictionaryTests
     {
-        #region Constants and Fields
-
         private const int Key1 = 1;
         private const string Value1 = "One";
 
@@ -30,10 +27,6 @@ namespace Omnifactotum.Tests
         private const string ValueExtra = "Forty two";
 
         private Dictionary<int, string> _dictionary;
-
-        #endregion
-
-        #region SetUp/TearDown
 
         [SetUp]
         public void SetUp()
@@ -52,10 +45,6 @@ namespace Omnifactotum.Tests
         {
             _dictionary = null;
         }
-
-        #endregion
-
-        #region Tests
 
         [Test]
         [Category(TestCategory.Negative)]
@@ -290,10 +279,6 @@ namespace Omnifactotum.Tests
             Assert.That(array, Is.EquivalentTo(_dictionary));
         }
 
-        #endregion
-
-        #region Nested Types: Test Cases
-
         internal sealed class ConstructionCases : TestCasesBase
         {
             protected override IEnumerable<TestCaseData> GetCases()
@@ -309,7 +294,5 @@ namespace Omnifactotum.Tests
                     .SetName("Explicit creation");
             }
         }
-
-        #endregion
     }
 }

@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Linq;
 
 namespace Omnifactotum.Validation.Constraints
 {
@@ -13,8 +12,6 @@ namespace Omnifactotum.Validation.Constraints
     public abstract class BaseValidatableMemberAttribute : Attribute
 #pragma warning restore 3015
     {
-        #region Constructors
-
         /// <summary>
         ///     Initializes a new instance of the <see cref="BaseValidatableMemberAttribute"/> class.
         /// </summary>
@@ -22,7 +19,5 @@ namespace Omnifactotum.Validation.Constraints
         {
             // Nothing to do
         }
-
-        #endregion
     }
 }

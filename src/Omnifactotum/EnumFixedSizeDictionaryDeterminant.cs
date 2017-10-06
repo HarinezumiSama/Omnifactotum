@@ -12,15 +12,9 @@ namespace Omnifactotum
     public sealed class EnumFixedSizeDictionaryDeterminant<TKey> : FixedSizeDictionaryDeterminant<TKey>
         where TKey : struct
     {
-        #region Constants and Fields
-
         private readonly int _size;
         private readonly Func<TKey, int> _getIndex;
         private readonly Func<int, TKey> _getKey;
-
-        #endregion
-
-        #region Constructors
 
         /// <summary>
         ///     Initializes a new instance of the <see cref="EnumFixedSizeDictionaryDeterminant{TKey}"/> class.
@@ -73,10 +67,6 @@ namespace Omnifactotum
             _getKey = CreateConversionMethod<int, TKey>();
         }
 
-        #endregion
-
-        #region Public Properties
-
         /// <summary>
         ///     Gets the constant size of an internal array used in
         ///     the <see cref="FixedSizeDictionary{TKey,TValue,TDeterminant}"/>.
@@ -89,10 +79,6 @@ namespace Omnifactotum
                 return _size;
             }
         }
-
-        #endregion
-
-        #region Public Methods
 
         /// <summary>
         ///     Gets the internal index corresponding to the specified key.
@@ -122,17 +108,11 @@ namespace Omnifactotum
             return _getKey(index);
         }
 
-        #endregion
-
-        #region Private Methods
-
         private static Func<TSource, TTarget> CreateConversionMethod<TSource, TTarget>()
         {
             var parameter = Expression.Parameter(typeof(TSource));
             var convert = Expression.Convert(parameter, typeof(TTarget));
             return Expression.Lambda<Func<TSource, TTarget>>(convert, parameter).Compile();
         }
-
-        #endregion
     }
 }

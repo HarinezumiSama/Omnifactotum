@@ -14,14 +14,8 @@ namespace Omnifactotum.Tests.Validation
     [TestFixture]
     public sealed class ObjectValidatorTests
     {
-        #region Constants and Fields
-
         private static readonly string ValidationResultPropertyName =
             Factotum.For<ObjectValidationException>.GetPropertyName(obj => obj.ValidationResult);
-
-        #endregion
-
-        #region Tests
 
         [Test]
         public void TestValidateWhenValidationSucceeded()
@@ -166,10 +160,6 @@ namespace Omnifactotum.Tests.Validation
             Assert.That(nullContainedValue.HasValue, Is.False);
         }
 
-        #endregion
-
-        #region Private Methods
-
         private static string MakeExpressionString(string propertyPathTemplate)
         {
             return string.Format(
@@ -189,22 +179,12 @@ namespace Omnifactotum.Tests.Validation
             Assert.That(validationResult.EnsureSucceeded, Throws.Nothing);
         }
 
-        #endregion
-
-        #region SimpleData Class
-
         public sealed class SimpleData
         {
-            #region Constants and Fields
-
             [SuppressMessage("StyleCop.CSharp.MaintainabilityRules", "SA1401:FieldsMustBePrivate",
                 Justification = "OK in the unit test.")]
             [MemberConstraint(typeof(UtcDateConstraint))]
             public DateTime StartDate;
-
-            #endregion
-
-            #region Public Properties
 
             [UsedImplicitly]
             [MemberConstraint(typeof(NeverCalledConstraint))]
@@ -244,45 +224,25 @@ namespace Omnifactotum.Tests.Validation
                     return null;
                 }
             }
-
-            #endregion
         }
-
-        #endregion
-
-        #region BaseAnotherSimpleData Class
 
         public abstract class BaseAnotherSimpleData
         {
             //// No members
         }
 
-        #endregion
-
-        #region AnotherSimpleData Class
-
         public sealed class AnotherSimpleData : BaseAnotherSimpleData
         {
-            #region Public Properties
-
             [MemberConstraint(typeof(NotNullConstraint))]
             public string Value
             {
                 get;
                 set;
             }
-
-            #endregion
         }
-
-        #endregion
-
-        #region ComplexData Class
 
         public sealed class ComplexData
         {
-            #region Public Properties
-
             [UsedImplicitly]
             public string Value
             {
@@ -327,49 +287,27 @@ namespace Omnifactotum.Tests.Validation
 
                 set;
             }
-
-            #endregion
         }
-
-        #endregion
-
-        #region SimpleContainer Class
 
         public sealed class SimpleContainer<T>
         {
-            #region Public Properties
-
             [MemberConstraint(typeof(NotNullConstraint))]
             public T ContainedValue
             {
                 get;
                 set;
             }
-
-            #endregion
         }
-
-        #endregion
-
-        #region MapContainerPropertiesPairConstraint Class
 
         public sealed class MapContainerPropertiesPairConstraint
             : KeyValuePairConstraintBase<string, SimpleContainer<int?>>
         {
-            #region Constructors
-
             public MapContainerPropertiesPairConstraint()
                 : base(typeof(NotNullOrEmptyStringConstraint), typeof(NotNullConstraint<SimpleContainer<int?>>))
             {
                 // Nothing to do
             }
-
-            #endregion
         }
-
-        #endregion
-
-        #region UtcDateConstraint Class
 
         private sealed class UtcDateConstraint : MemberConstraintBase
         {
@@ -388,10 +326,6 @@ namespace Omnifactotum.Tests.Validation
             }
         }
 
-        #endregion
-
-        #region NeverCalledConstraint Class
-
         private sealed class NeverCalledConstraint : MemberConstraintBase
         {
             protected override void ValidateValue(
@@ -406,14 +340,8 @@ namespace Omnifactotum.Tests.Validation
             }
         }
 
-        #endregion
-
-        #region MapContainer Class
-
         private sealed class MapContainer
         {
-            #region Public Properties
-
             [MemberConstraint(typeof(NotNullConstraint))]
             [MemberItemConstraint(typeof(MapContainerPropertiesPairConstraint))]
             public IEnumerable<KeyValuePair<string, SimpleContainer<int?>>> Properties
@@ -423,10 +351,6 @@ namespace Omnifactotum.Tests.Validation
 
                 set;
             }
-
-            #endregion
         }
-
-        #endregion
     }
 }

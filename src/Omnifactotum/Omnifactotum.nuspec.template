@@ -1,0 +1,19 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+
+<package>
+    <metadata>
+        <id>$id$</id>
+        <version>$version$</version>
+        <title>$title$</title>
+        <authors>$author$</authors>
+        <owners>$author$</owners>
+        <!--<licenseUrl>http://omnifactotum.codeplex.com/license</licenseUrl>-->
+        <projectUrl>https://bitbucket.org/HarinezumiSama/omnifactotum</projectUrl>
+        <!--iconUrl>http://ICON_URL_HERE_OR_DELETE_THIS_LINE</iconUrl-->
+        <requireLicenseAcceptance>false</requireLicenseAcceptance>
+        <description>$description$</description>
+        <releaseNotes>$PkgReleaseNotes$</releaseNotes>
+        <copyright>$copyright$</copyright>
+        <tags>omnifactotum omni factotum aid assistant extension extensions helper common C#</tags>
+    </metadata>
+</package>

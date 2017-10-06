@@ -1,6 +1,4 @@
-﻿using System;
-using System.Diagnostics;
-using System.Linq;
+﻿using System.Linq;
 using Omnifactotum.Annotations;
 
 //// Namespace is intentionally named so in order to simplify usage of extension methods
@@ -12,8 +10,6 @@ namespace System.Collections.Generic
     /// </summary>
     public static class OmnifactotumCollectionHashCodeHelper
     {
-        #region Public Methods
-
         /// <summary>
         ///     Computes the hash code of the specified collection by combining hash codes of the elements
         ///     in the collection into a new hash code.
@@ -38,7 +34,5 @@ namespace System.Collections.Generic
                 0,
                 (current, item) => current.CombineHashCodeValues(item.GetHashCodeSafely()));
         }
-
-        #endregion
     }
 }

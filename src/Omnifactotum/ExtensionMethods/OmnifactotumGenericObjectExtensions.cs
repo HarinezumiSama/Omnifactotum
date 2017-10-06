@@ -1,8 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Diagnostics;
 using System.Globalization;
-using System.Linq;
 using Omnifactotum;
 using Omnifactotum.Annotations;
 
@@ -16,8 +14,6 @@ namespace System
     /// </summary>
     public static class OmnifactotumGenericObjectExtensions
     {
-        #region Public Methods
-
         /// <summary>
         ///     Returns the specified value if is not <c>null</c>;
         ///     otherwise, throws <see cref="System.ArgumentNullException"/>.
@@ -38,14 +34,10 @@ namespace System
         public static T EnsureNotNull<T>([CanBeNull] this T value)
             where T : class
         {
-            #region Argument Check
-
             if (value == null)
             {
                 throw new ArgumentNullException("value");
             }
-
-            #endregion
 
             return value;
         }
@@ -73,14 +65,10 @@ namespace System
         public static T EnsureNotNull<T>([CanBeNull] this T? value)
             where T : struct
         {
-            #region Argument Check
-
             if (!value.HasValue)
             {
                 throw new ArgumentNullException("value");
             }
-
-            #endregion
 
             return value.Value;
         }
@@ -307,14 +295,10 @@ namespace System
         public static T AvoidNull<T>([CanBeNull] this T source, Func<T> getDefault)
             where T : class
         {
-            #region Argument Check
-
             if (getDefault == null)
             {
                 throw new ArgumentNullException("getDefault");
             }
-
-            #endregion
 
             var result = source ?? getDefault();
             if (result == null)
@@ -453,14 +437,10 @@ namespace System
         public static T Affirm<T>([CanBeNull] this T value, [NotNull] Func<T, bool> predicate)
             where T : class
         {
-            #region Argument Check
-
             if (predicate == null)
             {
                 throw new ArgumentNullException("predicate");
             }
-
-            #endregion
 
             return value == null || !predicate(value) ? null : value;
         }
@@ -488,14 +468,10 @@ namespace System
         public static bool ComputePredicate<T>([CanBeNull] this T value, [NotNull] Func<T, bool> predicate)
             where T : class
         {
-            #region Argument Check
-
             if (predicate == null)
             {
                 throw new ArgumentNullException("predicate");
             }
-
-            #endregion
 
             return value != null && predicate(value);
         }
@@ -533,14 +509,10 @@ namespace System
             [CanBeNull] TOutput defaultOutput)
             where TInput : class
         {
-            #region Argument Check
-
             if (transform == null)
             {
                 throw new ArgumentNullException("transform");
             }
-
-            #endregion
 
             return input == null ? defaultOutput : transform(input);
         }
@@ -576,7 +548,5 @@ namespace System
         {
             return Morph(input, transform, default(TOutput));
         }
-
-        #endregion
     }
 }

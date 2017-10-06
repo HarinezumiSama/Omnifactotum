@@ -1,7 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Diagnostics;
-using System.Linq;
 using NUnit.Framework;
 using NUnit.Framework.Constraints;
 
@@ -10,8 +7,6 @@ namespace Omnifactotum.Tests
     [TestFixture]
     public sealed class DirectedGraphTests
     {
-        #region Tests
-
         [Test]
         [Category(TestCategory.Positive)]
         public void TestObjectConnection()
@@ -291,10 +286,6 @@ namespace Omnifactotum.Tests
             Assert.That(() => graph.SortTopologically(), Throws.InvalidOperationException);
         }
 
-        #endregion
-
-        #region Private Methods
-
         private static void AssertNodeRelation<T>(DirectedGraphNode<T> tail, DirectedGraphNode<T> head)
         {
             Assert.That(head, Is.Not.Null);
@@ -343,7 +334,5 @@ namespace Omnifactotum.Tests
         {
             return negateCondition ? !constraint : constraint;
         }
-
-        #endregion
     }
 }

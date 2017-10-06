@@ -15,8 +15,6 @@ namespace Omnifactotum.Validation
     /// </summary>
     public static class ObjectValidator
     {
-        #region Constants and Fields
-
         /// <summary>
         ///     The root object parameter name (used in expressions).
         /// </summary>
@@ -42,10 +40,6 @@ namespace Omnifactotum.Validation
         private static readonly MethodInfo EnumerableFirstOfObjectMethodInfo =
             EnumerableFirstBaseMethodInfo.MakeGenericMethod(typeof(object));
 
-        #endregion
-
-        #region Public Methods
-
         /// <summary>
         ///     Validates the specified instance.
         /// </summary>
@@ -63,10 +57,6 @@ namespace Omnifactotum.Validation
         {
             return Validate(instance, null);
         }
-
-        #endregion
-
-        #region Internal Methods
 
         /// <summary>
         ///     Validates the specified instance.
@@ -88,14 +78,10 @@ namespace Omnifactotum.Validation
             [NotNull] T instance,
             [CanBeNull] RecursiveProcessingContext<MemberData> recursiveProcessingContext)
         {
-            #region Argument Check
-
             if (ReferenceEquals(instance, null))
             {
                 throw new ArgumentNullException("instance");
             }
-
-            #endregion
 
             var parameterExpression = Expression.Parameter(instance.GetType(), RootObjectParameterName);
             var rootMemberData = new MemberData(parameterExpression, null, instance, null, null);
@@ -109,10 +95,6 @@ namespace Omnifactotum.Validation
 
             return new ObjectValidationResult(objectValidatorContext.Errors.Items);
         }
-
-        #endregion
-
-        #region Private Methods
 
         private static bool IsReadableProperty([NotNull] MemberInfo info)
         {
@@ -156,14 +138,10 @@ namespace Omnifactotum.Validation
 
         private static IEnumerable<MemberData> GetMembers(MemberData parentMemberData)
         {
-            #region Argument Check
-
             if (parentMemberData == null)
             {
                 throw new ArgumentNullException("parentMemberData");
             }
-
-            #endregion
 
             var instance = parentMemberData.Value;
             var instanceType = instance.GetTypeSafely();
@@ -273,14 +251,10 @@ namespace Omnifactotum.Validation
             MemberData memberData,
             ObjectValidatorContext objectValidatorContext)
         {
-            #region Argument Check
-
             root.EnsureNotNull();
             parameterExpression.EnsureNotNull();
             memberData.EnsureNotNull();
             objectValidatorContext.EnsureNotNull();
-
-            #endregion
 
             var effectiveAttributes = memberData.EffectiveAttributes;
             if (effectiveAttributes == null || effectiveAttributes.Length == 0)
@@ -301,7 +275,5 @@ namespace Omnifactotum.Validation
                 constraint.Validate(objectValidatorContext, context, memberData.Value);
             }
         }
-
-        #endregion
     }
 }

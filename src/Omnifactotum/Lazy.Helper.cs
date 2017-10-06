@@ -1,6 +1,4 @@
-﻿using System;
-using System.Diagnostics;
-using System.Threading;
+﻿using System.Threading;
 using Omnifactotum.Annotations;
 
 //// Namespace is intentionally named so in order to simplify usage of extension methods
@@ -14,8 +12,6 @@ namespace System
     /// </summary>
     public static class Lazy
     {
-        #region Public Methods
-
         /// <summary>
         ///     Creates a new instance of the <see cref="System.Lazy{T}"/> class. When lazy initialization
         ///     occurs, the specified initialization function is used.
@@ -88,7 +84,5 @@ namespace System
         {
             return new Lazy<T>(valueFactory, mode);
         }
-
-        #endregion
     }
 }

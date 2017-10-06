@@ -1,6 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Diagnostics;
 using System.Globalization;
 using System.Linq;
 using Omnifactotum.Annotations;
@@ -16,8 +14,6 @@ namespace Omnifactotum
     [Serializable]
     public sealed class DirectedGraphNode<T>
     {
-        #region Constructors
-
         /// <summary>
         ///     Initializes a new instance of the <see cref="DirectedGraphNode{T}"/> class.
         /// </summary>
@@ -26,9 +22,9 @@ namespace Omnifactotum
         /// </param>
         public DirectedGraphNode([CanBeNull] T value)
         {
-            this.Heads = new DirectedGraphNodeCollection<T>(this, DirectedGraphOwnerRelation.Tail);
-            this.Tails = new DirectedGraphNodeCollection<T>(this, DirectedGraphOwnerRelation.Head);
-            this.Value = value;
+            Heads = new DirectedGraphNodeCollection<T>(this, DirectedGraphOwnerRelation.Tail);
+            Tails = new DirectedGraphNodeCollection<T>(this, DirectedGraphOwnerRelation.Head);
+            Value = value;
         }
 
         /// <summary>
@@ -40,10 +36,6 @@ namespace Omnifactotum
         {
             // Nothing to do
         }
-
-        #endregion
-
-        #region Public Properties
 
         /// <summary>
         ///     Gets the graph which this node belongs to.
@@ -85,10 +77,6 @@ namespace Omnifactotum
             private set;
         }
 
-        #endregion
-
-        #region Public Methods
-
         /// <summary>
         ///     Returns a <see cref="System.String"/> that represents this <see cref="DirectedGraphNode{T}"/>.
         /// </summary>
@@ -100,12 +88,8 @@ namespace Omnifactotum
             return string.Format(
                 "{0}. Value = {1}",
                 GetType().GetQualifiedName(),
-                this.Value.ToStringSafely());
+                Value.ToStringSafely());
         }
-
-        #endregion
-
-        #region Internal Methods
 
         internal void AssignGraph([CanBeNull] DirectedGraph<T> graph)
         {
@@ -142,7 +126,5 @@ namespace Omnifactotum
                     return RecursiveProcessingDirective.Continue;
                 });
         }
-
-        #endregion
     }
 }

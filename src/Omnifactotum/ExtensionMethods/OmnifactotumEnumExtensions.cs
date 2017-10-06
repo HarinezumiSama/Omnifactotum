@@ -1,7 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.ComponentModel;
-using System.Diagnostics;
 using System.Globalization;
 using System.Linq;
 using Omnifactotum.Annotations;
@@ -16,16 +14,10 @@ namespace System
     /// </summary>
     public static class OmnifactotumEnumExtensions
     {
-        #region Constants and Fields
-
         /// <summary>
         ///     The type name format.
         /// </summary>
         private static readonly string NameFormat = "{0}" + Type.Delimiter + "{1}";
-
-        #endregion
-
-        #region Public Methods
 
         /// <summary>
         ///     Gets the name of the specified enumeration value.
@@ -165,23 +157,18 @@ namespace System
         public static bool IsOneOf<TEnum>(this TEnum enumerationValue, IEnumerable<TEnum> otherValues)
             where TEnum : struct
         {
-            #region Argument Check
-
             var enumType = typeof(TEnum);
             if (!enumType.IsEnum)
             {
                 throw new ArgumentException(
-                    string.Format("The type is not an enumeration ({0}).", enumType.FullName),
-                    //// ReSharper disable once NotResolvedInText
-                    "TEnum");
+                    $@"The type {enumType.GetFullName().ToUIString()} is not an enumeration.",
+                    nameof(TEnum));
             }
 
             if (otherValues == null)
             {
-                throw new ArgumentNullException("otherValues");
+                throw new ArgumentNullException(nameof(otherValues));
             }
-
-            #endregion
 
             return otherValues.Any(otherValue => EqualityComparer<TEnum>.Default.Equals(enumerationValue, otherValue));
         }
@@ -231,14 +218,10 @@ namespace System
         /// </exception>
         public static bool IsDefined([NotNull] this Enum enumerationValue)
         {
-            #region Argument Check
-
             if (enumerationValue == null)
             {
-                throw new ArgumentNullException("enumerationValue");
+                throw new ArgumentNullException(nameof(enumerationValue));
             }
-
-            #endregion
 
             return Enum.IsDefined(enumerationValue.GetType(), enumerationValue);
         }
@@ -258,19 +241,15 @@ namespace System
         /// </exception>
         public static void EnsureDefined([NotNull] this Enum enumerationValue)
         {
-            #region Argument Check
-
             if (enumerationValue == null)
             {
-                throw new ArgumentNullException("enumerationValue");
+                throw new ArgumentNullException(nameof(enumerationValue));
             }
-
-            #endregion
 
             if (!IsDefined(enumerationValue))
             {
                 throw new InvalidEnumArgumentException(
-                    "enumerationValue",
+                    nameof(enumerationValue),
                     (int)(object)enumerationValue,
                     enumerationValue.GetType());
             }
@@ -290,20 +269,13 @@ namespace System
         public static NotImplementedException CreateEnumValueNotImplementedException(
             [NotNull] this Enum enumerationValue)
         {
-            #region Argument Check
-
             if (enumerationValue == null)
             {
-                throw new ArgumentNullException("enumerationValue");
+                throw new ArgumentNullException(nameof(enumerationValue));
             }
 
-            #endregion
-
             return new NotImplementedException(
-                string.Format(
-                    CultureInfo.InvariantCulture,
-                    "The operation for the enumeration value '{0}' is not implemented.",
-                    enumerationValue.GetQualifiedName()));
+                $@"The operation for the enumeration value {enumerationValue.GetQualifiedName().ToUIString()} is not implemented.");
         }
 
         /// <summary>
@@ -319,25 +291,14 @@ namespace System
         /// </returns>
         public static NotSupportedException CreateEnumValueNotSupportedException([NotNull] this Enum enumerationValue)
         {
-            #region Argument Check
-
             if (enumerationValue == null)
             {
-                throw new ArgumentNullException("enumerationValue");
+                throw new ArgumentNullException(nameof(enumerationValue));
             }
 
-            #endregion
-
             return new NotSupportedException(
-                string.Format(
-                    CultureInfo.InvariantCulture,
-                    "The operation for the enumeration value '{0}' is not supported.",
-                    enumerationValue.GetQualifiedName()));
+                $@"The operation for the enumeration value {enumerationValue.GetQualifiedName().ToUIString()} is not supported.");
         }
-
-        #endregion
-
-        #region Private Methods
 
         /// <summary>
         ///     Gets the name of the specified enumeration value.
@@ -353,14 +314,10 @@ namespace System
         /// </returns>
         private static string GetNameInternal([NotNull] Enum value, bool? fullEnumName)
         {
-            #region Argument Check
-
             if (value == null)
             {
-                throw new ArgumentNullException("value");
+                throw new ArgumentNullException(nameof(value));
             }
-
-            #endregion
 
             var enumType = value.GetType();
             var enumValueName = Enum.GetName(enumType, value) ?? value.ToString();
@@ -391,26 +348,13 @@ namespace System
         private static bool IsSetInternal<TEnum>(this TEnum enumerationValue, TEnum flags, bool all)
             where TEnum : struct
         {
-            #region Argument Check
-
             var enumType = typeof(TEnum);
-            if (!enumType.IsEnum)
+            if (!enumType.IsEnum || !enumType.IsDefined(typeof(FlagsAttribute), false))
             {
                 throw new ArgumentException(
-                    string.Format("The type must be an enumeration ({0}).", enumType.FullName),
-                    //// ReSharper disable once NotResolvedInText
-                    "TEnum");
+                    $@"The type {enumType.GetFullName().ToUIString()} is not a bit-field enumeration.",
+                    nameof(TEnum));
             }
-
-            if (!enumType.IsDefined(typeof(FlagsAttribute), true))
-            {
-                throw new ArgumentException(
-                    string.Format("The type must be a flag enumeration ({0}).", enumType.FullName),
-                    //// ReSharper disable once NotResolvedInText
-                    "TEnum");
-            }
-
-            #endregion
 
             var underlyingType = Enum.GetUnderlyingType(enumType);
             if (underlyingType == typeof(ulong))
@@ -426,7 +370,5 @@ namespace System
                 return all ? andedValue == castFlags : andedValue != 0;
             }
         }
-
-        #endregion
     }
 }

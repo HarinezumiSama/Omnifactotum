@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.ObjectModel;
+﻿using System.Collections.ObjectModel;
 using System.Diagnostics;
 using System.Text;
 using Omnifactotum.Annotations;
@@ -13,8 +12,6 @@ namespace System
     /// </summary>
     public static class OmnifactotumArrayExtensions
     {
-        #region Public Methods
-
         /// <summary>
         ///     Creates a shallow copy of the specified array.
         /// </summary>
@@ -50,8 +47,6 @@ namespace System
         /// </param>
         public static void Initialize<T>([NotNull] this T[] array, [NotNull] Func<T, int, T> getElementValue)
         {
-            #region Argument Check
-
             if (array == null)
             {
                 throw new ArgumentNullException("array");
@@ -61,8 +56,6 @@ namespace System
             {
                 throw new ArgumentNullException("getElementValue");
             }
-
-            #endregion
 
             for (var index = 0; index < array.Length; index++)
             {
@@ -86,14 +79,10 @@ namespace System
         /// </param>
         public static void Initialize<T>([NotNull] this T[] array, [NotNull] Func<int, T> getElementValue)
         {
-            #region Argument Check
-
             if (getElementValue == null)
             {
                 throw new ArgumentNullException("getElementValue");
             }
-
-            #endregion
 
             Initialize(array, (element, index) => getElementValue(index));
         }
@@ -132,14 +121,10 @@ namespace System
         [NotNull]
         public static ReadOnlyCollection<T> AsReadOnly<T>([NotNull] this T[] array)
         {
-            #region Argument Check
-
             if (array == null)
             {
                 throw new ArgumentNullException("array");
             }
-
-            #endregion
 
             return new ReadOnlyCollection<T>(array);
         }
@@ -160,14 +145,10 @@ namespace System
         [NotNull]
         public static string ToHexString([NotNull] this byte[] byteArray, bool useUpperCase)
         {
-            #region Argument Check
-
             if (byteArray == null)
             {
                 throw new ArgumentNullException("byteArray");
             }
-
-            #endregion
 
             const string UpperCaseFormat = "X2";
             const string LowerCaseFormat = "x2";
@@ -200,10 +181,6 @@ namespace System
             return ToHexString(byteArray, false);
         }
 
-        #endregion
-
-        #region StrongTypeHelper<T> Class
-
         /// <summary>
         ///     The strong type helper.
         /// </summary>
@@ -212,16 +189,10 @@ namespace System
         /// </typeparam>
         private static class StrongTypeHelper<T>
         {
-            #region Constants and Fields
-
             /// <summary>
             ///     The empty array.
             /// </summary>
             private static volatile T[] _emptyArray;
-
-            #endregion
-
-            #region Public Properties
 
             /// <summary>
             ///     Gets the empty array.
@@ -243,10 +214,6 @@ namespace System
                     return _emptyArray;
                 }
             }
-
-            #endregion
         }
-
-        #endregion
     }
 }

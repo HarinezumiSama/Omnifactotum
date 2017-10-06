@@ -15,8 +15,6 @@ namespace Omnifactotum
     [Serializable]
     public sealed class DirectedGraph<T> : DirectedGraphNodeCollectionBase<T>
     {
-        #region Constructors
-
         /// <summary>
         ///     Initializes a new instance of the <see cref="DirectedGraph{T}"/> class.
         /// </summary>
@@ -34,21 +32,13 @@ namespace Omnifactotum
         public DirectedGraph([NotNull] IEnumerable<DirectedGraphNode<T>> nodes)
             : this()
         {
-            #region Argument Check
-
             if (nodes == null)
             {
                 throw new ArgumentNullException("nodes");
             }
 
-            #endregion
-
-            nodes.DoForEach(this.Add);
+            nodes.DoForEach(Add);
         }
-
-        #endregion
-
-        #region Public Methods
 
         /// <summary>
         ///     Creates a node with the specified value and adds the created node to this graph.
@@ -79,7 +69,7 @@ namespace Omnifactotum
         public DirectedGraphNode<T>[] SortTopologically(
             [CanBeNull] Comparison<DirectedGraphNode<T>> compareEquipollentNodes)
         {
-            var internalNodeMap = new Dictionary<DirectedGraphNode<T>, InternalNode<T>>(this.Count);
+            var internalNodeMap = new Dictionary<DirectedGraphNode<T>, InternalNode<T>>(Count);
 
             foreach (var node in this)
             {
@@ -105,7 +95,7 @@ namespace Omnifactotum
                 internalNode.Node.Tails.DoForEach(item => internalNodeCopy.Tails.Add(internalNodeMap[item]));
             }
 
-            var resultList = new List<DirectedGraphNode<T>>(this.Count);
+            var resultList = new List<DirectedGraphNode<T>>(Count);
             var comparer = new NodeComparer<T>(compareEquipollentNodes);
 
             var remainingNodes = internalNodeMap.Values.ToList();
@@ -143,10 +133,6 @@ namespace Omnifactotum
             return SortTopologically(null);
         }
 
-        #endregion
-
-        #region Internal Properties
-
         internal override DirectedGraph<T> Graph
         {
             [DebuggerStepThrough]
@@ -164,10 +150,6 @@ namespace Omnifactotum
             }
         }
 
-        #endregion
-
-        #region Protected Methods
-
         /// <summary>
         ///     Called right after an item has been removed from this collection.
         /// </summary>
@@ -183,27 +165,17 @@ namespace Omnifactotum
             this.DoForEach(obj => obj.Heads.Remove(item));
         }
 
-        #endregion
-
-        #region InternalNode<TValue> Class
-
         private sealed class InternalNode<TValue>
         {
-            #region Constructors
-
             /// <summary>
             ///     Initializes a new instance of the <see cref="InternalNode{TValue}"/> class.
             /// </summary>
             public InternalNode(DirectedGraphNode<TValue> node)
             {
-                this.Node = node.EnsureNotNull();
-                this.Heads = new List<InternalNode<TValue>>(node.Heads.Count);
-                this.Tails = new List<InternalNode<TValue>>(node.Tails.Count);
+                Node = node.EnsureNotNull();
+                Heads = new List<InternalNode<TValue>>(node.Heads.Count);
+                Tails = new List<InternalNode<TValue>>(node.Tails.Count);
             }
-
-            #endregion
-
-            #region Public Properties
 
             public DirectedGraphNode<TValue> Node
             {
@@ -222,23 +194,11 @@ namespace Omnifactotum
                 get;
                 private set;
             }
-
-            #endregion
         }
-
-        #endregion
-
-        #region NodeComparer<TValue> Class
 
         private sealed class NodeComparer<TValue> : IComparer<DirectedGraphNode<TValue>>
         {
-            #region Constants and Fields
-
             private readonly Comparison<DirectedGraphNode<TValue>> _comparison;
-
-            #endregion
-
-            #region Constructors
 
             /// <summary>
             ///     Initializes a new instance of the <see cref="NodeComparer{TValue}"/> class.
@@ -248,18 +208,10 @@ namespace Omnifactotum
                 _comparison = comparison ?? ((x, y) => Comparer<TValue>.Default.Compare(x.Value, y.Value));
             }
 
-            #endregion
-
-            #region IComparer<DirectedGraphNode<T>> Members
-
             public int Compare(DirectedGraphNode<TValue> x, DirectedGraphNode<TValue> y)
             {
                 return _comparison(x, y);
             }
-
-            #endregion
         }
-
-        #endregion
     }
 }

@@ -1,7 +1,4 @@
-﻿using System;
-using System.Linq;
-
-namespace Omnifactotum.Validation.Constraints
+﻿namespace Omnifactotum.Validation.Constraints
 {
     /// <summary>
     ///     Specifies that the annotated member should not be <c>null</c>.

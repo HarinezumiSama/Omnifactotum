@@ -16,8 +16,6 @@ namespace Omnifactotum.Validation.Constraints
     /// </typeparam>
     public abstract class TypedMemberConstraintBase<T> : MemberConstraintBase
     {
-        #region Protected Methods
-
         /// <summary>
         ///     Validates the specified value is scope of the specified memberContext.
         /// </summary>
@@ -81,8 +79,6 @@ namespace Omnifactotum.Validation.Constraints
             T value,
             [NotNull] Expression<Func<T, TMember>> memberGetterExpression)
         {
-            #region Argument Check
-
             if (valueContext == null)
             {
                 throw new ArgumentNullException("valueContext");
@@ -97,8 +93,6 @@ namespace Omnifactotum.Validation.Constraints
             {
                 throw new ArgumentNullException("memberGetterExpression");
             }
-
-            #endregion
 
             var memberInfo = Factotum.For<T>.GetFieldOrPropertyInfo(memberGetterExpression);
 
@@ -143,8 +137,6 @@ namespace Omnifactotum.Validation.Constraints
             [NotNull] Expression<Func<T, TMember>> memberGetterExpression,
             [NotNull] Type constraintType)
         {
-            #region Argument Check
-
             if (valueContext == null)
             {
                 throw new ArgumentNullException("valueContext");
@@ -164,8 +156,6 @@ namespace Omnifactotum.Validation.Constraints
             {
                 throw new ArgumentNullException("constraintType");
             }
-
-            #endregion
 
             var memberContext = CreateMemberContext(valueContext, value, memberGetterExpression);
             var constraint = validatorContext.ResolveConstraint(constraintType);
@@ -214,7 +204,5 @@ namespace Omnifactotum.Validation.Constraints
                 validatorContext.Errors.Add(newError);
             }
         }
-
-        #endregion
     }
 }

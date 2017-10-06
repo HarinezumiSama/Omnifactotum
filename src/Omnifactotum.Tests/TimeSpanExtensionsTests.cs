@@ -1,7 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Diagnostics;
-using System.Linq;
 using NUnit.Framework;
 
 namespace Omnifactotum.Tests
@@ -9,8 +6,6 @@ namespace Omnifactotum.Tests
     [TestFixture]
     public sealed class TimeSpanExtensionsTests
     {
-        #region Tests
-
         [Test]
         [Category(TestCategory.Positive)]
         public void TestMultiply()
@@ -40,7 +35,5 @@ namespace Omnifactotum.Tests
             var ts = new TimeSpan(3, 2, 1);
             Assert.That(() => ts.Divide(0m), Throws.ArgumentException);
         }
-
-        #endregion
     }
 }
