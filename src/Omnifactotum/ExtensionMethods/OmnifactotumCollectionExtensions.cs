@@ -1,8 +1,10 @@
 ﻿using System.Linq;
+using Omnifactotum;
 using Omnifactotum.Annotations;
 
 //// Namespace is intentionally named so in order to simplify usage of extension methods
 //// ReSharper disable once CheckNamespace
+
 namespace System.Collections.Generic
 {
     /// <summary>
@@ -547,6 +549,184 @@ namespace System.Collections.Generic
 
             return collection.SyncRoot;
         }
+
+        /// <summary>
+        ///     <para>
+        ///         Converts the specified collection of string values to its UI representation.
+        ///     </para>
+        ///     <list type="table">
+        ///         <listheader>
+        ///             <term>The input value</term>
+        ///             <description>The result of the method</description>
+        ///         </listheader>
+        ///         <item>
+        ///             <term><c>null</c></term>
+        ///             <description>The literal: <b>&lt;null&gt;</b></description>
+        ///         </item>
+        ///         <item>
+        ///             <term>not <c>null</c></term>
+        ///             <description>
+        ///                 A string value containing UI representations of each item in the
+        ///                 collection separated with comma and whitespace. (See <see cref="OmnifactotumStringExtensions.ToUIString"/>.)
+        ///             </description>
+        ///         </item>
+        ///     </list>
+        /// </summary>
+        /// <param name="values">
+        ///     The collection of string values to convert.
+        /// </param>
+        /// <returns>
+        ///     The UI representation of the specified collection of string values.
+        /// </returns>
+        /// <example>
+        ///     <code>
+        /// <![CDATA[
+        ///         string[] values;
+        ///
+        ///         values = null;
+        ///         Console.WriteLine("Values are {0}.", values.ToUIString()); // Output: Values are <null>.
+        ///
+        ///         values = new string[] { null, string.Empty, "Hello", "Class 'MyClass' is found in project \"MyProject\"." };
+        ///         Console.WriteLine("Values are {0}.", values.ToUIString()); // Output: Values are null, "", "Hello", "Class 'MyClass' is found in project ""MyProject"".".
+        /// ]]>
+        ///     </code>
+        /// </example>
+        public static string ToUIString([CanBeNull] this IEnumerable<string> values)
+            => values?.Select(value => value.ToUIString()).Join(", ")
+                ?? OmnifactotumConstants.NullCollectionRepresentation;
+
+        /// <summary>
+        ///     <para>
+        ///         Converts the specified collection of nullable values to its UI representation.
+        ///     </para>
+        ///     <list type="table">
+        ///         <listheader>
+        ///             <term>The input value</term>
+        ///             <description>The result of the method</description>
+        ///         </listheader>
+        ///         <item>
+        ///             <term><c>null</c></term>
+        ///             <description>The literal: <b>&lt;null&gt;</b></description>
+        ///         </item>
+        ///         <item>
+        ///             <term>not <c>null</c></term>
+        ///             <description>
+        ///                 A string value containing UI representations of each item in the
+        ///                 collection separated with comma and whitespace. (See <see cref="OmnifactotumGenericObjectExtensions.ToUIString{T}(System.Nullable{T})"/>.)
+        ///             </description>
+        ///         </item>
+        ///     </list>
+        /// </summary>
+        /// <typeparam name="T">
+        ///     The underlying value type of the nullable values in the collection.
+        /// </typeparam>
+        /// <param name="values">
+        ///     The collection of nullable values to convert.
+        /// </param>
+        /// <returns>
+        ///     The UI representation of the specified collection of nullable values.
+        /// </returns>
+        /// <example>
+        ///     <code>
+        /// <![CDATA[
+        ///         int?[] values;
+        ///
+        ///         values = null;
+        ///         Console.WriteLine("Values are {0}.", values.ToUIString()); // Output: Values are <null>.
+        ///
+        ///         values = new int?[] { null, 42 };
+        ///         Console.WriteLine("Values are {0}.", values.ToUIString()); // Output: Values are null, 42.
+        /// ]]>
+        ///     </code>
+        /// </example>
+        public static string ToUIString<T>(this IEnumerable<T?> values)
+            where T : struct
+            => values?.Select(value => value.ToUIString()).Join(", ")
+                ?? OmnifactotumConstants.NullCollectionRepresentation;
+
+        /// <summary>
+        ///     <para>
+        ///         Converts the specified collection of nullable values to its UI representation
+        ///         using the specified format and format provider.
+        ///     </para>
+        ///     <list type="table">
+        ///         <listheader>
+        ///             <term>The input value</term>
+        ///             <description>The result of the method</description>
+        ///         </listheader>
+        ///         <item>
+        ///             <term><c>null</c></term>
+        ///             <description>The literal: <b>&lt;null&gt;</b></description>
+        ///         </item>
+        ///         <item>
+        ///             <term>not <c>null</c></term>
+        ///             <description>
+        ///                 A string value containing UI representations of each item in the
+        ///                 collection separated with comma and whitespace. (See <see cref="OmnifactotumGenericObjectExtensions.ToUIString{T}(System.Nullable{T},string,System.IFormatProvider)"/>.)
+        ///             </description>
+        ///         </item>
+        ///     </list>
+        /// </summary>
+        /// <typeparam name="T">
+        ///     The underlying value type of the nullable values in the collection.
+        /// </typeparam>
+        /// <param name="values">
+        ///     The collection of nullable values to convert.
+        /// </param>
+        /// <param name="format">
+        ///     The format to use, or <c>null</c> to use the default format defined for the type <typeparamref name="T"/>.
+        /// </param>
+        /// <param name="formatProvider">
+        ///     The provider to use to format the value, or <c>null</c> to obtain the format
+        ///     information from the current locale setting of the operating system.
+        /// </param>
+        /// <returns>
+        ///     The UI representation of the specified collection of nullable values.
+        /// </returns>
+        public static string ToUIString<T>(this IEnumerable<T?> values, string format, IFormatProvider formatProvider)
+            where T : struct, IFormattable
+            => values?.Select(value => value.ToUIString(format, formatProvider)).Join(", ")
+                ?? OmnifactotumConstants.NullCollectionRepresentation;
+
+        /// <summary>
+        ///     <para>
+        ///         Converts the specified collection of nullable values to its UI representation
+        ///         using the specified format provider.
+        ///     </para>
+        ///     <list type="table">
+        ///         <listheader>
+        ///             <term>The input value</term>
+        ///             <description>The result of the method</description>
+        ///         </listheader>
+        ///         <item>
+        ///             <term><c>null</c></term>
+        ///             <description>The literal: <b>&lt;null&gt;</b></description>
+        ///         </item>
+        ///         <item>
+        ///             <term>not <c>null</c></term>
+        ///             <description>
+        ///                 A string value containing UI representations of each item in the
+        ///                 collection separated with comma and whitespace. (See <see cref="OmnifactotumGenericObjectExtensions.ToUIString{T}(System.Nullable{T},System.IFormatProvider)"/>.)
+        ///             </description>
+        ///         </item>
+        ///     </list>
+        /// </summary>
+        /// <typeparam name="T">
+        ///     The underlying value type of the nullable values in the collection.
+        /// </typeparam>
+        /// <param name="values">
+        ///     The collection of nullable values to convert.
+        /// </param>
+        /// <param name="formatProvider">
+        ///     The provider to use to format the value, or <c>null</c> to obtain the format
+        ///     information from the current locale setting of the operating system.
+        /// </param>
+        /// <returns>
+        ///     The UI representation of the specified collection of nullable values.
+        /// </returns>
+        public static string ToUIString<T>(this IEnumerable<T?> values, IFormatProvider formatProvider)
+            where T : struct, IFormattable
+            => values.ToUIString(null, formatProvider);
 
         /// <summary>
         ///     Checks the reference and count equality.

@@ -16,7 +16,7 @@ namespace System
     {
         /// <summary>
         ///     Returns the specified value if is not <c>null</c>;
-        ///     otherwise, throws <see cref="System.ArgumentNullException"/>.
+        ///     otherwise, throws <see cref="ArgumentNullException"/>.
         /// </summary>
         /// <typeparam name="T">
         ///     The reference type of the value to check.
@@ -27,7 +27,7 @@ namespace System
         /// <returns>
         ///     The specified value if is not <c>null</c>.
         /// </returns>
-        /// <exception cref="System.ArgumentNullException">
+        /// <exception cref="ArgumentNullException">
         ///     <paramref name="value"/> is <c>null</c>.
         /// </exception>
         [NotNull]
@@ -45,7 +45,7 @@ namespace System
         /// <summary>
         ///     Returns the value which underlies the specified nullable value, if it is not <c>null</c>
         ///     (that is, if its <see cref="Nullable{T}.HasValue"/> property is <c>true</c>);
-        ///     otherwise, throws <see cref="System.ArgumentNullException"/>.
+        ///     otherwise, throws <see cref="ArgumentNullException"/>.
         /// </summary>
         /// <typeparam name="T">
         ///     The type which underlies the nullable type of the value to check.
@@ -57,7 +57,7 @@ namespace System
         ///     The value which underlies the specified nullable value, if it is not <c>null</c>
         ///     (that is, if its <see cref="Nullable{T}.HasValue"/> property is <c>true</c>).
         /// </returns>
-        /// <exception cref="System.ArgumentNullException">
+        /// <exception cref="ArgumentNullException">
         ///     <paramref name="value"/> is <c>null</c>, that is, its <see cref="Nullable{T}.HasValue"/> property is
         ///     <c>false</c>.
         /// </exception>
@@ -311,7 +311,26 @@ namespace System
         }
 
         /// <summary>
-        ///     Converts the specified nullable value its UI representation.
+        ///     <para>
+        ///         Converts the specified nullable value to its UI representation.
+        ///     </para>
+        ///     <list type="table">
+        ///         <listheader>
+        ///             <term>The input value</term>
+        ///             <description>The result of the method</description>
+        ///         </listheader>
+        ///         <item>
+        ///             <term><c>null</c></term>
+        ///             <description>The literal: <b>null</b></description>
+        ///         </item>
+        ///         <item>
+        ///             <term>not <c>null</c></term>
+        ///             <description>
+        ///                 A result of the <see cref="object.ToString()"/> method called for the
+        ///                 input value.
+        ///             </description>
+        ///         </item>
+        ///     </list>
         /// </summary>
         /// <typeparam name="T">
         ///     The underlying value type of the nullable value.
@@ -322,14 +341,90 @@ namespace System
         /// <returns>
         ///     The UI representation of the specified nullable value.
         /// </returns>
+        /// <example>
+        ///     <code>
+        /// <![CDATA[
+        ///         int? value;
+        ///
+        ///         value = null;
+        ///         Console.WriteLine("Value is {0}.", value.ToUIString()); // Output: Value is null.
+        ///
+        ///         value = 42;
+        ///         Console.WriteLine("Value is {0}.", value.ToUIString()); // Output: Value is 42.
+        /// ]]>
+        ///     </code>
+        /// </example>
         public static string ToUIString<T>([CanBeNull] this T? value)
             where T : struct
-        {
-            return value.HasValue ? value.Value.ToString() : OmnifactotumStringExtensions.NullString;
-        }
+            => value?.ToString() ?? OmnifactotumConstants.NullValueRepresentation;
 
         /// <summary>
-        ///     Converts the specified nullable value its UI representation using the specified format provider.
+        ///     <para>
+        ///         Converts the specified nullable value to its UI representation using the
+        ///         specified format and format provider.
+        ///     </para>
+        ///     <list type="table">
+        ///         <listheader>
+        ///             <term>The input value</term>
+        ///             <description>The result of the method</description>
+        ///         </listheader>
+        ///         <item>
+        ///             <term><c>null</c></term>
+        ///             <description>The literal: <b>null</b></description>
+        ///         </item>
+        ///         <item>
+        ///             <term>not <c>null</c></term>
+        ///             <description>
+        ///                 A result of the
+        ///                 <see cref="IFormattable.ToString(string,System.IFormatProvider)"/> method
+        ///                 called for the input value.
+        ///             </description>
+        ///         </item>
+        ///     </list>
+        /// </summary>
+        /// <typeparam name="T">
+        ///     The underlying value type of the nullable value.
+        /// </typeparam>
+        /// <param name="value">
+        ///     The nullable value to convert.
+        /// </param>
+        /// <param name="format">
+        ///     The format to use, or <c>null</c> to use the default format defined for the type <typeparamref name="T"/>.
+        /// </param>
+        /// <param name="formatProvider">
+        ///     The provider to use to format the value, or <c>null</c> to obtain the format
+        ///     information from the current locale setting of the operating system.
+        /// </param>
+        /// <returns>
+        ///     The UI representation of the specified nullable value.
+        /// </returns>
+        public static string ToUIString<T>([CanBeNull] this T? value, string format, IFormatProvider formatProvider)
+            where T : struct, IFormattable
+            => value?.ToString(format, formatProvider) ?? OmnifactotumConstants.NullValueRepresentation;
+
+        /// <summary>
+        ///     <para>
+        ///         Converts the specified nullable value to its UI representation using the
+        ///         specified format provider.
+        ///     </para>
+        ///     <list type="table">
+        ///         <listheader>
+        ///             <term>The input value</term>
+        ///             <description>The result of the method</description>
+        ///         </listheader>
+        ///         <item>
+        ///             <term><c>null</c></term>
+        ///             <description>The literal: <b>null</b></description>
+        ///         </item>
+        ///         <item>
+        ///             <term>not <c>null</c></term>
+        ///             <description>
+        ///                 A result of the
+        ///                 <see cref="IFormattable.ToString(string,System.IFormatProvider)"/> method
+        ///                 called for the input value.
+        ///             </description>
+        ///         </item>
+        ///     </list>
         /// </summary>
         /// <typeparam name="T">
         ///     The underlying value type of the nullable value.
@@ -338,19 +433,15 @@ namespace System
         ///     The nullable value to convert.
         /// </param>
         /// <param name="formatProvider">
-        ///     The provider to use to format the value, or <c>null</c> to obtain the format information
-        ///     from the current locale setting of the operating system.
+        ///     The provider to use to format the value, or <c>null</c> to obtain the format
+        ///     information from the current locale setting of the operating system.
         /// </param>
         /// <returns>
         ///     The UI representation of the specified nullable value.
         /// </returns>
         public static string ToUIString<T>([CanBeNull] this T? value, IFormatProvider formatProvider)
             where T : struct, IFormattable
-        {
-            return value.HasValue
-                ? value.Value.ToString(null, formatProvider)
-                : OmnifactotumStringExtensions.NullString;
-        }
+            => value.ToUIString(null, formatProvider);
 
         /// <summary>
         ///     Gets a string representing the properties of the specified object.
@@ -431,7 +522,7 @@ namespace System
         /// <returns>
         ///     <paramref name="value"/> if the predicate evaluates to <c>true</c>; otherwise, <c>null</c>.
         /// </returns>
-        /// <exception cref="System.ArgumentNullException">
+        /// <exception cref="ArgumentNullException">
         ///     <paramref name="predicate"/> is <c>null</c>.
         /// </exception>
         public static T Affirm<T>([CanBeNull] this T value, [NotNull] Func<T, bool> predicate)
@@ -462,7 +553,7 @@ namespace System
         ///     <c>true</c> if the <paramref name="value"/> is NOT <c>null</c> and the predicate evaluates to
         ///     <c>true</c>; otherwise, <c>false</c>.
         /// </returns>
-        /// <exception cref="System.ArgumentNullException">
+        /// <exception cref="ArgumentNullException">
         ///     <paramref name="predicate"/> is <c>null</c>.
         /// </exception>
         public static bool ComputePredicate<T>([CanBeNull] this T value, [NotNull] Func<T, bool> predicate)
@@ -500,7 +591,7 @@ namespace System
         ///     An output value obtained by using the <paramref name="transform"/> method if the
         ///     <paramref name="input"/> value is NOT <c>null</c>; otherwise, the specified default output value.
         /// </returns>
-        /// <exception cref="System.ArgumentNullException">
+        /// <exception cref="ArgumentNullException">
         ///     <paramref name="transform"/> is <c>null</c>.
         /// </exception>
         public static TOutput Morph<TInput, TOutput>(
@@ -538,7 +629,7 @@ namespace System
         ///     An output value obtained by using the <paramref name="transform"/> method if the
         ///     <paramref name="input"/> value is NOT <c>null</c>; otherwise, the default value for the output type.
         /// </returns>
-        /// <exception cref="System.ArgumentNullException">
+        /// <exception cref="ArgumentNullException">
         ///     <paramref name="transform"/> is <c>null</c>.
         /// </exception>
         public static TOutput Morph<TInput, TOutput>(

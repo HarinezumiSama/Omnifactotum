@@ -30,5 +30,14 @@ namespace Omnifactotum.Tests.ExtensionMethods
             int? nullValue = null;
             Assert.That(() => nullValue.EnsureNotNull(), Throws.TypeOf<ArgumentNullException>());
         }
+
+        [Test]
+        [TestCase(null, "null")]
+        [TestCase(42, "42")]
+        public void TestToUIString(int? value, string expectedResult)
+        {
+            var actualResult = value.ToUIString();
+            Assert.That(actualResult, Is.EqualTo(expectedResult));
+        }
     }
 }

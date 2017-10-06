@@ -128,8 +128,8 @@ namespace Omnifactotum.Tests.ExtensionMethods
 
         [Test]
         [TestCase(null, "null")]
-        [TestCase("", "\"\"")]
-        [TestCase(" A \"B\" C", "\" A \"\"B\"\" C\"")]
+        [TestCase("", @"""""")]
+        [TestCase(@" A ""B"" 'C'", @""" A """"B"""" 'C'""")]
         public void TestToUIString(string value, string expectedResult)
         {
             var actualResult = value.ToUIString();

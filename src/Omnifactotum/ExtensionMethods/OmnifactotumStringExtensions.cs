@@ -1,10 +1,12 @@
 ﻿using System.Collections.Generic;
 using System.Globalization;
 using System.Text;
+using Omnifactotum;
 using Omnifactotum.Annotations;
 
 //// Namespace is intentionally named so in order to simplify usage of extension methods
 //// ReSharper disable once CheckNamespace
+
 namespace System
 {
     /// <summary>
@@ -12,11 +14,6 @@ namespace System
     /// </summary>
     public static class OmnifactotumStringExtensions
     {
-        /// <summary>
-        ///     The <c>null</c> string representation.
-        /// </summary>
-        internal const string NullString = "null";
-
         /// <summary>
         ///     The double quote symbol.
         /// </summary>
@@ -150,21 +147,60 @@ namespace System
         }
 
         /// <summary>
-        ///     Converts the specified string to its UI representation.
+        ///     <para>
+        ///         Converts the specified string to its UI representation.
+        ///     </para>
+        ///     <list type="table">
+        ///         <listheader>
+        ///             <term>The input value</term>
+        ///             <description>The result of the method</description>
+        ///         </listheader>
+        ///         <item>
+        ///             <term><c>null</c></term>
+        ///             <description>The literal: <b>null</b></description>
+        ///         </item>
+        ///         <item>
+        ///             <term>not <c>null</c></term>
+        ///             <description>
+        ///                 An input value enclosed in the double quote characters ("). If the value
+        ///                 contains one or more double quote characters, then each of them is
+        ///                 duplicated in the result.
+        ///             </description>
+        ///         </item>
+        ///     </list>
         /// </summary>
         /// <param name="value">
-        ///     The string to convert.
+        ///     The string value to convert.
         /// </param>
         /// <returns>
         ///     The UI representation of the specified string.
         /// </returns>
+        /// <example>
+        ///     <code>
+        /// <![CDATA[
+        ///         string value;
+        ///
+        ///         value = null;
+        ///         Console.WriteLine("Value is {0}.", value.ToUIString()); // Output: Value is null.
+        ///
+        ///         value = string.Empty;
+        ///         Console.WriteLine("Value is {0}.", value.ToUIString()); // Output: Value is "".
+        ///
+        ///         value = "Hello";
+        ///         Console.WriteLine("Value is {0}.", value.ToUIString()); // Output: Value is "Hello".
+        ///
+        ///         value = "Class 'MyClass' is found in project \"MyProject\".";
+        ///         Console.WriteLine("Value is {0}.", value.ToUIString()); // Output: Value is "Class 'MyClass' is found in project ""MyProject"".".
+        /// ]]>
+        ///     </code>
+        /// </example>
         [NotNull]
         public static string ToUIString([CanBeNull] this string value)
         {
             const string DoubleDoubleQuote = DoubleQuote + DoubleQuote;
 
             return value == null
-                ? NullString
+                ? OmnifactotumConstants.NullValueRepresentation
                 : DoubleQuote + value.Replace(DoubleQuote, DoubleDoubleQuote) + DoubleQuote;
         }
 

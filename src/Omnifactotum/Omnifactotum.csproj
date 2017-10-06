@@ -70,6 +70,7 @@
     <Compile Include="ColoredConsoleTraceListener.cs" />
     <Compile Include="ComparableObjectBase.cs" />
     <Compile Include="ComparableValueCapsule.cs" />
+    <Compile Include="OmnifactotumConstants.cs" />
     <Compile Include="ValueContainer.Helper.cs" />
     <Compile Include="EnumFixedSizeDictionary.cs" />
     <Compile Include="EnumFixedSizeDictionaryDeterminant.cs" />
