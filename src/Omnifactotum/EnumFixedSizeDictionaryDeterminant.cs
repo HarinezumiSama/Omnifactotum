@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Diagnostics;
 using System.Globalization;
 using System.Linq;
@@ -12,7 +12,6 @@ namespace Omnifactotum
     public sealed class EnumFixedSizeDictionaryDeterminant<TKey> : FixedSizeDictionaryDeterminant<TKey>
         where TKey : struct
     {
-        private readonly int _size;
         private readonly Func<TKey, int> _getIndex;
         private readonly Func<int, TKey> _getKey;
 
@@ -62,7 +61,7 @@ namespace Omnifactotum
                         MaxValue));
             }
 
-            _size = upperBound.Value + 1;
+            Size = upperBound.Value + 1;
             _getIndex = CreateConversionMethod<TKey, int>();
             _getKey = CreateConversionMethod<int, TKey>();
         }
@@ -74,10 +73,7 @@ namespace Omnifactotum
         public override int Size
         {
             [DebuggerStepThrough]
-            get
-            {
-                return _size;
-            }
+            get;
         }
 
         /// <summary>
@@ -89,10 +85,7 @@ namespace Omnifactotum
         /// <returns>
         ///     The internal index corresponding to the specified key.
         /// </returns>
-        public override int GetIndex(TKey key)
-        {
-            return _getIndex(key);
-        }
+        public override int GetIndex(TKey key) => _getIndex(key);
 
         /// <summary>
         ///     Gets the key corresponding to the specified internal index.
@@ -103,10 +96,7 @@ namespace Omnifactotum
         /// <returns>
         ///     The key corresponding to the specified internal index.
         /// </returns>
-        public override TKey GetKey(int index)
-        {
-            return _getKey(index);
-        }
+        public override TKey GetKey(int index) => _getKey(index);
 
         private static Func<TSource, TTarget> CreateConversionMethod<TSource, TTarget>()
         {

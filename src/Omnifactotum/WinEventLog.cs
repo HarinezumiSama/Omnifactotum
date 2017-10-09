@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Diagnostics;
+using System.Diagnostics.CodeAnalysis;
 using System.Globalization;
 using System.Reflection;
 using Omnifactotum.Annotations;
@@ -9,6 +10,7 @@ namespace Omnifactotum
     /// <summary>
     ///     Provides the simple interface to write to the Windows <b>Event Log</b>.
     /// </summary>
+    [ExcludeFromCodeCoverage]
     public static class WinEventLog
     {
         private const string LogName = "Application";
@@ -53,12 +55,12 @@ namespace Omnifactotum
             {
                 throw new ArgumentException(
                     @"The value can be neither empty or whitespace-only string nor null.",
-                    "source");
+                    nameof(source));
             }
 
             if (message == null)
             {
-                throw new ArgumentNullException("message");
+                throw new ArgumentNullException(nameof(message));
             }
 
             try

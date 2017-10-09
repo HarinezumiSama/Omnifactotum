@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
-using System.Diagnostics;
 using Omnifactotum.Annotations;
 
 namespace Omnifactotum
@@ -28,12 +27,7 @@ namespace Omnifactotum
         /// </param>
         public ReadOnlySet([NotNull] ISet<T> set)
         {
-            if (set == null)
-            {
-                throw new ArgumentNullException("set");
-            }
-
-            _set = set;
+            _set = set ?? throw new ArgumentNullException(nameof(set));
         }
 
         /// <summary>
@@ -49,10 +43,7 @@ namespace Omnifactotum
         /// <exception cref="System.NotSupportedException">
         ///     The set is read-only.
         /// </exception>
-        bool ISet<T>.Add([CanBeNull] T item)
-        {
-            throw new NotSupportedException(ReadOnlyMessage);
-        }
+        bool ISet<T>.Add([CanBeNull] T item) => throw new NotSupportedException(ReadOnlyMessage);
 
         /// <summary>
         ///     Removes all elements in the specified collection from the current set.
@@ -63,10 +54,7 @@ namespace Omnifactotum
         /// <exception cref="System.NotSupportedException">
         ///     The set is read-only.
         /// </exception>
-        void ISet<T>.ExceptWith(IEnumerable<T> other)
-        {
-            throw new NotSupportedException(ReadOnlyMessage);
-        }
+        void ISet<T>.ExceptWith(IEnumerable<T> other) => throw new NotSupportedException(ReadOnlyMessage);
 
         /// <summary>
         ///     Modifies the current set so that it contains only elements that are also in a specified collection.
@@ -77,10 +65,7 @@ namespace Omnifactotum
         /// <exception cref="System.NotSupportedException">
         ///     The set is read-only.
         /// </exception>
-        void ISet<T>.IntersectWith(IEnumerable<T> other)
-        {
-            throw new NotSupportedException(ReadOnlyMessage);
-        }
+        void ISet<T>.IntersectWith(IEnumerable<T> other) => throw new NotSupportedException(ReadOnlyMessage);
 
         /// <summary>
         ///     Modifies the current set so that it contains only elements that are present
@@ -92,10 +77,7 @@ namespace Omnifactotum
         /// <exception cref="System.NotSupportedException">
         ///     The set is read-only.
         /// </exception>
-        void ISet<T>.SymmetricExceptWith(IEnumerable<T> other)
-        {
-            throw new NotSupportedException(ReadOnlyMessage);
-        }
+        void ISet<T>.SymmetricExceptWith(IEnumerable<T> other) => throw new NotSupportedException(ReadOnlyMessage);
 
         /// <summary>
         ///     Modifies the current set so that it contains all elements that are present
@@ -107,10 +89,7 @@ namespace Omnifactotum
         /// <exception cref="System.NotSupportedException">
         ///     The set is read-only.
         /// </exception>
-        void ISet<T>.UnionWith(IEnumerable<T> other)
-        {
-            throw new NotSupportedException(ReadOnlyMessage);
-        }
+        void ISet<T>.UnionWith(IEnumerable<T> other) => throw new NotSupportedException(ReadOnlyMessage);
 
         /// <summary>
         ///     Determines whether the current set is a property (strict) subset of a specified collection.
@@ -125,10 +104,7 @@ namespace Omnifactotum
         /// <exception cref="System.ArgumentNullException">
         ///     <paramref name="other"/> is <c>null</c>.
         /// </exception>
-        public bool IsProperSubsetOf(IEnumerable<T> other)
-        {
-            return _set.IsProperSubsetOf(other);
-        }
+        public bool IsProperSubsetOf(IEnumerable<T> other) => _set.IsProperSubsetOf(other);
 
         /// <summary>
         ///     Determines whether the current set is a correct superset of a specified collection.
@@ -143,10 +119,7 @@ namespace Omnifactotum
         /// <exception cref="System.ArgumentNullException">
         ///     <paramref name="other"/> is <c>null</c>.
         /// </exception>
-        public bool IsProperSupersetOf(IEnumerable<T> other)
-        {
-            return _set.IsProperSupersetOf(other);
-        }
+        public bool IsProperSupersetOf(IEnumerable<T> other) => _set.IsProperSupersetOf(other);
 
         /// <summary>
         ///     Determines whether the current set is a subset of a specified collection.
@@ -160,10 +133,7 @@ namespace Omnifactotum
         /// <exception cref="System.ArgumentNullException">
         ///     <paramref name="other"/> is <c>null</c>.
         /// </exception>
-        public bool IsSubsetOf(IEnumerable<T> other)
-        {
-            return _set.IsSubsetOf(other);
-        }
+        public bool IsSubsetOf(IEnumerable<T> other) => _set.IsSubsetOf(other);
 
         /// <summary>
         ///     Determines whether the current set is a superset of a specified collection.
@@ -177,10 +147,7 @@ namespace Omnifactotum
         /// <exception cref="System.ArgumentNullException">
         ///     <paramref name="other"/> is <c>null</c>.
         /// </exception>
-        public bool IsSupersetOf(IEnumerable<T> other)
-        {
-            return _set.IsSupersetOf(other);
-        }
+        public bool IsSupersetOf(IEnumerable<T> other) => _set.IsSupersetOf(other);
 
         /// <summary>
         ///     Determines whether the current set overlaps with the specified collection.
@@ -194,10 +161,7 @@ namespace Omnifactotum
         /// <exception cref="System.ArgumentNullException">
         ///     <paramref name="other"/> is <c>null</c>.
         /// </exception>
-        public bool Overlaps(IEnumerable<T> other)
-        {
-            return _set.Overlaps(other);
-        }
+        public bool Overlaps(IEnumerable<T> other) => _set.Overlaps(other);
 
         /// <summary>
         ///     Determines whether the current set and the specified collection contain the same elements.
@@ -211,33 +175,17 @@ namespace Omnifactotum
         /// <exception cref="System.ArgumentNullException">
         ///     <paramref name="other"/> is <c>null</c>.
         /// </exception>
-        public bool SetEquals(IEnumerable<T> other)
-        {
-            return _set.SetEquals(other);
-        }
+        public bool SetEquals(IEnumerable<T> other) => _set.SetEquals(other);
 
         /// <summary>
         ///     Gets the number of elements contained in the current set.
         /// </summary>
-        public int Count
-        {
-            get
-            {
-                return _set.Count;
-            }
-        }
+        public int Count => _set.Count;
 
         /// <summary>
         ///     Gets a value indicating whether the current set is read-only.
         /// </summary>
-        public bool IsReadOnly
-        {
-            [DebuggerStepThrough]
-            get
-            {
-                return true;
-            }
-        }
+        public bool IsReadOnly => true;
 
         /// <summary>
         ///     Adds an item to the <see cref="ICollection{T}"/>.
@@ -248,10 +196,7 @@ namespace Omnifactotum
         /// <exception cref="System.NotSupportedException">
         ///     The set is read-only.
         /// </exception>
-        void ICollection<T>.Add([CanBeNull] T item)
-        {
-            throw new NotSupportedException(ReadOnlyMessage);
-        }
+        void ICollection<T>.Add(T item) => throw new NotSupportedException(ReadOnlyMessage);
 
         /// <summary>
         ///     Removes all items from the <see cref="ICollection{T}"/>.
@@ -259,10 +204,7 @@ namespace Omnifactotum
         /// <exception cref="System.NotSupportedException">
         ///     The set is read-only.
         /// </exception>
-        void ICollection<T>.Clear()
-        {
-            throw new NotSupportedException(ReadOnlyMessage);
-        }
+        void ICollection<T>.Clear() => throw new NotSupportedException(ReadOnlyMessage);
 
         /// <summary>
         ///     Removes the first occurrence of a specific object from the current set.
@@ -278,10 +220,7 @@ namespace Omnifactotum
         /// <exception cref="System.NotSupportedException">
         ///     The set is read-only.
         /// </exception>
-        bool ICollection<T>.Remove([CanBeNull] T item)
-        {
-            throw new NotSupportedException(ReadOnlyMessage);
-        }
+        bool ICollection<T>.Remove(T item) => throw new NotSupportedException(ReadOnlyMessage);
 
         /// <summary>
         ///     Determines whether the current set contains a specific value.
@@ -292,10 +231,7 @@ namespace Omnifactotum
         /// <returns>
         ///     <c>true</c> if <paramref name="item"/> is found in the set; otherwise, <c>false</c>.
         /// </returns>
-        public bool Contains([CanBeNull] T item)
-        {
-            return _set.Contains(item);
-        }
+        public bool Contains(T item) => _set.Contains(item);
 
         /// <summary>
         ///     Copies the elements of the current set to an
@@ -308,10 +244,7 @@ namespace Omnifactotum
         /// <param name="arrayIndex">
         ///     The zero-based index in array at which copying begins.
         /// </param>
-        public void CopyTo(T[] array, int arrayIndex)
-        {
-            _set.CopyTo(array, arrayIndex);
-        }
+        public void CopyTo(T[] array, int arrayIndex) => _set.CopyTo(array, arrayIndex);
 
         /// <summary>
         ///     Returns an enumerator that iterates through the collection.
@@ -319,10 +252,7 @@ namespace Omnifactotum
         /// <returns>
         ///     A <see cref="IEnumerator{T}"/> that can be used to iterate through the collection.
         /// </returns>
-        public IEnumerator<T> GetEnumerator()
-        {
-            return _set.GetEnumerator();
-        }
+        public IEnumerator<T> GetEnumerator() => _set.GetEnumerator();
 
         /// <summary>
         ///     Returns an enumerator that iterates through a collection.
@@ -330,9 +260,6 @@ namespace Omnifactotum
         /// <returns>
         ///     An <see cref="IEnumerator"/> object that can be used to iterate through the collection.
         /// </returns>
-        IEnumerator IEnumerable.GetEnumerator()
-        {
-            return _set.GetEnumerator();
-        }
+        IEnumerator IEnumerable.GetEnumerator() => _set.GetEnumerator();
     }
 }

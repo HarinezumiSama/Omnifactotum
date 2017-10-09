@@ -52,6 +52,7 @@ namespace Omnifactotum.Validation
         /// </returns>
         public int GetHashCode(MemberData obj)
         {
+            //// ReSharper disable once ConditionIsAlwaysTrueOrFalse - Potentially false detection
             return obj == null ? 0 : ByReferenceEqualityComparer<object>.Instance.GetHashCode(obj.Value);
         }
     }

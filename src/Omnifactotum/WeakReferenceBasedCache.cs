@@ -36,12 +36,7 @@ namespace Omnifactotum
             [NotNull] Func<TKey, TValue> valueFactory,
             [CanBeNull] IEqualityComparer<TKey> keyEqualityComparer)
         {
-            if (valueFactory == null)
-            {
-                throw new ArgumentNullException("valueFactory");
-            }
-
-            _valueFactory = valueFactory;
+            _valueFactory = valueFactory ?? throw new ArgumentNullException(nameof(valueFactory));
             _dictionary = new Dictionary<TKey, WeakReference>(keyEqualityComparer);
         }
 
@@ -71,7 +66,10 @@ namespace Omnifactotum
             [DebuggerNonUserCode]
             get
             {
-                return _dictionary.Comparer;
+                lock (_dictionary)
+                {
+                    return _dictionary.Comparer;
+                }
             }
         }
 
@@ -108,7 +106,7 @@ namespace Omnifactotum
             {
                 if (ReferenceEquals(key, null))
                 {
-                    throw new ArgumentNullException("key");
+                    throw new ArgumentNullException(nameof(key));
                 }
 
                 TValue result;
@@ -156,7 +154,7 @@ namespace Omnifactotum
         {
             if (ReferenceEquals(key, null))
             {
-                throw new ArgumentNullException("key");
+                throw new ArgumentNullException(nameof(key));
             }
 
             lock (_dictionary)

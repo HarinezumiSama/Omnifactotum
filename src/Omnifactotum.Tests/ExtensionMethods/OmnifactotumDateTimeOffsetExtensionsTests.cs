@@ -4,7 +4,7 @@ using NUnit.Framework;
 namespace Omnifactotum.Tests.ExtensionMethods
 {
     [TestFixture]
-    public sealed class OmnifactotumDateTimeOffsetExtensionsTests
+    internal sealed class OmnifactotumDateTimeOffsetExtensionsTests
     {
         [Test]
         public void TestToFixedString()

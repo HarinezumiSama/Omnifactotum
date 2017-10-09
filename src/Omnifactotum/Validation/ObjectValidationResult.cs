@@ -26,12 +26,12 @@ namespace Omnifactotum.Validation
         {
             if (errors == null)
             {
-                throw new ArgumentNullException("errors");
+                throw new ArgumentNullException(nameof(errors));
             }
 
             if (errors.Any(item => item == null))
             {
-                throw new ArgumentException(@"The collection contains a null element.", "errors");
+                throw new ArgumentException(@"The collection contains a null element.", nameof(errors));
             }
 
             Errors = errors.ToArray().AsReadOnly();
@@ -55,7 +55,6 @@ namespace Omnifactotum.Validation
         public ReadOnlyCollection<MemberConstraintValidationError> Errors
         {
             get;
-            private set;
         }
 
         /// <summary>
@@ -80,7 +79,7 @@ namespace Omnifactotum.Validation
         {
             if (getErrorDescription == null)
             {
-                throw new ArgumentNullException("getErrorDescription");
+                throw new ArgumentNullException(nameof(getErrorDescription));
             }
 
             if (IsObjectValid)

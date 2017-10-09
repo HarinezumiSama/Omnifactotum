@@ -29,12 +29,12 @@ namespace Omnifactotum.Validation.Constraints
         {
             if (validatorContext == null)
             {
-                throw new ArgumentNullException("validatorContext");
+                throw new ArgumentNullException(nameof(validatorContext));
             }
 
             if (memberContext == null)
             {
-                throw new ArgumentNullException("memberContext");
+                throw new ArgumentNullException(nameof(memberContext));
             }
 
             ValidateValue(validatorContext, memberContext, value);
@@ -73,17 +73,14 @@ namespace Omnifactotum.Validation.Constraints
         protected TTarget CastTo<TTarget>([CanBeNull] object value)
         {
             var targetType = typeof(TTarget);
-            if (value is TTarget || ((!targetType.IsValueType || targetType.IsNullable()) && value == null))
+            if (value is TTarget || (!targetType.IsValueType || targetType.IsNullable()) && value == null)
             {
                 return (TTarget)value;
             }
 
-            var message = string.Format(
-                CultureInfo.InvariantCulture,
-                "The type of the value '{0}' is not compatible with the type '{1}' expected by the constraint '{2}'.",
-                value.GetTypeSafely().GetFullName(),
-                targetType.GetFullName(),
-                GetType().GetQualifiedName());
+            var message =
+                $@"The type of the value '{value.GetTypeSafely().GetFullName()}' is not compatible with the type '{
+                    targetType.GetFullName()}' expected by the constraint '{GetType().GetQualifiedName()}'.";
 
             throw new InvalidOperationException(message);
         }
@@ -108,14 +105,14 @@ namespace Omnifactotum.Validation.Constraints
         {
             if (memberContext == null)
             {
-                throw new ArgumentNullException("memberContext");
+                throw new ArgumentNullException(nameof(memberContext));
             }
 
             if (string.IsNullOrWhiteSpace(failureMessage))
             {
                 throw new ArgumentException(
                     @"The value can be neither empty nor whitespace-only string nor null.",
-                    "failureMessage");
+                    nameof(failureMessage));
             }
 
             var error = new MemberConstraintValidationError(memberContext, GetType(), failureMessage);
@@ -138,7 +135,7 @@ namespace Omnifactotum.Validation.Constraints
         {
             if (memberContext == null)
             {
-                throw new ArgumentNullException("memberContext");
+                throw new ArgumentNullException(nameof(memberContext));
             }
 
             var failureMessage = string.Format(

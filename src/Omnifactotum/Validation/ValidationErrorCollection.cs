@@ -24,7 +24,6 @@ namespace Omnifactotum.Validation
         internal ReadOnlyCollection<MemberConstraintValidationError> Items
         {
             get;
-            private set;
         }
 
         /// <summary>

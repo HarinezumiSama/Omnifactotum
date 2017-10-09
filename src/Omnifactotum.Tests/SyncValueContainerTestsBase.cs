@@ -5,18 +5,16 @@ using Omnifactotum.NUnit;
 
 namespace Omnifactotum.Tests
 {
-    //// ReSharper disable AssignNullToNotNullAttribute - for negative test cases
+    //// ReSharper disable AssignNullToNotNullAttribute - For negative test cases
 
-    [TestFixture(typeof(int), 1, int.MaxValue)]
-    [TestFixture(typeof(string), "Some value", "Another value")]
-    public sealed class SyncValueContainerTests<T>
+    internal abstract class SyncValueContainerTestsBase<T>
         where T : IEquatable<T>
     {
         private readonly T _value;
         private readonly T _anotherValue;
         private readonly T[] _values;
 
-        public SyncValueContainerTests(T value, T anotherValue)
+        protected SyncValueContainerTestsBase(T value, T anotherValue)
         {
             Assert.That(value, Is.Not.EqualTo(default(T)));
 

@@ -3,11 +3,20 @@ using System.Linq.Expressions;
 using System.Reflection;
 using NUnit.Framework;
 
+//// ReSharper disable AssignNullToNotNullAttribute - For negative test cases
+
 namespace Omnifactotum.Tests.ExtensionMethods
 {
     [TestFixture]
-    public sealed class OmnifactotumExpressionExtensionsTests
+    internal sealed class OmnifactotumExpressionExtensionsTests
     {
+        [Test]
+        public void TestGetLastMethodWithInvalidArgumentThrows()
+        {
+            Expression<Func<OmnifactotumExpressionExtensionsTests, string>> expression = null;
+            Assert.That(() => expression.GetLastMethod(), Throws.ArgumentNullException);
+        }
+
         [Test]
         public void TestGetLastMethodLastIsToString()
         {

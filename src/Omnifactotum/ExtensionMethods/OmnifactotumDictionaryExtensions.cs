@@ -40,21 +40,15 @@ namespace System.Collections.Generic
         {
             if (dictionary == null)
             {
-                throw new ArgumentNullException("dictionary");
+                throw new ArgumentNullException(nameof(dictionary));
             }
 
             if (ReferenceEquals(key, null))
             {
-                throw new ArgumentNullException("key");
+                throw new ArgumentNullException(nameof(key));
             }
 
-            TValue result;
-            if (!dictionary.TryGetValue(key, out result))
-            {
-                result = defaultValue;
-            }
-
-            return result;
+            return dictionary.TryGetValue(key, out var result) ? result : defaultValue;
         }
 
         /// <summary>
@@ -115,21 +109,20 @@ namespace System.Collections.Generic
         {
             if (dictionary == null)
             {
-                throw new ArgumentNullException("dictionary");
+                throw new ArgumentNullException(nameof(dictionary));
             }
 
             if (ReferenceEquals(key, null))
             {
-                throw new ArgumentNullException("key");
+                throw new ArgumentNullException(nameof(key));
             }
 
             if (valueFactory == null)
             {
-                throw new ArgumentNullException("valueFactory");
+                throw new ArgumentNullException(nameof(valueFactory));
             }
 
-            TValue result;
-            if (dictionary.TryGetValue(key, out result))
+            if (dictionary.TryGetValue(key, out var result))
             {
                 return result;
             }

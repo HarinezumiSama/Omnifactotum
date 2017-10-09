@@ -34,7 +34,7 @@ namespace Omnifactotum
         {
             if (nodes == null)
             {
-                throw new ArgumentNullException("nodes");
+                throw new ArgumentNullException(nameof(nodes));
             }
 
             nodes.DoForEach(Add);
@@ -91,7 +91,6 @@ namespace Omnifactotum
             foreach (var internalNode in internalNodeMap.Values)
             {
                 var internalNodeCopy = internalNode;
-                internalNode.Node.Heads.DoForEach(item => internalNodeCopy.Heads.Add(internalNodeMap[item]));
                 internalNode.Node.Tails.DoForEach(item => internalNodeCopy.Tails.Add(internalNodeMap[item]));
             }
 
@@ -136,14 +135,11 @@ namespace Omnifactotum
         internal override DirectedGraph<T> Graph
         {
             [DebuggerStepThrough]
-            get
-            {
-                return this;
-            }
+            get => this;
 
             set
             {
-                if (value != null && value != this)
+                if (value != this)
                 {
                     throw new InvalidOperationException("Internal error: the graph cannot be changed.");
                 }
@@ -167,32 +163,20 @@ namespace Omnifactotum
 
         private sealed class InternalNode<TValue>
         {
-            /// <summary>
-            ///     Initializes a new instance of the <see cref="InternalNode{TValue}"/> class.
-            /// </summary>
             public InternalNode(DirectedGraphNode<TValue> node)
             {
                 Node = node.EnsureNotNull();
-                Heads = new List<InternalNode<TValue>>(node.Heads.Count);
                 Tails = new List<InternalNode<TValue>>(node.Tails.Count);
             }
 
             public DirectedGraphNode<TValue> Node
             {
                 get;
-                private set;
-            }
-
-            public List<InternalNode<TValue>> Heads
-            {
-                get;
-                private set;
             }
 
             public List<InternalNode<TValue>> Tails
             {
                 get;
-                private set;
             }
         }
 

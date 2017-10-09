@@ -12,7 +12,7 @@ using Omnifactotum.Validation.Constraints;
 namespace Omnifactotum.Tests.Validation
 {
     [TestFixture]
-    public sealed class ObjectValidatorTests
+    internal sealed class ObjectValidatorTests
     {
         private static readonly string ValidationResultPropertyName =
             Factotum.For<ObjectValidationException>.GetPropertyName(obj => obj.ValidationResult);
@@ -118,7 +118,7 @@ namespace Omnifactotum.Tests.Validation
                 {
                     { string.Empty, new SimpleContainer<int?> { ContainedValue = 0 } },
                     { "abc", new SimpleContainer<int?> { ContainedValue = 3 } },
-                    { "x", new SimpleContainer<int?> { ContainedValue = null } },
+                    { "x", new SimpleContainer<int?> { ContainedValue = null } }
                 }
             };
 
@@ -217,13 +217,7 @@ namespace Omnifactotum.Tests.Validation
 
             [MemberConstraint(typeof(NeverCalledConstraint))]
             [UsedImplicitly]
-            public string this[int index]
-            {
-                get
-                {
-                    return null;
-                }
-            }
+            public string this[int index] => null;
         }
 
         public abstract class BaseAnotherSimpleData

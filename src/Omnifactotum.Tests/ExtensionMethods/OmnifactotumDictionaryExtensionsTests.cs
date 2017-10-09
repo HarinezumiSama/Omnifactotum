@@ -6,7 +6,7 @@ using Omnifactotum.Annotations;
 namespace Omnifactotum.Tests.ExtensionMethods
 {
     [TestFixture]
-    public sealed class OmnifactotumDictionaryExtensionsTests
+    internal sealed class OmnifactotumDictionaryExtensionsTests
     {
         private const int Key1 = 1;
         private const int Key2 = 2;

@@ -6,7 +6,7 @@ namespace Omnifactotum.Tests.ExtensionMethods
     //// ReSharper disable ExpressionIsAlwaysNull - Intentionally for unit tests
 
     [TestFixture]
-    public sealed class OmnifactotumGenericObjectExtensionsTests
+    internal sealed class OmnifactotumGenericObjectExtensionsTests
     {
         [Test]
         public void TestEnsureNotNullForReferenceType()

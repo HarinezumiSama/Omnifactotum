@@ -6,7 +6,7 @@ using Omnifactotum.NUnit;
 namespace Omnifactotum.Tests
 {
     [TestFixture]
-    public sealed class FixedSizeDictionaryTests
+    internal sealed class FixedSizeDictionaryTests
     {
         [Test]
         public void TestBasicScenario()
@@ -155,18 +155,9 @@ namespace Omnifactotum.Tests
 
         private sealed class BooleanDeterminant : FixedSizeDictionaryDeterminant<bool>
         {
-            public override int Size
-            {
-                get
-                {
-                    return 2;
-                }
-            }
+            public override int Size => 2;
 
-            public override int GetIndex(bool key)
-            {
-                return key ? 1 : 0;
-            }
+            public override int GetIndex(bool key) => key ? 1 : 0;
 
             public override bool GetKey(int index)
             {

@@ -6,7 +6,7 @@ using Omnifactotum.Validation.Constraints;
 namespace Omnifactotum.Tests.Validation.Constraints
 {
     [TestFixture]
-    public sealed class MemberConstraintBaseTests
+    internal sealed class MemberConstraintBaseTests
     {
         [Test]
         [TestCase(null)]

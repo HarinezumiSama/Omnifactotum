@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
-using System.Globalization;
 using Omnifactotum.Annotations;
 
 namespace Omnifactotum
@@ -13,7 +12,6 @@ namespace Omnifactotum
     ///     The type of an encapsulated value.
     /// </typeparam>
     [Serializable]
-    [DebuggerDisplay(@"\{Value = {_value}\}")]
     public sealed class SyncValueContainer<T> : IValueContainer<T>, IEquatable<SyncValueContainer<T>>
     {
         private T _value;
@@ -33,7 +31,7 @@ namespace Omnifactotum
         {
             if (syncObject == null)
             {
-                throw new ArgumentNullException("syncObject");
+                throw new ArgumentNullException(nameof(syncObject));
             }
 
             if (syncObject.GetType().IsValueType)
@@ -75,7 +73,6 @@ namespace Omnifactotum
         public object SyncObject
         {
             get;
-            private set;
         }
 
         /// <summary>
@@ -116,10 +113,7 @@ namespace Omnifactotum
         ///     <c>true</c> if the two specified <see cref="SyncValueContainer{T}"/> instances are equal;
         ///     otherwise, <c>false</c>.
         /// </returns>
-        public static bool operator ==(SyncValueContainer<T> left, SyncValueContainer<T> right)
-        {
-            return Equals(left, right);
-        }
+        public static bool operator ==(SyncValueContainer<T> left, SyncValueContainer<T> right) => Equals(left, right);
 
         /// <summary>
         ///     Determines whether the two specified <see cref="SyncValueContainer{T}"/> instances are not equal.
@@ -134,10 +128,7 @@ namespace Omnifactotum
         ///     <c>true</c> if the two specified <see cref="SyncValueContainer{T}"/> instances are not equal;
         ///     otherwise, <c>false</c>.
         /// </returns>
-        public static bool operator !=(SyncValueContainer<T> left, SyncValueContainer<T> right)
-        {
-            return !(left == right);
-        }
+        public static bool operator !=(SyncValueContainer<T> left, SyncValueContainer<T> right) => !(left == right);
 
         /// <summary>
         ///     Returns a <see cref="String" /> that represents this <see cref="SyncValueContainer{T}"/> instance.
@@ -145,10 +136,7 @@ namespace Omnifactotum
         /// <returns>
         ///     A <see cref="String" /> that represents this <see cref="SyncValueContainer{T}"/> instance.
         /// </returns>
-        public override string ToString()
-        {
-            return string.Format(CultureInfo.InvariantCulture, "{{ Value = {0} }}", Value.ToStringSafely());
-        }
+        public override string ToString() => $@"{{ Value = {Value.ToStringSafelyInvariant()} }}";
 
         /// <summary>
         ///     Determines whether the specified <see cref="Object" /> is equal to
@@ -161,10 +149,7 @@ namespace Omnifactotum
         ///     <c>true</c> if the specified <see cref="Object" /> is equal to
         ///     this <see cref="SyncValueContainer{T}"/> instance; otherwise, <c>false</c>.
         /// </returns>
-        public override bool Equals(object obj)
-        {
-            return Equals(obj as SyncValueContainer<T>);
-        }
+        public override bool Equals(object obj) => Equals(obj as SyncValueContainer<T>);
 
         /// <summary>
         ///     Returns a hash code for this <see cref="SyncValueContainer{T}"/> instance.
@@ -172,10 +157,7 @@ namespace Omnifactotum
         /// <returns>
         ///     A hash code for this <see cref="SyncValueContainer{T}"/> instance.
         /// </returns>
-        public override int GetHashCode()
-        {
-            return Value.GetHashCodeSafely();
-        }
+        public override int GetHashCode() => Value.GetHashCodeSafely();
 
         /// <summary>
         ///     Determines whether the current <see cref="SyncValueContainer{T}"/> instance is equal to another instance
@@ -188,10 +170,7 @@ namespace Omnifactotum
         ///     <c>true</c> if the current <see cref="SyncValueContainer{T}"/> instance is equal to
         ///     the <paramref name="other" /> parameter; otherwise, <c>false</c>.
         /// </returns>
-        public bool Equals(SyncValueContainer<T> other)
-        {
-            return Equals(this, other);
-        }
+        public bool Equals(SyncValueContainer<T> other) => Equals(this, other);
 
         private static bool Equals(SyncValueContainer<T> left, SyncValueContainer<T> right)
         {

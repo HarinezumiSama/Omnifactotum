@@ -33,14 +33,7 @@ namespace System
         [NotNull]
         public static T EnsureNotNull<T>([CanBeNull] this T value)
             where T : class
-        {
-            if (value == null)
-            {
-                throw new ArgumentNullException("value");
-            }
-
-            return value;
-        }
+            => value ?? throw new ArgumentNullException(nameof(value));
 
         /// <summary>
         ///     Returns the value which underlies the specified nullable value, if it is not <c>null</c>
@@ -64,14 +57,7 @@ namespace System
         [DebuggerStepThrough]
         public static T EnsureNotNull<T>([CanBeNull] this T? value)
             where T : struct
-        {
-            if (!value.HasValue)
-            {
-                throw new ArgumentNullException("value");
-            }
-
-            return value.Value;
-        }
+            => value ?? throw new ArgumentNullException(nameof(value));
 
         /// <summary>
         ///     Returns a <see cref="System.String"/> that represents the specified value, considering that this value
@@ -91,9 +77,7 @@ namespace System
         ///     the <paramref name="nullValueString"/> parameter if <paramref name="value"/> is <c>null</c>.
         /// </returns>
         public static string ToStringSafely<T>([CanBeNull] this T value, [CanBeNull] string nullValueString)
-        {
-            return ReferenceEquals(value, null) ? nullValueString : value.ToString();
-        }
+            => ReferenceEquals(value, null) ? nullValueString : value.ToString();
 
         /// <summary>
         ///     Returns a <see cref="System.String"/> that represents the specified value, considering that this value
@@ -109,10 +93,7 @@ namespace System
         ///     A <see cref="System.String"/> that represents the specified value it is not <c>null</c>;
         ///     otherwise, the empty string.
         /// </returns>
-        public static string ToStringSafely<T>([CanBeNull] this T value)
-        {
-            return ToStringSafely(value, string.Empty);
-        }
+        public static string ToStringSafely<T>([CanBeNull] this T value) => ToStringSafely(value, string.Empty);
 
         /// <summary>
         ///     Returns a <see cref="System.String"/> that represents the specified value, using invariant culture and
@@ -138,8 +119,9 @@ namespace System
                 return nullValueString;
             }
 
-            var formattable = value as IFormattable;
-            return formattable == null ? value.ToString() : formattable.ToString(null, CultureInfo.InvariantCulture);
+            return value is IFormattable formattable
+                ? formattable.ToString(null, CultureInfo.InvariantCulture)
+                : value.ToString();
         }
 
         /// <summary>
@@ -158,9 +140,7 @@ namespace System
         ///     otherwise, the empty string.
         /// </returns>
         public static string ToStringSafelyInvariant<T>([CanBeNull] this T value)
-        {
-            return ToStringSafelyInvariant(value, string.Empty);
-        }
+            => ToStringSafelyInvariant(value, string.Empty);
 
         /// <summary>
         ///     Gets a hash code of the specified value safely, that is, <n>null</n> does not cause an exception.
@@ -180,9 +160,7 @@ namespace System
         ///     parameter.
         /// </returns>
         public static int GetHashCodeSafely<T>([CanBeNull] this T value, int nullValueHashCode)
-        {
-            return ReferenceEquals(value, null) ? nullValueHashCode : value.GetHashCode();
-        }
+            => ReferenceEquals(value, null) ? nullValueHashCode : value.GetHashCode();
 
         /// <summary>
         ///     Gets a hash code of the specified value safely, that is, <n>null</n> does not cause an exception.
@@ -197,10 +175,7 @@ namespace System
         ///     A hash code of the specified value obtained by calling <see cref="object.GetHashCode"/> for this value
         ///     if it is not <c>null</c>; otherwise, <c>0</c>.
         /// </returns>
-        public static int GetHashCodeSafely<T>([CanBeNull] this T value)
-        {
-            return GetHashCodeSafely(value, 0);
-        }
+        public static int GetHashCodeSafely<T>([CanBeNull] this T value) => GetHashCodeSafely(value, 0);
 
         /// <summary>
         ///     Gets the type of the specified value, considering that this value may be <c>null</c>.
@@ -216,9 +191,7 @@ namespace System
         ///     The actual type of the value if it is not <c>null</c>; otherwise, <typeparamref name="T"/>.
         /// </returns>
         public static Type GetTypeSafely<T>([CanBeNull] this T value)
-        {
-            return ReferenceEquals(value, null) ? typeof(T) : value.GetType();
-        }
+            => ReferenceEquals(value, null) ? typeof(T) : value.GetType();
 
         /// <summary>
         ///     Creates an array containing the specified value as its sole element.
@@ -233,10 +206,7 @@ namespace System
         ///     An array containing the specified value as its sole element.
         /// </returns>
         [NotNull]
-        public static T[] AsArray<T>([CanBeNull] this T value)
-        {
-            return new[] { value };
-        }
+        public static T[] AsArray<T>([CanBeNull] this T value) => new[] { value };
 
         /// <summary>
         ///     Creates a strongly-typed list containing the specified value as its sole element.
@@ -251,10 +221,7 @@ namespace System
         ///     A strongly-typed list containing the specified value as its sole element.
         /// </returns>
         [NotNull]
-        public static List<T> AsList<T>([CanBeNull] this T value)
-        {
-            return new List<T> { value };
-        }
+        public static List<T> AsList<T>([CanBeNull] this T value) => new List<T> { value };
 
         /// <summary>
         ///     Gets a strongly-typed collection containing the specified value as its sole element.
@@ -297,7 +264,7 @@ namespace System
         {
             if (getDefault == null)
             {
-                throw new ArgumentNullException("getDefault");
+                throw new ArgumentNullException(nameof(getDefault));
             }
 
             var result = source ?? getDefault();
@@ -459,9 +426,7 @@ namespace System
         ///     A string representing the properties of the specified object.
         /// </returns>
         public static string ToPropertyString<T>([CanBeNull] this T obj, [CanBeNull] ToPropertyStringOptions options)
-        {
-            return Factotum.ToPropertyString(obj, options);
-        }
+            => Factotum.ToPropertyString(obj, options);
 
         /// <summary>
         ///     Gets a string representing the properties of the specified object.
@@ -475,10 +440,7 @@ namespace System
         /// <returns>
         ///     A string representing the properties of the specified object.
         /// </returns>
-        public static string ToPropertyString<T>([CanBeNull] this T obj)
-        {
-            return Factotum.ToPropertyString(obj, null);
-        }
+        public static string ToPropertyString<T>([CanBeNull] this T obj) => Factotum.ToPropertyString(obj, null);
 
         /// <summary>
         ///     Determines if the contents of the specified object are equal to the contents of another specified
@@ -502,9 +464,7 @@ namespace System
         ///     <c>true</c> if the contents of the two specified objects are equal; otherwise, <c>false</c>.
         /// </returns>
         public static bool IsEqualByContentsTo<T>([CanBeNull] this T obj, [CanBeNull] T other)
-        {
-            return Factotum.AreEqualByContents(obj, other);
-        }
+            => Factotum.AreEqualByContents(obj, other);
 
         /// <summary>
         ///     Computes the specified predicate against the specified reference type value and
@@ -530,7 +490,7 @@ namespace System
         {
             if (predicate == null)
             {
-                throw new ArgumentNullException("predicate");
+                throw new ArgumentNullException(nameof(predicate));
             }
 
             return value == null || !predicate(value) ? null : value;
@@ -561,7 +521,7 @@ namespace System
         {
             if (predicate == null)
             {
-                throw new ArgumentNullException("predicate");
+                throw new ArgumentNullException(nameof(predicate));
             }
 
             return value != null && predicate(value);
@@ -602,7 +562,7 @@ namespace System
         {
             if (transform == null)
             {
-                throw new ArgumentNullException("transform");
+                throw new ArgumentNullException(nameof(transform));
             }
 
             return input == null ? defaultOutput : transform(input);
@@ -636,8 +596,6 @@ namespace System
             [CanBeNull] this TInput input,
             [NotNull] Func<TInput, TOutput> transform)
             where TInput : class
-        {
-            return Morph(input, transform, default(TOutput));
-        }
+            => Morph(input, transform, default(TOutput));
     }
 }

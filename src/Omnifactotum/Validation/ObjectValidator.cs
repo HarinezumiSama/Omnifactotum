@@ -80,7 +80,7 @@ namespace Omnifactotum.Validation
         {
             if (ReferenceEquals(instance, null))
             {
-                throw new ArgumentNullException("instance");
+                throw new ArgumentNullException(nameof(instance));
             }
 
             var parameterExpression = Expression.Parameter(instance.GetType(), RootObjectParameterName);
@@ -118,11 +118,7 @@ namespace Omnifactotum.Validation
         private static BaseMemberConstraintAttribute[] FilterBy<TAttribute>(
             this IEnumerable<BaseValidatableMemberAttribute> attributes)
             where TAttribute : BaseMemberConstraintAttribute
-        {
-            return attributes == null
-                ? null
-                : attributes.Where(obj => obj is TAttribute).Cast<BaseMemberConstraintAttribute>().ToArray();
-        }
+            => attributes?.Where(obj => obj is TAttribute).Cast<BaseMemberConstraintAttribute>().ToArray();
 
         private static object GetMemberValue(object instance, MemberInfo memberInfo)
         {
@@ -140,7 +136,7 @@ namespace Omnifactotum.Validation
         {
             if (parentMemberData == null)
             {
-                throw new ArgumentNullException("parentMemberData");
+                throw new ArgumentNullException(nameof(parentMemberData));
             }
 
             var instance = parentMemberData.Value;

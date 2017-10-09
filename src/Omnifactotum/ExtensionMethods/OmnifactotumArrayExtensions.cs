@@ -3,8 +3,8 @@ using System.Diagnostics;
 using System.Text;
 using Omnifactotum.Annotations;
 
-//// Namespace is intentionally named so in order to simplify usage of extension methods
-//// ReSharper disable once CheckNamespace
+//// ReSharper disable once CheckNamespace - Namespace is intentionally named so in order to simplify usage of extension methods
+
 namespace System
 {
     /// <summary>
@@ -27,7 +27,7 @@ namespace System
         [CanBeNull]
         public static T[] Copy<T>([CanBeNull] this T[] array)
         {
-            return array == null ? null : (T[])array.Clone();
+            return (T[])array?.Clone();
         }
 
         /// <summary>
@@ -49,12 +49,12 @@ namespace System
         {
             if (array == null)
             {
-                throw new ArgumentNullException("array");
+                throw new ArgumentNullException(nameof(array));
             }
 
             if (getElementValue == null)
             {
-                throw new ArgumentNullException("getElementValue");
+                throw new ArgumentNullException(nameof(getElementValue));
             }
 
             for (var index = 0; index < array.Length; index++)
@@ -81,7 +81,7 @@ namespace System
         {
             if (getElementValue == null)
             {
-                throw new ArgumentNullException("getElementValue");
+                throw new ArgumentNullException(nameof(getElementValue));
             }
 
             Initialize(array, (element, index) => getElementValue(index));
@@ -123,7 +123,7 @@ namespace System
         {
             if (array == null)
             {
-                throw new ArgumentNullException("array");
+                throw new ArgumentNullException(nameof(array));
             }
 
             return new ReadOnlyCollection<T>(array);
@@ -147,7 +147,7 @@ namespace System
         {
             if (byteArray == null)
             {
-                throw new ArgumentNullException("byteArray");
+                throw new ArgumentNullException(nameof(byteArray));
             }
 
             const string UpperCaseFormat = "X2";

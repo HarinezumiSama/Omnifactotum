@@ -31,9 +31,7 @@ namespace Omnifactotum
         /// <summary>
         ///     The pointer string format.
         /// </summary>
-        internal static readonly string PointerStringFormat = string.Format(
-            "0x{{0:X{0}}}",
-            Marshal.SizeOf(typeof(IntPtr)) * 2);
+        internal static readonly string PointerStringFormat = $@"0x{{0:X{Marshal.SizeOf(typeof(IntPtr)) * 2}}}";
 
         private const string NullString = "<null>";
 
@@ -193,7 +191,7 @@ namespace Omnifactotum
         {
             if (obj == null)
             {
-                throw new ArgumentNullException("obj");
+                throw new ArgumentNullException(nameof(obj));
             }
 
             var propertyRecords = obj.GetType()
@@ -247,19 +245,18 @@ namespace Omnifactotum
                 bindingFlags |= BindingFlags.NonPublic;
             }
 
-            Func<Type, PropertyInfo[]> getProperties =
-                type =>
+            PropertyInfo[] GetProperties(Type type)
+            {
+                var getPropertiesQuery = type
+                    .GetProperties(bindingFlags)
+                    .Where(item => item.CanRead && !item.GetIndexParameters().Any());
+                if (actualOptions.SortMembersAlphabetically)
                 {
-                    var getPropertiesQuery = type
-                        .GetProperties(bindingFlags)
-                        .Where(item => item.CanRead && !item.GetIndexParameters().Any());
-                    if (actualOptions.SortMembersAlphabetically)
-                    {
-                        getPropertiesQuery = getPropertiesQuery.OrderBy(item => item.Name);
-                    }
+                    getPropertiesQuery = getPropertiesQuery.OrderBy(item => item.Name);
+                }
 
-                    return getPropertiesQuery.ToArray();
-                };
+                return getPropertiesQuery.ToArray();
+            }
 
             if (_toPropertyStringResultBuilder == null)
             {
@@ -270,7 +267,7 @@ namespace Omnifactotum
                 _toPropertyStringResultBuilder.Clear();
             }
 
-            ToPropertyStringInternal(obj, true, actualOptions, getProperties, _toPropertyStringResultBuilder, 0);
+            ToPropertyStringInternal(obj, true, actualOptions, GetProperties, _toPropertyStringResultBuilder, 0);
 
             var result = _toPropertyStringResultBuilder.ToString();
             _toPropertyStringResultBuilder.Clear();
@@ -388,7 +385,7 @@ namespace Omnifactotum
 
             if (!generateUniquePart && !generateRandomPart)
             {
-                throw new ArgumentException("There is nothing to generate.", "modes");
+                throw new ArgumentException("There is nothing to generate.", nameof(modes));
             }
 
             if (size < minimumSize)
@@ -397,7 +394,7 @@ namespace Omnifactotum
                     CultureInfo.InvariantCulture,
                     "For the specified mode(s), the size must be at least {0}.",
                     minimumSize);
-                throw new ArgumentOutOfRangeException("size", size, errorMessage);
+                throw new ArgumentOutOfRangeException(nameof(size), size, errorMessage);
             }
 
             var result = new byte[size];
@@ -536,7 +533,7 @@ namespace Omnifactotum
         {
             if (exception == null)
             {
-                throw new ArgumentNullException("exception");
+                throw new ArgumentNullException(nameof(exception));
             }
 
             var taskCompletionSource = new TaskCompletionSource<int>();
@@ -716,15 +713,15 @@ namespace Omnifactotum
         {
             if (propertyGetterExpression == null)
             {
-                throw new ArgumentNullException("propertyGetterExpression");
+                throw new ArgumentNullException(nameof(propertyGetterExpression));
             }
 
-            var memberExpression = propertyGetterExpression.Body as MemberExpression;
-            if ((memberExpression == null) || (memberExpression.NodeType != ExpressionType.MemberAccess))
+            if (!(propertyGetterExpression.Body is MemberExpression memberExpression)
+                || memberExpression.NodeType != ExpressionType.MemberAccess)
             {
                 throw new ArgumentException(
                     string.Format(InvalidExpressionMessageAutoFormat, propertyGetterExpression),
-                    "propertyGetterExpression");
+                    nameof(propertyGetterExpression));
             }
 
             var result = memberExpression.Member as PropertyInfo;
@@ -732,24 +729,24 @@ namespace Omnifactotum
             {
                 throw new ArgumentException(
                     string.Format(InvalidExpressionMessageAutoFormat, propertyGetterExpression),
-                    "propertyGetterExpression");
+                    nameof(propertyGetterExpression));
             }
 
             if (result.DeclaringType == null)
             {
                 throw new ArgumentException(
                     string.Format(InvalidExpressionMessageAutoFormat, propertyGetterExpression),
-                    "propertyGetterExpression");
+                    nameof(propertyGetterExpression));
             }
 
             if (memberExpression.Expression == null)
             {
                 var accessor = result.GetGetMethod(true) ?? result.GetSetMethod(true);
-                if ((accessor == null) || !accessor.IsStatic)
+                if (accessor == null || !accessor.IsStatic)
                 {
                     throw new ArgumentException(
                         string.Format(InvalidExpressionMessageAutoFormat, propertyGetterExpression),
-                        "propertyGetterExpression");
+                        nameof(propertyGetterExpression));
                 }
             }
 
@@ -832,12 +829,12 @@ namespace Omnifactotum
         {
             if (getItems == null)
             {
-                throw new ArgumentNullException("getItems");
+                throw new ArgumentNullException(nameof(getItems));
             }
 
             if (processItem == null)
             {
-                throw new ArgumentNullException("processItem");
+                throw new ArgumentNullException(nameof(processItem));
             }
 
             if (ReferenceEquals(instance, null))
@@ -918,7 +915,7 @@ namespace Omnifactotum
         {
             if (processItem == null)
             {
-                throw new ArgumentNullException("processItem");
+                throw new ArgumentNullException(nameof(processItem));
             }
 
             ProcessRecursively(
@@ -969,7 +966,7 @@ namespace Omnifactotum
         {
             if (type == null)
             {
-                throw new ArgumentNullException("type");
+                throw new ArgumentNullException(nameof(type));
             }
 
             return type.IsPrimitive
@@ -1068,21 +1065,20 @@ namespace Omnifactotum
                         ByReferenceEqualityComparer<object>.Instance);
                 }
 
-                Action openBrace =
-                    () =>
+                void OpenBrace()
+                {
+                    if (!isBraceOpen && !isRoot)
                     {
-                        if (!isBraceOpen && !isRoot)
-                        {
-                            resultBuilder.Append(ComplexObjectOpeningBrace);
-                            isBraceOpen = true;
-                        }
-                    };
+                        resultBuilder.Append(ComplexObjectOpeningBrace);
+                        isBraceOpen = true;
+                    }
+                }
 
                 var nextRecursionLevel = recursionLevel + 1;
 
                 var type = obj.GetTypeSafely();
 
-                Func<string> renderActualType = () => string.Format("{0} :: ", type.GetQualifiedName());
+                string RenderActualType() => $@"{type.GetQualifiedName()} :: ";
 
                 var shouldRenderActualType = false;
                 if (isRoot)
@@ -1102,8 +1098,8 @@ namespace Omnifactotum
 
                 if (shouldRenderActualType)
                 {
-                    openBrace();
-                    resultBuilder.Append(renderActualType());
+                    OpenBrace();
+                    resultBuilder.Append(RenderActualType());
                 }
 
                 if (ReferenceEquals(obj, null))
@@ -1122,7 +1118,7 @@ namespace Omnifactotum
                     resultBuilder.AppendFormat(
                         "{0} {1}<- {2}",
                         ComplexObjectOpeningBrace,
-                        shouldRenderActualType ? string.Empty : renderActualType(),
+                        shouldRenderActualType ? string.Empty : RenderActualType(),
                         ComplexObjectClosingBrace);
                     return;
                 }
@@ -1183,7 +1179,7 @@ namespace Omnifactotum
                     return;
                 }
 
-                openBrace();
+                OpenBrace();
 
                 if (!isRoot && !options.RenderComplexProperties)
                 {
@@ -1199,8 +1195,7 @@ namespace Omnifactotum
 
                 var propertySeparatorNeeded = false;
 
-                var enumerable = obj as IEnumerable;
-                if (enumerable != null)
+                if (obj is IEnumerable enumerable)
                 {
                     var elementType = type.GetCollectionElementType().EnsureNotNull();
 
@@ -1421,6 +1416,9 @@ namespace Omnifactotum
 
         private struct PairReferenceHolder : IEquatable<PairReferenceHolder>
         {
+            private static readonly ByReferenceEqualityComparer<object> EqualityComparer =
+                ByReferenceEqualityComparer<object>.Instance;
+
             private readonly object _valueA;
             private readonly object _valueB;
 
@@ -1430,23 +1428,13 @@ namespace Omnifactotum
                 _valueB = valueB;
             }
 
-            public override bool Equals(object obj)
-            {
-                return obj is PairReferenceHolder && Equals((PairReferenceHolder)obj);
-            }
+            public override bool Equals(object obj) => obj is PairReferenceHolder holder && Equals(holder);
 
             public override int GetHashCode()
-            {
-                var equalityComparer = ByReferenceEqualityComparer<object>.Instance;
-
-                return equalityComparer.GetHashCode(_valueA)
-                    .CombineHashCodeValues(equalityComparer.GetHashCode(_valueB));
-            }
+                => EqualityComparer.GetHashCode(_valueA).CombineHashCodeValues(EqualityComparer.GetHashCode(_valueB));
 
             public bool Equals(PairReferenceHolder other)
-            {
-                return ReferenceEquals(_valueA, other._valueA) && ReferenceEquals(_valueB, other._valueB);
-            }
+                => ReferenceEquals(_valueA, other._valueA) && ReferenceEquals(_valueB, other._valueB);
         }
     }
 }

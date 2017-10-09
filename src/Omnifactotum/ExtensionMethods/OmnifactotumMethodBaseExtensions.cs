@@ -27,7 +27,7 @@ namespace System.Reflection
         {
             if (method == null)
             {
-                throw new ArgumentNullException("method");
+                throw new ArgumentNullException(nameof(method));
             }
 
             return GetNameInternal(method, true);
@@ -46,7 +46,7 @@ namespace System.Reflection
         {
             if (method == null)
             {
-                throw new ArgumentNullException("method");
+                throw new ArgumentNullException(nameof(method));
             }
 
             return GetNameInternal(method, false);
@@ -66,7 +66,7 @@ namespace System.Reflection
         {
             if (method == null)
             {
-                throw new ArgumentNullException("method");
+                throw new ArgumentNullException(nameof(method));
             }
 
             return GetSignatureInternal(method, false);
@@ -86,7 +86,7 @@ namespace System.Reflection
         {
             if (method == null)
             {
-                throw new ArgumentNullException("method");
+                throw new ArgumentNullException(nameof(method));
             }
 
             return GetSignatureInternal(method, true);
@@ -101,19 +101,18 @@ namespace System.Reflection
         {
             var resultBuilder = new StringBuilder();
 
-            Func<Type, string> getTypeName = type => GetTypeNameInternal(type, fullNames);
+            string GetTypeName(Type type) => GetTypeNameInternal(type, fullNames);
 
             //// MethodInfo specific code
             {
-                var methodInfo = method as MethodInfo;
-                if (methodInfo != null)
+                if (method is MethodInfo methodInfo)
                 {
-                    resultBuilder.Append(getTypeName(methodInfo.ReturnType));
+                    resultBuilder.Append(GetTypeName(methodInfo.ReturnType));
                     resultBuilder.Append(" ");
                 }
             }
 
-            resultBuilder.Append(getTypeName(GetMethodType(method)));
+            resultBuilder.Append(GetTypeName(GetMethodType(method)));
             resultBuilder.Append(Type.Delimiter);
             resultBuilder.Append(method.Name);
 
@@ -129,7 +128,7 @@ namespace System.Reflection
                         resultBuilder.Append(", ");
                     }
 
-                    resultBuilder.Append(getTypeName(genericArguments[index]));
+                    resultBuilder.Append(GetTypeName(genericArguments[index]));
                 }
 
                 resultBuilder.Append(">");
@@ -155,7 +154,7 @@ namespace System.Reflection
                     resultBuilder.Append("ref ");
                 }
 
-                resultBuilder.Append(getTypeName(parameter.ParameterType));
+                resultBuilder.Append(GetTypeName(parameter.ParameterType));
             }
 
             resultBuilder.Append(")");

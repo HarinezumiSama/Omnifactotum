@@ -4,7 +4,7 @@ using NUnit.Framework;
 namespace Omnifactotum.Tests.ExtensionMethods
 {
     [TestFixture]
-    public sealed class OmnifactotumDateTimeExtensionsTests
+    internal sealed class OmnifactotumDateTimeExtensionsTests
     {
         [Test]
         [TestCase(DateTimeKind.Local)]

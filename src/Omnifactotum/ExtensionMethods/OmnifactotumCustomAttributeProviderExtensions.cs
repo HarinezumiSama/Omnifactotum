@@ -3,6 +3,7 @@ using Omnifactotum.Annotations;
 
 //// Namespace is intentionally named so in order to simplify usage of extension methods
 //// ReSharper disable once CheckNamespace
+
 namespace System.Reflection
 {
     /// <summary>
@@ -35,25 +36,26 @@ namespace System.Reflection
             bool inherit)
             where TAttribute : Attribute
         {
-            if (provider == null)
-            {
-                throw new ArgumentNullException("provider");
-            }
-
             //// As per MSDN:
             ////    Calling ICustomAttributeProvider.GetCustomAttributes on PropertyInfo or EventInfo when the inherit
             ////    parameter of GetCustomAttributes is true does not walk the type hierarchy. Use System.Attribute to
             ////    inherit custom attributes.
-            var memberInfo = provider as MemberInfo;
-            if (memberInfo != null)
-            {
-                return Attribute
-                    .GetCustomAttributes(memberInfo, typeof(TAttribute), inherit)
-                    .Cast<TAttribute>()
-                    .ToArray();
-            }
 
-            return provider.GetCustomAttributes(typeof(TAttribute), inherit).Cast<TAttribute>().ToArray();
+            switch (provider)
+            {
+                case null:
+                    //// ReSharper disable once HeuristicUnreachableCode - False detection
+                    throw new ArgumentNullException(nameof(provider));
+
+                case MemberInfo memberInfo:
+                    return Attribute
+                        .GetCustomAttributes(memberInfo, typeof(TAttribute), inherit)
+                        .Cast<TAttribute>()
+                        .ToArray();
+
+                default:
+                    return provider.GetCustomAttributes(typeof(TAttribute), inherit).Cast<TAttribute>().ToArray();
+            }
         }
 
         /// <summary>

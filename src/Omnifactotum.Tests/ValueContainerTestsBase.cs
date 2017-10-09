@@ -7,14 +7,14 @@ namespace Omnifactotum.Tests
 {
     [TestFixture(typeof(int), 1, int.MaxValue)]
     [TestFixture(typeof(string), "Some value", "Another value")]
-    public sealed class ValueContainerTests<T>
+    internal abstract class ValueContainerTestsBase<T>
         where T : IEquatable<T>
     {
         private readonly T _value;
         private readonly T _anotherValue;
         private readonly T[] _values;
 
-        public ValueContainerTests(T value, T anotherValue)
+        protected ValueContainerTestsBase(T value, T anotherValue)
         {
             Assert.That(value, Is.Not.EqualTo(default(T)));
             Assert.That(anotherValue, Is.Not.EqualTo(default(T)));

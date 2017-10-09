@@ -40,7 +40,7 @@ namespace System
         {
             if (divisor == 0m)
             {
-                throw new ArgumentException("The divisor cannot be zero.", "divisor");
+                throw new ArgumentException("The divisor cannot be zero.", nameof(divisor));
             }
 
             return TimeSpan.FromTicks(Convert.ToInt64(value.Ticks / divisor));

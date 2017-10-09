@@ -27,12 +27,7 @@ namespace Omnifactotum
         /// </param>
         internal VirtualTreeNodeCollection([NotNull] VirtualTreeNodeBase<T> owner)
         {
-            if (owner == null)
-            {
-                throw new ArgumentNullException("owner");
-            }
-
-            _owner = owner;
+            _owner = owner ?? throw new ArgumentNullException(nameof(owner));
             _list = new List<VirtualTreeNode<T>>();
         }
 
@@ -90,7 +85,7 @@ namespace Omnifactotum
         {
             if (collection == null)
             {
-                throw new ArgumentNullException("collection");
+                throw new ArgumentNullException(nameof(collection));
             }
 
             foreach (var item in collection)
@@ -114,21 +109,18 @@ namespace Omnifactotum
         [NotNull]
         public VirtualTreeNode<T> this[int index]
         {
-            get
-            {
-                return _list[index];
-            }
+            get => _list[index];
 
             set
             {
                 if (value == null)
                 {
-                    throw new ArgumentNullException("value");
+                    throw new ArgumentNullException(nameof(value));
                 }
 
                 if (index < 0 || index >= _list.Count)
                 {
-                    throw new ArgumentOutOfRangeException("index", index, "The specified index is out of range.");
+                    throw new ArgumentOutOfRangeException(nameof(index), index, "The specified index is out of range.");
                 }
 
                 if (value != _list[index])
@@ -149,7 +141,7 @@ namespace Omnifactotum
         /// <returns>
         ///     The index of <paramref name="item"/> if found; otherwise, <c>-1</c>.
         /// </returns>
-        public int IndexOf([CanBeNull] VirtualTreeNode<T> item)
+        public int IndexOf(VirtualTreeNode<T> item)
         {
             return item == null ? -1 : _list.IndexOf(item);
         }
@@ -172,8 +164,14 @@ namespace Omnifactotum
         /// <exception cref="System.ArgumentException">
         ///     <paramref name="item"/> already belongs to this or another collection.
         /// </exception>
+        //// ReSharper disable once AnnotationConflictInHierarchy
         public void Insert(int index, [NotNull] VirtualTreeNode<T> item)
         {
+            if (item == null)
+            {
+                throw new ArgumentNullException(nameof(item));
+            }
+
             CheckItemBeingAdded(item);
 
             _list.Insert(index, item);
@@ -235,8 +233,14 @@ namespace Omnifactotum
         /// <exception cref="System.ArgumentException">
         ///     <paramref name="item"/> already belongs to this or another collection.
         /// </exception>
+        //// ReSharper disable once AnnotationConflictInHierarchy
         public void Add([NotNull] VirtualTreeNode<T> item)
         {
+            if (item == null)
+            {
+                throw new ArgumentNullException(nameof(item));
+            }
+
             CheckItemBeingAdded(item);
 
             _list.Add(item);
@@ -266,7 +270,7 @@ namespace Omnifactotum
         ///     <c>true</c> if <paramref name="item"/> is found in the <see cref="VirtualTreeNodeCollection{T}"/>;
         ///     otherwise, <c>false</c>.
         /// </returns>
-        public bool Contains([CanBeNull] VirtualTreeNode<T> item)
+        public bool Contains(VirtualTreeNode<T> item)
         {
             return item != null && _list.Contains(item);
         }
@@ -290,7 +294,7 @@ namespace Omnifactotum
         {
             if (array == null)
             {
-                throw new ArgumentNullException("array");
+                throw new ArgumentNullException(nameof(array));
             }
 
             _list.CopyTo(array, arrayIndex);
@@ -307,7 +311,7 @@ namespace Omnifactotum
         ///     <c>true</c> if <paramref name="item"/> was successfully removed from
         ///     the <see cref="VirtualTreeNodeCollection{T}"/>; otherwise, <c>false</c>.
         /// </returns>
-        public bool Remove([CanBeNull] VirtualTreeNode<T> item)
+        public bool Remove(VirtualTreeNode<T> item)
         {
             if (item == null)
             {
@@ -349,7 +353,7 @@ namespace Omnifactotum
         {
             if (item == null)
             {
-                throw new ArgumentNullException("item");
+                throw new ArgumentNullException(nameof(item));
             }
 
             if (item.Parent == null)
@@ -359,10 +363,10 @@ namespace Omnifactotum
 
             if (item.Parent == _owner)
             {
-                throw new ArgumentException("The item already belongs to this collection.", "item");
+                throw new ArgumentException("The item already belongs to this collection.", nameof(item));
             }
 
-            throw new ArgumentException("The item already belongs to another collection.", "item");
+            throw new ArgumentException("The item already belongs to another collection.", nameof(item));
         }
     }
 }

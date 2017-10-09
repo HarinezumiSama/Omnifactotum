@@ -1,7 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Diagnostics;
-using System.Globalization;
 using Omnifactotum.Annotations;
 
 namespace Omnifactotum
@@ -13,7 +11,6 @@ namespace Omnifactotum
     ///     The type of an encapsulated value.
     /// </typeparam>
     [Serializable]
-    [DebuggerDisplay(@"\{Value = {Value}\}")]
     public sealed class ValueContainer<T> : IValueContainer<T>, IEquatable<ValueContainer<T>>
     {
         /// <summary>
@@ -38,9 +35,7 @@ namespace Omnifactotum
             // Nothing to do
         }
 
-        /// <summary>
-        ///     Gets or sets the encapsulated value.
-        /// </summary>
+        /// <inheritdoc />
         public T Value
         {
             get;
@@ -60,10 +55,7 @@ namespace Omnifactotum
         ///     <c>true</c> if the two specified <see cref="ValueContainer{T}"/> instances are equal;
         ///     otherwise, <c>false</c>.
         /// </returns>
-        public static bool operator ==(ValueContainer<T> left, ValueContainer<T> right)
-        {
-            return Equals(left, right);
-        }
+        public static bool operator ==(ValueContainer<T> left, ValueContainer<T> right) => Equals(left, right);
 
         /// <summary>
         ///     Determines whether the two specified <see cref="ValueContainer{T}"/> instances are not equal.
@@ -78,10 +70,7 @@ namespace Omnifactotum
         ///     <c>true</c> if the two specified <see cref="ValueContainer{T}"/> instances are not equal;
         ///     otherwise, <c>false</c>.
         /// </returns>
-        public static bool operator !=(ValueContainer<T> left, ValueContainer<T> right)
-        {
-            return !(left == right);
-        }
+        public static bool operator !=(ValueContainer<T> left, ValueContainer<T> right) => !(left == right);
 
         /// <summary>
         ///     Returns a <see cref="String" /> that represents this <see cref="ValueContainer{T}"/> instance.
@@ -89,26 +78,20 @@ namespace Omnifactotum
         /// <returns>
         ///     A <see cref="String" /> that represents this <see cref="ValueContainer{T}"/> instance.
         /// </returns>
-        public override string ToString()
-        {
-            return string.Format(CultureInfo.InvariantCulture, "{{ Value = {0} }}", Value.ToStringSafely());
-        }
+        public override string ToString() => $@"{{ Value = {Value.ToStringSafelyInvariant()} }}";
 
         /// <summary>
-        ///     Determines whether the specified <see cref="Object" /> is equal to
+        ///     Determines whether the specified <see cref="object" /> is equal to
         ///     this <see cref="ValueContainer{T}"/> instance.
         /// </summary>
         /// <param name="obj">
-        ///     The <see cref="System.Object" /> to compare with this <see cref="ValueContainer{T}"/> instance.
+        ///     The <see cref="object" /> to compare with this <see cref="ValueContainer{T}"/> instance.
         /// </param>
         /// <returns>
-        ///     <c>true</c> if the specified <see cref="Object" /> is equal to
+        ///     <c>true</c> if the specified <see cref="object" /> is equal to
         ///     this <see cref="ValueContainer{T}"/> instance; otherwise, <c>false</c>.
         /// </returns>
-        public override bool Equals(object obj)
-        {
-            return Equals(obj as ValueContainer<T>);
-        }
+        public override bool Equals(object obj) => Equals(obj as ValueContainer<T>);
 
         /// <summary>
         ///     Returns a hash code for this <see cref="ValueContainer{T}"/> instance.
@@ -116,10 +99,8 @@ namespace Omnifactotum
         /// <returns>
         ///     A hash code for this <see cref="ValueContainer{T}"/> instance.
         /// </returns>
-        public override int GetHashCode()
-        {
-            return Value.GetHashCodeSafely();
-        }
+        //// ReSharper disable once NonReadonlyMemberInGetHashCode - Specific use-case
+        public override int GetHashCode() => Value.GetHashCodeSafely();
 
         /// <summary>
         ///     Determines whether the current <see cref="ValueContainer{T}"/> instance is equal to another instance
@@ -132,12 +113,9 @@ namespace Omnifactotum
         ///     <c>true</c> if the current <see cref="ValueContainer{T}"/> instance is equal to
         ///     the <paramref name="other" /> parameter; otherwise, <c>false</c>.
         /// </returns>
-        public bool Equals(ValueContainer<T> other)
-        {
-            return Equals(this, other);
-        }
+        public bool Equals(ValueContainer<T> other) => Equals(this, other);
 
-        private static bool Equals(ValueContainer<T> left, ValueContainer<T> right)
+        private static bool Equals(IValueContainer<T> left, IValueContainer<T> right)
         {
             if (ReferenceEquals(left, right))
             {

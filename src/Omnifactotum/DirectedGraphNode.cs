@@ -64,7 +64,6 @@ namespace Omnifactotum
         public DirectedGraphNodeCollection<T> Heads
         {
             get;
-            private set;
         }
 
         /// <summary>
@@ -74,7 +73,6 @@ namespace Omnifactotum
         public DirectedGraphNodeCollection<T> Tails
         {
             get;
-            private set;
         }
 
         /// <summary>
@@ -83,13 +81,7 @@ namespace Omnifactotum
         /// <returns>
         ///     A <see cref="System.String"/> that represents this <see cref="DirectedGraphNode{T}"/>.
         /// </returns>
-        public override string ToString()
-        {
-            return string.Format(
-                "{0}. Value = {1}",
-                GetType().GetQualifiedName(),
-                Value.ToStringSafely());
-        }
+        public override string ToString() => $@"{GetType().GetQualifiedName()}. Value = {Value.ToStringSafely()}";
 
         internal void AssignGraph([CanBeNull] DirectedGraph<T> graph)
         {

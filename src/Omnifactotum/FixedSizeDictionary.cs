@@ -27,7 +27,6 @@ namespace Omnifactotum
         private static readonly FixedSizeDictionaryDeterminant<TKey> Determinant = new SafeDeterminant();
 
         private readonly DictionaryValueHolder[] _items;
-        private int _count;
         private int _version;
 
         /// <summary>
@@ -55,7 +54,7 @@ namespace Omnifactotum
         {
             if (dictionary == null)
             {
-                throw new ArgumentNullException("dictionary");
+                throw new ArgumentNullException(nameof(dictionary));
             }
 
             foreach (var pair in dictionary)
@@ -82,7 +81,7 @@ namespace Omnifactotum
                 throw new InvalidOperationException("Invalid item array length in the source dictionary.");
             }
 
-            _count = dictionary._count;
+            Count = dictionary.Count;
         }
 
         private FixedSizeDictionary(DictionaryValueHolder[] items)
@@ -100,7 +99,6 @@ namespace Omnifactotum
         public ICollection<TKey> Keys
         {
             get;
-            private set;
         }
 
         /// <summary>
@@ -110,7 +108,6 @@ namespace Omnifactotum
         public ICollection<TValue> Values
         {
             get;
-            private set;
         }
 
         /// <summary>
@@ -128,12 +125,11 @@ namespace Omnifactotum
         /// <exception cref="KeyNotFoundException">
         ///     An element with the specified key was not found.
         /// </exception>
-        public TValue this[[NotNull] TKey key]
+        public TValue this[TKey key]
         {
             get
             {
-                TValue result;
-                var found = TryGetValue(key, out result);
+                var found = TryGetValue(key, out var result);
                 if (!found)
                 {
                     throw new KeyNotFoundException(
@@ -146,10 +142,7 @@ namespace Omnifactotum
                 return result;
             }
 
-            set
-            {
-                SetItemInternal(key, value, true);
-            }
+            set => SetItemInternal(key, value, true);
         }
 
         /// <summary>
@@ -159,23 +152,17 @@ namespace Omnifactotum
         public int Count
         {
             [DebuggerStepThrough]
-            get
-            {
-                return _count;
-            }
+            get;
+
+            [DebuggerStepThrough]
+            private set;
         }
 
         /// <summary>
         ///     Gets a value indicating whether
         ///     the <see cref="FixedSizeDictionary{TKey,TValue,TDeterminant}" /> is read-only.
         /// </summary>
-        public bool IsReadOnly
-        {
-            get
-            {
-                return false;
-            }
-        }
+        public bool IsReadOnly => false;
 
         /// <summary>
         ///     Adds an element with the specified key and value to
@@ -194,7 +181,7 @@ namespace Omnifactotum
         ///     An element with the same key already exists in
         ///     the <see cref="FixedSizeDictionary{TKey,TValue,TDeterminant}"/>.
         /// </exception>
-        public void Add([NotNull] TKey key, [CanBeNull] TValue value)
+        public void Add(TKey key, [CanBeNull] TValue value)
         {
             SetItemInternal(key, value, false);
         }
@@ -210,8 +197,13 @@ namespace Omnifactotum
         ///     <c>true</c> if the <see cref="FixedSizeDictionary{TKey,TValue,TDeterminant}" /> contains an element
         ///     with the specified key; otherwise, <c>false</c>.
         /// </returns>
-        public bool ContainsKey([NotNull] TKey key)
+        public bool ContainsKey(TKey key)
         {
+            if (ReferenceEquals(key, null))
+            {
+                throw new ArgumentNullException(nameof(key));
+            }
+
             var index = Determinant.GetIndex(key);
             var item = _items[index];
             return item.IsSet;
@@ -227,7 +219,7 @@ namespace Omnifactotum
         /// <returns>
         ///     <c>true</c> if the element is successfully removed; otherwise, <c>false</c>.
         /// </returns>
-        public bool Remove([NotNull] TKey key)
+        public bool Remove(TKey key)
         {
             var index = Determinant.GetIndex(key);
 
@@ -237,7 +229,7 @@ namespace Omnifactotum
 
             if (result)
             {
-                _count--;
+                Count--;
             }
 
             return result;
@@ -276,9 +268,7 @@ namespace Omnifactotum
         ///     The object to add to the <see cref="ICollection{T}"/>.
         /// </param>
         void ICollection<KeyValuePair<TKey, TValue>>.Add(KeyValuePair<TKey, TValue> item)
-        {
-            Add(item.Key, item.Value);
-        }
+            => Add(item.Key, item.Value);
 
         /// <summary>
         ///     Removes all items from the <see cref="FixedSizeDictionary{TKey,TValue,TDeterminant}" />.
@@ -292,7 +282,7 @@ namespace Omnifactotum
                 _items[index] = new DictionaryValueHolder();
             }
 
-            _count = 0;
+            Count = 0;
         }
 
         /// <summary>
@@ -306,10 +296,7 @@ namespace Omnifactotum
         ///     otherwise, <c>false</c>.
         /// </returns>
         bool ICollection<KeyValuePair<TKey, TValue>>.Contains(KeyValuePair<TKey, TValue> item)
-        {
-            TValue value;
-            return TryGetValue(item.Key, out value) && EqualityComparer<TValue>.Default.Equals(value, item.Value);
-        }
+            => TryGetValue(item.Key, out var value) && EqualityComparer<TValue>.Default.Equals(value, item.Value);
 
         /// <summary>
         ///     Copies the elements of the <see cref="ICollection{T}"/> to an <see cref="Array"/>,
@@ -338,13 +325,13 @@ namespace Omnifactotum
         {
             if (array == null)
             {
-                throw new ArgumentNullException("array");
+                throw new ArgumentNullException(nameof(array));
             }
 
             if (arrayIndex < 0)
             {
                 throw new ArgumentOutOfRangeException(
-                    "arrayIndex",
+                    nameof(arrayIndex),
                     arrayIndex,
                     @"The value cannot be negative.");
             }
@@ -382,15 +369,9 @@ namespace Omnifactotum
         ///     otherwise, <c>false</c>.
         /// </returns>
         bool ICollection<KeyValuePair<TKey, TValue>>.Remove(KeyValuePair<TKey, TValue> item)
-        {
-            TValue value;
-            if (!TryGetValue(item.Key, out value) || !EqualityComparer<TValue>.Default.Equals(value, item.Value))
-            {
-                return false;
-            }
-
-            return Remove(item.Key);
-        }
+            => TryGetValue(item.Key, out var value)
+                && EqualityComparer<TValue>.Default.Equals(value, item.Value)
+                && Remove(item.Key);
 
         /// <summary>
         ///     Returns an enumerator that iterates through
@@ -399,10 +380,7 @@ namespace Omnifactotum
         /// <returns>
         ///     An <see cref="IEnumerator{T}" /> that can be used to iterate through the collection.
         /// </returns>
-        public IEnumerator<KeyValuePair<TKey, TValue>> GetEnumerator()
-        {
-            return new Enumerator(this);
-        }
+        public IEnumerator<KeyValuePair<TKey, TValue>> GetEnumerator() => new Enumerator(this);
 
         /// <summary>
         ///     Returns an enumerator that iterates through
@@ -411,10 +389,7 @@ namespace Omnifactotum
         /// <returns>
         ///     An <see cref="IEnumerator" /> object that can be used to iterate through the collection.
         /// </returns>
-        IEnumerator IEnumerable.GetEnumerator()
-        {
-            return GetEnumerator();
-        }
+        IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();
 
         private void SetItemInternal([NotNull] TKey key, [CanBeNull] TValue value, bool replaceExisting)
         {
@@ -430,7 +405,7 @@ namespace Omnifactotum
                             CultureInfo.InvariantCulture,
                             "An element with the same key already exists (key: {0}).",
                             key),
-                        "key");
+                        nameof(key));
                 }
             }
 
@@ -439,38 +414,36 @@ namespace Omnifactotum
 
             if (!previousItem.IsSet)
             {
-                _count++;
+                Count++;
             }
         }
 
         private sealed class SafeDeterminant : FixedSizeDictionaryDeterminant<TKey>
         {
             private readonly TDeterminant _determinant;
-            private readonly int _size;
 
             internal SafeDeterminant()
             {
                 _determinant = new TDeterminant();
-                _size = _determinant.Size;
 
-                if (_size <= 0)
+                var determinantSize = _determinant.Size;
+                if (determinantSize <= 0)
                 {
                     throw new InvalidOperationException(
                         string.Format(
                             CultureInfo.InvariantCulture,
-                            "The determinant '{0}' return invalid size {1}. The size must be positive.",
+                            "The determinant '{0}' returned invalid size {1}. The size must be positive.",
                             typeof(TDeterminant).GetFullName(),
-                            _size));
+                            determinantSize));
                 }
+
+                Size = determinantSize;
             }
 
             public override int Size
             {
                 [DebuggerStepThrough]
-                get
-                {
-                    return _size;
-                }
+                get;
             }
 
             public override int GetIndex(TKey key)
@@ -494,21 +467,9 @@ namespace Omnifactotum
                 _dictionary = dictionary.EnsureNotNull();
             }
 
-            public int Count
-            {
-                get
-                {
-                    return _dictionary.Count;
-                }
-            }
+            public int Count => _dictionary.Count;
 
-            public bool IsReadOnly
-            {
-                get
-                {
-                    return true;
-                }
-            }
+            public bool IsReadOnly => true;
 
             void ICollection<TKey>.Add(TKey item)
             {
@@ -522,6 +483,11 @@ namespace Omnifactotum
 
             public bool Contains(TKey item)
             {
+                if (ReferenceEquals(item, null))
+                {
+                    throw new ArgumentNullException(nameof(item));
+                }
+
                 return _dictionary.ContainsKey(item);
             }
 
@@ -529,13 +495,13 @@ namespace Omnifactotum
             {
                 if (array == null)
                 {
-                    throw new ArgumentNullException("array");
+                    throw new ArgumentNullException(nameof(array));
                 }
 
                 if (arrayIndex < 0)
                 {
                     throw new ArgumentOutOfRangeException(
-                        "arrayIndex",
+                        nameof(arrayIndex),
                         arrayIndex,
                         @"The value cannot be negative.");
                 }
@@ -580,21 +546,9 @@ namespace Omnifactotum
                 _dictionary = dictionary.EnsureNotNull();
             }
 
-            public int Count
-            {
-                get
-                {
-                    return _dictionary.Count;
-                }
-            }
+            public int Count => _dictionary.Count;
 
-            public bool IsReadOnly
-            {
-                get
-                {
-                    return true;
-                }
-            }
+            public bool IsReadOnly => true;
 
             void ICollection<TValue>.Add(TValue item)
             {
@@ -616,13 +570,13 @@ namespace Omnifactotum
             {
                 if (array == null)
                 {
-                    throw new ArgumentNullException("array");
+                    throw new ArgumentNullException(nameof(array));
                 }
 
                 if (arrayIndex < 0)
                 {
                     throw new ArgumentOutOfRangeException(
-                        "arrayIndex",
+                        nameof(arrayIndex),
                         arrayIndex,
                         @"The value cannot be negative.");
                 }
@@ -668,15 +622,12 @@ namespace Omnifactotum
 
             internal Enumerator([NotNull] FixedSizeDictionary<TKey, TValue, TDeterminant> dictionary)
             {
-                if (dictionary == null)
-                {
-                    throw new ArgumentNullException("dictionary");
-                }
+                _dictionary = dictionary ?? throw new ArgumentNullException(nameof(dictionary));
 
-                _dictionary = dictionary;
                 _initialVersion = dictionary._version;
                 _size = Determinant.Size;
-                _initialCount = dictionary._count;
+                _initialCount = dictionary.Count;
+
                 ResetInternal();
             }
 
@@ -706,13 +657,7 @@ namespace Omnifactotum
                 // Nothing to do
             }
 
-            object IEnumerator.Current
-            {
-                get
-                {
-                    return Current;
-                }
-            }
+            object IEnumerator.Current => Current;
 
             public bool MoveNext()
             {
@@ -747,7 +692,7 @@ namespace Omnifactotum
 
             private void EnsureVersionConsistency()
             {
-                if (_dictionary._version != _initialVersion || _dictionary._count != _initialCount)
+                if (_dictionary._version != _initialVersion || _dictionary.Count != _initialCount)
                 {
                     throw new InvalidOperationException("Cannot enumerate the modified collection.");
                 }

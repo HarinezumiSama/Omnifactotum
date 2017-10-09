@@ -15,7 +15,7 @@ using Omnifactotum.Tests.Properties;
 namespace Omnifactotum.Tests
 {
     [TestFixture]
-    public unsafe sealed class FactotumTests
+    internal sealed unsafe class FactotumTests
     {
         private static readonly MethodInfo ToPropertyStringMethodDefinition =
             new Func<object, ToPropertyStringOptions, string>(Factotum.ToPropertyString)
@@ -630,32 +630,15 @@ namespace Omnifactotum.Tests
 
             [DefaultValue(DefaultStringValue)]
             //// ReSharper disable once MemberCanBeMadeStatic.Local
-            public string ReadOnlyStringValueWithDefault
-            {
-                get
-                {
-                    return NonDefaultStringValue;
-                }
-            }
+            public string ReadOnlyStringValueWithDefault => NonDefaultStringValue;
 
             [DefaultValue(DefaultStringValue)]
             [UsedImplicitly]
             public string this[int index]
             {
-                get
-                {
-                    if (index != 0)
-                    {
-                        throw new NotSupportedException();
-                    }
+                get => index == 0 ? NonDefaultStringValue : throw new NotSupportedException();
 
-                    return NonDefaultStringValue;
-                }
-
-                set
-                {
-                    throw new NotSupportedException();
-                }
+                set => throw new NotSupportedException();
             }
         }
     }

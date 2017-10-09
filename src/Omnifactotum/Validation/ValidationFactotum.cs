@@ -29,12 +29,12 @@ namespace Omnifactotum.Validation
         {
             if (expression == null)
             {
-                throw new ArgumentNullException("expression");
+                throw new ArgumentNullException(nameof(expression));
             }
 
             if (valueType == null)
             {
-                throw new ArgumentNullException("valueType");
+                throw new ArgumentNullException(nameof(valueType));
             }
 
             var expressionType = expression.Type.GetCollectionElementType() ?? expression.Type;
@@ -76,7 +76,7 @@ namespace Omnifactotum.Validation
         {
             if (constraintType == null)
             {
-                throw new ArgumentNullException("constraintType");
+                throw new ArgumentNullException(nameof(constraintType));
             }
 
             return !constraintType.IsInterface && CompatibleMemberConstraintType.IsAssignableFrom(constraintType);
@@ -111,7 +111,7 @@ namespace Omnifactotum.Validation
                 constraintType.GetFullName(),
                 CompatibleMemberConstraintType.GetFullName());
 
-            throw new ArgumentException(message, "constraintType");
+            throw new ArgumentException(message, nameof(constraintType));
         }
     }
 }

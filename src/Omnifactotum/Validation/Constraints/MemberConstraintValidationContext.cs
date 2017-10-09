@@ -30,30 +30,13 @@ namespace Omnifactotum.Validation.Constraints
             [NotNull] Expression expression,
             [NotNull] ParameterExpression rootParameterExpression)
         {
-            if (root == null)
-            {
-                throw new ArgumentNullException("root");
-            }
+            Root = root ?? throw new ArgumentNullException(nameof(root));
+            Container = container ?? throw new ArgumentNullException(nameof(container));
+            Expression = expression ?? throw new ArgumentNullException(nameof(expression));
 
-            if (container == null)
-            {
-                throw new ArgumentNullException("container");
-            }
+            RootParameterExpression = rootParameterExpression
+                ?? throw new ArgumentNullException(nameof(rootParameterExpression));
 
-            if (expression == null)
-            {
-                throw new ArgumentNullException("expression");
-            }
-
-            if (rootParameterExpression == null)
-            {
-                throw new ArgumentNullException("rootParameterExpression");
-            }
-
-            Root = root;
-            Container = container;
-            Expression = expression;
-            RootParameterExpression = rootParameterExpression;
             LambdaExpression = Expression.Lambda(expression, rootParameterExpression);
         }
 
@@ -63,7 +46,6 @@ namespace Omnifactotum.Validation.Constraints
         public object Root
         {
             get;
-            private set;
         }
 
         /// <summary>
@@ -72,7 +54,6 @@ namespace Omnifactotum.Validation.Constraints
         public object Container
         {
             get;
-            private set;
         }
 
         /// <summary>
@@ -81,7 +62,6 @@ namespace Omnifactotum.Validation.Constraints
         public Expression Expression
         {
             get;
-            private set;
         }
 
         /// <summary>
@@ -90,7 +70,6 @@ namespace Omnifactotum.Validation.Constraints
         internal LambdaExpression LambdaExpression
         {
             get;
-            private set;
         }
 
         /// <summary>
@@ -99,7 +78,6 @@ namespace Omnifactotum.Validation.Constraints
         internal ParameterExpression RootParameterExpression
         {
             get;
-            private set;
         }
 
         /// <summary>
@@ -123,7 +101,7 @@ namespace Omnifactotum.Validation.Constraints
             {
                 throw new ArgumentException(
                     @"The value can be neither empty nor whitespace-only string nor null.",
-                    "parameterName");
+                    nameof(parameterName));
             }
 
             var rootType = Root.GetTypeSafely();
@@ -155,10 +133,7 @@ namespace Omnifactotum.Validation.Constraints
         ///     A lambda expression based on the expression describing the path to the value from the root object.
         /// </returns>
         public Expression<Func<object, object>> CreateLambdaExpression(string parameterName)
-        {
-            ParameterExpression parameterExpression;
-            return CreateLambdaExpression(parameterName, out parameterExpression);
-        }
+            => CreateLambdaExpression(parameterName, out _);
 
         /// <summary>
         ///     Creates a lambda expression, using the default parameter name, based on the expression describing
@@ -171,9 +146,7 @@ namespace Omnifactotum.Validation.Constraints
         ///     A lambda expression based on the expression describing the path to the value from the root object.
         /// </returns>
         public Expression<Func<object, object>> CreateLambdaExpression(out ParameterExpression parameterExpression)
-        {
-            return CreateLambdaExpression(ObjectValidator.RootObjectParameterName, out parameterExpression);
-        }
+            => CreateLambdaExpression(ObjectValidator.RootObjectParameterName, out parameterExpression);
 
         /// <summary>
         ///     Creates a lambda expression, using the default parameter name, based on the expression describing
@@ -183,8 +156,6 @@ namespace Omnifactotum.Validation.Constraints
         ///     A lambda expression based on the expression describing the path to the value from the root object.
         /// </returns>
         public Expression<Func<object, object>> CreateLambdaExpression()
-        {
-            return CreateLambdaExpression(ObjectValidator.RootObjectParameterName);
-        }
+            => CreateLambdaExpression(ObjectValidator.RootObjectParameterName);
     }
 }

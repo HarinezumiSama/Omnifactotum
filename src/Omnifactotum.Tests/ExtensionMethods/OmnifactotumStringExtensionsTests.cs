@@ -4,12 +4,12 @@ using System.Linq;
 using NUnit.Framework;
 using NUnit.Framework.Constraints;
 
+//// ReSharper disable AssignNullToNotNullAttribute - For negative test cases
+
 namespace Omnifactotum.Tests.ExtensionMethods
 {
-    //// ReSharper disable AssignNullToNotNullAttribute - Intentionally for tests
-
     [TestFixture]
-    public sealed class OmnifactotumStringExtensionsTests
+    internal sealed class OmnifactotumStringExtensionsTests
     {
         [Test]
         [TestCase(null, true)]

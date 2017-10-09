@@ -19,9 +19,6 @@ namespace Omnifactotum
         private static readonly IComparer<T> ValueComparer = Comparer<T>.Default;
         private static readonly IEqualityComparer<T> ValueEqualityComparer = EqualityComparer<T>.Default;
 
-        private readonly T _lower;
-        private readonly T _upper;
-
         /// <summary>
         ///     Initializes a new instance of the <see cref="ValueRange{T}"/> structure.
         /// </summary>
@@ -38,8 +35,8 @@ namespace Omnifactotum
                 throw new ArgumentException("The lower boundary cannot be greater than the upper one.");
             }
 
-            _lower = lower;
-            _upper = upper;
+            Lower = lower;
+            Upper = upper;
         }
 
         /// <summary>
@@ -48,10 +45,7 @@ namespace Omnifactotum
         public T Lower
         {
             [DebuggerStepThrough]
-            get
-            {
-                return _lower;
-            }
+            get;
         }
 
         /// <summary>
@@ -60,10 +54,7 @@ namespace Omnifactotum
         public T Upper
         {
             [DebuggerStepThrough]
-            get
-            {
-                return _upper;
-            }
+            get;
         }
 
         /// <summary>
@@ -79,10 +70,7 @@ namespace Omnifactotum
         ///     <c>true</c> if the two specified <see cref="ValueRange{T}"/> instances are equal;
         ///     otherwise, <c>false</c>.
         /// </returns>
-        public static bool operator ==(ValueRange<T> left, ValueRange<T> right)
-        {
-            return left.Equals(right);
-        }
+        public static bool operator ==(ValueRange<T> left, ValueRange<T> right) => left.Equals(right);
 
         /// <summary>
         ///     Determines if the two specified <see cref="ValueRange{T}"/> instances are not equal.
@@ -97,10 +85,7 @@ namespace Omnifactotum
         ///     <c>true</c> if the two specified <see cref="ValueRange{T}"/> instances are not equal;
         ///     otherwise, <c>false</c>.
         /// </returns>
-        public static bool operator !=(ValueRange<T> left, ValueRange<T> right)
-        {
-            return !left.Equals(right);
-        }
+        public static bool operator !=(ValueRange<T> left, ValueRange<T> right) => !left.Equals(right);
 
         /// <summary>
         ///     Determines whether the specified <see cref="System.Object"/> is equal to this instance.
@@ -113,10 +98,7 @@ namespace Omnifactotum
         ///     otherwise, <c>false</c>.
         /// </returns>
         [Pure]
-        public override bool Equals(object obj)
-        {
-            return obj is ValueRange<T> && Equals((ValueRange<T>)obj);
-        }
+        public override bool Equals(object obj) => obj is ValueRange<T> castObj && Equals(castObj);
 
         /// <summary>
         ///     Returns the hash code for this instance.
@@ -125,10 +107,7 @@ namespace Omnifactotum
         ///     A 32-bit signed integer that is the hash code for this instance.
         /// </returns>
         [Pure]
-        public override int GetHashCode()
-        {
-            return _lower.CombineHashCodes(_upper);
-        }
+        public override int GetHashCode() => Lower.CombineHashCodes(Upper);
 
         /// <summary>
         ///     Returns a <see cref="System.String"/> that represents this <see cref="ValueRange{T}"/>.
@@ -137,10 +116,7 @@ namespace Omnifactotum
         ///     A <see cref="System.String"/> that represents this <see cref="ValueRange{T}"/>.
         /// </returns>
         [Pure]
-        public override string ToString()
-        {
-            return string.Format(CultureInfo.InvariantCulture, "[{0}; {1}]", _lower, _upper);
-        }
+        public override string ToString() => string.Format(CultureInfo.InvariantCulture, "[{0}; {1}]", Lower, Upper);
 
         /// <summary>
         ///     Determines whether the current range contains the specified value.
@@ -153,9 +129,7 @@ namespace Omnifactotum
         /// </returns>
         [Pure]
         public bool Contains(T value)
-        {
-            return ValueComparer.Compare(value, _lower) >= 0 && ValueComparer.Compare(value, _upper) <= 0;
-        }
+            => ValueComparer.Compare(value, Lower) >= 0 && ValueComparer.Compare(value, Upper) <= 0;
 
         /// <summary>
         ///     Determines whether the current range contains the whole specified range, that is, whether
@@ -168,10 +142,7 @@ namespace Omnifactotum
         ///     <c>true</c> if the current range contains the whole specified range; otherwise, <c>false</c>.
         /// </returns>
         [Pure]
-        public bool Contains(ValueRange<T> other)
-        {
-            return Contains(other._lower) && Contains(other._upper);
-        }
+        public bool Contains(ValueRange<T> other) => Contains(other.Lower) && Contains(other.Upper);
 
         /// <summary>
         ///     Determines whether the current range intersects with the specified range.
@@ -184,10 +155,7 @@ namespace Omnifactotum
         /// </returns>
         [Pure]
         public bool IntersectsWith(ValueRange<T> other)
-        {
-            return Contains(other._lower) || Contains(other._upper)
-                || other.Contains(_lower) || other.Contains(_upper);
-        }
+            => Contains(other.Lower) || Contains(other.Upper) || other.Contains(Lower) || other.Contains(Upper);
 
         /// <summary>
         ///     Indicates whether the current object is equal to another object of the same type.
@@ -201,9 +169,6 @@ namespace Omnifactotum
         /// </returns>
         [Pure]
         public bool Equals(ValueRange<T> other)
-        {
-            return ValueEqualityComparer.Equals(other._lower, _lower)
-                && ValueEqualityComparer.Equals(other._upper, _upper);
-        }
+            => ValueEqualityComparer.Equals(other.Lower, Lower) && ValueEqualityComparer.Equals(other.Upper, Upper);
     }
 }

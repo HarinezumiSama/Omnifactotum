@@ -36,7 +36,6 @@ namespace Omnifactotum.Validation.Constraints
         protected Type KeyConstraintType
         {
             get;
-            private set;
         }
 
         /// <summary>
@@ -45,7 +44,6 @@ namespace Omnifactotum.Validation.Constraints
         protected Type ValueConstraintType
         {
             get;
-            private set;
         }
 
         /// <summary>

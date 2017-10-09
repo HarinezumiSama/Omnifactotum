@@ -26,7 +26,7 @@ namespace System.Reflection
         {
             if (assembly == null)
             {
-                throw new ArgumentNullException("assembly");
+                throw new ArgumentNullException(nameof(assembly));
             }
 
             if (assembly.IsDynamic)
@@ -36,7 +36,7 @@ namespace System.Reflection
                         CultureInfo.InvariantCulture,
                         "The assembly {{ {0} }} is dynamic.",
                         assembly.FullName),
-                    "assembly");
+                    nameof(assembly));
             }
 
             if (string.IsNullOrEmpty(assembly.Location))

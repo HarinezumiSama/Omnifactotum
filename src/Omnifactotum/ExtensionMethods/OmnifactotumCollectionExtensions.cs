@@ -28,21 +28,16 @@ namespace System.Collections.Generic
         /// </returns>
         public static int? GetFastCount<T>([CanBeNull] this IEnumerable<T> collection)
         {
-            if (collection == null)
+            switch (collection)
             {
-                return 0;
-            }
+                case null:
+                    return 0;
 
-            var typedCastCollection = collection as ICollection<T>;
-            if (typedCastCollection != null)
-            {
-                return typedCastCollection.Count;
-            }
+                case ICollection<T> typedCastCollection:
+                    return typedCastCollection.Count;
 
-            var castCollection = collection as ICollection;
-            if (castCollection != null)
-            {
-                return castCollection.Count;
+                case ICollection castCollection:
+                    return castCollection.Count;
             }
 
             return null;
@@ -70,12 +65,12 @@ namespace System.Collections.Generic
         {
             if (collection == null)
             {
-                throw new ArgumentNullException("collection");
+                throw new ArgumentNullException(nameof(collection));
             }
 
             if (action == null)
             {
-                throw new ArgumentNullException("action");
+                throw new ArgumentNullException(nameof(action));
             }
 
             foreach (var item in collection)
@@ -107,12 +102,12 @@ namespace System.Collections.Generic
         {
             if (collection == null)
             {
-                throw new ArgumentNullException("collection");
+                throw new ArgumentNullException(nameof(collection));
             }
 
             if (action == null)
             {
-                throw new ArgumentNullException("action");
+                throw new ArgumentNullException(nameof(action));
             }
 
             var index = 0;
@@ -140,18 +135,17 @@ namespace System.Collections.Generic
         {
             if (collection == null)
             {
-                throw new ArgumentNullException("collection");
+                throw new ArgumentNullException(nameof(collection));
             }
 
             if (items == null)
             {
-                throw new ArgumentNullException("items");
+                throw new ArgumentNullException(nameof(items));
             }
 
             collection.Clear();
 
-            var list = collection as List<T>;
-            if (list != null)
+            if (collection is List<T> list)
             {
                 list.AddRange(items);
                 return;
@@ -208,8 +202,7 @@ namespace System.Collections.Generic
 
             foreach (var pair in map)
             {
-                int otherCount;
-                if (!otherMap.TryGetValue(pair.Key, out otherCount) || (otherCount != pair.Value))
+                if (!otherMap.TryGetValue(pair.Key, out var otherCount) || otherCount != pair.Value)
                 {
                     return false;
                 }
@@ -360,12 +353,12 @@ namespace System.Collections.Generic
         {
             if (collection == null)
             {
-                throw new ArgumentNullException("collection");
+                throw new ArgumentNullException(nameof(collection));
             }
 
             if (keySelector == null)
             {
-                throw new ArgumentNullException("keySelector");
+                throw new ArgumentNullException(nameof(keySelector));
             }
 
             var actualComparer = comparer ?? EqualityComparer<TKey>.Default;
@@ -501,7 +494,7 @@ namespace System.Collections.Generic
         {
             if (collection == null)
             {
-                throw new ArgumentNullException("collection");
+                throw new ArgumentNullException(nameof(collection));
             }
 
             return new HashSet<T>(collection, comparer);
@@ -544,7 +537,7 @@ namespace System.Collections.Generic
         {
             if (ReferenceEquals(collection, null))
             {
-                throw new ArgumentNullException("collection");
+                throw new ArgumentNullException(nameof(collection));
             }
 
             return collection.SyncRoot;

@@ -36,7 +36,6 @@ namespace Omnifactotum.Validation
         public ObjectValidationResult ValidationResult
         {
             get;
-            private set;
         }
     }
 }

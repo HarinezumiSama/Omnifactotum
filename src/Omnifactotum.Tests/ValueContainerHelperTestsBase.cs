@@ -4,14 +4,14 @@ using NUnit.Framework.Constraints;
 
 namespace Omnifactotum.Tests
 {
-    [TestFixture(typeof(int), 1, int.MaxValue)]
-    [TestFixture(typeof(string), "Some value", "Another value")]
-    public sealed class ValueContainerHelperTests<T>
+    [TestFixture(typeof(int), 1, int.MaxValue, TestName = "Value type")]
+    [TestFixture(typeof(string), "Some value", "Another value", TestName = "Reference type")]
+    internal abstract class ValueContainerHelperTestsBase<T>
         where T : IEquatable<T>
     {
         private readonly T[] _values;
 
-        public ValueContainerHelperTests(T value, T anotherValue)
+        protected ValueContainerHelperTestsBase(T value, T anotherValue)
         {
             Assert.That(value, Is.Not.EqualTo(default(T)));
             Assert.That(anotherValue, Is.Not.EqualTo(default(T)));

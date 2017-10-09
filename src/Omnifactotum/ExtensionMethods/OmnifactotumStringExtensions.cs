@@ -14,10 +14,7 @@ namespace System
     /// </summary>
     public static class OmnifactotumStringExtensions
     {
-        /// <summary>
-        ///     The double quote symbol.
-        /// </summary>
-        private const string DoubleQuote = "\"";
+        private const string DoubleQuote = @"""";
 
         /// <summary>
         ///     Determines whether the specified string is <c>null</c> or an <see cref="String.Empty"/> string.
@@ -29,10 +26,7 @@ namespace System
         ///     <c>true</c> if the specified string is <c>null</c> or an <see cref="String.Empty"/> string;
         ///     otherwise, <c>false</c>.
         /// </returns>
-        public static bool IsNullOrEmpty([CanBeNull] this string value)
-        {
-            return string.IsNullOrEmpty(value);
-        }
+        public static bool IsNullOrEmpty([CanBeNull] this string value) => string.IsNullOrEmpty(value);
 
         /// <summary>
         ///     Determines whether a specified string is <c>null</c>, <see cref="String.Empty"/>,
@@ -45,10 +39,7 @@ namespace System
         ///     <c>true</c> if the specified value is <c>null</c> or <see cref="String.Empty"/>, or if it consists
         ///     exclusively of white-space characters; otherwise, <c>false</c>.
         /// </returns>
-        public static bool IsNullOrWhiteSpace([CanBeNull] this string value)
-        {
-            return string.IsNullOrWhiteSpace(value);
-        }
+        public static bool IsNullOrWhiteSpace([CanBeNull] this string value) => string.IsNullOrWhiteSpace(value);
 
         /// <summary>
         ///     Converts the specified string value to an equivalent <see cref="Boolean"/> value.
@@ -68,14 +59,12 @@ namespace System
                 return null;
             }
 
-            bool booleanResult;
-            if (bool.TryParse(value, out booleanResult))
+            if (bool.TryParse(value, out var booleanResult))
             {
                 return booleanResult;
             }
 
-            int intResult;
-            if (int.TryParse(value, NumberStyles.Integer, CultureInfo.InvariantCulture, out intResult))
+            if (int.TryParse(value, NumberStyles.Integer, CultureInfo.InvariantCulture, out var intResult))
             {
                 return intResult != 0;
             }
@@ -98,7 +87,9 @@ namespace System
             var proxyResult = ToNullableBoolean(value);
             if (!proxyResult.HasValue)
             {
-                throw new ArgumentException("The specified value cannot be converted to Boolean.", "value");
+                throw new ArgumentException(
+                    $@"The specified value cannot be converted to {nameof(Boolean)}.",
+                    nameof(value));
             }
 
             return proxyResult.Value;
@@ -121,14 +112,7 @@ namespace System
         /// </returns>
         [NotNull]
         public static string Join([NotNull] this IEnumerable<string> values, [CanBeNull] string separator)
-        {
-            if (values == null)
-            {
-                throw new ArgumentNullException("values");
-            }
-
-            return string.Join(separator, values);
-        }
+            => string.Join(separator, values ?? throw new ArgumentNullException(nameof(values)));
 
         /// <summary>
         ///     Avoids the specified string value to be a <c>null</c> reference: returns the specified string value
@@ -141,10 +125,7 @@ namespace System
         ///     The source string value if it is not <c>null</c>; otherwise, empty string.
         /// </returns>
         [NotNull]
-        public static string AvoidNull([CanBeNull] this string source)
-        {
-            return source ?? string.Empty;
-        }
+        public static string AvoidNull([CanBeNull] this string source) => source ?? string.Empty;
 
         /// <summary>
         ///     <para>
@@ -222,9 +203,7 @@ namespace System
         /// </returns>
         [NotNull]
         public static string TrimSafely([CanBeNull] this string value, [CanBeNull] params char[] trimChars)
-        {
-            return value == null ? string.Empty : value.Trim(trimChars);
-        }
+            => value?.Trim(trimChars) ?? string.Empty;
 
         /// <summary>
         ///     Removes all leading occurrences of a set of characters specified in an array
@@ -244,9 +223,7 @@ namespace System
         /// </returns>
         [NotNull]
         public static string TrimStartSafely([CanBeNull] this string value, [CanBeNull] params char[] trimChars)
-        {
-            return value == null ? string.Empty : value.TrimStart(trimChars);
-        }
+            => value?.TrimStart(trimChars) ?? string.Empty;
 
         /// <summary>
         ///     Removes all trailing occurrences of a set of characters specified in an array
@@ -266,9 +243,7 @@ namespace System
         /// </returns>
         [NotNull]
         public static string TrimEndSafely([CanBeNull] this string value, [CanBeNull] params char[] trimChars)
-        {
-            return value == null ? string.Empty : value.TrimEnd(trimChars);
-        }
+            => value?.TrimEnd(trimChars) ?? string.Empty;
 
         /// <summary>
         ///     Shortens the specified <see cref="System.String"/> value if its length exceeds the specified length.
@@ -293,7 +268,7 @@ namespace System
             if (maximumLength < 0)
             {
                 throw new ArgumentOutOfRangeException(
-                    "maximumLength",
+                    nameof(maximumLength),
                     maximumLength,
                     "The length must be a non-negative value.");
             }
@@ -325,7 +300,7 @@ namespace System
             if (count < 0)
             {
                 throw new ArgumentOutOfRangeException(
-                    "count",
+                    nameof(count),
                     count,
                     "The count must be a non-negative value.");
             }

@@ -35,12 +35,8 @@ namespace Omnifactotum.Validation
             [CanBeNull] BaseValidatableMemberAttribute[] attributes,
             [CanBeNull] BaseMemberConstraintAttribute[] effectiveAttributes)
         {
-            if (expression == null)
-            {
-                throw new ArgumentNullException("expression");
-            }
+            Expression = expression ?? throw new ArgumentNullException(nameof(expression));
 
-            Expression = expression;
             Container = container;
             Value = value;
             Attributes = attributes;
@@ -53,7 +49,6 @@ namespace Omnifactotum.Validation
         public Expression Expression
         {
             get;
-            private set;
         }
 
         /// <summary>
@@ -62,7 +57,6 @@ namespace Omnifactotum.Validation
         public object Container
         {
             get;
-            private set;
         }
 
         /// <summary>
@@ -71,7 +65,6 @@ namespace Omnifactotum.Validation
         public object Value
         {
             get;
-            private set;
         }
 
         /// <summary>
@@ -80,7 +73,6 @@ namespace Omnifactotum.Validation
         public BaseValidatableMemberAttribute[] Attributes
         {
             get;
-            private set;
         }
 
         /// <summary>
@@ -89,7 +81,6 @@ namespace Omnifactotum.Validation
         public BaseMemberConstraintAttribute[] EffectiveAttributes
         {
             get;
-            private set;
         }
     }
 }

@@ -9,7 +9,7 @@ namespace Omnifactotum.Tests
     //// ReSharper disable AssignNullToNotNullAttribute - for negative test cases
 
     [TestFixture]
-    public sealed class KeyedEqualityComparerTests
+    internal sealed class KeyedEqualityComparerTests
     {
         [OneTimeSetUp]
         public void TestFixtureSetUp()
@@ -26,6 +26,7 @@ namespace Omnifactotum.Tests
         [Test]
         public void TestConstruction()
         {
+            //// ReSharper disable once ConvertToLocalFunction
             Func<string, int> keySelector = s => s.Length;
 
             var testee = new KeyedEqualityComparer<string, int>(keySelector);
@@ -41,6 +42,7 @@ namespace Omnifactotum.Tests
         [Test]
         public void TestConstructionWithKeyComparer()
         {
+            //// ReSharper disable once ConvertToLocalFunction
             Func<int, string> keySelector = i => i.ToString(CultureInfo.InvariantCulture);
             var keyComparer = StringComparer.OrdinalIgnoreCase;
 
@@ -52,6 +54,7 @@ namespace Omnifactotum.Tests
         [Test]
         public void TestConstructionWithNullKeyComparer()
         {
+            //// ReSharper disable once ConvertToLocalFunction
             Func<int, string> keySelector = i => i.ToString(CultureInfo.InvariantCulture);
 
             var testee = new KeyedEqualityComparer<int, string>(keySelector, null);
@@ -109,8 +112,8 @@ namespace Omnifactotum.Tests
         {
             IEqualityComparer testee = new KeyedEqualityComparer<string, int>(int.Parse);
 
-            Assert.That(() => testee.Equals(1, "1"), Throws.ArgumentException);
-            Assert.That(() => testee.Equals("1", -1), Throws.ArgumentException);
+            Assert.That(() => testee.Equals(1, "1"), Is.False);
+            Assert.That(() => testee.Equals("1", -1), Is.False);
         }
 
         [Test]
@@ -135,8 +138,8 @@ namespace Omnifactotum.Tests
                 int.Parse,
                 new AbsValueIntEqualityComparer());
 
-            Assert.That(() => testee.Equals(1, "1"), Throws.ArgumentException);
-            Assert.That(() => testee.Equals("1", -1), Throws.ArgumentException);
+            Assert.That(() => testee.Equals(1, "1"), Is.False);
+            Assert.That(() => testee.Equals("1", -1), Is.False);
         }
 
         [Test]
@@ -176,7 +179,7 @@ namespace Omnifactotum.Tests
         public void TestGenericGetHashCodeNegative()
         {
             IEqualityComparer testee = new KeyedEqualityComparer<string, int>(int.Parse);
-            Assert.That(() => testee.GetHashCode(1), Throws.ArgumentException);
+            Assert.That(() => testee.GetHashCode(1), Is.EqualTo(1));
         }
 
         [Test]
@@ -186,20 +189,14 @@ namespace Omnifactotum.Tests
                 int.Parse,
                 new AbsValueIntEqualityComparer());
 
-            Assert.That(() => testee.GetHashCode(1), Throws.ArgumentException);
+            Assert.That(() => testee.GetHashCode(1), Is.EqualTo(1));
         }
 
         private sealed class AbsValueIntEqualityComparer : IEqualityComparer<int>
         {
-            public bool Equals(int x, int y)
-            {
-                return Math.Abs(x) == Math.Abs(y);
-            }
+            public bool Equals(int x, int y) => Math.Abs(x) == Math.Abs(y);
 
-            public int GetHashCode(int obj)
-            {
-                return Math.Abs(obj).GetHashCode();
-            }
+            public int GetHashCode(int obj) => Math.Abs(obj).GetHashCode();
         }
     }
 }

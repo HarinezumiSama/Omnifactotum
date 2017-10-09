@@ -28,7 +28,6 @@ namespace Omnifactotum
         public T Value
         {
             get;
-            private set;
         }
     }
 }

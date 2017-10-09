@@ -4,7 +4,7 @@ using NUnit.Framework;
 namespace Omnifactotum.Tests
 {
     [TestFixture]
-    public sealed class ByReferenceEqualityComparerTests
+    internal sealed class ByReferenceEqualityComparerTests
     {
         [Test]
         public void TestReferenceType()
@@ -13,9 +13,12 @@ namespace Omnifactotum.Tests
 
             var equalityComparer = ByReferenceEqualityComparer<SomeReferenceType>.Instance;
 
-            var objA1 = new SomeReferenceType { Value = "A" };
-            var objA2 = new SomeReferenceType { Value = "A" };
-            var objB = new SomeReferenceType { Value = "B" };
+            const string ValueA = "A";
+            const string ValueB = "B";
+
+            var objA1 = new SomeReferenceType(ValueA);
+            var objA2 = new SomeReferenceType(ValueA);
+            var objB = new SomeReferenceType(ValueB);
 
             Assert.That(equalityComparer.Equals(objA1, objA1), Is.True);
             Assert.That(equalityComparer.GetHashCode(objA1), Is.EqualTo(equalityComparer.GetHashCode(objA1)));
@@ -34,9 +37,12 @@ namespace Omnifactotum.Tests
 
             var equalityComparer = ByReferenceEqualityComparer<SomeValueType>.Instance;
 
-            var objA1 = new SomeValueType { Value = "A" };
-            var objA2 = new SomeValueType { Value = "A" };
-            var objB = new SomeValueType { Value = "B" };
+            const string ValueA = "A";
+            const string ValueB = "B";
+
+            var objA1 = new SomeValueType(ValueA);
+            var objA2 = new SomeValueType(ValueA);
+            var objB = new SomeValueType(ValueB);
 
             Assert.That(equalityComparer.Equals(objA1, objA1), Is.True);
             Assert.That(equalityComparer.GetHashCode(objA1), Is.EqualTo(equalityComparer.GetHashCode(objA1)));
@@ -50,10 +56,11 @@ namespace Omnifactotum.Tests
 
         private sealed class SomeReferenceType : IEquatable<SomeReferenceType>
         {
-            public string Value
+            private readonly string _value;
+
+            public SomeReferenceType(string value)
             {
-                private get;
-                set;
+                _value = value;
             }
 
             public override bool Equals(object obj)
@@ -63,36 +70,37 @@ namespace Omnifactotum.Tests
 
             public override int GetHashCode()
             {
-                return this.Value == null ? 0 : StringComparer.Ordinal.GetHashCode(this.Value);
+                return _value == null ? 0 : StringComparer.Ordinal.GetHashCode(_value);
             }
 
             public bool Equals(SomeReferenceType other)
             {
-                return other != null && StringComparer.Ordinal.Equals(this.Value, other.Value);
+                return other != null && StringComparer.Ordinal.Equals(_value, other._value);
             }
         }
 
         private struct SomeValueType : IEquatable<SomeValueType>
         {
-            public string Value
+            private readonly string _value;
+
+            public SomeValueType(string value)
             {
-                private get;
-                set;
+                _value = value;
             }
 
             public override bool Equals(object obj)
             {
-                return obj is SomeValueType && Equals((SomeValueType)obj);
+                return obj is SomeValueType type && Equals(type);
             }
 
             public override int GetHashCode()
             {
-                return this.Value == null ? 0 : StringComparer.Ordinal.GetHashCode(this.Value);
+                return _value == null ? 0 : StringComparer.Ordinal.GetHashCode(_value);
             }
 
             public bool Equals(SomeValueType other)
             {
-                return StringComparer.Ordinal.Equals(this.Value, other.Value);
+                return StringComparer.Ordinal.Equals(_value, other._value);
             }
         }
     }

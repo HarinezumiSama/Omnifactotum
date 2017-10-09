@@ -115,7 +115,7 @@ namespace Omnifactotum
             {
                 if (value < 0)
                 {
-                    throw new ArgumentOutOfRangeException("value", value, "The value cannot be negative.");
+                    throw new ArgumentOutOfRangeException(nameof(value), value, "The value cannot be negative.");
                 }
 
                 _maxCollectionItemCount = value;
@@ -138,7 +138,7 @@ namespace Omnifactotum
             {
                 if (value <= 0)
                 {
-                    throw new ArgumentOutOfRangeException("value", value, @"The value must be positive.");
+                    throw new ArgumentOutOfRangeException(nameof(value), value, @"The value must be positive.");
                 }
 
                 _maxRecursionLevel = value;

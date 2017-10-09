@@ -8,11 +8,12 @@ namespace Omnifactotum.Tests
     //// ReSharper disable AssignNullToNotNullAttribute - for negative test cases
 
     [TestFixture]
-    public sealed class KeyedEqualityComparerHelperTests
+    internal sealed class KeyedEqualityComparerHelperTests
     {
         [Test]
         public void TestConstruction()
         {
+            //// ReSharper disable once ConvertToLocalFunction
             Func<string, int> keySelector = s => s.Length;
 
             var instance = KeyedEqualityComparer.For<string>.Create(keySelector);
@@ -30,6 +31,7 @@ namespace Omnifactotum.Tests
         [Test]
         public void TestConstructionWithKeyComparer()
         {
+            //// ReSharper disable once ConvertToLocalFunction
             Func<int, string> keySelector = i => i.ToString(CultureInfo.InvariantCulture);
             var keyComparer = StringComparer.OrdinalIgnoreCase;
 
@@ -41,6 +43,7 @@ namespace Omnifactotum.Tests
         [Test]
         public void TestConstructionWithNullKeyComparer()
         {
+            //// ReSharper disable once ConvertToLocalFunction
             Func<int, string> keySelector = i => i.ToString(CultureInfo.InvariantCulture);
 
             var instance = KeyedEqualityComparer.For<int>.Create(keySelector, null);

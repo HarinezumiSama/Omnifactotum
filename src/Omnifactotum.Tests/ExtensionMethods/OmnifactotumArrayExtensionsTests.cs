@@ -11,7 +11,7 @@ namespace Omnifactotum.Tests.ExtensionMethods
     //// ReSharper disable AssignNullToNotNullAttribute - Intentionally for tests
 
     [TestFixture]
-    public sealed class OmnifactotumArrayExtensionsTests
+    internal sealed class OmnifactotumArrayExtensionsTests
     {
         private static readonly string[] NullArray = null;
         private static readonly byte[] NullByteArray = null;
@@ -162,7 +162,7 @@ namespace Omnifactotum.Tests.ExtensionMethods
             [UsedImplicitly]
             public CopyableObject Copy()
             {
-                return new CopyableObject { Value = this.Value };
+                return new CopyableObject { Value = Value };
             }
 
             public object Clone()

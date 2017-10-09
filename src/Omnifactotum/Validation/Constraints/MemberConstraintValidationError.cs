@@ -26,25 +26,15 @@ namespace Omnifactotum.Validation.Constraints
             Type failedConstraintType,
             string errorMessage)
         {
-            if (context == null)
-            {
-                throw new ArgumentNullException("context");
-            }
-
-            if (failedConstraintType == null)
-            {
-                throw new ArgumentNullException("failedConstraintType");
-            }
-
             if (string.IsNullOrWhiteSpace(errorMessage))
             {
                 throw new ArgumentException(
                     @"The value can be neither empty nor whitespace-only string nor null.",
-                    "errorMessage");
+                    nameof(errorMessage));
             }
 
-            Context = context;
-            FailedConstraintType = failedConstraintType;
+            Context = context ?? throw new ArgumentNullException(nameof(context));
+            FailedConstraintType = failedConstraintType ?? throw new ArgumentNullException(nameof(failedConstraintType));
             ErrorMessage = errorMessage;
         }
 
@@ -54,7 +44,6 @@ namespace Omnifactotum.Validation.Constraints
         public MemberConstraintValidationContext Context
         {
             get;
-            private set;
         }
 
         /// <summary>
@@ -63,7 +52,6 @@ namespace Omnifactotum.Validation.Constraints
         public Type FailedConstraintType
         {
             get;
-            private set;
         }
 
         /// <summary>
@@ -72,7 +60,6 @@ namespace Omnifactotum.Validation.Constraints
         public string ErrorMessage
         {
             get;
-            private set;
         }
 
         /// <summary>
@@ -88,7 +75,7 @@ namespace Omnifactotum.Validation.Constraints
         {
             if (error == null)
             {
-                throw new ArgumentNullException("error");
+                throw new ArgumentNullException(nameof(error));
             }
 
             return string.Format(

@@ -2,19 +2,17 @@
 using NUnit.Framework;
 using NUnit.Framework.Constraints;
 
+//// ReSharper disable AssignNullToNotNullAttribute - For negative test cases
+
 namespace Omnifactotum.Tests
 {
-    //// ReSharper disable AssignNullToNotNullAttribute - for negative test cases
-
-    [TestFixture(typeof(int), 1, int.MaxValue)]
-    [TestFixture(typeof(string), "Some value", "Another value")]
-    public sealed class SyncValueContainerHelperTests<T>
+    internal abstract class SyncValueContainerHelperTestsBase<T>
         where T : IEquatable<T>
     {
         private readonly T _value;
         private readonly T[] _values;
 
-        public SyncValueContainerHelperTests(T value, T anotherValue)
+        protected SyncValueContainerHelperTestsBase(T value, T anotherValue)
         {
             Assert.That(value, Is.Not.EqualTo(default(T)));
             Assert.That(anotherValue, Is.Not.EqualTo(default(T)));

@@ -10,7 +10,7 @@ namespace Omnifactotum.Tests.ExtensionMethods
 {
     //// ReSharper disable AssignNullToNotNullAttribute - Intentionally for tests
     [TestFixture]
-    public sealed class OmnifactotumAssemblyExtensionsTests
+    internal sealed class OmnifactotumAssemblyExtensionsTests
     {
         [Test]
         public void TestGetLocalPathUsingNullAssemblyNegative()
@@ -33,7 +33,7 @@ namespace Omnifactotum.Tests.ExtensionMethods
         public void TestGetLocalPathOfDynamicAssemblyNegative()
         {
             var assemblyBuilder = AppDomain.CurrentDomain.DefineDynamicAssembly(
-                new AssemblyName("Test_" + Guid.NewGuid().ToString("N")), 
+                new AssemblyName("Test_" + Guid.NewGuid().ToString("N")),
                 AssemblyBuilderAccess.RunAndSave);
 
             Assert.That(() => assemblyBuilder.GetLocalPath(), Throws.TypeOf<ArgumentException>());

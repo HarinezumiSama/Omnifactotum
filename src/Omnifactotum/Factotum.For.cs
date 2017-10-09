@@ -61,7 +61,7 @@ namespace Omnifactotum
                             InvalidExpressionMessageFormat,
                             typeof(TObject).GetFullName(),
                             fieldGetterExpression),
-                        "fieldGetterExpression");
+                        nameof(fieldGetterExpression));
                 }
 
                 return result;
@@ -133,7 +133,7 @@ namespace Omnifactotum
                             InvalidExpressionMessageFormat,
                             typeof(TObject).GetFullName(),
                             propertyGetterExpression),
-                        "propertyGetterExpression");
+                        nameof(propertyGetterExpression));
                 }
 
                 return result;
@@ -185,20 +185,20 @@ namespace Omnifactotum
             {
                 if (memberGetterExpression == null)
                 {
-                    throw new ArgumentNullException("memberGetterExpression");
+                    throw new ArgumentNullException(nameof(memberGetterExpression));
                 }
 
                 var objectType = typeof(TObject);
 
-                var memberExpression = memberGetterExpression.Body as MemberExpression;
-                if ((memberExpression == null) || (memberExpression.NodeType != ExpressionType.MemberAccess))
+                if (!(memberGetterExpression.Body is MemberExpression memberExpression)
+                    || memberExpression.NodeType != ExpressionType.MemberAccess)
                 {
                     throw new ArgumentException(
                         string.Format(
                             InvalidExpressionMessageFormat,
                             objectType.GetFullName(),
                             memberGetterExpression),
-                        "memberGetterExpression");
+                        nameof(memberGetterExpression));
                 }
 
                 var result = memberExpression.Member;
@@ -213,17 +213,17 @@ namespace Omnifactotum
                             InvalidExpressionMessageFormat,
                             objectType.GetFullName(),
                             memberGetterExpression),
-                        "memberGetterExpression");
+                        nameof(memberGetterExpression));
                 }
 
-                if ((result.DeclaringType == null) || !result.DeclaringType.IsAssignableFrom(objectType))
+                if (result.DeclaringType == null || !result.DeclaringType.IsAssignableFrom(objectType))
                 {
                     throw new ArgumentException(
                         string.Format(
                             InvalidExpressionMessageFormat,
                             objectType.GetFullName(),
                             memberGetterExpression),
-                        "memberGetterExpression");
+                        nameof(memberGetterExpression));
                 }
 
                 if (memberExpression.Expression == null)
@@ -231,29 +231,29 @@ namespace Omnifactotum
                     if (propertyInfo != null)
                     {
                         var accessor = propertyInfo.GetGetMethod(true) ?? propertyInfo.GetSetMethod(true);
-                        if ((accessor == null) || !accessor.IsStatic || (result.ReflectedType != objectType))
+                        if (accessor == null || !accessor.IsStatic || result.ReflectedType != objectType)
                         {
                             throw new ArgumentException(
                                 string.Format(
                                     InvalidExpressionMessageFormat,
                                     objectType.GetFullName(),
                                     memberGetterExpression),
-                                "memberGetterExpression");
+                                nameof(memberGetterExpression));
                         }
                     }
                 }
                 else
                 {
-                    var parameterExpression = memberExpression.Expression as ParameterExpression;
-                    if ((parameterExpression == null) || (parameterExpression.NodeType != ExpressionType.Parameter) ||
-                        (parameterExpression.Type != typeof(TObject)))
+                    if (!(memberExpression.Expression is ParameterExpression parameterExpression)
+                        || parameterExpression.NodeType != ExpressionType.Parameter
+                        || parameterExpression.Type != typeof(TObject))
                     {
                         throw new ArgumentException(
                             string.Format(
                                 InvalidExpressionMessageFormat,
                                 objectType.GetFullName(),
                                 memberGetterExpression),
-                            "memberGetterExpression");
+                            nameof(memberGetterExpression));
                     }
                 }
 

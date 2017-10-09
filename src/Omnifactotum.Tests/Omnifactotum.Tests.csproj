@@ -71,9 +71,17 @@
     <Compile Include="ExtensionMethods\OmnifactotumDateTimeOffsetExtensionsTests.cs" />
     <Compile Include="ExtensionMethods\OmnifactotumDisposableExtensionsTests.cs" />
     <Compile Include="ExtensionMethods\OmnifactotumStringExtensionsTests.cs" />
+    <Compile Include="SyncValueContainerForReferenceTypeTests.cs" />
+    <Compile Include="SyncValueContainerForValueTypeTests.cs" />
+    <Compile Include="SyncValueContainerHelperForReferenceTypeTests.cs" />
+    <Compile Include="SyncValueContainerHelperForValueTypeTests.cs" />
     <Compile Include="Validation\Constraints\MemberConstraintBaseTests.cs" />
-    <Compile Include="ValueContainerHelperTests.cs" />
-    <Compile Include="SyncValueContainerHelperTests.cs" />
+    <Compile Include="ValueContainerForReferenceTypeTests.cs" />
+    <Compile Include="ValueContainerForValueTypeTests.cs" />
+    <Compile Include="ValueContainerHelperForReferenceTypeTests.cs" />
+    <Compile Include="ValueContainerHelperForValueTypeTests.cs" />
+    <Compile Include="ValueContainerHelperTestsBase.cs" />
+    <Compile Include="SyncValueContainerHelperTestsBase.cs" />
     <Compile Include="EnumFixedSizeDictionaryTests.cs" />
     <Compile Include="FixedSizeDictionaryTests.cs" />
     <Compile Include="KeyedEqualityComparerHelperTests.cs" />
@@ -81,7 +89,7 @@
     <Compile Include="ExtensionMethods\OmnifactotumCustomAttributeProviderExtensionsTests.cs" />
     <Compile Include="ExtensionMethods\OmnifactotumDictionaryExtensionsTests.cs" />
     <Compile Include="ExtensionMethods\OmnifactotumGenericObjectExtensionsTests.cs" />
-    <Compile Include="ValueContainerTests.cs" />
+    <Compile Include="ValueContainerTestsBase.cs" />
     <Compile Include="Validation\Constraints\NotNullOrWhiteSpaceStringConstraintTests.cs" />
     <Compile Include="DirectedGraphTests.cs" />
     <Compile Include="EnumFactotumTests.cs" />
@@ -104,7 +112,7 @@
     </Compile>
     <Compile Include="ReadOnlyDictionaryTests.cs" />
     <Compile Include="ReadOnlySetTests.cs" />
-    <Compile Include="SyncValueContainerTests.cs" />
+    <Compile Include="SyncValueContainerTestsBase.cs" />
     <Compile Include="TestCategory.cs" />
     <Compile Include="TimeSpanExtensionsTests.cs" />
     <Compile Include="ValueRangeTests.cs" />

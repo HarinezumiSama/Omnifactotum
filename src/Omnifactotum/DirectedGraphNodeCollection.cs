@@ -33,7 +33,7 @@ namespace Omnifactotum
         {
             if (owner == null)
             {
-                throw new ArgumentNullException("owner");
+                throw new ArgumentNullException(nameof(owner));
             }
 
             ownerRelation.EnsureDefined();

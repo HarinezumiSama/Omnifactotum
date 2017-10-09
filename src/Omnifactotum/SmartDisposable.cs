@@ -29,7 +29,6 @@ namespace Omnifactotum
         public T Instance
         {
             get;
-            private set;
         }
 
         /// <summary>

@@ -26,11 +26,11 @@ namespace System.Linq.Expressions
         {
             if (expression == null)
             {
-                throw new ArgumentNullException("expression");
+                throw new ArgumentNullException(nameof(expression));
             }
 
             var methodCallExpression = expression.Body as MethodCallExpression;
-            return methodCallExpression == null ? null : methodCallExpression.Method.EnsureNotNull();
+            return methodCallExpression?.Method.EnsureNotNull();
         }
 
         /// <summary>
@@ -62,12 +62,12 @@ namespace System.Linq.Expressions
         {
             if (sourceExpression == null)
             {
-                throw new ArgumentNullException("sourceExpression");
+                throw new ArgumentNullException(nameof(sourceExpression));
             }
 
             if (targetExpression == null)
             {
-                throw new ArgumentNullException("targetExpression");
+                throw new ArgumentNullException(nameof(targetExpression));
             }
 
             var parameterExpression = sourceExpression.Parameters.Single();
@@ -99,22 +99,26 @@ namespace System.Linq.Expressions
         {
             if (sourceExpression == null)
             {
-                throw new ArgumentNullException("sourceExpression");
+                throw new ArgumentNullException(nameof(sourceExpression));
             }
 
             if (sourceExpression.Parameters.Count != 1)
             {
-                throw new ArgumentException("The source expression must have a single parameter.", "sourceExpression");
+                throw new ArgumentException(
+                    "The source expression must have a single parameter.",
+                    nameof(sourceExpression));
             }
 
             if (targetExpression == null)
             {
-                throw new ArgumentNullException("targetExpression");
+                throw new ArgumentNullException(nameof(targetExpression));
             }
 
             if (targetExpression.Parameters.Count != 1)
             {
-                throw new ArgumentException("The target expression must have a single parameter.", "targetExpression");
+                throw new ArgumentException(
+                    "The target expression must have a single parameter.",
+                    nameof(targetExpression));
             }
 
             if (sourceExpression.ReturnType != targetExpression.Parameters.Single().Type)
@@ -154,18 +158,8 @@ namespace System.Linq.Expressions
             /// </param>
             public ReplaceExpressionVisitor(Expression sourceExpression, Expression targetExpression)
             {
-                if (sourceExpression == null)
-                {
-                    throw new ArgumentNullException("sourceExpression");
-                }
-
-                if (targetExpression == null)
-                {
-                    throw new ArgumentNullException("targetExpression");
-                }
-
-                _sourceExpression = sourceExpression;
-                _targetExpression = targetExpression;
+                _sourceExpression = sourceExpression ?? throw new ArgumentNullException(nameof(sourceExpression));
+                _targetExpression = targetExpression ?? throw new ArgumentNullException(nameof(targetExpression));
             }
 
             /// <summary>

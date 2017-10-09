@@ -34,13 +34,11 @@ namespace Omnifactotum.Validation
         public ValidationErrorCollection Errors
         {
             get;
-            private set;
         }
 
         internal RecursiveProcessingContext<MemberData> RecursiveProcessingContext
         {
             get;
-            private set;
         }
 
         /// <summary>

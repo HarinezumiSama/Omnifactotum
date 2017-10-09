@@ -4,12 +4,12 @@ using System.Linq;
 using NUnit.Framework;
 using Omnifactotum.NUnit;
 
+//// ReSharper disable AssignNullToNotNullAttribute - For negative test cases
+
 namespace Omnifactotum.Tests
 {
-    //// ReSharper disable AssignNullToNotNullAttribute - for negative test cases
-
     [TestFixture]
-    public sealed class ReadOnlySetTests
+    internal sealed class ReadOnlySetTests
     {
         private const int Value1 = 1;
         private const int Value2 = 2;
@@ -98,64 +98,63 @@ namespace Omnifactotum.Tests
             var collection = (ICollection<int>)readOnlySet;
             Assert.That(collection.IsReadOnly, Is.True);
 
-            Action assertNoChanges =
-                () =>
-                {
-                    Assert.That(readOnlySet.Count, Is.EqualTo(count));
-                    CollectionAssert.AreEquivalent(_set, readOnlySet);
+            void AssertNoChanges()
+            {
+                Assert.That(readOnlySet.Count, Is.EqualTo(count));
+                CollectionAssert.AreEquivalent(_set, readOnlySet);
 
-                    Assert.That(collection.Count, Is.EqualTo(count));
-                    CollectionAssert.AreEquivalent(_set, collection);
-                };
+                Assert.That(collection.Count, Is.EqualTo(count));
+                CollectionAssert.AreEquivalent(_set, collection);
+            }
 
-            assertNoChanges();
+            AssertNoChanges();
 
             Assert.That(
                 () => ((ISet<int>)readOnlySet).Add(ValueExtra),
                 Throws.TypeOf<NotSupportedException>());
-            assertNoChanges();
+            AssertNoChanges();
 
             Assert.That(
                 () => ((ISet<int>)readOnlySet).Remove(Value1),
                 Throws.TypeOf<NotSupportedException>());
-            assertNoChanges();
+            AssertNoChanges();
 
             Assert.That(
                 () => ((ISet<int>)readOnlySet).ExceptWith(Value1.AsCollection()),
                 Throws.TypeOf<NotSupportedException>());
-            assertNoChanges();
+            AssertNoChanges();
 
             Assert.That(
                 () => ((ISet<int>)readOnlySet).IntersectWith(Value1.AsCollection()),
                 Throws.TypeOf<NotSupportedException>());
-            assertNoChanges();
+            AssertNoChanges();
 
             Assert.That(
                 () => ((ISet<int>)readOnlySet).SymmetricExceptWith(Value1.AsCollection()),
                 Throws.TypeOf<NotSupportedException>());
-            assertNoChanges();
+            AssertNoChanges();
 
             Assert.That(
                 () => ((ISet<int>)readOnlySet).UnionWith(ValueExtra.AsCollection()),
                 Throws.TypeOf<NotSupportedException>());
-            assertNoChanges();
+            AssertNoChanges();
 
             //// As collection
 
             Assert.That(
                 () => collection.Add(ValueExtra),
                 Throws.TypeOf<NotSupportedException>());
-            assertNoChanges();
+            AssertNoChanges();
 
             Assert.That(
                 collection.Clear,
                 Throws.TypeOf<NotSupportedException>());
-            assertNoChanges();
+            AssertNoChanges();
 
             Assert.That(
                 () => collection.Remove(Value1),
                 Throws.TypeOf<NotSupportedException>());
-            assertNoChanges();
+            AssertNoChanges();
         }
 
         [Test]

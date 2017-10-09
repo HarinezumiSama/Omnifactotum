@@ -9,7 +9,7 @@ namespace Omnifactotum.Tests
     //// ReSharper disable AssignNullToNotNullAttribute - for negative test cases
 
     [TestFixture]
-    public sealed class ReadOnlyDictionaryTests
+    internal sealed class ReadOnlyDictionaryTests
     {
         private const int Key1 = 1;
         private const string Value1 = "One";
@@ -229,24 +229,19 @@ namespace Omnifactotum.Tests
         {
             var rod = new ReadOnlyDictionary<int, string>(_dictionary);
 
-            string resultValue1;
-            Assert.That(rod.TryGetValue(Key1, out resultValue1), Is.True);
+            Assert.That(rod.TryGetValue(Key1, out var resultValue1), Is.True);
             Assert.That(resultValue1, Is.EqualTo(Value1));
 
-            string resultValue2;
-            Assert.That(rod.TryGetValue(Key2, out resultValue2), Is.True);
+            Assert.That(rod.TryGetValue(Key2, out var resultValue2), Is.True);
             Assert.That(resultValue2, Is.EqualTo(Value2));
 
-            string resultValue3;
-            Assert.That(rod.TryGetValue(Key3, out resultValue3), Is.True);
+            Assert.That(rod.TryGetValue(Key3, out var resultValue3), Is.True);
             Assert.That(resultValue3, Is.EqualTo(Value3));
 
-            string resultValue17;
-            Assert.That(rod.TryGetValue(Key17, out resultValue17), Is.True);
+            Assert.That(rod.TryGetValue(Key17, out var resultValue17), Is.True);
             Assert.That(resultValue17, Is.EqualTo(Value17));
 
-            string resultValueExtra;
-            Assert.That(rod.TryGetValue(KeyExtra, out resultValueExtra), Is.False);
+            Assert.That(rod.TryGetValue(KeyExtra, out var resultValueExtra), Is.False);
             Assert.That(resultValueExtra, Is.Null);
         }
 

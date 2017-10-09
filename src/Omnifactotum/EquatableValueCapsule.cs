@@ -36,14 +36,7 @@ namespace Omnifactotum
         /// <summary>
         ///     Gets the <see cref="IEqualityComparer{T}"/> used for comparing contained values for equality.
         /// </summary>
-        public IEqualityComparer<T> ValueEqualityComparer
-        {
-            [DebuggerNonUserCode]
-            get
-            {
-                return GetValueEqualityComparer().EnsureNotNull();
-            }
-        }
+        public IEqualityComparer<T> ValueEqualityComparer => GetValueEqualityComparer().EnsureNotNull();
 
         /// <summary>
         ///     Determines whether the two specified <see cref="EquatableValueCapsule{T}"/> instances are equal.
@@ -61,9 +54,7 @@ namespace Omnifactotum
         public static bool operator ==(
             [CanBeNull] EquatableValueCapsule<T> left,
             [CanBeNull] EquatableValueCapsule<T> right)
-        {
-            return EqualityComparer<EquatableValueCapsule<T>>.Default.Equals(left, right);
-        }
+            => EqualityComparer<EquatableValueCapsule<T>>.Default.Equals(left, right);
 
         /// <summary>
         ///     Determines whether the two specified <see cref="EquatableValueCapsule{T}"/> instances are not equal.
@@ -81,9 +72,7 @@ namespace Omnifactotum
         public static bool operator !=(
             [CanBeNull] EquatableValueCapsule<T> left,
             [CanBeNull] EquatableValueCapsule<T> right)
-        {
-            return !(left == right);
-        }
+            => !(left == right);
 
         /// <summary>
         ///     Determines whether the specified <see cref="Object"/> is equal to
@@ -96,10 +85,7 @@ namespace Omnifactotum
         ///     <c>true</c> if the specified <see cref="System.Object"/> is equal to
         ///     this <see cref="EquatableValueCapsule{T}"/>; otherwise, <c>false</c>.
         /// </returns>
-        public sealed override bool Equals([CanBeNull] object obj)
-        {
-            return Equals(obj as EquatableValueCapsule<T>);
-        }
+        public sealed override bool Equals(object obj) => Equals(obj as EquatableValueCapsule<T>);
 
         /// <summary>
         ///     Returns a hash code for this <see cref="EquatableValueCapsule{T}"/>.
@@ -109,9 +95,7 @@ namespace Omnifactotum
         ///     a hash table.
         /// </returns>
         public sealed override int GetHashCode()
-        {
-            return ReferenceEquals(Value, null) ? 0 : ValueEqualityComparer.GetHashCode(Value);
-        }
+            => ReferenceEquals(Value, null) ? 0 : ValueEqualityComparer.GetHashCode(Value);
 
         /// <summary>
         ///     Determines whether the current object is equal to another object of the same type.
@@ -123,20 +107,9 @@ namespace Omnifactotum
         ///     <c>true</c> if the current object is equal to the <paramref name="other"/> parameter;
         ///     otherwise, <c>false</c>.
         /// </returns>
-        public bool Equals([CanBeNull] EquatableValueCapsule<T> other)
-        {
-            if (ReferenceEquals(other, null) || other.GetType() != GetType())
-            {
-                return false;
-            }
-
-            if (ReferenceEquals(other, this))
-            {
-                return true;
-            }
-
-            return ValueEqualityComparer.Equals(other.Value, Value);
-        }
+        public bool Equals(EquatableValueCapsule<T> other)
+            => !ReferenceEquals(other, null) && other.GetType() == GetType()
+                && (ReferenceEquals(other, this) || ValueEqualityComparer.Equals(other.Value, Value));
 
         /// <summary>
         ///     Gets the <see cref="IEqualityComparer{T}"/> used for comparing contained values for equality.
@@ -146,9 +119,6 @@ namespace Omnifactotum
         ///     The <see cref="IEqualityComparer{T}"/> used for comparing contained values for equality.
         /// </returns>
         [DebuggerNonUserCode]
-        protected virtual IEqualityComparer<T> GetValueEqualityComparer()
-        {
-            return EqualityComparer<T>.Default;
-        }
+        protected virtual IEqualityComparer<T> GetValueEqualityComparer() => EqualityComparer<T>.Default;
     }
 }

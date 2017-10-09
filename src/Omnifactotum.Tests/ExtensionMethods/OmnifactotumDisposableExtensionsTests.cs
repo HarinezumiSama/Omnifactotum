@@ -8,7 +8,7 @@ namespace Omnifactotum.Tests.ExtensionMethods
 {
     //// ReSharper disable AssignNullToNotNullAttribute - Intentionally for tests
     [TestFixture]
-    public sealed class OmnifactotumDisposableExtensionsTests
+    internal sealed class OmnifactotumDisposableExtensionsTests
     {
         [Test]
         public void TestDisposeSafelyOfReferenceTypeNullInstance()

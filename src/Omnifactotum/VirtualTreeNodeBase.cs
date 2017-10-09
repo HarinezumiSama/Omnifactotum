@@ -39,12 +39,12 @@ namespace Omnifactotum
         {
             if (children == null)
             {
-                throw new ArgumentNullException("children");
+                throw new ArgumentNullException(nameof(children));
             }
 
             if (children.Any(item => item == null))
             {
-                throw new ArgumentException(@"The collection contains a null element.", "children");
+                throw new ArgumentException(@"The collection contains a null element.", nameof(children));
             }
 
             _children = new VirtualTreeNodeCollection<T>(this, children);

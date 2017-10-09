@@ -5,13 +5,13 @@ using Omnifactotum.NUnit;
 namespace Omnifactotum.Tests
 {
     [TestFixture]
-    public sealed class ValueRangeTests
+    internal sealed class ValueRangeTests
     {
         [Test]
         [Category(TestCategory.Negative)]
         public void TestInvalidConstruction()
         {
-            Assert.That((TestDelegate)(() => new ValueRange<int>(2, 1)), Throws.ArgumentException);
+            Assert.That(() => new ValueRange<int>(2, 1), Throws.ArgumentException);
             Assert.That(() => ValueRange.Create(2, 1), Throws.ArgumentException);
         }
 

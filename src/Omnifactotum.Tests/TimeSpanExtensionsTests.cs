@@ -4,7 +4,7 @@ using NUnit.Framework;
 namespace Omnifactotum.Tests
 {
     [TestFixture]
-    public sealed class TimeSpanExtensionsTests
+    internal sealed class TimeSpanExtensionsTests
     {
         [Test]
         [Category(TestCategory.Positive)]

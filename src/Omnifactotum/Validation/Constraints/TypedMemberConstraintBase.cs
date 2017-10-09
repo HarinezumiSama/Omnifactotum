@@ -81,17 +81,17 @@ namespace Omnifactotum.Validation.Constraints
         {
             if (valueContext == null)
             {
-                throw new ArgumentNullException("valueContext");
+                throw new ArgumentNullException(nameof(valueContext));
             }
 
             if (ReferenceEquals(value, null))
             {
-                throw new ArgumentNullException("value");
+                throw new ArgumentNullException(nameof(value));
             }
 
             if (memberGetterExpression == null)
             {
-                throw new ArgumentNullException("memberGetterExpression");
+                throw new ArgumentNullException(nameof(memberGetterExpression));
             }
 
             var memberInfo = Factotum.For<T>.GetFieldOrPropertyInfo(memberGetterExpression);
@@ -139,22 +139,22 @@ namespace Omnifactotum.Validation.Constraints
         {
             if (valueContext == null)
             {
-                throw new ArgumentNullException("valueContext");
+                throw new ArgumentNullException(nameof(valueContext));
             }
 
             if (ReferenceEquals(value, null))
             {
-                throw new ArgumentNullException("value");
+                throw new ArgumentNullException(nameof(value));
             }
 
             if (memberGetterExpression == null)
             {
-                throw new ArgumentNullException("memberGetterExpression");
+                throw new ArgumentNullException(nameof(memberGetterExpression));
             }
 
             if (constraintType == null)
             {
-                throw new ArgumentNullException("constraintType");
+                throw new ArgumentNullException(nameof(constraintType));
             }
 
             var memberContext = CreateMemberContext(valueContext, value, memberGetterExpression);

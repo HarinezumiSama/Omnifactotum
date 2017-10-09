@@ -31,12 +31,7 @@ namespace Omnifactotum
             [NotNull] Func<T, TKey> keySelector,
             [CanBeNull] IEqualityComparer<TKey> keyComparer)
         {
-            if (keySelector == null)
-            {
-                throw new ArgumentNullException("keySelector");
-            }
-
-            KeySelector = keySelector;
+            KeySelector = keySelector ?? throw new ArgumentNullException(nameof(keySelector));
             KeyComparer = keyComparer ?? EqualityComparer<TKey>.Default;
         }
 
@@ -60,7 +55,6 @@ namespace Omnifactotum
         public Func<T, TKey> KeySelector
         {
             get;
-            private set;
         }
 
         /// <summary>
@@ -70,7 +64,6 @@ namespace Omnifactotum
         public IEqualityComparer<TKey> KeyComparer
         {
             get;
-            private set;
         }
 
         /// <summary>
@@ -85,7 +78,7 @@ namespace Omnifactotum
         /// <returns>
         ///     <c>true</c> if the keys of the specified objects are equal; otherwise, <c>false</c>.
         /// </returns>
-        public bool Equals([CanBeNull] T x, [CanBeNull] T y)
+        public bool Equals(T x, T y)
         {
             if (!typeof(T).IsValueType)
             {
@@ -150,12 +143,7 @@ namespace Omnifactotum
                 return false;
             }
 
-            if ((x is T) && (y is T))
-            {
-                return Equals((T)x, (T)y);
-            }
-
-            throw new ArgumentException("Invalid argument type.");
+            return x is T castX && y is T castY && Equals(castX, castY);
         }
 
         /// <summary>
@@ -168,18 +156,6 @@ namespace Omnifactotum
         ///     A hash code for the key of the specified object.
         /// </returns>
         int IEqualityComparer.GetHashCode([CanBeNull] object obj)
-        {
-            if (ReferenceEquals(obj, null))
-            {
-                return 0;
-            }
-
-            if (obj is T)
-            {
-                return GetHashCode((T)obj);
-            }
-
-            throw new ArgumentException("Invalid argument type.", "obj");
-        }
+            => ReferenceEquals(obj, null) ? 0 : (obj is T castObj ? GetHashCode(castObj) : obj.GetHashCode());
     }
 }

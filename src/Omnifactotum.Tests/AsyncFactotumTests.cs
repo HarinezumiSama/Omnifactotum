@@ -4,7 +4,7 @@ using NUnit.Framework;
 namespace Omnifactotum.Tests
 {
     [TestFixture]
-    public sealed class AsyncFactotumTests
+    internal sealed class AsyncFactotumTests
     {
         private const int ExpectedResult = 9;
 

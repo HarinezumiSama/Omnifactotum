@@ -51,8 +51,14 @@ namespace Omnifactotum
         /// <param name="item">
         ///     An item to add to this collection.
         /// </param>
+        //// ReSharper disable once AnnotationConflictInHierarchy
         public void Add([NotNull] DirectedGraphNode<T> item)
         {
+            if (item == null)
+            {
+                throw new ArgumentNullException(nameof(item));
+            }
+
             AddInternal(item);
             OnItemAdded(item);
         }
@@ -80,7 +86,7 @@ namespace Omnifactotum
         /// <returns>
         ///     <c>true</c> if <paramref name="item"/> is found in this collection; otherwise, <c>false</c>.
         /// </returns>
-        public bool Contains([CanBeNull] DirectedGraphNode<T> item)
+        public bool Contains(DirectedGraphNode<T> item)
         {
             return item != null && _items.Contains(item);
         }
@@ -111,7 +117,7 @@ namespace Omnifactotum
         ///     <c>true</c> if <paramref name="item"/> was removed from this collection;
         ///     otherwise, <c>false</c>.
         /// </returns>
-        public bool Remove([CanBeNull] DirectedGraphNode<T> item)
+        public bool Remove(DirectedGraphNode<T> item)
         {
             var result = RemoveInternal(item);
             if (result && item != null)
@@ -160,12 +166,12 @@ namespace Omnifactotum
         {
             if (item == null)
             {
-                throw new ArgumentNullException("item");
+                throw new ArgumentNullException(nameof(item));
             }
 
             if (Graph != null && item.Graph != null && item.Graph != Graph)
             {
-                throw new ArgumentException("The item is already associated with another graph.", "item");
+                throw new ArgumentException("The item is already associated with another graph.", nameof(item));
             }
 
             if (_items.Contains(item))
@@ -173,9 +179,7 @@ namespace Omnifactotum
                 if (item.Graph == null)
                 {
                     throw new InvalidOperationException(
-                        string.Format(
-                            "The node {{{0}}} belongs to the graph but is not associated with this graph.",
-                            item));
+                        $@"The node {{{item}}} belongs to the graph but is not associated with this graph.");
                 }
 
                 return;

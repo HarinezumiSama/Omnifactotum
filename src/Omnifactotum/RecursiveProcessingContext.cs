@@ -39,7 +39,6 @@ namespace Omnifactotum
         internal HashSet<T> ItemsBeingProcessed
         {
             get;
-            private set;
         }
     }
 }

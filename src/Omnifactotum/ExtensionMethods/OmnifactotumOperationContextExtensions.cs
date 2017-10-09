@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using System.IdentityModel.Claims;
 using System.Linq;
 using System.Security.Cryptography.X509Certificates;
@@ -6,11 +7,13 @@ using Omnifactotum.Annotations;
 
 //// Namespace is intentionally named so in order to simplify usage of extension methods
 //// ReSharper disable once CheckNamespace
+
 namespace System.ServiceModel
 {
     /// <summary>
     ///     Contains extension methods for <see cref="OperationContext"/> class.
     /// </summary>
+    [ExcludeFromCodeCoverage]
     public static class OmnifactotumOperationContextExtensions
     {
         /// <summary>
@@ -23,22 +26,17 @@ namespace System.ServiceModel
         ///     An <see cref="X509Certificate2"/> if the client has provided its certificate, or <c>null</c> otherwise.
         /// </returns>
         [CanBeNull]
-        public static X509Certificate2 GetClientCertificate(this OperationContext operationContext)
+        public static X509Certificate2 GetClientCertificate([CanBeNull] this OperationContext operationContext)
         {
             var certificates = GetAllClientCertificates(operationContext);
             return certificates.FirstOrDefault();
         }
 
         [NotNull]
-        private static IEnumerable<X509Certificate2> GetAllClientCertificates(OperationContext operationContext)
+        private static IEnumerable<X509Certificate2> GetAllClientCertificates(
+            [CanBeNull] OperationContext operationContext)
         {
-            if (operationContext == null || operationContext.ServiceSecurityContext == null
-                || operationContext.ServiceSecurityContext.AuthorizationContext == null)
-            {
-                return Enumerable.Empty<X509Certificate2>();
-            }
-
-            var claimSets = operationContext.ServiceSecurityContext.AuthorizationContext.ClaimSets;
+            var claimSets = operationContext?.ServiceSecurityContext?.AuthorizationContext?.ClaimSets;
             if (claimSets == null)
             {
                 return Enumerable.Empty<X509Certificate2>();

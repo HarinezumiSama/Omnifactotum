@@ -43,10 +43,7 @@ namespace System
         public static void DisposeSafely<T>([CanBeNull] this T? disposable)
             where T : struct, IDisposable
         {
-            if (disposable.HasValue)
-            {
-                disposable.Value.Dispose();
-            }
+            disposable?.Dispose();
         }
     }
 }

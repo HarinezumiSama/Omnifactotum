@@ -5,6 +5,7 @@ namespace Omnifactotum.Validation.Constraints
     /// <summary>
     ///     Specifies how the annotated member is validated.
     /// </summary>
+    //// ReSharper disable once RedundantAttributeUsageProperty - Just making sure
     [AttributeUsage(AttributeTargets.Field | AttributeTargets.Property, AllowMultiple = true, Inherited = true)]
     public sealed class MemberConstraintAttribute : BaseMemberConstraintAttribute
     {

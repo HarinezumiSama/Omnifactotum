@@ -41,13 +41,7 @@ namespace Omnifactotum
         /// <returns>
         ///     <c>true</c> if the trace listener is thread safe; otherwise, <c>false</c>.
         /// </returns>
-        public override bool IsThreadSafe
-        {
-            get
-            {
-                return true;
-            }
-        }
+        public override bool IsThreadSafe => true;
 
         /// <summary>
         ///     Gets or sets the color used for error messages.
@@ -668,12 +662,15 @@ namespace Omnifactotum
             if (_originalForegroundColor.HasValue)
             {
                 throw new InvalidOperationException(
-                    string.Format("Internal logic error ({0}, {1}).", _colorChangedCount, _originalForegroundColor));
+                    $@"Internal logic error ({nameof(_colorChangedCount)} = {_colorChangedCount}, {
+                        nameof(_originalForegroundColor)} = {_originalForegroundColor}).");
             }
 
             _originalForegroundColor = Console.ForegroundColor;
 
             ConsoleColor color;
+
+            //// ReSharper disable once SwitchStatementMissingSomeCases - By design
             switch (eventType)
             {
                 case TraceEventType.Critical:

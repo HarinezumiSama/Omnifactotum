@@ -7,7 +7,7 @@ using Omnifactotum.Annotations;
 namespace Omnifactotum.Tests
 {
     [TestFixture]
-    public sealed class EnumFactotumTests
+    internal sealed class EnumFactotumTests
     {
         [Test]
         public void TestGetValue()
@@ -32,41 +32,41 @@ namespace Omnifactotum.Tests
         [Test]
         public void TestGetAllValues()
         {
-            Assert.That(() => EnumFactotum.GetAllValues<int>(), Throws.ArgumentException);
+            Assert.That(EnumFactotum.GetAllValues<int>, Throws.ArgumentException);
 
             Assert.That(
-                () => EnumFactotum.GetAllValues<FileMode>(),
+                EnumFactotum.GetAllValues<FileMode>,
                 Is.EquivalentTo(Enum.GetValues(typeof(FileMode))));
 
             Assert.That(
-                () => EnumFactotum.GetAllValues<FileAttributes>(),
+                EnumFactotum.GetAllValues<FileAttributes>,
                 Is.EquivalentTo(Enum.GetValues(typeof(FileAttributes))));
         }
 
         [Test]
         public void TestGetAllFlagValues()
         {
-            Assert.That(() => EnumFactotum.GetAllFlagValues<int>(), Throws.ArgumentException);
+            Assert.That(EnumFactotum.GetAllFlagValues<int>, Throws.ArgumentException);
 
-            Assert.That(() => EnumFactotum.GetAllFlagValues<FileMode>(), Throws.ArgumentException);
+            Assert.That(EnumFactotum.GetAllFlagValues<FileMode>, Throws.ArgumentException);
 
             Assert.That(
-                () => EnumFactotum.GetAllFlagValues<FileAttributes>(),
+                EnumFactotum.GetAllFlagValues<FileAttributes>,
                 Is.EquivalentTo(Enum.GetValues(typeof(FileAttributes))));
 
             Assert.That(
-                () => EnumFactotum.GetAllFlagValues<FileShare>(),
+                EnumFactotum.GetAllFlagValues<FileShare>,
                 Is.EquivalentTo(
                     Enum.GetValues(typeof(FileShare))
                         .Cast<FileShare>()
                         .Except(new[] { FileShare.None, FileShare.ReadWrite })));
 
             Assert.That(
-                () => EnumFactotum.GetAllFlagValues<FlagsInt64>(),
+                EnumFactotum.GetAllFlagValues<FlagsInt64>,
                 Is.EquivalentTo(new[] { FlagsInt64.Bit0, FlagsInt64.Bit32, FlagsInt64.Bit49, FlagsInt64.Bit63 }));
 
             Assert.That(
-                () => EnumFactotum.GetAllFlagValues<FlagsUInt64>(),
+                EnumFactotum.GetAllFlagValues<FlagsUInt64>,
                 Is.EquivalentTo(new[] { FlagsUInt64.Bit0, FlagsUInt64.Bit35, FlagsUInt64.Bit53, FlagsUInt64.Bit63 }));
         }
 

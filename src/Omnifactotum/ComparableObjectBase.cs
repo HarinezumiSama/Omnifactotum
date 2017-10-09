@@ -107,7 +107,7 @@ namespace Omnifactotum
 
             if (other.GetType() != GetType())
             {
-                throw new ArgumentException("Incompatible comparand type.", "other");
+                throw new ArgumentException("Incompatible comparand type.", nameof(other));
             }
 
             return CompareToInternal(other);

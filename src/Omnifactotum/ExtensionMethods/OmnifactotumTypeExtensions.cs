@@ -9,6 +9,7 @@ using Omnifactotum.Annotations;
 
 //// Namespace is intentionally named so in order to simplify usage of extension methods
 //// ReSharper disable once CheckNamespace
+
 namespace System
 {
     /// <summary>
@@ -50,12 +51,12 @@ namespace System
         {
             if (type == null)
             {
-                throw new ArgumentNullException("type");
+                throw new ArgumentNullException(nameof(type));
             }
 
             if (string.IsNullOrEmpty(name))
             {
-                throw new ArgumentException("The value can be neither empty string nor null.", "name");
+                throw new ArgumentException("The value can be neither empty string nor null.", nameof(name));
             }
 
             return type.Assembly.GetManifestResourceStream(type, name);
@@ -179,7 +180,7 @@ namespace System
         {
             if (type == null)
             {
-                throw new ArgumentNullException("type");
+                throw new ArgumentNullException(nameof(type));
             }
 
             return type.IsGenericType
@@ -205,7 +206,7 @@ namespace System
         {
             if (type == null)
             {
-                throw new ArgumentNullException("type");
+                throw new ArgumentNullException(nameof(type));
             }
 
             if (type.HasElementType && type.IsArray)
@@ -328,20 +329,20 @@ namespace System
         {
             if (resultBuilder == null)
             {
-                throw new ArgumentNullException("resultBuilder");
+                throw new ArgumentNullException(nameof(resultBuilder));
             }
 
             if (type == null)
             {
-                throw new ArgumentNullException("type");
+                throw new ArgumentNullException(nameof(type));
             }
 
             if (genericParameterOffset < 0)
             {
-                throw new ArgumentOutOfRangeException("genericParameterOffset", genericParameterOffset, null);
+                throw new ArgumentOutOfRangeException(nameof(genericParameterOffset), genericParameterOffset, null);
             }
 
-            if (type.IsGenericType && (genericParameters == null))
+            if (type.IsGenericType && genericParameters == null)
             {
                 genericParameters = type.GetGenericArguments().ToList();
             }
@@ -367,7 +368,7 @@ namespace System
 
             if (type.HasElementType)
             {
-                var elementType = type.GetElementType();
+                var elementType = type.GetElementType().EnsureNotNull();
 
                 if (type.IsPointer)
                 {
@@ -396,7 +397,7 @@ namespace System
                 }
             }
 
-            if (!fullName && (type.IsNullable() || (!type.IsGenericType && !type.IsGenericTypeDefinition)))
+            if (!fullName && (type.IsNullable() || !type.IsGenericType && !type.IsGenericTypeDefinition))
             {
                 var shortTypeName = GetShortTypeNameInternal(type);
                 resultBuilder.Append(shortTypeName);

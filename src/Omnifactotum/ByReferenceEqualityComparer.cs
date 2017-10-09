@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.Runtime.CompilerServices;
 
 namespace Omnifactotum
@@ -15,8 +14,6 @@ namespace Omnifactotum
     /// </typeparam>
     public sealed class ByReferenceEqualityComparer<T> : IEqualityComparer<T>
     {
-        private static readonly ByReferenceEqualityComparer<T> InstanceField = new ByReferenceEqualityComparer<T>();
-
         private readonly bool _isReferenceType = !typeof(T).IsValueType;
 
         /// <summary>
@@ -33,12 +30,8 @@ namespace Omnifactotum
         /// </summary>
         public static ByReferenceEqualityComparer<T> Instance
         {
-            [DebuggerStepThrough]
-            get
-            {
-                return InstanceField;
-            }
-        }
+            get;
+        } = new ByReferenceEqualityComparer<T>();
 
         /// <summary>
         ///     Determines whether the specified objects are equal by reference.

@@ -56,7 +56,7 @@ namespace Omnifactotum
         ///     <c>true</c> if the specified <see cref="System.Object"/> is equal to
         ///     this <see cref="EquatableObjectBase"/>; otherwise, <c>false</c>.
         /// </returns>
-        public sealed override bool Equals([CanBeNull] object obj)
+        public sealed override bool Equals(object obj)
         {
             return Equals(obj as EquatableObjectBase);
         }
@@ -83,20 +83,9 @@ namespace Omnifactotum
         ///     <c>true</c> if the current object is equal to the <paramref name="other"/> parameter;
         ///     otherwise, <c>false</c>.
         /// </returns>
-        public bool Equals([CanBeNull] EquatableObjectBase other)
-        {
-            if (ReferenceEquals(other, null) || other.GetType() != GetType())
-            {
-                return false;
-            }
-
-            if (ReferenceEquals(other, this))
-            {
-                return true;
-            }
-
-            return EqualsInternal(other);
-        }
+        public bool Equals(EquatableObjectBase other)
+            => !ReferenceEquals(other, null) && other.GetType() == GetType()
+                && (ReferenceEquals(other, this) || EqualsInternal(other));
 
         /// <summary>
         ///     Returns a hash code for this <see cref="EquatableObjectBase"/>.

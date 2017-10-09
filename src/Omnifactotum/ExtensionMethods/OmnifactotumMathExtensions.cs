@@ -82,6 +82,7 @@ namespace System
         /// </returns>
         public static float Sqr(this float value)
         {
+            //// ReSharper disable once RedundantOverflowCheckingContext - Just making sure
             return unchecked(value * value);
         }
 
@@ -97,6 +98,7 @@ namespace System
         /// </returns>
         public static double Sqr(this double value)
         {
+            //// ReSharper disable once RedundantOverflowCheckingContext - Just making sure
             return unchecked(value * value);
         }
 
@@ -112,6 +114,7 @@ namespace System
         /// </returns>
         public static decimal Sqr(this decimal value)
         {
+            //// ReSharper disable once RedundantOverflowCheckingContext - Just making sure
             return unchecked(value * value);
         }
 
@@ -189,6 +192,7 @@ namespace System
         /// </returns>
         public static float SqrChecked(this float value)
         {
+            //// ReSharper disable once RedundantOverflowCheckingContext - Just making sure
             return checked(value * value);
         }
 
@@ -204,6 +208,7 @@ namespace System
         /// </returns>
         public static double SqrChecked(this double value)
         {
+            //// ReSharper disable once RedundantOverflowCheckingContext - Just making sure
             return checked(value * value);
         }
 
@@ -219,6 +224,7 @@ namespace System
         /// </returns>
         public static decimal SqrChecked(this decimal value)
         {
+            //// ReSharper disable once RedundantOverflowCheckingContext - Just making sure
             return checked(value * value);
         }
 

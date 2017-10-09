@@ -34,7 +34,6 @@ namespace Omnifactotum.Validation.Constraints
         public Type ConstraintType
         {
             get;
-            private set;
         }
 
         /// <summary>

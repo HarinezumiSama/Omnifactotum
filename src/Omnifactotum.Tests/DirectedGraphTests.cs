@@ -2,11 +2,59 @@
 using NUnit.Framework;
 using NUnit.Framework.Constraints;
 
+//// ReSharper disable AssignNullToNotNullAttribute - For negative test cases
+
 namespace Omnifactotum.Tests
 {
     [TestFixture]
-    public sealed class DirectedGraphTests
+    internal sealed class DirectedGraphTests
     {
+        [Test]
+        [Category(TestCategory.Positive)]
+        public void TestParameterlessConstructionSucceeds()
+        {
+            var graph = new DirectedGraph<string>();
+            Assert.That(graph.Graph, Is.SameAs(graph));
+            Assert.That(graph.Count, Is.EqualTo(0));
+            Assert.That(graph, Is.EquivalentTo(new DirectedGraphNode<string>[0]));
+        }
+
+        [Test]
+        [Category(TestCategory.Positive)]
+        public void TestConstructionWithNodesSucceeds()
+        {
+            var nodeA = DirectedGraphNode.Create("A");
+            var nodeB = DirectedGraphNode.Create("B");
+
+            var graph = new DirectedGraph<string>(new[] { nodeA, nodeB });
+            Assert.That(graph.Graph, Is.SameAs(graph));
+            Assert.That(graph.Count, Is.EqualTo(2));
+            Assert.That(graph, Is.EquivalentTo(new[] { nodeA, nodeB }));
+        }
+
+        [Test]
+        [Category(TestCategory.Negative)]
+        public void TestConstructionWithInvalidArgumentThrows()
+        {
+            Assert.That(() => new DirectedGraph<string>(null), Throws.ArgumentNullException);
+        }
+
+        [Test]
+        public void TestGraphPropertyCanOnlyBeSameGraphObject()
+        {
+            var graph = new DirectedGraph<string>();
+            Assert.That(graph.Graph, Is.SameAs(graph));
+
+            Assert.That(() => graph.Graph = null, Throws.InvalidOperationException);
+            Assert.That(graph.Graph, Is.SameAs(graph));
+
+            Assert.That(() => graph.Graph = new DirectedGraph<string>(), Throws.InvalidOperationException);
+            Assert.That(graph.Graph, Is.SameAs(graph));
+
+            graph.Graph = graph;
+            Assert.That(graph.Graph, Is.SameAs(graph));
+        }
+
         [Test]
         [Category(TestCategory.Positive)]
         public void TestObjectConnection()
@@ -122,42 +170,41 @@ namespace Omnifactotum.Tests
 
             var graph = new DirectedGraph<string>(new[] { nodeA });
 
-            Action assertGraphState =
-                () =>
-                {
-                    Assert.That(graph.Count, Is.EqualTo(5));
+            void AssertGraphState()
+            {
+                Assert.That(graph.Count, Is.EqualTo(5));
 
-                    AssertStrictNodeRelation(nodeA, nodeB);
-                    AssertStrictNodeRelation(nodeA, nodeC);
-                    AssertStrictNodeRelation(nodeA, nodeD);
-                    AssertStrictNodeRelation(nodeA, nodeE);
-                    AssertStrictNodeRelation(nodeB, nodeD);
-                    AssertStrictNodeRelation(nodeC, nodeD);
-                    AssertStrictNodeRelation(nodeC, nodeE);
-                    AssertStrictNodeRelation(nodeD, nodeE);
+                AssertStrictNodeRelation(nodeA, nodeB);
+                AssertStrictNodeRelation(nodeA, nodeC);
+                AssertStrictNodeRelation(nodeA, nodeD);
+                AssertStrictNodeRelation(nodeA, nodeE);
+                AssertStrictNodeRelation(nodeB, nodeD);
+                AssertStrictNodeRelation(nodeC, nodeD);
+                AssertStrictNodeRelation(nodeC, nodeE);
+                AssertStrictNodeRelation(nodeD, nodeE);
 
-                    AssertNodesNotRelated(nodeB, nodeC);
-                    AssertNodesNotRelated(nodeB, nodeE);
-                };
+                AssertNodesNotRelated(nodeB, nodeC);
+                AssertNodesNotRelated(nodeB, nodeE);
+            }
 
-            assertGraphState();
+            AssertGraphState();
 
             var sortedNodes = graph.SortTopologically(
                 (left, right) => StringComparer.Ordinal.Compare(left.Value, right.Value));
             Assert.That(sortedNodes, Is.Not.Null);
             CollectionAssert.AreEqual(sortedNodes, new[] { nodeA, nodeB, nodeC, nodeD, nodeE });
-            assertGraphState();
+            AssertGraphState();
 
             var sortedNodesDefault = graph.SortTopologically();
             Assert.That(sortedNodesDefault, Is.Not.Null);
             CollectionAssert.AreEqual(sortedNodesDefault, new[] { nodeA, nodeB, nodeC, nodeD, nodeE });
-            assertGraphState();
+            AssertGraphState();
 
             var sortedNodesReverseAlpha = graph.SortTopologically(
                 (left, right) => -StringComparer.Ordinal.Compare(left.Value, right.Value));
             Assert.That(sortedNodesReverseAlpha, Is.Not.Null);
             CollectionAssert.AreEqual(sortedNodesReverseAlpha, new[] { nodeA, nodeC, nodeB, nodeD, nodeE });
-            assertGraphState();
+            AssertGraphState();
         }
 
         [Test]
@@ -177,43 +224,42 @@ namespace Omnifactotum.Tests
             nodeB.Heads.Add(nodeE);
             nodeD.Heads.Add(nodeE);
 
-            Action assertGraphState =
-                () =>
-                {
-                    Assert.That(graph.Count, Is.EqualTo(5));
+            void AssertGraphState()
+            {
+                Assert.That(graph.Count, Is.EqualTo(5));
 
-                    AssertStrictNodeRelation(nodeA, nodeB);
-                    AssertStrictNodeRelation(nodeC, nodeD);
-                    AssertStrictNodeRelation(nodeB, nodeE);
-                    AssertStrictNodeRelation(nodeD, nodeE);
+                AssertStrictNodeRelation(nodeA, nodeB);
+                AssertStrictNodeRelation(nodeC, nodeD);
+                AssertStrictNodeRelation(nodeB, nodeE);
+                AssertStrictNodeRelation(nodeD, nodeE);
 
-                    AssertNodesNotRelated(nodeA, nodeC);
-                    AssertNodesNotRelated(nodeA, nodeD);
-                    AssertNodesNotRelated(nodeA, nodeE);
+                AssertNodesNotRelated(nodeA, nodeC);
+                AssertNodesNotRelated(nodeA, nodeD);
+                AssertNodesNotRelated(nodeA, nodeE);
 
-                    AssertNodesNotRelated(nodeB, nodeC);
-                    AssertNodesNotRelated(nodeB, nodeD);
+                AssertNodesNotRelated(nodeB, nodeC);
+                AssertNodesNotRelated(nodeB, nodeD);
 
-                    AssertNodesNotRelated(nodeC, nodeA);
-                    AssertNodesNotRelated(nodeC, nodeB);
-                    AssertNodesNotRelated(nodeC, nodeE);
+                AssertNodesNotRelated(nodeC, nodeA);
+                AssertNodesNotRelated(nodeC, nodeB);
+                AssertNodesNotRelated(nodeC, nodeE);
 
-                    AssertNodesNotRelated(nodeD, nodeA);
-                    AssertNodesNotRelated(nodeD, nodeB);
-                };
+                AssertNodesNotRelated(nodeD, nodeA);
+                AssertNodesNotRelated(nodeD, nodeB);
+            }
 
-            assertGraphState();
+            AssertGraphState();
 
             var sortedNodesDefault = graph.SortTopologically();
             Assert.That(sortedNodesDefault, Is.Not.Null);
             CollectionAssert.AreEqual(sortedNodesDefault, new[] { nodeA, nodeB, nodeC, nodeD, nodeE });
-            assertGraphState();
+            AssertGraphState();
 
             var sortedNodesReverseAlpha = graph.SortTopologically(
                 (left, right) => -StringComparer.Ordinal.Compare(left.Value, right.Value));
             Assert.That(sortedNodesReverseAlpha, Is.Not.Null);
             CollectionAssert.AreEqual(sortedNodesReverseAlpha, new[] { nodeC, nodeD, nodeA, nodeB, nodeE });
-            assertGraphState();
+            AssertGraphState();
         }
 
         [Test]
