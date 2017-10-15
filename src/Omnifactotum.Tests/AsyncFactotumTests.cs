@@ -3,6 +3,8 @@ using NUnit.Framework;
 
 namespace Omnifactotum.Tests
 {
+    //// TODO [HarinezumiSama] Generate tests using T4
+
     [TestFixture]
     internal sealed class AsyncFactotumTests
     {

@@ -3,10 +3,10 @@ using NUnit.Framework;
 using NUnit.Framework.Constraints;
 using Omnifactotum.NUnit;
 
+//// ReSharper disable AssignNullToNotNullAttribute - For negative test cases
+
 namespace Omnifactotum.Tests
 {
-    //// ReSharper disable AssignNullToNotNullAttribute - For negative test cases
-
     internal abstract class SyncValueContainerTestsBase<T>
         where T : IEquatable<T>
     {

@@ -4,8 +4,6 @@ using NUnit.Framework.Constraints;
 
 namespace Omnifactotum.Tests
 {
-    [TestFixture(typeof(int), 1, int.MaxValue, TestName = "Value type")]
-    [TestFixture(typeof(string), "Some value", "Another value", TestName = "Reference type")]
     internal abstract class ValueContainerHelperTestsBase<T>
         where T : IEquatable<T>
     {

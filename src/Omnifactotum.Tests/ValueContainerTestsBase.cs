@@ -5,8 +5,6 @@ using Omnifactotum.NUnit;
 
 namespace Omnifactotum.Tests
 {
-    [TestFixture(typeof(int), 1, int.MaxValue)]
-    [TestFixture(typeof(string), "Some value", "Another value")]
     internal abstract class ValueContainerTestsBase<T>
         where T : IEquatable<T>
     {

@@ -3,6 +3,8 @@ using System.Diagnostics;
 using System.IO;
 using System.Runtime.CompilerServices;
 
+//// TODO [HarinezumiSama] Create a wrapper interface for System.Console to make possible writing unit tests
+
 namespace Omnifactotum
 {
     /// <summary>
