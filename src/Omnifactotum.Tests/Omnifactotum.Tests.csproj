@@ -64,13 +64,16 @@
     <Compile Include="Compatibility\PropertyAccessMode.cs" />
     <Compile Include="Compatibility\TestCasesBase.cs" />
     <Compile Include="ConstraintTestsBase.cs" />
+    <Compile Include="ExtensionMethods\MethodBaseTestHelper.cs" />
     <Compile Include="ExtensionMethods\OmnifactotumArrayExtensionsTests.cs" />
     <Compile Include="ExtensionMethods\OmnifactotumAssemblyExtensionsTests.cs" />
     <Compile Include="ExtensionMethods\OmnifactotumCollectionExtensionsTests.cs" />
     <Compile Include="ExtensionMethods\OmnifactotumDateTimeExtensionsTests.cs" />
     <Compile Include="ExtensionMethods\OmnifactotumDateTimeOffsetExtensionsTests.cs" />
     <Compile Include="ExtensionMethods\OmnifactotumDisposableExtensionsTests.cs" />
+    <Compile Include="ExtensionMethods\OmnifactotumMethodBaseExtensionsTests.cs" />
     <Compile Include="ExtensionMethods\OmnifactotumStringExtensionsTests.cs" />
+    <Compile Include="FakeUseHelper.cs" />
     <Compile Include="SyncValueContainerForReferenceTypeTests.cs" />
     <Compile Include="SyncValueContainerForValueTypeTests.cs" />
     <Compile Include="SyncValueContainerHelperForReferenceTypeTests.cs" />

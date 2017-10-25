@@ -3,6 +3,7 @@ using Omnifactotum.Annotations;
 
 //// Namespace is intentionally named so in order to simplify usage of extension methods
 //// ReSharper disable once CheckNamespace
+
 namespace System.Reflection
 {
     /// <summary>
@@ -23,6 +24,7 @@ namespace System.Reflection
         /// <returns>
         ///     The full name of the <paramref name="method"/>.
         /// </returns>
+        [Pure]
         public static string GetFullName([NotNull] this MethodBase method)
         {
             if (method == null)
@@ -42,6 +44,7 @@ namespace System.Reflection
         /// <returns>
         ///     The qualified name of the <paramref name="method"/>.
         /// </returns>
+        [Pure]
         public static string GetQualifiedName([NotNull] this MethodBase method)
         {
             if (method == null)
@@ -62,6 +65,7 @@ namespace System.Reflection
         /// <returns>
         ///     The string representation of the method signature.
         /// </returns>
+        [Pure]
         public static string GetSignature([NotNull] this MethodBase method)
         {
             if (method == null)
@@ -82,6 +86,7 @@ namespace System.Reflection
         /// <returns>
         ///     The string representation of the method signature.
         /// </returns>
+        [Pure]
         public static string GetFullSignature([NotNull] this MethodBase method)
         {
             if (method == null)
@@ -92,10 +97,7 @@ namespace System.Reflection
             return GetSignatureInternal(method, true);
         }
 
-        private static Type GetMethodType([NotNull] MethodBase method)
-        {
-            return method.DeclaringType ?? method.ReflectedType;
-        }
+        private static Type GetMethodType([NotNull] MethodBase method) => method.DeclaringType ?? method.ReflectedType;
 
         private static string GetSignatureInternal([NotNull] MethodBase method, bool fullNames)
         {
@@ -103,35 +105,35 @@ namespace System.Reflection
 
             string GetTypeName(Type type) => GetTypeNameInternal(type, fullNames);
 
-            //// MethodInfo specific code
+            if (method is MethodInfo methodInfo)
             {
-                if (method is MethodInfo methodInfo)
-                {
-                    resultBuilder.Append(GetTypeName(methodInfo.ReturnType));
-                    resultBuilder.Append(" ");
-                }
+                resultBuilder.Append(GetTypeName(methodInfo.ReturnType));
+                resultBuilder.Append(" ");
             }
 
             resultBuilder.Append(GetTypeName(GetMethodType(method)));
             resultBuilder.Append(Type.Delimiter);
             resultBuilder.Append(method.Name);
 
-            var genericArguments = method.GetGenericArguments();
-            if (genericArguments.Length > 0)
+            if (method.IsGenericMethod || method.IsGenericMethodDefinition)
             {
-                resultBuilder.Append("<");
-
-                for (var index = 0; index < genericArguments.Length; index++)
+                var genericArguments = method.GetGenericArguments();
+                if (genericArguments.Length > 0)
                 {
-                    if (index > 0)
+                    resultBuilder.Append("<");
+
+                    for (var index = 0; index < genericArguments.Length; index++)
                     {
-                        resultBuilder.Append(", ");
+                        if (index > 0)
+                        {
+                            resultBuilder.Append(", ");
+                        }
+
+                        resultBuilder.Append(GetTypeName(genericArguments[index]));
                     }
 
-                    resultBuilder.Append(GetTypeName(genericArguments[index]));
+                    resultBuilder.Append(">");
                 }
-
-                resultBuilder.Append(">");
             }
 
             var parameters = method.GetParameters();
@@ -145,16 +147,22 @@ namespace System.Reflection
                 }
 
                 var parameter = parameters[index];
+                var parameterType = parameter.ParameterType;
+
                 if (parameter.IsOut)
                 {
                     resultBuilder.Append("out ");
                 }
-                else if (parameter.ParameterType.IsByRef)
+                else if (parameterType.IsByRef)
                 {
                     resultBuilder.Append("ref ");
                 }
 
-                resultBuilder.Append(GetTypeName(parameter.ParameterType));
+                var actualParameterType = parameterType.IsByRef && parameterType.HasElementType
+                    ? parameterType.GetElementType()
+                    : parameterType;
+
+                resultBuilder.Append(GetTypeName(actualParameterType));
             }
 
             resultBuilder.Append(")");
@@ -163,11 +171,9 @@ namespace System.Reflection
         }
 
         private static string GetTypeNameInternal([NotNull] Type type, bool fullName)
-        {
-            return type == VoidType
+            => type == VoidType
                 ? VoidTypeName
                 : (fullName ? type.GetFullName() : OmnifactotumTypeExtensions.GetShortTypeNameInternal(type));
-        }
 
         private static string GetNameInternal([NotNull] MethodBase method, bool fullName)
         {

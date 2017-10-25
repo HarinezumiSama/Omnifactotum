@@ -255,11 +255,6 @@ namespace System
         /// </returns>
         internal static string GetShortTypeNameInternal(Type type)
         {
-            if (string.IsNullOrEmpty(type.FullName))
-            {
-                return type.Name;
-            }
-
             if (type.IsNullable())
             {
                 var underlyingTypeName = GetShortTypeNameInternal(Nullable.GetUnderlyingType(type));
@@ -311,6 +306,11 @@ namespace System
                 return type.Name;
             }
 
+            if (string.IsNullOrEmpty(type.FullName))
+            {
+                return type.Name;
+            }
+
             var result = CSharpCodeProviderInstance.GetTypeOutput(new CodeTypeReference(type));
             if (result == type.FullName)
             {
@@ -347,25 +347,6 @@ namespace System
                 genericParameters = type.GetGenericArguments().ToList();
             }
 
-            if (type.DeclaringType == null)
-            {
-                if (fullName && !type.Namespace.IsNullOrEmpty())
-                {
-                    resultBuilder.Append(type.Namespace);
-                    resultBuilder.Append(Type.Delimiter);
-                }
-            }
-            else if (!type.IsGenericParameter)
-            {
-                GetNameInternal(
-                    resultBuilder,
-                    type.DeclaringType,
-                    fullName,
-                    genericParameters,
-                    ref genericParameterOffset);
-                resultBuilder.Append(Type.Delimiter);
-            }
-
             if (type.HasElementType)
             {
                 var elementType = type.GetElementType().EnsureNotNull();
@@ -397,6 +378,25 @@ namespace System
                 }
             }
 
+            if (type.DeclaringType == null)
+            {
+                if (fullName && !type.Namespace.IsNullOrEmpty())
+                {
+                    resultBuilder.Append(type.Namespace);
+                    resultBuilder.Append(Type.Delimiter);
+                }
+            }
+            else if (!type.IsGenericParameter)
+            {
+                GetNameInternal(
+                    resultBuilder,
+                    type.DeclaringType,
+                    fullName,
+                    genericParameters,
+                    ref genericParameterOffset);
+                resultBuilder.Append(Type.Delimiter);
+            }
+
             if (!fullName && (type.IsNullable() || !type.IsGenericType && !type.IsGenericTypeDefinition))
             {
                 var shortTypeName = GetShortTypeNameInternal(type);
@@ -419,7 +419,7 @@ namespace System
 
             if (genericParameters == null)
             {
-                throw new InvalidOperationException();
+                throw new InvalidOperationException("INTERNAL ERROR: Generic parameter list is not initialized.");
             }
 
             resultBuilder.Append('<');
