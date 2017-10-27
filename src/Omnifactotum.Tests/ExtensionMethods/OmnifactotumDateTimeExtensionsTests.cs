@@ -3,7 +3,7 @@ using NUnit.Framework;
 
 namespace Omnifactotum.Tests.ExtensionMethods
 {
-    [TestFixture]
+    [TestFixture(TestOf = typeof(OmnifactotumDateTimeExtensions))]
     internal sealed class OmnifactotumDateTimeExtensionsTests
     {
         [Test]
@@ -12,9 +12,9 @@ namespace Omnifactotum.Tests.ExtensionMethods
         [TestCase(DateTimeKind.Utc)]
         public void TestToFixedString(DateTimeKind kind)
         {
-            var dateTime = new DateTime(2001, 2, 3, 7, 8, 9, 123);
+            var value = new DateTime(2001, 2, 3, 7, 8, 9, 123);
 
-            var actualResult = dateTime.ToFixedString();
+            var actualResult = value.ToFixedString();
             Assert.That(actualResult, Is.EqualTo("2001-02-03 07:08:09"));
         }
 
@@ -24,9 +24,9 @@ namespace Omnifactotum.Tests.ExtensionMethods
         [TestCase(DateTimeKind.Utc)]
         public void TestToPreciseFixedString(DateTimeKind kind)
         {
-            var dateTime = new DateTime(2001, 2, 3, 7, 8, 9, 123);
+            var value = new DateTime(2001, 2, 3, 7, 8, 9, 123);
 
-            var actualResult = dateTime.ToPreciseFixedString();
+            var actualResult = value.ToPreciseFixedString();
             Assert.That(actualResult, Is.EqualTo("2001-02-03 07:08:09.1230000"));
         }
     }
