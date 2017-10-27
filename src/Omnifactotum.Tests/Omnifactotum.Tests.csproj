@@ -73,6 +73,7 @@
     <Compile Include="ExtensionMethods\OmnifactotumDisposableExtensionsTests.cs" />
     <Compile Include="ExtensionMethods\OmnifactotumExceptionExtensionsTests.cs" />
     <Compile Include="ExtensionMethods\OmnifactotumMethodBaseExtensionsTests.cs" />
+    <Compile Include="ExtensionMethods\OmnifactotumNullableBooleanExtensionsTests.cs" />
     <Compile Include="ExtensionMethods\OmnifactotumStringExtensionsTests.cs" />
     <Compile Include="FakeUseHelper.cs" />
     <Compile Include="SyncValueContainerForReferenceTypeTests.cs" />
