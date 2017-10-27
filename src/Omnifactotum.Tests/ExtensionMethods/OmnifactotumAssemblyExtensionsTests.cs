@@ -1,5 +1,6 @@
 ﻿using System;
 using System.CodeDom.Compiler;
+using System.Diagnostics.CodeAnalysis;
 using System.Reflection;
 using System.Reflection.Emit;
 using Microsoft.CSharp;
@@ -8,29 +9,32 @@ using Omnifactotum.NUnit;
 
 namespace Omnifactotum.Tests.ExtensionMethods
 {
-    //// ReSharper disable AssignNullToNotNullAttribute - Intentionally for tests
     [TestFixture]
     internal sealed class OmnifactotumAssemblyExtensionsTests
     {
         [Test]
-        public void TestGetLocalPathUsingNullAssemblyNegative()
-        {
-            Assert.That(() => ((Assembly)null).GetLocalPath(), Throws.TypeOf<ArgumentNullException>());
-        }
+        public void TestGetLocalPathWhenLocalAssemblyIsPassedThenSucceeds()
+            => Assert.That(GetType().Assembly.GetLocalPath(), Is.Not.Null.And.Not.Empty);
 
         [Test]
-        public void TestGetLocalPathOfInMemoryAssemblyNegative()
+        [SuppressMessage("ReSharper", "AssignNullToNotNullAttribute")]
+        public void TestGetLocalPathWhenNullAssemblyIsPassedThenThrows()
+            => Assert.That(() => ((Assembly)null).GetLocalPath(), Throws.TypeOf<ArgumentNullException>());
+
+        [Test]
+        public void TestGetLocalPathWhenInMemoryAssemblyIsPassedThenThrows()
         {
             var codeProvider = new CSharpCodeProvider();
             var compilerResults = codeProvider.CompileAssemblyFromSource(
                 new CompilerParameters { GenerateInMemory = true });
+
             var assembly = compilerResults.CompiledAssembly.AssertNotNull();
 
-            Assert.That(() => assembly.GetLocalPath(), Throws.TypeOf<InvalidOperationException>());
+            Assert.That(() => assembly.GetLocalPath(), Throws.TypeOf<ArgumentException>());
         }
 
         [Test]
-        public void TestGetLocalPathOfDynamicAssemblyNegative()
+        public void TestGetLocalPathWhenDynamicAssemblyIsPassedThenThrows()
         {
             var assemblyBuilder = AppDomain.CurrentDomain.DefineDynamicAssembly(
                 new AssemblyName("Test_" + Guid.NewGuid().ToString("N")),

@@ -1,8 +1,7 @@
-﻿using System.Globalization;
-using Omnifactotum.Annotations;
+﻿using Omnifactotum.Annotations;
 
-//// Namespace is intentionally named so in order to simplify usage of extension methods
-//// ReSharper disable once CheckNamespace
+//// ReSharper disable once CheckNamespace - Namespace is intentionally named so in order to simplify usage of extension methods
+
 namespace System.Reflection
 {
     /// <summary>
@@ -19,7 +18,10 @@ namespace System.Reflection
         /// <returns>
         ///     The local path of the specified assembly.
         /// </returns>
-        /// <exception cref="System.InvalidOperationException">
+        /// <exception cref="ArgumentNullException">
+        ///     The specified assembly is <c>null</c>.
+        /// </exception>
+        /// <exception cref="ArgumentException">
         ///     The specified assembly does not have a local path.
         /// </exception>
         public static string GetLocalPath([NotNull] this Assembly assembly)
@@ -32,34 +34,27 @@ namespace System.Reflection
             if (assembly.IsDynamic)
             {
                 throw new ArgumentException(
-                    string.Format(
-                        CultureInfo.InvariantCulture,
-                        "The assembly {{ {0} }} is dynamic.",
-                        assembly.FullName),
+                    $@"The assembly {{ {assembly.FullName} }} has no local path because it is dynamic.",
                     nameof(assembly));
             }
 
-            if (string.IsNullOrEmpty(assembly.Location))
+            ArgumentException CreateNoLocalPathException()
+                => new ArgumentException(
+                    $@"The assembly {{ {assembly.FullName} }} does not have a local path.",
+                    nameof(assembly));
+
+            if (string.IsNullOrEmpty(assembly.Location) || string.IsNullOrEmpty(assembly.CodeBase))
             {
-                throw CreateNoLocalPathException(assembly);
+                throw CreateNoLocalPathException();
             }
 
             var uri = new Uri(assembly.CodeBase);
             if (!uri.IsFile)
             {
-                throw CreateNoLocalPathException(assembly);
+                throw CreateNoLocalPathException();
             }
 
             return uri.LocalPath.EnsureNotNull();
-        }
-
-        private static InvalidOperationException CreateNoLocalPathException(Assembly assembly)
-        {
-            return new InvalidOperationException(
-                string.Format(
-                    CultureInfo.InvariantCulture,
-                    "The assembly {{ {0} }} does not have a local path.",
-                    assembly.FullName));
         }
     }
 }
