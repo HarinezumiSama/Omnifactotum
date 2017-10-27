@@ -4,7 +4,8 @@ using System.Threading;
 //// Namespace is intentionally named so in order to simplify usage of extension methods
 using Omnifactotum.Annotations;
 
-//// ReSharper disable once CheckNamespace
+//// ReSharper disable CheckNamespace - Namespace is intentionally named so in order to simplify usage of extension methods
+
 namespace System
 {
     /// <summary>
@@ -23,11 +24,9 @@ namespace System
         /// </returns>
         [DebuggerNonUserCode]
         public static bool IsFatal([CanBeNull] this Exception exception)
-        {
-            return exception is ThreadAbortException
+            => exception is ThreadAbortException
                 || exception is OperationCanceledException
                 || exception is OutOfMemoryException
                 || exception is StackOverflowException;
-        }
     }
 }
