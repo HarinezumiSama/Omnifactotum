@@ -75,6 +75,7 @@
     <Compile Include="ExtensionMethods\OmnifactotumMethodBaseExtensionsTests.cs" />
     <Compile Include="ExtensionMethods\OmnifactotumNullableBooleanExtensionsTests.cs" />
     <Compile Include="ExtensionMethods\OmnifactotumStringExtensionsTests.cs" />
+    <Compile Include="ExtensionMethods\OmnifactotumTypeExtensionsTests.cs" />
     <Compile Include="FakeUseHelper.cs" />
     <Compile Include="SyncValueContainerForReferenceTypeTests.cs" />
     <Compile Include="SyncValueContainerForValueTypeTests.cs" />
@@ -126,6 +127,7 @@
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
+    <EmbeddedResource Include="ExtensionMethods\OmnifactotumTypeExtensionsTests.TestResource.txt" />
     <Content Include="Resources\ExpectedComplexObjectAllFlagsToPropertyString.txt" />
     <Content Include="Resources\ExpectedComplexObjectDefaultOptionsToPropertyString.txt" />
     <Content Include="Resources\ExpectedComplexObjectMaxOneItemToPropertyString.txt" />
