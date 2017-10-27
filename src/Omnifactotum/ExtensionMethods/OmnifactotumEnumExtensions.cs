@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.ComponentModel;
+using System.Globalization;
 using System.Linq;
 using Omnifactotum.Annotations;
 
@@ -13,6 +14,8 @@ namespace System
     /// </summary>
     public static class OmnifactotumEnumExtensions
     {
+        private const string EnumValueSeparator = ", ";
+
         /// <summary>
         ///     The type name format.
         /// </summary>
@@ -27,10 +30,7 @@ namespace System
         /// <returns>
         ///     The name of the specified enumeration value.
         /// </returns>
-        public static string GetName([NotNull] this Enum value)
-        {
-            return GetNameInternal(value, null);
-        }
+        public static string GetName([NotNull] this Enum value) => value.GetName(EnumNameMode.Short);
 
         /// <summary>
         ///     Gets the qualified name of the specified enumeration value in the following form:
@@ -42,10 +42,7 @@ namespace System
         /// <returns>
         ///     The qualified name of the specified enumeration value.
         /// </returns>
-        public static string GetQualifiedName([NotNull] this Enum value)
-        {
-            return GetNameInternal(value, false);
-        }
+        public static string GetQualifiedName([NotNull] this Enum value) => value.GetName(EnumNameMode.Qualified);
 
         /// <summary>
         ///     Gets the full name of the specified enumeration value in the following form:
@@ -57,10 +54,7 @@ namespace System
         /// <returns>
         ///     The full name of the specified enumeration value.
         /// </returns>
-        public static string GetFullName([NotNull] this Enum value)
-        {
-            return GetNameInternal(value, true);
-        }
+        public static string GetFullName([NotNull] this Enum value) => value.GetName(EnumNameMode.Full);
 
         /// <summary>
         ///     Determines whether the specified enumeration value contains all the specified flags set.
@@ -216,14 +210,7 @@ namespace System
         ///     <paramref name="enumerationValue"/> is <c>null</c>.
         /// </exception>
         public static bool IsDefined([NotNull] this Enum enumerationValue)
-        {
-            if (enumerationValue == null)
-            {
-                throw new ArgumentNullException(nameof(enumerationValue));
-            }
-
-            return Enum.IsDefined(enumerationValue.GetType(), enumerationValue);
-        }
+            => IsDefinedInternal(enumerationValue ?? throw new ArgumentNullException(nameof(enumerationValue)));
 
         /// <summary>
         ///     Ensures that the specified enumeration value is defined in the corresponding enumeration and
@@ -245,12 +232,11 @@ namespace System
                 throw new ArgumentNullException(nameof(enumerationValue));
             }
 
-            if (!IsDefined(enumerationValue))
+            if (!IsDefinedInternal(enumerationValue))
             {
                 throw new InvalidEnumArgumentException(
-                    nameof(enumerationValue),
-                    (int)(object)enumerationValue,
-                    enumerationValue.GetType());
+                    $@"The value {enumerationValue:D} is not defined in the enumeration {
+                        enumerationValue.GetType().GetFullName().ToUIString()}.");
             }
         }
 
@@ -299,31 +285,68 @@ namespace System
                 $@"The operation for the enumeration value {enumerationValue.GetQualifiedName().ToUIString()} is not supported.");
         }
 
-        /// <summary>
-        ///     Gets the name of the specified enumeration value.
-        /// </summary>
-        /// <param name="value">
-        ///     The enumeration value.
-        /// </param>
-        /// <param name="fullEnumName">
-        ///     Specifies whether to get the full name of the enumeration value.
-        /// </param>
-        /// <returns>
-        ///     The name of the enumeration value.
-        /// </returns>
-        private static string GetNameInternal([NotNull] Enum value, bool? fullEnumName)
+        private static IEnumerable<Enum> DecomposeEnumFlags(this Enum enumValue)
+        {
+            var castEnumValue = enumValue.ToUlongInternal();
+            var enumType = enumValue.GetType();
+
+            if (castEnumValue == 0)
+            {
+                return new List<Enum> { enumValue };
+            }
+
+            var values = Enum.GetValues(enumType);
+
+            var result = new List<Enum>(values.Length);
+            foreach (var value in values)
+            {
+                var castValue = value.ToUlongInternal();
+                if (castValue != 0 && (castEnumValue & castValue) == castValue)
+                {
+                    result.Add((Enum)Enum.ToObject(enumType, castValue));
+                    castEnumValue &= ~castValue;
+                }
+            }
+
+            if (castEnumValue != 0)
+            {
+                return new List<Enum> { enumValue };
+            }
+
+            return result;
+        }
+
+        private static string GetName([NotNull] this Enum value, EnumNameMode mode)
         {
             if (value == null)
             {
                 throw new ArgumentNullException(nameof(value));
             }
 
-            var enumType = value.GetType();
-            var enumValueName = Enum.GetName(enumType, value) ?? value.ToString();
+            return value.GetType().IsDefined(typeof(FlagsAttribute), false)
+                ? value.DecomposeEnumFlags().Select(flag => flag.GetSingleValueName(mode)).Join(EnumValueSeparator)
+                : value.GetSingleValueName(mode);
+        }
 
-            return fullEnumName.HasValue
-                ? string.Format(NameFormat, fullEnumName.Value ? enumType.FullName : enumType.Name, enumValueName)
-                : enumValueName;
+        private static string GetSingleValueName([NotNull] this Enum value, EnumNameMode mode)
+        {
+            var enumType = value.GetType();
+            var enumValueName = value.ToString();
+
+            switch (mode)
+            {
+                case EnumNameMode.Short:
+                    return enumValueName;
+
+                case EnumNameMode.Qualified:
+                    return string.Format(NameFormat, enumType.Name, enumValueName);
+
+                case EnumNameMode.Full:
+                    return string.Format(NameFormat, enumType.GetFullName(), enumValueName);
+
+                default:
+                    throw mode.CreateEnumValueNotImplementedException();
+            }
         }
 
         /// <summary>
@@ -368,6 +391,42 @@ namespace System
                 var andedValue = Convert.ToInt64(enumerationValue) & castFlags;
                 return all ? andedValue == castFlags : andedValue != 0;
             }
+        }
+
+        private static bool IsDefinedInternal([NotNull] Enum enumerationValue)
+            => Enum.IsDefined(enumerationValue.GetType(), enumerationValue);
+
+        private static ulong ToUlongInternal(this object value)
+        {
+            var typeCode = Convert.GetTypeCode(value);
+
+            //// ReSharper disable once SwitchStatementMissingSomeCases
+            switch (typeCode)
+            {
+                case TypeCode.Boolean:
+                case TypeCode.Char:
+                case TypeCode.Byte:
+                case TypeCode.UInt16:
+                case TypeCode.UInt32:
+                case TypeCode.UInt64:
+                    return Convert.ToUInt64(value, CultureInfo.InvariantCulture);
+
+                case TypeCode.SByte:
+                case TypeCode.Int16:
+                case TypeCode.Int32:
+                case TypeCode.Int64:
+                    return (ulong)Convert.ToInt64(value, CultureInfo.InvariantCulture);
+
+                default:
+                    throw typeCode.CreateEnumValueNotSupportedException();
+            }
+        }
+
+        private enum EnumNameMode
+        {
+            Short,
+            Qualified,
+            Full
         }
     }
 }

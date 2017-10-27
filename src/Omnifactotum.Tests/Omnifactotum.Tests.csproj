@@ -71,6 +71,7 @@
     <Compile Include="ExtensionMethods\OmnifactotumDateTimeExtensionsTests.cs" />
     <Compile Include="ExtensionMethods\OmnifactotumDateTimeOffsetExtensionsTests.cs" />
     <Compile Include="ExtensionMethods\OmnifactotumDisposableExtensionsTests.cs" />
+    <Compile Include="ExtensionMethods\OmnifactotumEnumExtensionsTests.cs" />
     <Compile Include="ExtensionMethods\OmnifactotumExceptionExtensionsTests.cs" />
     <Compile Include="ExtensionMethods\OmnifactotumMethodBaseExtensionsTests.cs" />
     <Compile Include="ExtensionMethods\OmnifactotumNullableBooleanExtensionsTests.cs" />
