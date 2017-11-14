@@ -1,7 +1,7 @@
 ﻿using Omnifactotum.Annotations;
 
-//// Namespace is intentionally named so in order to simplify usage of extension methods
-//// ReSharper disable once CheckNamespace
+//// ReSharper disable once CheckNamespace - Namespace is intentionally named so in order to simplify usage of extension methods
+
 namespace System
 {
     /// <summary>
@@ -25,9 +25,7 @@ namespace System
         /// </returns>
         public static int CombineHashCodeValues(this int previousHashCode, int nextHashCode)
         {
-            return nextHashCode == 0
-                ? previousHashCode
-                : unchecked(previousHashCode * HashCodeMagicMultiplier) ^ nextHashCode;
+            return unchecked(previousHashCode * HashCodeMagicMultiplier) ^ nextHashCode;
         }
 
         /// <summary>
@@ -56,8 +54,8 @@ namespace System
         }
 
         /// <summary>
-        ///     Combines a hash code obtained at a previous step and a hash code of the specified instance
-        ///     into a new hash code.
+        ///     Combines a hash code obtained at a previous step and a hash code of the specified
+        ///     instance into a new hash code.
         /// </summary>
         /// <typeparam name="TNext">
         ///     The type of an instance which is considered as next.
@@ -69,8 +67,8 @@ namespace System
         ///     A certain next instance to get the hash code from.
         /// </param>
         /// <returns>
-        ///     A new hash code produced from a hash code obtained at a previous step and a hash code of
-        ///     the specified instance.
+        ///     A new hash code produced from a hash code obtained at a previous step and a hash code
+        ///     of the specified instance.
         /// </returns>
         public static int CombineHashCodes<TNext>(this int previousHashCode, [CanBeNull] TNext next)
         {
