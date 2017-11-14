@@ -292,7 +292,7 @@ namespace System
 
             if (castEnumValue == 0)
             {
-                return new List<Enum> { enumValue };
+                return new[] { enumValue };
             }
 
             var values = Enum.GetValues(enumType);
@@ -310,7 +310,7 @@ namespace System
 
             if (castEnumValue != 0)
             {
-                return new List<Enum> { enumValue };
+                return new[] { enumValue };
             }
 
             return result;
