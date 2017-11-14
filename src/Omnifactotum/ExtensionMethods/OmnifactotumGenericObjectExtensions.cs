@@ -224,7 +224,7 @@ namespace System
         public static List<T> AsList<T>([CanBeNull] this T value) => new List<T> { value };
 
         /// <summary>
-        ///     Gets a strongly-typed collection containing the specified value as its sole element.
+        ///     Creates a strongly-typed collection containing the specified value as its sole element.
         /// </summary>
         /// <typeparam name="T">
         ///     The type of the input value and elements of the resulting collection.
@@ -259,7 +259,7 @@ namespace System
         ///     <paramref name="getDefault"/> method.
         /// </returns>
         [NotNull]
-        public static T AvoidNull<T>([CanBeNull] this T source, Func<T> getDefault)
+        public static T AvoidNull<T>([CanBeNull] this T source, [NotNull] Func<T> getDefault)
             where T : class
         {
             if (getDefault == null)
