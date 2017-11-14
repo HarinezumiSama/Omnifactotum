@@ -7,8 +7,8 @@ using System.Reflection;
 namespace Omnifactotum
 {
     /// <summary>
-    ///     Represents the options used by
-    ///     the <see cref="Factotum.ToPropertyString{T}(T,ToPropertyStringOptions)"/> method.
+    ///     Represents the options used by the
+    ///     <see cref="OmnifactotumGenericObjectExtensions.ToPropertyString{T}(T,ToPropertyStringOptions)"/> method.
     /// </summary>
     public sealed class ToPropertyStringOptions : ICloneable
     {

@@ -1,1 +1,1 @@
-﻿Key = {(Omnifactotum.Tests.FactotumTests+ToPropertyStringCases, System.Int32[])}, Value = {((Omnifactotum.Tests.FactotumTests+ToPropertyStringCases, System.Int32[]), Omnifactotum.Tests.FactotumTests+ToPropertyStringCases)}
+﻿Key = {(Omnifactotum.Tests.ExtensionMethods.OmnifactotumGenericObjectExtensionsTests+ToPropertyStringCases, System.Int32[])}, Value = {((Omnifactotum.Tests.ExtensionMethods.OmnifactotumGenericObjectExtensionsTests+ToPropertyStringCases, System.Int32[]), Omnifactotum.Tests.ExtensionMethods.OmnifactotumGenericObjectExtensionsTests+ToPropertyStringCases)}

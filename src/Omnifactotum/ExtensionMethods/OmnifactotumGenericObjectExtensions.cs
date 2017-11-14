@@ -1,11 +1,15 @@
-﻿using System.Collections.Generic;
+﻿using System.Collections;
+using System.Collections.Generic;
 using System.Diagnostics;
 using System.Globalization;
+using System.Linq;
+using System.Reflection;
+using System.Runtime.InteropServices;
+using System.Text;
 using Omnifactotum;
 using Omnifactotum.Annotations;
 
-//// Namespace is intentionally named so in order to simplify usage of extension methods
-//// ReSharper disable once CheckNamespace
+//// ReSharper disable once CheckNamespace - Namespace is intentionally named so in order to simplify usage of extension methods
 
 namespace System
 {
@@ -14,6 +18,45 @@ namespace System
     /// </summary>
     public static class OmnifactotumGenericObjectExtensions
     {
+        private const string NullString = "<null>";
+
+        private const string ItemSeparator = ", ";
+        private const string PropertyNameValueSeparator = " = ";
+        private const string CollectionElementsPropertyName = "Elements";
+        private const string CollectionElementsOpeningBrace = "[";
+        private const string CollectionElementsClosingBrace = "]";
+        private const string ComplexObjectOpeningBrace = "{";
+        private const string ComplexObjectClosingBrace = "}";
+
+        /// <summary>
+        ///     The pointer string format.
+        /// </summary>
+        internal static readonly string PointerStringFormat = $@"0x{{0:X{Marshal.SizeOf(typeof(IntPtr)) * 2}}}";
+
+        private static readonly MethodInfo ToPropertyStringInternalMethodDefinition =
+            new ToPropertyStringInternalMethod(ToPropertyStringInternal).Method.GetGenericMethodDefinition();
+
+        private static readonly WeakReferenceBasedCache<Type, FieldInfo[]> ContentFieldsCache =
+            new WeakReferenceBasedCache<Type, FieldInfo[]>(
+                t => t.GetFields(BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic));
+
+        [ThreadStatic]
+        private static HashSet<object> _toPropertyStringObjectsBeingProcessed;
+
+        [ThreadStatic]
+        private static StringBuilder _toPropertyStringResultBuilder;
+
+        [ThreadStatic]
+        private static HashSet<PairReferenceHolder> _assertEqualityByContentsObjectsBeingProcessed;
+
+        private delegate void ToPropertyStringInternalMethod(
+            object obj,
+            bool isRoot,
+            ToPropertyStringOptions options,
+            Func<Type, PropertyInfo[]> getProperties,
+            StringBuilder resultBuilder,
+            int recursionLevel);
+
         /// <summary>
         ///     Returns the specified value if is not <c>null</c>;
         ///     otherwise, throws <see cref="ArgumentNullException"/>.
@@ -426,10 +469,46 @@ namespace System
         ///     A string representing the properties of the specified object.
         /// </returns>
         public static string ToPropertyString<T>([CanBeNull] this T obj, [CanBeNull] ToPropertyStringOptions options)
-            => Factotum.ToPropertyString(obj, options);
+        {
+            var actualOptions = options ?? new ToPropertyStringOptions();
+
+            var bindingFlags = BindingFlags.Instance | BindingFlags.Public;
+            if (actualOptions.IncludeNonPublicMembers)
+            {
+                bindingFlags |= BindingFlags.NonPublic;
+            }
+
+            PropertyInfo[] GetProperties(Type type)
+            {
+                var getPropertiesQuery = type
+                    .GetProperties(bindingFlags)
+                    .Where(item => item.CanRead && !item.GetIndexParameters().Any());
+                if (actualOptions.SortMembersAlphabetically)
+                {
+                    getPropertiesQuery = getPropertiesQuery.OrderBy(item => item.Name);
+                }
+
+                return getPropertiesQuery.ToArray();
+            }
+
+            if (_toPropertyStringResultBuilder == null)
+            {
+                _toPropertyStringResultBuilder = new StringBuilder(128);
+            }
+            else
+            {
+                _toPropertyStringResultBuilder.Clear();
+            }
+
+            ToPropertyStringInternal(obj, true, actualOptions, GetProperties, _toPropertyStringResultBuilder, 0);
+
+            var result = _toPropertyStringResultBuilder.ToString();
+            _toPropertyStringResultBuilder.Clear();
+            return result;
+        }
 
         /// <summary>
-        ///     Gets a string representing the properties of the specified object.
+        ///     Gets a string representing the properties of the specified object using the default options.
         /// </summary>
         /// <typeparam name="T">
         ///     The type of the object to convert.
@@ -440,7 +519,7 @@ namespace System
         /// <returns>
         ///     A string representing the properties of the specified object.
         /// </returns>
-        public static string ToPropertyString<T>([CanBeNull] this T obj) => Factotum.ToPropertyString(obj, null);
+        public static string ToPropertyString<T>([CanBeNull] this T obj) => ToPropertyString(obj, null);
 
         /// <summary>
         ///     Determines if the contents of the specified object are equal to the contents of another specified
@@ -464,7 +543,7 @@ namespace System
         ///     <c>true</c> if the contents of the two specified objects are equal; otherwise, <c>false</c>.
         /// </returns>
         public static bool IsEqualByContentsTo<T>([CanBeNull] this T obj, [CanBeNull] T other)
-            => Factotum.AreEqualByContents(obj, other);
+            => AreEqualByContentsInternal(obj, other);
 
         /// <summary>
         ///     Computes the specified predicate against the specified reference type value and
@@ -597,5 +676,437 @@ namespace System
             [NotNull] Func<TInput, TOutput> transform)
             where TInput : class
             => Morph(input, transform, default(TOutput));
+
+        private static bool IsSimpleTypeInternal([NotNull] this Type type)
+        {
+            if (type == null)
+            {
+                throw new ArgumentNullException(nameof(type));
+            }
+
+            return type.IsPrimitive
+                || type.IsEnum
+                || type.IsPointer
+                || type == typeof(string)
+                || type == typeof(decimal)
+                || type == typeof(Pointer)
+                || type == typeof(DateTime)
+                || type == typeof(DateTimeOffset);
+        }
+
+        [DebuggerNonUserCode]
+        private static void ToPropertyStringInternal<T>(
+            T obj,
+            bool isRoot,
+            ToPropertyStringOptions options,
+            Func<Type, PropertyInfo[]> getProperties,
+            StringBuilder resultBuilder,
+            int recursionLevel)
+        {
+            var isToPropertyStringObjectsBeingProcessedCreated = false;
+            var isObjectAddedToBeingProcessed = false;
+            var isBraceOpen = false;
+            try
+            {
+                if (_toPropertyStringObjectsBeingProcessed == null)
+                {
+                    isToPropertyStringObjectsBeingProcessedCreated = true;
+                    _toPropertyStringObjectsBeingProcessed = new HashSet<object>(
+                        ByReferenceEqualityComparer<object>.Instance);
+                }
+
+                void OpenBrace()
+                {
+                    if (!isBraceOpen && !isRoot)
+                    {
+                        resultBuilder.Append(ComplexObjectOpeningBrace);
+                        isBraceOpen = true;
+                    }
+                }
+
+                var nextRecursionLevel = recursionLevel + 1;
+
+                var type = obj.GetTypeSafely();
+
+                string RenderActualType() => $@"{type.GetQualifiedName()} :: ";
+
+                var shouldRenderActualType = false;
+                if (isRoot)
+                {
+                    if (options.RenderRootActualType)
+                    {
+                        shouldRenderActualType = true;
+                    }
+                }
+                else
+                {
+                    if (options.RenderActualType)
+                    {
+                        shouldRenderActualType = true;
+                    }
+                }
+
+                if (shouldRenderActualType)
+                {
+                    OpenBrace();
+                    resultBuilder.Append(RenderActualType());
+                }
+
+                if (ReferenceEquals(obj, null))
+                {
+                    resultBuilder.Append(NullString);
+                    return;
+                }
+
+                var isSimpleType = type.IsSimpleTypeInternal()
+                    || typeof(Type).IsAssignableFrom(type)
+                    || typeof(Assembly).IsAssignableFrom(type)
+                    || typeof(Delegate).IsAssignableFrom(type);
+
+                if (!isSimpleType && _toPropertyStringObjectsBeingProcessed.Contains(obj))
+                {
+                    resultBuilder.AppendFormat(
+                        "{0} {1}<- {2}",
+                        ComplexObjectOpeningBrace,
+                        shouldRenderActualType ? string.Empty : RenderActualType(),
+                        ComplexObjectClosingBrace);
+                    return;
+                }
+
+                if (!type.IsValueType || !typeof(T).IsValueType)
+                {
+                    _toPropertyStringObjectsBeingProcessed.Add(obj);
+                    isObjectAddedToBeingProcessed = true;
+                }
+
+                if (isSimpleType)
+                {
+                    ToPropertyStringInternalForSimpleType(obj, type, resultBuilder);
+                    return;
+                }
+
+                OpenBrace();
+
+                if (!isRoot && !options.RenderComplexProperties)
+                {
+                    resultBuilder.Append(obj.ToStringSafelyInvariant());
+                    return;
+                }
+
+                if (recursionLevel > options.MaxRecursionLevel)
+                {
+                    resultBuilder.Append("<Max recursion level reached>");
+                    return;
+                }
+
+                var propertySeparatorNeeded = false;
+
+                if (obj is IEnumerable enumerable)
+                {
+                    propertySeparatorNeeded = true;
+
+                    ToPropertyStringInternalForEnumerableCollection(
+                        enumerable,
+                        type,
+                        options,
+                        getProperties,
+                        resultBuilder,
+                        nextRecursionLevel);
+                }
+
+                var propertyInfos = getProperties(type);
+
+                foreach (var propertyInfo in propertyInfos)
+                {
+                    if (propertySeparatorNeeded)
+                    {
+                        resultBuilder.Append(ItemSeparator);
+                    }
+
+                    propertySeparatorNeeded = true;
+                    resultBuilder.Append(propertyInfo.Name);
+                    if (options.RenderMemberType)
+                    {
+                        resultBuilder.AppendFormat(":{0}", propertyInfo.PropertyType.GetQualifiedName());
+                    }
+
+                    resultBuilder.Append(PropertyNameValueSeparator);
+
+                    object propertyValue;
+                    try
+                    {
+                        propertyValue = propertyInfo.GetValue(obj, null);
+                    }
+                    catch (Exception ex)
+                    {
+                        resultBuilder.AppendFormat(
+                            "{{ Error getting property value: [{0}] {1}) }}",
+                            ex.GetType().Name,
+                            (ex.GetBaseException() ?? ex).Message);
+
+                        continue;
+                    }
+
+                    var method = ToPropertyStringInternalMethodDefinition.MakeGenericMethod(
+                        propertyInfo.PropertyType.IsPointer ? typeof(object) : propertyInfo.PropertyType);
+
+                    var parameters =
+                        new[]
+                        {
+                            propertyValue,
+                            false,
+                            options,
+                            getProperties,
+                            resultBuilder,
+                            nextRecursionLevel
+                        };
+
+                    method.Invoke(null, parameters);
+                }
+            }
+            finally
+            {
+                if (isBraceOpen)
+                {
+                    resultBuilder.Append(ComplexObjectClosingBrace);
+                }
+
+                if (isObjectAddedToBeingProcessed)
+                {
+                    _toPropertyStringObjectsBeingProcessed.Remove(obj);
+                }
+
+                if (isToPropertyStringObjectsBeingProcessedCreated)
+                {
+                    _toPropertyStringObjectsBeingProcessed = null;
+                }
+            }
+        }
+
+        private static void ToPropertyStringInternalForSimpleType<T>(T obj, Type type, StringBuilder resultBuilder)
+        {
+            if (type == typeof(Pointer))
+            {
+                unsafe
+                {
+                    resultBuilder.AppendFormat(PointerStringFormat, (long)Pointer.Unbox(obj));
+                }
+            }
+            else if (type == typeof(IntPtr))
+            {
+                resultBuilder.AppendFormat(PointerStringFormat, ((IntPtr)(object)obj).ToInt64());
+            }
+            else if (type == typeof(UIntPtr))
+            {
+                resultBuilder.AppendFormat(PointerStringFormat, ((UIntPtr)(object)obj).ToUInt64());
+            }
+            else if (type == typeof(string))
+            {
+                resultBuilder.Append(((string)(object)obj).ToUIString());
+            }
+            else if (type.IsEnum && type.IsDefined(typeof(FlagsAttribute), false))
+            {
+                resultBuilder.Append(
+                    ComplexObjectOpeningBrace + obj.ToStringSafelyInvariant() + ComplexObjectClosingBrace);
+            }
+            else if (type == typeof(DateTime))
+            {
+                resultBuilder.Append(((DateTime)(object)obj).ToPreciseFixedString());
+            }
+            else if (type == typeof(DateTimeOffset))
+            {
+                resultBuilder.Append(((DateTimeOffset)(object)obj).ToPreciseFixedString());
+            }
+            else if (typeof(Type).IsAssignableFrom(type))
+            {
+                resultBuilder.AppendFormat(((Type)(object)obj).AssemblyQualifiedName.ToUIString());
+            }
+            else if (typeof(Assembly).IsAssignableFrom(type))
+            {
+                resultBuilder.AppendFormat(((Assembly)(object)obj).CodeBase.ToUIString());
+            }
+            else
+            {
+                resultBuilder.Append(obj.ToStringSafelyInvariant());
+            }
+        }
+
+        private static void ToPropertyStringInternalForEnumerableCollection(
+            [NotNull] IEnumerable enumerable,
+            [NotNull] Type type,
+            [NotNull] ToPropertyStringOptions options,
+            [NotNull] Func<Type, PropertyInfo[]> getProperties,
+            [NotNull] StringBuilder resultBuilder,
+            int nextRecursionLevel)
+        {
+            var elementType = type.GetCollectionElementType().EnsureNotNull();
+
+            resultBuilder.Append(CollectionElementsOpeningBrace);
+            resultBuilder.Append(CollectionElementsPropertyName);
+            if (options.RenderMemberType)
+            {
+                resultBuilder.AppendFormat(":{0}", elementType.GetQualifiedName());
+            }
+
+            resultBuilder.Append(CollectionElementsClosingBrace);
+
+            resultBuilder.Append(PropertyNameValueSeparator);
+            resultBuilder.Append(ComplexObjectOpeningBrace);
+
+            var count = 0;
+            using (var enumeratorWrapper = SmartDisposable.Create(enumerable.GetEnumerator()))
+            {
+                while (enumeratorWrapper.Instance.MoveNext())
+                {
+                    if (count >= options.MaxCollectionItemCount)
+                    {
+                        if (count > 0)
+                        {
+                            resultBuilder.Append(ItemSeparator);
+                        }
+
+                        resultBuilder.Append("...");
+
+                        break;
+                    }
+
+                    if (count > 0)
+                    {
+                        resultBuilder.Append(ItemSeparator);
+                    }
+
+                    count++;
+
+                    object currentValue;
+                    try
+                    {
+                        currentValue = enumeratorWrapper.Instance.Current;
+                    }
+                    catch (Exception ex)
+                    {
+                        resultBuilder.AppendFormat(
+                            "{{ Error getting the collection element at index {0} ({1}: {2}) }}",
+                            count - 1,
+                            ex.GetType().Name,
+                            ex.Message);
+                        continue;
+                    }
+
+                    var method = ToPropertyStringInternalMethodDefinition.MakeGenericMethod(
+                        elementType.IsPointer ? typeof(object) : elementType);
+
+                    var parameters = new[]
+                    {
+                        currentValue,
+                        false,
+                        options,
+                        getProperties,
+                        resultBuilder,
+                        nextRecursionLevel
+                    };
+
+                    method.Invoke(null, parameters);
+                }
+            }
+
+            resultBuilder.Append(ComplexObjectClosingBrace);
+        }
+
+        private static bool AreEqualByContentsInternal(object valueA, object valueB)
+        {
+            var isAssertEqualityByContentObjectsBeingProcessedCreated = false;
+            var isObjectPairAddedToBeingProcessed = false;
+            try
+            {
+                if (ReferenceEquals(valueA, valueB))
+                {
+                    return true;
+                }
+
+                if (ReferenceEquals(valueA, null) || ReferenceEquals(valueB, null))
+                {
+                    return false;
+                }
+
+                var actualType = valueA.GetType();
+                if (actualType != valueB.GetType())
+                {
+                    return false;
+                }
+
+                if (actualType.IsSimpleTypeInternal())
+                {
+                    return Equals(valueA, valueB);
+                }
+
+                if (_assertEqualityByContentsObjectsBeingProcessed == null)
+                {
+                    isAssertEqualityByContentObjectsBeingProcessedCreated = true;
+                    _assertEqualityByContentsObjectsBeingProcessed = new HashSet<PairReferenceHolder>();
+                }
+
+                if (!actualType.IsValueType)
+                {
+                    isObjectPairAddedToBeingProcessed = true;
+                    _assertEqualityByContentsObjectsBeingProcessed.Add(new PairReferenceHolder(valueA, valueB));
+                }
+
+                var fields = ContentFieldsCache[actualType];
+                if (fields.Length == 0)
+                {
+                    return actualType.IsValueType || ReferenceEquals(valueA, valueB);
+                }
+
+                //// ReSharper disable once LoopCanBeConvertedToQuery - More readable in 'foreach' style
+                foreach (var field in fields)
+                {
+                    var fieldValueA = field.GetValue(valueA);
+                    var fieldValueB = field.GetValue(valueB);
+
+                    var fieldEqual = AreEqualByContentsInternal(fieldValueA, fieldValueB);
+                    if (!fieldEqual)
+                    {
+                        return false;
+                    }
+                }
+            }
+            finally
+            {
+                if (isObjectPairAddedToBeingProcessed)
+                {
+                    _assertEqualityByContentsObjectsBeingProcessed.Remove(new PairReferenceHolder(valueA, valueB));
+                }
+
+                if (isAssertEqualityByContentObjectsBeingProcessedCreated)
+                {
+                    _assertEqualityByContentsObjectsBeingProcessed = null;
+                }
+            }
+
+            return true;
+        }
+
+        private struct PairReferenceHolder : IEquatable<PairReferenceHolder>
+        {
+            private static readonly ByReferenceEqualityComparer<object> EqualityComparer =
+                ByReferenceEqualityComparer<object>.Instance;
+
+            private readonly object _valueA;
+            private readonly object _valueB;
+
+            internal PairReferenceHolder(object valueA, object valueB)
+            {
+                _valueA = valueA;
+                _valueB = valueB;
+            }
+
+            public override bool Equals(object obj) => obj is PairReferenceHolder holder && Equals(holder);
+
+            public override int GetHashCode()
+                => EqualityComparer.GetHashCode(_valueA).CombineHashCodeValues(EqualityComparer.GetHashCode(_valueB));
+
+            public bool Equals(PairReferenceHolder other)
+                => ReferenceEquals(_valueA, other._valueA) && ReferenceEquals(_valueB, other._valueB);
+        }
     }
 }

@@ -1,7 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
+using System.Globalization;
+using System.Reflection;
 using NUnit.Framework;
+using Omnifactotum.Annotations;
+using Omnifactotum.NUnit;
+using Omnifactotum.Tests.Properties;
 
 namespace Omnifactotum.Tests.ExtensionMethods
 {
@@ -12,6 +17,16 @@ namespace Omnifactotum.Tests.ExtensionMethods
     {
         private const string NullString = null;
         private const object NullObject = null;
+
+        private static readonly MethodInfo ToPropertyStringWithSpecificOptionsMethodDefinition =
+            new Func<object, ToPropertyStringOptions, string>(OmnifactotumGenericObjectExtensions.ToPropertyString)
+                .Method
+                .GetGenericMethodDefinition();
+
+        private static readonly MethodInfo ToPropertyStringWithDefaultOptionsMethodDefinition =
+            new Func<object, string>(OmnifactotumGenericObjectExtensions.ToPropertyString)
+                .Method
+                .GetGenericMethodDefinition();
 
         [Test]
         public void TestEnsureNotNullForReferenceTypeSucceeds()
@@ -155,8 +170,283 @@ namespace Omnifactotum.Tests.ExtensionMethods
             Assert.That(() => ((TestClass)null).GetHashCodeSafely(NullValueHashCode), Is.EqualTo(NullValueHashCode));
         }
 
+        [Test]
+        public void TestIsEqualByContentsTo()
+        {
+            const string ValueA = "A";
+            const string ValueB = "B";
+            const string ValueC = "C";
+            const string ValueD = "D";
+
+            Assert.That(new[] { ValueA, ValueB, ValueC, ValueD }, Is.Unique);
+
+            var nodeA = new RecursiveNode { Value = ValueA };
+            var nodeB = new RecursiveNode { Value = ValueB, Parent = nodeA };
+            nodeA.Parent = nodeB;
+
+            Assert.That(nodeA, Is.Not.AssignableTo<IEquatable<RecursiveNode>>());
+
+            var nodeC1 = new RecursiveNode { Value = ValueC, Parent = nodeA };
+            var nodeC2 = new RecursiveNode { Value = ValueC, Parent = nodeA };
+            var nodeDParentA = new RecursiveNode { Value = ValueD, Parent = nodeA };
+            var nodeDParentB = new RecursiveNode { Value = ValueD, Parent = nodeB };
+
+            Assert.That(nodeC1.IsEqualByContentsTo(nodeC1), Is.True);
+            Assert.That(nodeC1.IsEqualByContentsTo(null), Is.False);
+            Assert.That(((RecursiveNode)null).IsEqualByContentsTo(nodeC1), Is.False);
+
+            Assert.That(nodeC1.IsEqualByContentsTo(nodeC2), Is.True);
+            Assert.That(nodeC2.IsEqualByContentsTo(nodeC1), Is.True);
+
+            Assert.That(nodeC1.IsEqualByContentsTo(nodeDParentA), Is.False);
+
+            Assert.That(nodeDParentA.IsEqualByContentsTo(nodeDParentB), Is.False);
+        }
+
+        [Test]
+        [TestCaseSource(typeof(ToPropertyStringCases))]
+        public void TestToPropertyString(
+            Type objectType,
+            object obj,
+            ToPropertyStringOptions options,
+            string expectedString)
+        {
+            var methodWithSpecificOptions =
+                ToPropertyStringWithSpecificOptionsMethodDefinition.MakeGenericMethod(objectType);
+
+            var actualResultWithSpecificOptions =
+                (string)methodWithSpecificOptions.Invoke(null, new[] { obj, options });
+
+            Assert.That(actualResultWithSpecificOptions, Is.EqualTo(expectedString));
+
+            if (options == null)
+            {
+                var methodWithDefaultOptions =
+                    ToPropertyStringWithDefaultOptionsMethodDefinition.MakeGenericMethod(objectType);
+
+                var actualResultWithDefaultOptions = (string)methodWithDefaultOptions.Invoke(null, new[] { obj });
+                Assert.That(actualResultWithDefaultOptions, Is.EqualTo(expectedString));
+            }
+        }
+
+        private sealed class ToPropertyStringCases : TestCasesBase
+        {
+            private const int PointerAddress = 0x12EF3478;
+
+            private static readonly unsafe PointerContainer PointerContainer = new PointerContainer
+            {
+                Value = "SomePointer",
+                IntPointer = (int*)PointerAddress,
+                IntPtr = new IntPtr(PointerAddress)
+            };
+
+            protected override IEnumerable<TestCaseData> GetCases()
+            {
+                yield return new TestCaseData(
+                    typeof(string),
+                    null,
+                    new ToPropertyStringOptions().SetAllFlags(true),
+                    "string :: <null>")
+                    .SetName("Null string, all flags");
+
+                yield return new TestCaseData(
+                    typeof(RecursiveNode),
+                    null,
+                    new ToPropertyStringOptions().SetAllFlags(true),
+                    "OmnifactotumGenericObjectExtensionsTests.RecursiveNode :: <null>")
+                    .SetName("Null RecursiveNode, all flags");
+
+                yield return new TestCaseData(
+                    typeof(int),
+                    15789632,
+                    new ToPropertyStringOptions().SetAllFlags(true),
+                    "int :: 15789632")
+                    .SetName("Int32, all flags");
+
+                {
+                    const int IntValue = 35781632;
+
+                    yield return
+                        new TestCaseData(
+                            typeof(int),
+                            IntValue,
+                            new ToPropertyStringOptions(),
+                            IntValue.ToString(CultureInfo.InvariantCulture))
+                            .SetName("Int32, default options");
+                }
+
+                {
+                    const int IntValue = -45781632;
+
+                    yield return
+                        new TestCaseData(typeof(int), IntValue, null, IntValue.ToString(CultureInfo.InvariantCulture))
+                            .SetName("Int32, null options");
+                }
+
+                {
+                    var pointerString = string.Format(
+                        OmnifactotumGenericObjectExtensions.PointerStringFormat,
+                        PointerAddress);
+
+                    yield return
+                        new TestCaseData(
+                            typeof(PointerContainer),
+                            PointerContainer,
+                            new ToPropertyStringOptions().SetAllFlags(true),
+                            string.Format(Resources.ExpectedPointerContainerToPropertyStringTemplate, pointerString))
+                            .SetName("PointerContainer, all flags");
+                }
+
+                yield return
+                    new TestCaseData(
+                        typeof(object),
+                        VirtualTreeNode.Create(new DateTime(2011, 12, 31, 13, 59, 58, 321)),
+                        new ToPropertyStringOptions().SetAllFlags(true),
+                        Resources.ExpectedVirtualTreeNodeWithDateTimeToPropertyString)
+                        .SetName("VirtualTreeNode with DateTime, all flags");
+
+                yield return
+                    new TestCaseData(
+                        typeof(object),
+                        VirtualTreeNode.Create(
+                            new DateTimeOffset(2011, 12, 31, 13, 59, 58, 321, TimeSpan.FromHours(-2d))),
+                        new ToPropertyStringOptions().SetAllFlags(true),
+                        Resources.ExpectedVirtualTreeNodeWithDateTimeOffsetToPropertyString)
+                        .SetName("VirtualTreeNode with DateTimeOffset, all flags");
+
+                var keyTuple = Tuple.Create(GetType().ToString(), (Array)new[] { 1, 2, 5 });
+                var valueTuple = Tuple.Create((object)keyTuple, ToString());
+                var kvp = new KeyValuePair<Tuple<string, Array>, Tuple<object, string>>(keyTuple, valueTuple);
+
+                yield return
+                    new TestCaseData(
+                        typeof(KeyValuePair<Tuple<string, Array>, Tuple<object, string>>),
+                        kvp,
+                        new ToPropertyStringOptions().SetAllFlags(true),
+                        Resources.ExpectedComplexObjectAllFlagsToPropertyString)
+                        .SetName("Complex object (KeyValuePair), all flags");
+
+                yield return
+                    new TestCaseData(
+                        typeof(KeyValuePair<Tuple<string, Array>, Tuple<object, string>>),
+                        kvp,
+                        new ToPropertyStringOptions(),
+                        Resources.ExpectedComplexObjectDefaultOptionsToPropertyString)
+                        .SetName("Complex object (KeyValuePair), default options");
+
+                yield return
+                    new TestCaseData(
+                        typeof(KeyValuePair<Tuple<string, Array>, Tuple<object, string>>),
+                        kvp,
+                        new ToPropertyStringOptions { RenderComplexProperties = true, MaxCollectionItemCount = 1 },
+                        Resources.ExpectedComplexObjectMaxOneItemToPropertyString)
+                        .SetName("Complex object (KeyValuePair), complex properties and max 1 item from collection");
+
+                yield return
+                    new TestCaseData(
+                        typeof(KeyValuePair<Tuple<string, Array>, Tuple<object, string>>),
+                        kvp,
+                        new ToPropertyStringOptions { RenderComplexProperties = true, RenderMemberType = true },
+                        Resources.ExpectedComplexObjectWithMemberTypeToPropertyString)
+                        .SetName("Complex object (KeyValuePair), complex properties and member types");
+
+                yield return
+                    new TestCaseData(
+                        typeof(KeyValuePair<Tuple<string, Array>, Tuple<object, string>>),
+                        kvp,
+                        new ToPropertyStringOptions { RenderComplexProperties = true, RenderActualType = true },
+                        Resources.ExpectedComplexObjectWithActualTypeToPropertyString)
+                        .SetName("Complex object (KeyValuePair), complex properties and actual types");
+
+                var rootNode = new RecursiveNode { Value = "Root" };
+                var childNode = new RecursiveNode { Value = "Child", Parent = rootNode };
+                rootNode.Parent = childNode;
+                var grandChildNode = new RecursiveNode { Value = "Grandchild", Parent = childNode };
+                var nodes = new[] { rootNode, childNode, grandChildNode };
+
+                yield return
+                    new TestCaseData(
+                        typeof(RecursiveNode[]),
+                        nodes,
+                        new ToPropertyStringOptions().SetAllFlags(true),
+                        Resources.ExpectedComplexObjectWithCyclesAllFlagsToPropertyString)
+                        .SetName("Complex object (RecursiveNode[]) with cyclic dependency, all flags");
+
+                yield return
+                    new TestCaseData(
+                        typeof(RecursiveNode[]),
+                        nodes,
+                        new ToPropertyStringOptions { RenderRootActualType = true, RenderComplexProperties = true },
+                        Resources.ExpectedComplexObjectWithCyclesWithComplexPropertiesToPropertyString)
+                        .SetName("Complex object (RecursiveNode[]) with cyclic dependency, complex properties");
+
+                yield return
+                    new TestCaseData(
+                        typeof(RecursiveNode[]),
+                        nodes,
+                        new ToPropertyStringOptions { RenderComplexProperties = true, MaxRecursionLevel = 2 },
+                        Resources.ExpectedMaxRecursionToPropertyString)
+                        .SetName(
+                            "Complex object (RecursiveNode[]) with cyclic dependency, all flags, with max recursion");
+
+                yield return
+                    new TestCaseData(
+                        typeof(Delegate),
+                        new Func<string>(typeof(object).ToString),
+                        new ToPropertyStringOptions().SetAllFlags(true),
+                        "Func<string> :: System.Func`1[System.String]")
+                        .SetName("Delegate");
+            }
+        }
+
         private sealed class TestClass
         {
+        }
+
+        private sealed class RecursiveNode
+        {
+            public string Value
+            {
+                [UsedImplicitly]
+                get;
+
+                set;
+            }
+
+            public RecursiveNode Parent
+            {
+                [UsedImplicitly]
+                get;
+
+                set;
+            }
+        }
+
+        private sealed class PointerContainer
+        {
+            public string Value
+            {
+                [UsedImplicitly]
+                get;
+
+                set;
+            }
+
+            public unsafe int* IntPointer
+            {
+                [UsedImplicitly]
+                get;
+
+                set;
+            }
+
+            public IntPtr IntPtr
+            {
+                [UsedImplicitly]
+                get;
+
+                set;
+            }
         }
     }
 }
