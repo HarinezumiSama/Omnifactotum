@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using System.Globalization;
+using System.IO;
 using System.Reflection;
 using NUnit.Framework;
 using Omnifactotum.Annotations;
@@ -10,8 +11,6 @@ using Omnifactotum.Tests.Properties;
 
 namespace Omnifactotum.Tests.ExtensionMethods
 {
-    //// ReSharper disable ExpressionIsAlwaysNull - Intentionally for unit tests
-
     [TestFixture]
     internal sealed class OmnifactotumGenericObjectExtensionsTests
     {
@@ -37,8 +36,7 @@ namespace Omnifactotum.Tests.ExtensionMethods
             var someObject = new object();
             Assert.That(() => someObject.EnsureNotNull(), Is.SameAs(someObject));
 
-            object nullObject = null;
-            Assert.That(() => nullObject.EnsureNotNull(), Throws.TypeOf<ArgumentNullException>());
+            Assert.That(() => NullObject.EnsureNotNull(), Throws.TypeOf<ArgumentNullException>());
         }
 
         [Test]
@@ -47,8 +45,7 @@ namespace Omnifactotum.Tests.ExtensionMethods
             int? someValue = 42;
             Assert.That(() => someValue.EnsureNotNull(), Is.EqualTo(someValue.Value));
 
-            int? nullValue = null;
-            Assert.That(() => nullValue.EnsureNotNull(), Throws.TypeOf<ArgumentNullException>());
+            Assert.That(() => ((int?)null).EnsureNotNull(), Throws.TypeOf<ArgumentNullException>());
         }
 
         [Test]
@@ -139,7 +136,7 @@ namespace Omnifactotum.Tests.ExtensionMethods
         }
 
         [Test]
-        public void TestGetHashCodeSafelyWithDefaultNullValueHashCode()
+        public void TestGetHashCodeSafelyWithDefaultNullValueHashCodeSucceeds()
         {
             const int IntValue = 17;
             Assert.That(() => IntValue.GetHashCodeSafely(), Is.EqualTo(IntValue.GetHashCode()));
@@ -154,7 +151,7 @@ namespace Omnifactotum.Tests.ExtensionMethods
         }
 
         [Test]
-        public void TestGetHashCodeSafelyWithSpecifiedNullValueHashCode()
+        public void TestGetHashCodeSafelyWithSpecifiedNullValueHashCodeSucceeds()
         {
             const int NullValueHashCode = 1021;
 
@@ -171,7 +168,7 @@ namespace Omnifactotum.Tests.ExtensionMethods
         }
 
         [Test]
-        public void TestIsEqualByContentsTo()
+        public void TestIsEqualByContentsToSucceeds()
         {
             const string ValueA = "A";
             const string ValueB = "B";
@@ -205,7 +202,7 @@ namespace Omnifactotum.Tests.ExtensionMethods
 
         [Test]
         [TestCaseSource(typeof(ToPropertyStringCases))]
-        public void TestToPropertyString(
+        public void TestToPropertyStringSucceeds(
             Type objectType,
             object obj,
             ToPropertyStringOptions options,
@@ -227,6 +224,94 @@ namespace Omnifactotum.Tests.ExtensionMethods
                 var actualResultWithDefaultOptions = (string)methodWithDefaultOptions.Invoke(null, new[] { obj });
                 Assert.That(actualResultWithDefaultOptions, Is.EqualTo(expectedString));
             }
+        }
+
+        [Test]
+        [SetCulture("ru-RU")]
+        public void TestToStringSafelyWithDefaultNullValueStringSucceeds()
+        {
+            Assert.That(() => ((TestClass)null).ToStringSafely(), Is.EqualTo(string.Empty));
+            Assert.That(() => new TestClass().ToStringSafely(), Is.EqualTo(typeof(TestClass).FullName));
+
+            Assert.That(() => ((long?)null).ToStringSafely(), Is.EqualTo(string.Empty));
+            Assert.That(() => ((long?)123456789).ToStringSafely(), Is.EqualTo("123456789"));
+
+            Assert.That(() => ((DateTime?)null).ToStringSafely(), Is.EqualTo(string.Empty));
+            Assert.That(
+                () => ((DateTime?)new DateTime(2017, 11, 17, 21, 10, 44)).ToStringSafely(),
+                Is.EqualTo("17.11.2017 21:10:44"));
+
+            Assert.That(() => true.ToStringSafely(), Is.EqualTo(bool.TrueString));
+            Assert.That(() => FileMode.OpenOrCreate.ToStringSafely(), Is.EqualTo(nameof(FileMode.OpenOrCreate)));
+        }
+
+        [Test]
+        [SetCulture("ru-RU")]
+        public void TestToStringSafelyWithSpecifiedNullValueStringSucceeds()
+        {
+            const string NullValueString = "default";
+
+            Assert.That(() => ((TestClass)null).ToStringSafely(NullValueString), Is.EqualTo(NullValueString));
+            Assert.That(() => new TestClass().ToStringSafely(NullValueString), Is.EqualTo(typeof(TestClass).FullName));
+
+            Assert.That(() => ((long?)null).ToStringSafely(NullValueString), Is.EqualTo(NullValueString));
+            Assert.That(() => ((long?)42).ToStringSafely(NullValueString), Is.EqualTo("42"));
+
+            Assert.That(() => ((DateTime?)null).ToStringSafely(NullValueString), Is.EqualTo(NullValueString));
+            Assert.That(
+                () => ((DateTime?)new DateTime(2017, 11, 17, 21, 10, 44)).ToStringSafely(NullValueString),
+                Is.EqualTo("17.11.2017 21:10:44"));
+
+            Assert.That(() => true.ToStringSafely(NullValueString), Is.EqualTo(bool.TrueString));
+            Assert.That(
+                () => FileMode.OpenOrCreate.ToStringSafely(NullValueString),
+                Is.EqualTo(nameof(FileMode.OpenOrCreate)));
+        }
+
+        [Test]
+        [SetCulture("ru-RU")]
+        public void TestToStringSafelyInvariantWithDefaultNullValueStringSucceeds()
+        {
+            Assert.That(() => ((TestClass)null).ToStringSafelyInvariant(), Is.EqualTo(string.Empty));
+            Assert.That(() => new TestClass().ToStringSafelyInvariant(), Is.EqualTo(typeof(TestClass).FullName));
+
+            Assert.That(() => ((long?)null).ToStringSafelyInvariant(), Is.EqualTo(string.Empty));
+            Assert.That(() => ((long?)123456789).ToStringSafelyInvariant(), Is.EqualTo("123456789"));
+
+            Assert.That(() => ((DateTime?)null).ToStringSafelyInvariant(), Is.EqualTo(string.Empty));
+            Assert.That(
+                () => ((DateTime?)new DateTime(2017, 11, 17, 21, 10, 44)).ToStringSafelyInvariant(),
+                Is.EqualTo("11/17/2017 21:10:44"));
+
+            Assert.That(() => true.ToStringSafelyInvariant(), Is.EqualTo(bool.TrueString));
+            Assert.That(
+                () => FileMode.OpenOrCreate.ToStringSafelyInvariant(),
+                Is.EqualTo(nameof(FileMode.OpenOrCreate)));
+        }
+
+        [Test]
+        [SetCulture("ru-RU")]
+        public void TestToStringSafelyInvariantWithSpecifiedNullValueStringSucceeds()
+        {
+            const string NullValueString = "default";
+
+            Assert.That(() => ((TestClass)null).ToStringSafelyInvariant(NullValueString), Is.EqualTo(NullValueString));
+            Assert.That(
+                () => new TestClass().ToStringSafelyInvariant(NullValueString),
+                Is.EqualTo(typeof(TestClass).FullName));
+
+            Assert.That(() => ((long?)null).ToStringSafelyInvariant(NullValueString), Is.EqualTo(NullValueString));
+            Assert.That(() => ((long?)42).ToStringSafelyInvariant(NullValueString), Is.EqualTo("42"));
+
+            Assert.That(() => ((DateTime?)null).ToStringSafelyInvariant(NullValueString), Is.EqualTo(NullValueString));
+            Assert.That(
+                () => ((DateTime?)new DateTime(2017, 11, 17, 21, 10, 44)).ToStringSafelyInvariant(NullValueString),
+                Is.EqualTo("11/17/2017 21:10:44"));
+
+            Assert.That(() => true.ToStringSafelyInvariant(NullValueString), Is.EqualTo(bool.TrueString));
+            Assert.That(
+                () => FileMode.OpenOrCreate.ToStringSafelyInvariant(NullValueString),
+                Is.EqualTo(nameof(FileMode.OpenOrCreate)));
         }
 
         private sealed class ToPropertyStringCases : TestCasesBase
