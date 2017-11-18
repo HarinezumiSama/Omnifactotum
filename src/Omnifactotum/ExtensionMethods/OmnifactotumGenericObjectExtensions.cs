@@ -366,7 +366,10 @@ namespace System
         /// </example>
         public static string ToUIString<T>([CanBeNull] this T? value)
             where T : struct
-            => value?.ToString() ?? OmnifactotumConstants.NullValueRepresentation;
+            => (value.HasValue && value.Value is IFormattable formattable
+                ? formattable.ToString(null, CultureInfo.InvariantCulture)
+                : value?.ToString())
+                ?? OmnifactotumConstants.NullValueRepresentation;
 
         /// <summary>
         ///     <para>

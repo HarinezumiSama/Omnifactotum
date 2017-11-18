@@ -11,7 +11,7 @@ using Omnifactotum.Tests.Properties;
 
 namespace Omnifactotum.Tests.ExtensionMethods
 {
-    [TestFixture]
+    [TestFixture(TestOf = typeof(OmnifactotumGenericObjectExtensions))]
     internal sealed class OmnifactotumGenericObjectExtensionsTests
     {
         private const string NullString = null;
@@ -49,12 +49,77 @@ namespace Omnifactotum.Tests.ExtensionMethods
         }
 
         [Test]
-        [TestCase(null, "null")]
-        [TestCase(42, "42")]
-        public void TestToUIStringSucceeds(int? value, string expectedResult)
+        [SetCulture("ru-RU")]
+        public void TestToUIStringSucceeds()
         {
-            var actualResult = value.ToUIString();
-            Assert.That(actualResult, Is.EqualTo(expectedResult));
+            Assert.That(((int?)null).ToUIString(), Is.EqualTo("null"));
+            Assert.That(((int?)1234567).ToUIString(), Is.EqualTo("1234567"));
+
+            Assert.That(((DateTime?)null).ToUIString(), Is.EqualTo("null"));
+
+            Assert.That(
+                ((DateTime?)new DateTime(2016, 11, 19, 22, 14, 13)).ToUIString(),
+                Is.EqualTo("11/19/2016 22:14:13"));
+        }
+
+        [Test]
+        [SuppressMessage("ReSharper", "ExpressionIsAlwaysNull")]
+        public void TestToUIStringWithFormatAndFormatProviderSucceeds()
+        {
+            const string NumberFormat = "N0";
+            const string DateFormat = "F";
+            var russianCultureInfo = new CultureInfo("ru-RU");
+            var japaneseCultureInfo = new CultureInfo("ja-JP");
+
+            int? nullableIntegerNull = null;
+            int? nullableInteger = 1234567;
+            var nullableDateTime = (DateTime?)new DateTime(2016, 11, 19, 22, 14, 13);
+
+            Assert.That(nullableIntegerNull.ToUIString(NumberFormat, russianCultureInfo), Is.EqualTo("null"));
+            Assert.That(nullableIntegerNull.ToUIString(NumberFormat, japaneseCultureInfo), Is.EqualTo("null"));
+
+            Assert.That(nullableInteger.ToUIString(NumberFormat, russianCultureInfo), Is.EqualTo("1 234 567"));
+            Assert.That(nullableInteger.ToUIString(NumberFormat, japaneseCultureInfo), Is.EqualTo("1,234,567"));
+
+            Assert.That(((DateTime?)null).ToUIString(DateFormat, russianCultureInfo), Is.EqualTo("null"));
+            Assert.That(((DateTime?)null).ToUIString(DateFormat, japaneseCultureInfo), Is.EqualTo("null"));
+
+            Assert.That(
+                nullableDateTime.ToUIString(DateFormat, russianCultureInfo),
+                Is.EqualTo("19 ноября 2016 г. 22:14:13"));
+
+            Assert.That(
+                nullableDateTime.ToUIString(DateFormat, japaneseCultureInfo),
+                Is.EqualTo("2016年11月19日 22:14:13"));
+        }
+
+        [Test]
+        [SuppressMessage("ReSharper", "ExpressionIsAlwaysNull")]
+        public void TestToUIStringWithFormatProviderSucceeds()
+        {
+            var russianCultureInfo = new CultureInfo("ru-RU");
+            var japaneseCultureInfo = new CultureInfo("ja-JP");
+
+            int? nullableIntegerNull = null;
+            int? nullableInteger = 1234567;
+            var nullableDateTime = (DateTime?)new DateTime(2016, 11, 19, 22, 14, 23);
+
+            Assert.That(nullableIntegerNull.ToUIString(russianCultureInfo), Is.EqualTo("null"));
+            Assert.That(nullableIntegerNull.ToUIString(japaneseCultureInfo), Is.EqualTo("null"));
+
+            Assert.That(nullableInteger.ToUIString(russianCultureInfo), Is.EqualTo("1234567"));
+            Assert.That(nullableInteger.ToUIString(japaneseCultureInfo), Is.EqualTo("1234567"));
+
+            Assert.That(((DateTime?)null).ToUIString(russianCultureInfo), Is.EqualTo("null"));
+            Assert.That(((DateTime?)null).ToUIString(japaneseCultureInfo), Is.EqualTo("null"));
+
+            Assert.That(
+                nullableDateTime.ToUIString(russianCultureInfo),
+                Is.EqualTo("19.11.2016 22:14:23"));
+
+            Assert.That(
+                nullableDateTime.ToUIString(japaneseCultureInfo),
+                Is.EqualTo("2016/11/19 22:14:23"));
         }
 
         [Test]
@@ -312,6 +377,21 @@ namespace Omnifactotum.Tests.ExtensionMethods
             Assert.That(
                 () => FileMode.OpenOrCreate.ToStringSafelyInvariant(NullValueString),
                 Is.EqualTo(nameof(FileMode.OpenOrCreate)));
+        }
+
+        [Test]
+        public void TestGetTypeSafelySucceeds()
+        {
+            Assert.That(() => ((object)null).GetTypeSafely(), Is.EqualTo(typeof(object)));
+            Assert.That(() => new object().GetTypeSafely(), Is.EqualTo(typeof(object)));
+
+            Assert.That(() => ((int?)null).GetTypeSafely(), Is.EqualTo(typeof(int?)));
+            Assert.That(() => 17.GetTypeSafely(), Is.EqualTo(typeof(int)));
+            Assert.That(() => ((int?)17).GetTypeSafely(), Is.EqualTo(typeof(int)));
+
+            Assert.That(() => ((TestClass)null).GetTypeSafely(), Is.EqualTo(typeof(TestClass)));
+            Assert.That(() => new TestClass().GetTypeSafely(), Is.EqualTo(typeof(TestClass)));
+            Assert.That(() => ((object)new TestClass()).GetTypeSafely(), Is.EqualTo(typeof(TestClass)));
         }
 
         private sealed class ToPropertyStringCases : TestCasesBase
