@@ -235,6 +235,9 @@ namespace Omnifactotum.Tests.ExtensionMethods
         [Test]
         public void TestIsEqualByContentsToSucceeds()
         {
+            //// TODO [HarinezumiSama] Cover uncovered statements in System.OmnifactotumGenericObjectExtensions.AreEqualByContentsInternal
+            //// TODO [HarinezumiSama] Consider MarshalByRefObject when it's a proxy
+
             const string ValueA = "A";
             const string ValueB = "B";
             const string ValueC = "C";

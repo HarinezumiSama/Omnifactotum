@@ -233,6 +233,7 @@ namespace System
         /// <returns>
         ///     The actual type of the value if it is not <c>null</c>; otherwise, <typeparamref name="T"/>.
         /// </returns>
+        [NotNull]
         public static Type GetTypeSafely<T>([CanBeNull] this T value)
             => ReferenceEquals(value, null) ? typeof(T) : value.GetType();
 
@@ -549,67 +550,6 @@ namespace System
             => AreEqualByContentsInternal(obj, other);
 
         /// <summary>
-        ///     Computes the specified predicate against the specified reference type value and
-        ///     returns this value if the predicate evaluates to <c>true</c>; otherwise, returns <c>null</c>.
-        /// </summary>
-        /// <typeparam name="T">
-        ///     The type of the value.
-        /// </typeparam>
-        /// <param name="value">
-        ///     The value to compute the predicate against.
-        /// </param>
-        /// <param name="predicate">
-        ///     The predicate to compute.
-        /// </param>
-        /// <returns>
-        ///     <paramref name="value"/> if the predicate evaluates to <c>true</c>; otherwise, <c>null</c>.
-        /// </returns>
-        /// <exception cref="ArgumentNullException">
-        ///     <paramref name="predicate"/> is <c>null</c>.
-        /// </exception>
-        public static T Affirm<T>([CanBeNull] this T value, [NotNull] Func<T, bool> predicate)
-            where T : class
-        {
-            if (predicate == null)
-            {
-                throw new ArgumentNullException(nameof(predicate));
-            }
-
-            return value == null || !predicate(value) ? null : value;
-        }
-
-        /// <summary>
-        ///     Computes the specified predicate against the specified reference type value considering that
-        ///     this value can be <c>null</c>.
-        /// </summary>
-        /// <typeparam name="T">
-        ///     The type of the value.
-        /// </typeparam>
-        /// <param name="value">
-        ///     The value to compute the predicate against.
-        /// </param>
-        /// <param name="predicate">
-        ///     The predicate to compute.
-        /// </param>
-        /// <returns>
-        ///     <c>true</c> if the <paramref name="value"/> is NOT <c>null</c> and the predicate evaluates to
-        ///     <c>true</c>; otherwise, <c>false</c>.
-        /// </returns>
-        /// <exception cref="ArgumentNullException">
-        ///     <paramref name="predicate"/> is <c>null</c>.
-        /// </exception>
-        public static bool ComputePredicate<T>([CanBeNull] this T value, [NotNull] Func<T, bool> predicate)
-            where T : class
-        {
-            if (predicate == null)
-            {
-                throw new ArgumentNullException(nameof(predicate));
-            }
-
-            return value != null && predicate(value);
-        }
-
-        /// <summary>
         ///     Metamorphoses the specified reference type input value into an output value using the specified
         ///     transformation method. If the input value is <c>null</c>, the specified default output value is
         ///     returned.
@@ -681,13 +621,7 @@ namespace System
             => Morph(input, transform, default(TOutput));
 
         private static bool IsSimpleTypeInternal([NotNull] this Type type)
-        {
-            if (type == null)
-            {
-                throw new ArgumentNullException(nameof(type));
-            }
-
-            return type.IsPrimitive
+            => type.IsPrimitive
                 || type.IsEnum
                 || type.IsPointer
                 || type == typeof(string)
@@ -695,7 +629,6 @@ namespace System
                 || type == typeof(Pointer)
                 || type == typeof(DateTime)
                 || type == typeof(DateTimeOffset);
-        }
 
         [DebuggerNonUserCode]
         private static void ToPropertyStringInternal<T>(
