@@ -86,6 +86,7 @@
     <Compile Include="FakeUseHelper.cs" />
     <Compile Include="Internal\SimpleTestCase.cs" />
     <Compile Include="Internal\SimpleTestCase.Helper.cs" />
+    <Compile Include="LazyTests.cs" />
     <Compile Include="SyncValueContainerForReferenceTypeTests.cs" />
     <Compile Include="SyncValueContainerForValueTypeTests.cs" />
     <Compile Include="SyncValueContainerHelperForReferenceTypeTests.cs" />

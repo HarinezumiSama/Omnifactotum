@@ -5,7 +5,7 @@ using Omnifactotum.Tests.Internal;
 
 namespace Omnifactotum.Tests.ExtensionMethods
 {
-    [TestFixture]
+    [TestFixture(TestOf = typeof(OmnifactotumMathExtensions))]
     internal sealed class OmnifactotumMathExtensionsTests
     {
         internal static IEnumerable<SimpleTestCase<int>> TestSqrWithIntSucceedsCases
