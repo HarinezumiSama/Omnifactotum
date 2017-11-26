@@ -78,11 +78,14 @@
     <Compile Include="ExtensionMethods\OmnifactotumEnumExtensionsTests.cs" />
     <Compile Include="ExtensionMethods\OmnifactotumExceptionExtensionsTests.cs" />
     <Compile Include="ExtensionMethods\OmnifactotumHashCodeHelperTests.cs" />
+    <Compile Include="ExtensionMethods\OmnifactotumMathExtensionsTests.cs" />
     <Compile Include="ExtensionMethods\OmnifactotumMethodBaseExtensionsTests.cs" />
     <Compile Include="ExtensionMethods\OmnifactotumNullableBooleanExtensionsTests.cs" />
     <Compile Include="ExtensionMethods\OmnifactotumStringExtensionsTests.cs" />
     <Compile Include="ExtensionMethods\OmnifactotumTypeExtensionsTests.cs" />
     <Compile Include="FakeUseHelper.cs" />
+    <Compile Include="Internal\SimpleTestCase.cs" />
+    <Compile Include="Internal\SimpleTestCase.Helper.cs" />
     <Compile Include="SyncValueContainerForReferenceTypeTests.cs" />
     <Compile Include="SyncValueContainerForValueTypeTests.cs" />
     <Compile Include="SyncValueContainerHelperForReferenceTypeTests.cs" />

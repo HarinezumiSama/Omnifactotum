@@ -1,5 +1,4 @@
-﻿//// Namespace is intentionally named so in order to simplify usage of extension methods
-//// ReSharper disable CheckNamespace
+﻿//// ReSharper disable once CheckNamespace - Namespace is intentionally named so in order to simplify usage of extension methods
 
 namespace System
 {
@@ -82,8 +81,7 @@ namespace System
         /// </returns>
         public static float Sqr(this float value)
         {
-            //// ReSharper disable once RedundantOverflowCheckingContext - Just making sure
-            return unchecked(value * value);
+            return value * value;
         }
 
         /// <summary>
@@ -98,24 +96,7 @@ namespace System
         /// </returns>
         public static double Sqr(this double value)
         {
-            //// ReSharper disable once RedundantOverflowCheckingContext - Just making sure
-            return unchecked(value * value);
-        }
-
-        /// <summary>
-        ///     Returns the square of the specified number.
-        ///     This method SUPPRESSES overflow-checking.
-        /// </summary>
-        /// <param name="value">
-        ///     The value to compute the square of.
-        /// </param>
-        /// <returns>
-        ///     The square of the specified number.
-        /// </returns>
-        public static decimal Sqr(this decimal value)
-        {
-            //// ReSharper disable once RedundantOverflowCheckingContext - Just making sure
-            return unchecked(value * value);
+            return value * value;
         }
 
         /// <summary>
@@ -190,42 +171,9 @@ namespace System
         /// <returns>
         ///     The square of the specified number.
         /// </returns>
-        public static float SqrChecked(this float value)
-        {
-            //// ReSharper disable once RedundantOverflowCheckingContext - Just making sure
-            return checked(value * value);
-        }
-
-        /// <summary>
-        ///     Returns the square of the specified number.
-        ///     This method ENFORCES overflow-checking.
-        /// </summary>
-        /// <param name="value">
-        ///     The value to compute the square of.
-        /// </param>
-        /// <returns>
-        ///     The square of the specified number.
-        /// </returns>
-        public static double SqrChecked(this double value)
-        {
-            //// ReSharper disable once RedundantOverflowCheckingContext - Just making sure
-            return checked(value * value);
-        }
-
-        /// <summary>
-        ///     Returns the square of the specified number.
-        ///     This method ENFORCES overflow-checking.
-        /// </summary>
-        /// <param name="value">
-        ///     The value to compute the square of.
-        /// </param>
-        /// <returns>
-        ///     The square of the specified number.
-        /// </returns>
         public static decimal SqrChecked(this decimal value)
         {
-            //// ReSharper disable once RedundantOverflowCheckingContext - Just making sure
-            return checked(value * value);
+            return value * value;
         }
 
         /// <summary>
