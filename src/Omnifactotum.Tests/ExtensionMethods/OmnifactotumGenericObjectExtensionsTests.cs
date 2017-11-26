@@ -397,6 +397,72 @@ namespace Omnifactotum.Tests.ExtensionMethods
             Assert.That(() => ((object)new TestClass()).GetTypeSafely(), Is.EqualTo(typeof(TestClass)));
         }
 
+        [Test]
+        [SuppressMessage("ReSharper", "AssignNullToNotNullAttribute")]
+        public void TestMorphForReferenceTypeWithInvalidArgumentsThrows()
+        {
+            var validInstance = new TestClass();
+
+            Assert.That(() => validInstance.Morph<TestClass, string>(null), Throws.ArgumentNullException);
+            Assert.That(() => validInstance.Morph(null, "anyValue"), Throws.ArgumentNullException);
+        }
+
+        [Test]
+        public void TestMorphForReferenceTypeWithValidArgumentsSucceeds()
+        {
+            const RecursiveNode NullInput = ((RecursiveNode)null);
+            const string Value = "value";
+            const string DefaultOutput = "default";
+
+            Assert.That(DefaultOutput, Is.Not.EqualTo(Value) & Is.Not.EqualTo(default(string)));
+
+            Assert.That(
+                () => NullInput.Morph(node => node.Value, DefaultOutput),
+                Is.EqualTo(DefaultOutput));
+
+            Assert.That(
+                () => NullInput.Morph(node => node.Value),
+                Is.EqualTo(default(string)));
+
+            var input = new RecursiveNode { Value = Value };
+            Assert.That(() => input.Morph(node => node.Value, DefaultOutput), Is.EqualTo(Value));
+            Assert.That(() => input.Morph(node => node.Value), Is.EqualTo(Value));
+        }
+
+        [Test]
+        [SuppressMessage("ReSharper", "AssignNullToNotNullAttribute")]
+        public void TestMorphForNullableValueTypeWithInvalidArgumentsThrows()
+        {
+            var validInstance = new ConsoleKeyInfo?(new ConsoleKeyInfo());
+
+            Assert.That(() => validInstance.Morph<ConsoleKeyInfo, string>(null), Throws.ArgumentNullException);
+
+            Assert.That(
+                () => validInstance.Morph<ConsoleKeyInfo, string>(null, "anyValue"),
+                Throws.ArgumentNullException);
+        }
+
+        [Test]
+        public void TestMorphForNullableValueTypeWithValidArgumentsSucceeds()
+        {
+            const ConsoleKey Value = ConsoleKey.A;
+            const ConsoleKey DefaultOutput = ConsoleKey.Escape;
+
+            Assert.That(DefaultOutput, Is.Not.EqualTo(Value) & Is.Not.EqualTo(default(ConsoleKey)));
+
+            Assert.That(
+                () => ((ConsoleKeyInfo?)null).Morph(node => node.Key, DefaultOutput),
+                Is.EqualTo(DefaultOutput));
+
+            Assert.That(
+                () => ((ConsoleKeyInfo?)null).Morph(node => node.Key),
+                Is.EqualTo(default(ConsoleKey)));
+
+            var input = new ConsoleKeyInfo?(new ConsoleKeyInfo('a', Value, false, false, false));
+            Assert.That(() => input.Morph(info => info.Key, DefaultOutput), Is.EqualTo(Value));
+            Assert.That(() => input.Morph(info => info.Key), Is.EqualTo(Value));
+        }
+
         private sealed class ToPropertyStringCases : TestCasesBase
         {
             private const int PointerAddress = 0x12EF3478;

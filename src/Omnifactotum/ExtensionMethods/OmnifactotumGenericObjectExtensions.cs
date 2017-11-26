@@ -37,8 +37,7 @@ namespace System
             new ToPropertyStringInternalMethod(ToPropertyStringInternal).Method.GetGenericMethodDefinition();
 
         private static readonly WeakReferenceBasedCache<Type, FieldInfo[]> ContentFieldsCache =
-            new WeakReferenceBasedCache<Type, FieldInfo[]>(
-                t => t.GetFields(BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic));
+            new WeakReferenceBasedCache<Type, FieldInfo[]>(GetContentFieldsCacheFields);
 
         [ThreadStatic]
         private static HashSet<object> _toPropertyStringObjectsBeingProcessed;
@@ -620,6 +619,77 @@ namespace System
             where TInput : class
             => Morph(input, transform, default(TOutput));
 
+        /// <summary>
+        ///     Metamorphoses the specified nullable value type input value into an output value using the specified
+        ///     transformation method. If the input value is <c>null</c>, the specified default output value is
+        ///     returned.
+        /// </summary>
+        /// <typeparam name="TInput">
+        ///     The type of the input.
+        /// </typeparam>
+        /// <typeparam name="TOutput">
+        ///     The type of the output.
+        /// </typeparam>
+        /// <param name="input">
+        ///     The input value.
+        /// </param>
+        /// <param name="transform">
+        ///     A reference to the transformation method.
+        /// </param>
+        /// <param name="defaultOutput">
+        ///     The default output value.
+        /// </param>
+        /// <returns>
+        ///     An output value obtained by using the <paramref name="transform"/> method if the
+        ///     <paramref name="input"/> value is NOT <c>null</c>; otherwise, the specified default output value.
+        /// </returns>
+        /// <exception cref="ArgumentNullException">
+        ///     <paramref name="transform"/> is <c>null</c>.
+        /// </exception>
+        public static TOutput Morph<TInput, TOutput>(
+            [CanBeNull] this TInput? input,
+            [NotNull] Func<TInput, TOutput> transform,
+            [CanBeNull] TOutput defaultOutput)
+            where TInput : struct
+        {
+            if (transform == null)
+            {
+                throw new ArgumentNullException(nameof(transform));
+            }
+
+            return input == null ? defaultOutput : transform(input.Value);
+        }
+
+        /// <summary>
+        ///     Metamorphoses the specified nullable value type input value into an output value using the specified
+        ///     transformation method. If the input value is <c>null</c>, the default value for the output type
+        ///     is returned.
+        /// </summary>
+        /// <typeparam name="TInput">
+        ///     The type of the input.
+        /// </typeparam>
+        /// <typeparam name="TOutput">
+        ///     The type of the output.
+        /// </typeparam>
+        /// <param name="input">
+        ///     The input value.
+        /// </param>
+        /// <param name="transform">
+        ///     A reference to the transformation method.
+        /// </param>
+        /// <returns>
+        ///     An output value obtained by using the <paramref name="transform"/> method if the
+        ///     <paramref name="input"/> value is NOT <c>null</c>; otherwise, the default value for the output type.
+        /// </returns>
+        /// <exception cref="ArgumentNullException">
+        ///     <paramref name="transform"/> is <c>null</c>.
+        /// </exception>
+        public static TOutput Morph<TInput, TOutput>(
+            [CanBeNull] this TInput? input,
+            [NotNull] Func<TInput, TOutput> transform)
+            where TInput : struct
+            => Morph(input, transform, default(TOutput));
+
         private static bool IsSimpleTypeInternal([NotNull] this Type type)
             => type.IsPrimitive
                 || type.IsEnum
@@ -629,6 +699,9 @@ namespace System
                 || type == typeof(Pointer)
                 || type == typeof(DateTime)
                 || type == typeof(DateTimeOffset);
+
+        private static FieldInfo[] GetContentFieldsCacheFields(Type type)
+            => type.GetFields(BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic);
 
         [DebuggerNonUserCode]
         private static void ToPropertyStringInternal<T>(
