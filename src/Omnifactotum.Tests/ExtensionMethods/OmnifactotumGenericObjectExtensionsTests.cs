@@ -1,10 +1,12 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using System.Globalization;
 using System.IO;
 using System.Reflection;
 using NUnit.Framework;
+using NUnit.Framework.Constraints;
 using Omnifactotum.Annotations;
 using Omnifactotum.NUnit;
 using Omnifactotum.Tests.Properties;
@@ -235,7 +237,6 @@ namespace Omnifactotum.Tests.ExtensionMethods
         [Test]
         public void TestIsEqualByContentsToSucceeds()
         {
-            //// TODO [HarinezumiSama] Cover uncovered statements in System.OmnifactotumGenericObjectExtensions.AreEqualByContentsInternal
             //// TODO [HarinezumiSama] Consider MarshalByRefObject when it's a proxy
 
             const string ValueA = "A";
@@ -256,16 +257,33 @@ namespace Omnifactotum.Tests.ExtensionMethods
             var nodeDParentA = new RecursiveNode { Value = ValueD, Parent = nodeA };
             var nodeDParentB = new RecursiveNode { Value = ValueD, Parent = nodeB };
 
-            Assert.That(nodeC1.IsEqualByContentsTo(nodeC1), Is.True);
-            Assert.That(nodeC1.IsEqualByContentsTo(null), Is.False);
-            Assert.That(((RecursiveNode)null).IsEqualByContentsTo(nodeC1), Is.False);
+            AssertResultForIsEqualByContentsTo(nodeC1, nodeC1, Is.True);
+            AssertResultForIsEqualByContentsTo(nodeC1, null, Is.False);
+            AssertResultForIsEqualByContentsTo(nodeC1, nodeC2, Is.True);
+            AssertResultForIsEqualByContentsTo(nodeC1, nodeDParentA, Is.False);
+            AssertResultForIsEqualByContentsTo(nodeDParentA, nodeDParentB, Is.False);
 
-            Assert.That(nodeC1.IsEqualByContentsTo(nodeC2), Is.True);
-            Assert.That(nodeC2.IsEqualByContentsTo(nodeC1), Is.True);
+            AssertResultForIsEqualByContentsTo<object>("13", "13", Is.True);
+            AssertResultForIsEqualByContentsTo<object>(17, 17, Is.True);
+            AssertResultForIsEqualByContentsTo<object>("19", 19, Is.False);
 
-            Assert.That(nodeC1.IsEqualByContentsTo(nodeDParentA), Is.False);
+            const string ContainerValue = "92b6e84bba8e429b9ec8593d2594354e";
+            var simpleContainer = new SimpleContainer { Value = ContainerValue };
+            var descendantContainer1 = new DescendantContainer1 { Value = ContainerValue };
+            var descendantContainer2 = new DescendantContainer2 { Value = ContainerValue };
 
-            Assert.That(nodeDParentA.IsEqualByContentsTo(nodeDParentB), Is.False);
+            AssertResultForIsEqualByContentsTo(simpleContainer, descendantContainer1, Is.False);
+            AssertResultForIsEqualByContentsTo<SimpleContainer>(descendantContainer1, descendantContainer2, Is.False);
+
+            var classWithNoFields1 = new ClassWithNoFields();
+            var classWithNoFields2 = new ClassWithNoFields();
+            AssertResultForIsEqualByContentsTo(classWithNoFields1, classWithNoFields2, Is.True);
+
+            var structureWithNoFields1 = new StructureWithNoFields();
+            var structureWithNoFields2 = new StructureWithNoFields();
+            AssertResultForIsEqualByContentsTo(structureWithNoFields1, structureWithNoFields2, Is.True);
+
+            AssertResultForIsEqualByContentsTo<object>(classWithNoFields1, structureWithNoFields1, Is.False);
         }
 
         [Test]
@@ -410,7 +428,7 @@ namespace Omnifactotum.Tests.ExtensionMethods
         [Test]
         public void TestMorphForReferenceTypeWithValidArgumentsSucceeds()
         {
-            const RecursiveNode NullInput = ((RecursiveNode)null);
+            const RecursiveNode NullInput = (RecursiveNode)null;
             const string Value = "value";
             const string DefaultOutput = "default";
 
@@ -463,15 +481,24 @@ namespace Omnifactotum.Tests.ExtensionMethods
             Assert.That(() => input.Morph(info => info.Key), Is.EqualTo(Value));
         }
 
+        private static void AssertResultForIsEqualByContentsTo<T>(T valueA, T valueB, IResolveConstraint constraint)
+        {
+            Assert.That(valueA.IsEqualByContentsTo(valueB), constraint);
+            Assert.That(valueB.IsEqualByContentsTo(valueA), constraint);
+        }
+
         private sealed class ToPropertyStringCases : TestCasesBase
         {
-            private const int PointerAddress = 0x12EF3478;
+            private const int PointerAddress0 = 0x10EF3478;
+            private const int PointerAddress1 = 0x20EF3478;
+            private const int PointerAddress2 = 0x30EF3478;
 
             private static readonly unsafe PointerContainer PointerContainer = new PointerContainer
             {
                 Value = "SomePointer",
-                IntPointer = (int*)PointerAddress,
-                IntPtr = new IntPtr(PointerAddress)
+                IntPointer = (int*)PointerAddress0,
+                IntPtr = new IntPtr(PointerAddress1),
+                UIntPtr = new UIntPtr(PointerAddress2)
             };
 
             protected override IEnumerable<TestCaseData> GetCases()
@@ -518,16 +545,30 @@ namespace Omnifactotum.Tests.ExtensionMethods
                 }
 
                 {
-                    var pointerString = string.Format(
+                    var pointerString0 = string.Format(
                         OmnifactotumGenericObjectExtensions.PointerStringFormat,
-                        PointerAddress);
+                        PointerAddress0);
+
+                    var pointerString1 = string.Format(
+                        OmnifactotumGenericObjectExtensions.PointerStringFormat,
+                        PointerAddress1);
+
+                    var pointerString2 = string.Format(
+                        OmnifactotumGenericObjectExtensions.PointerStringFormat,
+                        PointerAddress2);
+
+                    var expectedPointerContainerToPropertyString = string.Format(
+                        Resources.ExpectedPointerContainerToPropertyStringTemplate,
+                        pointerString0,
+                        pointerString1,
+                        pointerString2);
 
                     yield return
                         new TestCaseData(
                             typeof(PointerContainer),
                             PointerContainer,
                             new ToPropertyStringOptions().SetAllFlags(true),
-                            string.Format(Resources.ExpectedPointerContainerToPropertyStringTemplate, pointerString))
+                            expectedPointerContainerToPropertyString)
                             .SetName("PointerContainer, all flags");
                 }
 
@@ -630,10 +671,61 @@ namespace Omnifactotum.Tests.ExtensionMethods
                         new ToPropertyStringOptions().SetAllFlags(true),
                         "Func<string> :: System.Func`1[System.String]")
                         .SetName("Delegate");
+
+                yield return
+                    new TestCaseData(
+                        typeof(ClassWithPropertyGetterThrowingException),
+                        new ClassWithPropertyGetterThrowingException(),
+                        new ToPropertyStringOptions().SetAllFlags(true),
+                        Resources.ExpectedClassWithPropertyGetterThrowingExceptionToPropertyString)
+                        .SetName(nameof(ClassWithPropertyGetterThrowingException));
+
+                {
+                    var input = new ClassWithFlagsEnumAndTypeAndAssemblyProperties();
+
+                    var expectedClassWithFlagsEnumAndTypeAndAssemblyPropertiesToPropertyString = string.Format(
+                        Resources.ExpectedClassWithFlagsEnumAndTypeAndAssemblyPropertiesToPropertyStringTemplate,
+                        input.SomeAssembly.CodeBase,
+                        input.SomeAttributes.ToString(),
+                        input.SomeType.AssemblyQualifiedName);
+
+                    yield return
+                        new TestCaseData(
+                            typeof(ClassWithFlagsEnumAndTypeAndAssemblyProperties),
+                            input,
+                            new ToPropertyStringOptions().SetAllFlags(true),
+                            expectedClassWithFlagsEnumAndTypeAndAssemblyPropertiesToPropertyString)
+                            .SetName(nameof(ClassWithFlagsEnumAndTypeAndAssemblyProperties));
+                }
             }
         }
 
         private sealed class TestClass
+        {
+        }
+
+        private class SimpleContainer
+        {
+            public string Value
+            {
+                get;
+                set;
+            }
+        }
+
+        private sealed class DescendantContainer1 : SimpleContainer
+        {
+        }
+
+        private sealed class DescendantContainer2 : SimpleContainer
+        {
+        }
+
+        private sealed class ClassWithNoFields
+        {
+        }
+
+        private sealed class StructureWithNoFields
         {
         }
 
@@ -681,6 +773,94 @@ namespace Omnifactotum.Tests.ExtensionMethods
 
                 set;
             }
+
+            public UIntPtr UIntPtr
+            {
+                [UsedImplicitly]
+                get;
+
+                set;
+            }
+        }
+
+        private sealed class ClassWithPropertyGetterThrowingException
+        {
+            [UsedImplicitly]
+            public int Property1Good => 42;
+
+            [UsedImplicitly]
+            public DateTime Property2Bad => throw new NotImplementedException("Never gonna be implemented.");
+
+            [UsedImplicitly]
+            public IEnumerable<string> Property3Bad => new ThrowingEnumerable();
+
+            [UsedImplicitly]
+            public string Property4Good => "Some value";
+
+            private sealed class ThrowingEnumerable : IEnumerable<string>
+            {
+                public IEnumerator<string> GetEnumerator() => new ThrowingEnumerator();
+
+                IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();
+            }
+
+            private sealed class ThrowingEnumerator : IEnumerator<string>
+            {
+                private int _index = -1;
+
+                public void Dispose()
+                {
+                    // Nothing to do
+                }
+
+                public bool MoveNext()
+                {
+                    if (_index < -1 || _index >= 2)
+                    {
+                        return false;
+                    }
+
+                    _index++;
+                    return true;
+                }
+
+                public void Reset() => throw new NotSupportedException();
+
+                public string Current
+                {
+                    get
+                    {
+                        switch (_index)
+                        {
+                            case 0:
+                                return "Item0";
+
+                            case 1:
+                                throw new NotImplementedException("No item at index 1.");
+
+                            case 2:
+                                return "Item2";
+
+                            default:
+                                throw new InvalidOperationException("Cannot access items outside range.");
+                        }
+                    }
+                }
+
+                object IEnumerator.Current => Current;
+            }
+        }
+
+        private sealed class ClassWithFlagsEnumAndTypeAndAssemblyProperties
+        {
+            [UsedImplicitly]
+            public FileAttributes SomeAttributes => FileAttributes.Archive | FileAttributes.Offline;
+
+            [UsedImplicitly]
+            public Type SomeType => typeof(TestClass);
+
+            [UsedImplicitly]
+            public Assembly SomeAssembly => typeof(ClassWithFlagsEnumAndTypeAndAssemblyProperties).Assembly;
         }
     }
 }

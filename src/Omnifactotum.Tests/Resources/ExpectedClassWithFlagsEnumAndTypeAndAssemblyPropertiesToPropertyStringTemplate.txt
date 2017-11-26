@@ -1,0 +1,1 @@
+﻿OmnifactotumGenericObjectExtensionsTests.ClassWithFlagsEnumAndTypeAndAssemblyProperties :: SomeAssembly:Assembly = {{RuntimeAssembly :: "{0}"}}, SomeAttributes:FileAttributes = {{FileAttributes :: {{{1}}}}}, SomeType:Type = {{RuntimeType :: "{2}"}}

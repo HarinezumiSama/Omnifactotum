@@ -486,6 +486,7 @@ namespace System
                 var getPropertiesQuery = type
                     .GetProperties(bindingFlags)
                     .Where(item => item.CanRead && !item.GetIndexParameters().Any());
+
                 if (actualOptions.SortMembersAlphabetically)
                 {
                     getPropertiesQuery = getPropertiesQuery.OrderBy(item => item.Name);
@@ -848,10 +849,12 @@ namespace System
                     }
                     catch (Exception ex)
                     {
+                        var underlyingException = ex.GetBaseException() ?? ex;
+
                         resultBuilder.AppendFormat(
-                            "{{ Error getting property value: [{0}] {1}) }}",
-                            ex.GetType().Name,
-                            (ex.GetBaseException() ?? ex).Message);
+                            "{{ Error getting property value: [{0}] {1} }}",
+                            underlyingException.GetType().Name,
+                            underlyingException.Message);
 
                         continue;
                     }
@@ -993,11 +996,15 @@ namespace System
                     }
                     catch (Exception ex)
                     {
+                        //// ReSharper disable once ConstantNullCoalescingCondition
+                        var underlyingException = ex.GetBaseException() ?? ex;
+
                         resultBuilder.AppendFormat(
-                            "{{ Error getting the collection element at index {0} ({1}: {2}) }}",
+                            "{{ Error getting a collection element at index {0}: [{1}] {2} }}",
                             count - 1,
-                            ex.GetType().Name,
-                            ex.Message);
+                            underlyingException.GetType().Name,
+                            underlyingException.Message);
+
                         continue;
                     }
 
@@ -1038,7 +1045,7 @@ namespace System
                 }
 
                 var actualType = valueA.GetType();
-                if (actualType != valueB.GetType())
+                if (valueB.GetType() != actualType)
                 {
                     return false;
                 }
@@ -1063,10 +1070,9 @@ namespace System
                 var fields = ContentFieldsCache[actualType];
                 if (fields.Length == 0)
                 {
-                    return actualType.IsValueType || ReferenceEquals(valueA, valueB);
+                    return true;
                 }
 
-                //// ReSharper disable once LoopCanBeConvertedToQuery - More readable in 'foreach' style
                 foreach (var field in fields)
                 {
                     var fieldValueA = field.GetValue(valueA);

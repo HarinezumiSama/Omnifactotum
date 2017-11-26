@@ -23,10 +23,7 @@ namespace System
         public static void DisposeSafely<T>([CanBeNull] this T disposable)
             where T : class, IDisposable
         {
-            if (!ReferenceEquals(disposable, null))
-            {
-                disposable.Dispose();
-            }
+            disposable?.Dispose();
         }
 
         /// <summary>

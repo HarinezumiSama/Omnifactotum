@@ -141,8 +141,10 @@
     <Content Include="Resources\ExpectedComplexObjectWithCyclesAllFlagsToPropertyString.txt" />
     <Content Include="Resources\ExpectedComplexObjectWithCyclesWithComplexPropertiesToPropertyString.txt" />
     <Content Include="Resources\ExpectedComplexObjectWithMemberTypeToPropertyString.txt" />
+    <Content Include="Resources\ExpectedClassWithPropertyGetterThrowingExceptionToPropertyString.txt" />
     <Content Include="Resources\ExpectedLinqExpressionToPropertyString.txt" />
     <Content Include="Resources\ExpectedMaxRecursionToPropertyString.txt" />
+    <Content Include="Resources\ExpectedClassWithFlagsEnumAndTypeAndAssemblyPropertiesToPropertyStringTemplate.txt" />
     <Content Include="Resources\ExpectedPointerContainerToPropertyStringTemplate.txt" />
     <Content Include="Resources\ExpectedVirtualTreeNodeWithDateTimeOffsetToPropertyString.txt" />
     <Content Include="Resources\ExpectedVirtualTreeNodeWithDateTimeToPropertyString.txt" />
