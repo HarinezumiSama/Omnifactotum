@@ -30,8 +30,12 @@ namespace Omnifactotum.Validation
         ///     Adds the specified error to the collection.
         /// </summary>
         /// <param name="error">
-        ///     <para>The error.</para>
-        ///     <para>Can be <c>null</c>, in which case it is simply not added to the collection.</para>
+        ///     <para>
+        ///         The error.
+        ///     </para>
+        ///     <para>
+        ///         Can be <c>null</c>, in which case it is simply not added to the collection.
+        ///     </para>
         /// </param>
         public void Add([CanBeNull] MemberConstraintValidationError error)
         {
@@ -44,14 +48,18 @@ namespace Omnifactotum.Validation
         }
 
         /// <summary>
-        ///     Adds the specified error to the collection.
+        ///     Adds the specified collection of errors to this <see cref="ValidationErrorCollection"/>.
         /// </summary>
         /// <param name="errors">
-        ///     The collection of errors.
-        ///     <para>Can be <c>null</c>, in which case it is simply not added to the collection.</para>
         ///     <para>
-        ///         One or more items in the collection can be <c>null</c>, in which case those items are
-        ///         simply not added to the collection.
+        ///         The collection of errors.
+        ///     </para>
+        ///     <para>
+        ///         Can be <c>null</c>, in which case nothing is added to this <see cref="ValidationErrorCollection"/>.
+        ///     </para>
+        ///     <para>
+        ///         One or more items in the collection can be <c>null</c>, in which case these <c>null</c> items
+        ///         are not added to this <see cref="ValidationErrorCollection"/>.
         ///     </para>
         /// </param>
         public void AddRange([CanBeNull] IEnumerable<MemberConstraintValidationError> errors)

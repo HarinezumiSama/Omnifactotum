@@ -67,6 +67,7 @@
     <Compile Include="Compatibility\PropertyAccessMode.cs" />
     <Compile Include="Compatibility\TestCasesBase.cs" />
     <Compile Include="ConstraintTestsBase.cs" />
+    <Compile Include="EquatableValueCapsuleTests.cs" />
     <Compile Include="ExtensionMethods\MethodBaseTestHelper.cs" />
     <Compile Include="ExtensionMethods\OmnifactotumArrayExtensionsTests.cs" />
     <Compile Include="ExtensionMethods\OmnifactotumAssemblyExtensionsTests.cs" />
@@ -92,6 +93,7 @@
     <Compile Include="SyncValueContainerHelperForReferenceTypeTests.cs" />
     <Compile Include="SyncValueContainerHelperForValueTypeTests.cs" />
     <Compile Include="Validation\Constraints\MemberConstraintBaseTests.cs" />
+    <Compile Include="ValueCapsuleTests.cs" />
     <Compile Include="ValueContainerForReferenceTypeTests.cs" />
     <Compile Include="ValueContainerForValueTypeTests.cs" />
     <Compile Include="ValueContainerHelperForReferenceTypeTests.cs" />

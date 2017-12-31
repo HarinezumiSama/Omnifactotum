@@ -327,19 +327,12 @@ namespace System
             [CanBeNull] List<Type> genericParameters,
             ref int genericParameterOffset)
         {
-            if (resultBuilder == null)
-            {
-                throw new ArgumentNullException(nameof(resultBuilder));
-            }
-
-            if (type == null)
-            {
-                throw new ArgumentNullException(nameof(type));
-            }
-
             if (genericParameterOffset < 0)
             {
-                throw new ArgumentOutOfRangeException(nameof(genericParameterOffset), genericParameterOffset, null);
+                throw new ArgumentOutOfRangeException(
+                    nameof(genericParameterOffset),
+                    genericParameterOffset,
+                    "Internal error: generic parameter offset is out of range.");
             }
 
             if (type.IsGenericType && genericParameters == null)
@@ -443,8 +436,13 @@ namespace System
             resultBuilder.Append('>');
         }
 
-        private static string GetNameInternal(Type type, bool fullName)
+        private static string GetNameInternal([NotNull] Type type, bool fullName)
         {
+            if (type == null)
+            {
+                throw new ArgumentNullException(nameof(type));
+            }
+
             var resultBuilder = new StringBuilder();
             var offset = 0;
             GetNameInternal(resultBuilder, type, fullName, null, ref offset);
