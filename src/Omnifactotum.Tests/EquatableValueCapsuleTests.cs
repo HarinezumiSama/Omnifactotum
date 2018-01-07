@@ -7,15 +7,17 @@ using Omnifactotum.NUnit;
 
 namespace Omnifactotum.Tests
 {
-    [TestFixture]
+    [TestFixture(TestOf = typeof(EquatableValueCapsule<>))]
     internal sealed class EquatableValueCapsuleTests
     {
         [Test]
-        public void TestConstruction()
+        [TestCase(null)]
+        [TestCase("")]
+        [TestCase("85dc4bfa130e4c26ad634343a23fda82")]
+        public void TestConstruction(string value)
         {
-            const string Value = "74eb9ddd3c6d496e9f84ceeb765412cd";
-            var capsule = new CaseInsensitiveStringEquatableValueCapsule(Value);
-            Assert.That(capsule.Value, Is.EqualTo(Value));
+            var capsule = new CaseInsensitiveStringEquatableValueCapsule(value);
+            Assert.That(capsule.Value, Is.EqualTo(value));
         }
 
         [Test]
@@ -32,36 +34,16 @@ namespace Omnifactotum.Tests
         }
 
         [Test]
-        [TestCase(
-            null,
-            null,
-            AssertEqualityExpectation.EqualAndMayBeSame,
-            AssertEqualityExpectation.EqualAndMayBeSame)]
-        [TestCase(
-            null,
-            "Value",
-            AssertEqualityExpectation.NotEqual,
-            AssertEqualityExpectation.NotEqual)]
-        [TestCase(
-            "Value",
-            "Value",
-            AssertEqualityExpectation.EqualAndCannotBeSame,
-            AssertEqualityExpectation.EqualAndCannotBeSame)]
-        [TestCase(
-            "Value",
-            "vALUE",
-            AssertEqualityExpectation.EqualAndCannotBeSame,
-            AssertEqualityExpectation.NotEqual)]
-        [TestCase(
-            "Value",
-            "V@lue",
-            AssertEqualityExpectation.NotEqual,
-            AssertEqualityExpectation.NotEqual)]
+        [TestCase(null, null, true, true)]
+        [TestCase(null, "Value", false, false)]
+        [TestCase("Value", "Value", true, true)]
+        [TestCase("Value", "vALUE", true, false)]
+        [TestCase("Value", "V@lue", false, false)]
         public void TestEquality(
             string value1,
             string value2,
-            AssertEqualityExpectation caseInsensitiveStringExpectation,
-            AssertEqualityExpectation regularStringExpectation)
+            bool isCaseInsensitiveStringEqual,
+            bool isRegularStringEqual)
         {
             var caseInsensitiveCapsule1 = new CaseInsensitiveStringEquatableValueCapsule(value1);
             var caseInsensitiveCapsule2 = new CaseInsensitiveStringEquatableValueCapsule(value2);
@@ -69,12 +51,19 @@ namespace Omnifactotum.Tests
             NUnitFactotum.AssertEquality(
                 caseInsensitiveCapsule1,
                 caseInsensitiveCapsule2,
-                caseInsensitiveStringExpectation);
+                isCaseInsensitiveStringEqual
+                    ? AssertEqualityExpectation.EqualAndCannotBeSame
+                    : AssertEqualityExpectation.NotEqual);
 
             var regularCapsule1 = new RegularStringEquatableValueCapsule(value1);
             var regularCapsule2 = new RegularStringEquatableValueCapsule(value2);
 
-            NUnitFactotum.AssertEquality(regularCapsule1, regularCapsule2, regularStringExpectation);
+            NUnitFactotum.AssertEquality(
+                regularCapsule1,
+                regularCapsule2,
+                isRegularStringEqual
+                    ? AssertEqualityExpectation.EqualAndCannotBeSame
+                    : AssertEqualityExpectation.NotEqual);
         }
 
         private sealed class RegularStringEquatableValueCapsule : EquatableValueCapsule<string>

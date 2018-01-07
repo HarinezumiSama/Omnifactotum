@@ -61,6 +61,7 @@
     <Compile Include="AsyncFactotumTests.cs" />
     <Compile Include="Auxiliary\DisposableStruct.cs" />
     <Compile Include="ByReferenceEqualityComparerTests.cs" />
+    <Compile Include="ComparableValueCapsuleTests.cs" />
     <Compile Include="Compatibility\AssertEqualityExpectation.cs" />
     <Compile Include="Compatibility\GenericTestCasesBase.cs" />
     <Compile Include="Compatibility\NUnitFactotum.cs" />

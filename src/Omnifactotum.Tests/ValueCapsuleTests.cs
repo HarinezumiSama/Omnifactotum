@@ -4,15 +4,17 @@ using Omnifactotum.Annotations;
 
 namespace Omnifactotum.Tests
 {
-    [TestFixture]
+    [TestFixture(TestOf = typeof(ValueCapsule<>))]
     internal sealed class ValueCapsuleTests
     {
         [Test]
-        public void TestConstruction()
+        [TestCase(null)]
+        [TestCase("")]
+        [TestCase("ab81a1846da744d1a38284a57713564e")]
+        public void TestConstruction(string value)
         {
-            const string Value = "74eb9ddd3c6d496e9f84ceeb765412cd";
-            var capsule = new StringCapsule(Value);
-            Assert.That(capsule.Value, Is.EqualTo(Value));
+            var capsule = new StringCapsule(value);
+            Assert.That(capsule.Value, Is.EqualTo(value));
         }
 
         [Test]

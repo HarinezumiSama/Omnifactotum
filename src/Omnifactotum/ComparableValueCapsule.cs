@@ -59,7 +59,9 @@ namespace Omnifactotum
         ///     <c>true</c> if the left <see cref="ComparableValueCapsule{T}"/> instance is less than
         ///     the right <see cref="ComparableValueCapsule{T}"/> instance; otherwise, <c>false</c>.
         /// </returns>
-        public static bool operator <([CanBeNull] ComparableValueCapsule<T> left, [CanBeNull] ComparableValueCapsule<T> right)
+        public static bool operator <(
+            [CanBeNull] ComparableValueCapsule<T> left,
+            [CanBeNull] ComparableValueCapsule<T> right)
         {
             return Comparer<ComparableValueCapsule<T>>.Default.Compare(left, right) < 0;
         }
@@ -78,7 +80,9 @@ namespace Omnifactotum
         ///     <c>true</c> if the left <see cref="ComparableValueCapsule{T}"/> instance is less than or equal to
         ///     the right <see cref="ComparableValueCapsule{T}"/> instance; otherwise, <c>false</c>.
         /// </returns>
-        public static bool operator <=([CanBeNull] ComparableValueCapsule<T> left, [CanBeNull] ComparableValueCapsule<T> right)
+        public static bool operator <=(
+            [CanBeNull] ComparableValueCapsule<T> left,
+            [CanBeNull] ComparableValueCapsule<T> right)
         {
             return Comparer<ComparableValueCapsule<T>>.Default.Compare(left, right) <= 0;
         }
@@ -97,7 +101,9 @@ namespace Omnifactotum
         ///     <c>true</c> if the left <see cref="ComparableValueCapsule{T}"/> instance is greater than
         ///     the right <see cref="ComparableValueCapsule{T}"/> instance; otherwise, <c>false</c>.
         /// </returns>
-        public static bool operator >([CanBeNull] ComparableValueCapsule<T> left, [CanBeNull] ComparableValueCapsule<T> right)
+        public static bool operator >(
+            [CanBeNull] ComparableValueCapsule<T> left,
+            [CanBeNull] ComparableValueCapsule<T> right)
         {
             return Comparer<ComparableValueCapsule<T>>.Default.Compare(left, right) > 0;
         }
@@ -116,7 +122,9 @@ namespace Omnifactotum
         ///     <c>true</c> if the left <see cref="ComparableValueCapsule{T}"/> instance is greater than or equal to
         ///     the right <see cref="ComparableValueCapsule{T}"/> instance; otherwise, <c>false</c>.
         /// </returns>
-        public static bool operator >=([CanBeNull] ComparableValueCapsule<T> left, [CanBeNull] ComparableValueCapsule<T> right)
+        public static bool operator >=(
+            [CanBeNull] ComparableValueCapsule<T> left,
+            [CanBeNull] ComparableValueCapsule<T> right)
         {
             return Comparer<ComparableValueCapsule<T>>.Default.Compare(left, right) >= 0;
         }
@@ -136,14 +144,14 @@ namespace Omnifactotum
         /// </exception>
         public int CompareTo([CanBeNull] ComparableValueCapsule<T> other)
         {
-            if (ReferenceEquals(other, null))
+            if (other is null)
             {
                 return 1;
             }
 
             if (other.GetType() != GetType())
             {
-                throw new ArgumentException("Incompatible comparand type.");
+                throw new ArgumentException("Incompatible comparand type.", nameof(other));
             }
 
             return ValueComparer.Compare(Value, other.Value);
