@@ -53,10 +53,7 @@ namespace Omnifactotum.Tests
             foreach (var value in _values)
             {
                 var container = new ValueContainer<T>(value);
-
-                Assert.That(
-                    container.Value,
-                    typeof(T).IsValueType ? (IResolveConstraint)Is.EqualTo(value) : Is.SameAs(value));
+                Assert.That(container.Value, GetEqualityConstraint(value));
             }
         }
 
@@ -64,16 +61,40 @@ namespace Omnifactotum.Tests
         public void TestValue()
         {
             var container = new ValueContainer<T>(_value);
-
-            Assert.That(
-                container.Value,
-                typeof(T).IsValueType ? (IResolveConstraint)Is.EqualTo(_value) : Is.SameAs(_value));
+            Assert.That(container.Value, GetEqualityConstraint(_value));
 
             container.Value = _anotherValue;
-
-            Assert.That(
-                container.Value,
-                typeof(T).IsValueType ? (IResolveConstraint)Is.EqualTo(_anotherValue) : Is.SameAs(_anotherValue));
+            Assert.That(container.Value, GetEqualityConstraint(_anotherValue));
         }
+
+        [Test]
+        public void TestEquality()
+        {
+            var container1 = new ValueContainer<T>(_value);
+            var container2 = new ValueContainer<T>(_value);
+            var containerAnother = new ValueContainer<T>(_anotherValue);
+            var containerDefault = new ValueContainer<T>();
+
+            NUnitFactotum.AssertEquality(container1, container1, AssertEqualityExpectation.EqualAndMayBeSame);
+            NUnitFactotum.AssertEquality(container1, container2, AssertEqualityExpectation.EqualAndCannotBeSame);
+            NUnitFactotum.AssertEquality(container1, containerAnother, AssertEqualityExpectation.NotEqual);
+            NUnitFactotum.AssertEquality(container1, containerDefault, AssertEqualityExpectation.NotEqual);
+            NUnitFactotum.AssertEquality(container1, null, AssertEqualityExpectation.NotEqual);
+        }
+
+        [Test]
+        public void TestToString()
+        {
+            foreach (var value in _values)
+            {
+                var container = new ValueContainer<T>(value);
+                Assert.That(
+                    container.ToString(),
+                    Is.EqualTo($@"{{ {nameof(ValueCapsule<T>.Value)} = {value.ToStringSafelyInvariant()} }}"));
+            }
+        }
+
+        private static IResolveConstraint GetEqualityConstraint(T value)
+            => typeof(T).IsValueType ? (IResolveConstraint)Is.EqualTo(value) : Is.SameAs(value);
     }
 }
