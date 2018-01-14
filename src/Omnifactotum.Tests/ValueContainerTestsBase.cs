@@ -90,7 +90,7 @@ namespace Omnifactotum.Tests
                 var container = new ValueContainer<T>(value);
                 Assert.That(
                     container.ToString(),
-                    Is.EqualTo($@"{{ {nameof(ValueCapsule<T>.Value)} = {value.ToStringSafelyInvariant()} }}"));
+                    Is.EqualTo($@"{{ {nameof(ValueContainer<T>.Value)} = {value.ToStringSafelyInvariant()} }}"));
             }
         }
 

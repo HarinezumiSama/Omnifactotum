@@ -2,7 +2,7 @@
 
 namespace Omnifactotum.Tests
 {
-    [TestFixture]
+    [TestFixture(TestOf = typeof(SyncValueContainer<>))]
     internal sealed class SyncValueContainerForReferenceTypeTests : SyncValueContainerTestsBase<string>
     {
         public SyncValueContainerForReferenceTypeTests()

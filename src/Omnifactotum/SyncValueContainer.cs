@@ -136,7 +136,7 @@ namespace Omnifactotum
         /// <returns>
         ///     A <see cref="String" /> that represents this <see cref="SyncValueContainer{T}"/> instance.
         /// </returns>
-        public override string ToString() => $@"{{ Value = {Value.ToStringSafelyInvariant()} }}";
+        public override string ToString() => $@"{{ {nameof(Value)} = {Value.ToStringSafelyInvariant()} }}";
 
         /// <summary>
         ///     Determines whether the specified <see cref="Object" /> is equal to
