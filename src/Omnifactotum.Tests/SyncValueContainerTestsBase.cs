@@ -1,5 +1,9 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.Diagnostics;
 using System.Diagnostics.CodeAnalysis;
+using System.Linq.Expressions;
+using System.Threading;
 using NUnit.Framework;
 using NUnit.Framework.Constraints;
 using Omnifactotum.NUnit;
@@ -46,10 +50,7 @@ namespace Omnifactotum.Tests
             var container = new SyncValueContainer<T>();
 
             Assert.That(container.SyncObject, Is.Not.Null & Is.TypeOf<object>());
-
-            Assert.That(
-                container.Value,
-                typeof(T).IsValueType ? (IResolveConstraint)Is.EqualTo(default(T)) : Is.Null);
+            Assert.That(container.Value, GetDefaultValueConstraint());
         }
 
         [Test]
@@ -97,6 +98,93 @@ namespace Omnifactotum.Tests
         }
 
         [Test]
+        public void TestValueThreadSafety()
+        {
+            const int ConditionWaitTimeoutInSeconds = 1;
+
+            var container = new SyncValueContainer<T>();
+            Assert.That(container.Value, GetDefaultValueConstraint());
+
+            var canAnotherThreadChangeValue = false;
+            var isAnotherThreadEntered = false;
+            var isAnotherThreadExited = false;
+
+            void ExecuteAnotherThread()
+            {
+                isAnotherThreadEntered = true;
+
+                while (!canAnotherThreadChangeValue)
+                {
+                    Thread.Sleep(1);
+                }
+
+                container.Value = _anotherValue;
+
+                isAnotherThreadExited = true;
+            }
+
+            void WaitForCondition(bool alwaysWait, Expression<Func<bool>> condition)
+            {
+                var compiledCondition = condition.Compile();
+
+                var stopwatch = Stopwatch.StartNew();
+                while (alwaysWait || !compiledCondition())
+                {
+                    if (stopwatch.Elapsed.TotalSeconds > ConditionWaitTimeoutInSeconds)
+                    {
+                        break;
+                    }
+
+                    Thread.Sleep(1);
+                }
+
+                Assert.That(compiledCondition(), $@"Condition has not been met: {condition}");
+            }
+
+            var thread = new Thread(ExecuteAnotherThread)
+            {
+                IsBackground = true,
+                Name = $@"{nameof(TestValueThreadSafety)}_{nameof(ExecuteAnotherThread)}"
+            };
+            try
+            {
+                thread.Start();
+                WaitForCondition(false, () => isAnotherThreadEntered);
+                WaitForCondition(false, () => !isAnotherThreadExited);
+                Assert.That(container.Value, GetDefaultValueConstraint());
+
+                lock (container.SyncObject)
+                {
+                    WaitForCondition(false, () => !isAnotherThreadExited);
+                    canAnotherThreadChangeValue = true;
+                    WaitForCondition(true, () => !isAnotherThreadExited);
+
+                    container.Value = _value;
+                    Assert.That(container.Value, GetEqualityConstraint(_value));
+
+                    WaitForCondition(true, () => !isAnotherThreadExited);
+                }
+
+                WaitForCondition(false, () => isAnotherThreadExited);
+                Assert.That(container.Value, GetEqualityConstraint(_anotherValue));
+            }
+            finally
+            {
+                try
+                {
+                    if (thread.IsAlive)
+                    {
+                        thread.Abort();
+                    }
+                }
+                catch (Exception)
+                {
+                    // Nothing to do
+                }
+            }
+        }
+
+        [Test]
         public void TestEquality()
         {
             var container1 = new SyncValueContainer<T>(_value);
@@ -125,5 +213,8 @@ namespace Omnifactotum.Tests
 
         private static IResolveConstraint GetEqualityConstraint(T value)
             => typeof(T).IsValueType ? (IResolveConstraint)Is.EqualTo(value) : Is.SameAs(value);
+
+        private static IResolveConstraint GetDefaultValueConstraint()
+            => typeof(T).IsValueType ? (IResolveConstraint)Is.EqualTo(default(T)) : Is.Null;
     }
 }
