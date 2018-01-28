@@ -42,11 +42,16 @@
         return EnumeratePrefixedValues("T{0}", ", ", false, count, true);
     }
 
+    private static string EnumerateTypeArgs(string template, int count)
+    {
+        return count == 0 
+            ? string.Empty 
+            : "<" + EnumeratePrefixedValues(template, ", ", false, count, false) + ">";
+    }
+
     private static string EnumerateActionTypeArgs(int count)
     {
-        return (count == 0 ? string.Empty : "<")
-            + EnumeratePrefixedValues("T{0}", ", ", false, count, false)
-            + (count == 0 ? string.Empty : ">");
+        return EnumerateTypeArgs("T{0}", count);
     }
 
     private static string EnumerateFormalArgs(int count)
@@ -59,9 +64,9 @@
             false);
     }
 
-    private static string EnumerateActualArgs(int count)
+    private static string EnumerateActualArgs(int count, bool addStartSeparator = false)
     {
-        return EnumeratePrefixedValues("arg{0}", ", ", false, count, false);
+        return EnumeratePrefixedValues("arg{0}", ", ", addStartSeparator, count, false);
     }
 
     private static string EnumeratePrefixedValues(

@@ -211,18 +211,7 @@ namespace Omnifactotum
         public static Task<TResult> ComputeAsync<<#= EnumerateFuncTypeArgs(index) #>TResult>(
             [NotNull] Func<<#= EnumerateFuncTypeArgs(index) #>TResult> callee<#= EnumerateFormalArgs(index) #>)
         {
-            if (callee == null)
-            {
-                throw new ArgumentNullException(nameof(callee));
-            }
-
-            var task = CreateAndStartComputeTask(
-                <# if (index == 0) { #>callee<# } else { #>() => callee(<#= EnumerateActualArgs(index) #>)<# } #>,
-                callee.Method,
-                (LogErrorWithMessage)TraceErrorInternal,
-                AttachErrorLoggingTask);
-
-            return task;
+            return ComputeAsync<<#= EnumerateFuncTypeArgs(index) #>TResult>(callee, (LogErrorWithMessage)TraceErrorInternal<#= EnumerateActualArgs(index, true) #>);
         }
 
         #endregion

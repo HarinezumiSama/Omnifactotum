@@ -167,18 +167,7 @@ namespace Omnifactotum
         public static Task<TResult> ComputeAsync<TResult>(
             [NotNull] Func<TResult> callee)
         {
-            if (callee == null)
-            {
-                throw new ArgumentNullException(nameof(callee));
-            }
-
-            var task = CreateAndStartComputeTask(
-                callee,
-                callee.Method,
-                (LogErrorWithMessage)TraceErrorInternal,
-                AttachErrorLoggingTask);
-
-            return task;
+            return ComputeAsync<TResult>(callee, (LogErrorWithMessage)TraceErrorInternal);
         }
 
         #endregion
@@ -364,18 +353,7 @@ namespace Omnifactotum
             [NotNull] Func<T1, TResult> callee,
             T1 arg1)
         {
-            if (callee == null)
-            {
-                throw new ArgumentNullException(nameof(callee));
-            }
-
-            var task = CreateAndStartComputeTask(
-                () => callee(arg1),
-                callee.Method,
-                (LogErrorWithMessage)TraceErrorInternal,
-                AttachErrorLoggingTask);
-
-            return task;
+            return ComputeAsync<T1, TResult>(callee, (LogErrorWithMessage)TraceErrorInternal, arg1);
         }
 
         #endregion
@@ -589,18 +567,7 @@ namespace Omnifactotum
             T1 arg1,
             T2 arg2)
         {
-            if (callee == null)
-            {
-                throw new ArgumentNullException(nameof(callee));
-            }
-
-            var task = CreateAndStartComputeTask(
-                () => callee(arg1, arg2),
-                callee.Method,
-                (LogErrorWithMessage)TraceErrorInternal,
-                AttachErrorLoggingTask);
-
-            return task;
+            return ComputeAsync<T1, T2, TResult>(callee, (LogErrorWithMessage)TraceErrorInternal, arg1, arg2);
         }
 
         #endregion
@@ -842,18 +809,7 @@ namespace Omnifactotum
             T2 arg2,
             T3 arg3)
         {
-            if (callee == null)
-            {
-                throw new ArgumentNullException(nameof(callee));
-            }
-
-            var task = CreateAndStartComputeTask(
-                () => callee(arg1, arg2, arg3),
-                callee.Method,
-                (LogErrorWithMessage)TraceErrorInternal,
-                AttachErrorLoggingTask);
-
-            return task;
+            return ComputeAsync<T1, T2, T3, TResult>(callee, (LogErrorWithMessage)TraceErrorInternal, arg1, arg2, arg3);
         }
 
         #endregion
@@ -1123,18 +1079,7 @@ namespace Omnifactotum
             T3 arg3,
             T4 arg4)
         {
-            if (callee == null)
-            {
-                throw new ArgumentNullException(nameof(callee));
-            }
-
-            var task = CreateAndStartComputeTask(
-                () => callee(arg1, arg2, arg3, arg4),
-                callee.Method,
-                (LogErrorWithMessage)TraceErrorInternal,
-                AttachErrorLoggingTask);
-
-            return task;
+            return ComputeAsync<T1, T2, T3, T4, TResult>(callee, (LogErrorWithMessage)TraceErrorInternal, arg1, arg2, arg3, arg4);
         }
 
         #endregion
@@ -1432,18 +1377,7 @@ namespace Omnifactotum
             T4 arg4,
             T5 arg5)
         {
-            if (callee == null)
-            {
-                throw new ArgumentNullException(nameof(callee));
-            }
-
-            var task = CreateAndStartComputeTask(
-                () => callee(arg1, arg2, arg3, arg4, arg5),
-                callee.Method,
-                (LogErrorWithMessage)TraceErrorInternal,
-                AttachErrorLoggingTask);
-
-            return task;
+            return ComputeAsync<T1, T2, T3, T4, T5, TResult>(callee, (LogErrorWithMessage)TraceErrorInternal, arg1, arg2, arg3, arg4, arg5);
         }
 
         #endregion
@@ -1769,18 +1703,7 @@ namespace Omnifactotum
             T5 arg5,
             T6 arg6)
         {
-            if (callee == null)
-            {
-                throw new ArgumentNullException(nameof(callee));
-            }
-
-            var task = CreateAndStartComputeTask(
-                () => callee(arg1, arg2, arg3, arg4, arg5, arg6),
-                callee.Method,
-                (LogErrorWithMessage)TraceErrorInternal,
-                AttachErrorLoggingTask);
-
-            return task;
+            return ComputeAsync<T1, T2, T3, T4, T5, T6, TResult>(callee, (LogErrorWithMessage)TraceErrorInternal, arg1, arg2, arg3, arg4, arg5, arg6);
         }
 
         #endregion
@@ -2134,18 +2057,7 @@ namespace Omnifactotum
             T6 arg6,
             T7 arg7)
         {
-            if (callee == null)
-            {
-                throw new ArgumentNullException(nameof(callee));
-            }
-
-            var task = CreateAndStartComputeTask(
-                () => callee(arg1, arg2, arg3, arg4, arg5, arg6, arg7),
-                callee.Method,
-                (LogErrorWithMessage)TraceErrorInternal,
-                AttachErrorLoggingTask);
-
-            return task;
+            return ComputeAsync<T1, T2, T3, T4, T5, T6, T7, TResult>(callee, (LogErrorWithMessage)TraceErrorInternal, arg1, arg2, arg3, arg4, arg5, arg6, arg7);
         }
 
         #endregion
@@ -2527,18 +2439,7 @@ namespace Omnifactotum
             T7 arg7,
             T8 arg8)
         {
-            if (callee == null)
-            {
-                throw new ArgumentNullException(nameof(callee));
-            }
-
-            var task = CreateAndStartComputeTask(
-                () => callee(arg1, arg2, arg3, arg4, arg5, arg6, arg7, arg8),
-                callee.Method,
-                (LogErrorWithMessage)TraceErrorInternal,
-                AttachErrorLoggingTask);
-
-            return task;
+            return ComputeAsync<T1, T2, T3, T4, T5, T6, T7, T8, TResult>(callee, (LogErrorWithMessage)TraceErrorInternal, arg1, arg2, arg3, arg4, arg5, arg6, arg7, arg8);
         }
 
         #endregion
@@ -2948,18 +2849,7 @@ namespace Omnifactotum
             T8 arg8,
             T9 arg9)
         {
-            if (callee == null)
-            {
-                throw new ArgumentNullException(nameof(callee));
-            }
-
-            var task = CreateAndStartComputeTask(
-                () => callee(arg1, arg2, arg3, arg4, arg5, arg6, arg7, arg8, arg9),
-                callee.Method,
-                (LogErrorWithMessage)TraceErrorInternal,
-                AttachErrorLoggingTask);
-
-            return task;
+            return ComputeAsync<T1, T2, T3, T4, T5, T6, T7, T8, T9, TResult>(callee, (LogErrorWithMessage)TraceErrorInternal, arg1, arg2, arg3, arg4, arg5, arg6, arg7, arg8, arg9);
         }
 
         #endregion
@@ -3397,18 +3287,7 @@ namespace Omnifactotum
             T9 arg9,
             T10 arg10)
         {
-            if (callee == null)
-            {
-                throw new ArgumentNullException(nameof(callee));
-            }
-
-            var task = CreateAndStartComputeTask(
-                () => callee(arg1, arg2, arg3, arg4, arg5, arg6, arg7, arg8, arg9, arg10),
-                callee.Method,
-                (LogErrorWithMessage)TraceErrorInternal,
-                AttachErrorLoggingTask);
-
-            return task;
+            return ComputeAsync<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, TResult>(callee, (LogErrorWithMessage)TraceErrorInternal, arg1, arg2, arg3, arg4, arg5, arg6, arg7, arg8, arg9, arg10);
         }
 
         #endregion
@@ -3874,18 +3753,7 @@ namespace Omnifactotum
             T10 arg10,
             T11 arg11)
         {
-            if (callee == null)
-            {
-                throw new ArgumentNullException(nameof(callee));
-            }
-
-            var task = CreateAndStartComputeTask(
-                () => callee(arg1, arg2, arg3, arg4, arg5, arg6, arg7, arg8, arg9, arg10, arg11),
-                callee.Method,
-                (LogErrorWithMessage)TraceErrorInternal,
-                AttachErrorLoggingTask);
-
-            return task;
+            return ComputeAsync<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, TResult>(callee, (LogErrorWithMessage)TraceErrorInternal, arg1, arg2, arg3, arg4, arg5, arg6, arg7, arg8, arg9, arg10, arg11);
         }
 
         #endregion
@@ -4379,18 +4247,7 @@ namespace Omnifactotum
             T11 arg11,
             T12 arg12)
         {
-            if (callee == null)
-            {
-                throw new ArgumentNullException(nameof(callee));
-            }
-
-            var task = CreateAndStartComputeTask(
-                () => callee(arg1, arg2, arg3, arg4, arg5, arg6, arg7, arg8, arg9, arg10, arg11, arg12),
-                callee.Method,
-                (LogErrorWithMessage)TraceErrorInternal,
-                AttachErrorLoggingTask);
-
-            return task;
+            return ComputeAsync<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, TResult>(callee, (LogErrorWithMessage)TraceErrorInternal, arg1, arg2, arg3, arg4, arg5, arg6, arg7, arg8, arg9, arg10, arg11, arg12);
         }
 
         #endregion
@@ -4912,18 +4769,7 @@ namespace Omnifactotum
             T12 arg12,
             T13 arg13)
         {
-            if (callee == null)
-            {
-                throw new ArgumentNullException(nameof(callee));
-            }
-
-            var task = CreateAndStartComputeTask(
-                () => callee(arg1, arg2, arg3, arg4, arg5, arg6, arg7, arg8, arg9, arg10, arg11, arg12, arg13),
-                callee.Method,
-                (LogErrorWithMessage)TraceErrorInternal,
-                AttachErrorLoggingTask);
-
-            return task;
+            return ComputeAsync<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, TResult>(callee, (LogErrorWithMessage)TraceErrorInternal, arg1, arg2, arg3, arg4, arg5, arg6, arg7, arg8, arg9, arg10, arg11, arg12, arg13);
         }
 
         #endregion
@@ -5473,18 +5319,7 @@ namespace Omnifactotum
             T13 arg13,
             T14 arg14)
         {
-            if (callee == null)
-            {
-                throw new ArgumentNullException(nameof(callee));
-            }
-
-            var task = CreateAndStartComputeTask(
-                () => callee(arg1, arg2, arg3, arg4, arg5, arg6, arg7, arg8, arg9, arg10, arg11, arg12, arg13, arg14),
-                callee.Method,
-                (LogErrorWithMessage)TraceErrorInternal,
-                AttachErrorLoggingTask);
-
-            return task;
+            return ComputeAsync<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, T14, TResult>(callee, (LogErrorWithMessage)TraceErrorInternal, arg1, arg2, arg3, arg4, arg5, arg6, arg7, arg8, arg9, arg10, arg11, arg12, arg13, arg14);
         }
 
         #endregion
@@ -6062,18 +5897,7 @@ namespace Omnifactotum
             T14 arg14,
             T15 arg15)
         {
-            if (callee == null)
-            {
-                throw new ArgumentNullException(nameof(callee));
-            }
-
-            var task = CreateAndStartComputeTask(
-                () => callee(arg1, arg2, arg3, arg4, arg5, arg6, arg7, arg8, arg9, arg10, arg11, arg12, arg13, arg14, arg15),
-                callee.Method,
-                (LogErrorWithMessage)TraceErrorInternal,
-                AttachErrorLoggingTask);
-
-            return task;
+            return ComputeAsync<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, T14, T15, TResult>(callee, (LogErrorWithMessage)TraceErrorInternal, arg1, arg2, arg3, arg4, arg5, arg6, arg7, arg8, arg9, arg10, arg11, arg12, arg13, arg14, arg15);
         }
 
         #endregion
@@ -6679,18 +6503,7 @@ namespace Omnifactotum
             T15 arg15,
             T16 arg16)
         {
-            if (callee == null)
-            {
-                throw new ArgumentNullException(nameof(callee));
-            }
-
-            var task = CreateAndStartComputeTask(
-                () => callee(arg1, arg2, arg3, arg4, arg5, arg6, arg7, arg8, arg9, arg10, arg11, arg12, arg13, arg14, arg15, arg16),
-                callee.Method,
-                (LogErrorWithMessage)TraceErrorInternal,
-                AttachErrorLoggingTask);
-
-            return task;
+            return ComputeAsync<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, T14, T15, T16, TResult>(callee, (LogErrorWithMessage)TraceErrorInternal, arg1, arg2, arg3, arg4, arg5, arg6, arg7, arg8, arg9, arg10, arg11, arg12, arg13, arg14, arg15, arg16);
         }
 
         #endregion

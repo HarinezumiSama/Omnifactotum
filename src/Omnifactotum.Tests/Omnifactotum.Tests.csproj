@@ -58,7 +58,11 @@
     <None Include="..\SolutionItems\Omnifactotum.snk">
       <Link>Properties\Omnifactotum.snk</Link>
     </None>
-    <Compile Include="AsyncFactotumTests.cs" />
+    <Compile Include="AsyncFactotumTests.Generated.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>AsyncFactotumTests.tt</DependentUpon>
+    </Compile>
     <Compile Include="Auxiliary\DisposableStruct.cs" />
     <Compile Include="ByReferenceEqualityComparerTests.cs" />
     <Compile Include="ComparableValueCapsuleTests.cs" />
@@ -141,6 +145,10 @@
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="ExtensionMethods\OmnifactotumTypeExtensionsTests.TestResource.txt" />
+    <Content Include="AsyncFactotumTests.tt">
+      <Generator>TextTemplatingFileGenerator</Generator>
+      <LastGenOutput>AsyncFactotumTests.Generated.cs</LastGenOutput>
+    </Content>
     <Content Include="Resources\ExpectedComplexObjectAllFlagsToPropertyString.txt" />
     <Content Include="Resources\ExpectedComplexObjectDefaultOptionsToPropertyString.txt" />
     <Content Include="Resources\ExpectedComplexObjectMaxOneItemToPropertyString.txt" />
@@ -169,7 +177,9 @@
       <Name>Omnifactotum</Name>
     </ProjectReference>
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <Service Include="{508349B6-6B84-4DF5-91F0-309BEEBAD82D}" />
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
     <PostBuildEvent>"$(ProjectDir)\..\SolutionItems\sign.cmd" "$(TargetPath)" || exit /b 1</PostBuildEvent>

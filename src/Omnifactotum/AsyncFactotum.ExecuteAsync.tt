@@ -199,18 +199,7 @@ namespace Omnifactotum
         public static Task ExecuteAsync<#= EnumerateActionTypeArgs(index) #>(
             [NotNull] Action<#= EnumerateActionTypeArgs(index) #> callee<#= EnumerateFormalArgs(index) #>)
         {
-            if (callee == null)
-            {
-                throw new ArgumentNullException(nameof(callee));
-            }
-
-            var task = CreateAndStartExecuteTask(
-                <# if (index == 0) { #>callee<# } else { #>() => callee(<#= EnumerateActualArgs(index) #>)<# } #>,
-                callee.Method,
-                (LogErrorWithMessage)TraceErrorInternal,
-                AttachErrorLoggingTask);
-
-            return task;
+            return ExecuteAsync<#= EnumerateActionTypeArgs(index) #>(callee, (LogErrorWithMessage)TraceErrorInternal<#= EnumerateActualArgs(index, true) #>);
         }
 
         #endregion
