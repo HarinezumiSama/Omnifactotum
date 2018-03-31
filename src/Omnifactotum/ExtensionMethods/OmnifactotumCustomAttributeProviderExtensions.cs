@@ -59,37 +59,6 @@ namespace System.Reflection
         }
 
         /// <summary>
-        ///     Gets the list of the attributes, of the specified type, applied to the specified provider of
-        ///     custom attributes.
-        /// </summary>
-        /// <typeparam name="TAttribute">
-        ///     The type of the attribute.
-        /// </typeparam>
-        /// <param name="provider">
-        ///     The provider of custom attributes to get the attribute list of.
-        /// </param>
-        /// <param name="inherit">
-        ///     <c>true</c> to look up the hierarchy chain for the inherited custom attribute;
-        ///     otherwise, <c>false</c>.
-        /// </param>
-        /// <returns>
-        ///     The list of the attributes of the specified type.
-        /// </returns>
-        /// <exception cref="System.ArgumentNullException">
-        ///     <paramref name="provider"/> is <c>null</c>.
-        /// </exception>
-        [Obsolete(
-            "For compatibility with FW 4.5+: use OmnifactotumCustomAttributeProviderExtensions.GetCustomAttributeArray.",
-            true)]
-        public static TAttribute[] GetCustomAttributes<TAttribute>(
-            [NotNull] this ICustomAttributeProvider provider,
-            bool inherit)
-            where TAttribute : Attribute
-        {
-            return GetCustomAttributeArray<TAttribute>(provider, inherit);
-        }
-
-        /// <summary>
         ///     Gets the sole specified attribute applied to the specified provider of custom attributes.
         /// </summary>
         /// <typeparam name="TAttribute">

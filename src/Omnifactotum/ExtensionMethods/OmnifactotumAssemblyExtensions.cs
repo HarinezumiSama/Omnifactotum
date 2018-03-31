@@ -24,6 +24,7 @@ namespace System.Reflection
         /// <exception cref="ArgumentException">
         ///     The specified assembly does not have a local path.
         /// </exception>
+        [NotNull]
         public static string GetLocalPath([NotNull] this Assembly assembly)
         {
             if (assembly == null)
@@ -31,30 +32,24 @@ namespace System.Reflection
                 throw new ArgumentNullException(nameof(assembly));
             }
 
-            if (assembly.IsDynamic)
-            {
-                throw new ArgumentException(
-                    $@"The assembly {{ {assembly.FullName} }} has no local path because it is dynamic.",
-                    nameof(assembly));
-            }
-
             ArgumentException CreateNoLocalPathException()
                 => new ArgumentException(
                     $@"The assembly {{ {assembly.FullName} }} does not have a local path.",
                     nameof(assembly));
 
-            if (string.IsNullOrEmpty(assembly.Location) || string.IsNullOrEmpty(assembly.CodeBase))
+            if (assembly.IsDynamic || string.IsNullOrEmpty(assembly.Location)
+                || string.IsNullOrEmpty(assembly.CodeBase))
             {
                 throw CreateNoLocalPathException();
             }
 
             var uri = new Uri(assembly.CodeBase);
-            if (!uri.IsFile)
+            if (!uri.IsFile || !uri.IsAbsoluteUri || string.IsNullOrWhiteSpace(uri.LocalPath))
             {
                 throw CreateNoLocalPathException();
             }
 
-            return uri.LocalPath.EnsureNotNull();
+            return uri.LocalPath;
         }
     }
 }

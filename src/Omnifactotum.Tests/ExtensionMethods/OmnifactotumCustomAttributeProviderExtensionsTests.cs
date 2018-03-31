@@ -1,12 +1,14 @@
 ﻿using System;
 using System.Linq;
 using System.Reflection;
+using System.Runtime.InteropServices;
 using NUnit.Framework;
 using Omnifactotum.Annotations;
 
+//// ReSharper disable AssignNullToNotNullAttribute - For negative test cases
+
 namespace Omnifactotum.Tests.ExtensionMethods
 {
-    //// ReSharper disable AssignNullToNotNullAttribute - Intentionally for tests
     [TestFixture]
     internal sealed class OmnifactotumCustomAttributeProviderExtensionsTests
     {
@@ -22,6 +24,14 @@ namespace Omnifactotum.Tests.ExtensionMethods
             var noAttributes = typeof(NoAttributesAppliedTestClass).GetCustomAttributeArray<Attribute>(true);
             Assert.That(noAttributes, Is.Not.Null);
             Assert.That(noAttributes, Is.Empty);
+
+            var testAssemblyAttributes =
+                typeof(OmnifactotumCustomAttributeProviderExtensionsTests).Assembly
+                    .GetCustomAttributeArray<GuidAttribute>(false);
+
+            Assert.That(testAssemblyAttributes.Length, Is.EqualTo(1));
+            Assert.That(testAssemblyAttributes.Single(), Is.TypeOf<GuidAttribute>());
+            Assert.That(testAssemblyAttributes.Single().Value, Is.EqualTo("81176c2e-16ac-45cf-976c-1af1e66fa530"));
         }
 
         [Test]
