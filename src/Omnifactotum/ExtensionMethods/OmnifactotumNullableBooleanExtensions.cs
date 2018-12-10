@@ -33,6 +33,7 @@ namespace System
             [CanBeNull] string noValueString,
             [CanBeNull] string trueValueString,
             [CanBeNull] string falseValueString)
+            //// ReSharper disable once ArrangeRedundantParentheses :: For clarity
             => value.HasValue ? (value.Value ? trueValueString : falseValueString) : noValueString;
 
         /// <summary>
@@ -61,6 +62,7 @@ namespace System
             [NotNull] Func<string> noValueProvider,
             [NotNull] Func<string> trueValueProvider,
             [NotNull] Func<string> falseValueProvider)
+            //// ReSharper disable once ArrangeRedundantParentheses :: For clarity
             => value.HasValue
                 ? (value.Value
                     ? (trueValueProvider ?? throw new ArgumentNullException(nameof(trueValueProvider))).Invoke()

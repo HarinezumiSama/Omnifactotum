@@ -53,8 +53,7 @@ namespace Omnifactotum
             {
                 var memberInfo = GetDataMemberInfo(fieldGetterExpression);
 
-                var result = memberInfo as FieldInfo;
-                if (result == null)
+                if (!(memberInfo is FieldInfo result))
                 {
                     throw new ArgumentException(
                         string.Format(
@@ -125,8 +124,7 @@ namespace Omnifactotum
             {
                 var memberInfo = GetDataMemberInfo(propertyGetterExpression);
 
-                var result = memberInfo as PropertyInfo;
-                if (result == null)
+                if (!(memberInfo is PropertyInfo result))
                 {
                     throw new ArgumentException(
                         string.Format(
@@ -183,7 +181,7 @@ namespace Omnifactotum
             private static MemberInfo GetDataMemberInfo<TMember>(
                 [NotNull] Expression<Func<TObject, TMember>> memberGetterExpression)
             {
-                if (memberGetterExpression == null)
+                if (memberGetterExpression is null)
                 {
                     throw new ArgumentNullException(nameof(memberGetterExpression));
                 }
@@ -206,7 +204,7 @@ namespace Omnifactotum
                 var fieldInfo = memberExpression.Member as FieldInfo;
                 var propertyInfo = memberExpression.Member as PropertyInfo;
 
-                if (fieldInfo == null && propertyInfo == null)
+                if (fieldInfo is null && propertyInfo is null)
                 {
                     throw new ArgumentException(
                         string.Format(
@@ -216,7 +214,7 @@ namespace Omnifactotum
                         nameof(memberGetterExpression));
                 }
 
-                if (result.DeclaringType == null || !result.DeclaringType.IsAssignableFrom(objectType))
+                if (result.DeclaringType is null || !result.DeclaringType.IsAssignableFrom(objectType))
                 {
                     throw new ArgumentException(
                         string.Format(
@@ -226,12 +224,12 @@ namespace Omnifactotum
                         nameof(memberGetterExpression));
                 }
 
-                if (memberExpression.Expression == null)
+                if (memberExpression.Expression is null)
                 {
                     if (propertyInfo != null)
                     {
                         var accessor = propertyInfo.GetGetMethod(true) ?? propertyInfo.GetSetMethod(true);
-                        if (accessor == null || !accessor.IsStatic || result.ReflectedType != objectType)
+                        if (accessor is null || !accessor.IsStatic || result.ReflectedType != objectType)
                         {
                             throw new ArgumentException(
                                 string.Format(

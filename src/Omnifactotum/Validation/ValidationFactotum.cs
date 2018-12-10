@@ -27,12 +27,12 @@ namespace Omnifactotum.Validation
         /// </returns>
         public static Expression ConvertTypeAuto([NotNull] Expression expression, [NotNull] Type valueType)
         {
-            if (expression == null)
+            if (expression is null)
             {
                 throw new ArgumentNullException(nameof(expression));
             }
 
-            if (valueType == null)
+            if (valueType is null)
             {
                 throw new ArgumentNullException(nameof(valueType));
             }
@@ -57,7 +57,7 @@ namespace Omnifactotum.Validation
         /// </returns>
         public static Expression ConvertTypeAuto([NotNull] Expression expression, object value)
         {
-            return value == null ? expression : ConvertTypeAuto(expression, value.GetType());
+            return value is null ? expression : ConvertTypeAuto(expression, value.GetType());
         }
 
         /// <summary>
@@ -74,7 +74,7 @@ namespace Omnifactotum.Validation
         /// </exception>
         public static bool IsValidMemberConstraintType([NotNull] this Type constraintType)
         {
-            if (constraintType == null)
+            if (constraintType is null)
             {
                 throw new ArgumentNullException(nameof(constraintType));
             }

@@ -75,16 +75,10 @@ namespace Omnifactotum
         public VirtualTreeNodeBase<T> Parent
         {
             [DebuggerStepThrough]
-            get
-            {
-                return _owner;
-            }
+            get => _owner;
 
             [DebuggerStepThrough]
-            internal set
-            {
-                _owner = value;
-            }
+            internal set => _owner = value;
         }
 
         /// <summary>

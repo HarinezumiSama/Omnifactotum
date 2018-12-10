@@ -79,7 +79,7 @@ namespace Omnifactotum.Validation.Constraints
             T value,
             [NotNull] Expression<Func<T, TMember>> memberGetterExpression)
         {
-            if (valueContext == null)
+            if (valueContext is null)
             {
                 throw new ArgumentNullException(nameof(valueContext));
             }
@@ -89,7 +89,7 @@ namespace Omnifactotum.Validation.Constraints
                 throw new ArgumentNullException(nameof(value));
             }
 
-            if (memberGetterExpression == null)
+            if (memberGetterExpression is null)
             {
                 throw new ArgumentNullException(nameof(memberGetterExpression));
             }
@@ -137,7 +137,7 @@ namespace Omnifactotum.Validation.Constraints
             [NotNull] Expression<Func<T, TMember>> memberGetterExpression,
             [NotNull] Type constraintType)
         {
-            if (valueContext == null)
+            if (valueContext is null)
             {
                 throw new ArgumentNullException(nameof(valueContext));
             }
@@ -147,12 +147,12 @@ namespace Omnifactotum.Validation.Constraints
                 throw new ArgumentNullException(nameof(value));
             }
 
-            if (memberGetterExpression == null)
+            if (memberGetterExpression is null)
             {
                 throw new ArgumentNullException(nameof(memberGetterExpression));
             }
 
-            if (constraintType == null)
+            if (constraintType is null)
             {
                 throw new ArgumentNullException(nameof(constraintType));
             }

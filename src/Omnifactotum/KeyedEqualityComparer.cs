@@ -138,7 +138,7 @@ namespace Omnifactotum
                 return true;
             }
 
-            if (ReferenceEquals(x, null) || ReferenceEquals(y, null))
+            if (x is null || y is null)
             {
                 return false;
             }
@@ -156,6 +156,7 @@ namespace Omnifactotum
         ///     A hash code for the key of the specified object.
         /// </returns>
         int IEqualityComparer.GetHashCode([CanBeNull] object obj)
-            => ReferenceEquals(obj, null) ? 0 : (obj is T castObj ? GetHashCode(castObj) : obj.GetHashCode());
+            //// ReSharper disable once ArrangeRedundantParentheses :: For clarity
+            => obj is null ? 0 : (obj is T castObj ? GetHashCode(castObj) : obj.GetHashCode());
     }
 }

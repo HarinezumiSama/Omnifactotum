@@ -52,7 +52,7 @@ namespace Omnifactotum
         public FixedSizeDictionary([NotNull] IDictionary<TKey, TValue> dictionary)
             : this()
         {
-            if (dictionary == null)
+            if (dictionary is null)
             {
                 throw new ArgumentNullException(nameof(dictionary));
             }
@@ -250,7 +250,8 @@ namespace Omnifactotum
         ///     <c>true</c> if the <see cref="FixedSizeDictionary{TKey,TValue,TDeterminant}" /> contains an element
         ///     with the specified key; otherwise, <c>false</c>.
         /// </returns>
-        // ReSharper disable once AnnotationRedundanceInHierarchy - To emphasize
+        //// ReSharper disable once CommentTypo :: ReSharper term :)
+        //// ReSharper disable once AnnotationRedundanceInHierarchy :: To emphasize
         public bool TryGetValue([NotNull] TKey key, [CanBeNull] out TValue value)
         {
             var index = Determinant.GetIndex(key);
@@ -323,7 +324,7 @@ namespace Omnifactotum
             KeyValuePair<TKey, TValue>[] array,
             int arrayIndex)
         {
-            if (array == null)
+            if (array is null)
             {
                 throw new ArgumentNullException(nameof(array));
             }
@@ -493,7 +494,7 @@ namespace Omnifactotum
 
             public void CopyTo(TKey[] array, int arrayIndex)
             {
-                if (array == null)
+                if (array is null)
                 {
                     throw new ArgumentNullException(nameof(array));
                 }
@@ -568,7 +569,7 @@ namespace Omnifactotum
 
             public void CopyTo(TValue[] array, int arrayIndex)
             {
-                if (array == null)
+                if (array is null)
                 {
                     throw new ArgumentNullException(nameof(array));
                 }

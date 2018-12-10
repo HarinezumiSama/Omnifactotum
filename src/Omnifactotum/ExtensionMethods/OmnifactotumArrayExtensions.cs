@@ -47,12 +47,12 @@ namespace System
         /// </param>
         public static void Initialize<T>([NotNull] this T[] array, [NotNull] Func<T, int, T> getElementValue)
         {
-            if (array == null)
+            if (array is null)
             {
                 throw new ArgumentNullException(nameof(array));
             }
 
-            if (getElementValue == null)
+            if (getElementValue is null)
             {
                 throw new ArgumentNullException(nameof(getElementValue));
             }
@@ -79,7 +79,7 @@ namespace System
         /// </param>
         public static void Initialize<T>([NotNull] this T[] array, [NotNull] Func<int, T> getElementValue)
         {
-            if (getElementValue == null)
+            if (getElementValue is null)
             {
                 throw new ArgumentNullException(nameof(getElementValue));
             }
@@ -121,7 +121,7 @@ namespace System
         [NotNull]
         public static ReadOnlyCollection<T> AsReadOnly<T>([NotNull] this T[] array)
         {
-            if (array == null)
+            if (array is null)
             {
                 throw new ArgumentNullException(nameof(array));
             }
@@ -145,7 +145,7 @@ namespace System
         [NotNull]
         public static string ToHexString([NotNull] this byte[] byteArray, bool useUpperCase)
         {
-            if (byteArray == null)
+            if (byteArray is null)
             {
                 throw new ArgumentNullException(nameof(byteArray));
             }
@@ -206,7 +206,7 @@ namespace System
                     //// Thread-safe lock is not needed here
 
                     // ReSharper disable once ConvertIfStatementToNullCoalescingExpression
-                    if (_emptyArray == null)
+                    if (_emptyArray is null)
                     {
                         _emptyArray = new T[0];
                     }

@@ -24,7 +24,7 @@ namespace Omnifactotum.Tests.Validation
             {
                 Data = new SimpleData { StartDate = DateTime.UtcNow, NullableValue = 0, Value = "A" },
                 NonEmptyValue = "B",
-                MultipleDatas = new BaseAnotherSimpleData[] { new AnotherSimpleData { Value = "B" } },
+                MultipleDataItems = new BaseAnotherSimpleData[] { new AnotherSimpleData { Value = "B" } },
                 SingleBaseData = new AnotherSimpleData { Value = "Q" }
             };
 
@@ -35,7 +35,7 @@ namespace Omnifactotum.Tests.Validation
             {
                 Data = new SimpleData { StartDate = DateTime.UtcNow, NullableValue = 0, Value = "A" },
                 NonEmptyValue = "B",
-                MultipleDatas = new BaseAnotherSimpleData[] { new AnotherSimpleData { Value = "B" } }
+                MultipleDataItems = new BaseAnotherSimpleData[] { new AnotherSimpleData { Value = "B" } }
             };
 
             EnsureTestValidationSucceeded(data2);
@@ -49,7 +49,7 @@ namespace Omnifactotum.Tests.Validation
             {
                 Data = new SimpleData { StartDate = DateTime.Now },
                 NonEmptyValue = string.Empty,
-                MultipleDatas =
+                MultipleDataItems =
                     new BaseAnotherSimpleData[] { new AnotherSimpleData { Value = "C" }, new AnotherSimpleData() },
                 SingleBaseData = new AnotherSimpleData()
             };
@@ -83,7 +83,7 @@ namespace Omnifactotum.Tests.Validation
                 {
                     MakeExpressionString("{0}.Data.Value"),
                     MakeExpressionString("{0}.Data.NullableValue"),
-                    MakeExpressionString("Convert({0}.MultipleDatas[1]).Value"),
+                    MakeExpressionString("Convert({0}.MultipleDataItems[1]).Value"),
                     MakeExpressionString("Convert({0}.SingleBaseData).Value")
                 };
 
@@ -255,7 +255,7 @@ namespace Omnifactotum.Tests.Validation
 
             [MemberConstraint(typeof(NotNullConstraint))]
             [MemberItemConstraint(typeof(NotNullConstraint))]
-            public BaseAnotherSimpleData[] MultipleDatas
+            public BaseAnotherSimpleData[] MultipleDataItems
             {
                 [UsedImplicitly]
                 get;

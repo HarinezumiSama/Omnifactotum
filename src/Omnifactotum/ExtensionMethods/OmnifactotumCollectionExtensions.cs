@@ -63,12 +63,12 @@ namespace System.Collections.Generic
         /// </exception>
         public static void DoForEach<T>([NotNull] this IEnumerable<T> collection, [NotNull] Action<T> action)
         {
-            if (collection == null)
+            if (collection is null)
             {
                 throw new ArgumentNullException(nameof(collection));
             }
 
-            if (action == null)
+            if (action is null)
             {
                 throw new ArgumentNullException(nameof(action));
             }
@@ -100,12 +100,12 @@ namespace System.Collections.Generic
         /// </exception>
         public static void DoForEach<T>([NotNull] this IEnumerable<T> collection, [NotNull] Action<T, int> action)
         {
-            if (collection == null)
+            if (collection is null)
             {
                 throw new ArgumentNullException(nameof(collection));
             }
 
-            if (action == null)
+            if (action is null)
             {
                 throw new ArgumentNullException(nameof(action));
             }
@@ -133,12 +133,12 @@ namespace System.Collections.Generic
         /// </param>
         public static void SetItems<T>([NotNull] this ICollection<T> collection, [NotNull] IEnumerable<T> items)
         {
-            if (collection == null)
+            if (collection is null)
             {
                 throw new ArgumentNullException(nameof(collection));
             }
 
-            if (items == null)
+            if (items is null)
             {
                 throw new ArgumentNullException(nameof(items));
             }
@@ -351,12 +351,12 @@ namespace System.Collections.Generic
             [NotNull] Func<T, TKey> keySelector,
             [CanBeNull] IEqualityComparer<TKey> comparer)
         {
-            if (collection == null)
+            if (collection is null)
             {
                 throw new ArgumentNullException(nameof(collection));
             }
 
-            if (keySelector == null)
+            if (keySelector is null)
             {
                 throw new ArgumentNullException(nameof(keySelector));
             }
@@ -414,7 +414,7 @@ namespace System.Collections.Generic
             [CanBeNull] this IEnumerable<TDisposable> collection)
             where TDisposable : class, IDisposable
         {
-            if (collection == null)
+            if (collection is null)
             {
                 return;
             }
@@ -440,7 +440,7 @@ namespace System.Collections.Generic
             [CanBeNull] this IEnumerable<TDisposable?> collection)
             where TDisposable : struct, IDisposable
         {
-            if (collection == null)
+            if (collection is null)
             {
                 return;
             }
@@ -492,7 +492,7 @@ namespace System.Collections.Generic
             [NotNull] this IEnumerable<T> collection,
             [CanBeNull] IEqualityComparer<T> comparer)
         {
-            if (collection == null)
+            if (collection is null)
             {
                 throw new ArgumentNullException(nameof(collection));
             }

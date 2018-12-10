@@ -85,7 +85,7 @@ namespace Omnifactotum
 
         internal void AssignGraph([CanBeNull] DirectedGraph<T> graph)
         {
-            if (graph == null)
+            if (graph is null)
             {
                 return;
             }

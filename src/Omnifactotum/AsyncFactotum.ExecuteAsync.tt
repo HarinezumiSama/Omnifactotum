@@ -52,12 +52,12 @@ namespace Omnifactotum
             [NotNull] Action<#= EnumerateActionTypeArgs(index) #> callee,
             [NotNull] LogErrorWithExceptionAndMessage logError<#= EnumerateFormalArgs(index) #>)
         {
-            if (callee == null)
+            if (callee is null)
             {
                 throw new ArgumentNullException(nameof(callee));
             }
 
-            if (logError == null)
+            if (logError is null)
             {
                 throw new ArgumentNullException(nameof(logError));
             }
@@ -103,12 +103,12 @@ namespace Omnifactotum
             [NotNull] Action<#= EnumerateActionTypeArgs(index) #> callee,
             [NotNull] LogErrorWithException logError<#= EnumerateFormalArgs(index) #>)
         {
-            if (callee == null)
+            if (callee is null)
             {
                 throw new ArgumentNullException(nameof(callee));
             }
 
-            if (logError == null)
+            if (logError is null)
             {
                 throw new ArgumentNullException(nameof(logError));
             }
@@ -154,12 +154,12 @@ namespace Omnifactotum
             [NotNull] Action<#= EnumerateActionTypeArgs(index) #> callee,
             [NotNull] LogErrorWithMessage logError<#= EnumerateFormalArgs(index) #>)
         {
-            if (callee == null)
+            if (callee is null)
             {
                 throw new ArgumentNullException(nameof(callee));
             }
 
-            if (logError == null)
+            if (logError is null)
             {
                 throw new ArgumentNullException(nameof(logError));
             }

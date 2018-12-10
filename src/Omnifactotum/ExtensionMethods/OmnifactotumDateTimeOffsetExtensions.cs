@@ -9,6 +9,9 @@ namespace System
     /// </summary>
     public static class OmnifactotumDateTimeOffsetExtensions
     {
+        private const string FixedFormat = @"yyyy'-'MM'-'dd' 'HH':'mm':'ss UTCzzz";
+        private const string PreciseFixedFormat = @"yyyy'-'MM'-'dd' 'HH':'mm':'ss'.'fffffff UTCzzz";
+
         /// <summary>
         ///     Converts the specified <see cref="DateTimeOffset"/> value to its string
         ///     representation in the format similar to extended ISO 8601.
@@ -26,7 +29,7 @@ namespace System
         ///     <b>Result:</b> 2001-02-03 07:08:09 UTC+02:30
         /// </example>
         public static string ToFixedString(this DateTimeOffset value)
-            => value.ToString("yyyy'-'MM'-'dd' 'HH':'mm':'ss UTCzzz", CultureInfo.InvariantCulture);
+            => value.ToString(FixedFormat, CultureInfo.InvariantCulture);
 
         /// <summary>
         ///     Converts the specified <see cref="DateTimeOffset"/> value to its precise string
@@ -45,6 +48,6 @@ namespace System
         ///     <b>Result:</b> 2001-02-03 07:08:09.1230000 UTC+02:30
         /// </example>
         public static string ToPreciseFixedString(this DateTimeOffset value)
-            => value.ToString("yyyy'-'MM'-'dd' 'HH':'mm':'ss'.'fffffff UTCzzz", CultureInfo.InvariantCulture);
+            => value.ToString(PreciseFixedFormat, CultureInfo.InvariantCulture);
     }
 }

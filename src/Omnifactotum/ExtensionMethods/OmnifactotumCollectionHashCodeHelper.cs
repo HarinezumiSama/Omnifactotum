@@ -29,7 +29,7 @@ namespace System.Collections.Generic
         /// </returns>
         public static int ComputeCollectionHashCode<T>([CanBeNull] this IEnumerable<T> collection)
         {
-            if (collection == null)
+            if (collection is null)
             {
                 return NoElementsHashCode;
             }

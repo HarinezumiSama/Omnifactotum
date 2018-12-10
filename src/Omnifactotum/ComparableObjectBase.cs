@@ -100,7 +100,7 @@ namespace Omnifactotum
         /// </exception>
         public int CompareTo([CanBeNull] ComparableObjectBase other)
         {
-            if (ReferenceEquals(other, null))
+            if (other is null)
             {
                 return 1;
             }

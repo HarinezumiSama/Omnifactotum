@@ -29,7 +29,7 @@ namespace Omnifactotum
         /// </param>
         public SyncValueContainer([CanBeNull] T value, [NotNull] object syncObject)
         {
-            if (syncObject == null)
+            if (syncObject is null)
             {
                 throw new ArgumentNullException(nameof(syncObject));
             }
@@ -179,7 +179,7 @@ namespace Omnifactotum
                 return true;
             }
 
-            if (ReferenceEquals(left, null) || ReferenceEquals(right, null))
+            if (left is null || right is null)
             {
                 return false;
             }

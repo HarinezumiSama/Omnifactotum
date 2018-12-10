@@ -134,7 +134,7 @@ namespace Omnifactotum.Validation
 
         private static IEnumerable<MemberData> GetMembers(MemberData parentMemberData)
         {
-            if (parentMemberData == null)
+            if (parentMemberData is null)
             {
                 throw new ArgumentNullException(nameof(parentMemberData));
             }
@@ -142,20 +142,20 @@ namespace Omnifactotum.Validation
             var instance = parentMemberData.Value;
             var instanceType = instance.GetTypeSafely();
 
-            if (instance == null || IsSimpleTypeInternal(instanceType))
+            if (instance is null || IsSimpleTypeInternal(instanceType))
             {
                 return Enumerable.Empty<MemberData>();
             }
 
             var parentExpression = parentMemberData.Expression;
 
-            var allDataMembers = instanceType.FindMembers(
+            var allDataMemberInfos = instanceType.FindMembers(
                 MemberTypes.Field | MemberTypes.Property,
                 BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic,
                 (info, criteria) => info is FieldInfo || IsReadableProperty(info),
                 null);
 
-            var internalMemberDatas = allDataMembers
+            var internalMembers = allDataMemberInfos
                 .Select(
                     obj =>
                         new
@@ -166,7 +166,7 @@ namespace Omnifactotum.Validation
                 .Where(obj => obj.Attributes.Length != 0)
                 .ToArray();
 
-            var memberDatas = internalMemberDatas
+            var members = internalMembers
                 .Select(
                     obj => new MemberData(
                         Expression.MakeMemberAccess(
@@ -196,7 +196,7 @@ namespace Omnifactotum.Validation
                         parentMemberData.Attributes,
                         parentMemberData.Attributes.FilterBy<MemberItemConstraintAttribute>());
 
-                    memberDatas.Add(itemData);
+                    members.Add(itemData);
                 }
             }
             //////// TODO [vmcl] Support IEnumerable<T>
@@ -209,7 +209,7 @@ namespace Omnifactotum.Validation
             {
                 var enumerable = (IEnumerable)instance;
 
-                var enumerablepParentExpression = Expression.Call(
+                var enumerableParentExpression = Expression.Call(
                     EnumerableCastToObjectMethodInfo,
                     ValidationFactotum.ConvertTypeAuto(parentExpression, typeof(IEnumerable)));
 
@@ -217,10 +217,10 @@ namespace Omnifactotum.Validation
                 foreach (var item in enumerable)
                 {
                     var optionalSkipExpression = index == 0
-                        ? enumerablepParentExpression
+                        ? enumerableParentExpression
                         : Expression.Call(
                             EnumerableSkipOfObjectMethodInfo,
-                            enumerablepParentExpression,
+                            enumerableParentExpression,
                             Expression.Constant(index));
 
                     var firstExpression = Expression.Call(EnumerableFirstOfObjectMethodInfo, optionalSkipExpression);
@@ -232,13 +232,13 @@ namespace Omnifactotum.Validation
                         parentMemberData.Attributes,
                         parentMemberData.Attributes.FilterBy<MemberItemConstraintAttribute>());
 
-                    memberDatas.Add(itemData);
+                    members.Add(itemData);
 
                     index++;
                 }
             }
 
-            return memberDatas;
+            return members;
         }
 
         private static void ValidateInternal(
@@ -253,7 +253,7 @@ namespace Omnifactotum.Validation
             objectValidatorContext.EnsureNotNull();
 
             var effectiveAttributes = memberData.EffectiveAttributes;
-            if (effectiveAttributes == null || effectiveAttributes.Length == 0)
+            if (effectiveAttributes is null || effectiveAttributes.Length == 0)
             {
                 return;
             }

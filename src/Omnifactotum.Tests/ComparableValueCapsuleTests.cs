@@ -35,13 +35,15 @@ namespace Omnifactotum.Tests
 
         [Test]
         [TestCase(null, null, 0, 0)]
-        [TestCase(null, "Value", -1, -1)]
-        [TestCase("Value", null, 1, 1)]
-        [TestCase("Value", "Value", 0, 0)]
-        [TestCase("Value", "vALUE", 0, 1)]
-        [TestCase("vALUE", "Value", 0, -1)]
-        [TestCase("Value", "V@lue", 1, 1)]
-        [TestCase("V@lue", "Value", -1, -1)]
+        [TestCase(null, @"Value", -1, -1)]
+        [TestCase(@"Value", null, 1, 1)]
+        [TestCase(@"Value", @"Value", 0, 0)]
+        //// ReSharper disable once StringLiteralTypo :: Test value
+        [TestCase(@"Value", @"vALUE", 0, 1)]
+        //// ReSharper disable once StringLiteralTypo :: Test value
+        [TestCase(@"vALUE", @"Value", 0, -1)]
+        [TestCase(@"Value", @"V@lue", 1, 1)]
+        [TestCase(@"V@lue", @"Value", -1, -1)]
         public void TestEqualityAndComparison(
             string value1,
             string value2,

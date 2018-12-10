@@ -24,7 +24,7 @@ namespace System.Linq.Expressions
         /// </returns>
         public static MethodInfo GetLastMethod<TDelegate>([NotNull] this Expression<TDelegate> expression)
         {
-            if (expression == null)
+            if (expression is null)
             {
                 throw new ArgumentNullException(nameof(expression));
             }
@@ -60,12 +60,12 @@ namespace System.Linq.Expressions
             [NotNull] this Expression<Func<TInput, TIntermediate>> sourceExpression,
             [NotNull] Expression<Func<TIntermediate, TResult>> targetExpression)
         {
-            if (sourceExpression == null)
+            if (sourceExpression is null)
             {
                 throw new ArgumentNullException(nameof(sourceExpression));
             }
 
-            if (targetExpression == null)
+            if (targetExpression is null)
             {
                 throw new ArgumentNullException(nameof(targetExpression));
             }
@@ -97,7 +97,7 @@ namespace System.Linq.Expressions
             [NotNull] this LambdaExpression sourceExpression,
             [NotNull] LambdaExpression targetExpression)
         {
-            if (sourceExpression == null)
+            if (sourceExpression is null)
             {
                 throw new ArgumentNullException(nameof(sourceExpression));
             }
@@ -109,7 +109,7 @@ namespace System.Linq.Expressions
                     nameof(sourceExpression));
             }
 
-            if (targetExpression == null)
+            if (targetExpression is null)
             {
                 throw new ArgumentNullException(nameof(targetExpression));
             }

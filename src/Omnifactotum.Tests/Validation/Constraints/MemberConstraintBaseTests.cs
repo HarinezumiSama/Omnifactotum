@@ -19,7 +19,7 @@ namespace Omnifactotum.Tests.Validation.Constraints
             var castValue = testee.CallCastTo<int?>(value);
 
             Assert.That(castValue, Is.EqualTo(value));
-            if (value == null)
+            if (value is null)
             {
                 Assert.That(castValue.HasValue, Is.False);
             }

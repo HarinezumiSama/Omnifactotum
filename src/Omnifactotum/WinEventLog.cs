@@ -25,16 +25,10 @@ namespace Omnifactotum
         public static string DefaultSource
         {
             [DebuggerStepThrough]
-            get
-            {
-                return _defaultSource;
-            }
+            get => _defaultSource;
 
             [DebuggerStepThrough]
-            set
-            {
-                _defaultSource = value;
-            }
+            set => _defaultSource = value;
         }
 
         /// <summary>
@@ -58,7 +52,7 @@ namespace Omnifactotum
                     nameof(source));
             }
 
-            if (message == null)
+            if (message is null)
             {
                 throw new ArgumentNullException(nameof(message));
             }

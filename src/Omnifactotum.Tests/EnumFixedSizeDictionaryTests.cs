@@ -14,7 +14,8 @@ namespace Omnifactotum.Tests
         [TestCaseSource(typeof(BasicScenarioCases))]
         public void TestBasicScenario(FileMode fileMode)
         {
-            const string Value = "V.alue";
+            //// ReSharper disable once StringLiteralTypo :: Test value
+            const string Value = @"V.alue";
 
             var dictionary = new EnumFixedSizeDictionary<FileMode, string>();
             Assert.That(dictionary.Count, Is.EqualTo(0));

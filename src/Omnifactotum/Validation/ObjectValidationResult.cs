@@ -24,12 +24,12 @@ namespace Omnifactotum.Validation
         /// </param>
         internal ObjectValidationResult(ICollection<MemberConstraintValidationError> errors)
         {
-            if (errors == null)
+            if (errors is null)
             {
                 throw new ArgumentNullException(nameof(errors));
             }
 
-            if (errors.Any(item => item == null))
+            if (errors.Any(item => item is null))
             {
                 throw new ArgumentException(@"The collection contains a null element.", nameof(errors));
             }
@@ -43,10 +43,7 @@ namespace Omnifactotum.Validation
         public bool IsObjectValid
         {
             [DebuggerNonUserCode]
-            get
-            {
-                return Errors.Count == 0;
-            }
+            get => Errors.Count == 0;
         }
 
         /// <summary>
@@ -77,7 +74,7 @@ namespace Omnifactotum.Validation
             Func<MemberConstraintValidationError, string> getErrorDescription,
             string errorDescriptionSeparator)
         {
-            if (getErrorDescription == null)
+            if (getErrorDescription is null)
             {
                 throw new ArgumentNullException(nameof(getErrorDescription));
             }
@@ -117,7 +114,7 @@ namespace Omnifactotum.Validation
         public void EnsureSucceeded()
         {
             var exception = GetException();
-            if (exception == null)
+            if (exception is null)
             {
                 return;
             }

@@ -83,7 +83,7 @@ namespace Omnifactotum
         /// </exception>
         public void AddRange([NotNull] IEnumerable<VirtualTreeNode<T>> collection)
         {
-            if (collection == null)
+            if (collection is null)
             {
                 throw new ArgumentNullException(nameof(collection));
             }
@@ -113,7 +113,7 @@ namespace Omnifactotum
 
             set
             {
-                if (value == null)
+                if (value is null)
                 {
                     throw new ArgumentNullException(nameof(value));
                 }
@@ -143,7 +143,7 @@ namespace Omnifactotum
         /// </returns>
         public int IndexOf(VirtualTreeNode<T> item)
         {
-            return item == null ? -1 : _list.IndexOf(item);
+            return item is null ? -1 : _list.IndexOf(item);
         }
 
         /// <summary>
@@ -167,7 +167,7 @@ namespace Omnifactotum
         //// ReSharper disable once AnnotationConflictInHierarchy
         public void Insert(int index, [NotNull] VirtualTreeNode<T> item)
         {
-            if (item == null)
+            if (item is null)
             {
                 throw new ArgumentNullException(nameof(item));
             }
@@ -200,10 +200,7 @@ namespace Omnifactotum
         public int Count
         {
             [DebuggerStepThrough]
-            get
-            {
-                return _list.Count;
-            }
+            get => _list.Count;
         }
 
         /// <summary>
@@ -215,10 +212,7 @@ namespace Omnifactotum
         public bool IsReadOnly
         {
             [DebuggerStepThrough]
-            get
-            {
-                return false;
-            }
+            get => false;
         }
 
         /// <summary>
@@ -236,7 +230,7 @@ namespace Omnifactotum
         //// ReSharper disable once AnnotationConflictInHierarchy
         public void Add([NotNull] VirtualTreeNode<T> item)
         {
-            if (item == null)
+            if (item is null)
             {
                 throw new ArgumentNullException(nameof(item));
             }
@@ -292,7 +286,7 @@ namespace Omnifactotum
         /// </exception>
         public void CopyTo(VirtualTreeNode<T>[] array, int arrayIndex)
         {
-            if (array == null)
+            if (array is null)
             {
                 throw new ArgumentNullException(nameof(array));
             }
@@ -313,7 +307,7 @@ namespace Omnifactotum
         /// </returns>
         public bool Remove(VirtualTreeNode<T> item)
         {
-            if (item == null)
+            if (item is null)
             {
                 return false;
             }
@@ -351,12 +345,12 @@ namespace Omnifactotum
 
         private void CheckItemBeingAdded([NotNull] VirtualTreeNode<T> item)
         {
-            if (item == null)
+            if (item is null)
             {
                 throw new ArgumentNullException(nameof(item));
             }
 
-            if (item.Parent == null)
+            if (item.Parent is null)
             {
                 return;
             }

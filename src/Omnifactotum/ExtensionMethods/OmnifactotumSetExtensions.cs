@@ -25,7 +25,7 @@ namespace System.Collections.Generic
         [NotNull]
         public static ReadOnlySet<T> AsReadOnly<T>([NotNull] this ISet<T> set)
         {
-            if (set == null)
+            if (set is null)
             {
                 throw new ArgumentNullException(nameof(set));
             }

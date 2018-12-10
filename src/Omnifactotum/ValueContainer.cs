@@ -122,7 +122,7 @@ namespace Omnifactotum
                 return true;
             }
 
-            if (ReferenceEquals(left, null) || ReferenceEquals(right, null))
+            if (left is null || right is null)
             {
                 return false;
             }

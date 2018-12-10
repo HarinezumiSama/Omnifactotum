@@ -180,7 +180,7 @@ namespace System
         {
             const string DoubleDoubleQuote = DoubleQuote + DoubleQuote;
 
-            return value == null
+            return value is null
                 ? OmnifactotumConstants.NullValueRepresentation
                 : DoubleQuote + value.Replace(DoubleQuote, DoubleDoubleQuote) + DoubleQuote;
         }

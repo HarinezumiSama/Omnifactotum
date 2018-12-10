@@ -31,7 +31,7 @@ namespace Omnifactotum
             [NotNull] DirectedGraphNode<T> owner,
             DirectedGraphOwnerRelation ownerRelation)
         {
-            if (owner == null)
+            if (owner is null)
             {
                 throw new ArgumentNullException(nameof(owner));
             }
@@ -45,15 +45,9 @@ namespace Omnifactotum
         internal override DirectedGraph<T> Graph
         {
             [DebuggerNonUserCode]
-            get
-            {
-                return _owner.Graph;
-            }
+            get => _owner.Graph;
 
-            set
-            {
-                _owner.AssignGraph(value);
-            }
+            set => _owner.AssignGraph(value);
         }
 
         /// <summary>

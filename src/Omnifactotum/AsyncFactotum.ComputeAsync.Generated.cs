@@ -41,12 +41,12 @@ namespace Omnifactotum
             [NotNull] Func<TResult> callee,
             [NotNull] LogErrorWithExceptionAndMessage logError)
         {
-            if (callee == null)
+            if (callee is null)
             {
                 throw new ArgumentNullException(nameof(callee));
             }
 
-            if (logError == null)
+            if (logError is null)
             {
                 throw new ArgumentNullException(nameof(logError));
             }
@@ -85,12 +85,12 @@ namespace Omnifactotum
             [NotNull] Func<TResult> callee,
             [NotNull] LogErrorWithException logError)
         {
-            if (callee == null)
+            if (callee is null)
             {
                 throw new ArgumentNullException(nameof(callee));
             }
 
-            if (logError == null)
+            if (logError is null)
             {
                 throw new ArgumentNullException(nameof(logError));
             }
@@ -129,12 +129,12 @@ namespace Omnifactotum
             [NotNull] Func<TResult> callee,
             [NotNull] LogErrorWithMessage logError)
         {
-            if (callee == null)
+            if (callee is null)
             {
                 throw new ArgumentNullException(nameof(callee));
             }
 
-            if (logError == null)
+            if (logError is null)
             {
                 throw new ArgumentNullException(nameof(logError));
             }
@@ -206,12 +206,12 @@ namespace Omnifactotum
             [NotNull] LogErrorWithExceptionAndMessage logError,
             T1 arg1)
         {
-            if (callee == null)
+            if (callee is null)
             {
                 throw new ArgumentNullException(nameof(callee));
             }
 
-            if (logError == null)
+            if (logError is null)
             {
                 throw new ArgumentNullException(nameof(logError));
             }
@@ -257,12 +257,12 @@ namespace Omnifactotum
             [NotNull] LogErrorWithException logError,
             T1 arg1)
         {
-            if (callee == null)
+            if (callee is null)
             {
                 throw new ArgumentNullException(nameof(callee));
             }
 
-            if (logError == null)
+            if (logError is null)
             {
                 throw new ArgumentNullException(nameof(logError));
             }
@@ -308,12 +308,12 @@ namespace Omnifactotum
             [NotNull] LogErrorWithMessage logError,
             T1 arg1)
         {
-            if (callee == null)
+            if (callee is null)
             {
                 throw new ArgumentNullException(nameof(callee));
             }
 
-            if (logError == null)
+            if (logError is null)
             {
                 throw new ArgumentNullException(nameof(logError));
             }
@@ -399,12 +399,12 @@ namespace Omnifactotum
             T1 arg1,
             T2 arg2)
         {
-            if (callee == null)
+            if (callee is null)
             {
                 throw new ArgumentNullException(nameof(callee));
             }
 
-            if (logError == null)
+            if (logError is null)
             {
                 throw new ArgumentNullException(nameof(logError));
             }
@@ -457,12 +457,12 @@ namespace Omnifactotum
             T1 arg1,
             T2 arg2)
         {
-            if (callee == null)
+            if (callee is null)
             {
                 throw new ArgumentNullException(nameof(callee));
             }
 
-            if (logError == null)
+            if (logError is null)
             {
                 throw new ArgumentNullException(nameof(logError));
             }
@@ -515,12 +515,12 @@ namespace Omnifactotum
             T1 arg1,
             T2 arg2)
         {
-            if (callee == null)
+            if (callee is null)
             {
                 throw new ArgumentNullException(nameof(callee));
             }
 
-            if (logError == null)
+            if (logError is null)
             {
                 throw new ArgumentNullException(nameof(logError));
             }
@@ -620,12 +620,12 @@ namespace Omnifactotum
             T2 arg2,
             T3 arg3)
         {
-            if (callee == null)
+            if (callee is null)
             {
                 throw new ArgumentNullException(nameof(callee));
             }
 
-            if (logError == null)
+            if (logError is null)
             {
                 throw new ArgumentNullException(nameof(logError));
             }
@@ -685,12 +685,12 @@ namespace Omnifactotum
             T2 arg2,
             T3 arg3)
         {
-            if (callee == null)
+            if (callee is null)
             {
                 throw new ArgumentNullException(nameof(callee));
             }
 
-            if (logError == null)
+            if (logError is null)
             {
                 throw new ArgumentNullException(nameof(logError));
             }
@@ -750,12 +750,12 @@ namespace Omnifactotum
             T2 arg2,
             T3 arg3)
         {
-            if (callee == null)
+            if (callee is null)
             {
                 throw new ArgumentNullException(nameof(callee));
             }
 
-            if (logError == null)
+            if (logError is null)
             {
                 throw new ArgumentNullException(nameof(logError));
             }
@@ -869,12 +869,12 @@ namespace Omnifactotum
             T3 arg3,
             T4 arg4)
         {
-            if (callee == null)
+            if (callee is null)
             {
                 throw new ArgumentNullException(nameof(callee));
             }
 
-            if (logError == null)
+            if (logError is null)
             {
                 throw new ArgumentNullException(nameof(logError));
             }
@@ -941,12 +941,12 @@ namespace Omnifactotum
             T3 arg3,
             T4 arg4)
         {
-            if (callee == null)
+            if (callee is null)
             {
                 throw new ArgumentNullException(nameof(callee));
             }
 
-            if (logError == null)
+            if (logError is null)
             {
                 throw new ArgumentNullException(nameof(logError));
             }
@@ -1013,12 +1013,12 @@ namespace Omnifactotum
             T3 arg3,
             T4 arg4)
         {
-            if (callee == null)
+            if (callee is null)
             {
                 throw new ArgumentNullException(nameof(callee));
             }
 
-            if (logError == null)
+            if (logError is null)
             {
                 throw new ArgumentNullException(nameof(logError));
             }
@@ -1146,12 +1146,12 @@ namespace Omnifactotum
             T4 arg4,
             T5 arg5)
         {
-            if (callee == null)
+            if (callee is null)
             {
                 throw new ArgumentNullException(nameof(callee));
             }
 
-            if (logError == null)
+            if (logError is null)
             {
                 throw new ArgumentNullException(nameof(logError));
             }
@@ -1225,12 +1225,12 @@ namespace Omnifactotum
             T4 arg4,
             T5 arg5)
         {
-            if (callee == null)
+            if (callee is null)
             {
                 throw new ArgumentNullException(nameof(callee));
             }
 
-            if (logError == null)
+            if (logError is null)
             {
                 throw new ArgumentNullException(nameof(logError));
             }
@@ -1304,12 +1304,12 @@ namespace Omnifactotum
             T4 arg4,
             T5 arg5)
         {
-            if (callee == null)
+            if (callee is null)
             {
                 throw new ArgumentNullException(nameof(callee));
             }
 
-            if (logError == null)
+            if (logError is null)
             {
                 throw new ArgumentNullException(nameof(logError));
             }
@@ -1451,12 +1451,12 @@ namespace Omnifactotum
             T5 arg5,
             T6 arg6)
         {
-            if (callee == null)
+            if (callee is null)
             {
                 throw new ArgumentNullException(nameof(callee));
             }
 
-            if (logError == null)
+            if (logError is null)
             {
                 throw new ArgumentNullException(nameof(logError));
             }
@@ -1537,12 +1537,12 @@ namespace Omnifactotum
             T5 arg5,
             T6 arg6)
         {
-            if (callee == null)
+            if (callee is null)
             {
                 throw new ArgumentNullException(nameof(callee));
             }
 
-            if (logError == null)
+            if (logError is null)
             {
                 throw new ArgumentNullException(nameof(logError));
             }
@@ -1623,12 +1623,12 @@ namespace Omnifactotum
             T5 arg5,
             T6 arg6)
         {
-            if (callee == null)
+            if (callee is null)
             {
                 throw new ArgumentNullException(nameof(callee));
             }
 
-            if (logError == null)
+            if (logError is null)
             {
                 throw new ArgumentNullException(nameof(logError));
             }
@@ -1784,12 +1784,12 @@ namespace Omnifactotum
             T6 arg6,
             T7 arg7)
         {
-            if (callee == null)
+            if (callee is null)
             {
                 throw new ArgumentNullException(nameof(callee));
             }
 
-            if (logError == null)
+            if (logError is null)
             {
                 throw new ArgumentNullException(nameof(logError));
             }
@@ -1877,12 +1877,12 @@ namespace Omnifactotum
             T6 arg6,
             T7 arg7)
         {
-            if (callee == null)
+            if (callee is null)
             {
                 throw new ArgumentNullException(nameof(callee));
             }
 
-            if (logError == null)
+            if (logError is null)
             {
                 throw new ArgumentNullException(nameof(logError));
             }
@@ -1970,12 +1970,12 @@ namespace Omnifactotum
             T6 arg6,
             T7 arg7)
         {
-            if (callee == null)
+            if (callee is null)
             {
                 throw new ArgumentNullException(nameof(callee));
             }
 
-            if (logError == null)
+            if (logError is null)
             {
                 throw new ArgumentNullException(nameof(logError));
             }
@@ -2145,12 +2145,12 @@ namespace Omnifactotum
             T7 arg7,
             T8 arg8)
         {
-            if (callee == null)
+            if (callee is null)
             {
                 throw new ArgumentNullException(nameof(callee));
             }
 
-            if (logError == null)
+            if (logError is null)
             {
                 throw new ArgumentNullException(nameof(logError));
             }
@@ -2245,12 +2245,12 @@ namespace Omnifactotum
             T7 arg7,
             T8 arg8)
         {
-            if (callee == null)
+            if (callee is null)
             {
                 throw new ArgumentNullException(nameof(callee));
             }
 
-            if (logError == null)
+            if (logError is null)
             {
                 throw new ArgumentNullException(nameof(logError));
             }
@@ -2345,12 +2345,12 @@ namespace Omnifactotum
             T7 arg7,
             T8 arg8)
         {
-            if (callee == null)
+            if (callee is null)
             {
                 throw new ArgumentNullException(nameof(callee));
             }
 
-            if (logError == null)
+            if (logError is null)
             {
                 throw new ArgumentNullException(nameof(logError));
             }
@@ -2534,12 +2534,12 @@ namespace Omnifactotum
             T8 arg8,
             T9 arg9)
         {
-            if (callee == null)
+            if (callee is null)
             {
                 throw new ArgumentNullException(nameof(callee));
             }
 
-            if (logError == null)
+            if (logError is null)
             {
                 throw new ArgumentNullException(nameof(logError));
             }
@@ -2641,12 +2641,12 @@ namespace Omnifactotum
             T8 arg8,
             T9 arg9)
         {
-            if (callee == null)
+            if (callee is null)
             {
                 throw new ArgumentNullException(nameof(callee));
             }
 
-            if (logError == null)
+            if (logError is null)
             {
                 throw new ArgumentNullException(nameof(logError));
             }
@@ -2748,12 +2748,12 @@ namespace Omnifactotum
             T8 arg8,
             T9 arg9)
         {
-            if (callee == null)
+            if (callee is null)
             {
                 throw new ArgumentNullException(nameof(callee));
             }
 
-            if (logError == null)
+            if (logError is null)
             {
                 throw new ArgumentNullException(nameof(logError));
             }
@@ -2951,12 +2951,12 @@ namespace Omnifactotum
             T9 arg9,
             T10 arg10)
         {
-            if (callee == null)
+            if (callee is null)
             {
                 throw new ArgumentNullException(nameof(callee));
             }
 
-            if (logError == null)
+            if (logError is null)
             {
                 throw new ArgumentNullException(nameof(logError));
             }
@@ -3065,12 +3065,12 @@ namespace Omnifactotum
             T9 arg9,
             T10 arg10)
         {
-            if (callee == null)
+            if (callee is null)
             {
                 throw new ArgumentNullException(nameof(callee));
             }
 
-            if (logError == null)
+            if (logError is null)
             {
                 throw new ArgumentNullException(nameof(logError));
             }
@@ -3179,12 +3179,12 @@ namespace Omnifactotum
             T9 arg9,
             T10 arg10)
         {
-            if (callee == null)
+            if (callee is null)
             {
                 throw new ArgumentNullException(nameof(callee));
             }
 
-            if (logError == null)
+            if (logError is null)
             {
                 throw new ArgumentNullException(nameof(logError));
             }
@@ -3396,12 +3396,12 @@ namespace Omnifactotum
             T10 arg10,
             T11 arg11)
         {
-            if (callee == null)
+            if (callee is null)
             {
                 throw new ArgumentNullException(nameof(callee));
             }
 
-            if (logError == null)
+            if (logError is null)
             {
                 throw new ArgumentNullException(nameof(logError));
             }
@@ -3517,12 +3517,12 @@ namespace Omnifactotum
             T10 arg10,
             T11 arg11)
         {
-            if (callee == null)
+            if (callee is null)
             {
                 throw new ArgumentNullException(nameof(callee));
             }
 
-            if (logError == null)
+            if (logError is null)
             {
                 throw new ArgumentNullException(nameof(logError));
             }
@@ -3638,12 +3638,12 @@ namespace Omnifactotum
             T10 arg10,
             T11 arg11)
         {
-            if (callee == null)
+            if (callee is null)
             {
                 throw new ArgumentNullException(nameof(callee));
             }
 
-            if (logError == null)
+            if (logError is null)
             {
                 throw new ArgumentNullException(nameof(logError));
             }
@@ -3869,12 +3869,12 @@ namespace Omnifactotum
             T11 arg11,
             T12 arg12)
         {
-            if (callee == null)
+            if (callee is null)
             {
                 throw new ArgumentNullException(nameof(callee));
             }
 
-            if (logError == null)
+            if (logError is null)
             {
                 throw new ArgumentNullException(nameof(logError));
             }
@@ -3997,12 +3997,12 @@ namespace Omnifactotum
             T11 arg11,
             T12 arg12)
         {
-            if (callee == null)
+            if (callee is null)
             {
                 throw new ArgumentNullException(nameof(callee));
             }
 
-            if (logError == null)
+            if (logError is null)
             {
                 throw new ArgumentNullException(nameof(logError));
             }
@@ -4125,12 +4125,12 @@ namespace Omnifactotum
             T11 arg11,
             T12 arg12)
         {
-            if (callee == null)
+            if (callee is null)
             {
                 throw new ArgumentNullException(nameof(callee));
             }
 
-            if (logError == null)
+            if (logError is null)
             {
                 throw new ArgumentNullException(nameof(logError));
             }
@@ -4370,12 +4370,12 @@ namespace Omnifactotum
             T12 arg12,
             T13 arg13)
         {
-            if (callee == null)
+            if (callee is null)
             {
                 throw new ArgumentNullException(nameof(callee));
             }
 
-            if (logError == null)
+            if (logError is null)
             {
                 throw new ArgumentNullException(nameof(logError));
             }
@@ -4505,12 +4505,12 @@ namespace Omnifactotum
             T12 arg12,
             T13 arg13)
         {
-            if (callee == null)
+            if (callee is null)
             {
                 throw new ArgumentNullException(nameof(callee));
             }
 
-            if (logError == null)
+            if (logError is null)
             {
                 throw new ArgumentNullException(nameof(logError));
             }
@@ -4640,12 +4640,12 @@ namespace Omnifactotum
             T12 arg12,
             T13 arg13)
         {
-            if (callee == null)
+            if (callee is null)
             {
                 throw new ArgumentNullException(nameof(callee));
             }
 
-            if (logError == null)
+            if (logError is null)
             {
                 throw new ArgumentNullException(nameof(logError));
             }
@@ -4899,12 +4899,12 @@ namespace Omnifactotum
             T13 arg13,
             T14 arg14)
         {
-            if (callee == null)
+            if (callee is null)
             {
                 throw new ArgumentNullException(nameof(callee));
             }
 
-            if (logError == null)
+            if (logError is null)
             {
                 throw new ArgumentNullException(nameof(logError));
             }
@@ -5041,12 +5041,12 @@ namespace Omnifactotum
             T13 arg13,
             T14 arg14)
         {
-            if (callee == null)
+            if (callee is null)
             {
                 throw new ArgumentNullException(nameof(callee));
             }
 
-            if (logError == null)
+            if (logError is null)
             {
                 throw new ArgumentNullException(nameof(logError));
             }
@@ -5183,12 +5183,12 @@ namespace Omnifactotum
             T13 arg13,
             T14 arg14)
         {
-            if (callee == null)
+            if (callee is null)
             {
                 throw new ArgumentNullException(nameof(callee));
             }
 
-            if (logError == null)
+            if (logError is null)
             {
                 throw new ArgumentNullException(nameof(logError));
             }
@@ -5456,12 +5456,12 @@ namespace Omnifactotum
             T14 arg14,
             T15 arg15)
         {
-            if (callee == null)
+            if (callee is null)
             {
                 throw new ArgumentNullException(nameof(callee));
             }
 
-            if (logError == null)
+            if (logError is null)
             {
                 throw new ArgumentNullException(nameof(logError));
             }
@@ -5605,12 +5605,12 @@ namespace Omnifactotum
             T14 arg14,
             T15 arg15)
         {
-            if (callee == null)
+            if (callee is null)
             {
                 throw new ArgumentNullException(nameof(callee));
             }
 
-            if (logError == null)
+            if (logError is null)
             {
                 throw new ArgumentNullException(nameof(logError));
             }
@@ -5754,12 +5754,12 @@ namespace Omnifactotum
             T14 arg14,
             T15 arg15)
         {
-            if (callee == null)
+            if (callee is null)
             {
                 throw new ArgumentNullException(nameof(callee));
             }
 
-            if (logError == null)
+            if (logError is null)
             {
                 throw new ArgumentNullException(nameof(logError));
             }
@@ -6041,12 +6041,12 @@ namespace Omnifactotum
             T15 arg15,
             T16 arg16)
         {
-            if (callee == null)
+            if (callee is null)
             {
                 throw new ArgumentNullException(nameof(callee));
             }
 
-            if (logError == null)
+            if (logError is null)
             {
                 throw new ArgumentNullException(nameof(logError));
             }
@@ -6197,12 +6197,12 @@ namespace Omnifactotum
             T15 arg15,
             T16 arg16)
         {
-            if (callee == null)
+            if (callee is null)
             {
                 throw new ArgumentNullException(nameof(callee));
             }
 
-            if (logError == null)
+            if (logError is null)
             {
                 throw new ArgumentNullException(nameof(logError));
             }
@@ -6353,12 +6353,12 @@ namespace Omnifactotum
             T15 arg15,
             T16 arg16)
         {
-            if (callee == null)
+            if (callee is null)
             {
                 throw new ArgumentNullException(nameof(callee));
             }
 
-            if (logError == null)
+            if (logError is null)
             {
                 throw new ArgumentNullException(nameof(logError));
             }

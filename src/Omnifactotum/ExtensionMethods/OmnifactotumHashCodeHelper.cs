@@ -31,7 +31,7 @@ namespace System
         /// <summary>
         ///     Combines hash code obtained from two specified instances into a new hash code.
         /// </summary>
-        /// <typeparam name="TPreviuos">
+        /// <typeparam name="TPrevious">
         ///     The type of an instance which is considered as previous.
         /// </typeparam>
         /// <typeparam name="TNext">
@@ -46,8 +46,8 @@ namespace System
         /// <returns>
         ///     A new hash code produced from the hash codes obtained from the specified instances.
         /// </returns>
-        public static int CombineHashCodes<TPreviuos, TNext>(
-            [CanBeNull] this TPreviuos previous,
+        public static int CombineHashCodes<TPrevious, TNext>(
+            [CanBeNull] this TPrevious previous,
             [CanBeNull] TNext next)
         {
             return CombineHashCodeValues(previous.GetHashCodeSafely(), next.GetHashCodeSafely());

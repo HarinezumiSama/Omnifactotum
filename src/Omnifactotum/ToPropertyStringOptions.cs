@@ -105,10 +105,7 @@ namespace Omnifactotum
         public int MaxCollectionItemCount
         {
             [DebuggerStepThrough]
-            get
-            {
-                return _maxCollectionItemCount;
-            }
+            get => _maxCollectionItemCount;
 
             [DebuggerNonUserCode]
             set
@@ -128,10 +125,7 @@ namespace Omnifactotum
         public int MaxRecursionLevel
         {
             [DebuggerStepThrough]
-            get
-            {
-                return _maxRecursionLevel;
-            }
+            get => _maxRecursionLevel;
 
             [DebuggerNonUserCode]
             set

@@ -38,7 +38,7 @@ namespace System.Collections.Generic
             [NotNull] TKey key,
             TValue defaultValue)
         {
-            if (dictionary == null)
+            if (dictionary is null)
             {
                 throw new ArgumentNullException(nameof(dictionary));
             }
@@ -107,7 +107,7 @@ namespace System.Collections.Generic
             [NotNull] TKey key,
             [NotNull] Func<TKey, TValue> valueFactory)
         {
-            if (dictionary == null)
+            if (dictionary is null)
             {
                 throw new ArgumentNullException(nameof(dictionary));
             }
@@ -117,7 +117,7 @@ namespace System.Collections.Generic
                 throw new ArgumentNullException(nameof(key));
             }
 
-            if (valueFactory == null)
+            if (valueFactory is null)
             {
                 throw new ArgumentNullException(nameof(valueFactory));
             }

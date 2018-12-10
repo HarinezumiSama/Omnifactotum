@@ -27,12 +27,12 @@ namespace Omnifactotum.Validation.Constraints
             MemberConstraintValidationContext memberContext,
             object value)
         {
-            if (validatorContext == null)
+            if (validatorContext is null)
             {
                 throw new ArgumentNullException(nameof(validatorContext));
             }
 
-            if (memberContext == null)
+            if (memberContext is null)
             {
                 throw new ArgumentNullException(nameof(memberContext));
             }
@@ -73,7 +73,7 @@ namespace Omnifactotum.Validation.Constraints
         protected TTarget CastTo<TTarget>([CanBeNull] object value)
         {
             var targetType = typeof(TTarget);
-            if (value is TTarget || (!targetType.IsValueType || targetType.IsNullable()) && value == null)
+            if (value is TTarget || (!targetType.IsValueType || targetType.IsNullable()) && value is null)
             {
                 return (TTarget)value;
             }
@@ -103,7 +103,7 @@ namespace Omnifactotum.Validation.Constraints
             [NotNull] MemberConstraintValidationContext memberContext,
             [NotNull] string failureMessage)
         {
-            if (memberContext == null)
+            if (memberContext is null)
             {
                 throw new ArgumentNullException(nameof(memberContext));
             }
@@ -133,7 +133,7 @@ namespace Omnifactotum.Validation.Constraints
             [NotNull] ObjectValidatorContext validatorContext,
             [NotNull] MemberConstraintValidationContext memberContext)
         {
-            if (memberContext == null)
+            if (memberContext is null)
             {
                 throw new ArgumentNullException(nameof(memberContext));
             }

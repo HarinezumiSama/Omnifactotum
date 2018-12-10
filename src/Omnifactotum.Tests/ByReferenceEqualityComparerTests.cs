@@ -70,7 +70,7 @@ namespace Omnifactotum.Tests
 
             public override int GetHashCode()
             {
-                return _value == null ? 0 : StringComparer.Ordinal.GetHashCode(_value);
+                return _value is null ? 0 : StringComparer.Ordinal.GetHashCode(_value);
             }
 
             public bool Equals(SomeReferenceType other)
@@ -95,7 +95,7 @@ namespace Omnifactotum.Tests
 
             public override int GetHashCode()
             {
-                return _value == null ? 0 : StringComparer.Ordinal.GetHashCode(_value);
+                return _value is null ? 0 : StringComparer.Ordinal.GetHashCode(_value);
             }
 
             public bool Equals(SomeValueType other)

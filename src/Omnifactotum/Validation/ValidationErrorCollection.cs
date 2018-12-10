@@ -39,7 +39,7 @@ namespace Omnifactotum.Validation
         /// </param>
         public void Add([CanBeNull] MemberConstraintValidationError error)
         {
-            if (error == null)
+            if (error is null)
             {
                 return;
             }
@@ -64,7 +64,7 @@ namespace Omnifactotum.Validation
         /// </param>
         public void AddRange([CanBeNull] IEnumerable<MemberConstraintValidationError> errors)
         {
-            if (errors == null)
+            if (errors is null)
             {
                 return;
             }

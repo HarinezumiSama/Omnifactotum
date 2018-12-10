@@ -49,7 +49,7 @@ namespace System
         /// </exception>
         public static Stream GetManifestResourceStream([NotNull] this Type type, [NotNull] string name)
         {
-            if (type == null)
+            if (type is null)
             {
                 throw new ArgumentNullException(nameof(type));
             }
@@ -178,7 +178,7 @@ namespace System
         /// </returns>
         public static bool IsNullable([NotNull] this Type type)
         {
-            if (type == null)
+            if (type is null)
             {
                 throw new ArgumentNullException(nameof(type));
             }
@@ -204,7 +204,7 @@ namespace System
         /// </returns>
         public static Type GetCollectionElementType([NotNull] this Type type)
         {
-            if (type == null)
+            if (type is null)
             {
                 throw new ArgumentNullException(nameof(type));
             }
@@ -335,7 +335,7 @@ namespace System
                     "Internal error: generic parameter offset is out of range.");
             }
 
-            if (type.IsGenericType && genericParameters == null)
+            if (type.IsGenericType && genericParameters is null)
             {
                 genericParameters = type.GetGenericArguments().ToList();
             }
@@ -371,7 +371,7 @@ namespace System
                 }
             }
 
-            if (type.DeclaringType == null)
+            if (type.DeclaringType is null)
             {
                 if (fullName && !type.Namespace.IsNullOrEmpty())
                 {
@@ -410,7 +410,7 @@ namespace System
                 return;
             }
 
-            if (genericParameters == null)
+            if (genericParameters is null)
             {
                 throw new InvalidOperationException("INTERNAL ERROR: Generic parameter list is not initialized.");
             }
@@ -438,7 +438,7 @@ namespace System
 
         private static string GetNameInternal([NotNull] Type type, bool fullName)
         {
-            if (type == null)
+            if (type is null)
             {
                 throw new ArgumentNullException(nameof(type));
             }

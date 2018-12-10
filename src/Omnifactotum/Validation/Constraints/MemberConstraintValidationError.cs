@@ -73,7 +73,7 @@ namespace Omnifactotum.Validation.Constraints
         /// </returns>
         public static string GetDefaultDescription([NotNull] MemberConstraintValidationError error)
         {
-            if (error == null)
+            if (error is null)
             {
                 throw new ArgumentNullException(nameof(error));
             }

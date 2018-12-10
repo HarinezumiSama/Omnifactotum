@@ -186,10 +186,12 @@ namespace Omnifactotum.NUnit
 
             var result = new List<TestCaseData>();
 
+            //// ReSharper disable once ArrangeRedundantParentheses :: For clarity
             var normalizedArguments = arguments
                 .Select(item => item is string ? item.AsCollection() : (item as IEnumerable ?? item.AsCollection()))
                 .Select(item => item.Cast<object>().ToArray())
                 .ToArray();
+
             try
             {
                 var indices = new int[normalizedArguments.Length];

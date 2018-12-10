@@ -39,10 +39,7 @@ namespace Omnifactotum
         public IComparer<T> ValueComparer
         {
             [DebuggerNonUserCode]
-            get
-            {
-                return GetValueComparer().EnsureNotNull();
-            }
+            get => GetValueComparer().EnsureNotNull();
         }
 
         /// <summary>

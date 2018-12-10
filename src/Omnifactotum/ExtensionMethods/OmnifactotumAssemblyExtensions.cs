@@ -27,7 +27,7 @@ namespace System.Reflection
         [NotNull]
         public static string GetLocalPath([NotNull] this Assembly assembly)
         {
-            if (assembly == null)
+            if (assembly is null)
             {
                 throw new ArgumentNullException(nameof(assembly));
             }

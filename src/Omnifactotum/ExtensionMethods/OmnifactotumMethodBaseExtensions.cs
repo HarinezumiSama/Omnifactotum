@@ -27,7 +27,7 @@ namespace System.Reflection
         [Pure]
         public static string GetFullName([NotNull] this MethodBase method)
         {
-            if (method == null)
+            if (method is null)
             {
                 throw new ArgumentNullException(nameof(method));
             }
@@ -47,7 +47,7 @@ namespace System.Reflection
         [Pure]
         public static string GetQualifiedName([NotNull] this MethodBase method)
         {
-            if (method == null)
+            if (method is null)
             {
                 throw new ArgumentNullException(nameof(method));
             }
@@ -68,7 +68,7 @@ namespace System.Reflection
         [Pure]
         public static string GetSignature([NotNull] this MethodBase method)
         {
-            if (method == null)
+            if (method is null)
             {
                 throw new ArgumentNullException(nameof(method));
             }
@@ -89,7 +89,7 @@ namespace System.Reflection
         [Pure]
         public static string GetFullSignature([NotNull] this MethodBase method)
         {
-            if (method == null)
+            if (method is null)
             {
                 throw new ArgumentNullException(nameof(method));
             }
@@ -171,6 +171,7 @@ namespace System.Reflection
         }
 
         private static string GetTypeNameInternal([NotNull] Type type, bool fullName)
+            //// ReSharper disable once ArrangeRedundantParentheses :: For clarity
             => type == VoidType
                 ? VoidTypeName
                 : (fullName ? type.GetFullName() : OmnifactotumTypeExtensions.GetShortTypeNameInternal(type));

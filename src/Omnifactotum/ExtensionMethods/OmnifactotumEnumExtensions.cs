@@ -158,7 +158,7 @@ namespace System
                     nameof(TEnum));
             }
 
-            if (otherValues == null)
+            if (otherValues is null)
             {
                 throw new ArgumentNullException(nameof(otherValues));
             }
@@ -227,7 +227,7 @@ namespace System
         /// </exception>
         public static void EnsureDefined([NotNull] this Enum enumerationValue)
         {
-            if (enumerationValue == null)
+            if (enumerationValue is null)
             {
                 throw new ArgumentNullException(nameof(enumerationValue));
             }
@@ -254,7 +254,7 @@ namespace System
         public static NotImplementedException CreateEnumValueNotImplementedException(
             [NotNull] this Enum enumerationValue)
         {
-            if (enumerationValue == null)
+            if (enumerationValue is null)
             {
                 throw new ArgumentNullException(nameof(enumerationValue));
             }
@@ -276,7 +276,7 @@ namespace System
         /// </returns>
         public static NotSupportedException CreateEnumValueNotSupportedException([NotNull] this Enum enumerationValue)
         {
-            if (enumerationValue == null)
+            if (enumerationValue is null)
             {
                 throw new ArgumentNullException(nameof(enumerationValue));
             }
@@ -318,7 +318,7 @@ namespace System
 
         private static string GetName([NotNull] this Enum value, EnumNameMode mode)
         {
-            if (value == null)
+            if (value is null)
             {
                 throw new ArgumentNullException(nameof(value));
             }
@@ -382,14 +382,14 @@ namespace System
             if (underlyingType == typeof(ulong))
             {
                 var castFlags = Convert.ToUInt64(flags);
-                var andedValue = Convert.ToUInt64(enumerationValue) & castFlags;
-                return all ? andedValue == castFlags : andedValue != 0;
+                var conjunctValue = Convert.ToUInt64(enumerationValue) & castFlags;
+                return all ? conjunctValue == castFlags : conjunctValue != 0;
             }
             else
             {
                 var castFlags = Convert.ToInt64(flags);
-                var andedValue = Convert.ToInt64(enumerationValue) & castFlags;
-                return all ? andedValue == castFlags : andedValue != 0;
+                var conjunctValue = Convert.ToInt64(enumerationValue) & castFlags;
+                return all ? conjunctValue == castFlags : conjunctValue != 0;
             }
         }
 

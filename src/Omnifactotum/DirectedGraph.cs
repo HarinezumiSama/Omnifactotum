@@ -32,7 +32,7 @@ namespace Omnifactotum
         public DirectedGraph([NotNull] IEnumerable<DirectedGraphNode<T>> nodes)
             : this()
         {
-            if (nodes == null)
+            if (nodes is null)
             {
                 throw new ArgumentNullException(nameof(nodes));
             }
@@ -104,7 +104,7 @@ namespace Omnifactotum
                     .Where(item => item.Tails.Count == 0)
                     .OrderBy(item => item.Node, comparer)
                     .FirstOrDefault();
-                if (candidate == null)
+                if (candidate is null)
                 {
                     throw new InvalidOperationException(
                         "Topological sorting cannot be performed since the graph has a cycle.");

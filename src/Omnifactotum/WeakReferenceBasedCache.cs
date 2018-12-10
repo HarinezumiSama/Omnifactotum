@@ -113,13 +113,14 @@ namespace Omnifactotum
                 lock (_dictionary)
                 {
                     var valueReference = _dictionary.GetValueOrDefault(key);
-                    if (valueReference == null)
+                    if (valueReference is null)
                     {
                         result = CreateValue(key);
                         valueReference = new WeakReference(result, false);
                         _dictionary[key] = valueReference;
                     }
-                    else if ((result = valueReference.Target as TValue) == null)
+                    //// ReSharper disable once ArrangeRedundantParentheses :: For clarity
+                    else if ((result = valueReference.Target as TValue) is null)
                     {
                         result = CreateValue(key);
                         valueReference.Target = result;

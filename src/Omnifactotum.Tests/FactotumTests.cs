@@ -142,7 +142,9 @@ namespace Omnifactotum.Tests
             Assert.That(() => Factotum.Max(1, 2), Is.EqualTo(2));
             Assert.That(() => Factotum.Max(1, 1), Is.EqualTo(1));
 
+            //// ReSharper disable StringLiteralTypo :: Test value
             Assert.That(() => Factotum.Max("abc", "abcd"), Is.EqualTo("abcd"));
+            //// ReSharper restore StringLiteralTypo :: Test value
 
             Assert.That(
                 () => Factotum.Max(TimeSpan.FromMilliseconds(1d), TimeSpan.FromMilliseconds(2d)),
@@ -155,7 +157,9 @@ namespace Omnifactotum.Tests
             Assert.That(() => Factotum.Min(1, 2), Is.EqualTo(1));
             Assert.That(() => Factotum.Min(1, 1), Is.EqualTo(1));
 
+            //// ReSharper disable StringLiteralTypo :: Test value
             Assert.That(() => Factotum.Min("abc", "abcd"), Is.EqualTo("abc"));
+            //// ReSharper restore StringLiteralTypo :: Test value
 
             Assert.That(
                 () => Factotum.Min(TimeSpan.FromMilliseconds(1d), TimeSpan.FromMilliseconds(2d)),

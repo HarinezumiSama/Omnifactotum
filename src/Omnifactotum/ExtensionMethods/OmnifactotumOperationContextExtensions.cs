@@ -37,7 +37,7 @@ namespace System.ServiceModel
             [CanBeNull] OperationContext operationContext)
         {
             var claimSets = operationContext?.ServiceSecurityContext?.AuthorizationContext?.ClaimSets;
-            if (claimSets == null)
+            if (claimSets is null)
             {
                 return Enumerable.Empty<X509Certificate2>();
             }

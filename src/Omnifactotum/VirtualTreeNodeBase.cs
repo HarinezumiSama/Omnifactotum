@@ -37,12 +37,12 @@ namespace Omnifactotum
         protected VirtualTreeNodeBase([NotNull] ICollection<VirtualTreeNode<T>> children)
             : this()
         {
-            if (children == null)
+            if (children is null)
             {
                 throw new ArgumentNullException(nameof(children));
             }
 
-            if (children.Any(item => item == null))
+            if (children.Any(item => item is null))
             {
                 throw new ArgumentException(@"The collection contains a null element.", nameof(children));
             }
@@ -60,7 +60,7 @@ namespace Omnifactotum
             get
             {
                 // ReSharper disable once ConvertIfStatementToNullCoalescingExpression
-                if (_children == null)
+                if (_children is null)
                 {
                     _children = new VirtualTreeNodeCollection<T>(this);
                 }

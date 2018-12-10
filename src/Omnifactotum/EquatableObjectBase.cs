@@ -84,7 +84,7 @@ namespace Omnifactotum
         ///     otherwise, <c>false</c>.
         /// </returns>
         public bool Equals(EquatableObjectBase other)
-            => !ReferenceEquals(other, null) && other.GetType() == GetType()
+            => !(other is null) && other.GetType() == GetType()
                 && (ReferenceEquals(other, this) || EqualsInternal(other));
 
         /// <summary>

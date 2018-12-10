@@ -155,16 +155,11 @@ namespace System
         ///     the <paramref name="nullValueString"/> parameter if <paramref name="value"/> is <c>null</c>.
         /// </returns>
         public static string ToStringSafelyInvariant<T>([CanBeNull] this T value, [CanBeNull] string nullValueString)
-        {
-            if (ReferenceEquals(value, null))
-            {
-                return nullValueString;
-            }
-
-            return value is IFormattable formattable
-                ? formattable.ToString(null, CultureInfo.InvariantCulture)
-                : value.ToString();
-        }
+            => ReferenceEquals(value, null)
+                ? nullValueString
+                : value is IFormattable formattable
+                    ? formattable.ToString(null, CultureInfo.InvariantCulture)
+                    : value.ToString();
 
         /// <summary>
         ///     Returns a <see cref="System.String"/> that represents the specified value, using invariant culture and
@@ -305,13 +300,13 @@ namespace System
         public static T AvoidNull<T>([CanBeNull] this T source, [NotNull] Func<T> getDefault)
             where T : class
         {
-            if (getDefault == null)
+            if (getDefault is null)
             {
                 throw new ArgumentNullException(nameof(getDefault));
             }
 
             var result = source ?? getDefault();
-            if (result == null)
+            if (result is null)
             {
                 throw new InvalidOperationException(
                     "The method that had to return non-null value returned null.");
@@ -495,7 +490,7 @@ namespace System
                 return getPropertiesQuery.ToArray();
             }
 
-            if (_toPropertyStringResultBuilder == null)
+            if (_toPropertyStringResultBuilder is null)
             {
                 _toPropertyStringResultBuilder = new StringBuilder(128);
             }
@@ -582,12 +577,12 @@ namespace System
             [CanBeNull] TOutput defaultOutput)
             where TInput : class
         {
-            if (transform == null)
+            if (transform is null)
             {
                 throw new ArgumentNullException(nameof(transform));
             }
 
-            return input == null ? defaultOutput : transform(input);
+            return input is null ? defaultOutput : transform(input);
         }
 
         /// <summary>
@@ -653,12 +648,12 @@ namespace System
             [CanBeNull] TOutput defaultOutput)
             where TInput : struct
         {
-            if (transform == null)
+            if (transform is null)
             {
                 throw new ArgumentNullException(nameof(transform));
             }
 
-            return input == null ? defaultOutput : transform(input.Value);
+            return input is null ? defaultOutput : transform(input.Value);
         }
 
         /// <summary>
@@ -718,9 +713,10 @@ namespace System
             var isBraceOpen = false;
             try
             {
-                if (_toPropertyStringObjectsBeingProcessed == null)
+                if (_toPropertyStringObjectsBeingProcessed is null)
                 {
                     isToPropertyStringObjectsBeingProcessedCreated = true;
+
                     _toPropertyStringObjectsBeingProcessed = new HashSet<object>(
                         ByReferenceEqualityComparer<object>.Instance);
                 }
@@ -1039,7 +1035,7 @@ namespace System
                     return true;
                 }
 
-                if (ReferenceEquals(valueA, null) || ReferenceEquals(valueB, null))
+                if (valueA is null || valueB is null)
                 {
                     return false;
                 }
@@ -1055,7 +1051,7 @@ namespace System
                     return Equals(valueA, valueB);
                 }
 
-                if (_assertEqualityByContentsObjectsBeingProcessed == null)
+                if (_assertEqualityByContentsObjectsBeingProcessed is null)
                 {
                     isAssertEqualityByContentObjectsBeingProcessedCreated = true;
                     _assertEqualityByContentsObjectsBeingProcessed = new HashSet<PairReferenceHolder>();

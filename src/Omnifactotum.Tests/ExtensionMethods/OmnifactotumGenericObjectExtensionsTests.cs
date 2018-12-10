@@ -88,6 +88,7 @@ namespace Omnifactotum.Tests.ExtensionMethods
 
             Assert.That(
                 nullableDateTime.ToUIString(DateFormat, russianCultureInfo),
+                //// ReSharper disable once StringLiteralTypo :: False detection
                 Is.EqualTo("19 ноября 2016 г. 22:14:13"));
 
             Assert.That(
@@ -302,7 +303,7 @@ namespace Omnifactotum.Tests.ExtensionMethods
 
             Assert.That(actualResultWithSpecificOptions, Is.EqualTo(expectedString));
 
-            if (options == null)
+            if (options is null)
             {
                 var methodWithDefaultOptions =
                     ToPropertyStringWithDefaultOptionsMethodDefinition.MakeGenericMethod(objectType);
@@ -708,6 +709,7 @@ namespace Omnifactotum.Tests.ExtensionMethods
         {
             public string Value
             {
+                //// ReSharper disable once UnusedAutoPropertyAccessor.Local :: For test purposes
                 get;
                 set;
             }

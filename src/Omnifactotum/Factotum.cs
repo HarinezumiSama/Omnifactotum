@@ -31,7 +31,6 @@ namespace Omnifactotum
         private const string InvalidExpressionMessageAutoFormat =
             "Invalid expression (must be a getter of a property of some type): {{ {0} }}.";
 
-
         private static readonly int GuidSize = Marshal.SizeOf(typeof(Guid));
 
         private static readonly RNGCryptoServiceProvider IdGenerator = new RNGCryptoServiceProvider();
@@ -59,7 +58,7 @@ namespace Omnifactotum
         public static void DisposeAndNull<T>([CanBeNull] ref T disposable)
             where T : class, IDisposable
         {
-            if (ReferenceEquals(disposable, null))
+            if (disposable is null)
             {
                 return;
             }
@@ -156,7 +155,7 @@ namespace Omnifactotum
         public static T SetDefaultValues<T>([NotNull] T obj)
             where T : class
         {
-            if (obj == null)
+            if (obj is null)
             {
                 throw new ArgumentNullException(nameof(obj));
             }
@@ -419,7 +418,7 @@ namespace Omnifactotum
         [NotNull]
         public static Task CreateEmptyFaultedTask([NotNull] Exception exception)
         {
-            if (exception == null)
+            if (exception is null)
             {
                 throw new ArgumentNullException(nameof(exception));
             }
@@ -599,7 +598,7 @@ namespace Omnifactotum
         public static PropertyInfo GetPropertyInfo<TProperty>(
             [NotNull] Expression<Func<TProperty>> propertyGetterExpression)
         {
-            if (propertyGetterExpression == null)
+            if (propertyGetterExpression is null)
             {
                 throw new ArgumentNullException(nameof(propertyGetterExpression));
             }
@@ -613,24 +612,24 @@ namespace Omnifactotum
             }
 
             var result = memberExpression.Member as PropertyInfo;
-            if (result == null)
+            if (result is null)
             {
                 throw new ArgumentException(
                     string.Format(InvalidExpressionMessageAutoFormat, propertyGetterExpression),
                     nameof(propertyGetterExpression));
             }
 
-            if (result.DeclaringType == null)
+            if (result.DeclaringType is null)
             {
                 throw new ArgumentException(
                     string.Format(InvalidExpressionMessageAutoFormat, propertyGetterExpression),
                     nameof(propertyGetterExpression));
             }
 
-            if (memberExpression.Expression == null)
+            if (memberExpression.Expression is null)
             {
                 var accessor = result.GetGetMethod(true) ?? result.GetSetMethod(true);
-                if (accessor == null || !accessor.IsStatic)
+                if (accessor is null || !accessor.IsStatic)
                 {
                     throw new ArgumentException(
                         string.Format(InvalidExpressionMessageAutoFormat, propertyGetterExpression),
@@ -715,12 +714,12 @@ namespace Omnifactotum
             [NotNull] Func<T, RecursiveProcessingDirective> processItem,
             [CanBeNull] RecursiveProcessingContext<T> processingContext)
         {
-            if (getItems == null)
+            if (getItems is null)
             {
                 throw new ArgumentNullException(nameof(getItems));
             }
 
-            if (processItem == null)
+            if (processItem is null)
             {
                 throw new ArgumentNullException(nameof(processItem));
             }
@@ -801,7 +800,7 @@ namespace Omnifactotum
             [NotNull] Action<T> processItem,
             [CanBeNull] RecursiveProcessingContext<T> processingContext)
         {
-            if (processItem == null)
+            if (processItem is null)
             {
                 throw new ArgumentNullException(nameof(processItem));
             }
@@ -889,7 +888,7 @@ namespace Omnifactotum
             }
 
             var items = getItems(instance);
-            if (items == null)
+            if (items is null)
             {
                 return true;
             }

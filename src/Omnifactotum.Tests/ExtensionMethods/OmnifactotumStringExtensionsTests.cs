@@ -116,7 +116,7 @@ namespace Omnifactotum.Tests.ExtensionMethods
         {
             var actualResult = value.AvoidNull();
 
-            if (value == null)
+            if (value is null)
             {
                 Assert.That(actualResult, Is.EqualTo(string.Empty));
             }
