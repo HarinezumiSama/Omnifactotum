@@ -1,0 +1,17 @@
+version: 0.4.{build}
+pull_requests:
+  do_not_increment_build_number: true
+image: Visual Studio 2017
+nuget:
+  disable_publish_on_pr: true
+build_script:
+- cmd: call .\Build.NuGet-Package.cmd
+test: off
+notifications:
+- provider: Email
+  to:
+  - vitalii.maklai@gmail.com
+  subject: Omnifactotum Build
+  on_build_success: true
+  on_build_failure: true
+  on_build_status_changed: true
