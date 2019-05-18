@@ -14,8 +14,8 @@
     <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <SignAssembly>true</SignAssembly>
-    <AssemblyOriginatorKeyFile>..\SolutionItems\Omnifactotum.snk</AssemblyOriginatorKeyFile>
-    <DelaySign>true</DelaySign>
+    <AssemblyOriginatorKeyFile>..\SolutionItems\Omnifactotum.ci.pfx</AssemblyOriginatorKeyFile>
+    <DelaySign>false</DelaySign>
     <NuGetPackageImportStamp>
     </NuGetPackageImportStamp>
   </PropertyGroup>
@@ -62,6 +62,9 @@
   <ItemGroup>
     <None Include="..\SolutionItems\Omnifactotum.snk">
       <Link>Properties\Omnifactotum.snk</Link>
+    </None>
+    <None Include="..\SolutionItems\Omnifactotum.ci.pfx">
+      <Link>Properties\Omnifactotum.ci.pfx</Link>
     </None>
     <Compile Include="AsyncFactotumTests.Generated.cs">
       <AutoGen>True</AutoGen>
@@ -188,7 +191,7 @@
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
-    <PostBuildEvent>"$(ProjectDir)\..\SolutionItems\sign.cmd" "$(TargetPath)" || exit /b 1</PostBuildEvent>
+    <PostBuildEvent>:: "$(ProjectDir)\..\SolutionItems\sign.cmd" "$(TargetPath)" || exit /b 1</PostBuildEvent>
   </PropertyGroup>
   <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
     <PropertyGroup>

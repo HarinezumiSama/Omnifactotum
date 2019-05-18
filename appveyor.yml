@@ -2,11 +2,17 @@ version: 0.4.{build}
 pull_requests:
   do_not_increment_build_number: true
 image: Visual Studio 2017
+environment:
+  PFX_PASSWORD:
+    secure: c6zVCK0OsF68pVROF22rcxHSvrVIgOoFqkApdDb/Kls=
 nuget:
   disable_publish_on_pr: true
 build_script:
-- cmd: call .\Build.NuGet-Package.cmd
+- ps: '& .\Build.NuGet-Package.ps1 -Verbose -AutomatedBuild -PfxPassword ($env:PFX_PASSWORD | ConvertTo-SecureString -AsPlainText -Force)'
 test: off
+artifacts:
+- path: bin\NuGet\*.nupkg
+  name: NuGet
 notifications:
 - provider: Email
   to:

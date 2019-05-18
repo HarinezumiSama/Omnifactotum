@@ -14,8 +14,8 @@
     <FileAlignment>512</FileAlignment>
     <TargetFrameworkProfile>Client</TargetFrameworkProfile>
     <SignAssembly>true</SignAssembly>
-    <AssemblyOriginatorKeyFile>..\SolutionItems\Omnifactotum.snk</AssemblyOriginatorKeyFile>
-    <DelaySign>true</DelaySign>
+    <AssemblyOriginatorKeyFile>..\SolutionItems\Omnifactotum.ci.pfx</AssemblyOriginatorKeyFile>
+    <DelaySign>false</DelaySign>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -174,6 +174,9 @@
     <None Include="..\SolutionItems\Omnifactotum.snk">
       <Link>Properties\Omnifactotum.snk</Link>
     </None>
+    <None Include="..\SolutionItems\Omnifactotum.ci.pfx">
+      <Link>Properties\Omnifactotum.ci.pfx</Link>
+    </None>
     <None Include="Omnifactotum.nuspec.template" />
     <None Include="packages.config" />
   </ItemGroup>
@@ -199,7 +202,7 @@
     <BuildDependsOn>UpdateGlobalVersion;$(BuildDependsOn)</BuildDependsOn>
   </PropertyGroup>
   <PropertyGroup>
-    <PostBuildEvent>"$(ProjectDir)\..\SolutionItems\sign.cmd" "$(TargetPath)" || exit /b 1</PostBuildEvent>
+    <PostBuildEvent>:: "$(ProjectDir)\..\SolutionItems\sign.cmd" "$(TargetPath)" || exit /b 1</PostBuildEvent>
   </PropertyGroup>
   <PropertyGroup>
     <MSBuildCommunityTasksPath>$(SolutionDir)\.build</MSBuildCommunityTasksPath>
