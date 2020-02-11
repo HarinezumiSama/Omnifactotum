@@ -33,16 +33,12 @@ namespace Omnifactotum.Tests.ExtensionMethods
             => Assert.That(enumValue.EnsureDefined, Throws.TypeOf<InvalidEnumArgumentException>());
 
         [Test]
-        [SuppressMessage("ReSharper", "AssignNullToNotNullAttribute")]
-        public void TestIsDefinedWhenNullArgumentIsPassedThenThrows()
-            => Assert.That(() => ((Enum)null).IsDefined(), Throws.ArgumentNullException);
-
-        [Test]
         [TestCase(FileAccess.Read, true)]
         [TestCase(ConsoleModifiers.Alt, true)]
         [TestCase(ConsoleColor.Green, true)]
         [TestCase(TestEnumeration.NoZeroValue, true)]
         [TestCase(UIntTestFlags.Flag2, true)]
+        [TestCase(null, false)]
         [TestCase(ConsoleModifiers.Alt | ConsoleModifiers.Shift | ConsoleModifiers.Control, false)]
         [TestCase((ConsoleColor)(-1), false)]
         [TestCase((TestEnumeration)0, false)]

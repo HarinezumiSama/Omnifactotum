@@ -196,8 +196,7 @@ namespace System
         }
 
         /// <summary>
-        ///     Ensures that the specified enumeration value is defined in the corresponding enumeration and
-        ///     if it is not, throws <see cref="System.ComponentModel.InvalidEnumArgumentException"/>.
+        ///     Checks if the specified enumeration value is defined in the corresponding enumeration.
         /// </summary>
         /// <param name="enumerationValue">
         ///     The enumeration value to check.
@@ -206,11 +205,7 @@ namespace System
         ///     <c>true</c> if the specified enumeration value is defined in the corresponding enumeration;
         ///     otherwise, <c>false</c>.
         /// </returns>
-        /// <exception cref="System.ArgumentNullException">
-        ///     <paramref name="enumerationValue"/> is <c>null</c>.
-        /// </exception>
-        public static bool IsDefined([NotNull] this Enum enumerationValue)
-            => IsDefinedInternal(enumerationValue ?? throw new ArgumentNullException(nameof(enumerationValue)));
+        public static bool IsDefined([NotNull] this Enum enumerationValue) => enumerationValue != null && IsDefinedInternal(enumerationValue);
 
         /// <summary>
         ///     Ensures that the specified enumeration value is defined in the corresponding enumeration and
