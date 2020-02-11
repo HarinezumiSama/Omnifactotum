@@ -13,13 +13,23 @@
     <FileAlignment>512</FileAlignment>
     <Deterministic>true</Deterministic>
     <SignAssembly>true</SignAssembly>
-    <AssemblyOriginatorKeyFile Condition=" '$(SIGN_OMNIFACTOTUM)' == 'true' ">..\Common\Omnifactotum.ci.pfx</AssemblyOriginatorKeyFile>
-    <DelaySign Condition=" '$(SIGN_OMNIFACTOTUM)' == 'true' ">false</DelaySign>
-    <AssemblyOriginatorKeyFile Condition=" '$(SIGN_OMNIFACTOTUM)' != 'true' ">..\Common\Omnifactotum.snk</AssemblyOriginatorKeyFile>
-    <DelaySign Condition=" '$(SIGN_OMNIFACTOTUM)' != 'true' ">true</DelaySign>
     <NuGetPackageImportStamp>
     </NuGetPackageImportStamp>
   </PropertyGroup>
+  <Choose>
+    <When Condition=" '$(SIGN_OMNIFACTOTUM)' == 'true' Or '$(SIGN_OMNIFACTOTUM)' == '1' ">
+      <PropertyGroup>
+        <AssemblyOriginatorKeyFile>..\Common\Omnifactotum.ci.pfx</AssemblyOriginatorKeyFile>
+        <DelaySign>false</DelaySign>
+      </PropertyGroup>
+    </When>
+    <Otherwise>
+      <PropertyGroup>
+        <AssemblyOriginatorKeyFile>..\Common\Omnifactotum.snk</AssemblyOriginatorKeyFile>
+        <DelaySign>true</DelaySign>
+      </PropertyGroup>
+    </Otherwise>
+  </Choose>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
     <DebugType>full</DebugType>
@@ -201,7 +211,7 @@
   <PropertyGroup>
     <PostBuildEvent></PostBuildEvent>
   </PropertyGroup>
-  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it.
        Other similar extension points exist, see Microsoft.Common.targets.
   <Target Name="BeforeBuild">
   </Target>
