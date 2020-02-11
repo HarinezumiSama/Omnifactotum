@@ -500,7 +500,7 @@ process
                 throw [ArgumentException]::new('In the automated build mode, the PFX password cannot be empty.', 'PfxPassword')
             }
 
-            [string] $pfxFilePath = "$PSScriptRoot\src\Common\Omnifactotum.ci.pfx"
+            [string] $pfxFilePath = "$root\src\Common\Omnifactotum.ci.pfx"
             Write-Host "Determining the CSP key container name for the PFX file ""$pfxFilePath""."
 
             [ResolveKeySource] $rks = [ResolveKeySource]::new()
@@ -581,17 +581,17 @@ process
         [string] $outDirPath = [Path]::Combine($root, $OutDir)
         [string] $packageDirPath = [Path]::Combine($root, $PackageDir)
 
-        [bool] $isSigningEnabled = $AutomatedBuild -or $env:SIGN_OMNIFACTOTUM -eq '1'
+        [bool] $isSigningEnabled = $AutomatedBuild -or $env:SIGN_OMNIFACTOTUM -ieq [bool]::TrueString
 
         @($outDirPath, $packageDirPath) | Delete-ItemIfExists
 
         [string[]] $nugetRestoreArguments = `
-        @(
-            'restore',
-            """$solutionFilePath""",
-            '-NoCache',
-            '-NonInteractive'
-        )
+            @(
+                'restore',
+                """$solutionFilePath""",
+                '-NoCache',
+                '-NonInteractive'
+            )
 
         if ([File]::Exists($nuGetConfigFilePath))
         {
@@ -601,12 +601,13 @@ process
         Execute-Command -Title "Restoring packages for ""$solutionFilePath""" -Command $nuGetFullPath -CommandArguments $nugetRestoreArguments
 
         [string[]] $buildArguments = `
-        @(
-            """$solutionFilePath""",
-            '/target:Rebuild',
-            "/p:Configuration=""$BuildConfiguration""",
-            "/p:Platform=""$BuildPlatform"""
-        )
+            @(
+                """$solutionFilePath""",
+                '/target:Rebuild',
+                "/p:Configuration=""$BuildConfiguration""",
+                "/p:Platform=""$BuildPlatform""",
+                "/p:SIGN_OMNIFACTOTUM=$($isSigningEnabled.ToString().ToLowerInvariant())"
+            )
 
         Execute-Command -Title "Building ""$solutionFilePath""" -Command $msBuildFullPath -CommandArguments $buildArguments
 
@@ -616,15 +617,15 @@ process
         [string] $resultFilePath = [Path]::ChangeExtension($testDllPath, 'TestResult.xml')
 
         [string[]] $nunitArguments = `
-        @(
-            $testDllPath,
-            "--work=""$workingDirectory""",
-            "--result=""$resultFilePath""",
-            '--labels=All',
-            '--stoponerror',
-            '--inprocess',
-            '--dispose-runners'
-        )
+            @(
+                $testDllPath,
+                "--work=""$workingDirectory""",
+                "--result=""$resultFilePath""",
+                '--labels=All',
+                '--stoponerror',
+                '--inprocess',
+                '--dispose-runners'
+            )
 
         Execute-Command -Title 'Running automated tests via NUnit' -Command $nunitConsoleFullPath -CommandArguments $nunitArguments
 
@@ -660,17 +661,17 @@ process
         try
         {
             [string[]] $nugetPackArguments = `
-            @(
-                'pack',
-                """$projectFilePath""",
-                '-Verbosity',
-                'detailed',
-                '-OutputDirectory',
-                """$packageDirPath""",
-                '-Symbols',
-                '-Properties',
-                "Configuration=""$BuildConfiguration"";Platform=""$ProjectPlatform"""
-            )
+                @(
+                    'pack',
+                    """$projectFilePath""",
+                    '-Verbosity',
+                    'detailed',
+                    '-OutputDirectory',
+                    """$packageDirPath""",
+                    '-Symbols',
+                    '-Properties',
+                    "Configuration=""$BuildConfiguration"";Platform=""$ProjectPlatform"""
+                )
 
             Execute-Command -Title "Packaging ""$projectFilePath""" -Command $nuGetFullPath -CommandArguments $nugetPackArguments
         }

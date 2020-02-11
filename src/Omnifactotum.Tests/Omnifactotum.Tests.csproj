@@ -11,8 +11,10 @@
     <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <SignAssembly>true</SignAssembly>
-    <AssemblyOriginatorKeyFile>..\Common\Omnifactotum.ci.pfx</AssemblyOriginatorKeyFile>
-    <DelaySign>false</DelaySign>
+    <AssemblyOriginatorKeyFile Condition=" '$(SIGN_OMNIFACTOTUM)' == 'true' ">..\Common\Omnifactotum.ci.pfx</AssemblyOriginatorKeyFile>
+    <DelaySign Condition=" '$(SIGN_OMNIFACTOTUM)' == 'true' ">false</DelaySign>
+    <AssemblyOriginatorKeyFile Condition=" '$(SIGN_OMNIFACTOTUM)' != 'true' ">..\Common\Omnifactotum.snk</AssemblyOriginatorKeyFile>
+    <DelaySign Condition=" '$(SIGN_OMNIFACTOTUM)' != 'true' ">true</DelaySign>
     <NuGetPackageImportStamp>
     </NuGetPackageImportStamp>
   </PropertyGroup>

@@ -8,7 +8,7 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Omnifactotum.Tests", "Omnifactotum.Tests\Omnifactotum.Tests.csproj", "{A6A92B13-8AF3-453B-B6AA-137312AE0CCB}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Common", "Common", "{D7C50C3D-0B8E-4412-AC1A-A6B92C792565}"
-	ProjectSection(Common) = preProject
+	ProjectSection(SolutionItems) = preProject
 		Common\BaseVersion.txt = Common\BaseVersion.txt
 		..\Build.NuGet-Package.ps1 = ..\Build.NuGet-Package.ps1
 		Omnifactotum.sln.DotSettings = Omnifactotum.sln.DotSettings
