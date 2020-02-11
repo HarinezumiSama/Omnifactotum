@@ -32,7 +32,7 @@ param
     [string] $PackageDir = 'bin\NuGet',
 
     [Parameter()]
-    [string] $MSBuildVersion = '15.0',
+    [string] $MSBuildVersion = '16.0',
 
     [Parameter()]
     [string] $BuildConfiguration = 'Release',

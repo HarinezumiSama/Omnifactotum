@@ -1,23 +1,33 @@
 version: 0.4.{build}
 pull_requests:
   do_not_increment_build_number: true
-image: Visual Studio 2017
+branches:
+  only:
+  - master
+skip_tags: true
+image: Visual Studio 2019
+shallow_clone: true
 environment:
   PFX_PASSWORD:
     secure: c6zVCK0OsF68pVROF22rcxHSvrVIgOoFqkApdDb/Kls=
 nuget:
   disable_publish_on_pr: true
 build_script:
-- ps: '& .\Build.NuGet-Package.ps1 -Verbose -AutomatedBuild -PfxPassword ($env:PFX_PASSWORD | ConvertTo-SecureString -AsPlainText -Force)'
+- ps: >-
+    $Script:ErrorActionPreference = [System.Management.Automation.ActionPreference]::Stop
+
+
+    & .\Build.NuGet-Package.ps1 -Verbose -AutomatedBuild -PfxPassword ($env:PFX_PASSWORD | ConvertTo-SecureString -AsPlainText -Force)
 test: off
 artifacts:
 - path: bin\NuGet\*.nupkg
   name: NuGet
+deploy: off
 notifications:
 - provider: Email
   to:
   - vitalii.maklai@gmail.com
-  subject: Omnifactotum Build
+  subject: Omnifactotum Build [AppVeyor]
   on_build_success: true
   on_build_failure: true
-  on_build_status_changed: true
+  on_build_status_changed: false
