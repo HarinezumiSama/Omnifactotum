@@ -178,7 +178,6 @@
       <Link>Properties\Omnifactotum.ci.pfx</Link>
     </None>
     <None Include="Omnifactotum.nuspec.template" />
-    <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
     <None Include="AsyncFactotum.Common.ttinclude" />
@@ -194,6 +193,11 @@
   </ItemGroup>
   <ItemGroup>
     <Service Include="{508349B6-6B84-4DF5-91F0-309BEEBAD82D}" />
+  </ItemGroup>
+  <ItemGroup>
+    <PackageReference Include="MSBuildTasks">
+      <Version>1.4.0.88</Version>
+    </PackageReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
