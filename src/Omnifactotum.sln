@@ -1,8 +1,8 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 15
-VisualStudioVersion = 15.0.26730.15
-MinimumVisualStudioVersion = 15.0.0.0
+# Visual Studio Version 16
+VisualStudioVersion = 16.0.29326.143
+MinimumVisualStudioVersion = 16.0.0.0
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Omnifactotum", "Omnifactotum\Omnifactotum.csproj", "{1054B8A0-40D7-4FBC-A658-9AC9179035F8}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Omnifactotum.Tests", "Omnifactotum.Tests\Omnifactotum.Tests.csproj", "{A6A92B13-8AF3-453B-B6AA-137312AE0CCB}"
