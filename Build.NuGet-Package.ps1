@@ -500,7 +500,7 @@ process
                 throw [ArgumentException]::new('In the automated build mode, the PFX password cannot be empty.', 'PfxPassword')
             }
 
-            [string] $pfxFilePath = "$PSScriptRoot\src\SolutionItems\Omnifactotum.ci.pfx"
+            [string] $pfxFilePath = "$PSScriptRoot\src\Common\Omnifactotum.ci.pfx"
             Write-Host "Determining the CSP key container name for the PFX file ""$pfxFilePath""."
 
             [ResolveKeySource] $rks = [ResolveKeySource]::new()

@@ -7,21 +7,13 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Omnifactotum", "Omnifactotu
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Omnifactotum.Tests", "Omnifactotum.Tests\Omnifactotum.Tests.csproj", "{A6A92B13-8AF3-453B-B6AA-137312AE0CCB}"
 EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "SolutionItems", "SolutionItems", "{D7C50C3D-0B8E-4412-AC1A-A6B92C792565}"
-	ProjectSection(SolutionItems) = preProject
-		SolutionItems\BaseVersion.txt = SolutionItems\BaseVersion.txt
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Common", "Common", "{D7C50C3D-0B8E-4412-AC1A-A6B92C792565}"
+	ProjectSection(Common) = preProject
+		Common\BaseVersion.txt = Common\BaseVersion.txt
 		..\Build.NuGet-Package.ps1 = ..\Build.NuGet-Package.ps1
-		SolutionItems\hg.cmd = SolutionItems\hg.cmd
 		Omnifactotum.sln.DotSettings = Omnifactotum.sln.DotSettings
-		SolutionItems\Omnifactotum.snk = SolutionItems\Omnifactotum.snk
+		Common\Omnifactotum.snk = Common\Omnifactotum.snk
 		Settings.StyleCop = Settings.StyleCop
-		SolutionItems\sign.cmd = SolutionItems\sign.cmd
-	EndProjectSection
-EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = ".build", ".build", "{34003F43-DF6F-45FD-993C-1DDDA9456105}"
-	ProjectSection(SolutionItems) = preProject
-		.build\MSBuild.Community.Tasks.dll = .build\MSBuild.Community.Tasks.dll
-		.build\MSBuild.Community.Tasks.targets = .build\MSBuild.Community.Tasks.targets
 	EndProjectSection
 EndProject
 Global

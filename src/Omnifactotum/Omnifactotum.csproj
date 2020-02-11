@@ -3,18 +3,17 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProductVersion>8.0.30703</ProductVersion>
-    <SchemaVersion>2.0</SchemaVersion>
     <ProjectGuid>{1054B8A0-40D7-4FBC-A658-9AC9179035F8}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>Omnifactotum</RootNamespace>
     <AssemblyName>Omnifactotum</AssemblyName>
     <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
-    <FileAlignment>512</FileAlignment>
     <TargetFrameworkProfile>Client</TargetFrameworkProfile>
+    <FileAlignment>512</FileAlignment>
+    <Deterministic>true</Deterministic>
     <SignAssembly>true</SignAssembly>
-    <AssemblyOriginatorKeyFile>..\SolutionItems\Omnifactotum.ci.pfx</AssemblyOriginatorKeyFile>
+    <AssemblyOriginatorKeyFile>..\Common\Omnifactotum.ci.pfx</AssemblyOriginatorKeyFile>
     <DelaySign>false</DelaySign>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
@@ -30,7 +29,7 @@
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
     <DocumentationFile>..\..\bin\AnyCpu\Debug\Omnifactotum.xml</DocumentationFile>
     <Prefer32Bit>false</Prefer32Bit>
-    <LangVersion>default</LangVersion>
+    <LangVersion>8.0</LangVersion>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -45,7 +44,7 @@
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
     <DocumentationFile>..\..\bin\AnyCpu\Release\Omnifactotum.xml</DocumentationFile>
     <Prefer32Bit>false</Prefer32Bit>
-    <LangVersion>default</LangVersion>
+    <LangVersion>8.0</LangVersion>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="System" />
@@ -147,10 +146,10 @@
     <Compile Include="KeyValuePair.Helper.cs" />
     <Compile Include="Lazy.Helper.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="..\SolutionItems\CommonAssemblyInfo.cs">
+    <Compile Include="..\Common\CommonAssemblyInfo.cs">
       <Link>Properties\CommonAssemblyInfo.cs</Link>
     </Compile>
-    <Compile Include="..\SolutionItems\Generated.GlobalVersion.cs">
+    <Compile Include="..\Common\Generated.GlobalVersion.cs">
       <Link>Properties\Generated.GlobalVersion.cs</Link>
     </Compile>
     <Compile Include="ReadOnlyDictionary.cs" />
@@ -171,10 +170,10 @@
     <Compile Include="WinEventLog.cs" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="..\SolutionItems\Omnifactotum.snk">
+    <None Include="..\Common\Omnifactotum.snk">
       <Link>Properties\Omnifactotum.snk</Link>
     </None>
-    <None Include="..\SolutionItems\Omnifactotum.ci.pfx">
+    <None Include="..\Common\Omnifactotum.ci.pfx">
       <Link>Properties\Omnifactotum.ci.pfx</Link>
     </None>
     <None Include="Omnifactotum.nuspec.template" />
@@ -194,66 +193,10 @@
   <ItemGroup>
     <Service Include="{508349B6-6B84-4DF5-91F0-309BEEBAD82D}" />
   </ItemGroup>
-  <ItemGroup>
-    <PackageReference Include="MSBuildTasks">
-      <Version>1.4.0.88</Version>
-    </PackageReference>
-  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
-    <CompileDependsOn>UpdateGlobalVersion;$(CompileDependsOn)</CompileDependsOn>
-    <!--CleanDependsOn>UpdateGlobalVersion;$(CleanDependsOn)</CleanDependsOn-->
-    <BuildDependsOn>UpdateGlobalVersion;$(BuildDependsOn)</BuildDependsOn>
+    <PostBuildEvent></PostBuildEvent>
   </PropertyGroup>
-  <PropertyGroup>
-    <PostBuildEvent>:: "$(ProjectDir)\..\SolutionItems\sign.cmd" "$(TargetPath)" || exit /b 1</PostBuildEvent>
-  </PropertyGroup>
-  <PropertyGroup>
-    <MSBuildCommunityTasksPath>$(SolutionDir)\.build</MSBuildCommunityTasksPath>
-  </PropertyGroup>
-  <Import Project="$(MSBuildCommunityTasksPath)\MSBuild.Community.Tasks.targets" />
-  <Target Name="UpdateGlobalVersion">
-    <PropertyGroup>
-      <BaseVersionFile>$(ProjectDir)\..\SolutionItems\BaseVersion.txt</BaseVersionFile>
-      <RevisionFile>$(ProjectDir)\..\SolutionItems\Generated.Revision.txt</RevisionFile>
-      <RevisionIdFile>$(ProjectDir)\..\SolutionItems\Generated.RevisionId.txt</RevisionIdFile>
-    </PropertyGroup>
-    <Message Importance="high" Text="* Reading base version from '$(BaseVersionFile)'..." />
-    <ReadLinesFromFile File="$(BaseVersionFile)">
-      <Output TaskParameter="Lines" PropertyName="BaseVersion" />
-    </ReadLinesFromFile>
-    <Message Importance="high" Text="* Base version: '$(BaseVersion)'" />
-    <Exec Command="&quot;$(ProjectDir)\..\SolutionItems\hg.cmd&quot; identify --num &gt;&quot;$(RevisionFile)&quot;" />
-    <Exec Command="&quot;$(ProjectDir)\..\SolutionItems\hg.cmd&quot; identify --id &gt;&quot;$(RevisionIdFile)&quot;" />
-    <Message Importance="high" Text="* Reading HG revision number from '$(RevisionFile)'..." />
-    <ReadLinesFromFile File="$(RevisionFile)">
-      <Output TaskParameter="Lines" PropertyName="RevisionRaw" />
-    </ReadLinesFromFile>
-    <RegexReplace Input="$(RevisionRaw)" Expression="\+" Replacement="" Count="1">
-      <Output PropertyName="Revision" TaskParameter="Output" />
-    </RegexReplace>
-    <Message Importance="high" Text="* Revision number: '$(Revision)' (raw '$(RevisionRaw)')." />
-    <PropertyGroup>
-      <GlobalVersion>$(BaseVersion).0.$(Revision)</GlobalVersion>
-    </PropertyGroup>
-    <Message Importance="high" Text="* Reading HG revision ID from '$(RevisionIdFile)'..." />
-    <ReadLinesFromFile File="$(RevisionIdFile)">
-      <Output TaskParameter="Lines" PropertyName="RevisionId" />
-    </ReadLinesFromFile>
-    <Message Importance="high" Text="* Revision ID: '$(RevisionId)'" />
-    <ItemGroup>
-      <AssemblyVersion Include="global::System.Reflection.AssemblyVersion">
-        <_Parameter1>$(GlobalVersion)</_Parameter1>
-      </AssemblyVersion>
-      <AssemblyFileVersion Include="global::System.Reflection.AssemblyFileVersion">
-        <_Parameter1>$(GlobalVersion)</_Parameter1>
-      </AssemblyFileVersion>
-      <AssemblyInformationalVersion Include="global::System.Reflection.AssemblyInformationalVersion">
-        <_Parameter1>$(GlobalVersion) (rev. $(RevisionId))</_Parameter1>
-      </AssemblyInformationalVersion>
-    </ItemGroup>
-    <WriteCodeFragment Language="C#" OutputFile="$(ProjectDir)\..\SolutionItems\Generated.GlobalVersion.cs" AssemblyAttributes="@(AssemblyVersion);@(AssemblyFileVersion);@(AssemblyInformationalVersion)" />
-  </Target>
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
   <Target Name="BeforeBuild">
