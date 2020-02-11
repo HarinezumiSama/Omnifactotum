@@ -10,7 +10,7 @@ EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Common", "Common", "{D7C50C3D-0B8E-4412-AC1A-A6B92C792565}"
 	ProjectSection(SolutionItems) = preProject
 		Common\BaseVersion.txt = Common\BaseVersion.txt
-		..\Build.NuGet-Package.ps1 = ..\Build.NuGet-Package.ps1
+		..\build.ps1 = ..\build.ps1
 		Omnifactotum.sln.DotSettings = Omnifactotum.sln.DotSettings
 		Common\Omnifactotum.snk = Common\Omnifactotum.snk
 		Settings.StyleCop = Settings.StyleCop
