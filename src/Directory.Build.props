@@ -18,7 +18,13 @@
         <Description>$(Product): Helper classes and extension methods for .NET projects.</Description>
         <Copyright>Copyright © Vitalii Maklai 2004-$(BuildDateYear)</Copyright>
         <RepositoryUrl>https://github.com/HarinezumiSama/$(SolutionName)</RepositoryUrl>
+        <RepositoryType>git</RepositoryType>
         <PackageProjectUrl>$(RepositoryUrl)</PackageProjectUrl>
+        <PackageRequireLicenseAcceptance>false</PackageRequireLicenseAcceptance>
+        <PackageLicenseExpression>MIT</PackageLicenseExpression>
+        <PackageReleaseNotes></PackageReleaseNotes>
+        <PackageTags>C#;CSharp;omnifactotum;omni;factotum;aid;assistant;extension;extensions;helper;helpers;common</PackageTags>
+        <PackageOutputPath>$(SolutionDir)\..\bin\NuGet\</PackageOutputPath>
     </PropertyGroup>
 
     <PropertyGroup>
