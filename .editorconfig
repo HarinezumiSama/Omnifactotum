@@ -11,6 +11,3 @@ max_line_length = 140
 [*.{config,cs,csproj,css,DotSettings,js,json,nuspec,ps1,resx,scss,settings,sln,ts,tt,xml}]
 charset = utf-8-bom
 end_of_line = crlf
-
-[*.csproj]
-indent_size = 2

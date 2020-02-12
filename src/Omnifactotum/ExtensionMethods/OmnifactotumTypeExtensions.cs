@@ -1,10 +1,8 @@
-﻿using System.CodeDom;
-using System.Collections;
+﻿using System.Collections;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Text;
-using Microsoft.CSharp;
 using Omnifactotum.Annotations;
 
 //// Namespace is intentionally named so in order to simplify usage of extension methods
@@ -22,10 +20,25 @@ namespace System
         /// </summary>
         private const char GenericArgumentDelimiter = '`';
 
-        /// <summary>
-        ///     A reference to <see cref="CSharpCodeProvider"/> instance.
-        /// </summary>
-        private static readonly CSharpCodeProvider CSharpCodeProviderInstance = new CSharpCodeProvider();
+        private static readonly Dictionary<Type, string> ShortTypeNameMap = new Dictionary<Type, string>
+        {
+            { typeof(bool), @"bool" },
+            { typeof(byte), @"byte" },
+            { typeof(char), @"char" },
+            { typeof(decimal), @"decimal" },
+            { typeof(double), @"double" },
+            { typeof(float), @"float" },
+            { typeof(int), @"int" },
+            { typeof(long), @"long" },
+            { typeof(object), @"object" },
+            { typeof(sbyte), @"sbyte" },
+            { typeof(short), @"short" },
+            { typeof(string), @"string" },
+            { typeof(uint), @"uint" },
+            { typeof(ulong), @"ulong" },
+            { typeof(ushort), @"ushort" },
+            { typeof(void), @"void" }
+        };
 
         /// <summary>
         ///     Loads the specified manifest resource, scoped by the namespace of the specified
@@ -306,17 +319,7 @@ namespace System
                 return type.Name;
             }
 
-            if (string.IsNullOrEmpty(type.FullName))
-            {
-                return type.Name;
-            }
-
-            var result = CSharpCodeProviderInstance.GetTypeOutput(new CodeTypeReference(type));
-            if (result == type.FullName)
-            {
-                result = type.Name;
-            }
-
+            var result = ShortTypeNameMap.TryGetValue(type, out var shortTypeName) ? shortTypeName : type.Name;
             return result;
         }
 

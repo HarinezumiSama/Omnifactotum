@@ -3,7 +3,7 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 16
 VisualStudioVersion = 16.0.29326.143
 MinimumVisualStudioVersion = 16.0.0.0
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Omnifactotum", "Omnifactotum\Omnifactotum.csproj", "{1054B8A0-40D7-4FBC-A658-9AC9179035F8}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Omnifactotum", "Omnifactotum\Omnifactotum.csproj", "{1054B8A0-40D7-4FBC-A658-9AC9179035F8}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Omnifactotum.Tests", "Omnifactotum.Tests\Omnifactotum.Tests.csproj", "{A6A92B13-8AF3-453B-B6AA-137312AE0CCB}"
 EndProject
@@ -11,6 +11,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Common", "Common", "{D7C50C
 	ProjectSection(SolutionItems) = preProject
 		Common\BaseVersion.txt = Common\BaseVersion.txt
 		..\build.ps1 = ..\build.ps1
+		Directory.Build.props = Directory.Build.props
 		Omnifactotum.sln.DotSettings = Omnifactotum.sln.DotSettings
 		Common\Omnifactotum.snk = Common\Omnifactotum.snk
 		Settings.StyleCop = Settings.StyleCop

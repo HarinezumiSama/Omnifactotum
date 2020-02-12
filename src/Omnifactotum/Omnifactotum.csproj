@@ -1,221 +1,67 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
-  <PropertyGroup>
-    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
-    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{1054B8A0-40D7-4FBC-A658-9AC9179035F8}</ProjectGuid>
-    <OutputType>Library</OutputType>
-    <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>Omnifactotum</RootNamespace>
-    <AssemblyName>Omnifactotum</AssemblyName>
-    <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
-    <TargetFrameworkProfile>Client</TargetFrameworkProfile>
-    <FileAlignment>512</FileAlignment>
-    <Deterministic>true</Deterministic>
-    <SignAssembly>true</SignAssembly>
-    <NuGetPackageImportStamp>
-    </NuGetPackageImportStamp>
-  </PropertyGroup>
-  <Choose>
-    <When Condition=" '$(SIGN_OMNIFACTOTUM)' == 'true' Or '$(SIGN_OMNIFACTOTUM)' == '1' ">
-      <PropertyGroup>
-        <AssemblyOriginatorKeyFile>..\Common\Omnifactotum.ci.pfx</AssemblyOriginatorKeyFile>
-        <DelaySign>false</DelaySign>
-      </PropertyGroup>
-    </When>
-    <Otherwise>
-      <PropertyGroup>
-        <AssemblyOriginatorKeyFile>..\Common\Omnifactotum.snk</AssemblyOriginatorKeyFile>
-        <DelaySign>true</DelaySign>
-      </PropertyGroup>
-    </Otherwise>
-  </Choose>
-  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
-    <DebugSymbols>true</DebugSymbols>
-    <DebugType>full</DebugType>
-    <Optimize>false</Optimize>
-    <OutputPath>..\..\bin\AnyCpu\Debug\</OutputPath>
-    <DefineConstants>DEBUG;TRACE</DefineConstants>
-    <ErrorReport>prompt</ErrorReport>
-    <WarningLevel>4</WarningLevel>
-    <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
-    <UseVSHostingProcess>false</UseVSHostingProcess>
-    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
-    <DocumentationFile>..\..\bin\AnyCpu\Debug\Omnifactotum.xml</DocumentationFile>
-    <Prefer32Bit>false</Prefer32Bit>
-    <LangVersion>8.0</LangVersion>
-  </PropertyGroup>
-  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
-    <DebugSymbols>true</DebugSymbols>
-    <DebugType>full</DebugType>
-    <Optimize>true</Optimize>
-    <OutputPath>..\..\bin\AnyCpu\Release\</OutputPath>
-    <DefineConstants>TRACE</DefineConstants>
-    <ErrorReport>prompt</ErrorReport>
-    <WarningLevel>4</WarningLevel>
-    <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
-    <UseVSHostingProcess>false</UseVSHostingProcess>
-    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
-    <DocumentationFile>..\..\bin\AnyCpu\Release\Omnifactotum.xml</DocumentationFile>
-    <Prefer32Bit>false</Prefer32Bit>
-    <LangVersion>8.0</LangVersion>
-  </PropertyGroup>
-  <ItemGroup>
-    <Reference Include="System" />
-    <Reference Include="System.Core" />
-    <Reference Include="Microsoft.CSharp" />
-    <Reference Include="System.IdentityModel" />
-    <Reference Include="System.ServiceModel" />
-    <Reference Include="System.Xml" />
-  </ItemGroup>
-  <ItemGroup>
-    <Compile Include="Annotations\JetBrains.Annotations.cs" />
-    <Compile Include="AsyncFactotum.ComputeAsync.Generated.cs">
-      <AutoGen>True</AutoGen>
-      <DesignTime>True</DesignTime>
-      <DependentUpon>AsyncFactotum.ComputeAsync.tt</DependentUpon>
-    </Compile>
-    <Compile Include="AsyncFactotum.cs" />
-    <Compile Include="AsyncFactotum.ExecuteAsync.Generated.cs">
-      <AutoGen>True</AutoGen>
-      <DesignTime>True</DesignTime>
-      <DependentUpon>AsyncFactotum.ExecuteAsync.tt</DependentUpon>
-    </Compile>
-    <Compile Include="ByReferenceEqualityComparer.cs" />
-    <Compile Include="ColoredConsoleTraceListener.cs" />
-    <Compile Include="ComparableObjectBase.cs" />
-    <Compile Include="ComparableValueCapsule.cs" />
-    <Compile Include="OmnifactotumConstants.cs" />
-    <Compile Include="ValueContainer.Helper.cs" />
-    <Compile Include="EnumFixedSizeDictionary.cs" />
-    <Compile Include="EnumFixedSizeDictionaryDeterminant.cs" />
-    <Compile Include="EquatableObjectBase.cs" />
-    <Compile Include="EquatableValueCapsule.cs" />
-    <Compile Include="ExtensionMethods\OmnifactotumMathExtensions.cs" />
-    <Compile Include="ExtensionMethods\OmnifactotumExpressionExtensions.cs" />
-    <Compile Include="Factotum.For.cs" />
-    <Compile Include="FixedSizeDictionaryDeterminant.cs" />
-    <Compile Include="FixedSizeDictionary.cs" />
-    <Compile Include="IValueContainer.cs" />
-    <Compile Include="KeyedEqualityComparer.Helper.cs" />
-    <Compile Include="RecursiveProcessingContext.cs" />
-    <Compile Include="SyncValueContainer.Helper.cs" />
-    <Compile Include="Validation\Constraints\BaseMemberConstraintAttribute.cs" />
-    <Compile Include="Validation\Constraints\BaseValidatableMemberAttribute.cs" />
-    <Compile Include="Validation\Constraints\KeyValuePairConstraintBase.cs" />
-    <Compile Include="Validation\Constraints\NotNullConstraint{T}.cs" />
-    <Compile Include="Validation\Constraints\IgnoredConstraint.cs" />
-    <Compile Include="Validation\Constraints\TypedMemberConstraintBase.cs" />
-    <Compile Include="Validation\Constraints\KeyValuePairConstraint.cs" />
-    <Compile Include="Validation\Constraints\MemberItemConstraintAttribute.cs" />
-    <Compile Include="Validation\Constraints\NotNullOrWhiteSpaceStringConstraint.cs" />
-    <Compile Include="Validation\Constraints\NotNullOrEmptyStringConstraint.cs" />
-    <Compile Include="Validation\Constraints\IMemberConstraint.cs" />
-    <Compile Include="Validation\Constraints\MemberConstraintAttribute.cs" />
-    <Compile Include="Validation\Constraints\MemberConstraintBase.cs" />
-    <Compile Include="Validation\Constraints\MemberConstraintValidationContext.cs" />
-    <Compile Include="Validation\Constraints\MemberConstraintValidationError.cs" />
-    <Compile Include="Validation\Constraints\NotNullConstraint.cs" />
-    <Compile Include="Validation\Constraints\ValidatableMemberAttribute.cs" />
-    <Compile Include="Validation\InternalMemberDataEqualityComparer.cs" />
-    <Compile Include="Validation\MemberData.cs" />
-    <Compile Include="Validation\ObjectValidationException.cs" />
-    <Compile Include="Validation\ObjectValidationResult.cs" />
-    <Compile Include="Validation\ObjectValidator.cs" />
-    <Compile Include="Validation\ObjectValidatorContext.cs" />
-    <Compile Include="Validation\ValidationErrorCollection.cs" />
-    <Compile Include="Validation\ValidationFactotum.cs" />
-    <Compile Include="ValueCapsule.cs" />
-    <Compile Include="SyncValueContainer.cs" />
-    <Compile Include="DirectedGraph.cs" />
-    <Compile Include="DirectedGraphNode.cs" />
-    <Compile Include="DirectedGraphNode.Helper.cs" />
-    <Compile Include="DirectedGraphNodeCollection.cs" />
-    <Compile Include="DirectedGraphNodeCollectionBase.cs" />
-    <Compile Include="DirectedGraphOwnerRelation.cs" />
-    <Compile Include="EnumFactotum.cs" />
-    <Compile Include="ExtensionMethods\OmnifactotumDisposableExtensions.cs" />
-    <Compile Include="ExtensionMethods\OmnifactotumArrayExtensions.cs" />
-    <Compile Include="ExtensionMethods\OmnifactotumAssemblyExtensions.cs" />
-    <Compile Include="ExtensionMethods\OmnifactotumCollectionExtensions.cs" />
-    <Compile Include="ExtensionMethods\OmnifactotumCollectionHashCodeHelper.cs" />
-    <Compile Include="ExtensionMethods\OmnifactotumCustomAttributeProviderExtensions.cs" />
-    <Compile Include="ExtensionMethods\OmnifactotumDateTimeExtensions.cs" />
-    <Compile Include="ExtensionMethods\OmnifactotumDateTimeOffsetExtensions.cs" />
-    <Compile Include="ExtensionMethods\OmnifactotumDictionaryExtensions.cs" />
-    <Compile Include="ExtensionMethods\OmnifactotumEnumExtensions.cs" />
-    <Compile Include="ExtensionMethods\OmnifactotumExceptionExtensions.cs" />
-    <Compile Include="ExtensionMethods\OmnifactotumGenericObjectExtensions.cs" />
-    <Compile Include="ExtensionMethods\OmnifactotumHashCodeHelper.cs" />
-    <Compile Include="ExtensionMethods\OmnifactotumMethodBaseExtensions.cs" />
-    <Compile Include="ExtensionMethods\OmnifactotumNullableBooleanExtensions.cs" />
-    <Compile Include="ExtensionMethods\OmnifactotumOperationContextExtensions.cs" />
-    <Compile Include="ExtensionMethods\OmnifactotumSetExtensions.cs" />
-    <Compile Include="ExtensionMethods\OmnifactotumStringExtensions.cs" />
-    <Compile Include="ExtensionMethods\OmnifactotumTimeSpanExtensions.cs" />
-    <Compile Include="ExtensionMethods\OmnifactotumTypeExtensions.cs" />
-    <Compile Include="Factotum.cs" />
-    <Compile Include="IdGenerationModes.cs" />
-    <Compile Include="KeyedEqualityComparer.cs" />
-    <Compile Include="KeyValuePair.Helper.cs" />
-    <Compile Include="Lazy.Helper.cs" />
-    <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="..\Common\CommonAssemblyInfo.cs">
-      <Link>Properties\CommonAssemblyInfo.cs</Link>
-    </Compile>
-    <Compile Include="..\Common\Generated.GlobalVersion.cs">
-      <Link>Properties\Generated.GlobalVersion.cs</Link>
-    </Compile>
-    <Compile Include="ReadOnlyDictionary.cs" />
-    <Compile Include="ReadOnlySet.cs" />
-    <Compile Include="RecursiveProcessingDirective.cs" />
-    <Compile Include="SmartDisposable.cs" />
-    <Compile Include="SmartDisposable.Helper.cs" />
-    <Compile Include="ToPropertyStringOptions.cs" />
-    <Compile Include="ValueContainer.cs" />
-    <Compile Include="ValueRange.cs" />
-    <Compile Include="ValueRange.Helper.cs" />
-    <Compile Include="VirtualTreeNode.cs" />
-    <Compile Include="VirtualTreeNode.Helper.cs" />
-    <Compile Include="VirtualTreeNodeBase.cs" />
-    <Compile Include="VirtualTreeNodeCollection.cs" />
-    <Compile Include="VirtualTreeNodeRoot.cs" />
-    <Compile Include="WeakReferenceBasedCache.cs" />
-    <Compile Include="WinEventLog.cs" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="..\Common\Omnifactotum.snk">
-      <Link>Properties\Omnifactotum.snk</Link>
-    </None>
-    <None Include="..\Common\Omnifactotum.ci.pfx">
-      <Link>Properties\Omnifactotum.ci.pfx</Link>
-    </None>
-    <None Include="Omnifactotum.nuspec.template" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="AsyncFactotum.Common.ttinclude" />
-    <None Include="AsyncFactotum.ExecuteAsync.tt">
-      <Generator>TextTemplatingFileGenerator</Generator>
-      <LastGenOutput>AsyncFactotum.ExecuteAsync.Generated.cs</LastGenOutput>
-    </None>
-    <None Include="AsyncFactotum.ComputeAsync.tt">
-      <Generator>TextTemplatingFileGenerator</Generator>
-      <LastGenOutput>AsyncFactotum.ComputeAsync.Generated.cs</LastGenOutput>
-    </None>
-    <None Include="ExtensionMethods\__ReadMe.txt" />
-  </ItemGroup>
-  <ItemGroup>
-    <Service Include="{508349B6-6B84-4DF5-91F0-309BEEBAD82D}" />
-  </ItemGroup>
-  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
-  <PropertyGroup>
-    <PostBuildEvent></PostBuildEvent>
-  </PropertyGroup>
-  <!-- To modify your build process, add your task inside one of the targets below and uncomment it.
-       Other similar extension points exist, see Microsoft.Common.targets.
-  <Target Name="BeforeBuild">
-  </Target>
-  <Target Name="AfterBuild">
-  </Target>
-  -->
+
+<Project Sdk="Microsoft.NET.Sdk">
+    <PropertyGroup>
+        <EnableDefaultItems>false</EnableDefaultItems>
+        <TargetFrameworks>netstandard2.0;net40;net472</TargetFrameworks>
+        <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+        <IncludeSymbols>true</IncludeSymbols>
+        <Description>Omnifactotum: Helper classes and extension methods for .NET projects.</Description>
+        <OutputPath>..\..\bin\$(Platform)\$(Configuration)\</OutputPath>
+        <GenerateDocumentationFile>true</GenerateDocumentationFile>
+        <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
+        <WarningsAsErrors />
+        <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+    </PropertyGroup>
+
+    <PropertyGroup Condition="'$(TargetFramework)'=='net472'">
+        <DefineConstants>$(DefineConstants);IsNet472OrHigher</DefineConstants>
+    </PropertyGroup>
+
+    <ItemGroup Condition="'$(TargetFramework)'!='netstandard2.0'">
+        <Reference Include="System" />
+        <Reference Include="System.Core" />
+        <Reference Include="Microsoft.CSharp" />
+        <Reference Include="System.IdentityModel" />
+        <Reference Include="System.ServiceModel" />
+        <Reference Include="System.Xml" />
+    </ItemGroup>
+
+    <ItemGroup>
+        <Service Include="{508349b6-6b84-4df5-91f0-309beebad82d}" />
+    </ItemGroup>
+
+    <ItemGroup>
+        <Compile Include="**/*.cs" Exclude="**/obj/**" />
+
+        <None Include="AsyncFactotum.Common.ttinclude" />
+        <None Include="AsyncFactotum.ExecuteAsync.tt">
+            <Generator>TextTemplatingFileGenerator</Generator>
+            <LastGenOutput>AsyncFactotum.ExecuteAsync.Generated.cs</LastGenOutput>
+        </None>
+        <None Include="AsyncFactotum.ComputeAsync.tt">
+            <Generator>TextTemplatingFileGenerator</Generator>
+            <LastGenOutput>AsyncFactotum.ComputeAsync.Generated.cs</LastGenOutput>
+        </None>
+        <Compile Update="AsyncFactotum.ComputeAsync.Generated.cs">
+            <AutoGen>True</AutoGen>
+            <DesignTime>True</DesignTime>
+            <DependentUpon>AsyncFactotum.ComputeAsync.tt</DependentUpon>
+        </Compile>
+        <Compile Update="AsyncFactotum.ExecuteAsync.Generated.cs">
+            <AutoGen>True</AutoGen>
+            <DesignTime>True</DesignTime>
+            <DependentUpon>AsyncFactotum.ExecuteAsync.tt</DependentUpon>
+        </Compile>
+
+        <None Include="ExtensionMethods\__ReadMe.txt" />
+
+        <None Include="..\Common\Omnifactotum.snk">
+            <Link>Properties\Omnifactotum.snk</Link>
+        </None>
+        <None Include="..\Common\Omnifactotum.ci.pfx">
+            <Link>Properties\Omnifactotum.ci.pfx</Link>
+        </None>
+        <None Include="Omnifactotum.nuspec.template" />
+    </ItemGroup>
 </Project>
