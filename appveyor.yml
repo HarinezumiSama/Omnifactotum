@@ -17,7 +17,9 @@ build_script:
     $Script:ErrorActionPreference = [System.Management.Automation.ActionPreference]::Stop
 
 
-    & .\build.ps1 -Verbose -AutomatedBuild -PfxPassword ($env:PFX_PASSWORD | ConvertTo-SecureString -AsPlainText -Force)
+    & .\build.ps1 -Verbose `
+        -AutomatedBuild `
+        -PfxPassword ($env:PFX_PASSWORD | ConvertTo-SecureString -AsPlainText -Force)
 test: off
 artifacts:
 - path: bin\NuGet\*.nupkg
