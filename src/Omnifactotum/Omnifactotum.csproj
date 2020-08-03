@@ -3,6 +3,7 @@
 <Project Sdk="Microsoft.NET.Sdk">
     <PropertyGroup>
         <EnableDefaultItems>false</EnableDefaultItems>
+        <LangVersion>8.0</LangVersion>
         <TargetFrameworks>netstandard2.0;net40;net472</TargetFrameworks>
         <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
         <IncludeSymbols>true</IncludeSymbols>
