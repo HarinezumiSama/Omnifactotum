@@ -7,6 +7,7 @@
         <TargetFrameworks>netstandard2.0;net40;net472</TargetFrameworks>
         <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
         <IncludeSymbols>true</IncludeSymbols>
+        <IncludeSource>true</IncludeSource>
         <Description>Omnifactotum: Helper classes and extension methods for .NET projects.</Description>
         <OutputPath>..\..\bin\$(Platform)\$(Configuration)\</OutputPath>
         <GenerateDocumentationFile>true</GenerateDocumentationFile>
@@ -22,10 +23,8 @@
     <ItemGroup Condition="'$(TargetFramework)'!='netstandard2.0'">
         <Reference Include="System" />
         <Reference Include="System.Core" />
-        <Reference Include="Microsoft.CSharp" />
         <Reference Include="System.IdentityModel" />
         <Reference Include="System.ServiceModel" />
-        <Reference Include="System.Xml" />
     </ItemGroup>
 
     <ItemGroup>
