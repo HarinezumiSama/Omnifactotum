@@ -31,6 +31,7 @@ namespace Omnifactotum.Tests.ExtensionMethods
             _dictionary = null;
         }
 
+#if NETSTANDARD2_0 || NETFRAMEWORK
         [Test]
         public void TestGetValueOrDefaultNegative()
         {
@@ -63,6 +64,7 @@ namespace Omnifactotum.Tests.ExtensionMethods
             Assert.That(_dictionary.GetValueOrDefault(Key2, ExplicitValue2), Is.EqualTo(ExplicitValue2));
             AssertInitialDictionaryState();
         }
+#endif
 
         [Test]
         public void TestGetOrCreateValueNegative()

@@ -11,6 +11,8 @@ namespace System.Collections.Generic
     /// </summary>
     public static class OmnifactotumDictionaryExtensions
     {
+#if NETSTANDARD2_0 || NETFRAMEWORK
+
         /// <summary>
         ///     Gets the value associated with the specified key from the specified dictionary.
         /// </summary>
@@ -78,6 +80,8 @@ namespace System.Collections.Generic
         {
             return GetValueOrDefault(dictionary, key, default(TValue));
         }
+
+#endif
 
         /// <summary>
         ///     Gets the value associated with the specified key from the specified dictionary.

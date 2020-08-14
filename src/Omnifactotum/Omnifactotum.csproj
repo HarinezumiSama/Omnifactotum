@@ -4,11 +4,10 @@
     <PropertyGroup>
         <EnableDefaultItems>false</EnableDefaultItems>
         <LangVersion>8.0</LangVersion>
-        <TargetFrameworks>netstandard2.0;net40;net472</TargetFrameworks>
+        <TargetFrameworks>net40;net472;netstandard2.0;netstandard2.1</TargetFrameworks>
         <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
         <IncludeSymbols>true</IncludeSymbols>
         <IncludeSource>true</IncludeSource>
-        <Description>Omnifactotum: Helper classes and extension methods for .NET projects.</Description>
         <OutputPath>..\..\bin\$(Platform)\$(Configuration)\</OutputPath>
         <GenerateDocumentationFile>true</GenerateDocumentationFile>
         <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
@@ -20,9 +19,7 @@
         <DefineConstants>$(DefineConstants);IsNet472OrHigher</DefineConstants>
     </PropertyGroup>
 
-    <ItemGroup Condition="'$(TargetFramework)'!='netstandard2.0'">
-        <Reference Include="System" />
-        <Reference Include="System.Core" />
+    <ItemGroup Condition="'$(TargetFramework)'=='net40' or '$(TargetFramework)'=='net472'">
         <Reference Include="System.IdentityModel" />
         <Reference Include="System.ServiceModel" />
     </ItemGroup>
@@ -33,6 +30,13 @@
 
     <ItemGroup>
         <Compile Include="**/*.cs" Exclude="**/obj/**" />
+
+        <None Include="..\Common\Omnifactotum.snk">
+            <Link>Properties\Omnifactotum.snk</Link>
+        </None>
+        <None Include="..\Common\Omnifactotum.ci.pfx">
+            <Link>Properties\Omnifactotum.ci.pfx</Link>
+        </None>
 
         <None Include="AsyncFactotum.Common.ttinclude" />
         <None Include="AsyncFactotum.ExecuteAsync.tt">
@@ -55,13 +59,5 @@
         </Compile>
 
         <None Include="ExtensionMethods\__ReadMe.txt" />
-
-        <None Include="..\Common\Omnifactotum.snk">
-            <Link>Properties\Omnifactotum.snk</Link>
-        </None>
-        <None Include="..\Common\Omnifactotum.ci.pfx">
-            <Link>Properties\Omnifactotum.ci.pfx</Link>
-        </None>
-        <None Include="Omnifactotum.nuspec.template" />
     </ItemGroup>
 </Project>

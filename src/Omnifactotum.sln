@@ -9,7 +9,6 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Omnifactotum.Tests", "Omnif
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Common", "Common", "{D7C50C3D-0B8E-4412-AC1A-A6B92C792565}"
 	ProjectSection(SolutionItems) = preProject
-		Common\BaseVersion.txt = Common\BaseVersion.txt
 		..\build.ps1 = ..\build.ps1
 		Directory.Build.props = Directory.Build.props
 		Omnifactotum.sln.DotSettings = Omnifactotum.sln.DotSettings

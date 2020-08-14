@@ -2,7 +2,9 @@
 using System.CodeDom.Compiler;
 using System.Diagnostics.CodeAnalysis;
 using System.Reflection;
+#if NETFRAMEWORK
 using System.Reflection.Emit;
+#endif
 using Microsoft.CSharp;
 using NUnit.Framework;
 using Omnifactotum.NUnit;
@@ -25,6 +27,7 @@ namespace Omnifactotum.Tests.ExtensionMethods
         public void TestGetLocalPathWhenInMemoryAssemblyIsPassedThenThrows()
         {
             var codeProvider = new CSharpCodeProvider();
+
             var compilerResults = codeProvider.CompileAssemblyFromSource(
                 new CompilerParameters { GenerateInMemory = true });
 
@@ -33,6 +36,7 @@ namespace Omnifactotum.Tests.ExtensionMethods
             Assert.That(() => assembly.GetLocalPath(), Throws.TypeOf<ArgumentException>());
         }
 
+#if NETFRAMEWORK
         [Test]
         public void TestGetLocalPathWhenDynamicAssemblyIsPassedThenThrows()
         {
@@ -42,5 +46,6 @@ namespace Omnifactotum.Tests.ExtensionMethods
 
             Assert.That(() => assemblyBuilder.GetLocalPath(), Throws.TypeOf<ArgumentException>());
         }
+#endif
     }
 }

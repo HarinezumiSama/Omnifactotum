@@ -1,4 +1,6 @@
-﻿using Omnifactotum.Annotations;
+﻿#if NETSTANDARD2_0 || NETFRAMEWORK
+
+using Omnifactotum.Annotations;
 
 //// Namespace is intentionally named so in order to simplify usage of extension methods
 //// ReSharper disable once CheckNamespace
@@ -35,3 +37,5 @@ namespace System.Collections.Generic
         }
     }
 }
+
+#endif
