@@ -47,13 +47,7 @@ param
     [string] $NUnitConsolePath = 'nunit3-console.exe',
 
     [Parameter()]
-    [string] $NuGetPath = 'nuget.exe',
-
-    [Parameter()]
-    [switch] $AutomatedBuild,
-
-    [Parameter()]
-    [securestring] $PfxPassword
+    [string] $NuGetPath = 'nuget.exe'
 )
 begin
 {
@@ -491,75 +485,6 @@ process
 {
     try
     {
-        if ($AutomatedBuild)
-        {
-            Write-MinorSeparator
-
-            if ($PfxPassword -eq $null -or $PfxPassword.Length -eq 0)
-            {
-                throw [ArgumentException]::new('In the automated build mode, the PFX password cannot be empty.', 'PfxPassword')
-            }
-
-            [string] $pfxFilePath = "$root\src\Common\Omnifactotum.ci.pfx"
-            Write-Host "Determining the CSP key container name for the PFX file ""$pfxFilePath""."
-
-            [ResolveKeySource] $rks = [ResolveKeySource]::new()
-            $rks.KeyFile = $pfxFilePath
-
-            [string] $keyContainerName = $null
-            try
-            {
-                $rks.Execute()
-                $keyContainerName = $rks.ResolvedKeyContainer
-            }
-            catch
-            {
-                [string] $message = $_.Exception.Message
-                [Match] $match = [regex]::Match($message, 'VS_KEY_[0-9a-fA-F]{16}')
-                if (!$match.Success)
-                {
-                    throw [Exception]::new("Could not determine the key container name for the file ""$pfxFilePath"".", $_.Exception)
-                }
-
-                $keyContainerName = $match.Value
-            }
-
-            if ([string]::IsNullOrWhiteSpace($keyContainerName))
-            {
-                throw "Could not determine the key container name for the file ""$pfxFilePath""."
-            }
-
-            Write-Host ''
-            Write-Host "Installing the key from the PFX file ""$pfxFilePath"" to the CSP key container ""$keyContainerName""..."
-            [X509Certificate2] $pfxCertificate = [X509Certificate2]::new($pfxFilePath, $PfxPassword, [X509KeyStorageFlags]::Exportable)
-            try
-            {
-                [RSACryptoServiceProvider] $pfxKeyProvider = [RSACryptoServiceProvider]$pfxCertificate.PrivateKey
-                [byte[]] $pfxCspBlob = $pfxKeyProvider.ExportCspBlob($true)
-
-                [CspParameters] $cspParameters = [CspParameters]::new(1, 'Microsoft Strong Cryptographic Provider', $keyContainerName)
-                $cspParameters.KeyNumber = [KeyNumber]::Signature
-                $cspParameters.Flags = [CspProviderFlags]::UseNonExportableKey -bor [CspProviderFlags]::UseMachineKeyStore
-
-                [RSACryptoServiceProvider] $cspProvider = [RSACryptoServiceProvider]::new($cspParameters)
-                try
-                {
-                    $cspProvider.PersistKeyInCsp = $true
-                    $cspProvider.ImportCspBlob($pfxCspBlob) | Out-Null
-                }
-                finally
-                {
-                    $cspProvider.Dispose()
-                }
-            }
-            finally
-            {
-                $pfxCertificate.Dispose()
-            }
-
-            Write-Host "Installing the key from the PFX file ""$pfxFilePath"" to the CSP key container ""$keyContainerName"" - DONE."
-        }
-
         Write-MinorSeparator
         Write-Host -ForegroundColor Green 'Building NuGet package...'
 
@@ -581,15 +506,13 @@ process
         [string] $outDirPath = [Path]::Combine($root, $OutDir)
         [string] $packageDirPath = [Path]::Combine($root, $PackageDir)
 
-        [bool] $isSigningEnabled = $AutomatedBuild -or $env:SIGN_OMNIFACTOTUM -ieq [bool]::TrueString
-
         @($outDirPath, $packageDirPath) | Delete-ItemIfExists
 
         [string[]] $nugetRestoreArguments = `
             @(
-                'restore',
-                """$solutionFilePath""",
-                '-NoCache',
+                'restore'
+                """$solutionFilePath"""
+                '-NoCache'
                 '-NonInteractive'
             )
 
@@ -602,11 +525,10 @@ process
 
         [string[]] $buildArguments = `
             @(
-                """$solutionFilePath""",
-                '/target:Rebuild',
-                "/p:Configuration=""$BuildConfiguration""",
-                "/p:Platform=""$BuildPlatform""",
-                "/p:SIGN_OMNIFACTOTUM=$($isSigningEnabled.ToString().ToLowerInvariant())"
+                """$solutionFilePath"""
+                '/target:Rebuild'
+                "/p:Configuration=""$BuildConfiguration"""
+                "/p:Platform=""$BuildPlatform"""
             )
 
         Execute-Command -Title "Building ""$solutionFilePath""" -Command $msBuildFullPath -CommandArguments $buildArguments
@@ -618,21 +540,16 @@ process
 
         [string[]] $nunitArguments = `
             @(
-                $testDllPath,
-                "--work=""$workingDirectory""",
-                "--result=""$resultFilePath""",
-                '--labels=All',
-                '--stoponerror',
-                '--inprocess',
+                $testDllPath
+                "--work=""$workingDirectory"""
+                "--result=""$resultFilePath"""
+                '--labels=All'
+                '--stoponerror'
+                '--inprocess'
                 '--dispose-runners'
             )
 
         Execute-Command -Title 'Running automated tests via NUnit' -Command $nunitConsoleFullPath -CommandArguments $nunitArguments
-
-        if (!$isSigningEnabled)
-        {
-            throw 'ERROR: The assembly signing is not enabled. The NuGet package will not be created.'
-        }
 
         New-Item -Path $packageDirPath -ItemType Directory -Force | Out-Null
 

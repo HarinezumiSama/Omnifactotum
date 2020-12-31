@@ -38,9 +38,6 @@
         <None Include="..\Common\Omnifactotum.snk">
             <Link>Properties\Omnifactotum.snk</Link>
         </None>
-        <None Include="..\Common\Omnifactotum.ci.pfx">
-            <Link>Properties\Omnifactotum.ci.pfx</Link>
-        </None>
 
         <Compile Update="AsyncFactotumTests.Generated.cs">
             <AutoGen>True</AutoGen>

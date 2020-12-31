@@ -34,9 +34,6 @@
         <None Include="..\Common\Omnifactotum.snk">
             <Link>Properties\Omnifactotum.snk</Link>
         </None>
-        <None Include="..\Common\Omnifactotum.ci.pfx">
-            <Link>Properties\Omnifactotum.ci.pfx</Link>
-        </None>
 
         <None Include="AsyncFactotum.Common.ttinclude" />
         <None Include="AsyncFactotum.ExecuteAsync.tt">

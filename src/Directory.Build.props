@@ -2,9 +2,10 @@
 
 <Project>
     <PropertyGroup>
+        <!-- TODO: Inject BaseVersion and BuildNumber from AppVeyor -->
         <BaseVersion>0.4</BaseVersion>
         <BuildNumber></BuildNumber>
-        <BuildDateYear>2020</BuildDateYear>
+        <BuildDateYear>$([System.String]::Format("{0:yyyy}", $([System.DateTime]::Now)))</BuildDateYear>
     </PropertyGroup>
 
     <PropertyGroup>
@@ -42,21 +43,11 @@
         <AssemblyVersion>$(Version).0</AssemblyVersion>
         <FileVersion>$(AssemblyVersion)</FileVersion>
         <!--<InformationalVersion>$(AssemblyVersion)</InformationalVersion>-->
-        <SignAssembly>true</SignAssembly>
     </PropertyGroup>
 
-    <Choose>
-        <When Condition=" '$(SIGN_OMNIFACTOTUM)' == 'true' Or '$(SIGN_OMNIFACTOTUM)' == '1' ">
-            <PropertyGroup>
-                <AssemblyOriginatorKeyFile>$(SolutionDir)\Common\$(SolutionName).ci.pfx</AssemblyOriginatorKeyFile>
-                <DelaySign>false</DelaySign>
-            </PropertyGroup>
-        </When>
-        <Otherwise>
-            <PropertyGroup>
-                <AssemblyOriginatorKeyFile>$(SolutionDir)\Common\$(SolutionName).snk</AssemblyOriginatorKeyFile>
-                <DelaySign>true</DelaySign>
-            </PropertyGroup>
-        </Otherwise>
-    </Choose>
+    <PropertyGroup>
+        <SignAssembly>true</SignAssembly>
+        <DelaySign>false</DelaySign>
+        <AssemblyOriginatorKeyFile>$(SolutionDir)\Common\$(SolutionName).snk</AssemblyOriginatorKeyFile>
+    </PropertyGroup>
 </Project>

@@ -7,9 +7,6 @@ branches:
 skip_tags: true
 image: Visual Studio 2019
 shallow_clone: true
-environment:
-  PFX_PASSWORD:
-    secure: c6zVCK0OsF68pVROF22rcxHSvrVIgOoFqkApdDb/Kls=
 nuget:
   disable_publish_on_pr: true
 build_script:
@@ -17,9 +14,7 @@ build_script:
     $Script:ErrorActionPreference = [System.Management.Automation.ActionPreference]::Stop
 
 
-    & .\build.ps1 -Verbose `
-        -AutomatedBuild `
-        -PfxPassword ($env:PFX_PASSWORD | ConvertTo-SecureString -AsPlainText -Force)
+    & .\build.ps1 -Verbose
 test: off
 artifacts:
 - path: bin\NuGet\*.nupkg
