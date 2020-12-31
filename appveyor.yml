@@ -24,6 +24,10 @@ test: off
 artifacts:
 - path: bin\NuGet\*.nupkg
   name: NuGet
+- path: bin\AnyCPU\**\*
+  name: bin
+- path: binTests\**\*
+  name: binTests
 deploy: off
 notifications:
 - provider: Email
