@@ -1,5 +1,9 @@
-﻿#if NETSTANDARD2_0 || NETFRAMEWORK
+﻿#if NETFRAMEWORK
 
+#if (NETFRAMEWORK && !NET40) || NETSTANDARD || NETCOREAPP
+using System.Runtime.CompilerServices;
+#endif
+using Omnifactotum;
 using Omnifactotum.Annotations;
 
 //// Namespace is intentionally named so in order to simplify usage of extension methods
@@ -31,10 +35,11 @@ namespace System.Collections.Generic
         /// <returns>
         ///     A new <see cref="KeyValuePair{TKey,TValue}"/> having the specified key and value set.
         /// </returns>
+#if (NETFRAMEWORK && !NET40) || NETSTANDARD || NETCOREAPP
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+#endif
         public static KeyValuePair<TKey, TValue> Create<TKey, TValue>([CanBeNull] TKey key, [CanBeNull] TValue value)
-        {
-            return new KeyValuePair<TKey, TValue>(key, value);
-        }
+            => OmnifactotumKeyValuePair.Create(key, value);
     }
 }
 

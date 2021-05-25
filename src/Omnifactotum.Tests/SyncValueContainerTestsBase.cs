@@ -108,6 +108,9 @@ namespace Omnifactotum.Tests
             var isAnotherThreadEntered = false;
             var isAnotherThreadExited = false;
 
+            var cancellationTokenSource = new CancellationTokenSource();
+            var cancellationToken = cancellationTokenSource.Token;
+
             void ExecuteAnotherThread()
             {
                 isAnotherThreadEntered = true;
@@ -115,6 +118,7 @@ namespace Omnifactotum.Tests
                 //// ReSharper disable once AccessToModifiedClosure - Seems to be false alarm
                 while (!canAnotherThreadChangeValue)
                 {
+                    cancellationToken.ThrowIfCancellationRequested();
                     Thread.Sleep(1);
                 }
 
@@ -170,16 +174,12 @@ namespace Omnifactotum.Tests
             }
             finally
             {
-                try
+                cancellationTokenSource.Cancel();
+
+                if (!thread.Join(TimeSpan.FromSeconds(ConditionWaitTimeoutInSeconds)))
                 {
-                    if (thread.IsAlive)
-                    {
-                        thread.Abort();
-                    }
-                }
-                catch (Exception)
-                {
-                    // Nothing to do
+                    Assert.Inconclusive(
+                        $@"Failed to gracefully finish the thread {thread.Name.ToUIString()} (ID: {thread.ManagedThreadId:N0}).");
                 }
             }
         }

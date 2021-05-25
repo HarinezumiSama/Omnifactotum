@@ -2,6 +2,14 @@
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 
+#if (NETFRAMEWORK && !NET40_OR_GREATER)
+#error [NETFRAMEWORK] The compiler does not support `NET*_OR_GREATER` preprocessor directives required to compile this project.
+#endif
+
+#if (NETCOREAPP && !NET5_0_OR_GREATER)
+#error [NETCOREAPP] The compiler does not support `NET*_OR_GREATER` preprocessor directives required to compile this project.
+#endif
+
 // Miscellaneous
 [assembly: CLSCompliant(true)]
 

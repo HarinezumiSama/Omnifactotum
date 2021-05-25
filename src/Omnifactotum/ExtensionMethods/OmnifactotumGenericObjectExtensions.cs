@@ -18,15 +18,15 @@ namespace System
     /// </summary>
     public static class OmnifactotumGenericObjectExtensions
     {
-        private const string NullString = "<null>";
+        private const string NullString = @"<null>";
 
-        private const string ItemSeparator = ", ";
-        private const string PropertyNameValueSeparator = " = ";
-        private const string CollectionElementsPropertyName = "Elements";
-        private const string CollectionElementsOpeningBrace = "[";
-        private const string CollectionElementsClosingBrace = "]";
-        private const string ComplexObjectOpeningBrace = "{";
-        private const string ComplexObjectClosingBrace = "}";
+        private const string ItemSeparator = @", ";
+        private const string PropertyNameValueSeparator = @" = ";
+        private const string CollectionElementsPropertyName = @"Elements";
+        private const string CollectionElementsOpeningBrace = @"[";
+        private const string CollectionElementsClosingBrace = @"]";
+        private const string ComplexObjectOpeningBrace = @"{";
+        private const string ComplexObjectClosingBrace = @"}";
 
         /// <summary>
         ///     The pointer string format.
@@ -56,6 +56,8 @@ namespace System
             StringBuilder resultBuilder,
             int recursionLevel);
 
+#nullable enable
+
         /// <summary>
         ///     Returns the specified value if is not <c>null</c>;
         ///     otherwise, throws <see cref="ArgumentNullException"/>.
@@ -73,9 +75,12 @@ namespace System
         ///     <paramref name="value"/> is <c>null</c>.
         /// </exception>
         [NotNull]
-        public static T EnsureNotNull<T>([CanBeNull] this T value)
+        [DebuggerStepThrough]
+        public static T EnsureNotNull<T>([CanBeNull] this T? value)
             where T : class
             => value ?? throw new ArgumentNullException(nameof(value));
+
+#nullable restore
 
         /// <summary>
         ///     Returns the value which underlies the specified nullable value, if it is not <c>null</c>
@@ -119,7 +124,7 @@ namespace System
         ///     the <paramref name="nullValueString"/> parameter if <paramref name="value"/> is <c>null</c>.
         /// </returns>
         public static string ToStringSafely<T>([CanBeNull] this T value, [CanBeNull] string nullValueString)
-            => ReferenceEquals(value, null) ? nullValueString : value.ToString();
+            => value is null ? nullValueString : value.ToString();
 
         /// <summary>
         ///     Returns a <see cref="System.String"/> that represents the specified value, considering that this value
@@ -155,7 +160,7 @@ namespace System
         ///     the <paramref name="nullValueString"/> parameter if <paramref name="value"/> is <c>null</c>.
         /// </returns>
         public static string ToStringSafelyInvariant<T>([CanBeNull] this T value, [CanBeNull] string nullValueString)
-            => ReferenceEquals(value, null)
+            => value is null
                 ? nullValueString
                 : value is IFormattable formattable
                     ? formattable.ToString(null, CultureInfo.InvariantCulture)
@@ -197,7 +202,7 @@ namespace System
         ///     parameter.
         /// </returns>
         public static int GetHashCodeSafely<T>([CanBeNull] this T value, int nullValueHashCode)
-            => ReferenceEquals(value, null) ? nullValueHashCode : value.GetHashCode();
+            => value is null ? nullValueHashCode : value.GetHashCode();
 
         /// <summary>
         ///     Gets a hash code of the specified value safely, that is, <n>null</n> does not cause an exception.
@@ -229,7 +234,7 @@ namespace System
         /// </returns>
         [NotNull]
         public static Type GetTypeSafely<T>([CanBeNull] this T value)
-            => ReferenceEquals(value, null) ? typeof(T) : value.GetType();
+            => value is null ? typeof(T) : value.GetType();
 
         /// <summary>
         ///     Creates an array containing the specified value as its sole element.
@@ -297,7 +302,7 @@ namespace System
         ///     <paramref name="getDefault"/> method.
         /// </returns>
         [NotNull]
-        public static T AvoidNull<T>([CanBeNull] this T source, [NotNull] Func<T> getDefault)
+        public static T AvoidNull<T>([CanBeNull] this T source, [NotNull] [InstantHandle] Func<T> getDefault)
             where T : class
         {
             if (getDefault is null)
@@ -361,10 +366,10 @@ namespace System
         /// </example>
         public static string ToUIString<T>([CanBeNull] this T? value)
             where T : struct
-            => (value.HasValue && value.Value is IFormattable formattable
+            => (value is IFormattable formattable
                 ? formattable.ToString(null, CultureInfo.InvariantCulture)
                 : value?.ToString())
-                ?? OmnifactotumConstants.NullValueRepresentation;
+                ?? OmnifactotumRepresentationConstants.NullValueRepresentation;
 
         /// <summary>
         ///     <para>
@@ -408,7 +413,7 @@ namespace System
         /// </returns>
         public static string ToUIString<T>([CanBeNull] this T? value, string format, IFormatProvider formatProvider)
             where T : struct, IFormattable
-            => value?.ToString(format, formatProvider) ?? OmnifactotumConstants.NullValueRepresentation;
+            => value?.ToString(format, formatProvider) ?? OmnifactotumRepresentationConstants.NullValueRepresentation;
 
         /// <summary>
         ///     <para>
@@ -573,7 +578,7 @@ namespace System
         /// </exception>
         public static TOutput Morph<TInput, TOutput>(
             [CanBeNull] this TInput input,
-            [NotNull] Func<TInput, TOutput> transform,
+            [NotNull] [InstantHandle] Func<TInput, TOutput> transform,
             [CanBeNull] TOutput defaultOutput)
             where TInput : class
         {
@@ -611,9 +616,9 @@ namespace System
         /// </exception>
         public static TOutput Morph<TInput, TOutput>(
             [CanBeNull] this TInput input,
-            [NotNull] Func<TInput, TOutput> transform)
+            [NotNull] [InstantHandle] Func<TInput, TOutput> transform)
             where TInput : class
-            => Morph(input, transform, default(TOutput));
+            => Morph(input, transform, default);
 
         /// <summary>
         ///     Metamorphoses the specified nullable value type input value into an output value using the specified
@@ -644,7 +649,7 @@ namespace System
         /// </exception>
         public static TOutput Morph<TInput, TOutput>(
             [CanBeNull] this TInput? input,
-            [NotNull] Func<TInput, TOutput> transform,
+            [NotNull] [InstantHandle] Func<TInput, TOutput> transform,
             [CanBeNull] TOutput defaultOutput)
             where TInput : struct
         {
@@ -682,9 +687,9 @@ namespace System
         /// </exception>
         public static TOutput Morph<TInput, TOutput>(
             [CanBeNull] this TInput? input,
-            [NotNull] Func<TInput, TOutput> transform)
+            [NotNull] [InstantHandle] Func<TInput, TOutput> transform)
             where TInput : struct
-            => Morph(input, transform, default(TOutput));
+            => Morph(input, transform, default);
 
         private static bool IsSimpleTypeInternal([NotNull] this Type type)
             => type.IsPrimitive
@@ -758,7 +763,7 @@ namespace System
                     resultBuilder.Append(RenderActualType());
                 }
 
-                if (ReferenceEquals(obj, null))
+                if (obj is null)
                 {
                     resultBuilder.Append(NullString);
                     return;
@@ -931,7 +936,7 @@ namespace System
             }
             else if (typeof(Assembly).IsAssignableFrom(type))
             {
-                resultBuilder.AppendFormat(((Assembly)(object)obj).CodeBase.ToUIString());
+                resultBuilder.AppendFormat(((Assembly)(object)obj).Location.ToUIString());
             }
             else
             {
@@ -943,7 +948,7 @@ namespace System
             [NotNull] IEnumerable enumerable,
             [NotNull] Type type,
             [NotNull] ToPropertyStringOptions options,
-            [NotNull] Func<Type, PropertyInfo[]> getProperties,
+            [NotNull] [InstantHandle] Func<Type, PropertyInfo[]> getProperties,
             [NotNull] StringBuilder resultBuilder,
             int nextRecursionLevel)
         {
@@ -1097,7 +1102,7 @@ namespace System
             return true;
         }
 
-        private struct PairReferenceHolder : IEquatable<PairReferenceHolder>
+        private readonly struct PairReferenceHolder : IEquatable<PairReferenceHolder>
         {
             private static readonly ByReferenceEqualityComparer<object> EqualityComparer =
                 ByReferenceEqualityComparer<object>.Instance;

@@ -1,4 +1,8 @@
-﻿using Omnifactotum;
+﻿#if NET40
+using Omnifactotum;
+#else
+using System.Collections.ObjectModel;
+#endif
 using Omnifactotum.Annotations;
 
 //// Namespace is intentionally named so in order to simplify usage of extension methods
@@ -11,8 +15,6 @@ namespace System.Collections.Generic
     /// </summary>
     public static class OmnifactotumDictionaryExtensions
     {
-#if NETSTANDARD2_0 || NETFRAMEWORK
-
         /// <summary>
         ///     Gets the value associated with the specified key from the specified dictionary.
         /// </summary>
@@ -36,7 +38,11 @@ namespace System.Collections.Generic
         ///     the type of the value parameter.
         /// </returns>
         public static TValue GetValueOrDefault<TKey, TValue>(
-            [NotNull] this IDictionary<TKey, TValue> dictionary,
+            [NotNull]
+#if NETFRAMEWORK
+                this
+#endif
+                IDictionary<TKey, TValue> dictionary,
             [NotNull] TKey key,
             TValue defaultValue)
         {
@@ -45,7 +51,7 @@ namespace System.Collections.Generic
                 throw new ArgumentNullException(nameof(dictionary));
             }
 
-            if (ReferenceEquals(key, null))
+            if (key is null)
             {
                 throw new ArgumentNullException(nameof(key));
             }
@@ -75,13 +81,15 @@ namespace System.Collections.Generic
         ///     the type of the value parameter.
         /// </returns>
         public static TValue GetValueOrDefault<TKey, TValue>(
-            [NotNull] this IDictionary<TKey, TValue> dictionary,
+            [NotNull]
+#if NETFRAMEWORK
+                this
+#endif
+                IDictionary<TKey, TValue> dictionary,
             [NotNull] TKey key)
         {
-            return GetValueOrDefault(dictionary, key, default(TValue));
+            return GetValueOrDefault(dictionary, key, default);
         }
-
-#endif
 
         /// <summary>
         ///     Gets the value associated with the specified key from the specified dictionary.
@@ -109,14 +117,14 @@ namespace System.Collections.Generic
         public static TValue GetOrCreateValue<TKey, TValue>(
             [NotNull] this IDictionary<TKey, TValue> dictionary,
             [NotNull] TKey key,
-            [NotNull] Func<TKey, TValue> valueFactory)
+            [NotNull] [InstantHandle] Func<TKey, TValue> valueFactory)
         {
             if (dictionary is null)
             {
                 throw new ArgumentNullException(nameof(dictionary));
             }
 
-            if (ReferenceEquals(key, null))
+            if (key is null)
             {
                 throw new ArgumentNullException(nameof(key));
             }
@@ -161,9 +169,7 @@ namespace System.Collections.Generic
             [NotNull] this IDictionary<TKey, TValue> dictionary,
             [NotNull] TKey key)
             where TValue : new()
-        {
-            return GetOrCreateValue(dictionary, key, obj => new TValue());
-        }
+            => GetOrCreateValue(dictionary, key, obj => new TValue());
 
         /// <summary>
         ///     Creates a read-only wrapper for the specified dictionary.

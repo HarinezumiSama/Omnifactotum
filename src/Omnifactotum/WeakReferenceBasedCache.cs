@@ -104,7 +104,7 @@ namespace Omnifactotum
         {
             get
             {
-                if (ReferenceEquals(key, null))
+                if (key is null)
                 {
                     throw new ArgumentNullException(nameof(key));
                 }
@@ -112,7 +112,8 @@ namespace Omnifactotum
                 TValue result;
                 lock (_dictionary)
                 {
-                    var valueReference = _dictionary.GetValueOrDefault(key);
+                    //// ReSharper disable once InvokeAsExtensionMethod :: Avoiding multi-target issues
+                    var valueReference = OmnifactotumDictionaryExtensions.GetValueOrDefault(_dictionary, key);
                     if (valueReference is null)
                     {
                         result = CreateValue(key);

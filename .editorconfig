@@ -8,6 +8,32 @@ insert_final_newline = false
 trim_trailing_whitespace = true
 max_line_length = 140
 
+# .NET
+dotnet_diagnostic.IDE0022.severity = none
+dotnet_diagnostic.IDE0066.severity = none
+dotnet_diagnostic.IDE0079.severity = none
+
 [*.{config,cs,csproj,css,DotSettings,js,json,nuspec,ps1,resx,scss,settings,sln,ts,tt,xml}]
 charset = utf-8-bom
 end_of_line = crlf
+
+[*.md]
+charset = utf-8-bom
+end_of_line = crlf
+indent_style = space
+indent_size = 2
+insert_final_newline = true
+max_line_length = off
+trim_trailing_whitespace = true
+
+[*.sln]
+indent_style = tab
+
+[*.yml]
+charset = utf-8
+end_of_line = crlf
+indent_style = space
+indent_size = 2
+insert_final_newline = true
+max_line_length = off
+trim_trailing_whitespace = true

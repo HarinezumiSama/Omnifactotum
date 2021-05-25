@@ -1,4 +1,6 @@
-﻿//// ReSharper disable once CheckNamespace - Namespace is intentionally named so in order to simplify usage of extension methods
+﻿using PureAttribute = System.Diagnostics.Contracts.PureAttribute;
+
+//// ReSharper disable once CheckNamespace - Namespace is intentionally named so in order to simplify usage of extension methods
 
 namespace System
 {
@@ -17,10 +19,8 @@ namespace System
         /// <returns>
         ///     The square of the specified number.
         /// </returns>
-        public static int Sqr(this int value)
-        {
-            return unchecked(value * value);
-        }
+        [Pure]
+        public static int Sqr(this int value) => unchecked(value * value);
 
         /// <summary>
         ///     Returns the square of the specified number.
@@ -33,10 +33,8 @@ namespace System
         ///     The square of the specified number.
         /// </returns>
         [CLSCompliant(false)]
-        public static uint Sqr(this uint value)
-        {
-            return unchecked(value * value);
-        }
+        [Pure]
+        public static uint Sqr(this uint value) => unchecked(value * value);
 
         /// <summary>
         ///     Returns the square of the specified number.
@@ -48,10 +46,8 @@ namespace System
         /// <returns>
         ///     The square of the specified number.
         /// </returns>
-        public static long Sqr(this long value)
-        {
-            return unchecked(value * value);
-        }
+        [Pure]
+        public static long Sqr(this long value) => unchecked(value * value);
 
         /// <summary>
         ///     Returns the square of the specified number.
@@ -64,10 +60,8 @@ namespace System
         ///     The square of the specified number.
         /// </returns>
         [CLSCompliant(false)]
-        public static ulong Sqr(this ulong value)
-        {
-            return unchecked(value * value);
-        }
+        [Pure]
+        public static ulong Sqr(this ulong value) => unchecked(value * value);
 
         /// <summary>
         ///     Returns the square of the specified number.
@@ -79,10 +73,8 @@ namespace System
         /// <returns>
         ///     The square of the specified number.
         /// </returns>
-        public static float Sqr(this float value)
-        {
-            return value * value;
-        }
+        [Pure]
+        public static float Sqr(this float value) => value * value;
 
         /// <summary>
         ///     Returns the square of the specified number.
@@ -94,10 +86,8 @@ namespace System
         /// <returns>
         ///     The square of the specified number.
         /// </returns>
-        public static double Sqr(this double value)
-        {
-            return value * value;
-        }
+        [Pure]
+        public static double Sqr(this double value) => value * value;
 
         /// <summary>
         ///     Returns the square of the specified number.
@@ -109,10 +99,8 @@ namespace System
         /// <returns>
         ///     The square of the specified number.
         /// </returns>
-        public static int SqrChecked(this int value)
-        {
-            return checked(value * value);
-        }
+        [Pure]
+        public static int SqrChecked(this int value) => checked(value * value);
 
         /// <summary>
         ///     Returns the square of the specified number.
@@ -125,10 +113,8 @@ namespace System
         ///     The square of the specified number.
         /// </returns>
         [CLSCompliant(false)]
-        public static uint SqrChecked(this uint value)
-        {
-            return checked(value * value);
-        }
+        [Pure]
+        public static uint SqrChecked(this uint value) => checked(value * value);
 
         /// <summary>
         ///     Returns the square of the specified number.
@@ -140,10 +126,8 @@ namespace System
         /// <returns>
         ///     The square of the specified number.
         /// </returns>
-        public static long SqrChecked(this long value)
-        {
-            return checked(value * value);
-        }
+        [Pure]
+        public static long SqrChecked(this long value) => checked(value * value);
 
         /// <summary>
         ///     Returns the square of the specified number.
@@ -156,10 +140,8 @@ namespace System
         ///     The square of the specified number.
         /// </returns>
         [CLSCompliant(false)]
-        public static ulong SqrChecked(this ulong value)
-        {
-            return checked(value * value);
-        }
+        [Pure]
+        public static ulong SqrChecked(this ulong value) => checked(value * value);
 
         /// <summary>
         ///     Returns the square of the specified number.
@@ -171,10 +153,8 @@ namespace System
         /// <returns>
         ///     The square of the specified number.
         /// </returns>
-        public static decimal SqrChecked(this decimal value)
-        {
-            return value * value;
-        }
+        [Pure]
+        public static decimal SqrChecked(this decimal value) => value * value;
 
         /// <summary>
         ///     Returns the square root of the specified number.
@@ -185,10 +165,8 @@ namespace System
         /// <returns>
         ///     The square root of the specified number.
         /// </returns>
-        public static double Sqrt(this double value)
-        {
-            return Math.Sqrt(value);
-        }
+        [Pure]
+        public static double Sqrt(this double value) => Math.Sqrt(value);
 
         /// <summary>
         ///     Returns the absolute value of the specified number.
@@ -200,10 +178,8 @@ namespace System
         ///     The absolute value of the specified number.
         /// </returns>
         [CLSCompliant(false)]
-        public static sbyte Abs(this sbyte value)
-        {
-            return Math.Abs(value);
-        }
+        [Pure]
+        public static sbyte Abs(this sbyte value) => Math.Abs(value);
 
         /// <summary>
         ///     Returns the absolute value of the specified number.
@@ -215,10 +191,8 @@ namespace System
         ///     The absolute value of the specified number.
         /// </returns>
         [CLSCompliant(false)]
-        public static short Abs(this short value)
-        {
-            return Math.Abs(value);
-        }
+        [Pure]
+        public static short Abs(this short value) => Math.Abs(value);
 
         /// <summary>
         ///     Returns the absolute value of the specified number.
@@ -229,10 +203,8 @@ namespace System
         /// <returns>
         ///     The absolute value of the specified number.
         /// </returns>
-        public static int Abs(this int value)
-        {
-            return Math.Abs(value);
-        }
+        [Pure]
+        public static int Abs(this int value) => Math.Abs(value);
 
         /// <summary>
         ///     Returns the absolute value of the specified number.
@@ -243,10 +215,8 @@ namespace System
         /// <returns>
         ///     The absolute value of the specified number.
         /// </returns>
-        public static long Abs(this long value)
-        {
-            return Math.Abs(value);
-        }
+        [Pure]
+        public static long Abs(this long value) => Math.Abs(value);
 
         /// <summary>
         ///     Returns the absolute value of the specified number.
@@ -257,10 +227,8 @@ namespace System
         /// <returns>
         ///     The absolute value of the specified number.
         /// </returns>
-        public static float Abs(this float value)
-        {
-            return Math.Abs(value);
-        }
+        [Pure]
+        public static float Abs(this float value) => Math.Abs(value);
 
         /// <summary>
         ///     Returns the absolute value of the specified number.
@@ -271,10 +239,8 @@ namespace System
         /// <returns>
         ///     The absolute value of the specified number.
         /// </returns>
-        public static double Abs(this double value)
-        {
-            return Math.Abs(value);
-        }
+        [Pure]
+        public static double Abs(this double value) => Math.Abs(value);
 
         /// <summary>
         ///     Returns the absolute value of the specified number.
@@ -285,9 +251,7 @@ namespace System
         /// <returns>
         ///     The absolute value of the specified number.
         /// </returns>
-        public static decimal Abs(this decimal value)
-        {
-            return Math.Abs(value);
-        }
+        [Pure]
+        public static decimal Abs(this decimal value) => Math.Abs(value);
     }
 }

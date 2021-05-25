@@ -1,5 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
+
+#if !NET40
+using System.Collections.ObjectModel;
+#endif
+
 using System.Linq;
 using NUnit.Framework;
 using Omnifactotum.NUnit;
@@ -58,8 +63,7 @@ namespace Omnifactotum.Tests
         [Test]
         [TestCaseSource(typeof(ConstructionCases))]
         [Category(TestCategory.Positive)]
-        public void TestConstruction(
-            Func<IDictionary<int, string>, ReadOnlyDictionary<int, string>> getReadOnlyDictionary)
+        public void TestConstruction(Func<IDictionary<int, string>, ReadOnlyDictionary<int, string>> getReadOnlyDictionary)
         {
             var count = _dictionary.Count;
 
@@ -77,8 +81,8 @@ namespace Omnifactotum.Tests
             Assert.That(rod.Keys, Is.EquivalentTo(_dictionary.Keys));
             Assert.That(rod.Values, Is.EquivalentTo(_dictionary.Values));
 
-            Assert.That(rod.Keys.IsReadOnly, Is.True);
-            Assert.That(rod.Values.IsReadOnly, Is.True);
+            Assert.That(((ICollection<int>)rod.Keys).IsReadOnly, Is.True);
+            Assert.That(((ICollection<string>)rod.Values).IsReadOnly, Is.True);
         }
 
         [Test]
@@ -117,70 +121,70 @@ namespace Omnifactotum.Tests
 
         [Test]
         [Category(TestCategory.Negative)]
-        public void TestReadOnly()
+        public void TestReadOnlyBehavior()
         {
-            var count = _dictionary.Count;
+            var originalPairs = _dictionary.ToArray();
+            var originalCount = _dictionary.Count;
 
             var rod = new ReadOnlyDictionary<int, string>(_dictionary);
+            var rodAsDictionary = (IDictionary<int, string>)rod;
+            var rodAsCollection = (ICollection<KeyValuePair<int, string>>)rod;
 
-            Assert.That(rod.Count, Is.EqualTo(count));
-            Assert.That(rod, Is.EquivalentTo(_dictionary));
-            Assert.That(rod.IsReadOnly, Is.True);
+            void EnsureUnchanged()
+            {
+                Assert.That(_dictionary, Is.EquivalentTo(originalPairs));
 
-            Assert.That(
-                () => ((IDictionary<int, string>)rod).Add(KeyExtra, ValueExtra),
-                Throws.TypeOf<NotSupportedException>());
-            Assert.That(rod.Count, Is.EqualTo(count));
-            Assert.That(rod, Is.EquivalentTo(_dictionary));
+                Assert.That(rodAsDictionary.IsReadOnly, Is.True);
+                Assert.That(rodAsCollection.IsReadOnly, Is.True);
 
-            Assert.That(() => ((IDictionary<int, string>)rod).Remove(Key1), Throws.TypeOf<NotSupportedException>());
-            Assert.That(rod.Count, Is.EqualTo(count));
-            Assert.That(rod, Is.EquivalentTo(_dictionary));
+                Assert.That(rodAsDictionary.Count, Is.EqualTo(originalCount));
+                Assert.That(rodAsDictionary, Is.EquivalentTo(originalPairs));
 
-            Assert.That(() => rod[KeyExtra] = ValueExtra, Throws.TypeOf<NotSupportedException>());
-            Assert.That(rod.Count, Is.EqualTo(count));
-            Assert.That(rod, Is.EquivalentTo(_dictionary));
+                Assert.That(rod.Count, Is.EqualTo(originalCount));
+                Assert.That(rod, Is.EquivalentTo(originalPairs));
 
-            Assert.That(() => rod[Key1] = ValueExtra, Throws.TypeOf<NotSupportedException>());
-            Assert.That(rod.Count, Is.EqualTo(count));
-            Assert.That(rod, Is.EquivalentTo(_dictionary));
+                Assert.That(rodAsCollection.Count, Is.EqualTo(originalCount));
+                Assert.That(rodAsCollection, Is.EquivalentTo(originalPairs));
+            }
 
-            //// As collection
+            void AssertNotSupportedAndEnsureUnchanged(TestDelegate code)
+            {
+                code.AssertNotNull();
+                Assert.That(code, Throws.TypeOf<NotSupportedException>());
 
-            var rodCollection = (ICollection<KeyValuePair<int, string>>)rod;
+                EnsureUnchanged();
+            }
 
-            Assert.That(rodCollection.Count, Is.EqualTo(count));
-            Assert.That(rodCollection, Is.EquivalentTo(_dictionary));
-            Assert.That(rodCollection.IsReadOnly, Is.True);
+            EnsureUnchanged();
 
-            Assert.That(
-                () => rodCollection.Add(new KeyValuePair<int, string>(KeyExtra, ValueExtra)),
-                Throws.TypeOf<NotSupportedException>());
-            Assert.That(rod.Count, Is.EqualTo(count));
-            Assert.That(rodCollection.Count, Is.EqualTo(count));
-            Assert.That(rodCollection, Is.EquivalentTo(_dictionary));
+            //// As IDictionary<TKey, TValue>
 
-            Assert.That(rodCollection.Clear, Throws.TypeOf<NotSupportedException>());
-            Assert.That(rod.Count, Is.EqualTo(count));
-            Assert.That(rodCollection.Count, Is.EqualTo(count));
-            Assert.That(rodCollection, Is.EquivalentTo(_dictionary));
+            AssertNotSupportedAndEnsureUnchanged(() => rodAsDictionary.Add(KeyExtra, ValueExtra));
+            AssertNotSupportedAndEnsureUnchanged(() => rodAsDictionary.Remove(Key1));
+            AssertNotSupportedAndEnsureUnchanged(() => rodAsDictionary[KeyExtra] = ValueExtra);
+            AssertNotSupportedAndEnsureUnchanged(() => rodAsDictionary[Key1] = ValueExtra);
 
-            Assert.That(
-                () => rodCollection.Remove(new KeyValuePair<int, string>(Key1, Value1)),
-                Throws.TypeOf<NotSupportedException>());
-            Assert.That(rod.Count, Is.EqualTo(count));
-            Assert.That(rodCollection.Count, Is.EqualTo(count));
-            Assert.That(rodCollection, Is.EquivalentTo(_dictionary));
+            //// As ICollection<TKey, TValue>
+
+            AssertNotSupportedAndEnsureUnchanged(() => rodAsCollection.Add(new KeyValuePair<int, string>(KeyExtra, ValueExtra)));
+            AssertNotSupportedAndEnsureUnchanged(rodAsCollection.Clear);
+            AssertNotSupportedAndEnsureUnchanged(() => rodAsCollection.Remove(new KeyValuePair<int, string>(Key1, Value1)));
 
             //// Keys
 
-            Assert.That(() => rod.Keys.Add(KeyExtra), Throws.TypeOf<NotSupportedException>());
-            Assert.That(() => rod.Keys.Clear(), Throws.TypeOf<NotSupportedException>());
+            var rodKeys = (ICollection<int>)rod.Keys;
+
+            AssertNotSupportedAndEnsureUnchanged(() => rodKeys.Add(KeyExtra));
+            AssertNotSupportedAndEnsureUnchanged(() => rodKeys.Remove(Key1));
+            AssertNotSupportedAndEnsureUnchanged(() => rodKeys.Clear());
 
             //// Values
 
-            Assert.That(() => rod.Values.Add(ValueExtra), Throws.TypeOf<NotSupportedException>());
-            Assert.That(() => rod.Values.Clear(), Throws.TypeOf<NotSupportedException>());
+            var rodValues = ((ICollection<string>)rod.Values);
+
+            AssertNotSupportedAndEnsureUnchanged(() => rodValues.Add(ValueExtra));
+            AssertNotSupportedAndEnsureUnchanged(() => rodValues.Remove(Value1));
+            AssertNotSupportedAndEnsureUnchanged(() => rodValues.Clear());
         }
 
         [Test]
@@ -281,12 +285,12 @@ namespace Omnifactotum.Tests
                 yield return new TestCaseData(
                     new Func<IDictionary<int, string>, ReadOnlyDictionary<int, string>>(
                         obj => obj.AsReadOnly()))
-                    .SetName("Implicit creation");
+                    .SetDescription("Implicit creation");
 
                 yield return new TestCaseData(
                     new Func<IDictionary<int, string>, ReadOnlyDictionary<int, string>>(
                         obj => new ReadOnlyDictionary<int, string>(obj)))
-                    .SetName("Explicit creation");
+                    .SetDescription("Explicit creation");
             }
         }
     }

@@ -1,4 +1,5 @@
-﻿using Omnifactotum.Annotations;
+﻿using System.IO;
+using Omnifactotum.Annotations;
 
 //// ReSharper disable once CheckNamespace - Namespace is intentionally named so in order to simplify usage of extension methods
 
@@ -37,19 +38,18 @@ namespace System.Reflection
                     $@"The assembly {{ {assembly.FullName} }} does not have a local path.",
                     nameof(assembly));
 
-            if (assembly.IsDynamic || string.IsNullOrEmpty(assembly.Location)
-                || string.IsNullOrEmpty(assembly.CodeBase))
+            if (assembly.IsDynamic || string.IsNullOrEmpty(assembly.Location))
             {
                 throw CreateNoLocalPathException();
             }
 
-            var uri = new Uri(assembly.CodeBase);
+            var uri = new Uri(assembly.Location);
             if (!uri.IsFile || !uri.IsAbsoluteUri || string.IsNullOrWhiteSpace(uri.LocalPath))
             {
                 throw CreateNoLocalPathException();
             }
 
-            return uri.LocalPath;
+            return Path.GetFullPath(uri.LocalPath);
         }
     }
 }

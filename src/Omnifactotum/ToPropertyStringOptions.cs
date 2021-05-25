@@ -84,11 +84,11 @@ namespace Omnifactotum
             set;
         }
 
-        // TODO [vmcl] Add AutoRenderStringRepresentation flag
-        // TODO [vmcl] Add AlwaysRenderStringRepresentation flag
-        // TODO [vmcl] Add RenderFields flag
-        // TODO [vmcl] Add MaxRecursionLevel property
-        // TODO [vmcl] Add callback Func<MemberInfo, bool> that determines whether to include a specific member
+        // TODO [HarinezumiSama] Add AutoRenderStringRepresentation flag
+        // TODO [HarinezumiSama] Add AlwaysRenderStringRepresentation flag
+        // TODO [HarinezumiSama] Add RenderFields flag
+        // TODO [HarinezumiSama] Add MaxRecursionLevel property
+        // TODO [HarinezumiSama] Add callback Func<MemberInfo, bool> that determines whether to include a specific member
 
         /// <summary>
         ///     Gets or sets a value indicating whether the members should be sorted alphabetically.

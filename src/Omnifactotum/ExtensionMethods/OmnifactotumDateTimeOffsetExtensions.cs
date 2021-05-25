@@ -1,4 +1,5 @@
 ﻿using System.Globalization;
+using PureAttribute = System.Diagnostics.Contracts.PureAttribute;
 
 //// ReSharper disable once CheckNamespace - Namespace is intentionally named so in order to simplify usage of extension methods
 
@@ -9,8 +10,8 @@ namespace System
     /// </summary>
     public static class OmnifactotumDateTimeOffsetExtensions
     {
-        private const string FixedFormat = @"yyyy'-'MM'-'dd' 'HH':'mm':'ss UTCzzz";
-        private const string PreciseFixedFormat = @"yyyy'-'MM'-'dd' 'HH':'mm':'ss'.'fffffff UTCzzz";
+        private const string FixedFormat = @"yyyy'-'MM'-'dd' 'HH':'mm':'ss' UTC'zzz";
+        private const string PreciseFixedFormat = @"yyyy'-'MM'-'dd' 'HH':'mm':'ss'.'fffffff' UTC'zzz";
 
         /// <summary>
         ///     Converts the specified <see cref="DateTimeOffset"/> value to its string
@@ -28,6 +29,7 @@ namespace System
         ///     </code>
         ///     <b>Result:</b> 2001-02-03 07:08:09 UTC+02:30
         /// </example>
+        [Pure]
         public static string ToFixedString(this DateTimeOffset value)
             => value.ToString(FixedFormat, CultureInfo.InvariantCulture);
 
@@ -47,6 +49,7 @@ namespace System
         ///     </code>
         ///     <b>Result:</b> 2001-02-03 07:08:09.1230000 UTC+02:30
         /// </example>
+        [Pure]
         public static string ToPreciseFixedString(this DateTimeOffset value)
             => value.ToString(PreciseFixedFormat, CultureInfo.InvariantCulture);
     }

@@ -1,6 +1,7 @@
 ﻿using System;
 using System.IO;
 using System.Threading;
+using System.Threading.Tasks;
 using NUnit.Framework;
 
 namespace Omnifactotum.Tests.ExtensionMethods
@@ -15,6 +16,8 @@ namespace Omnifactotum.Tests.ExtensionMethods
 
             Assert.That(() => NullException.IsFatal(), Is.False);
         }
+
+#if NETFRAMEWORK
 
         [Test]
         public void TestIsFatalWhenThreadAbortExceptionIsPassedThenReturnsTrue()
@@ -35,8 +38,11 @@ namespace Omnifactotum.Tests.ExtensionMethods
             }
         }
 
+#endif
+
         [Test]
         [TestCase(typeof(OperationCanceledException), true)]
+        [TestCase(typeof(TaskCanceledException), true)]
         [TestCase(typeof(OutOfMemoryException), true)]
         [TestCase(typeof(StackOverflowException), true)]
         [TestCase(typeof(IOException), false)]

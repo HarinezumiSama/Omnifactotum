@@ -27,7 +27,7 @@ namespace System.Collections.Generic
         ///     A hash code of the specified collection, or <c>0</c> if the specified collection is
         ///     <c>null</c> or empty.
         /// </returns>
-        public static int ComputeCollectionHashCode<T>([CanBeNull] this IEnumerable<T> collection)
+        public static int ComputeCollectionHashCode<T>([CanBeNull] [InstantHandle] this IEnumerable<T> collection)
         {
             if (collection is null)
             {

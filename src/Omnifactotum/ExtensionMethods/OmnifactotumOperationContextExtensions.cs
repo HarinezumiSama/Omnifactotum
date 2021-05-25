@@ -1,4 +1,5 @@
-﻿#if !NETSTANDARD
+﻿#if NETFRAMEWORK
+
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using System.IdentityModel.Claims;
@@ -51,4 +52,5 @@ namespace System.ServiceModel
         }
     }
 }
+
 #endif

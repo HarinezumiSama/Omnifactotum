@@ -3,6 +3,7 @@ using System.ComponentModel;
 using System.Globalization;
 using System.Linq;
 using Omnifactotum.Annotations;
+using PureAttribute = System.Diagnostics.Contracts.PureAttribute;
 
 //// Namespace is intentionally named so in order to simplify usage of extension methods
 //// ReSharper disable once CheckNamespace
@@ -30,6 +31,7 @@ namespace System
         /// <returns>
         ///     The name of the specified enumeration value.
         /// </returns>
+        [Pure]
         public static string GetName([NotNull] this Enum value) => value.GetName(EnumNameMode.Short);
 
         /// <summary>
@@ -42,6 +44,7 @@ namespace System
         /// <returns>
         ///     The qualified name of the specified enumeration value.
         /// </returns>
+        [Pure]
         public static string GetQualifiedName([NotNull] this Enum value) => value.GetName(EnumNameMode.Qualified);
 
         /// <summary>
@@ -54,6 +57,7 @@ namespace System
         /// <returns>
         ///     The full name of the specified enumeration value.
         /// </returns>
+        [Pure]
         public static string GetFullName([NotNull] this Enum value) => value.GetName(EnumNameMode.Full);
 
         /// <summary>
@@ -84,6 +88,7 @@ namespace System
         ///         <typeparamref name="TEnum"/> type is not marked by <see cref="System.FlagsAttribute"/>.
         ///     </para>
         /// </exception>
+        [Pure]
         public static bool IsAllSet<TEnum>(this TEnum enumerationValue, TEnum flags)
             where TEnum : struct
         {
@@ -118,6 +123,7 @@ namespace System
         ///         <typeparamref name="TEnum"/> type is not marked by <see cref="System.FlagsAttribute"/>.
         ///     </para>
         /// </exception>
+        [Pure]
         public static bool IsAnySet<TEnum>(this TEnum enumerationValue, TEnum flags)
             where TEnum : struct
         {
@@ -147,7 +153,8 @@ namespace System
         /// <exception cref="System.ArgumentNullException">
         ///     <paramref name="otherValues"/> is <c>null</c>.
         /// </exception>
-        public static bool IsOneOf<TEnum>(this TEnum enumerationValue, IEnumerable<TEnum> otherValues)
+        [Pure]
+        public static bool IsOneOf<TEnum>(this TEnum enumerationValue, [NotNull] [InstantHandle] IEnumerable<TEnum> otherValues)
             where TEnum : struct
         {
             var enumType = typeof(TEnum);
@@ -189,6 +196,7 @@ namespace System
         /// <exception cref="System.ArgumentNullException">
         ///     <paramref name="otherValues"/> is <c>null</c>.
         /// </exception>
+        [Pure]
         public static bool IsOneOf<TEnum>(this TEnum enumerationValue, params TEnum[] otherValues)
             where TEnum : struct
         {
@@ -205,7 +213,10 @@ namespace System
         ///     <c>true</c> if the specified enumeration value is defined in the corresponding enumeration;
         ///     otherwise, <c>false</c>.
         /// </returns>
-        public static bool IsDefined([NotNull] this Enum enumerationValue) => enumerationValue != null && IsDefinedInternal(enumerationValue);
+        [Pure]
+        public static bool IsDefined([NotNull] this Enum enumerationValue)
+            //// ReSharper disable once ConditionIsAlwaysTrueOrFalse
+            => enumerationValue != null && IsDefinedInternal(enumerationValue);
 
         /// <summary>
         ///     Ensures that the specified enumeration value is defined in the corresponding enumeration and
@@ -246,6 +257,7 @@ namespace System
         ///     A <see cref="System.NotImplementedException"/> with the descriptive message regarding
         ///     the specified enumeration value.
         /// </returns>
+        [Pure]
         public static NotImplementedException CreateEnumValueNotImplementedException(
             [NotNull] this Enum enumerationValue)
         {
@@ -269,6 +281,7 @@ namespace System
         ///     A <see cref="System.NotSupportedException"/> with the descriptive message regarding
         ///     the specified enumeration value.
         /// </returns>
+        [Pure]
         public static NotSupportedException CreateEnumValueNotSupportedException([NotNull] this Enum enumerationValue)
         {
             if (enumerationValue is null)
@@ -280,6 +293,7 @@ namespace System
                 $@"The operation for the enumeration value {enumerationValue.GetQualifiedName().ToUIString()} is not supported.");
         }
 
+        [Pure]
         private static IEnumerable<Enum> DecomposeEnumFlags(this Enum enumValue)
         {
             var castEnumValue = enumValue.ToUlongInternal();
@@ -311,6 +325,7 @@ namespace System
             return result;
         }
 
+        [Pure]
         private static string GetName([NotNull] this Enum value, EnumNameMode mode)
         {
             if (value is null)
@@ -323,6 +338,7 @@ namespace System
                 : value.GetSingleValueName(mode);
         }
 
+        [Pure]
         private static string GetSingleValueName([NotNull] this Enum value, EnumNameMode mode)
         {
             var enumType = value.GetType();
@@ -362,6 +378,7 @@ namespace System
         /// <returns>
         ///   A <see cref="System.Boolean"/> value.
         /// </returns>
+        [Pure]
         private static bool IsSetInternal<TEnum>(this TEnum enumerationValue, TEnum flags, bool all)
             where TEnum : struct
         {
@@ -388,9 +405,11 @@ namespace System
             }
         }
 
+        [Pure]
         private static bool IsDefinedInternal([NotNull] Enum enumerationValue)
             => Enum.IsDefined(enumerationValue.GetType(), enumerationValue);
 
+        [Pure]
         private static ulong ToUlongInternal(this object value)
         {
             var typeCode = Convert.GetTypeCode(value);

@@ -314,10 +314,10 @@ namespace Omnifactotum.Tests
             protected override IEnumerable<TestCaseData> GetCases()
             {
                 yield return new TestCaseData(new Func<ISet<int>, ReadOnlySet<int>>(obj => obj.AsReadOnly()))
-                    .SetName("Implicit creation");
+                    .SetDescription("Implicit creation");
 
                 yield return new TestCaseData(new Func<ISet<int>, ReadOnlySet<int>>(obj => new ReadOnlySet<int>(obj)))
-                    .SetName("Explicit creation");
+                    .SetDescription("Explicit creation");
             }
         }
     }

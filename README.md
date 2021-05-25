@@ -3,6 +3,10 @@ Provides own *helper* and *functional* classes as well as *extension methods* fo
 
 **Note**: `Factotum` is a Latin word literally meaning "do everything" (that is, a *handyman* or *Jack-of-all-trades*).
 
+### Release Notes
+
+- [Release Notes](./src/Omnifactotum.ReleaseNotes.md)
+
 ### Status and Statistics
 - [![Build status](https://ci.appveyor.com/api/projects/status/8kcys4vgvk1cd1gg?svg=true)](https://ci.appveyor.com/project/HarinezumiSama/omnifactotum)
 
@@ -17,24 +21,24 @@ Provides own *helper* and *functional* classes as well as *extension methods* fo
 ### The *non-exaustive* list of .NET classes covered
 
 - Reflection
-  - [**`Assembly`**](https://docs.microsoft.com/en-us/dotnet/api/?term=system.reflection.assembly) extension methods
-  - [**`ICustomAttributeProvider`**](https://docs.microsoft.com/en-us/dotnet/api/?term=System.Reflection.ICustomAttributeProvider) extension methods (`ICustomAttributeProvider` is implemented by [**`Assembly`**](https://docs.microsoft.com/en-us/dotnet/api/?term=System.Reflection.Assembly), [**`MethodInfo`**](https://docs.microsoft.com/en-us/dotnet/api/?term=System.Reflection.MethodInfo), [**`PropertyInfo`**](https://docs.microsoft.com/en-us/dotnet/api/?term=System.Reflection.PropertyInfo), [**`Type`**](https://docs.microsoft.com/en-us/dotnet/api/?term=System.Type) etc.)
-  - [**`MethodBase`**](https://docs.microsoft.com/en-us/dotnet/api/?term=System.Reflection.MethodBase) extension methods
-  - [**`Type`**](https://docs.microsoft.com/en-us/dotnet/api/?term=System.Type) extension methods
-- Array (**`T[]`**) and collection ([**`IEnumerable<T>`**](https://docs.microsoft.com/en-us/dotnet/api/?term=System.Collections.Generic.IEnumerable%3CT%3E) and [**`ICollection<T>`**](https://docs.microsoft.com/en-us/dotnet/api/?term=System.Collections.Generic.ICollection%3CT%3E)) extension methods
-- [**`DateTime`**](https://docs.microsoft.com/en-us/dotnet/api/?term=System.DateTime) extension methods
-- [**`DateTimeOffset`**](https://docs.microsoft.com/en-us/dotnet/api/?term=System.DateTimeOffset) extension methods
-- [**`Dictionary<TKey, TValue>`**](https://docs.microsoft.com/en-us/dotnet/api/?term=System.Collections.Generic.Dictionary%3CTKey%2CTValue%3E) extension methods
-- [**`IDisposable`**](https://docs.microsoft.com/en-us/dotnet/api/?term=System.IDisposable) extension methods
-- [**`Enum`**](https://docs.microsoft.com/en-us/dotnet/api/?term=System.Enum) extension methods
-- [**`Exception`**](https://docs.microsoft.com/en-us/dotnet/api/?term=System.Exception) extension methods
-- [**`Expression<TDelegate>`**](https://docs.microsoft.com/en-us/dotnet/api/?term=System.Linq.Expressions.Expression%3CTDelegate%3E) extension methods
-- Arbitrary [**`Object`**](https://docs.microsoft.com/en-us/dotnet/api/?term=System.Object) generic extension methods
+  - [**`Assembly`**](https://docs.microsoft.com/en-us/dotnet/api/system.reflection.assembly) extension methods
+  - [**`ICustomAttributeProvider`**](https://docs.microsoft.com/en-us/dotnet/api/system.reflection.icustomattributeprovider) extension methods (`ICustomAttributeProvider` is implemented by [**`Assembly`**](https://docs.microsoft.com/en-us/dotnet/api/system.reflection.assembly), [**`MethodInfo`**](https://docs.microsoft.com/en-us/dotnet/api/system.reflection.methodinfo), [**`PropertyInfo`**](https://docs.microsoft.com/en-us/dotnet/api/system.reflection.propertyinfo), [**`Type`**](https://docs.microsoft.com/en-us/dotnet/api/system.type) etc.)
+  - [**`MethodBase`**](https://docs.microsoft.com/en-us/dotnet/api/system.reflection.methodbase) extension methods
+  - [**`Type`**](https://docs.microsoft.com/en-us/dotnet/api/system.type) extension methods
+- Array (**`T[]`**) and collection ([**`IEnumerable<T>`**](https://docs.microsoft.com/en-us/dotnet/api/system.collections.generic.ienumerable-1) and [**`ICollection<T>`**](https://docs.microsoft.com/en-us/dotnet/api/system.collections.generic.icollection-1)) extension methods
+- [**`DateTime`**](https://docs.microsoft.com/en-us/dotnet/api/system.datetime) extension methods
+- [**`DateTimeOffset`**](https://docs.microsoft.com/en-us/dotnet/api/system.datetimeoffset) extension methods
+- [**`Dictionary<TKey, TValue>`**](https://docs.microsoft.com/en-us/dotnet/api/system.collections.generic.dictionary-2) extension methods
+- [**`IDisposable`**](https://docs.microsoft.com/en-us/dotnet/api/system.idisposable) extension methods
+- [**`Enum`**](https://docs.microsoft.com/en-us/dotnet/api/system.enum) extension methods
+- [**`Exception`**](https://docs.microsoft.com/en-us/dotnet/api/system.exception) extension methods
+- [**`Expression<TDelegate>`**](https://docs.microsoft.com/en-us/dotnet/api/system.linq.expressions.expression-1) extension methods
+- Arbitrary [**`Object`**](https://docs.microsoft.com/en-us/dotnet/api/system.object) generic extension methods
 - Math extension methods for numeric types
-- [**`Nullable<Boolean> (bool?)`**](https://docs.microsoft.com/en-us/dotnet/api/?term=System.Nullable%3CT%3E) extension methods
-- [**`ISet`**](https://docs.microsoft.com/en-us/dotnet/api/?term=System.Collections.Generic.ISet%3CT%3E) extension methods
-- [**`String`**](https://docs.microsoft.com/en-us/dotnet/api/?term=System.String) extension methods
-- [**`TimeSpan`**](https://docs.microsoft.com/en-us/dotnet/api/?term=System.TimeSpan) extension methods
+- [**`Nullable<Boolean> (bool?)`**](https://docs.microsoft.com/en-us/dotnet/api/system.nullable-1) extension methods
+- [**`ISet`**](https://docs.microsoft.com/en-us/dotnet/api/system.collections.generic.iset-1) extension methods
+- [**`String`**](https://docs.microsoft.com/en-us/dotnet/api/system.string) extension methods
+- [**`TimeSpan`**](https://docs.microsoft.com/en-us/dotnet/api/system.timespan) extension methods
 
 ### The *non-exaustive* list of own helper classes
 
@@ -51,8 +55,21 @@ Provides own *helper* and *functional* classes as well as *extension methods* fo
 - `EnumFixedSizeDictionary<TKey, TValue>`
 - `FixedSizeDictionary<TKey, TValue>`
 - `KeyedEqualityComparer<T, TKey>`
-- `ReadOnlyDictionary<TKey, TValue>` <sub><sup>(.NET Framework 4.0 target only; [`System.Collections.ObjectModel.ReadOnlyDictionary<TKey, TValue>`](https://docs.microsoft.com/en-us/dotnet/api/system.collections.objectmodel.readonlydictionary-2?view=net-5.0) is available as of .NET Framework 4.5+)</sup></sub>
+- `ReadOnlyDictionary<TKey, TValue>`
+  - **NOTE**: `.NET Framework 4.0` only; as of `.NET Framework 4.5+` [`System.Collections.ObjectModel.ReadOnlyDictionary<TKey, TValue>`](https://docs.microsoft.com/en-us/dotnet/api/system.collections.objectmodel.readonlydictionary-2?view=netframework-4.5) is available. 
+- `ReadOnlyItemCollection<T>` (the read-only wrapper for [`ICollection<T>`](https://docs.microsoft.com/en-us/dotnet/api/system.collections.generic.icollection-1))
 - `ReadOnlySet<T>`
 - `ValueRange<T>`
 - `VirtualTreeNode<T>` and `VirtualTreeNodeRoot<T>`
 - `WeakReferenceBasedCache<TKey, TValue>`
+
+### Dealing with Compatibility Issues
+
+Due to certain inconsistencies between `.NET Standard 2.0` and `.NET Core 2.x`, you may need to apply one or more workarounds as described below when using **`Omnifactotum`** with your projects compiled for `.NET Standard 2.0` or `.NET Core 2.x` **-or-** a mix of `.NET Standard 2.0` and/or `.NET Core 2.x` and/or `.NET Framework 4.x`:
+
+| Omnifactotum's Class or Method | Workaround |
+| :----------------------------- | :--------- |
+| `System.Collections.Generic.KeyValuePair` | Use [`Omnifactotum.OmnifactotumKeyValuePair`](./src/Omnifactotum/OmnifactotumKeyValuePair.cs). |
+| <code>[OmnifactotumCollectionExtensions](./src/Omnifactotum/ExtensionMethods/OmnifactotumCollectionExtensions.cs).ToHashSet(...)</code> | Use static method invocation instead of extension method invocation. That is: `OmnifactotumCollectionExtensions.ToHashSet(collection)` instead of `collection.ToHashSet()`. |
+| <code>[OmnifactotumDictionaryExtensions](./src/Omnifactotum/ExtensionMethods/OmnifactotumDictionaryExtensions.cs).GetValueOrDefault</code> | Use static method invocation instead of extension method invocation. That is: `OmnifactotumDictionaryExtensions.GetValueOrDefault(dictionary)` instead of `dictionary.GetValueOrDefault()`. |
+

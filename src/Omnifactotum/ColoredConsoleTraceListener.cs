@@ -161,7 +161,7 @@ namespace Omnifactotum
         {
             lock (_syncLock)
             {
-                //// TODO [vmcl] Use disposable instead of try/finally (?)
+                //// TODO [HarinezumiSama] Use disposable instead of try/finally (?)
 
                 ChangeColor(TraceEventType.Error);
                 try
@@ -698,7 +698,9 @@ namespace Omnifactotum
 
         private void ChangeColor(TraceEventType eventType)
         {
+#if !NET5_0
             RuntimeHelpers.PrepareConstrainedRegions();
+#endif
             try
             {
                 // Nothing to do
@@ -719,7 +721,9 @@ namespace Omnifactotum
 
         private void ResetColor()
         {
+#if !NET5_0
             RuntimeHelpers.PrepareConstrainedRegions();
+#endif
             try
             {
                 // Nothing to do

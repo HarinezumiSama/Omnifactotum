@@ -1,34 +1,83 @@
-version: 0.4.{build}
+version: 'Build #{build} [{branch}]'
 pull_requests:
   do_not_increment_build_number: true
 branches:
   only:
   - master
+  - develop
+  - /feature\/.*/
 skip_tags: true
 image: Visual Studio 2019
+configuration: Release
+platform: Any CPU
 shallow_clone: true
 nuget:
   disable_publish_on_pr: true
+matrix:
+  fast_finish: true
+environment:
+  CI_ARG_PRERELEASE_SUFFIX: '-internal'
+  CI_OUT_ARG_DEPLOYMENT_VERSION: ''
+for:
+  -
+    branches:
+      only:
+        - develop
+    environment:
+      CI_ARG_PRERELEASE_SUFFIX: '-prerelease'
+    deploy: off
+  -
+    branches:
+      only:
+        - /^feature\/.*/
+    deploy: off
+  -
+    branches:
+      only:
+        - master
+    environment:
+      CI_ARG_PRERELEASE_SUFFIX: ''
 build_script:
 - ps: >-
-    $Script:ErrorActionPreference = [System.Management.Automation.ActionPreference]::Stop
+    $Script:ErrorActionPreference = [System.Management.Automation.ActionPreference]::Stop;
+
+    Microsoft.PowerShell.Core\Set-StrictMode -Version 1;
 
 
-    & .\build.ps1 -Verbose
+    & .\build.ps1 `
+        -Verbose `
+        -BuildConfiguration $env:Configuration `
+        -BuildPlatform $env:Platform `
+        -EnableDotCover `
+        -AppveyorBuild `
+        -AppveyorSourceCodeRevisionId $env:APPVEYOR_REPO_COMMIT `
+        -AppveyorBuildNumber $env:APPVEYOR_BUILD_NUMBER `
+        -PrereleaseSuffix $env:CI_ARG_PRERELEASE_SUFFIX
 test: off
 artifacts:
-- path: bin\NuGet\*.nupkg
-  name: NuGet
-- path: bin\AnyCPU\**\*
-  name: bin
-- path: binTests\**\*
-  name: binTests
-deploy: off
+- path: .artifacts\**\*
+  name: Artifacts
+- path: src\.out\bin\AnyCPU\Release\Omnifactotum.Tests\TestResults
+  name: TestResults
+- path: src\.out\binCoverage\Omnifactotum.CoverageResult
+  name: Omnifactotum.CoverageResult
+deploy:
+- provider: GitHub
+  on:
+    branch: master
+  release: '$(CI_OUT_ARG_DEPLOYMENT_VERSION)'
+  description: '$(APPVEYOR_PROJECT_NAME) $(CI_OUT_ARG_DEPLOYMENT_VERSION)'
+  draft: true
+  prerelease: true
+  auth_token:
+    secure: IA0JpDs4+uNdYekaXOOeVdU0sOak2Tz6zwHP1QPjdiXF+JOaqLpGkYVLW928iuEX
+  artifact: Artifacts
 notifications:
 - provider: Email
   to:
   - vitalii.maklai@gmail.com
-  subject: Omnifactotum Build [AppVeyor]
+  - '{{commitAuthorEmail}}'
+  subject: '[AppVeyor] {{projectName}} {{buildVersion}}: Build {{status}} ({{branch}} @ {{commitId}})'
   on_build_success: true
   on_build_failure: true
   on_build_status_changed: false

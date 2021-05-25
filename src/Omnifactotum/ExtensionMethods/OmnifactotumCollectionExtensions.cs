@@ -1,4 +1,5 @@
-﻿using System.Linq;
+﻿using System.Collections.ObjectModel;
+using System.Linq;
 using Omnifactotum;
 using Omnifactotum.Annotations;
 
@@ -26,7 +27,7 @@ namespace System.Collections.Generic
         ///     The number of elements in the specified collection if it was possible to determine it without
         ///     enumerating collection's elements; otherwise, <c>null</c>.
         /// </returns>
-        public static int? GetFastCount<T>([CanBeNull] this IEnumerable<T> collection)
+        public static int? GetFastCount<T>([CanBeNull] [NoEnumeration] this IEnumerable<T> collection)
         {
             switch (collection)
             {
@@ -38,9 +39,10 @@ namespace System.Collections.Generic
 
                 case ICollection castCollection:
                     return castCollection.Count;
-            }
 
-            return null;
+                default:
+                    return null;
+            }
         }
 
         /// <summary>
@@ -61,7 +63,7 @@ namespace System.Collections.Generic
         ///     <para>-or-</para>
         ///     <para><paramref name="action"/> is <c>null</c>.</para>
         /// </exception>
-        public static void DoForEach<T>([NotNull] this IEnumerable<T> collection, [NotNull] Action<T> action)
+        public static void DoForEach<T>([NotNull] this IEnumerable<T> collection, [NotNull] [InstantHandle] Action<T> action)
         {
             if (collection is null)
             {
@@ -98,7 +100,7 @@ namespace System.Collections.Generic
         ///     <para>-or-</para>
         ///     <para><paramref name="action"/> is <c>null</c>.</para>
         /// </exception>
-        public static void DoForEach<T>([NotNull] this IEnumerable<T> collection, [NotNull] Action<T, int> action)
+        public static void DoForEach<T>([NotNull] this IEnumerable<T> collection, [NotNull] [InstantHandle] Action<T, int> action)
         {
             if (collection is null)
             {
@@ -131,7 +133,7 @@ namespace System.Collections.Generic
         /// <param name="items">
         ///     The items to put to the collection.
         /// </param>
-        public static void SetItems<T>([NotNull] this ICollection<T> collection, [NotNull] IEnumerable<T> items)
+        public static void SetItems<T>([NotNull] this ICollection<T> collection, [NotNull] [InstantHandle] IEnumerable<T> items)
         {
             if (collection is null)
             {
@@ -175,8 +177,8 @@ namespace System.Collections.Generic
         ///     they both are <c>null</c>; otherwise, <c>false</c>.
         /// </returns>
         public static bool CollectionsEquivalent<T>(
-            [CanBeNull] this IEnumerable<T> collection,
-            [CanBeNull] IEnumerable<T> otherCollection,
+            [CanBeNull] [InstantHandle] this IEnumerable<T> collection,
+            [CanBeNull] [InstantHandle] IEnumerable<T> otherCollection,
             [CanBeNull] IEqualityComparer<T> comparer)
         {
             //// ReSharper disable PossibleMultipleEnumeration - the method is optimized accordingly
@@ -229,8 +231,8 @@ namespace System.Collections.Generic
         ///     they both are <c>null</c>; otherwise, <c>false</c>.
         /// </returns>
         public static bool CollectionsEquivalent<T>(
-            [CanBeNull] this IEnumerable<T> collection,
-            [CanBeNull] IEnumerable<T> otherCollection)
+            [CanBeNull] [InstantHandle] this IEnumerable<T> collection,
+            [CanBeNull] [InstantHandle] IEnumerable<T> otherCollection)
         {
             return CollectionsEquivalent(collection, otherCollection, null);
         }
@@ -347,8 +349,8 @@ namespace System.Collections.Generic
         /// </returns>
         [NotNull]
         public static Dictionary<TKey, List<T>> FindDuplicates<T, TKey>(
-            [NotNull] this IEnumerable<T> collection,
-            [NotNull] Func<T, TKey> keySelector,
+            [NotNull] [InstantHandle] this IEnumerable<T> collection,
+            [NotNull] [InstantHandle] Func<T, TKey> keySelector,
             [CanBeNull] IEqualityComparer<TKey> comparer)
         {
             if (collection is null)
@@ -366,7 +368,7 @@ namespace System.Collections.Generic
             return collection
                 .GroupBy(keySelector, actualComparer)
                 .Where(group => group.Count() > 1)
-                .Select(group => KeyValuePair.Create(group.Key, group.ToList()))
+                .Select(group => OmnifactotumKeyValuePair.Create(group.Key, group.ToList()))
                 .ToDictionary(item => item.Key, item => item.Value, actualComparer);
         }
 
@@ -393,8 +395,8 @@ namespace System.Collections.Generic
         /// </returns>
         [NotNull]
         public static Dictionary<TKey, List<T>> FindDuplicates<T, TKey>(
-            [NotNull] this IEnumerable<T> collection,
-            [NotNull] Func<T, TKey> keySelector)
+            [NotNull] [InstantHandle] this IEnumerable<T> collection,
+            [NotNull] [InstantHandle] Func<T, TKey> keySelector)
         {
             return FindDuplicates(collection, keySelector, null);
         }
@@ -411,7 +413,7 @@ namespace System.Collections.Generic
         /// </param>
         /// <seealso cref="OmnifactotumDisposableExtensions.DisposeSafely{T}(T)"/>
         public static void DisposeCollectionItemsSafely<TDisposable>(
-            [CanBeNull] this IEnumerable<TDisposable> collection)
+            [CanBeNull] [InstantHandle] this IEnumerable<TDisposable> collection)
             where TDisposable : class, IDisposable
         {
             if (collection is null)
@@ -437,7 +439,7 @@ namespace System.Collections.Generic
         /// </param>
         /// <seealso cref="OmnifactotumDisposableExtensions.DisposeSafely{T}(System.Nullable{T})"/>
         public static void DisposeCollectionItemsSafely<TDisposable>(
-            [CanBeNull] this IEnumerable<TDisposable?> collection)
+            [CanBeNull] [InstantHandle] this IEnumerable<TDisposable?> collection)
             where TDisposable : struct, IDisposable
         {
             if (collection is null)
@@ -465,10 +467,8 @@ namespace System.Collections.Generic
         ///     The source collection if it is not <c>null</c>; otherwise, empty collection.
         /// </returns>
         [NotNull]
-        public static IEnumerable<T> AvoidNull<T>([CanBeNull] this IEnumerable<T> source)
-        {
-            return source ?? Enumerable.Empty<T>();
-        }
+        public static IEnumerable<T> AvoidNull<T>([CanBeNull] [NoEnumeration] this IEnumerable<T> source)
+            => source ?? Enumerable.Empty<T>();
 
         /// <summary>
         ///     Creates a new instance of the <see cref="HashSet{T}"/> class that uses the specified equality comparer
@@ -489,7 +489,11 @@ namespace System.Collections.Generic
         /// </returns>
         [NotNull]
         public static HashSet<T> ToHashSet<T>(
-            [NotNull] this IEnumerable<T> collection,
+            [NotNull] [InstantHandle]
+#if NETFRAMEWORK && !NET472_OR_GREATER
+                this
+#endif
+                IEnumerable<T> collection,
             [CanBeNull] IEqualityComparer<T> comparer)
         {
             if (collection is null)
@@ -515,27 +519,33 @@ namespace System.Collections.Generic
         ///     A created hash set.
         /// </returns>
         [NotNull]
-        public static HashSet<T> ToHashSet<T>([NotNull] this IEnumerable<T> collection)
+        public static HashSet<T> ToHashSet<T>(
+            [NotNull] [InstantHandle]
+#if NETFRAMEWORK && !NET472_OR_GREATER
+                this
+#endif
+                IEnumerable<T> collection)
         {
+            if (collection is null)
+            {
+                throw new ArgumentNullException(nameof(collection));
+            }
+
             return new HashSet<T>(collection);
         }
 
         /// <summary>
         ///     Gets an object that can be used to synchronize access to the specified collection.
         /// </summary>
-        /// <typeparam name="T">
-        ///     The type of the collection object.
-        /// </typeparam>
         /// <param name="collection">
         ///     The collection to get a synchronization object of.
         /// </param>
         /// <returns>
         ///     An object that can be used to synchronize access to the specified collection.
         /// </returns>
-        public static object GetSyncRoot<T>([NotNull] this T collection)
-            where T : ICollection
+        public static object GetSyncRoot([NotNull] [NoEnumeration] this ICollection collection)
         {
-            if (ReferenceEquals(collection, null))
+            if (collection is null)
             {
                 throw new ArgumentNullException(nameof(collection));
             }
@@ -584,9 +594,9 @@ namespace System.Collections.Generic
         /// ]]>
         ///     </code>
         /// </example>
-        public static string ToUIString([CanBeNull] this IEnumerable<string> values)
-            => values?.Select(value => value.ToUIString()).Join(", ")
-                ?? OmnifactotumConstants.NullCollectionRepresentation;
+        public static string ToUIString([CanBeNull] [InstantHandle] this IEnumerable<string> values)
+            => values?.Select(value => value.ToUIString()).Join(@", ")
+                ?? OmnifactotumRepresentationConstants.NullCollectionRepresentation;
 
         /// <summary>
         ///     <para>
@@ -632,10 +642,10 @@ namespace System.Collections.Generic
         /// ]]>
         ///     </code>
         /// </example>
-        public static string ToUIString<T>(this IEnumerable<T?> values)
+        public static string ToUIString<T>([InstantHandle] this IEnumerable<T?> values)
             where T : struct
             => values?.Select(value => value.ToUIString()).Join(", ")
-                ?? OmnifactotumConstants.NullCollectionRepresentation;
+                ?? OmnifactotumRepresentationConstants.NullCollectionRepresentation;
 
         /// <summary>
         ///     <para>
@@ -676,10 +686,10 @@ namespace System.Collections.Generic
         /// <returns>
         ///     The UI representation of the specified collection of nullable values.
         /// </returns>
-        public static string ToUIString<T>(this IEnumerable<T?> values, string format, IFormatProvider formatProvider)
+        public static string ToUIString<T>([InstantHandle] this IEnumerable<T?> values, string format, IFormatProvider formatProvider)
             where T : struct, IFormattable
-            => values?.Select(value => value.ToUIString(format, formatProvider)).Join(", ")
-                ?? OmnifactotumConstants.NullCollectionRepresentation;
+            => values?.Select(value => value.ToUIString(format, formatProvider)).Join(@", ")
+                ?? OmnifactotumRepresentationConstants.NullCollectionRepresentation;
 
         /// <summary>
         ///     <para>
@@ -717,9 +727,32 @@ namespace System.Collections.Generic
         /// <returns>
         ///     The UI representation of the specified collection of nullable values.
         /// </returns>
-        public static string ToUIString<T>(this IEnumerable<T?> values, IFormatProvider formatProvider)
+        public static string ToUIString<T>([InstantHandle] this IEnumerable<T?> values, IFormatProvider formatProvider)
             where T : struct, IFormattable
             => values.ToUIString(null, formatProvider);
+
+        /// <summary>
+        ///     Creates a read-only wrapper for the specified list.
+        /// </summary>
+        /// <typeparam name="T">
+        ///     The type of values in the list.
+        /// </typeparam>
+        /// <param name="list">
+        ///     The list to create a read-only wrapper for.
+        /// </param>
+        /// <returns>
+        ///     A read-only wrapper for the specified list.
+        /// </returns>
+        [NotNull]
+        public static ReadOnlyCollection<T> AsReadOnly<T>([NotNull] this IList<T> list)
+        {
+            if (list is null)
+            {
+                throw new ArgumentNullException(nameof(list));
+            }
+
+            return new ReadOnlyCollection<T>(list);
+        }
 
         /// <summary>
         ///     Checks the reference and count equality.
@@ -737,21 +770,22 @@ namespace System.Collections.Generic
         ///     The result of the check.
         /// </returns>
         private static bool? CheckReferenceAndCountEquality<T>(
-            [CanBeNull] IEnumerable<T> collection,
-            [CanBeNull] IEnumerable<T> otherCollection)
+            [CanBeNull] [NoEnumeration] IEnumerable<T> collection,
+            [CanBeNull] [NoEnumeration] IEnumerable<T> otherCollection)
         {
             if (ReferenceEquals(collection, otherCollection))
             {
                 return true;
             }
 
-            if (ReferenceEquals(collection, null) || ReferenceEquals(otherCollection, null))
+            if (collection is null || otherCollection is null)
             {
                 return false;
             }
 
             var collectionFastCount = GetFastCount(collection);
             var otherCollectionFastCount = GetFastCount(otherCollection);
+
             if (collectionFastCount.HasValue
                 && otherCollectionFastCount.HasValue
                 && collectionFastCount.Value != otherCollectionFastCount.Value)
@@ -778,7 +812,7 @@ namespace System.Collections.Generic
         ///     The count map.
         /// </returns>
         private static Dictionary<T, int> CreateCountMap<T>(
-            [NotNull] IEnumerable<T> collection,
+            [NotNull] [InstantHandle] IEnumerable<T> collection,
             [CanBeNull] IEqualityComparer<T> comparer)
         {
             return collection

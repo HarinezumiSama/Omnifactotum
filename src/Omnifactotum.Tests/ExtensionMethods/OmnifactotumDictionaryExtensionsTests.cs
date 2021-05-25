@@ -1,5 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
+#if !NET40
+using System.Collections.ObjectModel;
+#endif
 using NUnit.Framework;
 using Omnifactotum.Annotations;
 
@@ -31,7 +34,6 @@ namespace Omnifactotum.Tests.ExtensionMethods
             _dictionary = null;
         }
 
-#if NETSTANDARD2_0 || NETFRAMEWORK
         [Test]
         public void TestGetValueOrDefaultNegative()
         {
@@ -49,22 +51,37 @@ namespace Omnifactotum.Tests.ExtensionMethods
         public void TestGetValueOrDefault()
         {
             RecreateDictionary();
+#if NETCOREAPP2_1
+            Assert.That(OmnifactotumDictionaryExtensions.GetValueOrDefault(_dictionary, Key1), Is.EqualTo(Value1));
+#else
             Assert.That(_dictionary.GetValueOrDefault(Key1), Is.EqualTo(Value1));
+#endif
             AssertInitialDictionaryState();
 
             RecreateDictionary();
+#if NETCOREAPP2_1
+            Assert.That(OmnifactotumDictionaryExtensions.GetValueOrDefault(_dictionary, Key2), Is.EqualTo(null));
+#else
             Assert.That(_dictionary.GetValueOrDefault(Key2), Is.EqualTo(null));
+#endif
             AssertInitialDictionaryState();
 
             RecreateDictionary();
+#if NETCOREAPP2_1
+            Assert.That(OmnifactotumDictionaryExtensions.GetValueOrDefault(_dictionary, Key2, null), Is.EqualTo(null));
+#else
             Assert.That(_dictionary.GetValueOrDefault(Key2, null), Is.EqualTo(null));
+#endif
             AssertInitialDictionaryState();
 
             RecreateDictionary();
+#if NETCOREAPP2_1
+            Assert.That(OmnifactotumDictionaryExtensions.GetValueOrDefault(_dictionary, Key2, ExplicitValue2), Is.EqualTo(ExplicitValue2));
+#else
             Assert.That(_dictionary.GetValueOrDefault(Key2, ExplicitValue2), Is.EqualTo(ExplicitValue2));
+#endif
             AssertInitialDictionaryState();
         }
-#endif
 
         [Test]
         public void TestGetOrCreateValueNegative()

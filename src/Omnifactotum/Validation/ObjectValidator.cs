@@ -199,7 +199,7 @@ namespace Omnifactotum.Validation
                     members.Add(itemData);
                 }
             }
-            //////// TODO [vmcl] Support IEnumerable<T>
+            //////// TODO [HarinezumiSama] Support IEnumerable<T>
             ////else if (parentExpression.Type.IsGenericType
             ////    && typeof(IEnumerable<>).IsAssignableFrom(parentExpression.Type.GetGenericTypeDefinition()))
             ////{

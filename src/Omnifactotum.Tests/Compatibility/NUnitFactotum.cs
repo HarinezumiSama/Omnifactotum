@@ -246,6 +246,8 @@ namespace Omnifactotum.NUnit
         public static List<TestCaseData> GenerateCombinatorialTestCases([NotNull] params object[] arguments)
             => GenerateCombinatorialTestCases(null, arguments);
 
+#nullable enable
+
         /// <summary>
         ///     Returns the specified value if is not null;
         ///     otherwise, throws <see cref="AssertionException"/>.
@@ -263,12 +265,14 @@ namespace Omnifactotum.NUnit
         ///     <paramref name="value"/> is <c>null</c>.
         /// </exception>
         [NotNull]
-        public static T AssertNotNull<T>([CanBeNull] this T value)
+        public static T AssertNotNull<T>([CanBeNull] this T? value)
             where T : class
         {
             Assert.That(value, Is.Not.Null);
             return value.EnsureNotNull();
         }
+
+#nullable restore
 
         /// <summary>
         ///     Returns the value which underlies the specified nullable value, if it is not <c>null</c>

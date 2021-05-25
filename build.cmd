@@ -10,5 +10,5 @@ if not exist "%PS_ExePath%" (
     exit /b 127
 )
 
-"%PS_ExePath%" -ExecutionPolicy RemoteSigned -NonInteractive -Command "%~dpn0.ps1" %* -Verbose:$true
+"%PS_ExePath%" -ExecutionPolicy RemoteSigned -NonInteractive -Command "%~dpn0.ps1" %*
 exit /b %ERRORLEVEL%

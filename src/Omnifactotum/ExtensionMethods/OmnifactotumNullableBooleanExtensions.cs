@@ -1,4 +1,5 @@
 ﻿using Omnifactotum.Annotations;
+using PureAttribute = System.Diagnostics.Contracts.PureAttribute;
 
 //// ReSharper disable once CheckNamespace - Namespace is intentionally named so in order to simplify usage of extension methods
 
@@ -28,6 +29,7 @@ namespace System
         /// <returns>
         ///     The string representation of the specified nullable Boolean value.
         /// </returns>
+        [Pure]
         public static string ToString(
             [CanBeNull] this bool? value,
             [CanBeNull] string noValueString,
@@ -59,9 +61,9 @@ namespace System
         /// </returns>
         public static string ToString(
             [CanBeNull] this bool? value,
-            [NotNull] Func<string> noValueProvider,
-            [NotNull] Func<string> trueValueProvider,
-            [NotNull] Func<string> falseValueProvider)
+            [NotNull] [InstantHandle] Func<string> noValueProvider,
+            [NotNull] [InstantHandle] Func<string> trueValueProvider,
+            [NotNull] [InstantHandle] Func<string> falseValueProvider)
             //// ReSharper disable once ArrangeRedundantParentheses :: For clarity
             => value.HasValue
                 ? (value.Value

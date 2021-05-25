@@ -1,5 +1,5 @@
-**/bin/*
-**/binTests/*
+**/.out/*
+**/.temp/*
 **/obj/*
 **/packages/*
 **/.vs/*

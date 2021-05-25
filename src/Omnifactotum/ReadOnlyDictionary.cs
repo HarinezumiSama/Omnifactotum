@@ -1,12 +1,12 @@
-﻿using System;
+﻿#if NET40
+
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using Omnifactotum.Annotations;
 
 namespace Omnifactotum
 {
-    //// TODO [vmcl] This custom ReadOnlyDictionary implementation is not needed in FW 4.5+
-
     /// <summary>
     ///     Represents a read-only wrapper for the <see cref="IDictionary{TKey,TValue}"/>.
     /// </summary>
@@ -16,11 +16,16 @@ namespace Omnifactotum
     /// <typeparam name="TValue">
     ///     The type of values in the dictionary.
     /// </typeparam>
+    [Serializable]
     public sealed class ReadOnlyDictionary<TKey, TValue> : IDictionary<TKey, TValue>
     {
-        private const string ReadOnlyMessage = "The instance cannot be modified as it is read-only.";
-
         private readonly IDictionary<TKey, TValue> _dictionary;
+
+        [NonSerialized]
+        private ReadOnlyItemCollection<TKey> _keys;
+
+        [NonSerialized]
+        private ReadOnlyItemCollection<TValue> _values;
 
         /// <summary>
         ///     Initializes a new instance of the <see cref="ReadOnlyDictionary{TKey,TValue}"/> class.
@@ -29,9 +34,7 @@ namespace Omnifactotum
         ///     The original dictionary to wrap.
         /// </param>
         public ReadOnlyDictionary([NotNull] IDictionary<TKey, TValue> dictionary)
-        {
-            _dictionary = dictionary ?? throw new ArgumentNullException(nameof(dictionary));
-        }
+            => _dictionary = dictionary ?? throw new ArgumentNullException(nameof(dictionary));
 
         /// <summary>
         ///     Gets a collection containing the keys of the current dictionary.
@@ -39,7 +42,15 @@ namespace Omnifactotum
         /// <returns>
         ///     A collection containing the keys of the current dictionary.
         /// </returns>
-        public ICollection<TKey> Keys => _dictionary.Keys;
+        public ReadOnlyItemCollection<TKey> Keys => _keys ??= new ReadOnlyItemCollection<TKey>(_dictionary.Keys);
+
+        /// <summary>
+        ///     Gets a collection containing the keys of the current dictionary.
+        /// </summary>
+        /// <returns>
+        ///     A collection containing the keys of the current dictionary.
+        /// </returns>
+        ICollection<TKey> IDictionary<TKey, TValue>.Keys => Keys;
 
         /// <summary>
         ///     Gets a collection containing the values in the current dictionary.
@@ -47,7 +58,32 @@ namespace Omnifactotum
         /// <returns>
         ///     A collection containing the values in the current dictionary.
         /// </returns>
-        public ICollection<TValue> Values => _dictionary.Values;
+        public ReadOnlyItemCollection<TValue> Values => _values ??= new ReadOnlyItemCollection<TValue>(_dictionary.Values);
+
+        /// <summary>
+        ///     Gets a collection containing the values in the current dictionary.
+        /// </summary>
+        /// <returns>
+        ///     A collection containing the values in the current dictionary.
+        /// </returns>
+        ICollection<TValue> IDictionary<TKey, TValue>.Values => Values;
+
+        /// <summary>
+        ///     Gets the element with the specified key.
+        /// </summary>
+        /// <param name="key">
+        ///     The key of the element to get.
+        /// </param>
+        /// <returns>
+        ///     The element with the specified key.
+        /// </returns>
+        /// <exception cref="System.ArgumentNullException">
+        ///     <paramref name="key"/> is <c>null</c>.
+        /// </exception>
+        /// <exception cref="System.Collections.Generic.KeyNotFoundException">
+        ///     The property is retrieved and key is not found.
+        /// </exception>
+        public TValue this[TKey key] => _dictionary[key];
 
         /// <summary>
         ///     Gets or sets the element with the specified key.
@@ -71,12 +107,20 @@ namespace Omnifactotum
         /// <exception cref="System.Collections.Generic.KeyNotFoundException">
         ///     The property is retrieved and key is not found.
         /// </exception>
-        public TValue this[TKey key]
+        TValue IDictionary<TKey, TValue>.this[TKey key]
         {
             get => _dictionary[key];
 
-            set => throw new NotSupportedException(ReadOnlyMessage);
+            set => throw CreateReadOnlyInstanceException();
         }
+
+        /// <summary>
+        ///     Gets the number of elements contained in the current collection.
+        /// </summary>
+        /// <returns>
+        ///     The number of elements contained in the current collection.
+        /// </returns>
+        public int Count => _dictionary.Count;
 
         /// <summary>
         ///     Adds an element with the provided key and value to the current dictionary.
@@ -91,7 +135,7 @@ namespace Omnifactotum
         /// <param name="value">
         ///     The object to use as the value of the element to add.
         /// </param>
-        void IDictionary<TKey, TValue>.Add(TKey key, TValue value) => throw new NotSupportedException(ReadOnlyMessage);
+        void IDictionary<TKey, TValue>.Add(TKey key, TValue value) => throw CreateReadOnlyInstanceException();
 
         /// <summary>
         ///     Removes the element with the specified key from the current dictionary.
@@ -106,7 +150,7 @@ namespace Omnifactotum
         /// <returns>
         ///     <c>true</c> if the element is successfully removed; otherwise, <c>false</c>.
         /// </returns>
-        bool IDictionary<TKey, TValue>.Remove(TKey key) => throw new NotSupportedException(ReadOnlyMessage);
+        bool IDictionary<TKey, TValue>.Remove(TKey key) => throw CreateReadOnlyInstanceException();
 
         /// <summary>
         ///     Determines whether the current dictionary contains an element with the specified key.
@@ -138,20 +182,12 @@ namespace Omnifactotum
         public bool TryGetValue(TKey key, out TValue value) => _dictionary.TryGetValue(key, out value);
 
         /// <summary>
-        ///     Gets the number of elements contained in the current collection.
-        /// </summary>
-        /// <returns>
-        ///     The number of elements contained in the current collection.
-        /// </returns>
-        public int Count => _dictionary.Count;
-
-        /// <summary>
         ///     Gets a value indicating whether the current collection is read-only.
         /// </summary>
         /// <returns>
         ///     <c>true</c> if the current collection is read-only; otherwise, <c>false</c>.
         /// </returns>
-        public bool IsReadOnly => true;
+        bool ICollection<KeyValuePair<TKey, TValue>>.IsReadOnly => true;
 
         /// <summary>
         ///     Adds an item to the current collection.
@@ -167,7 +203,7 @@ namespace Omnifactotum
         ///     The current collection is read-only.
         /// </exception>
         void ICollection<KeyValuePair<TKey, TValue>>.Add(KeyValuePair<TKey, TValue> item)
-            => throw new NotSupportedException(ReadOnlyMessage);
+            => throw CreateReadOnlyInstanceException();
 
         /// <summary>
         ///     Removes all items from the current collection.
@@ -179,7 +215,7 @@ namespace Omnifactotum
         /// <exception cref="System.NotSupportedException">
         ///     The current collection is read-only.
         /// </exception>
-        void ICollection<KeyValuePair<TKey, TValue>>.Clear() => throw new NotSupportedException(ReadOnlyMessage);
+        void ICollection<KeyValuePair<TKey, TValue>>.Clear() => throw CreateReadOnlyInstanceException();
 
         /// <summary>
         ///     Removes the first occurrence of a specific object from the current collection.
@@ -198,7 +234,7 @@ namespace Omnifactotum
         ///     The current collection is read-only.
         /// </exception>
         bool ICollection<KeyValuePair<TKey, TValue>>.Remove(KeyValuePair<TKey, TValue> item)
-            => throw new NotSupportedException(ReadOnlyMessage);
+            => throw CreateReadOnlyInstanceException();
 
         /// <summary>
         ///     Determines whether the current collection contains a specific value.
@@ -242,5 +278,10 @@ namespace Omnifactotum
         ///     the collection.
         /// </returns>
         IEnumerator IEnumerable.GetEnumerator() => _dictionary.GetEnumerator();
+
+        private NotSupportedException CreateReadOnlyInstanceException()
+            => new NotSupportedException($@"The {GetType().GetQualifiedName()} instance cannot be modified because it is read-only.");
     }
 }
+
+#endif

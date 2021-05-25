@@ -14,7 +14,17 @@ namespace System
     public static class OmnifactotumExceptionExtensions
     {
         /// <summary>
-        ///     Determines whether the specified exception should NOT be handled by a user code.
+        ///     <para>Determines whether the specified exception should NOT be handled by a user code.</para>
+        ///     <para>
+        ///         The following exceptions (and their descendants) are considered by this method as the ones that should not be
+        ///         handled by a user code:
+        ///         <list type="bullet">
+        ///             <item><see cref="ThreadAbortException"/></item>
+        ///             <item><see cref="OperationCanceledException"/></item>
+        ///             <item><see cref="OutOfMemoryException"/></item>
+        ///             <item><see cref="StackOverflowException"/></item>
+        ///         </list>
+        ///     </para>
         /// </summary>
         /// <param name="exception">
         ///     The exception to check.
@@ -22,6 +32,19 @@ namespace System
         /// <returns>
         ///     <c>true</c> if the specified exception should NOT be handled by a user code; otherwise, <c>false</c>.
         /// </returns>
+        /// <example>
+        ///     <code>
+        /// try
+        /// {
+        ///     ...
+        /// }
+        /// catch (Exception ex)
+        ///     when (!ex.IsFatal())
+        /// {
+        ///     Logger.Write(...);
+        /// }
+        ///     </code>
+        /// </example>
         [DebuggerNonUserCode]
         public static bool IsFatal([CanBeNull] this Exception exception)
             => exception is ThreadAbortException

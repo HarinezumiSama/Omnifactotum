@@ -1,35 +1,35 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 
 <Project>
+    <Target Name="CheckBuildPropertiesBeforeBuild" BeforeTargets="Clean;Build">
+        <Message Text="[$(MSBuildProjectName):$(TargetFramework):$(Configuration):$(Platform)] SolutionDir = &quot;$(SolutionDir)&quot;, SolutionName = &quot;$(SolutionName)&quot;" Importance="high" />
+
+        <Error Condition="'$(SolutionDir)' == '' Or '$(SolutionName)' == ''"
+                Text="[$(MSBuildProjectName):$(TargetFramework):$(Configuration):$(Platform)] Individual projects cannot be built. Please build the entire solution." />
+    </Target>
+
     <PropertyGroup>
-        <!-- TODO: Inject BaseVersion and BuildNumber from AppVeyor -->
-        <BaseVersion>0.4</BaseVersion>
-        <BuildNumber></BuildNumber>
-        <BuildDateYear>$([System.String]::Format("{0:yyyy}", $([System.DateTime]::Now)))</BuildDateYear>
+        <IsAppveyorBuild>false</IsAppveyorBuild>
     </PropertyGroup>
 
     <PropertyGroup>
-        <Version>0.0.0</Version>
+        <BuildDateYear>$([System.String]::Format("{0:yyyy}", $([System.DateTime]::Now)))</BuildDateYear>
+        <Version>0.4.0</Version>
+        <VersionSuffix>-debug</VersionSuffix>
+        <ReleaseNotesFilePath>$(SolutionDir)$(SolutionName).ReleaseNotes.md</ReleaseNotesFilePath>
     </PropertyGroup>
 
     <PropertyGroup>
         <RestoreProjectStyle>PackageReference</RestoreProjectStyle>
+        <CopyLocalLockFileAssemblies>true</CopyLocalLockFileAssemblies>
     </PropertyGroup>
 
     <PropertyGroup>
-        <Authors>Vitalii Maklai</Authors>
-        <Company>$(Authors)</Company>
-        <Product>$(SolutionName)</Product>
-        <Description>$(Product): Helper classes and extension methods for .NET projects.</Description>
-        <Copyright>Copyright © Vitalii Maklai 2004-$(BuildDateYear)</Copyright>
-        <RepositoryUrl>https://github.com/HarinezumiSama/$(SolutionName)</RepositoryUrl>
-        <RepositoryType>git</RepositoryType>
-        <PackageProjectUrl>$(RepositoryUrl)</PackageProjectUrl>
-        <PackageRequireLicenseAcceptance>false</PackageRequireLicenseAcceptance>
-        <PackageLicenseExpression>MIT</PackageLicenseExpression>
-        <PackageReleaseNotes></PackageReleaseNotes>
-        <PackageTags>C#;CSharp;omnifactotum;omni;factotum;aid;assistant;extension;extensions;helper;helpers;common</PackageTags>
-        <PackageOutputPath>$(SolutionDir)\..\bin\NuGet\</PackageOutputPath>
+        <LangVersion>8.0</LangVersion>
+        <Nullable>disable</Nullable>
+        <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
+        <WarningsAsErrors />
+        <RunSettingsFilePath>$(SolutionDir)$(SolutionName).runsettings</RunSettingsFilePath>
     </PropertyGroup>
 
     <PropertyGroup>
@@ -38,14 +38,43 @@
     </PropertyGroup>
 
     <PropertyGroup>
-        <Version Condition=" '$(BaseVersion)' != '' And '$(BuildNumber)' != '' And '$(BuildNumber)' != '0' ">$(BaseVersion).$(BuildNumber)</Version>
-        <PackageVersion>$(Version)</PackageVersion>
-        <AssemblyVersion>$(Version).0</AssemblyVersion>
-        <FileVersion>$(AssemblyVersion)</FileVersion>
-        <!--<InformationalVersion>$(AssemblyVersion)</InformationalVersion>-->
+        <Authors>Vitalii Maklai</Authors>
+        <Company>$(Authors)</Company>
+        <Product>$(SolutionName)</Product>
+        <Description>$(Product): Provides own helper and functional classes as well as extension methods for standard .NET classes.</Description>
+        <Copyright>Copyright © Vitalii Maklai 2004-$(BuildDateYear)</Copyright>
+        <RepositoryUrl>https://github.com/HarinezumiSama/$(SolutionName)</RepositoryUrl>
+        <RepositoryType>git</RepositoryType>
+        <PackageProjectUrl>$(RepositoryUrl)</PackageProjectUrl>
+        <PackageRequireLicenseAcceptance>false</PackageRequireLicenseAcceptance>
+        <PackageLicenseExpression>MIT</PackageLicenseExpression>
+        <PackageReleaseNotes>$([System.IO.File]::ReadAllText($(ReleaseNotesFilePath)))</PackageReleaseNotes>
+        <PackageTags>C#;CSharp;omnifactotum;omni;factotum;aid;assistant;extension;extensions;helper;helpers;common;typical</PackageTags>
+        <IncludeSymbols>true</IncludeSymbols>
+        <IncludeSource>true</IncludeSource>
     </PropertyGroup>
 
     <PropertyGroup>
+        <__RootSolutionOutputPathBase>$(SolutionDir)\.out</__RootSolutionOutputPathBase>
+        <__RootSolutionOutputPath>$([System.IO.Path]::GetFullPath($(__RootSolutionOutputPathBase)))</__RootSolutionOutputPath>
+        <OutputPath>$(__RootSolutionOutputPath)\bin\$(Platform)\$(Configuration)\$(MSBuildProjectName)\</OutputPath>
+        <BaseIntermediateOutputPath>$(__RootSolutionOutputPath)\obj\$(MSBuildProjectName)\</BaseIntermediateOutputPath>
+        <PackageOutputPath>$(__RootSolutionOutputPath)\NuGet\</PackageOutputPath>
+        <VSTestResultsDirectory>$(OutputPath)TestResults</VSTestResultsDirectory>
+    </PropertyGroup>
+
+    <Target Name="CleanTestResults" AfterTargets="Clean">
+        <RemoveDir Directories="$(VSTestResultsDirectory)" Condition="Exists($(VSTestResultsDirectory))" ContinueOnError="true" />
+    </Target>
+
+    <PropertyGroup>
+        <PackageVersion>$(Version)$(VersionSuffix)</PackageVersion>
+        <AssemblyVersion>$(Version).0</AssemblyVersion>
+        <FileVersion>$(Version).0</FileVersion>
+        <InformationalVersion>$(Version)$(VersionSuffix)</InformationalVersion>
+    </PropertyGroup>
+
+    <PropertyGroup Condition="'$(SolutionDir)' != '' And '$(SolutionName)' != ''">
         <SignAssembly>true</SignAssembly>
         <DelaySign>false</DelaySign>
         <AssemblyOriginatorKeyFile>$(SolutionDir)\Common\$(SolutionName).snk</AssemblyOriginatorKeyFile>

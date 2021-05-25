@@ -3,6 +3,7 @@ using System.Globalization;
 using System.Text;
 using Omnifactotum;
 using Omnifactotum.Annotations;
+using PureAttribute = System.Diagnostics.Contracts.PureAttribute;
 
 //// Namespace is intentionally named so in order to simplify usage of extension methods
 //// ReSharper disable once CheckNamespace
@@ -26,6 +27,7 @@ namespace System
         ///     <c>true</c> if the specified string is <c>null</c> or an <see cref="String.Empty"/> string;
         ///     otherwise, <c>false</c>.
         /// </returns>
+        [Pure]
         public static bool IsNullOrEmpty([CanBeNull] this string value) => string.IsNullOrEmpty(value);
 
         /// <summary>
@@ -39,6 +41,7 @@ namespace System
         ///     <c>true</c> if the specified value is <c>null</c> or <see cref="String.Empty"/>, or if it consists
         ///     exclusively of white-space characters; otherwise, <c>false</c>.
         /// </returns>
+        [Pure]
         public static bool IsNullOrWhiteSpace([CanBeNull] this string value) => string.IsNullOrWhiteSpace(value);
 
         /// <summary>
@@ -52,6 +55,7 @@ namespace System
         ///     The <see cref="Nullable{Boolean}"/> representation of the specified string value.
         /// </returns>
         [CanBeNull]
+        [Pure]
         public static bool? ToNullableBoolean([CanBeNull] this string value)
         {
             if (string.IsNullOrWhiteSpace(value))
@@ -82,6 +86,7 @@ namespace System
         /// <returns>
         ///     The <see cref="System.Boolean"/> representation of the specified string value.
         /// </returns>
+        [Pure]
         public static bool ToBoolean(this string value)
         {
             var proxyResult = ToNullableBoolean(value);
@@ -111,7 +116,7 @@ namespace System
         ///     by the <paramref name="separator"/> string.
         /// </returns>
         [NotNull]
-        public static string Join([NotNull] this IEnumerable<string> values, [CanBeNull] string separator)
+        public static string Join([NotNull] [InstantHandle] this IEnumerable<string> values, [CanBeNull] string separator)
             => string.Join(separator, values ?? throw new ArgumentNullException(nameof(values)));
 
         /// <summary>
@@ -125,6 +130,7 @@ namespace System
         ///     The source string value if it is not <c>null</c>; otherwise, empty string.
         /// </returns>
         [NotNull]
+        [Pure]
         public static string AvoidNull([CanBeNull] this string source) => source ?? string.Empty;
 
         /// <summary>
@@ -176,12 +182,13 @@ namespace System
         ///     </code>
         /// </example>
         [NotNull]
+        [Pure]
         public static string ToUIString([CanBeNull] this string value)
         {
             const string DoubleDoubleQuote = DoubleQuote + DoubleQuote;
 
             return value is null
-                ? OmnifactotumConstants.NullValueRepresentation
+                ? OmnifactotumRepresentationConstants.NullValueRepresentation
                 : DoubleQuote + value.Replace(DoubleQuote, DoubleDoubleQuote) + DoubleQuote;
         }
 
@@ -202,6 +209,7 @@ namespace System
         ///     are removed instead.
         /// </returns>
         [NotNull]
+        [Pure]
         public static string TrimSafely([CanBeNull] this string value, [CanBeNull] params char[] trimChars)
             => value?.Trim(trimChars) ?? string.Empty;
 
@@ -222,6 +230,7 @@ namespace System
         ///     are removed instead.
         /// </returns>
         [NotNull]
+        [Pure]
         public static string TrimStartSafely([CanBeNull] this string value, [CanBeNull] params char[] trimChars)
             => value?.TrimStart(trimChars) ?? string.Empty;
 
@@ -242,6 +251,7 @@ namespace System
         ///     are removed instead.
         /// </returns>
         [NotNull]
+        [Pure]
         public static string TrimEndSafely([CanBeNull] this string value, [CanBeNull] params char[] trimChars)
             => value?.TrimEnd(trimChars) ?? string.Empty;
 
@@ -263,6 +273,7 @@ namespace System
         ///     <paramref name="maximumLength"/> is less than zero.
         /// </exception>
         [NotNull]
+        [Pure]
         public static string Shorten([CanBeNull] this string value, int maximumLength)
         {
             if (maximumLength < 0)
@@ -295,6 +306,7 @@ namespace System
         ///     <paramref name="value"/> is <c>null</c> or an empty string or <paramref name="count"/> is zero.
         /// </returns>
         [NotNull]
+        [Pure]
         public static string Replicate([CanBeNull] this string value, int count)
         {
             if (count < 0)

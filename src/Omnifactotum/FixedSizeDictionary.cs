@@ -354,7 +354,7 @@ namespace Omnifactotum
                 }
 
                 var key = Determinant.GetKey(index);
-                array[currentArrayIndex] = KeyValuePair.Create(key, item.Value);
+                array[currentArrayIndex] = OmnifactotumKeyValuePair.Create(key, item.Value);
                 currentArrayIndex++;
             }
         }
@@ -392,6 +392,7 @@ namespace Omnifactotum
         /// </returns>
         IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();
 
+        //// ReSharper disable once ParameterOnlyUsedForPreconditionCheck.Local
         private void SetItemInternal([NotNull] TKey key, [CanBeNull] TValue value, bool replaceExisting)
         {
             var index = Determinant.GetIndex(key);

@@ -1,5 +1,4 @@
-﻿using System.Collections.ObjectModel;
-using System.Diagnostics;
+﻿using System.Diagnostics;
 using System.Text;
 using Omnifactotum.Annotations;
 
@@ -45,7 +44,7 @@ namespace System
         ///     the first parameter represents the previous value of the element;
         ///     the second parameter represents the index of the element in the array.
         /// </param>
-        public static void Initialize<T>([NotNull] this T[] array, [NotNull] Func<T, int, T> getElementValue)
+        public static void Initialize<T>([NotNull] this T[] array, [NotNull] [InstantHandle] Func<T, int, T> getElementValue)
         {
             if (array is null)
             {
@@ -77,7 +76,7 @@ namespace System
         ///     A reference to a method that returns a new value for each array's element;
         ///     the parameter represents the index of the element in the array.
         /// </param>
-        public static void Initialize<T>([NotNull] this T[] array, [NotNull] Func<int, T> getElementValue)
+        public static void Initialize<T>([NotNull] this T[] array, [NotNull] [InstantHandle] Func<int, T> getElementValue)
         {
             if (getElementValue is null)
             {
@@ -104,29 +103,6 @@ namespace System
         public static T[] AvoidNull<T>([CanBeNull] this T[] source)
         {
             return source ?? StrongTypeHelper<T>.EmptyArray;
-        }
-
-        /// <summary>
-        ///     Creates a read-only wrapper for the specified array.
-        /// </summary>
-        /// <typeparam name="T">
-        ///     The type of values in the array.
-        /// </typeparam>
-        /// <param name="array">
-        ///     The array to create a read-only wrapper for.
-        /// </param>
-        /// <returns>
-        ///     A read-only wrapper for the specified array.
-        /// </returns>
-        [NotNull]
-        public static ReadOnlyCollection<T> AsReadOnly<T>([NotNull] this T[] array)
-        {
-            if (array is null)
-            {
-                throw new ArgumentNullException(nameof(array));
-            }
-
-            return new ReadOnlyCollection<T>(array);
         }
 
         /// <summary>

@@ -95,26 +95,6 @@ namespace Omnifactotum.Tests.ExtensionMethods
         }
 
         [Test]
-        public void TestAsReadOnlyNegative()
-        {
-            Assert.That(() => NullArray.AsReadOnly(), Throws.TypeOf<ArgumentNullException>());
-        }
-
-        [Test]
-        public void TestAsReadOnly()
-        {
-            var array = new[] { "foo", "bar" }.AssertNotNull();
-            var readOnly = array.AsReadOnly();
-
-            Assert.That(readOnly, Is.Not.Null);
-            Assert.That(() => ((ICollection<string>)readOnly).Clear(), Throws.TypeOf<NotSupportedException>());
-            Assert.That(readOnly, Is.EqualTo(array));
-
-            array[0] = "not foo";
-            Assert.That(readOnly, Is.EqualTo(array));
-        }
-
-        [Test]
         [TestCase(false)]
         [TestCase(true)]
         public void TestToHexStringWithCaseNegative(bool useUpperCase)
@@ -153,11 +133,7 @@ namespace Omnifactotum.Tests.ExtensionMethods
 
         private sealed class CopyableObject : ICloneable
         {
-            public int Value
-            {
-                private get;
-                set;
-            }
+            public int Value { private get; set; }
 
             [UsedImplicitly]
             public CopyableObject Copy()

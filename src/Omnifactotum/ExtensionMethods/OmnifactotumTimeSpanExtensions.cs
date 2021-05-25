@@ -1,5 +1,8 @@
-﻿//// Namespace is intentionally named so in order to simplify usage of extension methods
+﻿using PureAttribute = System.Diagnostics.Contracts.PureAttribute;
+
+//// Namespace is intentionally named so in order to simplify usage of extension methods
 //// ReSharper disable once CheckNamespace
+
 namespace System
 {
     /// <summary>
@@ -19,10 +22,9 @@ namespace System
         /// <returns>
         ///     A new <see cref="TimeSpan"/> representing the original interval multiplied by the coefficient.
         /// </returns>
+        [Pure]
         public static TimeSpan Multiply(this TimeSpan value, decimal coefficient)
-        {
-            return TimeSpan.FromTicks(Convert.ToInt64(value.Ticks * coefficient));
-        }
+            => TimeSpan.FromTicks(Convert.ToInt64(value.Ticks * coefficient));
 
         /// <summary>
         ///     Divides the specified <see cref="TimeSpan"/> by the specified divisor.
@@ -36,6 +38,7 @@ namespace System
         /// <returns>
         ///     A new <see cref="TimeSpan"/> representing the original interval divided by the divisor.
         /// </returns>
+        [Pure]
         public static TimeSpan Divide(this TimeSpan value, decimal divisor)
         {
             if (divisor == 0m)

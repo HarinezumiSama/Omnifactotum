@@ -1,4 +1,5 @@
-﻿#if !NETSTANDARD
+﻿#if NETFRAMEWORK
+
 using System;
 using System.Diagnostics;
 using System.Diagnostics.CodeAnalysis;
@@ -8,6 +9,8 @@ using Omnifactotum.Annotations;
 
 namespace Omnifactotum
 {
+    //// TODO: Move to the project `Omnifactotum.Windows` (use the `System.Diagnostics.EventLog` package reference in that project)
+
     /// <summary>
     ///     Provides the simple interface to write to the Windows <b>Event Log</b>.
     /// </summary>
@@ -76,13 +79,9 @@ namespace Omnifactotum
                 EventLog.WriteEntry(source, message, type);
             }
             catch (Exception ex)
+                when (!ex.IsFatal())
             {
-                if (ex.IsFatal())
-                {
-                    throw;
-                }
-
-                // Suppressing any exception as writing to the log should not cause any new unhandled exception
+                // Suppressing exceptions as writing to the log should not cause any new unhandled exception
             }
         }
 
@@ -173,4 +172,5 @@ namespace Omnifactotum
         }
     }
 }
+
 #endif

@@ -97,7 +97,7 @@ namespace Omnifactotum
             }
 
             disposable.Value.Dispose();
-            disposable = default(T?);
+            disposable = default;
         }
 
         /// <summary>
@@ -301,6 +301,7 @@ namespace Omnifactotum
                 }
             }
 
+            //// ReSharper disable once InvertIf
             if (generateRandomPart)
             {
                 var randomPartSize = size - offset;
@@ -364,7 +365,7 @@ namespace Omnifactotum
         [MethodImpl(MethodImplOptions.NoInlining)]
         public static string GetExecutableLocalPath()
         {
-            //// TODO [vmcl] Cache the result
+            //// TODO [HarinezumiSama] Cache the result
 
             var assembly = Assembly.GetEntryAssembly() ?? Assembly.GetCallingAssembly();
             return assembly.GetLocalPath();
@@ -384,10 +385,10 @@ namespace Omnifactotum
         [MethodImpl(MethodImplOptions.NoInlining)]
         public static string GetExecutableDirectory()
         {
-            //// [vmcl] GetExecutableLocalPath() method cannot be re-used in order to keep
+            //// [HarinezumiSama] GetExecutableLocalPath() method cannot be re-used in order to keep
             //// the correct stack for Assembly.GetCallingAssembly()
 
-            //// TODO [vmcl] Cache the result
+            //// TODO [HarinezumiSama] Cache the result
 
             var assembly = Assembly.GetEntryAssembly() ?? Assembly.GetCallingAssembly();
             var path = assembly.GetLocalPath();
@@ -626,6 +627,7 @@ namespace Omnifactotum
                     nameof(propertyGetterExpression));
             }
 
+            //// ReSharper disable once InvertIf
             if (memberExpression.Expression is null)
             {
                 var accessor = result.GetGetMethod(true) ?? result.GetSetMethod(true);
@@ -710,8 +712,8 @@ namespace Omnifactotum
         /// </exception>
         public static void ProcessRecursively<T>(
             [CanBeNull] T instance,
-            [NotNull] Func<T, IEnumerable<T>> getItems,
-            [NotNull] Func<T, RecursiveProcessingDirective> processItem,
+            [NotNull] [InstantHandle] Func<T, IEnumerable<T>> getItems,
+            [NotNull] [InstantHandle] Func<T, RecursiveProcessingDirective> processItem,
             [CanBeNull] RecursiveProcessingContext<T> processingContext)
         {
             if (getItems is null)
@@ -724,7 +726,7 @@ namespace Omnifactotum
                 throw new ArgumentNullException(nameof(processItem));
             }
 
-            if (ReferenceEquals(instance, null))
+            if (instance is null)
             {
                 return;
             }
@@ -760,8 +762,8 @@ namespace Omnifactotum
         /// </exception>
         public static void ProcessRecursively<T>(
             [CanBeNull] T instance,
-            [NotNull] Func<T, IEnumerable<T>> getItems,
-            [NotNull] Func<T, RecursiveProcessingDirective> processItem)
+            [NotNull] [InstantHandle] Func<T, IEnumerable<T>> getItems,
+            [NotNull] [InstantHandle] Func<T, RecursiveProcessingDirective> processItem)
         {
             ProcessRecursively(instance, getItems, processItem, null);
         }
@@ -796,8 +798,8 @@ namespace Omnifactotum
         /// </exception>
         public static void ProcessRecursively<T>(
             [CanBeNull] T instance,
-            [NotNull] Func<T, IEnumerable<T>> getItems,
-            [NotNull] Action<T> processItem,
+            [NotNull] [InstantHandle] Func<T, IEnumerable<T>> getItems,
+            [NotNull] [InstantHandle] Action<T> processItem,
             [CanBeNull] RecursiveProcessingContext<T> processingContext)
         {
             if (processItem is null)
@@ -843,19 +845,19 @@ namespace Omnifactotum
         /// </exception>
         public static void ProcessRecursively<T>(
             [CanBeNull] T instance,
-            [NotNull] Func<T, IEnumerable<T>> getItems,
-            [NotNull] Action<T> processItem)
+            [NotNull] [InstantHandle] Func<T, IEnumerable<T>> getItems,
+            [NotNull] [InstantHandle] Action<T> processItem)
         {
             ProcessRecursively(instance, getItems, processItem, null);
         }
 
         private static bool ProcessRecursivelyInternal<T>(
             [CanBeNull] T instance,
-            Func<T, IEnumerable<T>> getItems,
-            Func<T, RecursiveProcessingDirective> processItem,
+            [NotNull] [InstantHandle] Func<T, IEnumerable<T>> getItems,
+            [NotNull] [InstantHandle] Func<T, RecursiveProcessingDirective> processItem,
             RecursiveProcessingContext<T> processingContext)
         {
-            if (ReferenceEquals(instance, null))
+            if (instance is null)
             {
                 return true;
             }

@@ -68,32 +68,36 @@ namespace Omnifactotum.Tests.ExtensionMethods
         [SuppressMessage("ReSharper", "ExpressionIsAlwaysNull")]
         public void TestToUIStringWithFormatAndFormatProviderSucceeds()
         {
-            const string NumberFormat = "N0";
-            const string DateFormat = "F";
-            var russianCultureInfo = new CultureInfo("ru-RU");
-            var japaneseCultureInfo = new CultureInfo("ja-JP");
+            const string NumberFormat = @"N0";
+
+            const string RussianDateFormat = @"dddd', 'd' 'MMMM' 'yyyy' г. 'HH':'mm':'ss";
+            const string JapaneseDateFormat = @"yyyy'年'MMMMd'日'dddd' 'HH':'mm':'ss";
+
+            var russianCultureInfo = new CultureInfo(@"ru-RU");
+            var japaneseCultureInfo = new CultureInfo(@"ja-JP");
 
             int? nullableIntegerNull = null;
             int? nullableInteger = 1234567;
             var nullableDateTime = (DateTime?)new DateTime(2016, 11, 19, 22, 14, 13);
 
-            Assert.That(nullableIntegerNull.ToUIString(NumberFormat, russianCultureInfo), Is.EqualTo("null"));
-            Assert.That(nullableIntegerNull.ToUIString(NumberFormat, japaneseCultureInfo), Is.EqualTo("null"));
+            Assert.That(nullableIntegerNull.ToUIString(NumberFormat, russianCultureInfo), Is.EqualTo(@"null"));
+            Assert.That(nullableIntegerNull.ToUIString(NumberFormat, japaneseCultureInfo), Is.EqualTo(@"null"));
 
-            Assert.That(nullableInteger.ToUIString(NumberFormat, russianCultureInfo), Is.EqualTo("1 234 567"));
-            Assert.That(nullableInteger.ToUIString(NumberFormat, japaneseCultureInfo), Is.EqualTo("1,234,567"));
+            Assert.That(nullableInteger.ToUIString(NumberFormat, russianCultureInfo), Is.EqualTo(@"1 234 567"));
+            Assert.That(nullableInteger.ToUIString(NumberFormat, japaneseCultureInfo), Is.EqualTo(@"1,234,567"));
 
-            Assert.That(((DateTime?)null).ToUIString(DateFormat, russianCultureInfo), Is.EqualTo("null"));
-            Assert.That(((DateTime?)null).ToUIString(DateFormat, japaneseCultureInfo), Is.EqualTo("null"));
+            Assert.That(((DateTime?)null).ToUIString(RussianDateFormat, russianCultureInfo), Is.EqualTo(@"null"));
+            Assert.That(((DateTime?)null).ToUIString(JapaneseDateFormat, japaneseCultureInfo), Is.EqualTo(@"null"));
+
+            //// ReSharper disable StringLiteralTypo :: False detection (not English)
+            Assert.That(
+                nullableDateTime.ToUIString(RussianDateFormat, russianCultureInfo),
+                Is.EqualTo(@"суббота, 19 ноября 2016 г. 22:14:13"));
+            //// ReSharper restore StringLiteralTypo
 
             Assert.That(
-                nullableDateTime.ToUIString(DateFormat, russianCultureInfo),
-                //// ReSharper disable once StringLiteralTypo :: False detection
-                Is.EqualTo("19 ноября 2016 г. 22:14:13"));
-
-            Assert.That(
-                nullableDateTime.ToUIString(DateFormat, japaneseCultureInfo),
-                Is.EqualTo("2016年11月19日 22:14:13"));
+                nullableDateTime.ToUIString(JapaneseDateFormat, japaneseCultureInfo),
+                Is.EqualTo(@"2016年11月19日土曜日 22:14:13"));
         }
 
         [Test]
@@ -429,7 +433,7 @@ namespace Omnifactotum.Tests.ExtensionMethods
         [Test]
         public void TestMorphForReferenceTypeWithValidArgumentsSucceeds()
         {
-            const RecursiveNode NullInput = (RecursiveNode)null;
+            const RecursiveNode NullInput = null;
             const string Value = "value";
             const string DefaultOutput = "default";
 
@@ -457,7 +461,7 @@ namespace Omnifactotum.Tests.ExtensionMethods
             Assert.That(() => validInstance.Morph<ConsoleKeyInfo, string>(null), Throws.ArgumentNullException);
 
             Assert.That(
-                () => validInstance.Morph<ConsoleKeyInfo, string>(null, "anyValue"),
+                () => validInstance.Morph(null, @"anyValue"),
                 Throws.ArgumentNullException);
         }
 
@@ -509,21 +513,21 @@ namespace Omnifactotum.Tests.ExtensionMethods
                     null,
                     new ToPropertyStringOptions().SetAllFlags(true),
                     "string :: <null>")
-                    .SetName("Null string, all flags");
+                    .SetDescription("Null string, all flags");
 
                 yield return new TestCaseData(
                     typeof(RecursiveNode),
                     null,
                     new ToPropertyStringOptions().SetAllFlags(true),
                     "OmnifactotumGenericObjectExtensionsTests.RecursiveNode :: <null>")
-                    .SetName("Null RecursiveNode, all flags");
+                    .SetDescription("Null RecursiveNode, all flags");
 
                 yield return new TestCaseData(
                     typeof(int),
                     15789632,
                     new ToPropertyStringOptions().SetAllFlags(true),
                     "int :: 15789632")
-                    .SetName("Int32, all flags");
+                    .SetDescription("Int32, all flags");
 
                 {
                     const int IntValue = 35781632;
@@ -534,7 +538,7 @@ namespace Omnifactotum.Tests.ExtensionMethods
                             IntValue,
                             new ToPropertyStringOptions(),
                             IntValue.ToString(CultureInfo.InvariantCulture))
-                            .SetName("Int32, default options");
+                            .SetDescription("Int32, default options");
                 }
 
                 {
@@ -542,7 +546,7 @@ namespace Omnifactotum.Tests.ExtensionMethods
 
                     yield return
                         new TestCaseData(typeof(int), IntValue, null, IntValue.ToString(CultureInfo.InvariantCulture))
-                            .SetName("Int32, null options");
+                            .SetDescription("Int32, null options");
                 }
 
                 {
@@ -570,7 +574,7 @@ namespace Omnifactotum.Tests.ExtensionMethods
                             PointerContainer,
                             new ToPropertyStringOptions().SetAllFlags(true),
                             expectedPointerContainerToPropertyString)
-                            .SetName("PointerContainer, all flags");
+                            .SetDescription("PointerContainer, all flags");
                 }
 
                 yield return
@@ -579,7 +583,7 @@ namespace Omnifactotum.Tests.ExtensionMethods
                         VirtualTreeNode.Create(new DateTime(2011, 12, 31, 13, 59, 58, 321)),
                         new ToPropertyStringOptions().SetAllFlags(true),
                         Resources.ExpectedVirtualTreeNodeWithDateTimeToPropertyString)
-                        .SetName("VirtualTreeNode with DateTime, all flags");
+                        .SetDescription("VirtualTreeNode with DateTime, all flags");
 
                 yield return
                     new TestCaseData(
@@ -588,7 +592,7 @@ namespace Omnifactotum.Tests.ExtensionMethods
                             new DateTimeOffset(2011, 12, 31, 13, 59, 58, 321, TimeSpan.FromHours(-2d))),
                         new ToPropertyStringOptions().SetAllFlags(true),
                         Resources.ExpectedVirtualTreeNodeWithDateTimeOffsetToPropertyString)
-                        .SetName("VirtualTreeNode with DateTimeOffset, all flags");
+                        .SetDescription("VirtualTreeNode with DateTimeOffset, all flags");
 
                 var keyTuple = Tuple.Create(GetType().ToString(), (Array)new[] { 1, 2, 5 });
                 var valueTuple = Tuple.Create((object)keyTuple, ToString());
@@ -600,7 +604,7 @@ namespace Omnifactotum.Tests.ExtensionMethods
                         kvp,
                         new ToPropertyStringOptions().SetAllFlags(true),
                         Resources.ExpectedComplexObjectAllFlagsToPropertyString)
-                        .SetName("Complex object (KeyValuePair), all flags");
+                        .SetDescription("Complex object (KeyValuePair), all flags");
 
                 yield return
                     new TestCaseData(
@@ -608,7 +612,7 @@ namespace Omnifactotum.Tests.ExtensionMethods
                         kvp,
                         new ToPropertyStringOptions(),
                         Resources.ExpectedComplexObjectDefaultOptionsToPropertyString)
-                        .SetName("Complex object (KeyValuePair), default options");
+                        .SetDescription("Complex object (KeyValuePair), default options");
 
                 yield return
                     new TestCaseData(
@@ -616,7 +620,7 @@ namespace Omnifactotum.Tests.ExtensionMethods
                         kvp,
                         new ToPropertyStringOptions { RenderComplexProperties = true, MaxCollectionItemCount = 1 },
                         Resources.ExpectedComplexObjectMaxOneItemToPropertyString)
-                        .SetName("Complex object (KeyValuePair), complex properties and max 1 item from collection");
+                        .SetDescription("Complex object (KeyValuePair), complex properties and max 1 item from collection");
 
                 yield return
                     new TestCaseData(
@@ -624,7 +628,7 @@ namespace Omnifactotum.Tests.ExtensionMethods
                         kvp,
                         new ToPropertyStringOptions { RenderComplexProperties = true, RenderMemberType = true },
                         Resources.ExpectedComplexObjectWithMemberTypeToPropertyString)
-                        .SetName("Complex object (KeyValuePair), complex properties and member types");
+                        .SetDescription("Complex object (KeyValuePair), complex properties and member types");
 
                 yield return
                     new TestCaseData(
@@ -632,7 +636,7 @@ namespace Omnifactotum.Tests.ExtensionMethods
                         kvp,
                         new ToPropertyStringOptions { RenderComplexProperties = true, RenderActualType = true },
                         Resources.ExpectedComplexObjectWithActualTypeToPropertyString)
-                        .SetName("Complex object (KeyValuePair), complex properties and actual types");
+                        .SetDescription("Complex object (KeyValuePair), complex properties and actual types");
 
                 var rootNode = new RecursiveNode { Value = "Root" };
                 var childNode = new RecursiveNode { Value = "Child", Parent = rootNode };
@@ -646,7 +650,7 @@ namespace Omnifactotum.Tests.ExtensionMethods
                         nodes,
                         new ToPropertyStringOptions().SetAllFlags(true),
                         Resources.ExpectedComplexObjectWithCyclesAllFlagsToPropertyString)
-                        .SetName("Complex object (RecursiveNode[]) with cyclic dependency, all flags");
+                        .SetDescription("Complex object (RecursiveNode[]) with cyclic dependency, all flags");
 
                 yield return
                     new TestCaseData(
@@ -654,7 +658,7 @@ namespace Omnifactotum.Tests.ExtensionMethods
                         nodes,
                         new ToPropertyStringOptions { RenderRootActualType = true, RenderComplexProperties = true },
                         Resources.ExpectedComplexObjectWithCyclesWithComplexPropertiesToPropertyString)
-                        .SetName("Complex object (RecursiveNode[]) with cyclic dependency, complex properties");
+                        .SetDescription("Complex object (RecursiveNode[]) with cyclic dependency, complex properties");
 
                 yield return
                     new TestCaseData(
@@ -662,7 +666,7 @@ namespace Omnifactotum.Tests.ExtensionMethods
                         nodes,
                         new ToPropertyStringOptions { RenderComplexProperties = true, MaxRecursionLevel = 2 },
                         Resources.ExpectedMaxRecursionToPropertyString)
-                        .SetName(
+                        .SetDescription(
                             "Complex object (RecursiveNode[]) with cyclic dependency, all flags, with max recursion");
 
                 yield return
@@ -671,7 +675,7 @@ namespace Omnifactotum.Tests.ExtensionMethods
                         new Func<string>(typeof(object).ToString),
                         new ToPropertyStringOptions().SetAllFlags(true),
                         "Func<string> :: System.Func`1[System.String]")
-                        .SetName("Delegate");
+                        .SetDescription("Delegate");
 
                 yield return
                     new TestCaseData(
@@ -679,14 +683,14 @@ namespace Omnifactotum.Tests.ExtensionMethods
                         new ClassWithPropertyGetterThrowingException(),
                         new ToPropertyStringOptions().SetAllFlags(true),
                         Resources.ExpectedClassWithPropertyGetterThrowingExceptionToPropertyString)
-                        .SetName(nameof(ClassWithPropertyGetterThrowingException));
+                        .SetDescription(nameof(ClassWithPropertyGetterThrowingException));
 
                 {
                     var input = new ClassWithFlagsEnumAndTypeAndAssemblyProperties();
 
                     var expectedClassWithFlagsEnumAndTypeAndAssemblyPropertiesToPropertyString = string.Format(
                         Resources.ExpectedClassWithFlagsEnumAndTypeAndAssemblyPropertiesToPropertyStringTemplate,
-                        input.SomeAssembly.CodeBase,
+                        input.SomeAssembly.Location,
                         input.SomeAttributes.ToString(),
                         input.SomeType.AssemblyQualifiedName);
 
@@ -696,39 +700,45 @@ namespace Omnifactotum.Tests.ExtensionMethods
                             input,
                             new ToPropertyStringOptions().SetAllFlags(true),
                             expectedClassWithFlagsEnumAndTypeAndAssemblyPropertiesToPropertyString)
-                            .SetName(nameof(ClassWithFlagsEnumAndTypeAndAssemblyProperties));
+                            .SetDescription(nameof(ClassWithFlagsEnumAndTypeAndAssemblyProperties));
                 }
             }
         }
 
         private sealed class TestClass
         {
+            // No own members
         }
 
         private class SimpleContainer
         {
             public string Value
             {
-                //// ReSharper disable once UnusedAutoPropertyAccessor.Local :: For test purposes
+                [UsedImplicitly]
                 get;
+
                 set;
             }
         }
 
         private sealed class DescendantContainer1 : SimpleContainer
         {
+            // No own members
         }
 
         private sealed class DescendantContainer2 : SimpleContainer
         {
+            // No own members
         }
 
         private sealed class ClassWithNoFields
         {
+            // No own members
         }
 
         private sealed class StructureWithNoFields
         {
+            // No own members
         }
 
         private sealed class RecursiveNode
