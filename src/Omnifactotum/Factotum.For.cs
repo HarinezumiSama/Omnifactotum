@@ -16,6 +16,23 @@ namespace Omnifactotum
         public static class For<TObject>
         {
             /// <summary>
+            ///     A cached delegate for the <see cref="Identity"/> method.
+            /// </summary>
+            public static readonly Func<TObject, TObject> IdentityMethod = Identity;
+
+            /// <summary>
+            ///     Represents an identity function which returns the instance passed as an argument.
+            ///     The intended usage is instead of identity lambda expression similar to <c>obj => obj</c>.
+            /// </summary>
+            /// <param name="obj">
+            ///     The instance to return.
+            /// </param>
+            /// <returns>
+            ///     The instance passed as an argument.
+            /// </returns>
+            public static TObject Identity([CanBeNull] TObject obj) => obj;
+
+            /// <summary>
             ///     Gets the <see cref="MemberInfo"/> of the field or property specified by the lambda expression.
             /// </summary>
             /// <typeparam name="TMember">
@@ -188,8 +205,7 @@ namespace Omnifactotum
 
                 var objectType = typeof(TObject);
 
-                if (!(memberGetterExpression.Body is MemberExpression memberExpression)
-                    || memberExpression.NodeType != ExpressionType.MemberAccess)
+                if (!(memberGetterExpression.Body is MemberExpression { NodeType: ExpressionType.MemberAccess } memberExpression))
                 {
                     throw new ArgumentException(
                         string.Format(
@@ -242,8 +258,7 @@ namespace Omnifactotum
                 }
                 else
                 {
-                    if (!(memberExpression.Expression is ParameterExpression parameterExpression)
-                        || parameterExpression.NodeType != ExpressionType.Parameter
+                    if (!(memberExpression.Expression is ParameterExpression { NodeType: ExpressionType.Parameter } parameterExpression)
                         || parameterExpression.Type != typeof(TObject))
                     {
                         throw new ArgumentException(

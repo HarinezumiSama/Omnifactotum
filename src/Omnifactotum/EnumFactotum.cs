@@ -134,7 +134,7 @@ namespace Omnifactotum
                 }
             }
 
-            var result = resultList.Distinct().OrderBy(Factotum.Identity).ToArray();
+            var result = resultList.Distinct().OrderBy(Factotum.For<TEnum>.IdentityMethod).ToArray();
             return result;
         }
     }

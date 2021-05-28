@@ -132,10 +132,7 @@ namespace Omnifactotum
         /// <returns>
         ///     The instance passed as an argument.
         /// </returns>
-        public static T Identity<T>([CanBeNull] T obj)
-        {
-            return obj;
-        }
+        public static T Identity<T>([CanBeNull] T obj) => obj;
 
         /// <summary>
         ///     Sets the values of the public instance properties of the specified object to the values indicated

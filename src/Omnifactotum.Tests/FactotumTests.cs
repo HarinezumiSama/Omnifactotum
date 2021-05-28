@@ -91,6 +91,8 @@ namespace Omnifactotum.Tests
         public void TestIdentityValueType(int value)
         {
             Assert.That(() => Factotum.Identity(value), Is.EqualTo(value));
+            Assert.That(() => Factotum.For<int>.Identity(value), Is.EqualTo(value));
+            Assert.That(() => Factotum.For<int>.IdentityMethod(value), Is.EqualTo(value));
         }
 
         [Test]
@@ -100,6 +102,8 @@ namespace Omnifactotum.Tests
         public void TestIdentityReferenceType(string value)
         {
             Assert.That(() => Factotum.Identity(value), Is.SameAs(value));
+            Assert.That(() => Factotum.For<string>.Identity(value), Is.SameAs(value));
+            Assert.That(() => Factotum.For<string>.IdentityMethod(value), Is.SameAs(value));
         }
 
         [Test]
