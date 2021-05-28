@@ -366,9 +366,7 @@ namespace System
         /// </example>
         public static string ToUIString<T>([CanBeNull] this T? value)
             where T : struct
-            => (value is IFormattable formattable
-                ? formattable.ToString(null, CultureInfo.InvariantCulture)
-                : value?.ToString())
+            => (value is IFormattable formattable ? formattable.ToString(null, CultureInfo.InvariantCulture) : value?.ToString())
                 ?? OmnifactotumRepresentationConstants.NullValueRepresentation;
 
         /// <summary>
@@ -728,11 +726,13 @@ namespace System
 
                 void OpenBrace()
                 {
-                    if (!isBraceOpen && !isRoot)
+                    if (isBraceOpen || isRoot)
                     {
-                        resultBuilder.Append(ComplexObjectOpeningBrace);
-                        isBraceOpen = true;
+                        return;
                     }
+
+                    resultBuilder.Append(ComplexObjectOpeningBrace);
+                    isBraceOpen = true;
                 }
 
                 var nextRecursionLevel = recursionLevel + 1;
@@ -741,21 +741,7 @@ namespace System
 
                 string RenderActualType() => $@"{type.GetQualifiedName()} :: ";
 
-                var shouldRenderActualType = false;
-                if (isRoot)
-                {
-                    if (options.RenderRootActualType)
-                    {
-                        shouldRenderActualType = true;
-                    }
-                }
-                else
-                {
-                    if (options.RenderActualType)
-                    {
-                        shouldRenderActualType = true;
-                    }
-                }
+                var shouldRenderActualType = isRoot ? options.RenderRootActualType : options.RenderActualType;
 
                 if (shouldRenderActualType)
                 {
@@ -776,11 +762,10 @@ namespace System
 
                 if (!isSimpleType && _toPropertyStringObjectsBeingProcessed.Contains(obj))
                 {
-                    resultBuilder.AppendFormat(
-                        "{0} {1}<- {2}",
-                        ComplexObjectOpeningBrace,
-                        shouldRenderActualType ? string.Empty : RenderActualType(),
-                        ComplexObjectClosingBrace);
+                    resultBuilder.Append(
+                        $@"{ComplexObjectOpeningBrace} {(shouldRenderActualType ? string.Empty : RenderActualType())}<- {
+                            ComplexObjectClosingBrace}");
+
                     return;
                 }
 
@@ -835,10 +820,17 @@ namespace System
                     }
 
                     propertySeparatorNeeded = true;
+
+                    ProcessSingleProperty(propertyInfo);
+                }
+
+                void ProcessSingleProperty(PropertyInfo propertyInfo)
+                {
                     resultBuilder.Append(propertyInfo.Name);
                     if (options.RenderMemberType)
                     {
-                        resultBuilder.AppendFormat(":{0}", propertyInfo.PropertyType.GetQualifiedName());
+                        resultBuilder.Append(@":");
+                        resultBuilder.Append(propertyInfo.PropertyType.GetQualifiedName());
                     }
 
                     resultBuilder.Append(PropertyNameValueSeparator);
@@ -850,18 +842,18 @@ namespace System
                     }
                     catch (Exception ex)
                     {
+                        //// ReSharper disable once ConstantNullCoalescingCondition
                         var underlyingException = ex.GetBaseException() ?? ex;
 
-                        resultBuilder.AppendFormat(
-                            "{{ Error getting property value: [{0}] {1} }}",
-                            underlyingException.GetType().Name,
-                            underlyingException.Message);
+                        resultBuilder.Append(
+                            $@"{{ Error getting the property value: [{underlyingException.GetType().Name}] {
+                                underlyingException.Message} }}");
 
-                        continue;
+                        return;
                     }
 
-                    var method = ToPropertyStringInternalMethodDefinition.MakeGenericMethod(
-                        propertyInfo.PropertyType.IsPointer ? typeof(object) : propertyInfo.PropertyType);
+                    var typeArgument = propertyInfo.PropertyType.IsPointer ? typeof(object) : propertyInfo.PropertyType;
+                    var method = ToPropertyStringInternalMethodDefinition.MakeGenericMethod(typeArgument);
 
                     var parameters =
                         new[]
@@ -919,8 +911,7 @@ namespace System
             }
             else if (type.IsEnum && type.IsDefined(typeof(FlagsAttribute), false))
             {
-                resultBuilder.Append(
-                    ComplexObjectOpeningBrace + obj.ToStringSafelyInvariant() + ComplexObjectClosingBrace);
+                resultBuilder.Append(ComplexObjectOpeningBrace + obj.ToStringSafelyInvariant() + ComplexObjectClosingBrace);
             }
             else if (type == typeof(DateTime))
             {
@@ -932,11 +923,11 @@ namespace System
             }
             else if (typeof(Type).IsAssignableFrom(type))
             {
-                resultBuilder.AppendFormat(((Type)(object)obj).AssemblyQualifiedName.ToUIString());
+                resultBuilder.Append(((Type)(object)obj).AssemblyQualifiedName.ToUIString());
             }
             else if (typeof(Assembly).IsAssignableFrom(type))
             {
-                resultBuilder.AppendFormat(((Assembly)(object)obj).Location.ToUIString());
+                resultBuilder.Append(((Assembly)(object)obj).Location.ToUIString());
             }
             else
             {
@@ -958,7 +949,8 @@ namespace System
             resultBuilder.Append(CollectionElementsPropertyName);
             if (options.RenderMemberType)
             {
-                resultBuilder.AppendFormat(":{0}", elementType.GetQualifiedName());
+                resultBuilder.Append(":");
+                resultBuilder.Append(elementType.GetQualifiedName());
             }
 
             resultBuilder.Append(CollectionElementsClosingBrace);
@@ -1000,17 +992,15 @@ namespace System
                         //// ReSharper disable once ConstantNullCoalescingCondition
                         var underlyingException = ex.GetBaseException() ?? ex;
 
-                        resultBuilder.AppendFormat(
-                            "{{ Error getting a collection element at index {0}: [{1}] {2} }}",
-                            count - 1,
-                            underlyingException.GetType().Name,
-                            underlyingException.Message);
+                        resultBuilder.Append(
+                            $@"{{ Error getting the collection element at index {count - 1}: [{underlyingException.GetType().Name}] {
+                                underlyingException.Message} }}");
 
                         continue;
                     }
 
-                    var method = ToPropertyStringInternalMethodDefinition.MakeGenericMethod(
-                        elementType.IsPointer ? typeof(object) : elementType);
+                    var typeArgument = elementType.IsPointer ? typeof(object) : elementType;
+                    var method = ToPropertyStringInternalMethodDefinition.MakeGenericMethod(typeArgument);
 
                     var parameters = new[]
                     {
