@@ -3076,6 +3076,8 @@ namespace Omnifactotum.Tests
 
         #endregion
 
+        //// Private methods
+
         #region Private Methods
 
         private static void AssertTaskFinishesFast(Task task)
