@@ -34,7 +34,9 @@
 
     <PropertyGroup>
         <DebugSymbols>true</DebugSymbols>
-        <DebugType>full</DebugType>
+        <DebugType>portable</DebugType>
+        <EmbedAllSources>true</EmbedAllSources>
+        <Deterministic>true</Deterministic>
     </PropertyGroup>
 
     <PropertyGroup>
@@ -52,6 +54,7 @@
         <PackageTags>C#;CSharp;omnifactotum;omni;factotum;aid;assistant;extension;extensions;helper;helpers;common;typical</PackageTags>
         <IncludeSymbols>true</IncludeSymbols>
         <IncludeSource>true</IncludeSource>
+        <SymbolPackageFormat>snupkg</SymbolPackageFormat>
     </PropertyGroup>
 
     <PropertyGroup>

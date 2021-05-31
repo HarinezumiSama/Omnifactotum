@@ -660,7 +660,7 @@ process
 
                 Copy-Item `
                     -Verbose `
-                    -Path "$nuGetPackageDirectoryPath\*.nupkg" `
+                    -Path "$nuGetPackageDirectoryPath\*.*nupkg" `
                     -Destination $resolvedArtifactsDirectoryPath `
                     -Recurse `
                     | Out-Null
