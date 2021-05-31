@@ -603,7 +603,7 @@ process
             [psobject] $publishedPackageInfo = Invoke-RestMethod `
                 -UseBasicParsing `
                 -Method Get `
-                -Uri "https://api.nuget.org/v3/registration3/$([WebUtility]::UrlEncode($packageId))/index.json"
+                -Uri "https://api.nuget.org/v3/registration5-gz-semver2/$([WebUtility]::UrlEncode($packageId))/index.json"
 
             [version] $latestPublishedPackageVersion = [version]::new(0, 0)
             foreach ($packageInfoItem in $publishedPackageInfo.items)
