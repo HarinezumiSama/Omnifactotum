@@ -1,4 +1,11 @@
-﻿### Changes in 0.4.0 (since 0.3.0.119)
+﻿### Changes in 0.4.1 (since 0.4.0)
+- Added the `Factotum.For<TObject>.Identity` method (same as `Factotum.Identity<T>`)
+- Added `Factotum.For<TObject>.IdentityMethod` (the cached reference to the `Factotum.For<TObject>.Identity` method)
+- Using the `Deterministic` build option
+- Using Portable PDBs
+- Using `snupkg` format of the symbol package
+
+### Changes in 0.4.0 (since 0.3.0.119)
 
 #### Major Updates
 - `Omnifactotum` is now the multi-target package for:

@@ -14,7 +14,7 @@
 
     <PropertyGroup>
         <BuildDateYear>$([System.String]::Format("{0:yyyy}", $([System.DateTime]::Now)))</BuildDateYear>
-        <Version>0.4.0</Version>
+        <Version>0.4.1</Version>
         <VersionSuffix>-debug</VersionSuffix>
         <ReleaseNotesFilePath>$(SolutionDir)$(SolutionName).ReleaseNotes.md</ReleaseNotesFilePath>
     </PropertyGroup>
