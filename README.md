@@ -1,7 +1,7 @@
 ﻿# Omnifactotum
 Provides own *helper* and *functional* classes as well as *extension methods* for standard .NET classes.
 
-**Note**: `Factotum` is a Latin word literally meaning "do everything" (that is, a *handyman* or *Jack-of-all-trades*).
+**NOTE**: `Factotum` is a Latin word literally meaning "do everything" (that is, a *handyman* or *Jack-of-all-trades*).
 
 ### Release Notes
 
