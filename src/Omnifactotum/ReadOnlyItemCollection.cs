@@ -2,6 +2,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using Omnifactotum.Annotations;
+using static Omnifactotum.FormattableStringFactotum;
 
 namespace Omnifactotum
 {
@@ -63,6 +64,7 @@ namespace Omnifactotum
         IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();
 
         private NotSupportedException CreateReadOnlyInstanceException()
-            => new NotSupportedException($@"The {GetType().GetQualifiedName()} instance cannot be modified because it is read-only.");
+            => new NotSupportedException(
+                AsInvariant($@"The {GetType().GetQualifiedName()} instance cannot be modified because it is read-only."));
     }
 }

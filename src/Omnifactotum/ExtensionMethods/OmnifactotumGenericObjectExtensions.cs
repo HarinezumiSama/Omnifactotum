@@ -8,8 +8,9 @@ using System.Runtime.InteropServices;
 using System.Text;
 using Omnifactotum;
 using Omnifactotum.Annotations;
+using static Omnifactotum.FormattableStringFactotum;
 
-//// ReSharper disable once CheckNamespace - Namespace is intentionally named so in order to simplify usage of extension methods
+//// ReSharper disable once CheckNamespace :: Namespace is intentionally named so in order to simplify usage of extension methods
 
 namespace System
 {
@@ -31,7 +32,7 @@ namespace System
         /// <summary>
         ///     The pointer string format.
         /// </summary>
-        internal static readonly string PointerStringFormat = $@"0x{{0:X{Marshal.SizeOf(typeof(IntPtr)) * 2}}}";
+        internal static readonly string PointerStringFormat = AsInvariant($@"0x{{0:X{Marshal.SizeOf(typeof(IntPtr)) * 2}}}");
 
         private static readonly MethodInfo ToPropertyStringInternalMethodDefinition =
             new ToPropertyStringInternalMethod(ToPropertyStringInternal).Method.GetGenericMethodDefinition();
@@ -739,7 +740,7 @@ namespace System
 
                 var type = obj.GetTypeSafely();
 
-                string RenderActualType() => $@"{type.GetQualifiedName()} :: ";
+                string RenderActualType() => AsInvariant($@"{type.GetQualifiedName()} :: ");
 
                 var shouldRenderActualType = isRoot ? options.RenderRootActualType : options.RenderActualType;
 
@@ -763,8 +764,9 @@ namespace System
                 if (!isSimpleType && _toPropertyStringObjectsBeingProcessed.Contains(obj))
                 {
                     resultBuilder.Append(
-                        $@"{ComplexObjectOpeningBrace} {(shouldRenderActualType ? string.Empty : RenderActualType())}<- {
-                            ComplexObjectClosingBrace}");
+                        AsInvariant(
+                            $@"{ComplexObjectOpeningBrace} {(shouldRenderActualType ? string.Empty : RenderActualType())}<- {
+                                ComplexObjectClosingBrace}"));
 
                     return;
                 }
@@ -846,8 +848,9 @@ namespace System
                         var underlyingException = ex.GetBaseException() ?? ex;
 
                         resultBuilder.Append(
-                            $@"{{ Error getting the property value: [{underlyingException.GetType().Name}] {
-                                underlyingException.Message} }}");
+                            AsInvariant(
+                                $@"{{ Error getting the property value: [{underlyingException.GetType().Name}] {
+                                    underlyingException.Message} }}"));
 
                         return;
                     }
@@ -959,61 +962,61 @@ namespace System
             resultBuilder.Append(ComplexObjectOpeningBrace);
 
             var count = 0;
-            using (var enumeratorWrapper = SmartDisposable.Create(enumerable.GetEnumerator()))
+
+            using var enumeratorWrapper = SmartDisposable.Create(enumerable.GetEnumerator());
+            while (enumeratorWrapper.Instance.MoveNext())
             {
-                while (enumeratorWrapper.Instance.MoveNext())
+                if (count >= options.MaxCollectionItemCount)
                 {
-                    if (count >= options.MaxCollectionItemCount)
-                    {
-                        if (count > 0)
-                        {
-                            resultBuilder.Append(ItemSeparator);
-                        }
-
-                        resultBuilder.Append("...");
-
-                        break;
-                    }
-
                     if (count > 0)
                     {
                         resultBuilder.Append(ItemSeparator);
                     }
 
-                    count++;
+                    resultBuilder.Append("...");
 
-                    object currentValue;
-                    try
-                    {
-                        currentValue = enumeratorWrapper.Instance.Current;
-                    }
-                    catch (Exception ex)
-                    {
-                        //// ReSharper disable once ConstantNullCoalescingCondition
-                        var underlyingException = ex.GetBaseException() ?? ex;
-
-                        resultBuilder.Append(
-                            $@"{{ Error getting the collection element at index {count - 1}: [{underlyingException.GetType().Name}] {
-                                underlyingException.Message} }}");
-
-                        continue;
-                    }
-
-                    var typeArgument = elementType.IsPointer ? typeof(object) : elementType;
-                    var method = ToPropertyStringInternalMethodDefinition.MakeGenericMethod(typeArgument);
-
-                    var parameters = new[]
-                    {
-                        currentValue,
-                        false,
-                        options,
-                        getProperties,
-                        resultBuilder,
-                        nextRecursionLevel
-                    };
-
-                    method.Invoke(null, parameters);
+                    break;
                 }
+
+                if (count > 0)
+                {
+                    resultBuilder.Append(ItemSeparator);
+                }
+
+                count++;
+
+                object currentValue;
+                try
+                {
+                    currentValue = enumeratorWrapper.Instance.Current;
+                }
+                catch (Exception ex)
+                {
+                    //// ReSharper disable once ConstantNullCoalescingCondition
+                    var underlyingException = ex.GetBaseException() ?? ex;
+
+                    resultBuilder.Append(
+                        AsInvariant(
+                            $@"{{ Error getting the collection element at index {count - 1}: [{underlyingException.GetType().Name}] {
+                                underlyingException.Message} }}"));
+
+                    continue;
+                }
+
+                var typeArgument = elementType.IsPointer ? typeof(object) : elementType;
+                var method = ToPropertyStringInternalMethodDefinition.MakeGenericMethod(typeArgument);
+
+                var parameters = new[]
+                {
+                    currentValue,
+                    false,
+                    options,
+                    getProperties,
+                    resultBuilder,
+                    nextRecursionLevel
+                };
+
+                method.Invoke(null, parameters);
             }
 
             resultBuilder.Append(ComplexObjectClosingBrace);
@@ -1064,6 +1067,7 @@ namespace System
                     return true;
                 }
 
+                //// ReSharper disable once LoopCanBeConvertedToQuery
                 foreach (var field in fields)
                 {
                     var fieldValueA = field.GetValue(valueA);

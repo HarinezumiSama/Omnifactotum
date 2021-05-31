@@ -11,11 +11,12 @@ using System.Runtime.InteropServices;
 using System.Security.Cryptography;
 using System.Threading.Tasks;
 using Omnifactotum.Annotations;
+using static Omnifactotum.FormattableStringFactotum;
 
 namespace Omnifactotum
 {
     /// <summary>
-    ///     Provides helper methods for common use.
+    ///     Provides the helper methods for common use.
     /// </summary>
     public static partial class Factotum
     {
@@ -26,7 +27,7 @@ namespace Omnifactotum
         public static readonly int MinimumGeneratedIdPartSize = Marshal.SizeOf(typeof(Guid));
 
         private const string InvalidExpressionMessageFormat =
-            "Invalid expression (must be a getter of a property of the type '{0}'): {{ {1} }}.";
+            "Invalid expression (must be a getter of a property of the type {0}): {{ {1} }}.";
 
         private const string InvalidExpressionMessageAutoFormat =
             "Invalid expression (must be a getter of a property of some type): {{ {0} }}.";
@@ -274,10 +275,7 @@ namespace Omnifactotum
 
             if (size < minimumSize)
             {
-                var errorMessage = string.Format(
-                    CultureInfo.InvariantCulture,
-                    "For the specified mode(s), the size must be at least {0}.",
-                    minimumSize);
+                var errorMessage = AsInvariant($@"For the specified mode(s), the size must be at least {minimumSize}.");
                 throw new ArgumentOutOfRangeException(nameof(size), size, errorMessage);
             }
 
@@ -601,26 +599,24 @@ namespace Omnifactotum
                 throw new ArgumentNullException(nameof(propertyGetterExpression));
             }
 
-            if (!(propertyGetterExpression.Body is MemberExpression memberExpression)
-                || memberExpression.NodeType != ExpressionType.MemberAccess)
+            if (!(propertyGetterExpression.Body is MemberExpression { NodeType: ExpressionType.MemberAccess } memberExpression))
             {
                 throw new ArgumentException(
-                    string.Format(InvalidExpressionMessageAutoFormat, propertyGetterExpression),
+                    string.Format(CultureInfo.InvariantCulture, InvalidExpressionMessageAutoFormat, propertyGetterExpression),
                     nameof(propertyGetterExpression));
             }
 
-            var result = memberExpression.Member as PropertyInfo;
-            if (result is null)
+            if (!(memberExpression.Member is PropertyInfo result))
             {
                 throw new ArgumentException(
-                    string.Format(InvalidExpressionMessageAutoFormat, propertyGetterExpression),
+                    string.Format(CultureInfo.InvariantCulture, InvalidExpressionMessageAutoFormat, propertyGetterExpression),
                     nameof(propertyGetterExpression));
             }
 
             if (result.DeclaringType is null)
             {
                 throw new ArgumentException(
-                    string.Format(InvalidExpressionMessageAutoFormat, propertyGetterExpression),
+                    string.Format(CultureInfo.InvariantCulture, InvalidExpressionMessageAutoFormat, propertyGetterExpression),
                     nameof(propertyGetterExpression));
             }
 
@@ -631,7 +627,7 @@ namespace Omnifactotum
                 if (accessor is null || !accessor.IsStatic)
                 {
                     throw new ArgumentException(
-                        string.Format(InvalidExpressionMessageAutoFormat, propertyGetterExpression),
+                        string.Format(CultureInfo.InvariantCulture, InvalidExpressionMessageAutoFormat, propertyGetterExpression),
                         nameof(propertyGetterExpression));
                 }
             }

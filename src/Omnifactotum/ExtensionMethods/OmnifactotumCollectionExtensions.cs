@@ -3,8 +3,7 @@ using System.Linq;
 using Omnifactotum;
 using Omnifactotum.Annotations;
 
-//// Namespace is intentionally named so in order to simplify usage of extension methods
-//// ReSharper disable once CheckNamespace
+//// ReSharper disable once CheckNamespace :: Namespace is intentionally named so in order to simplify usage of extension methods
 
 namespace System.Collections.Generic
 {
@@ -271,32 +270,24 @@ namespace System.Collections.Generic
             }
 
             var actualComparer = comparer ?? EqualityComparer<T>.Default;
+
             //// ReSharper disable PossibleMultipleEnumeration - the method is optimized accordingly
             //// ReSharper disable PossibleNullReferenceException - the method is optimized accordingly
-            using (var enumerator = collection.GetEnumerator())
+            using var enumerator = collection.GetEnumerator();
+            using var otherEnumerator = otherCollection.GetEnumerator();
+            //// ReSharper restore PossibleMultipleEnumeration
+            //// ReSharper restore PossibleNullReferenceException
+
+            while (enumerator.MoveNext())
             {
-                using (var otherEnumerator = otherCollection.GetEnumerator())
+                if (!otherEnumerator.MoveNext()
+                    || !actualComparer.Equals(enumerator.Current, otherEnumerator.Current))
                 {
-                    //// ReSharper restore PossibleMultipleEnumeration
-                    //// ReSharper restore PossibleNullReferenceException
-
-                    while (enumerator.MoveNext())
-                    {
-                        if (!otherEnumerator.MoveNext()
-                            || !actualComparer.Equals(enumerator.Current, otherEnumerator.Current))
-                        {
-                            return false;
-                        }
-                    }
-
-                    if (otherEnumerator.MoveNext())
-                    {
-                        return false;
-                    }
+                    return false;
                 }
             }
 
-            return true;
+            return !otherEnumerator.MoveNext();
         }
 
         /// <summary>

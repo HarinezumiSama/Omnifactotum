@@ -1,8 +1,11 @@
 ﻿using System;
 using System.IO;
-using System.Threading;
 using System.Threading.Tasks;
 using NUnit.Framework;
+
+#if NETFRAMEWORK
+using System.Threading;
+#endif
 
 namespace Omnifactotum.Tests.ExtensionMethods
 {

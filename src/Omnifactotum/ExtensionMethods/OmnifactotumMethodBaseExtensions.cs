@@ -1,8 +1,7 @@
 ﻿using System.Text;
 using Omnifactotum.Annotations;
 
-//// Namespace is intentionally named so in order to simplify usage of extension methods
-//// ReSharper disable once CheckNamespace
+//// ReSharper disable once CheckNamespace :: Namespace is intentionally named so in order to simplify usage of extension methods
 
 namespace System.Reflection
 {
@@ -190,9 +189,12 @@ namespace System.Reflection
 
             resultBuilder.Append(method.Name);
 
+            //// ReSharper disable once InvertIf
             if (method.IsGenericMethod || method.IsGenericMethodDefinition)
             {
                 var genericArguments = method.GetGenericArguments();
+
+                //// ReSharper disable once InvertIf
                 if (genericArguments.Length > 0)
                 {
                     resultBuilder.Append("<");

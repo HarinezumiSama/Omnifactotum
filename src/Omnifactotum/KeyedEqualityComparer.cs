@@ -87,7 +87,7 @@ namespace Omnifactotum
                     return true;
                 }
 
-                if (ReferenceEquals(x, null) || ReferenceEquals(y, null))
+                if (x is null || y is null)
                 {
                     return false;
                 }
@@ -110,13 +110,13 @@ namespace Omnifactotum
         /// </returns>
         public int GetHashCode([CanBeNull] T obj)
         {
-            if (!typeof(T).IsValueType && ReferenceEquals(obj, null))
+            if (!typeof(T).IsValueType && obj is null)
             {
                 return 0;
             }
 
             var key = KeySelector(obj);
-            return ReferenceEquals(key, null) ? 0 : KeyComparer.GetHashCode(key);
+            return key is null ? 0 : KeyComparer.GetHashCode(key);
         }
 
         /// <summary>
@@ -157,6 +157,6 @@ namespace Omnifactotum
         /// </returns>
         int IEqualityComparer.GetHashCode([CanBeNull] object obj)
             //// ReSharper disable once ArrangeRedundantParentheses :: For clarity
-            => obj is null ? 0 : (obj is T castObj ? GetHashCode(castObj) : obj.GetHashCode());
+            => obj is null ? 0 : obj is T castObj ? GetHashCode(castObj) : obj.GetHashCode();
     }
 }

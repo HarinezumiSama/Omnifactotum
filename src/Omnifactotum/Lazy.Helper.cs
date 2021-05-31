@@ -1,7 +1,7 @@
 ﻿using System.Threading;
 using Omnifactotum.Annotations;
 
-//// ReSharper disable once CheckNamespace - Namespace is intentionally named so in order to simplify usage
+//// ReSharper disable once CheckNamespace :: Namespace is intentionally named so in order to simplify usage
 
 namespace System
 {
@@ -27,10 +27,7 @@ namespace System
         /// <exception cref="System.ArgumentNullException">
         ///     <paramref name="valueFactory"/> is <c>null</c>.
         /// </exception>
-        public static Lazy<T> Create<T>([NotNull] Func<T> valueFactory)
-        {
-            return new Lazy<T>(valueFactory);
-        }
+        public static Lazy<T> Create<T>([NotNull] Func<T> valueFactory) => new Lazy<T>(valueFactory);
 
         /// <summary>
         ///     Creates a new instance of the <see cref="System.Lazy{T}"/> class. When lazy initialization
@@ -52,10 +49,7 @@ namespace System
         /// <exception cref="System.ArgumentNullException">
         ///     <paramref name="valueFactory"/> is <c>null</c>.
         /// </exception>
-        public static Lazy<T> Create<T>([NotNull] Func<T> valueFactory, bool isThreadSafe)
-        {
-            return new Lazy<T>(valueFactory, isThreadSafe);
-        }
+        public static Lazy<T> Create<T>([NotNull] Func<T> valueFactory, bool isThreadSafe) => new Lazy<T>(valueFactory, isThreadSafe);
 
         /// <summary>
         ///     Creates a new instance of the <see cref="System.Lazy{T}"/> class that uses the specified
@@ -79,9 +73,6 @@ namespace System
         /// <exception cref="System.ArgumentOutOfRangeException">
         ///     <paramref name="mode"/> contains an invalid value.
         /// </exception>
-        public static Lazy<T> Create<T>([NotNull] Func<T> valueFactory, LazyThreadSafetyMode mode)
-        {
-            return new Lazy<T>(valueFactory, mode);
-        }
+        public static Lazy<T> Create<T>([NotNull] Func<T> valueFactory, LazyThreadSafetyMode mode) => new Lazy<T>(valueFactory, mode);
     }
 }

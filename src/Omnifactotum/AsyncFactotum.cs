@@ -1,14 +1,15 @@
 ﻿using System;
 using System.Diagnostics;
-using System.Globalization;
 using System.Reflection;
 using System.Threading.Tasks;
 using Omnifactotum.Annotations;
+using static Omnifactotum.FormattableStringFactotum;
+
 
 namespace Omnifactotum
 {
     /// <summary>
-    ///     Provides helper methods and properties for asynchronous programming.
+    ///     Provides the helper methods and properties for asynchronous programming.
     /// </summary>
     public static partial class AsyncFactotum
     {
@@ -46,15 +47,10 @@ namespace Omnifactotum
         ///     Wraps the <see cref="Trace.TraceError(string)"/> method since it is conditional and thus cannot be
         ///     used directly as a delegate.
         /// </summary>
-        private static void TraceErrorInternal(string message)
-        {
-            Trace.TraceError(message);
-        }
+        private static void TraceErrorInternal(string message) => Trace.TraceError(message);
 
         private static Exception GetBaseException([NotNull] Exception exception)
-        {
-            return exception is AggregateException ? exception.GetBaseException() : exception;
-        }
+            => exception is AggregateException ? exception.GetBaseException() : exception;
 
         private static Task<TResult> CreateAndStartComputeTask<TResult, TLoggingMethod>(
             [NotNull] this Func<TResult> taskFunction,
@@ -92,11 +88,7 @@ namespace Omnifactotum
                 {
                     var baseException = GetBaseException(t.Exception.EnsureNotNull());
 
-                    var message = string.Format(
-                        CultureInfo.InvariantCulture,
-                        "The asynchronous call {{ {0} }} has failed.",
-                        method.GetFullSignature());
-
+                    var message = AsInvariant($@"The asynchronous call {{ {method.GetFullSignature()} }} has failed.");
                     logError(baseException, message);
                 },
                 TaskContinuationOptions.OnlyOnFaulted | TaskContinuationOptions.ExecuteSynchronously);
@@ -127,12 +119,7 @@ namespace Omnifactotum
                 {
                     var baseException = GetBaseException(t.Exception.EnsureNotNull());
 
-                    var message = string.Format(
-                        CultureInfo.InvariantCulture,
-                        "The asynchronous call {{ {0} }} has failed: {1}",
-                        method.GetFullSignature(),
-                        baseException);
-
+                    var message = AsInvariant($@"The asynchronous call {{ {method.GetFullSignature()} }} has failed: {baseException}");
                     logError(message);
                 },
                 TaskContinuationOptions.OnlyOnFaulted | TaskContinuationOptions.ExecuteSynchronously);

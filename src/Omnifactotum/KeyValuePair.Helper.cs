@@ -6,8 +6,7 @@ using System.Runtime.CompilerServices;
 using Omnifactotum;
 using Omnifactotum.Annotations;
 
-//// Namespace is intentionally named so in order to simplify usage of extension methods
-//// ReSharper disable once CheckNamespace
+//// ReSharper disable once CheckNamespace :: Namespace is intentionally named so in order to simplify usage
 
 namespace System.Collections.Generic
 {
@@ -38,7 +37,7 @@ namespace System.Collections.Generic
 #if (NETFRAMEWORK && !NET40) || NETSTANDARD || NETCOREAPP
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
 #endif
-        public static KeyValuePair<TKey, TValue> Create<TKey, TValue>([CanBeNull] TKey key, [CanBeNull] TValue value)
+            public static KeyValuePair<TKey, TValue> Create<TKey, TValue>([CanBeNull] TKey key, [CanBeNull] TValue value)
             => OmnifactotumKeyValuePair.Create(key, value);
     }
 }

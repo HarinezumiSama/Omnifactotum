@@ -3,10 +3,10 @@ using System.ComponentModel;
 using System.Globalization;
 using System.Linq;
 using Omnifactotum.Annotations;
+using static Omnifactotum.FormattableStringFactotum;
 using PureAttribute = System.Diagnostics.Contracts.PureAttribute;
 
-//// Namespace is intentionally named so in order to simplify usage of extension methods
-//// ReSharper disable once CheckNamespace
+//// ReSharper disable once CheckNamespace :: Namespace is intentionally named so in order to simplify usage of extension methods
 
 namespace System
 {
@@ -161,7 +161,7 @@ namespace System
             if (!enumType.IsEnum)
             {
                 throw new ArgumentException(
-                    $@"The type {enumType.GetFullName().ToUIString()} is not an enumeration.",
+                    AsInvariant($@"The type {enumType.GetFullName().ToUIString()} is not an enumeration."),
                     nameof(TEnum));
             }
 
@@ -241,8 +241,9 @@ namespace System
             if (!IsDefinedInternal(enumerationValue))
             {
                 throw new InvalidEnumArgumentException(
-                    $@"The value {enumerationValue:D} is not defined in the enumeration {
-                        enumerationValue.GetType().GetFullName().ToUIString()}.");
+                    AsInvariant(
+                        $@"The value {enumerationValue:D} is not defined in the enumeration {
+                            enumerationValue.GetType().GetFullName().ToUIString()}."));
             }
         }
 
@@ -258,8 +259,7 @@ namespace System
         ///     the specified enumeration value.
         /// </returns>
         [Pure]
-        public static NotImplementedException CreateEnumValueNotImplementedException(
-            [NotNull] this Enum enumerationValue)
+        public static NotImplementedException CreateEnumValueNotImplementedException([NotNull] this Enum enumerationValue)
         {
             if (enumerationValue is null)
             {
@@ -267,7 +267,8 @@ namespace System
             }
 
             return new NotImplementedException(
-                $@"The operation for the enumeration value {enumerationValue.GetQualifiedName().ToUIString()} is not implemented.");
+                AsInvariant(
+                    $@"The operation for the enumeration value {enumerationValue.GetQualifiedName().ToUIString()} is not implemented."));
         }
 
         /// <summary>
@@ -290,7 +291,8 @@ namespace System
             }
 
             return new NotSupportedException(
-                $@"The operation for the enumeration value {enumerationValue.GetQualifiedName().ToUIString()} is not supported.");
+                AsInvariant(
+                    $@"The operation for the enumeration value {enumerationValue.GetQualifiedName().ToUIString()} is not supported."));
         }
 
         [Pure]
@@ -307,9 +309,12 @@ namespace System
             var values = Enum.GetValues(enumType);
 
             var result = new List<Enum>(values.Length);
+
+            //// ReSharper disable once LoopCanBePartlyConvertedToQuery
             foreach (var value in values)
             {
                 var castValue = value.ToUlongInternal();
+                //// ReSharper disable once InvertIf
                 if (castValue != 0 && (castEnumValue & castValue) == castValue)
                 {
                     result.Add((Enum)Enum.ToObject(enumType, castValue));
@@ -350,10 +355,10 @@ namespace System
                     return enumValueName;
 
                 case EnumNameMode.Qualified:
-                    return string.Format(NameFormat, enumType.Name, enumValueName);
+                    return string.Format(CultureInfo.InvariantCulture, NameFormat, enumType.Name, enumValueName);
 
                 case EnumNameMode.Full:
-                    return string.Format(NameFormat, enumType.GetFullName(), enumValueName);
+                    return string.Format(CultureInfo.InvariantCulture, NameFormat, enumType.GetFullName(), enumValueName);
 
                 default:
                     throw mode.CreateEnumValueNotImplementedException();
@@ -386,7 +391,7 @@ namespace System
             if (!enumType.IsEnum || !enumType.IsDefined(typeof(FlagsAttribute), false))
             {
                 throw new ArgumentException(
-                    $@"The type {enumType.GetFullName().ToUIString()} is not a bit-field enumeration.",
+                    AsInvariant($@"The type {enumType.GetFullName().ToUIString()} is not a bit-field enumeration."),
                     nameof(TEnum));
             }
 

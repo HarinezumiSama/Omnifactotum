@@ -2,9 +2,9 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.Diagnostics;
-using System.Globalization;
 using System.Linq;
 using Omnifactotum.Annotations;
+using static Omnifactotum.FormattableStringFactotum;
 
 namespace Omnifactotum
 {
@@ -48,8 +48,9 @@ namespace Omnifactotum
         /// <exception cref="ArgumentNullException">
         ///     <paramref name="dictionary"/> is <c>null</c>.
         /// </exception>
-        //// ReSharper disable once ParameterTypeCanBeEnumerable.Local - By design
-        public FixedSizeDictionary([NotNull] IDictionary<TKey, TValue> dictionary)
+        public FixedSizeDictionary(
+            //// ReSharper disable once ParameterTypeCanBeEnumerable.Local :: By design
+            [NotNull] IDictionary<TKey, TValue> dictionary)
             : this()
         {
             if (dictionary is null)
@@ -96,19 +97,13 @@ namespace Omnifactotum
         ///     Gets an <see cref="ICollection{TKey}" /> containing the keys of
         ///     the <see cref="FixedSizeDictionary{TKey,TValue,TDeterminant}" />.
         /// </summary>
-        public ICollection<TKey> Keys
-        {
-            get;
-        }
+        public ICollection<TKey> Keys { get; }
 
         /// <summary>
         ///     Gets an <see cref="ICollection{TValue}" /> containing the values of
         ///     the <see cref="FixedSizeDictionary{TKey,TValue,TDeterminant}" />.
         /// </summary>
-        public ICollection<TValue> Values
-        {
-            get;
-        }
+        public ICollection<TValue> Values { get; }
 
         /// <summary>
         ///     Gets or sets the element with the specified key.
@@ -133,10 +128,7 @@ namespace Omnifactotum
                 if (!found)
                 {
                     throw new KeyNotFoundException(
-                        string.Format(
-                            CultureInfo.InvariantCulture,
-                            "The specified key was not present in the dictionary (key: {0}).",
-                            key));
+                        AsInvariant($@"The specified key was not present in the dictionary (key: {key})."));
                 }
 
                 return result;
@@ -199,7 +191,7 @@ namespace Omnifactotum
         /// </returns>
         public bool ContainsKey(TKey key)
         {
-            if (ReferenceEquals(key, null))
+            if (key is null)
             {
                 throw new ArgumentNullException(nameof(key));
             }
@@ -250,15 +242,17 @@ namespace Omnifactotum
         ///     <c>true</c> if the <see cref="FixedSizeDictionary{TKey,TValue,TDeterminant}" /> contains an element
         ///     with the specified key; otherwise, <c>false</c>.
         /// </returns>
-        //// ReSharper disable once CommentTypo :: ReSharper term :)
-        //// ReSharper disable once AnnotationRedundanceInHierarchy :: To emphasize
-        public bool TryGetValue([NotNull] TKey key, [CanBeNull] out TValue value)
+        public bool TryGetValue(
+            //// ReSharper disable once CommentTypo :: ReSharper term :)
+            //// ReSharper disable once AnnotationRedundanceInHierarchy :: To emphasize
+            [NotNull] TKey key,
+            [CanBeNull] out TValue value)
         {
             var index = Determinant.GetIndex(key);
             var item = _items[index];
 
             var result = item.IsSet;
-            value = result ? item.Value : default(TValue);
+            value = result ? item.Value : default;
             return result;
         }
 
@@ -398,17 +392,11 @@ namespace Omnifactotum
             var index = Determinant.GetIndex(key);
             var previousItem = _items[index];
 
-            if (previousItem.IsSet)
+            if (previousItem.IsSet && !replaceExisting)
             {
-                if (!replaceExisting)
-                {
-                    throw new ArgumentException(
-                        string.Format(
-                            CultureInfo.InvariantCulture,
-                            "An element with the same key already exists (key: {0}).",
-                            key),
-                        nameof(key));
-                }
+                throw new ArgumentException(
+                    AsInvariant($@"An element with the same key already exists (key: {key})."),
+                    nameof(key));
             }
 
             _version++;
@@ -432,11 +420,9 @@ namespace Omnifactotum
                 if (determinantSize <= 0)
                 {
                     throw new InvalidOperationException(
-                        string.Format(
-                            CultureInfo.InvariantCulture,
-                            "The determinant '{0}' returned invalid size {1}. The size must be positive.",
-                            typeof(TDeterminant).GetFullName(),
-                            determinantSize));
+                        AsInvariant(
+                            $@"The determinant {typeof(TDeterminant).GetFullName().ToUIString()} returned invalid size {
+                                determinantSize}. The size must be positive."));
                 }
 
                 Size = determinantSize;
@@ -485,7 +471,7 @@ namespace Omnifactotum
 
             public bool Contains(TKey item)
             {
-                if (ReferenceEquals(item, null))
+                if (item is null)
                 {
                     throw new ArgumentNullException(nameof(item));
                 }
@@ -703,17 +689,9 @@ namespace Omnifactotum
 
         private struct DictionaryValueHolder
         {
-            public bool IsSet
-            {
-                get;
-                set;
-            }
+            public bool IsSet { get; set; }
 
-            public TValue Value
-            {
-                get;
-                set;
-            }
+            public TValue Value { get; set; }
         }
     }
 }

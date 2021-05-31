@@ -58,50 +58,26 @@ namespace Omnifactotum.Tests
         {
             private readonly string _value;
 
-            public SomeReferenceType(string value)
-            {
-                _value = value;
-            }
+            public SomeReferenceType(string value) => _value = value;
 
-            public override bool Equals(object obj)
-            {
-                return Equals(obj as SomeReferenceType);
-            }
+            public override bool Equals(object obj) => Equals(obj as SomeReferenceType);
 
-            public override int GetHashCode()
-            {
-                return _value is null ? 0 : StringComparer.Ordinal.GetHashCode(_value);
-            }
+            public override int GetHashCode() => _value is null ? 0 : StringComparer.Ordinal.GetHashCode(_value);
 
-            public bool Equals(SomeReferenceType other)
-            {
-                return other != null && StringComparer.Ordinal.Equals(_value, other._value);
-            }
+            public bool Equals(SomeReferenceType other) => other != null && StringComparer.Ordinal.Equals(_value, other._value);
         }
 
-        private struct SomeValueType : IEquatable<SomeValueType>
+        private readonly struct SomeValueType : IEquatable<SomeValueType>
         {
             private readonly string _value;
 
-            public SomeValueType(string value)
-            {
-                _value = value;
-            }
+            public SomeValueType(string value) => _value = value;
 
-            public override bool Equals(object obj)
-            {
-                return obj is SomeValueType type && Equals(type);
-            }
+            public override bool Equals(object obj) => obj is SomeValueType type && Equals(type);
 
-            public override int GetHashCode()
-            {
-                return _value is null ? 0 : StringComparer.Ordinal.GetHashCode(_value);
-            }
+            public override int GetHashCode() => _value is null ? 0 : StringComparer.Ordinal.GetHashCode(_value);
 
-            public bool Equals(SomeValueType other)
-            {
-                return StringComparer.Ordinal.Equals(_value, other._value);
-            }
+            public bool Equals(SomeValueType other) => StringComparer.Ordinal.Equals(_value, other._value);
         }
     }
 }

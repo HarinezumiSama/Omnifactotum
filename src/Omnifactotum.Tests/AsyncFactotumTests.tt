@@ -313,7 +313,7 @@ namespace Omnifactotum.Tests
         private static int Compute<#= index #>(<#= EnumeratePrefixedValues("int arg{0}", ", ", false, index, false) #>)
         {
 <# if (index > 0) { #>
-            <#= EnumeratePrefixedValues(@"Assert.That(arg{0}, Is.EqualTo({0}));", $"{Environment.NewLine}            ", false, index, false) #>
+            <#= EnumeratePrefixedValues(@"Assert.That(arg{0}, Is.EqualTo({0}));", Environment.NewLine + new string(' ', 12), false, index, false) #>
 
             Assert.That(new[] { <#= EnumeratePrefixedValues("arg{0}", ", ", false, index, false) #> }, Is.Unique);
 
@@ -330,7 +330,7 @@ namespace Omnifactotum.Tests
         private static void Execute<#= index #>(<#= EnumeratePrefixedValues("int arg{0}", ", ", false, index, false) #>)
         {
 <# if (index > 0) { #>
-            <#= EnumeratePrefixedValues(@"Assert.That(arg{0}, Is.EqualTo({0}));", $"{Environment.NewLine}            ", false, index, false) #>
+            <#= EnumeratePrefixedValues(@"Assert.That(arg{0}, Is.EqualTo({0}));", Environment.NewLine + new string(' ', 12), false, index, false) #>
 
             Assert.That(new[] { <#= EnumeratePrefixedValues("arg{0}", ", ", false, index, false) #> }, Is.Unique);
 <# } #>

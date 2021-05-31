@@ -1,6 +1,6 @@
 ﻿using System;
-using System.Globalization;
 using Omnifactotum.Annotations;
+using static Omnifactotum.FormattableStringFactotum;
 
 namespace Omnifactotum.Validation.Constraints
 {
@@ -23,18 +23,13 @@ namespace Omnifactotum.Validation.Constraints
         ///     have parameterless constructor.
         /// </param>
         internal BaseMemberConstraintAttribute([NotNull] Type constraintType)
-        {
-            ConstraintType = constraintType.EnsureValidMemberConstraintType();
-        }
+            => ConstraintType = constraintType.EnsureValidMemberConstraintType();
 
         /// <summary>
         ///     Gets the type, implementing the <see cref="IMemberConstraint"/> interface, used to validate
         ///     the member annotated with this <see cref="BaseMemberConstraintAttribute"/> attribute.
         /// </summary>
-        public Type ConstraintType
-        {
-            get;
-        }
+        public Type ConstraintType { get; }
 
         /// <summary>
         ///     Returns a <see cref="System.String" /> that represents this <see cref="BaseMemberConstraintAttribute"/>.
@@ -43,13 +38,9 @@ namespace Omnifactotum.Validation.Constraints
         ///     A <see cref="System.String" /> that represents this <see cref="BaseMemberConstraintAttribute"/>.
         /// </returns>
         public override string ToString()
-        {
-            return string.Format(
-                CultureInfo.InvariantCulture,
-                "{{{0}: {1} = '{2}'}}",
-                GetType().GetQualifiedName(),
-                Factotum.For<BaseMemberConstraintAttribute>.GetPropertyName(obj => obj.ConstraintType),
-                ConstraintType.GetQualifiedName());
-        }
+            => AsInvariant(
+                $@"{{{GetType().GetQualifiedName()}: {
+                    Factotum.For<BaseMemberConstraintAttribute>.GetPropertyName(obj => obj.ConstraintType)} = {
+                    ConstraintType.GetQualifiedName().ToUIString()}}}");
     }
 }

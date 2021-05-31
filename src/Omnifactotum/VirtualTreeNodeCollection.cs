@@ -2,8 +2,8 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.Diagnostics;
-using System.Globalization;
 using Omnifactotum.Annotations;
+using static Omnifactotum.FormattableStringFactotum;
 
 namespace Omnifactotum
 {
@@ -56,14 +56,7 @@ namespace Omnifactotum
         /// <returns>
         ///     A <see cref="System.String"/> that represents this <see cref="VirtualTreeNodeCollection{T}"/>.
         /// </returns>
-        public override string ToString()
-        {
-            return string.Format(
-                CultureInfo.InvariantCulture,
-                "{0}. Count = {1}",
-                GetType().GetQualifiedName(),
-                Count);
-        }
+        public override string ToString() => AsInvariant($@"{GetType().GetQualifiedName()}: {nameof(Count)} = {Count}");
 
         /// <summary>
         ///     Adds the elements of the specified collection to the end of

@@ -95,7 +95,7 @@ namespace Omnifactotum
         ///     a hash table.
         /// </returns>
         public sealed override int GetHashCode()
-            => ReferenceEquals(Value, null) ? 0 : ValueEqualityComparer.GetHashCode(Value);
+            => Value is null ? 0 : ValueEqualityComparer.GetHashCode(Value);
 
         /// <summary>
         ///     Determines whether the current object is equal to another object of the same type.
@@ -108,7 +108,7 @@ namespace Omnifactotum
         ///     otherwise, <c>false</c>.
         /// </returns>
         public bool Equals(EquatableValueCapsule<T> other)
-            => !ReferenceEquals(other, null) && other.GetType() == GetType()
+            => !(other is null) && other.GetType() == GetType()
                 && (ReferenceEquals(other, this) || ValueEqualityComparer.Equals(other.Value, Value));
 
         /// <summary>

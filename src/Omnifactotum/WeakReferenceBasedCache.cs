@@ -154,7 +154,7 @@ namespace Omnifactotum
         /// </returns>
         public bool Remove([NotNull] TKey key)
         {
-            if (ReferenceEquals(key, null))
+            if (key is null)
             {
                 throw new ArgumentNullException(nameof(key));
             }

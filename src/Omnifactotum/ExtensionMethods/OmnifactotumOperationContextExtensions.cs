@@ -7,8 +7,7 @@ using System.Linq;
 using System.Security.Cryptography.X509Certificates;
 using Omnifactotum.Annotations;
 
-//// Namespace is intentionally named so in order to simplify usage of extension methods
-//// ReSharper disable once CheckNamespace
+//// ReSharper disable once CheckNamespace :: Namespace is intentionally named so in order to simplify usage of extension methods
 
 namespace System.ServiceModel
 {

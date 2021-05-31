@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using Omnifactotum.Annotations;
+using static Omnifactotum.FormattableStringFactotum;
 
 namespace Omnifactotum
 {
@@ -131,7 +132,7 @@ namespace Omnifactotum
                 if (item.Graph is null)
                 {
                     throw new InvalidOperationException(
-                        $@"The node {{{item}}} belongs to the graph but is not associated with this graph.");
+                        AsInvariant($@"The node {{{item}}} belongs to the graph but is not associated with this graph."));
                 }
 
                 return;
@@ -149,10 +150,7 @@ namespace Omnifactotum
                 item.AssignGraph(graph);
             }
 
-            if (Graph is null)
-            {
-                Graph = graph;
-            }
+            Graph ??= graph;
         }
 
         internal bool RemoveInternal([CanBeNull] DirectedGraphNode<T> item)

@@ -180,7 +180,7 @@ namespace Omnifactotum.Tests
 
             //// Values
 
-            var rodValues = ((ICollection<string>)rod.Values);
+            var rodValues = (ICollection<string>)rod.Values;
 
             AssertNotSupportedAndEnsureUnchanged(() => rodValues.Add(ValueExtra));
             AssertNotSupportedAndEnsureUnchanged(() => rodValues.Remove(Value1));

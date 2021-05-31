@@ -1,7 +1,6 @@
 ﻿using PureAttribute = System.Diagnostics.Contracts.PureAttribute;
 
-//// Namespace is intentionally named so in order to simplify usage of extension methods
-//// ReSharper disable once CheckNamespace
+//// ReSharper disable once CheckNamespace :: Namespace is intentionally named so in order to simplify usage of extension methods
 
 namespace System
 {
@@ -43,7 +42,7 @@ namespace System
         {
             if (divisor == 0m)
             {
-                throw new ArgumentException("The divisor cannot be zero.", nameof(divisor));
+                throw new ArgumentException(@"The divisor cannot be zero.", nameof(divisor));
             }
 
             return TimeSpan.FromTicks(Convert.ToInt64(value.Ticks / divisor));

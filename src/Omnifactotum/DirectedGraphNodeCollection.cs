@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Diagnostics;
-using System.Globalization;
 using Omnifactotum.Annotations;
 
 namespace Omnifactotum
@@ -87,11 +86,7 @@ namespace Omnifactotum
                     return item.Tails;
 
                 default:
-                    throw new NotSupportedException(
-                        string.Format(
-                            CultureInfo.InvariantCulture,
-                            "The case for enumeration value '{0}' is not supported.",
-                            _ownerRelation.GetQualifiedName()));
+                    throw _ownerRelation.CreateEnumValueNotSupportedException();
             }
         }
     }

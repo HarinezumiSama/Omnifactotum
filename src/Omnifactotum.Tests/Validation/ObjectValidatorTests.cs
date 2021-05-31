@@ -11,6 +11,7 @@ using Omnifactotum.Annotations;
 using Omnifactotum.NUnit;
 using Omnifactotum.Validation;
 using Omnifactotum.Validation.Constraints;
+using static Omnifactotum.FormattableStringFactotum;
 
 namespace Omnifactotum.Tests.Validation
 {
@@ -84,7 +85,7 @@ namespace Omnifactotum.Tests.Validation
 #if NETFRAMEWORK
             var itemPropertyPathConvertSpecifier = string.Empty;
 #else
-            var itemPropertyPathConvertSpecifier = $@", {nameof(AnotherSimpleData)}";
+            var itemPropertyPathConvertSpecifier = AsInvariant($@", {nameof(AnotherSimpleData)}");
 #endif
 
             var expectedNotNullErrorExpressions =
@@ -92,8 +93,8 @@ namespace Omnifactotum.Tests.Validation
                 {
                     MakeExpressionString("{0}.Data.Value"),
                     MakeExpressionString("{0}.Data.NullableValue"),
-                    MakeExpressionString($@"Convert({{0}}.MultipleDataItems[1]{itemPropertyPathConvertSpecifier}).Value"),
-                    MakeExpressionString($@"Convert({{0}}.SingleBaseData{itemPropertyPathConvertSpecifier}).Value")
+                    MakeExpressionString(AsInvariant($@"Convert({{0}}.MultipleDataItems[1]{itemPropertyPathConvertSpecifier}).Value")),
+                    MakeExpressionString(AsInvariant($@"Convert({{0}}.SingleBaseData{itemPropertyPathConvertSpecifier}).Value"))
                 };
 
             Assert.That(actualNotNullErrorExpressions, Is.EquivalentTo(expectedNotNullErrorExpressions));
@@ -135,11 +136,11 @@ namespace Omnifactotum.Tests.Validation
             var propertiesPropertyPathConvertSpecifier = string.Empty;
             var keyValuePairPropertyPathConvertSpecifier = string.Empty;
 #else
-            var propertiesPropertyPathConvertSpecifier = $@", {nameof(IEnumerable)}";
-            var keyValuePairPropertyPathConvertSpecifier = $@", {typeof(KeyValuePair<,>).Name}";
+            var propertiesPropertyPathConvertSpecifier = AsInvariant($@", {nameof(IEnumerable)}");
+            var keyValuePairPropertyPathConvertSpecifier = AsInvariant($@", {typeof(KeyValuePair<,>).Name}");
 #endif
 
-            var propertiesPropertyPath = $@"Convert({{0}}.Properties{propertiesPropertyPathConvertSpecifier})";
+            var propertiesPropertyPath = AsInvariant($@"Convert({{0}}.Properties{propertiesPropertyPathConvertSpecifier})");
 
             var validationResult = ObjectValidator.Validate(mapContainer);
 
@@ -159,7 +160,8 @@ namespace Omnifactotum.Tests.Validation
                 notNullOrEmptyError.Context.Expression.ToString(),
                 Is.EqualTo(
                     MakeExpressionString(
-                        $@"Convert({propertiesPropertyPath}.Cast().First(){keyValuePairPropertyPathConvertSpecifier}).Key")));
+                        AsInvariant(
+                            $@"Convert({propertiesPropertyPath}.Cast().First(){keyValuePairPropertyPathConvertSpecifier}).Key"))));
 
             var emptyKey =
                 (string)notNullOrEmptyError.Context.CreateLambdaExpression("key").Compile().Invoke(mapContainer);
@@ -173,8 +175,9 @@ namespace Omnifactotum.Tests.Validation
                 notNullError.Context.Expression.ToString(),
                 Is.EqualTo(
                     MakeExpressionString(
-                        $@"Convert({propertiesPropertyPath}.Cast().Skip(2).First(){
-                            keyValuePairPropertyPathConvertSpecifier}).Value.ContainedValue")));
+                        AsInvariant(
+                            $@"Convert({propertiesPropertyPath}.Cast().Skip(2).First(){
+                                keyValuePairPropertyPathConvertSpecifier}).Value.ContainedValue"))));
 
             var nullContainedValue =
                 (int?)notNullError.Context.CreateLambdaExpression("value").Compile().Invoke(mapContainer);
@@ -183,12 +186,7 @@ namespace Omnifactotum.Tests.Validation
         }
 
         private static string MakeExpressionString(string propertyPathTemplate)
-        {
-            return string.Format(
-                CultureInfo.InvariantCulture,
-                propertyPathTemplate,
-                ObjectValidator.RootObjectParameterName);
-        }
+            => string.Format(CultureInfo.InvariantCulture, propertyPathTemplate, ObjectValidator.RootObjectParameterName);
 
         private static void EnsureTestValidationSucceeded<T>(T data)
         {

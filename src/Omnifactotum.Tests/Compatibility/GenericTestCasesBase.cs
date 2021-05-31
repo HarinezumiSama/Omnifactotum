@@ -1,7 +1,8 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 
-//// ReSharper disable once CheckNamespace
+//// ReSharper disable once CheckNamespace :: Compatibility (Omnifactotum.NUnit)
+
 namespace Omnifactotum.NUnit
 {
     /// <summary>

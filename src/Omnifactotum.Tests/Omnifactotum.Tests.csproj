@@ -13,6 +13,7 @@
 
     <ItemGroup Condition="'$(TargetFramework)'=='net40' or '$(TargetFramework)'=='net461' or '$(TargetFramework)'=='net472'">
         <Reference Include="Microsoft.CSharp" />
+        <Reference Include="System.Windows.Forms" />
     </ItemGroup>
 
     <ItemGroup Condition="'$(TargetFramework)'!='net40' and '$(TargetFramework)'!='net461' and '$(TargetFramework)'!='net472'">

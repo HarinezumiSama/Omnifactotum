@@ -1,9 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
-using System.Globalization;
 using System.Linq;
 using Omnifactotum.Annotations;
+using static Omnifactotum.FormattableStringFactotum;
 
 namespace Omnifactotum
 {
@@ -76,12 +76,6 @@ namespace Omnifactotum
         ///     A <see cref="System.String"/> that represents this <see cref="VirtualTreeNodeBase{T}"/>.
         /// </returns>
         public override string ToString()
-        {
-            return string.Format(
-                CultureInfo.InvariantCulture,
-                "{0}. Children.Count = {1}",
-                GetType().GetQualifiedName(),
-                Children.Count);
-        }
+            => AsInvariant($@"{GetType().GetQualifiedName()}: {nameof(Children)}.{nameof(Children.Count)} = {Children.Count}");
     }
 }

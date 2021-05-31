@@ -1,7 +1,7 @@
 ﻿using Omnifactotum.Annotations;
 using PureAttribute = System.Diagnostics.Contracts.PureAttribute;
 
-//// ReSharper disable once CheckNamespace - Namespace is intentionally named so in order to simplify usage of extension methods
+//// ReSharper disable once CheckNamespace :: Namespace is intentionally named so in order to simplify usage of extension methods
 
 namespace System
 {

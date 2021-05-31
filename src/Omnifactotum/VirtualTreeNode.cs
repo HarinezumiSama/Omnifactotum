@@ -1,8 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
-using System.Globalization;
 using Omnifactotum.Annotations;
+using static Omnifactotum.FormattableStringFactotum;
 
 namespace Omnifactotum
 {
@@ -85,11 +85,7 @@ namespace Omnifactotum
         ///     Gets or sets the value associated with the current node.
         /// </summary>
         [CanBeNull]
-        public T Value
-        {
-            get;
-            set;
-        }
+        public T Value { get; set; }
 
         /// <summary>
         ///     Returns a <see cref="System.String"/> that represents this <see cref="VirtualTreeNode{T}"/>.
@@ -98,13 +94,7 @@ namespace Omnifactotum
         ///     A <see cref="System.String"/> that represents this <see cref="VirtualTreeNode{T}"/>.
         /// </returns>
         public override string ToString()
-        {
-            return string.Format(
-                CultureInfo.InvariantCulture,
-                "{0}. Children.Count = {1}, Value = {2}",
-                GetType().GetQualifiedName(),
-                Children.Count,
-                Value);
-        }
+            => AsInvariant($@"{GetType().GetQualifiedName()}: {nameof(Children)}.{nameof(Children.Count)} = {Children.Count}, {
+                nameof(Value)} = {Value}");
     }
 }

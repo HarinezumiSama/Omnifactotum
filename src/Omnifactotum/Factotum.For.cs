@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Globalization;
 using System.Linq.Expressions;
 using System.Reflection;
 using Omnifactotum.Annotations;
@@ -74,8 +75,9 @@ namespace Omnifactotum
                 {
                     throw new ArgumentException(
                         string.Format(
+                            CultureInfo.InvariantCulture,
                             InvalidExpressionMessageFormat,
-                            typeof(TObject).GetFullName(),
+                            typeof(TObject).GetFullName().ToUIString(),
                             fieldGetterExpression),
                         nameof(fieldGetterExpression));
                 }
@@ -145,8 +147,9 @@ namespace Omnifactotum
                 {
                     throw new ArgumentException(
                         string.Format(
+                            CultureInfo.InvariantCulture,
                             InvalidExpressionMessageFormat,
-                            typeof(TObject).GetFullName(),
+                            typeof(TObject).GetFullName().ToUIString(),
                             propertyGetterExpression),
                         nameof(propertyGetterExpression));
                 }
@@ -209,39 +212,42 @@ namespace Omnifactotum
                 {
                     throw new ArgumentException(
                         string.Format(
+                            CultureInfo.InvariantCulture,
                             InvalidExpressionMessageFormat,
-                            objectType.GetFullName(),
+                            objectType.GetFullName().ToUIString(),
+                            memberGetterExpression),
+                        nameof(memberGetterExpression));
+                }
+
+                var propertyInfo = memberExpression.Member as PropertyInfo;
+
+                if (!(memberExpression.Member is FieldInfo) && propertyInfo is null)
+                {
+                    throw new ArgumentException(
+                        string.Format(
+                            CultureInfo.InvariantCulture,
+                            InvalidExpressionMessageFormat,
+                            objectType.GetFullName().ToUIString(),
                             memberGetterExpression),
                         nameof(memberGetterExpression));
                 }
 
                 var result = memberExpression.Member;
 
-                var fieldInfo = memberExpression.Member as FieldInfo;
-                var propertyInfo = memberExpression.Member as PropertyInfo;
-
-                if (fieldInfo is null && propertyInfo is null)
-                {
-                    throw new ArgumentException(
-                        string.Format(
-                            InvalidExpressionMessageFormat,
-                            objectType.GetFullName(),
-                            memberGetterExpression),
-                        nameof(memberGetterExpression));
-                }
-
                 if (result.DeclaringType is null || !result.DeclaringType.IsAssignableFrom(objectType))
                 {
                     throw new ArgumentException(
                         string.Format(
+                            CultureInfo.InvariantCulture,
                             InvalidExpressionMessageFormat,
-                            objectType.GetFullName(),
+                            objectType.GetFullName().ToUIString(),
                             memberGetterExpression),
                         nameof(memberGetterExpression));
                 }
 
                 if (memberExpression.Expression is null)
                 {
+                    //// ReSharper disable once InvertIf
                     if (propertyInfo != null)
                     {
                         var accessor = propertyInfo.GetGetMethod(true) ?? propertyInfo.GetSetMethod(true);
@@ -249,8 +255,9 @@ namespace Omnifactotum
                         {
                             throw new ArgumentException(
                                 string.Format(
+                                    CultureInfo.InvariantCulture,
                                     InvalidExpressionMessageFormat,
-                                    objectType.GetFullName(),
+                                    objectType.GetFullName().ToUIString(),
                                     memberGetterExpression),
                                 nameof(memberGetterExpression));
                         }
@@ -263,8 +270,9 @@ namespace Omnifactotum
                     {
                         throw new ArgumentException(
                             string.Format(
+                                CultureInfo.InvariantCulture,
                                 InvalidExpressionMessageFormat,
-                                objectType.GetFullName(),
+                                objectType.GetFullName().ToUIString(),
                                 memberGetterExpression),
                             nameof(memberGetterExpression));
                     }

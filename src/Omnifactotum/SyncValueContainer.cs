@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Diagnostics;
 using Omnifactotum.Annotations;
+using static Omnifactotum.FormattableStringFactotum;
 
 namespace Omnifactotum
 {
@@ -61,7 +62,7 @@ namespace Omnifactotum
         ///     using the default value for the type <typeparamref name="T"/>.
         /// </summary>
         public SyncValueContainer()
-            : this(default(T))
+            : this(default)
         {
             // Nothing to do
         }
@@ -70,10 +71,7 @@ namespace Omnifactotum
         ///     Gets the synchronization object used for thread-safe access.
         /// </summary>
         [NotNull]
-        public object SyncObject
-        {
-            get;
-        }
+        public object SyncObject { get; }
 
         /// <summary>
         ///     Gets or sets the contained value.
@@ -136,7 +134,7 @@ namespace Omnifactotum
         /// <returns>
         ///     A <see cref="String" /> that represents this <see cref="SyncValueContainer{T}"/> instance.
         /// </returns>
-        public override string ToString() => $@"{{ {nameof(Value)} = {Value.ToStringSafelyInvariant()} }}";
+        public override string ToString() => AsInvariant($@"{{ {nameof(Value)} = {Value.ToStringSafelyInvariant()} }}");
 
         /// <summary>
         ///     Determines whether the specified <see cref="Object" /> is equal to
@@ -157,7 +155,9 @@ namespace Omnifactotum
         /// <returns>
         ///     A hash code for this <see cref="SyncValueContainer{T}"/> instance.
         /// </returns>
-        public override int GetHashCode() => Value.GetHashCodeSafely();
+        public override int GetHashCode()
+            //// ReSharper disable once NonReadonlyMemberInGetHashCode :: Specific use-case
+            => Value.GetHashCodeSafely();
 
         /// <summary>
         ///     Determines whether the current <see cref="SyncValueContainer{T}"/> instance is equal to another instance
@@ -172,7 +172,9 @@ namespace Omnifactotum
         /// </returns>
         public bool Equals(SyncValueContainer<T> other) => Equals(this, other);
 
+        //// ReSharper disable SuggestBaseTypeForParameter :: Performance
         private static bool Equals(SyncValueContainer<T> left, SyncValueContainer<T> right)
+            //// ReSharper restore SuggestBaseTypeForParameter
         {
             if (ReferenceEquals(left, right))
             {

@@ -1,7 +1,7 @@
 ﻿using Omnifactotum.Annotations;
 
-//// Namespace is intentionally named so in order to simplify usage of extension methods
-//// ReSharper disable once CheckNamespace
+//// ReSharper disable once CheckNamespace :: Namespace is intentionally named so in order to simplify usage of extension methods
+
 namespace System
 {
     /// <summary>
@@ -22,9 +22,7 @@ namespace System
         /// </param>
         public static void DisposeSafely<T>([CanBeNull] this T disposable)
             where T : class, IDisposable
-        {
-            disposable?.Dispose();
-        }
+            => disposable?.Dispose();
 
         /// <summary>
         ///     Calls the <see cref="IDisposable.Dispose"/> method of the specified instance implementing
@@ -39,8 +37,6 @@ namespace System
         /// </param>
         public static void DisposeSafely<T>([CanBeNull] this T? disposable)
             where T : struct, IDisposable
-        {
-            disposable?.Dispose();
-        }
+            => disposable?.Dispose();
     }
 }

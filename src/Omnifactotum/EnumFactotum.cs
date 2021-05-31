@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using static Omnifactotum.FormattableStringFactotum;
 
 namespace Omnifactotum
 {
@@ -37,7 +38,7 @@ namespace Omnifactotum
             if (!enumType.IsEnum)
             {
                 throw new ArgumentException(
-                    $@"The type {enumType.GetFullName().ToUIString()} is not an enumeration.",
+                    AsInvariant($@"The type {enumType.GetFullName().ToUIString()} is not an enumeration."),
                     nameof(TEnum));
             }
 
@@ -79,7 +80,7 @@ namespace Omnifactotum
             if (!enumType.IsEnum)
             {
                 throw new ArgumentException(
-                    $@"The type {enumType.GetFullName().ToUIString()} is not an enumeration.",
+                    AsInvariant($@"The type {enumType.GetFullName().ToUIString()} is not an enumeration."),
                     nameof(TEnum));
             }
 
@@ -102,7 +103,7 @@ namespace Omnifactotum
             if (!enumType.IsEnum || !enumType.IsDefined(typeof(FlagsAttribute), false))
             {
                 throw new ArgumentException(
-                    $@"The type {enumType.GetFullName().ToUIString()} is not a bit-field enumeration.",
+                    AsInvariant($@"The type {enumType.GetFullName().ToUIString()} is not a bit-field enumeration."),
                     nameof(TEnum));
             }
 
@@ -126,6 +127,8 @@ namespace Omnifactotum
                 for (var offset = 0; offset < MaxBitCount; offset++)
                 {
                     var flag = 1UL << offset;
+
+                    //// ReSharper disable once InvertIf
                     if ((flag & ordinalValue) == ordinalValue)
                     {
                         resultList.Add(value);

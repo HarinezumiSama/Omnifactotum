@@ -20,9 +20,6 @@ namespace Omnifactotum
         /// <returns>
         ///     A new instance of the <see cref="VirtualTreeNode{T}"/> class.
         /// </returns>
-        public static VirtualTreeNode<T> Create<T>([CanBeNull] T value)
-        {
-            return new VirtualTreeNode<T>(value);
-        }
+        public static VirtualTreeNode<T> Create<T>([CanBeNull] T value) => new VirtualTreeNode<T>(value);
     }
 }

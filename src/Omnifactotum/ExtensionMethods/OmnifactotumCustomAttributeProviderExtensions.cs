@@ -1,8 +1,7 @@
 ﻿using System.Linq;
 using Omnifactotum.Annotations;
 
-//// Namespace is intentionally named so in order to simplify usage of extension methods
-//// ReSharper disable once CheckNamespace
+//// ReSharper disable once CheckNamespace :: Namespace is intentionally named so in order to simplify usage of extension methods
 
 namespace System.Reflection
 {
@@ -43,8 +42,9 @@ namespace System.Reflection
 
             switch (provider)
             {
+                //// ReSharper disable once HeuristicUnreachableCode :: False detection
                 case null:
-                    //// ReSharper disable once HeuristicUnreachableCode - False detection
+                    //// ReSharper disable once HeuristicUnreachableCode :: False detection
                     throw new ArgumentNullException(nameof(provider));
 
                 case MemberInfo memberInfo:
@@ -85,9 +85,7 @@ namespace System.Reflection
             [NotNull] this ICustomAttributeProvider provider,
             bool inherit)
             where TAttribute : Attribute
-        {
-            return GetCustomAttributeArray<TAttribute>(provider, inherit).Single();
-        }
+            => GetCustomAttributeArray<TAttribute>(provider, inherit).Single();
 
         /// <summary>
         ///     Gets the sole specified attribute applied to the specified provider of custom attributes,
@@ -116,8 +114,6 @@ namespace System.Reflection
             [NotNull] this ICustomAttributeProvider provider,
             bool inherit)
             where TAttribute : Attribute
-        {
-            return GetCustomAttributeArray<TAttribute>(provider, inherit).SingleOrDefault();
-        }
+            => GetCustomAttributeArray<TAttribute>(provider, inherit).SingleOrDefault();
     }
 }

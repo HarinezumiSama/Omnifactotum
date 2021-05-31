@@ -8,6 +8,7 @@ using System.Reflection.Emit;
 using Microsoft.CSharp;
 using NUnit.Framework;
 using Omnifactotum.NUnit;
+using static Omnifactotum.FormattableStringFactotum;
 
 #else
 
@@ -22,6 +23,7 @@ using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
 using NUnit.Framework;
 using Omnifactotum.NUnit;
+using static Omnifactotum.FormattableStringFactotum;
 
 #endif
 
@@ -78,7 +80,7 @@ namespace Omnifactotum.Tests.ExtensionMethods
 
             var compilation = CSharpCompilation
                 .Create(
-                    $"{nameof(TestGetLocalPathWhenInMemoryAssemblyIsPassedThenThrows)}_{Guid.NewGuid():N}",
+                    AsInvariant($@"{nameof(TestGetLocalPathWhenInMemoryAssemblyIsPassedThenThrows)}_{Guid.NewGuid():N}"),
                     options: new CSharpCompilationOptions(outputKind, platform: Platform.AnyCpu))
                 .AssertNotNull()
                 .AddReferences(MetadataReference.CreateFromFile(typeof(object).Assembly.Location))
@@ -94,8 +96,9 @@ namespace Omnifactotum.Tests.ExtensionMethods
             Assert.That(
                 emitResult.Success,
                 Is.True,
-                () => $@"Failed to compile an in-memory assembly:{Environment.NewLine}{
-                    emitResult.Diagnostics.Select(d => $"* {d.GetMessage()}").Join(Environment.NewLine)}");
+                () => AsInvariant(
+                    $@"Failed to compile an in-memory assembly:{Environment.NewLine}{
+                        emitResult.Diagnostics.Select(d => AsInvariant($@"* {d.GetMessage()}")).Join(Environment.NewLine)}"));
 
             stream.Position = 0;
             var assembly = AssemblyLoadContext.Default.LoadFromStream(stream).AssertNotNull();
@@ -117,7 +120,7 @@ namespace Omnifactotum.Tests.ExtensionMethods
 #else
             var assemblyBuilder = AssemblyBuilder.DefineDynamicAssembly(
 #endif
-                new AssemblyName($"{nameof(TestGetLocalPathWhenDynamicAssemblyIsPassedThenThrows)}_{Guid.NewGuid():N}"),
+                new AssemblyName(AsInvariant($@"{nameof(TestGetLocalPathWhenDynamicAssemblyIsPassedThenThrows)}_{Guid.NewGuid():N}")),
                 assemblyBuilderAccess);
 
             Assert.That(() => assemblyBuilder.GetLocalPath(), Throws.TypeOf<ArgumentException>());

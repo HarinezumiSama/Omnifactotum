@@ -78,7 +78,7 @@ namespace Omnifactotum.Validation
             [NotNull] T instance,
             [CanBeNull] RecursiveProcessingContext<MemberData> recursiveProcessingContext)
         {
-            if (ReferenceEquals(instance, null))
+            if (instance is null)
             {
                 throw new ArgumentNullException(nameof(instance));
             }

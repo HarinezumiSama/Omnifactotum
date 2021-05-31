@@ -2,6 +2,7 @@
 using System.Diagnostics;
 using System.IO;
 using System.Runtime.CompilerServices;
+using static Omnifactotum.FormattableStringFactotum;
 
 //// TODO [HarinezumiSama] Create a wrapper interface for System.Console to make possible writing unit tests
 
@@ -664,8 +665,8 @@ namespace Omnifactotum
             if (_originalForegroundColor.HasValue)
             {
                 throw new InvalidOperationException(
-                    $@"Internal logic error ({nameof(_colorChangedCount)} = {_colorChangedCount}, {
-                        nameof(_originalForegroundColor)} = {_originalForegroundColor}).");
+                    AsInvariant($@"Internal logic error ({nameof(_colorChangedCount)} = {_colorChangedCount}, {
+                        nameof(_originalForegroundColor)} = {_originalForegroundColor})."));
             }
 
             _originalForegroundColor = Console.ForegroundColor;

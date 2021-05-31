@@ -1,7 +1,7 @@
 ﻿using System;
-using System.Globalization;
 using System.Linq;
 using Omnifactotum.Annotations;
+using static Omnifactotum.FormattableStringFactotum;
 
 namespace Omnifactotum
 {
@@ -32,7 +32,7 @@ namespace Omnifactotum
         ///     using the default value for the type <typeparamref name="T"/>.
         /// </summary>
         public DirectedGraphNode()
-            : this(default(T))
+            : this(default)
         {
             // Nothing to do
         }
@@ -41,39 +41,25 @@ namespace Omnifactotum
         ///     Gets the graph which this node belongs to.
         /// </summary>
         [CanBeNull]
-        public DirectedGraph<T> Graph
-        {
-            get;
-            internal set;
-        }
+        public DirectedGraph<T> Graph { get; internal set; }
 
         /// <summary>
         ///     Gets or sets the value associated with this <see cref="DirectedGraphNode{T}"/>.
         /// </summary>
         [CanBeNull]
-        public T Value
-        {
-            get;
-            set;
-        }
+        public T Value { get; set; }
 
         /// <summary>
         ///     Gets the collection of the heads of this node, that is, the nodes to which this node is directed to.
         /// </summary>
         [NotNull]
-        public DirectedGraphNodeCollection<T> Heads
-        {
-            get;
-        }
+        public DirectedGraphNodeCollection<T> Heads { get; }
 
         /// <summary>
         ///     Gets the collection of the tails of this node, that is, the nodes which are directed to this node.
         /// </summary>
         [NotNull]
-        public DirectedGraphNodeCollection<T> Tails
-        {
-            get;
-        }
+        public DirectedGraphNodeCollection<T> Tails { get; }
 
         /// <summary>
         ///     Returns a <see cref="System.String"/> that represents this <see cref="DirectedGraphNode{T}"/>.
@@ -81,7 +67,7 @@ namespace Omnifactotum
         /// <returns>
         ///     A <see cref="System.String"/> that represents this <see cref="DirectedGraphNode{T}"/>.
         /// </returns>
-        public override string ToString() => $@"{GetType().GetQualifiedName()}. Value = {Value.ToStringSafely()}";
+        public override string ToString() => AsInvariant($@"{GetType().GetQualifiedName()}. {nameof(Value)} = {Value.ToStringSafely()}");
 
         internal void AssignGraph([CanBeNull] DirectedGraph<T> graph)
         {
@@ -103,10 +89,7 @@ namespace Omnifactotum
                     if (node.Graph != null)
                     {
                         throw new InvalidOperationException(
-                            string.Format(
-                                CultureInfo.InvariantCulture,
-                                "The directed graph node {{{0}}} belongs to another graph.",
-                                node));
+                            AsInvariant($@"The directed graph node {{ {node} }} belongs to another graph."));
                     }
 
                     node.Graph = graph;

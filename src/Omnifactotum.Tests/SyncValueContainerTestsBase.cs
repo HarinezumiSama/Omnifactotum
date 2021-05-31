@@ -6,6 +6,7 @@ using System.Threading;
 using NUnit.Framework;
 using NUnit.Framework.Constraints;
 using Omnifactotum.NUnit;
+using static Omnifactotum.FormattableStringFactotum;
 
 namespace Omnifactotum.Tests
 {
@@ -142,13 +143,13 @@ namespace Omnifactotum.Tests
                     Thread.Sleep(1);
                 }
 
-                Assert.That(compiledCondition(), $@"Condition has not been met: {condition}");
+                Assert.That(compiledCondition(), () => AsInvariant($@"Condition has not been met: {condition}"));
             }
 
             var thread = new Thread(ExecuteAnotherThread)
             {
                 IsBackground = true,
-                Name = $@"{nameof(TestValueThreadSafety)}_{nameof(ExecuteAnotherThread)}"
+                Name = AsInvariant($@"{nameof(TestValueThreadSafety)}_{nameof(ExecuteAnotherThread)}")
             };
             try
             {
@@ -179,7 +180,8 @@ namespace Omnifactotum.Tests
                 if (!thread.Join(TimeSpan.FromSeconds(ConditionWaitTimeoutInSeconds)))
                 {
                     Assert.Inconclusive(
-                        $@"Failed to gracefully finish the thread {thread.Name.ToUIString()} (ID: {thread.ManagedThreadId:N0}).");
+                        AsInvariant(
+                            $@"Failed to gracefully finish the thread {thread.Name.ToUIString()} (ID: {thread.ManagedThreadId:N0})."));
                 }
             }
         }
@@ -205,9 +207,10 @@ namespace Omnifactotum.Tests
             foreach (var value in _values)
             {
                 var container = new SyncValueContainer<T>(value);
+
                 Assert.That(
                     container.ToString(),
-                    Is.EqualTo($@"{{ {nameof(SyncValueContainer<T>.Value)} = {value.ToStringSafelyInvariant()} }}"));
+                    Is.EqualTo(AsInvariant($@"{{ {nameof(SyncValueContainer<T>.Value)} = {value.ToStringSafelyInvariant()} }}")));
             }
         }
 

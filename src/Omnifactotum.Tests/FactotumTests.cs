@@ -1,12 +1,12 @@
 ﻿using System;
 using System.ComponentModel;
-using System.Globalization;
 using System.Linq;
 using System.Threading.Tasks;
 using Moq;
 using NUnit.Framework;
 using Omnifactotum.Annotations;
 using Omnifactotum.Tests.Auxiliary;
+using static Omnifactotum.FormattableStringFactotum;
 
 namespace Omnifactotum.Tests
 {
@@ -222,12 +222,10 @@ namespace Omnifactotum.Tests
         [Test]
         public void TestCreateEmptyCompletedTask()
         {
-            using (var task = Factotum.CreateEmptyCompletedTask())
-            {
-                Assert.That(task, Is.Not.Null);
-                Assert.That(task.Status, Is.EqualTo(TaskStatus.RanToCompletion));
-                Assert.That(task.Exception, Is.Null);
-            }
+            using var task = Factotum.CreateEmptyCompletedTask();
+            Assert.That(task, Is.Not.Null);
+            Assert.That(task.Status, Is.EqualTo(TaskStatus.RanToCompletion));
+            Assert.That(task.Exception, Is.Null);
         }
 
         [Test]
@@ -235,12 +233,10 @@ namespace Omnifactotum.Tests
         {
             var exception = new InvalidOperationException();
 
-            using (var task = Factotum.CreateEmptyFaultedTask(exception))
-            {
-                Assert.That(task, Is.Not.Null);
-                Assert.That(task.Status, Is.EqualTo(TaskStatus.Faulted));
-                Assert.That(task.Exception.EnsureNotNull().InnerExceptions.Single(), Is.SameAs(exception));
-            }
+            using var task = Factotum.CreateEmptyFaultedTask(exception);
+            Assert.That(task, Is.Not.Null);
+            Assert.That(task.Status, Is.EqualTo(TaskStatus.Faulted));
+            Assert.That(task.Exception.EnsureNotNull().InnerExceptions.Single(), Is.SameAs(exception));
         }
 
         [Test]
@@ -274,12 +270,7 @@ namespace Omnifactotum.Tests
 
             Assert.That(
                 name,
-                Is.EqualTo(
-                    string.Format(
-                        CultureInfo.InvariantCulture,
-                        "{0}.{1}.InstanceProperty",
-                        typeof(FactotumTests).Name,
-                        typeof(TestObject).Name)));
+                Is.EqualTo(AsInvariant($@"{nameof(FactotumTests)}.{nameof(TestObject)}.{nameof(TestObject.InstanceProperty)}")));
 
             var nameCopy = Factotum.For<TestObject>.GetQualifiedPropertyName(obj => obj.InstanceProperty);
             Assert.That(nameCopy, Is.EqualTo(name));
@@ -308,32 +299,19 @@ namespace Omnifactotum.Tests
         [Test]
         public void TestGetQualifiedPropertyNameForStaticProperty()
         {
-            // ReSharper disable once AccessToStaticMemberViaDerivedType - By design for this specific test case
+#pragma warning disable IDE0002
+            //// ReSharper disable once AccessToStaticMemberViaDerivedType :: On purpose
             var name = Factotum.GetQualifiedPropertyName(() => TestObject.StaticProperty);
+#pragma warning restore IDE0002
 
-            Assert.That(
-                name,
-                Is.EqualTo(
-                    string.Format(
-                        CultureInfo.InvariantCulture,
-                        "{0}.{1}.StaticProperty",
-                        typeof(FactotumTests).Name,
-                        typeof(TestObjectBase).Name)));
+            Assert.That(name, Is.EqualTo($@"{nameof(FactotumTests)}.{nameof(TestObjectBase)}.{nameof(TestObjectBase.StaticProperty)}"));
         }
 
         public abstract class TestObjectBase
         {
-            public static string StaticProperty
-            {
-                get;
-                set;
-            }
+            public static string StaticProperty { get; set; }
 
-            public string InstanceProperty
-            {
-                get;
-                set;
-            }
+            public string InstanceProperty { get; set; }
         }
 
         public sealed class TestObject : TestObjectBase
@@ -347,24 +325,12 @@ namespace Omnifactotum.Tests
             public const string NonDefaultStringValue = "NonDefaultStringValue";
 
             [DefaultValue(DefaultStringValue)]
-            public static string StaticStringValueWithDefault
-            {
-                get;
-                set;
-            }
+            public static string StaticStringValueWithDefault { get; set; }
 
-            public string StringValueNoDefault
-            {
-                get;
-                set;
-            }
+            public string StringValueNoDefault { get; set; }
 
             [DefaultValue(DefaultStringValue)]
-            public string StringValueWithDefault
-            {
-                get;
-                internal set;
-            }
+            public string StringValueWithDefault { get; internal set; }
 
             [DefaultValue(DefaultStringValue)]
             //// ReSharper disable once MemberCanBeMadeStatic.Local

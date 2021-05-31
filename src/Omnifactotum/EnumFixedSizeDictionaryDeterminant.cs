@@ -1,8 +1,8 @@
 ﻿using System;
 using System.Diagnostics;
-using System.Globalization;
 using System.Linq;
 using System.Linq.Expressions;
+using static Omnifactotum.FormattableStringFactotum;
 
 namespace Omnifactotum
 {
@@ -27,10 +27,7 @@ namespace Omnifactotum
             if (!type.IsEnum)
             {
                 throw new InvalidOperationException(
-                    string.Format(
-                        CultureInfo.InvariantCulture,
-                        "The type '{0}' is not an enumeration.",
-                        type.GetFullName()));
+                    AsInvariant($@"The type {type.GetFullName().ToUIString()} is not an enumeration."));
             }
 
             var values = Enum.GetValues(type).Cast<object>().ToArray();
@@ -53,12 +50,8 @@ namespace Omnifactotum
             if (!upperBound.HasValue)
             {
                 throw new InvalidOperationException(
-                    string.Format(
-                        CultureInfo.InvariantCulture,
-                        "The values of the enumeration '{0}' must be in the valid range ({1} to {2}).",
-                        type.GetFullName(),
-                        MinValue,
-                        MaxValue));
+                    AsInvariant($@"The values of the enumeration {type.GetFullName().ToUIString()} must be in the valid range ({
+                        MinValue} to {MaxValue})."));
             }
 
             Size = upperBound.Value + 1;

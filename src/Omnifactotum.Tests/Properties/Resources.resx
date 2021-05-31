@@ -120,45 +120,45 @@
   </resheader>
   <assembly alias="System.Windows.Forms" name="System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" />
   <data name="ExpectedClassWithFlagsEnumAndTypeAndAssemblyPropertiesToPropertyStringTemplate" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\resources\expectedclasswithflagsenumandtypeandassemblypropertiestopropertystringtemplate.txt;System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;utf-8</value>
+    <value>..\Resources\ExpectedClassWithFlagsEnumAndTypeAndAssemblyPropertiesToPropertyStringTemplate.txt;System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;utf-8</value>
   </data>
   <data name="ExpectedClassWithPropertyGetterThrowingExceptionToPropertyString" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\resources\expectedclasswithpropertygetterthrowingexceptiontopropertystring.txt;System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;utf-8</value>
+    <value>..\Resources\ExpectedClassWithPropertyGetterThrowingExceptionToPropertyString.txt;System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;utf-8</value>
   </data>
   <data name="ExpectedComplexObjectAllFlagsToPropertyString" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\resources\expectedcomplexobjectallflagstopropertystring.txt;System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;utf-8</value>
+    <value>..\Resources\ExpectedComplexObjectAllFlagsToPropertyString.txt;System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;utf-8</value>
   </data>
   <data name="ExpectedComplexObjectDefaultOptionsToPropertyString" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\resources\expectedcomplexobjectdefaultoptionstopropertystring.txt;System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;utf-8</value>
+    <value>..\Resources\ExpectedComplexObjectDefaultOptionsToPropertyString.txt;System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;utf-8</value>
   </data>
   <data name="ExpectedComplexObjectMaxOneItemToPropertyString" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\resources\expectedcomplexobjectmaxoneitemtopropertystring.txt;System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;utf-8</value>
+    <value>..\Resources\ExpectedComplexObjectMaxOneItemToPropertyString.txt;System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;utf-8</value>
   </data>
   <data name="ExpectedComplexObjectWithActualTypeToPropertyString" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\resources\expectedcomplexobjectwithactualtypetopropertystring.txt;System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;utf-8</value>
+    <value>..\Resources\ExpectedComplexObjectWithActualTypeToPropertyString.txt;System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;utf-8</value>
   </data>
   <data name="ExpectedComplexObjectWithCyclesAllFlagsToPropertyString" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\resources\expectedcomplexobjectwithcyclesallflagstopropertystring.txt;System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;utf-8</value>
+    <value>..\Resources\ExpectedComplexObjectWithCyclesAllFlagsToPropertyString.txt;System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;utf-8</value>
   </data>
   <data name="ExpectedComplexObjectWithCyclesWithComplexPropertiesToPropertyString" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\resources\expectedcomplexobjectwithcycleswithcomplexpropertiestopropertystring.txt;System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;utf-8</value>
+    <value>..\Resources\ExpectedComplexObjectWithCyclesWithComplexPropertiesToPropertyString.txt;System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;utf-8</value>
   </data>
   <data name="ExpectedComplexObjectWithMemberTypeToPropertyString" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\resources\expectedcomplexobjectwithmembertypetopropertystring.txt;System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;utf-8</value>
+    <value>..\Resources\ExpectedComplexObjectWithMemberTypeToPropertyString.txt;System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;utf-8</value>
   </data>
   <data name="ExpectedLinqExpressionToPropertyString" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\resources\expectedlinqexpressiontopropertystring.txt;System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;utf-8</value>
+    <value>..\Resources\ExpectedLinqExpressionToPropertyString.txt;System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;utf-8</value>
   </data>
   <data name="ExpectedMaxRecursionToPropertyString" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\resources\expectedmaxrecursiontopropertystring.txt;System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;utf-8</value>
+    <value>..\Resources\ExpectedMaxRecursionToPropertyString.txt;System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;utf-8</value>
   </data>
   <data name="ExpectedPointerContainerToPropertyStringTemplate" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\resources\expectedpointercontainertopropertystringtemplate.txt;System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;utf-8</value>
+    <value>..\Resources\ExpectedPointerContainerToPropertyStringTemplate.txt;System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;utf-8</value>
   </data>
   <data name="ExpectedVirtualTreeNodeWithDateTimeOffsetToPropertyString" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\resources\expectedvirtualtreenodewithdatetimeoffsettopropertystring.txt;System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;utf-8</value>
+    <value>..\Resources\ExpectedVirtualTreeNodeWithDateTimeOffsetToPropertyString.txt;System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;utf-8</value>
   </data>
   <data name="ExpectedVirtualTreeNodeWithDateTimeToPropertyString" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\resources\expectedvirtualtreenodewithdatetimetopropertystring.txt;System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;utf-8</value>
+    <value>..\Resources\ExpectedVirtualTreeNodeWithDateTimeToPropertyString.txt;System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;utf-8</value>
   </data>
 </root>

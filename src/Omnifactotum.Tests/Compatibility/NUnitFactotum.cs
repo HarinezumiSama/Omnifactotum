@@ -6,13 +6,14 @@ using System.Linq.Expressions;
 using System.Reflection;
 using NUnit.Framework;
 using Omnifactotum.Annotations;
+using static Omnifactotum.FormattableStringFactotum;
 
-//// ReSharper disable once CheckNamespace
+//// ReSharper disable once CheckNamespace :: Compatibility (Omnifactotum.NUnit)
 
 namespace Omnifactotum.NUnit
 {
     /// <summary>
-    ///     Provides helper methods and properties for common use in the NUnit tests.
+    ///     Provides the helper methods and properties for common use in the NUnit tests.
     /// </summary>
     internal static class NUnitFactotum
     {
@@ -49,38 +50,41 @@ namespace Omnifactotum.NUnit
         {
             Assert.That(propertyGetterExpression, Is.Not.Null);
             Assert.That(Enum.IsDefined(typeof(PropertyAccessMode), expectedAccessMode), Is.True);
+
             Assert.That(
                 (int)(visibleAccessorAttribute & ~MethodAttributes.MemberAccessMask),
                 Is.EqualTo(0),
-                "Invalid accessor visibility. Must match '{0}' mask.",
-                MethodAttributes.MemberAccessMask.GetQualifiedName());
+                () => AsInvariant(
+                    $"Invalid accessor visibility. Must match {MethodAttributes.MemberAccessMask.GetQualifiedName().ToUIString()} mask."));
 
             var propertyInfo = Factotum.For<TObject>.GetPropertyInfo(propertyGetterExpression);
             Assert.That(propertyInfo, Is.Not.Null);
 
+            string GetFullPropertyNameUIString()
+                => AsInvariant($@"{propertyInfo.DeclaringType.EnsureNotNull().GetFullName()}{Type.Delimiter}{propertyInfo.Name}")
+                    .ToUIString();
+
             var expectedReadability = expectedAccessMode != PropertyAccessMode.WriteOnly;
+
             var actualReadability = propertyInfo.CanRead
-                && AccessAttributesMatch(propertyInfo.GetGetMethod(true), visibleAccessorAttribute);
+                && AccessAttributesMatch(propertyInfo.GetGetMethod(true).AssertNotNull(), visibleAccessorAttribute);
+
             Assert.That(
                 actualReadability,
                 Is.EqualTo(expectedReadability),
-                "The property '{0}{1}{2}' MUST {3}be readable.",
-                propertyInfo.DeclaringType.EnsureNotNull().GetFullName(),
-                Type.Delimiter,
-                propertyInfo.Name,
-                expectedReadability ? string.Empty : "NOT ");
+                () => AsInvariant(
+                    $@"The property {GetFullPropertyNameUIString()} MUST {(expectedReadability ? string.Empty : "NOT ")}be readable."));
 
             var expectedWritability = expectedAccessMode != PropertyAccessMode.ReadOnly;
+
             var actualWritability = propertyInfo.CanWrite
-                && AccessAttributesMatch(propertyInfo.GetSetMethod(true), visibleAccessorAttribute);
+                && AccessAttributesMatch(propertyInfo.GetSetMethod(true).AssertNotNull(), visibleAccessorAttribute);
+
             Assert.That(
                 actualWritability,
                 Is.EqualTo(expectedWritability),
-                "The property '{0}{1}{2}' MUST {3}be writable.",
-                propertyInfo.DeclaringType.EnsureNotNull().GetFullName(),
-                Type.Delimiter,
-                propertyInfo.Name,
-                expectedWritability ? string.Empty : "NOT ");
+                () => AsInvariant(
+                    $@"The property {GetFullPropertyNameUIString()} MUST {(expectedWritability ? string.Empty : "NOT ")}be writable."));
         }
 
         /// <summary>
@@ -100,18 +104,17 @@ namespace Omnifactotum.NUnit
         /// </param>
         public static void AssertEquality<T>(T value1, T value2, AssertEqualityExpectation equalityExpectation)
         {
-            if (!ReferenceEquals(value1, null))
+            if (!(value1 is null))
             {
                 Assert.That(value1, Is.TypeOf<T>());
             }
 
-            if (!ReferenceEquals(value2, null))
+            if (!(value2 is null))
             {
                 Assert.That(value2, Is.TypeOf<T>());
             }
 
-            if (!ReferenceEquals(value1, null) && !ReferenceEquals(value2, null)
-                && equalityExpectation != AssertEqualityExpectation.EqualAndMayBeSame)
+            if (!(value1 is null) && !(value2 is null) && equalityExpectation != AssertEqualityExpectation.EqualAndMayBeSame)
             {
                 Assert.That(value1, Is.Not.SameAs(value2));
             }
@@ -128,17 +131,17 @@ namespace Omnifactotum.NUnit
             Assert.That(Equals(value1AsObject, value2AsObject), Is.EqualTo(equals));
             Assert.That(Equals(value2AsObject, value1AsObject), Is.EqualTo(equals));
 
-            if (!ReferenceEquals(value1, null))
+            if (!(value1 is null))
             {
                 Assert.That(value1AsObject.Equals(value2AsObject), Is.EqualTo(equals));
             }
 
-            if (!ReferenceEquals(value2, null))
+            if (!(value2 is null))
             {
                 Assert.That(value2AsObject.Equals(value1AsObject), Is.EqualTo(equals));
             }
 
-            if (equals && !ReferenceEquals(value1, null) && !ReferenceEquals(value2, null))
+            if (equals && !(value1 is null) && !(value2 is null))
             {
                 Assert.That(value1.GetHashCode(), Is.EqualTo(value2.GetHashCode()));
             }
@@ -148,7 +151,7 @@ namespace Omnifactotum.NUnit
             Assert.That(
                 equalityOperatorMethod,
                 Is.Not.Null,
-                $@"Equality operator (==) must be defined for the type {typeof(T).GetFullName()}.");
+                AsInvariant($@"Equality operator (==) must be defined for the type {typeof(T).GetFullName()}."));
 
             Assert.That(equalityOperatorMethod.Invoke(null, new object[] { value1, value2 }), Is.EqualTo(equals));
             Assert.That(equalityOperatorMethod.Invoke(null, new object[] { value2, value1 }), Is.EqualTo(equals));
@@ -158,7 +161,7 @@ namespace Omnifactotum.NUnit
             Assert.That(
                 inequalityOperatorMethod,
                 Is.Not.Null,
-                $@"Inequality operator (!=) must be defined for the 1type {typeof(T).GetFullName()}.");
+                AsInvariant($@"Inequality operator (!=) must be defined for the 1type {typeof(T).GetFullName()}."));
 
             Assert.That(inequalityOperatorMethod.Invoke(null, new object[] { value1, value2 }), Is.EqualTo(!equals));
             Assert.That(inequalityOperatorMethod.Invoke(null, new object[] { value2, value1 }), Is.EqualTo(!equals));
@@ -386,7 +389,7 @@ namespace Omnifactotum.NUnit
         /// <typeparam name="TSource">
         ///     The type of the source value.
         /// </typeparam>
-        public struct AssertCastHelper<TSource>
+        public readonly struct AssertCastHelper<TSource>
         {
             private readonly TSource _source;
 

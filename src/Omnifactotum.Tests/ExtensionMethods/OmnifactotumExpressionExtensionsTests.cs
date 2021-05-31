@@ -2,6 +2,7 @@
 using System.Linq.Expressions;
 using System.Reflection;
 using NUnit.Framework;
+using Omnifactotum.NUnit;
 
 //// ReSharper disable AssignNullToNotNullAttribute - For negative test cases
 
@@ -34,7 +35,7 @@ namespace Omnifactotum.Tests.ExtensionMethods
                 obj => obj.TestGetLastMethodLastIsSelf();
             var method = expression.GetLastMethod();
             Assert.That(method, Is.Not.Null);
-            Assert.That(method.Name, Is.EqualTo(MethodBase.GetCurrentMethod().Name));
+            Assert.That(method.Name, Is.EqualTo(MethodBase.GetCurrentMethod().AssertNotNull().Name));
             Assert.That(method.DeclaringType, Is.EqualTo(GetType()));
         }
 

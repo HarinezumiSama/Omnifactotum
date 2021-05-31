@@ -4,6 +4,7 @@ using System.ComponentModel;
 using System.Diagnostics.CodeAnalysis;
 using System.IO;
 using NUnit.Framework;
+using static Omnifactotum.FormattableStringFactotum;
 
 namespace Omnifactotum.Tests.ExtensionMethods
 {
@@ -295,7 +296,7 @@ namespace Omnifactotum.Tests.ExtensionMethods
             Assert.That(() => ConsoleColor.Gray.IsOneOf(null), Throws.ArgumentNullException);
 
             Assert.That(
-                () => ConsoleColor.Gray.IsOneOf((IEnumerable<ConsoleColor>)null),
+                () => ConsoleColor.Gray.IsOneOf(((IEnumerable<ConsoleColor>)null)!),
                 Throws.ArgumentNullException);
         }
 
@@ -306,7 +307,7 @@ namespace Omnifactotum.Tests.ExtensionMethods
                 Is.TypeOf<NotImplementedException>()
                     .With
                     .Message
-                    .Contains($@"""{nameof(ConsoleColor)}.{nameof(ConsoleColor.DarkRed)}"""));
+                    .Contains(AsInvariant($@"""{nameof(ConsoleColor)}.{nameof(ConsoleColor.DarkRed)}""")));
 
         [Test]
         [SuppressMessage("ReSharper", "AssignNullToNotNullAttribute")]
@@ -320,7 +321,7 @@ namespace Omnifactotum.Tests.ExtensionMethods
                 Is.TypeOf<NotSupportedException>()
                     .With
                     .Message
-                    .Contains($@"""{nameof(ConsoleColor)}.{nameof(ConsoleColor.DarkRed)}"""));
+                    .Contains(AsInvariant($@"""{nameof(ConsoleColor)}.{nameof(ConsoleColor.DarkRed)}""")));
 
         [Test]
         [SuppressMessage("ReSharper", "AssignNullToNotNullAttribute")]

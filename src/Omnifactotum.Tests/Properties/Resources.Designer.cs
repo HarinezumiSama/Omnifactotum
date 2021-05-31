@@ -70,7 +70,7 @@ namespace Omnifactotum.Tests.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to OmnifactotumGenericObjectExtensionsTests.ClassWithPropertyGetterThrowingException :: Property1Good:int = {int :: 42}, Property2Bad:DateTime = { Error getting the property value: [NotImplementedException] Never gonna be implemented. }, Property3Bad:IEnumerable&lt;string&gt; = {OmnifactotumGenericObjectExtensionsTests.ClassWithPropertyGetterThrowingException.ThrowingEnumerable :: [Elements:string] = {{string :: &quot;Item0&quot;}, { Error getting the collection element at index 1: [NotImplementedException] No item at index 1 [rest of string was truncated]&quot;;.
+        ///   Looks up a localized string similar to OmnifactotumGenericObjectExtensionsTests.ClassWithPropertyGetterThrowingException :: Property1Good:int = {int :: 42}, Property2Bad:DateTime = { Error getting the property value: [NotImplementedException] Never going to be implemented. }, Property3Bad:IEnumerable&lt;string&gt; = {OmnifactotumGenericObjectExtensionsTests.ClassWithPropertyGetterThrowingException.ThrowingEnumerable :: [Elements:string] = {{string :: &quot;Item0&quot;}, { Error getting the collection element at index 1: [NotImplementedException] No item at inde [rest of string was truncated]&quot;;.
         /// </summary>
         internal static string ExpectedClassWithPropertyGetterThrowingExceptionToPropertyString {
             get {

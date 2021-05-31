@@ -84,7 +84,7 @@ namespace Omnifactotum.Validation.Constraints
                 throw new ArgumentNullException(nameof(valueContext));
             }
 
-            if (ReferenceEquals(value, null))
+            if (value is null)
             {
                 throw new ArgumentNullException(nameof(value));
             }
@@ -142,7 +142,7 @@ namespace Omnifactotum.Validation.Constraints
                 throw new ArgumentNullException(nameof(valueContext));
             }
 
-            if (ReferenceEquals(value, null))
+            if (value is null)
             {
                 throw new ArgumentNullException(nameof(value));
             }
@@ -163,7 +163,7 @@ namespace Omnifactotum.Validation.Constraints
 
             constraint.Validate(validatorContext, memberContext, memberValue);
 
-            if (ReferenceEquals(memberValue, null))
+            if (memberValue is null)
             {
                 return;
             }

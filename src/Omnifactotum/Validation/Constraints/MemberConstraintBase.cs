@@ -1,6 +1,6 @@
 ﻿using System;
-using System.Globalization;
 using Omnifactotum.Annotations;
+using static Omnifactotum.FormattableStringFactotum;
 
 namespace Omnifactotum.Validation.Constraints
 {
@@ -78,9 +78,9 @@ namespace Omnifactotum.Validation.Constraints
                 return (TTarget)value;
             }
 
-            var message =
-                $@"The type of the value '{value.GetTypeSafely().GetFullName()}' is not compatible with the type '{
-                    targetType.GetFullName()}' expected by the constraint '{GetType().GetQualifiedName()}'.";
+            var message = AsInvariant(
+                $@"The type of the value {value.GetTypeSafely().GetFullName().ToUIString()} is not compatible with the type {
+                    targetType.GetFullName().ToUIString()} expected by the constraint {GetType().GetQualifiedName().ToUIString()}.");
 
             throw new InvalidOperationException(message);
         }
@@ -138,11 +138,7 @@ namespace Omnifactotum.Validation.Constraints
                 throw new ArgumentNullException(nameof(memberContext));
             }
 
-            var failureMessage = string.Format(
-                CultureInfo.InvariantCulture,
-                @"Validation of the constraint '{0}' failed.",
-                GetType().GetQualifiedName());
-
+            var failureMessage = AsInvariant($@"Validation of the constraint {GetType().GetQualifiedName().ToUIString()} failed.");
             AddError(validatorContext, memberContext, failureMessage);
         }
     }

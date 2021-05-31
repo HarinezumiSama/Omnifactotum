@@ -2,6 +2,7 @@
 using NUnit.Framework;
 using NUnit.Framework.Constraints;
 using Omnifactotum.NUnit;
+using static Omnifactotum.FormattableStringFactotum;
 
 namespace Omnifactotum.Tests
 {
@@ -88,9 +89,10 @@ namespace Omnifactotum.Tests
             foreach (var value in _values)
             {
                 var container = new ValueContainer<T>(value);
+
                 Assert.That(
                     container.ToString(),
-                    Is.EqualTo($@"{{ {nameof(ValueContainer<T>.Value)} = {value.ToStringSafelyInvariant()} }}"));
+                    Is.EqualTo(AsInvariant($@"{{ {nameof(ValueContainer<T>.Value)} = {value.ToStringSafelyInvariant()} }}")));
             }
         }
 

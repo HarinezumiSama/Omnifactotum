@@ -1,6 +1,7 @@
 ﻿using System;
 using NUnit.Framework.Constraints;
 using Omnifactotum.Annotations;
+using static Omnifactotum.FormattableStringFactotum;
 
 namespace Omnifactotum.Tests.Internal
 {
@@ -22,6 +23,6 @@ namespace Omnifactotum.Tests.Internal
             get;
         }
 
-        public override string ToString() => $@"{{ {nameof(Input)} = {Input}, {nameof(Constraint)} = {Constraint} }}";
+        public override string ToString() => AsInvariant($@"{{ {nameof(Input)} = {Input}, {nameof(Constraint)} = {Constraint} }}");
     }
 }

@@ -1,7 +1,8 @@
 ﻿using System.IO;
 using Omnifactotum.Annotations;
+using static Omnifactotum.FormattableStringFactotum;
 
-//// ReSharper disable once CheckNamespace - Namespace is intentionally named so in order to simplify usage of extension methods
+//// ReSharper disable once CheckNamespace :: Namespace is intentionally named so in order to simplify usage of extension methods
 
 namespace System.Reflection
 {
@@ -35,7 +36,7 @@ namespace System.Reflection
 
             ArgumentException CreateNoLocalPathException()
                 => new ArgumentException(
-                    $@"The assembly {{ {assembly.FullName} }} does not have a local path.",
+                    AsInvariant($@"The assembly {{ {assembly.FullName} }} does not have a local path."),
                     nameof(assembly));
 
             if (assembly.IsDynamic || string.IsNullOrEmpty(assembly.Location))

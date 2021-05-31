@@ -70,8 +70,10 @@ namespace Omnifactotum.Tests.ExtensionMethods
         {
             const string NumberFormat = @"N0";
 
+            //// ReSharper disable StringLiteralTypo :: Date/time format specifiers
             const string RussianDateFormat = @"dddd', 'd' 'MMMM' 'yyyy' г. 'HH':'mm':'ss";
             const string JapaneseDateFormat = @"yyyy'年'MMMMd'日'dddd' 'HH':'mm':'ss";
+            //// ReSharper restore StringLiteralTypo
 
             var russianCultureInfo = new CultureInfo(@"ru-RU");
             var japaneseCultureInfo = new CultureInfo(@"ja-JP");
@@ -307,6 +309,7 @@ namespace Omnifactotum.Tests.ExtensionMethods
 
             Assert.That(actualResultWithSpecificOptions, Is.EqualTo(expectedString));
 
+            //// ReSharper disable once InvertIf
             if (options is null)
             {
                 var methodWithDefaultOptions =
@@ -801,7 +804,7 @@ namespace Omnifactotum.Tests.ExtensionMethods
             public int Property1Good => 42;
 
             [UsedImplicitly]
-            public DateTime Property2Bad => throw new NotImplementedException("Never gonna be implemented.");
+            public DateTime Property2Bad => throw new NotImplementedException(@"Never going to be implemented.");
 
             [UsedImplicitly]
             public IEnumerable<string> Property3Bad => new ThrowingEnumerable();
@@ -845,16 +848,16 @@ namespace Omnifactotum.Tests.ExtensionMethods
                         switch (_index)
                         {
                             case 0:
-                                return "Item0";
+                                return @"Item0";
 
                             case 1:
-                                throw new NotImplementedException("No item at index 1.");
+                                throw new NotImplementedException(@"No item at index 1.");
 
                             case 2:
-                                return "Item2";
+                                return @"Item2";
 
                             default:
-                                throw new InvalidOperationException("Cannot access items outside range.");
+                                throw new InvalidOperationException(@"Cannot access items outside range.");
                         }
                     }
                 }

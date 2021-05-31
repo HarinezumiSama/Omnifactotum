@@ -1,8 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
-using System.Globalization;
 using Omnifactotum.Annotations;
+using static Omnifactotum.FormattableStringFactotum;
 
 namespace Omnifactotum
 {
@@ -116,7 +116,7 @@ namespace Omnifactotum
         ///     A <see cref="System.String"/> that represents this <see cref="ValueRange{T}"/>.
         /// </returns>
         [Pure]
-        public override string ToString() => string.Format(CultureInfo.InvariantCulture, "[{0}; {1}]", Lower, Upper);
+        public override string ToString() => AsInvariant($"[{Lower}; {Upper}]");
 
         /// <summary>
         ///     Determines whether the current range contains the specified value.

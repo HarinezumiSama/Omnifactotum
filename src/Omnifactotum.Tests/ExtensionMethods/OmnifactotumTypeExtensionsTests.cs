@@ -22,26 +22,19 @@ namespace Omnifactotum.Tests.ExtensionMethods
         [Test]
         public void TestGetManifestResourceStreamNonExistentResourceNameIsPassedThenReturnsNull()
         {
-            using (var stream = GetType().GetManifestResourceStream("NonExistentResourceName"))
-            {
-                Assert.That(stream, Is.Null);
-            }
+            using var stream = GetType().GetManifestResourceStream("NonExistentResourceName");
+            Assert.That(stream, Is.Null);
         }
 
         [Test]
         public void TestGetManifestResourceStreamWhenValidResourceNameIsPassedThenReturnsNonNullStream()
         {
-            using (var stream =
-                GetType().GetManifestResourceStream("OmnifactotumTypeExtensionsTests.TestResource.txt"))
-            {
-                Assert.That(stream, Is.Not.Null);
+            using var stream = GetType().GetManifestResourceStream("OmnifactotumTypeExtensionsTests.TestResource.txt");
+            Assert.That(stream, Is.Not.Null);
 
-                using (var reader = new StreamReader(stream))
-                {
-                    var actualValue = reader.ReadToEnd();
-                    Assert.That(actualValue, Is.EqualTo("Test"));
-                }
-            }
+            using var reader = new StreamReader(stream);
+            var actualValue = reader.ReadToEnd();
+            Assert.That(actualValue, Is.EqualTo("Test"));
         }
 
         [Test]

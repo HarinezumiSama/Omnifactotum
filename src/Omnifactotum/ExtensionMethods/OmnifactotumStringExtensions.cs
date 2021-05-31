@@ -3,10 +3,10 @@ using System.Globalization;
 using System.Text;
 using Omnifactotum;
 using Omnifactotum.Annotations;
+using static Omnifactotum.FormattableStringFactotum;
 using PureAttribute = System.Diagnostics.Contracts.PureAttribute;
 
-//// Namespace is intentionally named so in order to simplify usage of extension methods
-//// ReSharper disable once CheckNamespace
+//// ReSharper disable once CheckNamespace :: Namespace is intentionally named so in order to simplify usage of extension methods
 
 namespace System
 {
@@ -93,7 +93,7 @@ namespace System
             if (!proxyResult.HasValue)
             {
                 throw new ArgumentException(
-                    $@"The specified value cannot be converted to {nameof(Boolean)}.",
+                    AsInvariant($@"The specified value cannot be converted to {nameof(Boolean)}."),
                     nameof(value));
             }
 

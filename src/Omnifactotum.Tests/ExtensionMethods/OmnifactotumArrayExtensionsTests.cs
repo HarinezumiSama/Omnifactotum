@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
 using NUnit.Framework;
@@ -98,9 +97,7 @@ namespace Omnifactotum.Tests.ExtensionMethods
         [TestCase(false)]
         [TestCase(true)]
         public void TestToHexStringWithCaseNegative(bool useUpperCase)
-        {
-            Assert.That(() => NullByteArray.ToHexString(useUpperCase), Throws.TypeOf<ArgumentNullException>());
-        }
+            => Assert.That(() => NullByteArray.ToHexString(useUpperCase), Throws.TypeOf<ArgumentNullException>());
 
         [Test]
         [TestCase(false, "01c8")]
@@ -115,10 +112,7 @@ namespace Omnifactotum.Tests.ExtensionMethods
         }
 
         [Test]
-        public void TestToHexStringNegative()
-        {
-            Assert.That(() => NullByteArray.ToHexString(), Throws.TypeOf<ArgumentNullException>());
-        }
+        public void TestToHexStringNegative() => Assert.That(() => NullByteArray.ToHexString(), Throws.TypeOf<ArgumentNullException>());
 
         [Test]
         public void TestToHexString()
@@ -136,15 +130,9 @@ namespace Omnifactotum.Tests.ExtensionMethods
             public int Value { private get; set; }
 
             [UsedImplicitly]
-            public CopyableObject Copy()
-            {
-                return new CopyableObject { Value = Value };
-            }
+            public CopyableObject Copy() => new CopyableObject { Value = Value };
 
-            public object Clone()
-            {
-                return Copy();
-            }
+            public object Clone() => Copy();
         }
     }
 }

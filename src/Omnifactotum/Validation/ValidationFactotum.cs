@@ -1,8 +1,8 @@
 ﻿using System;
-using System.Globalization;
 using System.Linq.Expressions;
 using Omnifactotum.Annotations;
 using Omnifactotum.Validation.Constraints;
+using static Omnifactotum.FormattableStringFactotum;
 
 namespace Omnifactotum.Validation
 {
@@ -105,11 +105,9 @@ namespace Omnifactotum.Validation
                 return constraintType;
             }
 
-            var message = string.Format(
-                CultureInfo.InvariantCulture,
-                @"The specified type '{0}' is not a valid constraint type (must implement '{1}').",
-                constraintType.GetFullName(),
-                CompatibleMemberConstraintType.GetFullName());
+            var message = AsInvariant(
+                $@"The specified type {constraintType.GetFullName().ToUIString()} is not a valid constraint type (must implement {
+                    CompatibleMemberConstraintType.GetFullName().ToUIString()}).");
 
             throw new ArgumentException(message, nameof(constraintType));
         }

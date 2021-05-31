@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using Omnifactotum.Annotations;
+using static Omnifactotum.FormattableStringFactotum;
 
 namespace Omnifactotum
 {
@@ -20,27 +21,20 @@ namespace Omnifactotum
         /// <param name="value">
         ///     The value to initialize this instance with.
         /// </param>
-        public ValueContainer([CanBeNull] T value)
-        {
-            Value = value;
-        }
+        public ValueContainer([CanBeNull] T value) => Value = value;
 
         /// <summary>
         ///     Initializes a new instance of the <see cref="ValueContainer{T}"/> class
         ///     using the default value for the type <typeparamref name="T"/>.
         /// </summary>
         public ValueContainer()
-            : this(default(T))
+            : this(default)
         {
             // Nothing to do
         }
 
         /// <inheritdoc />
-        public T Value
-        {
-            get;
-            set;
-        }
+        public T Value { get; set; }
 
         /// <summary>
         ///     Determines whether the two specified <see cref="ValueContainer{T}"/> instances are equal.
@@ -78,7 +72,7 @@ namespace Omnifactotum
         /// <returns>
         ///     A <see cref="String" /> that represents this <see cref="ValueContainer{T}"/> instance.
         /// </returns>
-        public override string ToString() => $@"{{ {nameof(Value)} = {Value.ToStringSafelyInvariant()} }}";
+        public override string ToString() => AsInvariant($@"{{ {nameof(Value)} = {Value.ToStringSafelyInvariant()} }}");
 
         /// <summary>
         ///     Determines whether the specified <see cref="object" /> is equal to
@@ -99,8 +93,9 @@ namespace Omnifactotum
         /// <returns>
         ///     A hash code for this <see cref="ValueContainer{T}"/> instance.
         /// </returns>
-        //// ReSharper disable once NonReadonlyMemberInGetHashCode - Specific use-case
-        public override int GetHashCode() => Value.GetHashCodeSafely();
+        public override int GetHashCode()
+            //// ReSharper disable once NonReadonlyMemberInGetHashCode :: Specific use-case
+            => Value.GetHashCodeSafely();
 
         /// <summary>
         ///     Determines whether the current <see cref="ValueContainer{T}"/> instance is equal to another instance
@@ -115,7 +110,9 @@ namespace Omnifactotum
         /// </returns>
         public bool Equals(ValueContainer<T> other) => Equals(this, other);
 
-        private static bool Equals(IValueContainer<T> left, IValueContainer<T> right)
+        //// ReSharper disable SuggestBaseTypeForParameter :: Performance
+        private static bool Equals(ValueContainer<T> left, ValueContainer<T> right)
+            //// ReSharper restore SuggestBaseTypeForParameter
         {
             if (ReferenceEquals(left, right))
             {
