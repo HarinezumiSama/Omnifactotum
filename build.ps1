@@ -52,7 +52,17 @@ param
     [Parameter()]
     [AllowNull()]
     [AllowEmptyString()]
-    [string] $AppveyorOriginalBuildVersion = $env:APPVEYOR_BUILD_VERSION
+    [string] $AppveyorOriginalBuildVersion = $env:APPVEYOR_BUILD_VERSION,
+
+    [Parameter()]
+    [AllowNull()]
+    [AllowEmptyString()]
+    [string] $AppveyorDeploymentFlagVariableName = $null,
+
+    [Parameter()]
+    [AllowNull()]
+    [AllowEmptyString()]
+    [string] $AppveyorDeploymentVersionVariableName = $null
 )
 begin
 {
@@ -310,6 +320,8 @@ process
             Write-Host -ForegroundColor Green "AppveyorSourceCodeRevisionId: ""$AppveyorSourceCodeRevisionId"""
             Write-Host -ForegroundColor Green "AppveyorBuildNumber: ""$AppveyorBuildNumber"""
             Write-Host -ForegroundColor Green "AppveyorOriginalBuildVersion: ""$AppveyorOriginalBuildVersion"""
+            Write-Host -ForegroundColor Green "AppveyorDeployFlagVariableName: ""$AppveyorDeploymentFlagVariableName"""
+            Write-Host -ForegroundColor Green "AppveyorDeploymentVersionVariableName: ""$AppveyorDeploymentVersionVariableName"""
         }
 
         Write-MajorSeparator
@@ -389,6 +401,18 @@ process
                     'The original Appveyor build version cannot be blank when the AppveyorBuild switch is ON.',
                     'AppveyorOriginalBuildVersion')
             }
+            if ([string]::IsNullOrWhiteSpace($AppveyorDeploymentFlagVariableName))
+            {
+                throw [ArgumentException]::new(
+                    'The name of the deployment flag environment variable cannot be blank when the AppveyorBuild switch is ON.',
+                    'AppveyorDeploymentFlagVariableName')
+            }
+            if ([string]::IsNullOrWhiteSpace($AppveyorDeploymentVersionVariableName))
+            {
+                throw [ArgumentException]::new(
+                    'The name of the deployment version environment variable cannot be blank when the AppveyorBuild switch is ON.',
+                    'AppveyorDeploymentVersionVariableName')
+            }
 
             $resolvedArtifactsDirectoryPath = $AppveyorArtifactsSubdirectory | Resolve-WorkspacePath
             Ensure-CleanDirectory -LiteralPath $resolvedArtifactsDirectoryPath
@@ -461,7 +485,7 @@ process
                 -Version "v$($version): $AppveyorOriginalBuildVersion"
 
             Set-AppveyorBuildVariable `
-                -Name CI_OUT_ARG_DEPLOYMENT_VERSION `
+                -Name $AppveyorDeploymentVersionVariableName `
                 -Value "v$version [build $resolvedBuildNumber] [$dateStamp]"
         }
 
@@ -623,6 +647,9 @@ process
                     -Message ("The current package version is ""$version""" `
                         + ", but the version ""$latestPublishedPackageVersion"" is already published" `
                         + ". Skipping to publish the NuGet package ""$packageId"".")
+
+                Set-AppveyorBuildVariable -Name $AppveyorDeploymentFlagVariableName -Value 'false'
+                Set-AppveyorBuildVariable -Name $AppveyorDeploymentVersionVariableName -Value ([string]::Empty)
             }
             else
             {

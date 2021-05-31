@@ -18,6 +18,7 @@ matrix:
 environment:
   CI_ARG_PRERELEASE_SUFFIX: '-internal'
   CI_OUT_ARG_DEPLOYMENT_VERSION: ''
+  CI_OUT_ARG_DEPLOY: 'false'
 for:
   -
     branches:
@@ -37,6 +38,7 @@ for:
         - master
     environment:
       CI_ARG_PRERELEASE_SUFFIX: ''
+      CI_OUT_ARG_DEPLOY: 'true'
 build_script:
 - ps: >-
     $Script:ErrorActionPreference = [System.Management.Automation.ActionPreference]::Stop;
@@ -49,10 +51,12 @@ build_script:
         -BuildConfiguration $env:Configuration `
         -BuildPlatform $env:Platform `
         -EnableDotCover `
+        -PrereleaseSuffix $env:CI_ARG_PRERELEASE_SUFFIX `
         -AppveyorBuild `
         -AppveyorSourceCodeRevisionId $env:APPVEYOR_REPO_COMMIT `
         -AppveyorBuildNumber $env:APPVEYOR_BUILD_NUMBER `
-        -PrereleaseSuffix $env:CI_ARG_PRERELEASE_SUFFIX
+        -AppveyorDeploymentFlagVariableName 'CI_OUT_ARG_DEPLOY' `
+        -AppveyorDeploymentVersionVariableName 'CI_OUT_ARG_DEPLOYMENT_VERSION'
 test: off
 artifacts:
 - path: .artifacts\**\*
@@ -65,6 +69,7 @@ deploy:
 - provider: GitHub
   on:
     branch: master
+    CI_OUT_ARG_DEPLOY: 'true'
   release: '$(CI_OUT_ARG_DEPLOYMENT_VERSION)'
   description: '$(APPVEYOR_PROJECT_NAME) $(CI_OUT_ARG_DEPLOYMENT_VERSION)'
   draft: true
@@ -75,7 +80,6 @@ deploy:
 notifications:
 - provider: Email
   to:
-  - vitalii.maklai@gmail.com
   - '{{commitAuthorEmail}}'
   subject: '[AppVeyor] {{projectName}} {{buildVersion}}: Build {{status}} ({{branch}} @ {{commitId}})'
   on_build_success: true
