@@ -2,12 +2,21 @@
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 
-#if (NETFRAMEWORK && !NET40_OR_GREATER)
-#error [NETFRAMEWORK] The compiler does not support `NET*_OR_GREATER` preprocessor directives required to compile this project.
+#if NETFRAMEWORK && !NET40_OR_GREATER
+#error [NETFRAMEWORK] The compiler does not support `NET*_OR_GREATER` preprocessor symbols required to compile this project.
 #endif
 
-#if (NETCOREAPP && !NET5_0_OR_GREATER)
-#error [NETCOREAPP] The compiler does not support `NET*_OR_GREATER` preprocessor directives required to compile this project.
+//// Enable and use once Appveyor updates their VM image with VS2019 16.10 or higher
+//#if NETSTANDARD && !NETSTANDARD1_0_OR_GREATER
+//#error [NETSTANDARD] The compiler does not support `NET*_OR_GREATER` preprocessor symbols required to compile this project.
+//#endif
+
+#if NETCOREAPP && !NETCOREAPP1_0_OR_GREATER
+#error [NETCOREAPP] The compiler does not support `NET*_OR_GREATER` preprocessor symbols required to compile this project.
+#endif
+
+#if NET5_0 && !NET5_0_OR_GREATER
+#error [NET5_0] The compiler does not support `NET*_OR_GREATER` preprocessor symbols required to compile this project.
 #endif
 
 // Miscellaneous
