@@ -1,14 +1,20 @@
 ﻿# Omnifactotum
-Provides own *helper* and *functional* classes as well as *extension methods* for standard .NET classes.
 
-**Note**: `Factotum` is a Latin word literally meaning "do everything" (that is, a *handyman* or *Jack-of-all-trades*).
+Provides own **helper** and **functional** classes as well as **extension methods** for the standard .NET types.
+
+**Note**: `Factotum` is a Latin word literally meaning "*do everything*" (that is, a *handyman* or *Jack-of-all-trades*).
 
 ### Release Notes
 
 - [Release Notes](./src/Omnifactotum.ReleaseNotes.md)
 
-### Status and Statistics
-- [![Build status](https://ci.appveyor.com/api/projects/status/8kcys4vgvk1cd1gg?svg=true)](https://ci.appveyor.com/project/HarinezumiSama/omnifactotum)
+### Build Status
+| Branch  | Status  |
+| :------ | :------ |
+| `master` | [![Build status (master)](https://ci.appveyor.com/api/projects/status/8kcys4vgvk1cd1gg/branch/master?svg=true)](https://ci.appveyor.com/project/HarinezumiSama/omnifactotum/branch/master) |
+| `develop` | [![Build status (develop)](https://ci.appveyor.com/api/projects/status/8kcys4vgvk1cd1gg/branch/develop?svg=true)](https://ci.appveyor.com/project/HarinezumiSama/omnifactotum/branch/develop) |
+
+### Statistics
 
 - [![NuGet package version](https://img.shields.io/nuget/v/Omnifactotum.svg) ![NuGet package downloads](https://img.shields.io/nuget/dt/Omnifactotum.svg)](https://www.nuget.org/packages/Omnifactotum/) [![Omnifactotum on fuget.org](https://www.fuget.org/packages/Omnifactotum/badge.svg)](https://www.fuget.org/packages/Omnifactotum) ![Libraries.io SourceRank](https://img.shields.io/librariesio/sourcerank/nuget/Omnifactotum) ![Dependents (via libraries.io)](https://img.shields.io/librariesio/dependents/nuget/Omnifactotum)
 
@@ -56,7 +62,7 @@ Provides own *helper* and *functional* classes as well as *extension methods* fo
 - `FixedSizeDictionary<TKey, TValue>`
 - `KeyedEqualityComparer<T, TKey>`
 - `ReadOnlyDictionary<TKey, TValue>`
-  - **NOTE**: `.NET Framework 4.0` only; as of `.NET Framework 4.5+` [`System.Collections.ObjectModel.ReadOnlyDictionary<TKey, TValue>`](https://docs.microsoft.com/en-us/dotnet/api/system.collections.objectmodel.readonlydictionary-2?view=netframework-4.5) is available. 
+  - **NOTE**: `.NET Framework 4.0` only; as of `.NET Framework 4.5+` [`System.Collections.ObjectModel.ReadOnlyDictionary<TKey, TValue>`](https://docs.microsoft.com/en-us/dotnet/api/system.collections.objectmodel.readonlydictionary-2?view=netframework-4.5) is available.
 - `ReadOnlyItemCollection<T>` (the read-only wrapper for [`ICollection<T>`](https://docs.microsoft.com/en-us/dotnet/api/system.collections.generic.icollection-1))
 - `ReadOnlySet<T>`
 - `ValueRange<T>`
@@ -72,4 +78,3 @@ Due to certain inconsistencies between `.NET Standard 2.0` and `.NET Core 2.x`, 
 | `System.Collections.Generic.KeyValuePair` | Use [`Omnifactotum.OmnifactotumKeyValuePair`](./src/Omnifactotum/OmnifactotumKeyValuePair.cs). |
 | <code>[OmnifactotumCollectionExtensions](./src/Omnifactotum/ExtensionMethods/OmnifactotumCollectionExtensions.cs).ToHashSet(...)</code> | Use static method invocation instead of extension method invocation. That is: `OmnifactotumCollectionExtensions.ToHashSet(collection)` instead of `collection.ToHashSet()`. |
 | <code>[OmnifactotumDictionaryExtensions](./src/Omnifactotum/ExtensionMethods/OmnifactotumDictionaryExtensions.cs).GetValueOrDefault</code> | Use static method invocation instead of extension method invocation. That is: `OmnifactotumDictionaryExtensions.GetValueOrDefault(dictionary)` instead of `dictionary.GetValueOrDefault()`. |
-
