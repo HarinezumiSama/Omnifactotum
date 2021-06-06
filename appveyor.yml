@@ -1,12 +1,13 @@
 version: 'Build #{build} [{branch}]'
 pull_requests:
-  do_not_increment_build_number: true
+  do_not_increment_build_number: false
+skip_branch_with_pr: true
+skip_tags: true
 branches:
   only:
   - master
   - develop
   - /feature\/.*/
-skip_tags: true
 image: Visual Studio 2019
 configuration: Release
 platform: Any CPU
