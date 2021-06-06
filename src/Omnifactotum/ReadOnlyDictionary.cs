@@ -79,7 +79,7 @@ namespace Omnifactotum
         ///     The element with the specified key.
         /// </returns>
         /// <exception cref="System.ArgumentNullException">
-        ///     <paramref name="key"/> is <c>null</c>.
+        ///     <paramref name="key"/> is <see langword="null"/>.
         /// </exception>
         /// <exception cref="System.Collections.Generic.KeyNotFoundException">
         ///     The property is retrieved and key is not found.
@@ -103,7 +103,7 @@ namespace Omnifactotum
         ///     The property is set and the current dictionary is read-only.
         /// </exception>
         /// <exception cref="System.ArgumentNullException">
-        ///     <paramref name="key"/> is <c>null</c>.
+        ///     <paramref name="key"/> is <see langword="null"/>.
         /// </exception>
         /// <exception cref="System.Collections.Generic.KeyNotFoundException">
         ///     The property is retrieved and key is not found.
@@ -149,7 +149,7 @@ namespace Omnifactotum
         ///     The key of the element to remove.
         /// </param>
         /// <returns>
-        ///     <c>true</c> if the element is successfully removed; otherwise, <c>false</c>.
+        ///     <see langword="true"/> if the element is successfully removed; otherwise, <see langword="false"/>.
         /// </returns>
         bool IDictionary<TKey, TValue>.Remove(TKey key) => throw CreateReadOnlyInstanceException();
 
@@ -160,8 +160,8 @@ namespace Omnifactotum
         ///     The key to locate in the current dictionary.
         /// </param>
         /// <returns>
-        ///     <c>true</c> if the current dictionary contains an element
-        ///     with the specified key; otherwise, <c>false</c>.
+        ///     <see langword="true"/> if the current dictionary contains an element
+        ///     with the specified key; otherwise, <see langword="false"/>.
         /// </returns>
         public bool ContainsKey(TKey key) => _dictionary.ContainsKey(key);
 
@@ -177,8 +177,8 @@ namespace Omnifactotum
         ///     parameter. This parameter is passed uninitialized.
         /// </param>
         /// <returns>
-        ///     <c>true</c> if the current dictionary contains an element with the specified key;
-        ///     otherwise, <c>false</c>.
+        ///     <see langword="true"/> if the current dictionary contains an element with the specified key;
+        ///     otherwise, <see langword="false"/>.
         /// </returns>
         public bool TryGetValue(TKey key, out TValue value) => _dictionary.TryGetValue(key, out value);
 
@@ -186,7 +186,7 @@ namespace Omnifactotum
         ///     Gets a value indicating whether the current collection is read-only.
         /// </summary>
         /// <returns>
-        ///     <c>true</c> if the current collection is read-only; otherwise, <c>false</c>.
+        ///     <see langword="true"/> if the current collection is read-only; otherwise, <see langword="false"/>.
         /// </returns>
         bool ICollection<KeyValuePair<TKey, TValue>>.IsReadOnly => true;
 
@@ -229,7 +229,7 @@ namespace Omnifactotum
         ///     The object to remove from the current collection.
         /// </param>
         /// <returns>
-        ///     <c>true</c> if item was successfully removed from the current collection; otherwise, false.
+        ///     <see langword="true"/> if item was successfully removed from the current collection; otherwise, false.
         /// </returns>
         /// <exception cref="System.NotSupportedException">
         ///     The current collection is read-only.
@@ -244,7 +244,7 @@ namespace Omnifactotum
         ///     The object to locate in the current collection.
         /// </param>
         /// <returns>
-        ///     <c>true</c> if item is found in the current collection; otherwise, <c>false</c>.
+        ///     <see langword="true"/> if item is found in the current collection; otherwise, <see langword="false"/>.
         /// </returns>
         public bool Contains(KeyValuePair<TKey, TValue> item) => _dictionary.Contains(item);
 

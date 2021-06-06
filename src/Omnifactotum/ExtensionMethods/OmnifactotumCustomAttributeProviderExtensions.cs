@@ -21,14 +21,14 @@ namespace System.Reflection
         ///     The provider of custom attributes to get the attribute list of.
         /// </param>
         /// <param name="inherit">
-        ///     <c>true</c> to look up the hierarchy chain for the inherited custom attribute;
-        ///     otherwise, <c>false</c>.
+        ///     <see langword="true"/> to look up the hierarchy chain for the inherited custom attribute;
+        ///     otherwise, <see langword="false"/>.
         /// </param>
         /// <returns>
         ///     The list of the attributes of the specified type.
         /// </returns>
         /// <exception cref="System.ArgumentNullException">
-        ///     <paramref name="provider"/> is <c>null</c>.
+        ///     <paramref name="provider"/> is <see langword="null"/>.
         /// </exception>
         public static TAttribute[] GetCustomAttributeArray<TAttribute>(
             [NotNull] this ICustomAttributeProvider provider,
@@ -68,14 +68,14 @@ namespace System.Reflection
         ///     The provider of custom attributes to get the sole attribute of.
         /// </param>
         /// <param name="inherit">
-        ///     <c>true</c> to look up the hierarchy chain for the inherited custom attribute;
-        ///     otherwise, <c>false</c>.
+        ///     <see langword="true"/> to look up the hierarchy chain for the inherited custom attribute;
+        ///     otherwise, <see langword="false"/>.
         /// </param>
         /// <returns>
         ///     The attribute of the specified type.
         /// </returns>
         /// <exception cref="System.ArgumentNullException">
-        ///     <paramref name="provider"/> is <c>null</c>.
+        ///     <paramref name="provider"/> is <see langword="null"/>.
         /// </exception>
         /// <exception cref="System.InvalidOperationException">
         ///     The specified attribute either is not applied to the specified provider at all
@@ -89,7 +89,7 @@ namespace System.Reflection
 
         /// <summary>
         ///     Gets the sole specified attribute applied to the specified provider of custom attributes,
-        ///     or <c>null</c> if the specified attribute is not applied.
+        ///     or <see langword="null"/> if the specified attribute is not applied.
         /// </summary>
         /// <typeparam name="TAttribute">
         ///     The type of the attribute.
@@ -98,14 +98,14 @@ namespace System.Reflection
         ///     The provider of custom attributes to get the sole attribute of.
         /// </param>
         /// <param name="inherit">
-        ///     <c>true</c> to look up the hierarchy chain for the inherited custom attribute;
-        ///     otherwise, <c>false</c>.
+        ///     <see langword="true"/> to look up the hierarchy chain for the inherited custom attribute;
+        ///     otherwise, <see langword="false"/>.
         /// </param>
         /// <returns>
         ///     The attribute of the specified type.
         /// </returns>
         /// <exception cref="System.ArgumentNullException">
-        ///     <paramref name="provider"/> is <c>null</c>.
+        ///     <paramref name="provider"/> is <see langword="null"/>.
         /// </exception>
         /// <exception cref="System.InvalidOperationException">
         ///     The specified attribute is applied more than once.

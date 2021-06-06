@@ -43,7 +43,7 @@ namespace Omnifactotum
         ///     The second object of type <typeparamref name="T"/> to compare.
         /// </param>
         /// <returns>
-        ///     <c>true</c> if the specified objects are equal by reference; otherwise, <c>false</c>.
+        ///     <see langword="true"/> if the specified objects are equal by reference; otherwise, <see langword="false"/>.
         /// </returns>
         public bool Equals(T x, T y)
         {

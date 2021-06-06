@@ -11,7 +11,7 @@ namespace System
     {
         /// <summary>
         ///     Calls the <see cref="IDisposable.Dispose"/> method of the specified instance implementing
-        ///     the <see cref="IDisposable"/> interface, if this instance is not <c>null</c>;
+        ///     the <see cref="IDisposable"/> interface, if this instance is not <see langword="null"/>;
         ///     otherwise, does nothing.
         /// </summary>
         /// <typeparam name="T">
@@ -26,7 +26,7 @@ namespace System
 
         /// <summary>
         ///     Calls the <see cref="IDisposable.Dispose"/> method of the specified instance implementing
-        ///     the <see cref="IDisposable"/> interface, if this instance is not <c>null</c>;
+        ///     the <see cref="IDisposable"/> interface, if this instance is not <see langword="null"/>;
         ///     otherwise, does nothing.
         /// </summary>
         /// <typeparam name="T">

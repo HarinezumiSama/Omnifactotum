@@ -14,7 +14,7 @@ namespace System.Collections.Generic
     {
         /// <summary>
         ///     Get the number of elements in the specified collection without enumerating all
-        ///     its elements. If it's not possible to do so, <c>null</c> is returned.
+        ///     its elements. If it's not possible to do so, <see langword="null"/> is returned.
         /// </summary>
         /// <typeparam name="T">
         ///     The type of the elements in the collection.
@@ -24,7 +24,7 @@ namespace System.Collections.Generic
         /// </param>
         /// <returns>
         ///     The number of elements in the specified collection if it was possible to determine it without
-        ///     enumerating collection's elements; otherwise, <c>null</c>.
+        ///     enumerating collection's elements; otherwise, <see langword="null"/>.
         /// </returns>
         public static int? GetFastCount<T>([CanBeNull] [NoEnumeration] this IEnumerable<T> collection)
         {
@@ -58,9 +58,9 @@ namespace System.Collections.Generic
         ///     the parameter represents the item to perform the action on.
         /// </param>
         /// <exception cref="System.ArgumentNullException">
-        ///     <para><paramref name="collection"/> is <c>null</c>.</para>
+        ///     <para><paramref name="collection"/> is <see langword="null"/>.</para>
         ///     <para>-or-</para>
-        ///     <para><paramref name="action"/> is <c>null</c>.</para>
+        ///     <para><paramref name="action"/> is <see langword="null"/>.</para>
         /// </exception>
         public static void DoForEach<T>([NotNull] this IEnumerable<T> collection, [NotNull] [InstantHandle] Action<T> action)
         {
@@ -95,9 +95,9 @@ namespace System.Collections.Generic
         ///     the second parameter represents the zero-based index of the element in the collection.
         /// </param>
         /// <exception cref="System.ArgumentNullException">
-        ///     <para><paramref name="collection"/> is <c>null</c>.</para>
+        ///     <para><paramref name="collection"/> is <see langword="null"/>.</para>
         ///     <para>-or-</para>
-        ///     <para><paramref name="action"/> is <c>null</c>.</para>
+        ///     <para><paramref name="action"/> is <see langword="null"/>.</para>
         /// </exception>
         public static void DoForEach<T>([NotNull] this IEnumerable<T> collection, [NotNull] [InstantHandle] Action<T, int> action)
         {
@@ -169,11 +169,11 @@ namespace System.Collections.Generic
         /// </param>
         /// <param name="comparer">
         ///     An <see cref="System.Collections.Generic.IEqualityComparer{T}"/> to compare elements in the
-        ///     collections, or <c>null</c> to use the default equality comparer for the type <typeparamref name="T"/>.
+        ///     collections, or <see langword="null"/> to use the default equality comparer for the type <typeparamref name="T"/>.
         /// </param>
         /// <returns>
-        ///     <c>true</c> if two specified collections contain identical items in any order or
-        ///     they both are <c>null</c>; otherwise, <c>false</c>.
+        ///     <see langword="true"/> if two specified collections contain identical items in any order or
+        ///     they both are <see langword="null"/>; otherwise, <see langword="false"/>.
         /// </returns>
         public static bool CollectionsEquivalent<T>(
             [CanBeNull] [InstantHandle] this IEnumerable<T> collection,
@@ -226,8 +226,8 @@ namespace System.Collections.Generic
         ///     The another collection to compare.
         /// </param>
         /// <returns>
-        ///     <c>true</c> if two specified collections contain identical items in any order or
-        ///     they both are <c>null</c>; otherwise, <c>false</c>.
+        ///     <see langword="true"/> if two specified collections contain identical items in any order or
+        ///     they both are <see langword="null"/>; otherwise, <see langword="false"/>.
         /// </returns>
         public static bool CollectionsEquivalent<T>(
             [CanBeNull] [InstantHandle] this IEnumerable<T> collection,
@@ -250,11 +250,11 @@ namespace System.Collections.Generic
         /// </param>
         /// <param name="comparer">
         ///     An <see cref="System.Collections.Generic.IEqualityComparer{T}"/> to compare elements in the
-        ///     collections, or <c>null</c> to use the default equality comparer for the type <typeparamref name="T"/>.
+        ///     collections, or <see langword="null"/> to use the default equality comparer for the type <typeparamref name="T"/>.
         /// </param>
         /// <returns>
-        ///     <c>true</c> if two specified collections contain identical items in the same order or
-        ///     they both are <c>null</c>; otherwise, <c>false</c>.
+        ///     <see langword="true"/> if two specified collections contain identical items in the same order or
+        ///     they both are <see langword="null"/>; otherwise, <see langword="false"/>.
         /// </returns>
         public static bool CollectionsEqual<T>(
             [CanBeNull] this IEnumerable<T> collection,
@@ -304,8 +304,8 @@ namespace System.Collections.Generic
         ///     The another collection to compare.
         /// </param>
         /// <returns>
-        ///     <c>true</c> if two specified collections contain identical items in the same order or
-        ///     they both are <c>null</c>; otherwise, <c>false</c>.
+        ///     <see langword="true"/> if two specified collections contain identical items in the same order or
+        ///     they both are <see langword="null"/>; otherwise, <see langword="false"/>.
         /// </returns>
         public static bool CollectionsEqual<T>(
             [CanBeNull] this IEnumerable<T> collection,
@@ -394,7 +394,7 @@ namespace System.Collections.Generic
 
         /// <summary>
         ///     Safely disposes of each element in the specified collection.
-        ///     If the collection is <c>null</c>, nothing is done.
+        ///     If the collection is <see langword="null"/>, nothing is done.
         /// </summary>
         /// <typeparam name="TDisposable">
         ///     The type of the disposable elements in the collection.
@@ -420,7 +420,7 @@ namespace System.Collections.Generic
 
         /// <summary>
         ///     Safely disposes of each element in the specified collection.
-        ///     If the collection is <c>null</c>, nothing is done.
+        ///     If the collection is <see langword="null"/>, nothing is done.
         /// </summary>
         /// <typeparam name="TDisposable">
         ///     The type of the disposable elements in the collection.
@@ -445,17 +445,17 @@ namespace System.Collections.Generic
         }
 
         /// <summary>
-        ///     Avoids the specified collection to be a <c>null</c> reference: returns the specified collection
-        ///     if it is not <c>null</c> or an empty collection otherwise.
+        ///     Avoids the specified collection to be a <see langword="null"/> reference: returns the specified collection
+        ///     if it is not <see langword="null"/> or an empty collection otherwise.
         /// </summary>
         /// <typeparam name="T">
         ///     The type of elements in the collection.
         /// </typeparam>
         /// <param name="source">
-        ///     The collection to secure from a <c>null</c> reference.
+        ///     The collection to secure from a <see langword="null"/> reference.
         /// </param>
         /// <returns>
-        ///     The source collection if it is not <c>null</c>; otherwise, empty collection.
+        ///     The source collection if it is not <see langword="null"/>; otherwise, empty collection.
         /// </returns>
         [NotNull]
         public static IEnumerable<T> AvoidNull<T>([CanBeNull] [NoEnumeration] this IEnumerable<T> source)
@@ -554,11 +554,11 @@ namespace System.Collections.Generic
         ///             <description>The result of the method</description>
         ///         </listheader>
         ///         <item>
-        ///             <term><c>null</c></term>
+        ///             <term><see langword="null"/></term>
         ///             <description>The literal: <b>&lt;null&gt;</b></description>
         ///         </item>
         ///         <item>
-        ///             <term>not <c>null</c></term>
+        ///             <term>not <see langword="null"/></term>
         ///             <description>
         ///                 A string value containing UI representations of each item in the
         ///                 collection separated with comma and whitespace. (See <see cref="OmnifactotumStringExtensions.ToUIString"/>.)
@@ -599,11 +599,11 @@ namespace System.Collections.Generic
         ///             <description>The result of the method</description>
         ///         </listheader>
         ///         <item>
-        ///             <term><c>null</c></term>
+        ///             <term><see langword="null"/></term>
         ///             <description>The literal: <b>&lt;null&gt;</b></description>
         ///         </item>
         ///         <item>
-        ///             <term>not <c>null</c></term>
+        ///             <term>not <see langword="null"/></term>
         ///             <description>
         ///                 A string value containing UI representations of each item in the
         ///                 collection separated with comma and whitespace. (See <see cref="OmnifactotumGenericObjectExtensions.ToUIString{T}(System.Nullable{T})"/>.)
@@ -649,11 +649,11 @@ namespace System.Collections.Generic
         ///             <description>The result of the method</description>
         ///         </listheader>
         ///         <item>
-        ///             <term><c>null</c></term>
+        ///             <term><see langword="null"/></term>
         ///             <description>The literal: <b>&lt;null&gt;</b></description>
         ///         </item>
         ///         <item>
-        ///             <term>not <c>null</c></term>
+        ///             <term>not <see langword="null"/></term>
         ///             <description>
         ///                 A string value containing UI representations of each item in the
         ///                 collection separated with comma and whitespace. (See <see cref="OmnifactotumGenericObjectExtensions.ToUIString{T}(System.Nullable{T},string,System.IFormatProvider)"/>.)
@@ -668,10 +668,10 @@ namespace System.Collections.Generic
         ///     The collection of nullable values to convert.
         /// </param>
         /// <param name="format">
-        ///     The format to use, or <c>null</c> to use the default format defined for the type <typeparamref name="T"/>.
+        ///     The format to use, or <see langword="null"/> to use the default format defined for the type <typeparamref name="T"/>.
         /// </param>
         /// <param name="formatProvider">
-        ///     The provider to use to format the value, or <c>null</c> to obtain the format
+        ///     The provider to use to format the value, or <see langword="null"/> to obtain the format
         ///     information from the current locale setting of the operating system.
         /// </param>
         /// <returns>
@@ -693,11 +693,11 @@ namespace System.Collections.Generic
         ///             <description>The result of the method</description>
         ///         </listheader>
         ///         <item>
-        ///             <term><c>null</c></term>
+        ///             <term><see langword="null"/></term>
         ///             <description>The literal: <b>&lt;null&gt;</b></description>
         ///         </item>
         ///         <item>
-        ///             <term>not <c>null</c></term>
+        ///             <term>not <see langword="null"/></term>
         ///             <description>
         ///                 A string value containing UI representations of each item in the
         ///                 collection separated with comma and whitespace. (See <see cref="OmnifactotumGenericObjectExtensions.ToUIString{T}(System.Nullable{T},System.IFormatProvider)"/>.)
@@ -712,7 +712,7 @@ namespace System.Collections.Generic
         ///     The collection of nullable values to convert.
         /// </param>
         /// <param name="formatProvider">
-        ///     The provider to use to format the value, or <c>null</c> to obtain the format
+        ///     The provider to use to format the value, or <see langword="null"/> to obtain the format
         ///     information from the current locale setting of the operating system.
         /// </param>
         /// <returns>

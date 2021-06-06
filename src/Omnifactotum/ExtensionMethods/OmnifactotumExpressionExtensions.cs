@@ -20,7 +20,7 @@ namespace System.Linq.Expressions
         ///     The expression to get the last called method of.
         /// </param>
         /// <returns>
-        ///     The last called method, or <c>null</c> if the last element in the expression is not a method call.
+        ///     The last called method, or <see langword="null"/> if the last element in the expression is not a method call.
         /// </returns>
         public static MethodInfo GetLastMethod<TDelegate>([NotNull] this Expression<TDelegate> expression)
         {

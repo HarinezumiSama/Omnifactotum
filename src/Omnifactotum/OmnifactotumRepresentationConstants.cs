@@ -6,12 +6,12 @@
     public static class OmnifactotumRepresentationConstants
     {
         /// <summary>
-        ///     The UI representation of the <c>null</c> value.
+        ///     The UI representation of the <see langword="null"/> value.
         /// </summary>
         public const string NullValueRepresentation = @"null";
 
         /// <summary>
-        ///     The UI representation of the <c>null</c> collection.
+        ///     The UI representation of the <see langword="null"/> collection.
         /// </summary>
         internal const string NullCollectionRepresentation = @"<" + NullValueRepresentation + @">";
 

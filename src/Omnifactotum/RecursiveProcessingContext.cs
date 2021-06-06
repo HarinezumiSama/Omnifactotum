@@ -17,7 +17,7 @@ namespace Omnifactotum
         /// </summary>
         /// <param name="equalityComparer">
         ///     The equality comparer to use for eliminating duplicated instances,
-        ///     or <c>null</c> to use <see cref="ByReferenceEqualityComparer{T}"/>.
+        ///     or <see langword="null"/> to use <see cref="ByReferenceEqualityComparer{T}"/>.
         /// </param>
         public RecursiveProcessingContext([CanBeNull] IEqualityComparer<T> equalityComparer)
         {

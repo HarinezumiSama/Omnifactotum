@@ -3,7 +3,7 @@
 namespace Omnifactotum.Validation.Constraints
 {
     /// <summary>
-    ///     Specifies that the annotated member of type <see cref="String"/> should not be <c>null</c> or empty.
+    ///     Specifies that the annotated member of type <see cref="String"/> should not be <see langword="null"/> or empty.
     /// </summary>
     public sealed class NotNullOrWhiteSpaceStringConstraint : TypedMemberConstraintBase<string>
     {

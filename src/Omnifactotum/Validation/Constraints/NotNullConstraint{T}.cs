@@ -1,7 +1,7 @@
 ﻿namespace Omnifactotum.Validation.Constraints
 {
     /// <summary>
-    ///     Specifies that the annotated member should not be <c>null</c>.
+    ///     Specifies that the annotated member should not be <see langword="null"/>.
     /// </summary>
     /// <typeparam name="T">
     ///     The type of the value to validate.

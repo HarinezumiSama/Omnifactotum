@@ -16,7 +16,7 @@ namespace Omnifactotum.Validation
         ///     Initializes a new instance of the <see cref="ObjectValidatorContext"/> class.
         /// </summary>
         /// <param name="recursiveProcessingContext">
-        ///     The context of the recursive processing, or <c>null</c> to use a new context.
+        ///     The context of the recursive processing, or <see langword="null"/> to use a new context.
         /// </param>
         internal ObjectValidatorContext([CanBeNull] RecursiveProcessingContext<MemberData> recursiveProcessingContext)
         {

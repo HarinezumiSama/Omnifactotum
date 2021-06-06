@@ -46,7 +46,7 @@ namespace Omnifactotum
         ///     The dictionary to copy the key/values pairs from.
         /// </param>
         /// <exception cref="ArgumentNullException">
-        ///     <paramref name="dictionary"/> is <c>null</c>.
+        ///     <paramref name="dictionary"/> is <see langword="null"/>.
         /// </exception>
         public FixedSizeDictionary(
             //// ReSharper disable once ParameterTypeCanBeEnumerable.Local :: By design
@@ -72,7 +72,7 @@ namespace Omnifactotum
         ///     The dictionary to copy the key/values pairs from.
         /// </param>
         /// <exception cref="ArgumentNullException">
-        ///     <paramref name="dictionary"/> is <c>null</c>.
+        ///     <paramref name="dictionary"/> is <see langword="null"/>.
         /// </exception>
         public FixedSizeDictionary([NotNull] FixedSizeDictionary<TKey, TValue, TDeterminant> dictionary)
             : this(dictionary.EnsureNotNull()._items.Copy())
@@ -115,7 +115,7 @@ namespace Omnifactotum
         ///     The element with the specified key.
         /// </returns>
         /// <exception cref="ArgumentNullException">
-        ///     <paramref name="key"/> is <c>null</c>.
+        ///     <paramref name="key"/> is <see langword="null"/>.
         /// </exception>
         /// <exception cref="KeyNotFoundException">
         ///     An element with the specified key was not found.
@@ -167,7 +167,7 @@ namespace Omnifactotum
         ///     The object to use as the value of the element to add.
         /// </param>
         /// <exception cref="ArgumentNullException">
-        ///     <paramref name="key"/> is <c>null</c>.
+        ///     <paramref name="key"/> is <see langword="null"/>.
         /// </exception>
         /// <exception cref="ArgumentException">
         ///     An element with the same key already exists in
@@ -186,8 +186,8 @@ namespace Omnifactotum
         ///     The key to locate in the <see cref="FixedSizeDictionary{TKey,TValue,TDeterminant}" />.
         /// </param>
         /// <returns>
-        ///     <c>true</c> if the <see cref="FixedSizeDictionary{TKey,TValue,TDeterminant}" /> contains an element
-        ///     with the specified key; otherwise, <c>false</c>.
+        ///     <see langword="true"/> if the <see cref="FixedSizeDictionary{TKey,TValue,TDeterminant}" /> contains an element
+        ///     with the specified key; otherwise, <see langword="false"/>.
         /// </returns>
         public bool ContainsKey(TKey key)
         {
@@ -209,7 +209,7 @@ namespace Omnifactotum
         ///     The key of the element to remove.
         /// </param>
         /// <returns>
-        ///     <c>true</c> if the element is successfully removed; otherwise, <c>false</c>.
+        ///     <see langword="true"/> if the element is successfully removed; otherwise, <see langword="false"/>.
         /// </returns>
         public bool Remove(TKey key)
         {
@@ -239,8 +239,8 @@ namespace Omnifactotum
         ///     This parameter is passed uninitialized.
         /// </param>
         /// <returns>
-        ///     <c>true</c> if the <see cref="FixedSizeDictionary{TKey,TValue,TDeterminant}" /> contains an element
-        ///     with the specified key; otherwise, <c>false</c>.
+        ///     <see langword="true"/> if the <see cref="FixedSizeDictionary{TKey,TValue,TDeterminant}" /> contains an element
+        ///     with the specified key; otherwise, <see langword="false"/>.
         /// </returns>
         public bool TryGetValue(
             //// ReSharper disable once CommentTypo :: ReSharper term :)
@@ -287,8 +287,8 @@ namespace Omnifactotum
         ///     The object to locate in the <see cref="ICollection{T}"/>.
         /// </param>
         /// <returns>
-        ///     <c>true</c> if <paramref name="item"/> is found in the <see cref="ICollection{T}"/>;
-        ///     otherwise, <c>false</c>.
+        ///     <see langword="true"/> if <paramref name="item"/> is found in the <see cref="ICollection{T}"/>;
+        ///     otherwise, <see langword="false"/>.
         /// </returns>
         bool ICollection<KeyValuePair<TKey, TValue>>.Contains(KeyValuePair<TKey, TValue> item)
             => TryGetValue(item.Key, out var value) && EqualityComparer<TValue>.Default.Equals(value, item.Value);
@@ -305,7 +305,7 @@ namespace Omnifactotum
         ///     The zero-based index in <paramref name="array"/> at which copying begins.
         /// </param>
         /// <exception cref="ArgumentNullException">
-        ///     <paramref name="array"/> is <c>null</c>.
+        ///     <paramref name="array"/> is <see langword="null"/>.
         /// </exception>
         /// <exception cref="ArgumentOutOfRangeException">
         ///     <paramref name="arrayIndex"/> is less than 0.
@@ -360,8 +360,8 @@ namespace Omnifactotum
         ///     The object to remove from the <see cref="ICollection{T}"/>.
         /// </param>
         /// <returns>
-        ///     <c>true</c> if <paramref name="item"/> was successfully removed from the <see cref="ICollection{T}"/>;
-        ///     otherwise, <c>false</c>.
+        ///     <see langword="true"/> if <paramref name="item"/> was successfully removed from the <see cref="ICollection{T}"/>;
+        ///     otherwise, <see langword="false"/>.
         /// </returns>
         bool ICollection<KeyValuePair<TKey, TValue>>.Remove(KeyValuePair<TKey, TValue> item)
             => TryGetValue(item.Key, out var value)

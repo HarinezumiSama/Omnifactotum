@@ -18,10 +18,10 @@ namespace System
         ///     The type of the elements in the array.
         /// </typeparam>
         /// <param name="array">
-        ///     The array to copy. Can be <c>null</c>.
+        ///     The array to copy. Can be <see langword="null"/>.
         /// </param>
         /// <returns>
-        ///     A shallow copy of the specified array, or <c>null</c> if this array is <c>null</c>.
+        ///     A shallow copy of the specified array, or <see langword="null"/> if this array is <see langword="null"/>.
         /// </returns>
         [CanBeNull]
         public static T[] Copy<T>([CanBeNull] this T[] array)
@@ -87,17 +87,17 @@ namespace System
         }
 
         /// <summary>
-        ///     Avoids the specified array to be a <c>null</c> reference: returns the specified array
-        ///     if it is not <c>null</c> or an empty array otherwise.
+        ///     Avoids the specified array to be a <see langword="null"/> reference: returns the specified array
+        ///     if it is not <see langword="null"/> or an empty array otherwise.
         /// </summary>
         /// <typeparam name="T">
         ///     The type of elements in the array.
         /// </typeparam>
         /// <param name="source">
-        ///     The array to secure from a <c>null</c> reference.
+        ///     The array to secure from a <see langword="null"/> reference.
         /// </param>
         /// <returns>
-        ///     The source array if it is not <c>null</c>; otherwise, empty array.
+        ///     The source array if it is not <see langword="null"/>; otherwise, empty array.
         /// </returns>
         [NotNull]
         public static T[] AvoidNull<T>([CanBeNull] this T[] source)
@@ -112,8 +112,8 @@ namespace System
         ///     The byte array to convert.
         /// </param>
         /// <param name="useUpperCase">
-        ///     <c>true</c> to use upper case letter in the resulting hexadecimal string;
-        ///     <c>false</c> to use lower case letter in the resulting hexadecimal string.
+        ///     <see langword="true"/> to use upper case letter in the resulting hexadecimal string;
+        ///     <see langword="false"/> to use lower case letter in the resulting hexadecimal string.
         /// </param>
         /// <returns>
         ///     A hexadecimal string.

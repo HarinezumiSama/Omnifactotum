@@ -17,7 +17,7 @@ namespace Omnifactotum
         /// </param>
         /// <param name="syncObject">
         ///     The synchronization object used for thread-safe access.
-        ///     Cannot be <c>null</c> and must be of a reference type.
+        ///     Cannot be <see langword="null"/> and must be of a reference type.
         /// </param>
         /// <returns>
         ///     A created and initialized instance of the <see cref="SyncValueContainer{T}" /> class.
