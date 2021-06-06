@@ -67,8 +67,8 @@ namespace Omnifactotum
         ///     The second <see cref="ValueRange{T}"/> instance to compare.
         /// </param>
         /// <returns>
-        ///     <c>true</c> if the two specified <see cref="ValueRange{T}"/> instances are equal;
-        ///     otherwise, <c>false</c>.
+        ///     <see langword="true"/> if the two specified <see cref="ValueRange{T}"/> instances are equal;
+        ///     otherwise, <see langword="false"/>.
         /// </returns>
         public static bool operator ==(ValueRange<T> left, ValueRange<T> right) => left.Equals(right);
 
@@ -82,8 +82,8 @@ namespace Omnifactotum
         ///     The second <see cref="ValueRange{T}"/> instance to compare.
         /// </param>
         /// <returns>
-        ///     <c>true</c> if the two specified <see cref="ValueRange{T}"/> instances are not equal;
-        ///     otherwise, <c>false</c>.
+        ///     <see langword="true"/> if the two specified <see cref="ValueRange{T}"/> instances are not equal;
+        ///     otherwise, <see langword="false"/>.
         /// </returns>
         public static bool operator !=(ValueRange<T> left, ValueRange<T> right) => !left.Equals(right);
 
@@ -94,8 +94,8 @@ namespace Omnifactotum
         ///     The <see cref="System.Object"/> to compare with this instance.
         /// </param>
         /// <returns>
-        ///     <c>true</c> if the specified <see cref="System.Object"/> is equal to this instance;
-        ///     otherwise, <c>false</c>.
+        ///     <see langword="true"/> if the specified <see cref="System.Object"/> is equal to this instance;
+        ///     otherwise, <see langword="false"/>.
         /// </returns>
         [Pure]
         public override bool Equals(object obj) => obj is ValueRange<T> castObj && Equals(castObj);
@@ -125,7 +125,7 @@ namespace Omnifactotum
         ///     The value to check.
         /// </param>
         /// <returns>
-        ///     <c>true</c> if the current range contains the specified value; otherwise, <c>false</c>.
+        ///     <see langword="true"/> if the current range contains the specified value; otherwise, <see langword="false"/>.
         /// </returns>
         [Pure]
         public bool Contains(T value)
@@ -139,7 +139,7 @@ namespace Omnifactotum
         ///     The range to check if it is contained in the current range.
         /// </param>
         /// <returns>
-        ///     <c>true</c> if the current range contains the whole specified range; otherwise, <c>false</c>.
+        ///     <see langword="true"/> if the current range contains the whole specified range; otherwise, <see langword="false"/>.
         /// </returns>
         [Pure]
         public bool Contains(ValueRange<T> other) => Contains(other.Lower) && Contains(other.Upper);
@@ -151,7 +151,7 @@ namespace Omnifactotum
         ///     The range to check for intersection with the current range.
         /// </param>
         /// <returns>
-        ///     <c>true</c> if the current range intersects with the specified other range; otherwise, <c>false</c>.
+        ///     <see langword="true"/> if the current range intersects with the specified other range; otherwise, <see langword="false"/>.
         /// </returns>
         [Pure]
         public bool IntersectsWith(ValueRange<T> other)
@@ -164,8 +164,8 @@ namespace Omnifactotum
         ///     An object to compare with this object.
         /// </param>
         /// <returns>
-        ///     <c>true</c> if the current object is equal to the <paramref name="other"/> parameter;
-        ///     otherwise, <c>false</c>.
+        ///     <see langword="true"/> if the current object is equal to the <paramref name="other"/> parameter;
+        ///     otherwise, <see langword="false"/>.
         /// </returns>
         [Pure]
         public bool Equals(ValueRange<T> other)

@@ -116,7 +116,7 @@ namespace Omnifactotum
         /// <summary>
         ///     Writes the specified message to the <b>Windows Event Log</b>
         ///     using <see cref="WinEventLog.DefaultSource"/>.
-        ///     If <see cref="WinEventLog.DefaultSource"/> is <c>null</c> or empty, the entry assembly name is used.
+        ///     If <see cref="WinEventLog.DefaultSource"/> is <see langword="null"/> or empty, the entry assembly name is used.
         /// </summary>
         /// <param name="type">
         ///     The type of the event log entry.
@@ -134,7 +134,7 @@ namespace Omnifactotum
         ///     Writes the message to the <b>Windows Event Log</b>
         ///     using <see cref="WinEventLog.DefaultSource"/> and the specified array of objects and
         ///     formatting information.
-        ///     If <see cref="WinEventLog.DefaultSource"/> is <c>null</c> or empty, the entry assembly name is used.
+        ///     If <see cref="WinEventLog.DefaultSource"/> is <see langword="null"/> or empty, the entry assembly name is used.
         /// </summary>
         /// <param name="type">
         ///     The type of the event log entry.

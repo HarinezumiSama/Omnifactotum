@@ -44,9 +44,9 @@ namespace Omnifactotum
         ///     A task that is executing or has executed the specified method asynchronously.
         /// </returns>
         /// <exception cref="System.ArgumentNullException">
-        ///     <para><paramref name="callee"/> is <c>null</c>.</para>
+        ///     <para><paramref name="callee"/> is <see langword="null"/>.</para>
         ///     <para>- or -</para>
-        ///     <para><paramref name="logError"/> is <c>null</c>.</para>
+        ///     <para><paramref name="logError"/> is <see langword="null"/>.</para>
         /// </exception>
         public static Task ExecuteAsync<#= EnumerateActionTypeArgs(index) #>(
             [NotNull] Action<#= EnumerateActionTypeArgs(index) #> callee,
@@ -95,9 +95,9 @@ namespace Omnifactotum
         ///     A task that is executing or has executed the specified method asynchronously.
         /// </returns>
         /// <exception cref="System.ArgumentNullException">
-        ///     <para><paramref name="callee"/> is <c>null</c>.</para>
+        ///     <para><paramref name="callee"/> is <see langword="null"/>.</para>
         ///     <para>- or -</para>
-        ///     <para><paramref name="logError"/> is <c>null</c>.</para>
+        ///     <para><paramref name="logError"/> is <see langword="null"/>.</para>
         /// </exception>
         public static Task ExecuteAsync<#= EnumerateActionTypeArgs(index) #>(
             [NotNull] Action<#= EnumerateActionTypeArgs(index) #> callee,
@@ -146,9 +146,9 @@ namespace Omnifactotum
         ///     A task that is executing or has executed the specified method asynchronously.
         /// </returns>
         /// <exception cref="System.ArgumentNullException">
-        ///     <para><paramref name="callee"/> is <c>null</c>.</para>
+        ///     <para><paramref name="callee"/> is <see langword="null"/>.</para>
         ///     <para>- or -</para>
-        ///     <para><paramref name="logError"/> is <c>null</c>.</para>
+        ///     <para><paramref name="logError"/> is <see langword="null"/>.</para>
         /// </exception>
         public static Task ExecuteAsync<#= EnumerateActionTypeArgs(index) #>(
             [NotNull] Action<#= EnumerateActionTypeArgs(index) #> callee,
@@ -194,7 +194,7 @@ namespace Omnifactotum
         ///     A task that is executing or has executed the specified method asynchronously.
         /// </returns>
         /// <exception cref="System.ArgumentNullException">
-        ///     <para><paramref name="callee"/> is <c>null</c>.</para>
+        ///     <para><paramref name="callee"/> is <see langword="null"/>.</para>
         /// </exception>
         public static Task ExecuteAsync<#= EnumerateActionTypeArgs(index) #>(
             [NotNull] Action<#= EnumerateActionTypeArgs(index) #> callee<#= EnumerateFormalArgs(index) #>)

@@ -60,7 +60,7 @@ namespace System
 #nullable enable
 
         /// <summary>
-        ///     Returns the specified value if is not <c>null</c>;
+        ///     Returns the specified value if is not <see langword="null"/>;
         ///     otherwise, throws <see cref="ArgumentNullException"/>.
         /// </summary>
         /// <typeparam name="T">
@@ -70,10 +70,10 @@ namespace System
         ///     The value to check.
         /// </param>
         /// <returns>
-        ///     The specified value if is not <c>null</c>.
+        ///     The specified value if is not <see langword="null"/>.
         /// </returns>
         /// <exception cref="ArgumentNullException">
-        ///     <paramref name="value"/> is <c>null</c>.
+        ///     <paramref name="value"/> is <see langword="null"/>.
         /// </exception>
         [NotNull]
         [DebuggerStepThrough]
@@ -84,8 +84,8 @@ namespace System
 #nullable restore
 
         /// <summary>
-        ///     Returns the value which underlies the specified nullable value, if it is not <c>null</c>
-        ///     (that is, if its <see cref="Nullable{T}.HasValue"/> property is <c>true</c>);
+        ///     Returns the value which underlies the specified nullable value, if it is not <see langword="null"/>
+        ///     (that is, if its <see cref="Nullable{T}.HasValue"/> property is <see langword="true"/>);
         ///     otherwise, throws <see cref="ArgumentNullException"/>.
         /// </summary>
         /// <typeparam name="T">
@@ -95,12 +95,12 @@ namespace System
         ///     The value to check.
         /// </param>
         /// <returns>
-        ///     The value which underlies the specified nullable value, if it is not <c>null</c>
-        ///     (that is, if its <see cref="Nullable{T}.HasValue"/> property is <c>true</c>).
+        ///     The value which underlies the specified nullable value, if it is not <see langword="null"/>
+        ///     (that is, if its <see cref="Nullable{T}.HasValue"/> property is <see langword="true"/>).
         /// </returns>
         /// <exception cref="ArgumentNullException">
-        ///     <paramref name="value"/> is <c>null</c>, that is, its <see cref="Nullable{T}.HasValue"/> property is
-        ///     <c>false</c>.
+        ///     <paramref name="value"/> is <see langword="null"/>, that is, its <see cref="Nullable{T}.HasValue"/> property is
+        ///     <see langword="false"/>.
         /// </exception>
         [DebuggerStepThrough]
         public static T EnsureNotNull<T>([CanBeNull] this T? value)
@@ -109,7 +109,7 @@ namespace System
 
         /// <summary>
         ///     Returns a <see cref="System.String"/> that represents the specified value, considering that this value
-        ///     may be <c>null</c>.
+        ///     may be <see langword="null"/>.
         /// </summary>
         /// <typeparam name="T">
         ///     The type of the value to get a string representation of.
@@ -118,18 +118,18 @@ namespace System
         ///     The value to get a string representation of.
         /// </param>
         /// <param name="nullValueString">
-        ///     A <see cref="System.String"/> to return if <paramref name="value"/> is <c>null</c>.
+        ///     A <see cref="System.String"/> to return if <paramref name="value"/> is <see langword="null"/>.
         /// </param>
         /// <returns>
         ///     A <see cref="System.String"/> that represents the specified value, or the value of
-        ///     the <paramref name="nullValueString"/> parameter if <paramref name="value"/> is <c>null</c>.
+        ///     the <paramref name="nullValueString"/> parameter if <paramref name="value"/> is <see langword="null"/>.
         /// </returns>
         public static string ToStringSafely<T>([CanBeNull] this T value, [CanBeNull] string nullValueString)
             => value is null ? nullValueString : value.ToString();
 
         /// <summary>
         ///     Returns a <see cref="System.String"/> that represents the specified value, considering that this value
-        ///     may be <c>null</c>. In the latter case, the empty string is returned.
+        ///     may be <see langword="null"/>. In the latter case, the empty string is returned.
         /// </summary>
         /// <typeparam name="T">
         ///     The type of the value to get a string representation of.
@@ -138,14 +138,14 @@ namespace System
         ///     The value to get a string representation of.
         /// </param>
         /// <returns>
-        ///     A <see cref="System.String"/> that represents the specified value it is not <c>null</c>;
+        ///     A <see cref="System.String"/> that represents the specified value it is not <see langword="null"/>;
         ///     otherwise, the empty string.
         /// </returns>
         public static string ToStringSafely<T>([CanBeNull] this T value) => ToStringSafely(value, string.Empty);
 
         /// <summary>
         ///     Returns a <see cref="System.String"/> that represents the specified value, using invariant culture and
-        ///     considering that this value may be <c>null</c>.
+        ///     considering that this value may be <see langword="null"/>.
         /// </summary>
         /// <typeparam name="T">
         ///     The type of the value to get a string representation of.
@@ -154,11 +154,11 @@ namespace System
         ///     The value to get a string representation of.
         /// </param>
         /// <param name="nullValueString">
-        ///     A <see cref="System.String"/> to return if <paramref name="value"/> is <c>null</c>.
+        ///     A <see cref="System.String"/> to return if <paramref name="value"/> is <see langword="null"/>.
         /// </param>
         /// <returns>
         ///     A <see cref="System.String"/> that represents the specified value, or the value of
-        ///     the <paramref name="nullValueString"/> parameter if <paramref name="value"/> is <c>null</c>.
+        ///     the <paramref name="nullValueString"/> parameter if <paramref name="value"/> is <see langword="null"/>.
         /// </returns>
         public static string ToStringSafelyInvariant<T>([CanBeNull] this T value, [CanBeNull] string nullValueString)
             => value is null
@@ -169,8 +169,8 @@ namespace System
 
         /// <summary>
         ///     Returns a <see cref="System.String"/> that represents the specified value, using invariant culture and
-        ///     considering that this value may be <c>null</c>.
-        ///     If the value is <c>null</c>, the empty string is returned.
+        ///     considering that this value may be <see langword="null"/>.
+        ///     If the value is <see langword="null"/>, the empty string is returned.
         /// </summary>
         /// <typeparam name="T">
         ///     The type of the value to get a string representation of.
@@ -179,7 +179,7 @@ namespace System
         ///     The value to get a string representation of.
         /// </param>
         /// <returns>
-        ///     A <see cref="System.String"/> that represents the specified value it is not <c>null</c>;
+        ///     A <see cref="System.String"/> that represents the specified value it is not <see langword="null"/>;
         ///     otherwise, the empty string.
         /// </returns>
         public static string ToStringSafelyInvariant<T>([CanBeNull] this T value)
@@ -192,14 +192,14 @@ namespace System
         ///     The type of the value to get a hash code of.
         /// </typeparam>
         /// <param name="value">
-        ///     The value to get a hash code of. Can be <c>null</c>.
+        ///     The value to get a hash code of. Can be <see langword="null"/>.
         /// </param>
         /// <param name="nullValueHashCode">
-        ///     The value to return if the <paramref name="value"/> parameter is <c>null</c>.
+        ///     The value to return if the <paramref name="value"/> parameter is <see langword="null"/>.
         /// </param>
         /// <returns>
         ///     A hash code of the specified value obtained by calling <see cref="object.GetHashCode"/> for this value
-        ///     if it is not <c>null</c>; otherwise, the value specified in the <paramref name="nullValueHashCode"/>
+        ///     if it is not <see langword="null"/>; otherwise, the value specified in the <paramref name="nullValueHashCode"/>
         ///     parameter.
         /// </returns>
         public static int GetHashCodeSafely<T>([CanBeNull] this T value, int nullValueHashCode)
@@ -212,16 +212,16 @@ namespace System
         ///     The type of the value to get a hash code of.
         /// </typeparam>
         /// <param name="value">
-        ///     The value to get a hash code of. Can be <c>null</c>.
+        ///     The value to get a hash code of. Can be <see langword="null"/>.
         /// </param>
         /// <returns>
         ///     A hash code of the specified value obtained by calling <see cref="object.GetHashCode"/> for this value
-        ///     if it is not <c>null</c>; otherwise, <c>0</c>.
+        ///     if it is not <see langword="null"/>; otherwise, <c>0</c>.
         /// </returns>
         public static int GetHashCodeSafely<T>([CanBeNull] this T value) => GetHashCodeSafely(value, 0);
 
         /// <summary>
-        ///     Gets the type of the specified value, considering that this value may be <c>null</c>.
+        ///     Gets the type of the specified value, considering that this value may be <see langword="null"/>.
         ///     In the latter case, the formally specified type <typeparamref name="T"/> is returned.
         /// </summary>
         /// <typeparam name="T">
@@ -231,7 +231,7 @@ namespace System
         ///     The value to get the type of.
         /// </param>
         /// <returns>
-        ///     The actual type of the value if it is not <c>null</c>; otherwise, <typeparamref name="T"/>.
+        ///     The actual type of the value if it is not <see langword="null"/>; otherwise, <typeparamref name="T"/>.
         /// </returns>
         [NotNull]
         public static Type GetTypeSafely<T>([CanBeNull] this T value)
@@ -286,20 +286,20 @@ namespace System
         }
 
         /// <summary>
-        ///     Avoids the specified reference type value to be a <c>null</c> reference: returns the specified value
-        ///     if it is not <c>null</c> or a default value which is returned by the specified ad-hoc method.
+        ///     Avoids the specified reference type value to be a <see langword="null"/> reference: returns the specified value
+        ///     if it is not <see langword="null"/> or a default value which is returned by the specified ad-hoc method.
         /// </summary>
         /// <typeparam name="T">
         ///     The type of the value to handle.
         /// </typeparam>
         /// <param name="source">
-        ///     The value to secure from a <c>null</c> reference.
+        ///     The value to secure from a <see langword="null"/> reference.
         /// </param>
         /// <param name="getDefault">
-        ///     The method that will return the default value to use instead of <c>null</c>.
+        ///     The method that will return the default value to use instead of <see langword="null"/>.
         /// </param>
         /// <returns>
-        ///     The string value if it is not <c>null</c>; otherwise, the value returned from call to
+        ///     The string value if it is not <see langword="null"/>; otherwise, the value returned from call to
         ///     <paramref name="getDefault"/> method.
         /// </returns>
         [NotNull]
@@ -331,11 +331,11 @@ namespace System
         ///             <description>The result of the method</description>
         ///         </listheader>
         ///         <item>
-        ///             <term><c>null</c></term>
+        ///             <term><see langword="null"/></term>
         ///             <description>The literal: <b>null</b></description>
         ///         </item>
         ///         <item>
-        ///             <term>not <c>null</c></term>
+        ///             <term>not <see langword="null"/></term>
         ///             <description>
         ///                 A result of the <see cref="object.ToString()"/> method called for the
         ///                 input value.
@@ -381,11 +381,11 @@ namespace System
         ///             <description>The result of the method</description>
         ///         </listheader>
         ///         <item>
-        ///             <term><c>null</c></term>
+        ///             <term><see langword="null"/></term>
         ///             <description>The literal: <b>null</b></description>
         ///         </item>
         ///         <item>
-        ///             <term>not <c>null</c></term>
+        ///             <term>not <see langword="null"/></term>
         ///             <description>
         ///                 A result of the
         ///                 <see cref="IFormattable.ToString(string,System.IFormatProvider)"/> method
@@ -401,10 +401,10 @@ namespace System
         ///     The nullable value to convert.
         /// </param>
         /// <param name="format">
-        ///     The format to use, or <c>null</c> to use the default format defined for the type <typeparamref name="T"/>.
+        ///     The format to use, or <see langword="null"/> to use the default format defined for the type <typeparamref name="T"/>.
         /// </param>
         /// <param name="formatProvider">
-        ///     The provider to use to format the value, or <c>null</c> to obtain the format
+        ///     The provider to use to format the value, or <see langword="null"/> to obtain the format
         ///     information from the current locale setting of the operating system.
         /// </param>
         /// <returns>
@@ -425,11 +425,11 @@ namespace System
         ///             <description>The result of the method</description>
         ///         </listheader>
         ///         <item>
-        ///             <term><c>null</c></term>
+        ///             <term><see langword="null"/></term>
         ///             <description>The literal: <b>null</b></description>
         ///         </item>
         ///         <item>
-        ///             <term>not <c>null</c></term>
+        ///             <term>not <see langword="null"/></term>
         ///             <description>
         ///                 A result of the
         ///                 <see cref="IFormattable.ToString(string,System.IFormatProvider)"/> method
@@ -445,7 +445,7 @@ namespace System
         ///     The nullable value to convert.
         /// </param>
         /// <param name="formatProvider">
-        ///     The provider to use to format the value, or <c>null</c> to obtain the format
+        ///     The provider to use to format the value, or <see langword="null"/> to obtain the format
         ///     information from the current locale setting of the operating system.
         /// </param>
         /// <returns>
@@ -543,14 +543,14 @@ namespace System
         ///     The second object to compare.
         /// </param>
         /// <returns>
-        ///     <c>true</c> if the contents of the two specified objects are equal; otherwise, <c>false</c>.
+        ///     <see langword="true"/> if the contents of the two specified objects are equal; otherwise, <see langword="false"/>.
         /// </returns>
         public static bool IsEqualByContentsTo<T>([CanBeNull] this T obj, [CanBeNull] T other)
             => AreEqualByContentsInternal(obj, other);
 
         /// <summary>
         ///     Metamorphoses the specified reference type input value into an output value using the specified
-        ///     transformation method. If the input value is <c>null</c>, the specified default output value is
+        ///     transformation method. If the input value is <see langword="null"/>, the specified default output value is
         ///     returned.
         /// </summary>
         /// <typeparam name="TInput">
@@ -570,10 +570,10 @@ namespace System
         /// </param>
         /// <returns>
         ///     An output value obtained by using the <paramref name="transform"/> method if the
-        ///     <paramref name="input"/> value is NOT <c>null</c>; otherwise, the specified default output value.
+        ///     <paramref name="input"/> value is NOT <see langword="null"/>; otherwise, the specified default output value.
         /// </returns>
         /// <exception cref="ArgumentNullException">
-        ///     <paramref name="transform"/> is <c>null</c>.
+        ///     <paramref name="transform"/> is <see langword="null"/>.
         /// </exception>
         public static TOutput Morph<TInput, TOutput>(
             [CanBeNull] this TInput input,
@@ -591,7 +591,7 @@ namespace System
 
         /// <summary>
         ///     Metamorphoses the specified reference type input value into an output value using the specified
-        ///     transformation method. If the input value is <c>null</c>, the default value for the output type
+        ///     transformation method. If the input value is <see langword="null"/>, the default value for the output type
         ///     is returned.
         /// </summary>
         /// <typeparam name="TInput">
@@ -608,10 +608,10 @@ namespace System
         /// </param>
         /// <returns>
         ///     An output value obtained by using the <paramref name="transform"/> method if the
-        ///     <paramref name="input"/> value is NOT <c>null</c>; otherwise, the default value for the output type.
+        ///     <paramref name="input"/> value is NOT <see langword="null"/>; otherwise, the default value for the output type.
         /// </returns>
         /// <exception cref="ArgumentNullException">
-        ///     <paramref name="transform"/> is <c>null</c>.
+        ///     <paramref name="transform"/> is <see langword="null"/>.
         /// </exception>
         public static TOutput Morph<TInput, TOutput>(
             [CanBeNull] this TInput input,
@@ -621,7 +621,7 @@ namespace System
 
         /// <summary>
         ///     Metamorphoses the specified nullable value type input value into an output value using the specified
-        ///     transformation method. If the input value is <c>null</c>, the specified default output value is
+        ///     transformation method. If the input value is <see langword="null"/>, the specified default output value is
         ///     returned.
         /// </summary>
         /// <typeparam name="TInput">
@@ -641,10 +641,10 @@ namespace System
         /// </param>
         /// <returns>
         ///     An output value obtained by using the <paramref name="transform"/> method if the
-        ///     <paramref name="input"/> value is NOT <c>null</c>; otherwise, the specified default output value.
+        ///     <paramref name="input"/> value is NOT <see langword="null"/>; otherwise, the specified default output value.
         /// </returns>
         /// <exception cref="ArgumentNullException">
-        ///     <paramref name="transform"/> is <c>null</c>.
+        ///     <paramref name="transform"/> is <see langword="null"/>.
         /// </exception>
         public static TOutput Morph<TInput, TOutput>(
             [CanBeNull] this TInput? input,
@@ -662,7 +662,7 @@ namespace System
 
         /// <summary>
         ///     Metamorphoses the specified nullable value type input value into an output value using the specified
-        ///     transformation method. If the input value is <c>null</c>, the default value for the output type
+        ///     transformation method. If the input value is <see langword="null"/>, the default value for the output type
         ///     is returned.
         /// </summary>
         /// <typeparam name="TInput">
@@ -679,10 +679,10 @@ namespace System
         /// </param>
         /// <returns>
         ///     An output value obtained by using the <paramref name="transform"/> method if the
-        ///     <paramref name="input"/> value is NOT <c>null</c>; otherwise, the default value for the output type.
+        ///     <paramref name="input"/> value is NOT <see langword="null"/>; otherwise, the default value for the output type.
         /// </returns>
         /// <exception cref="ArgumentNullException">
-        ///     <paramref name="transform"/> is <c>null</c>.
+        ///     <paramref name="transform"/> is <see langword="null"/>.
         /// </exception>
         public static TOutput Morph<TInput, TOutput>(
             [CanBeNull] this TInput? input,

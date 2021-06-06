@@ -30,7 +30,7 @@ namespace System
         ///     The exception to check.
         /// </param>
         /// <returns>
-        ///     <c>true</c> if the specified exception should NOT be handled by a user code; otherwise, <c>false</c>.
+        ///     <see langword="true"/> if the specified exception should NOT be handled by a user code; otherwise, <see langword="false"/>.
         /// </returns>
         /// <example>
         ///     <code>

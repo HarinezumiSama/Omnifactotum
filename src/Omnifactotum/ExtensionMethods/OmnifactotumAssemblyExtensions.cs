@@ -21,7 +21,7 @@ namespace System.Reflection
         ///     The local path of the specified assembly.
         /// </returns>
         /// <exception cref="ArgumentNullException">
-        ///     The specified assembly is <c>null</c>.
+        ///     The specified assembly is <see langword="null"/>.
         /// </exception>
         /// <exception cref="ArgumentException">
         ///     The specified assembly does not have a local path.

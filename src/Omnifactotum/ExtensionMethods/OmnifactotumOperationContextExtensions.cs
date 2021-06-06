@@ -24,7 +24,7 @@ namespace System.ServiceModel
         ///     The operation context to get the client certificate for.
         /// </param>
         /// <returns>
-        ///     An <see cref="X509Certificate2"/> if the client has provided its certificate, or <c>null</c> otherwise.
+        ///     An <see cref="X509Certificate2"/> if the client has provided its certificate, or <see langword="null"/> otherwise.
         /// </returns>
         [CanBeNull]
         public static X509Certificate2 GetClientCertificate([CanBeNull] this OperationContext operationContext)

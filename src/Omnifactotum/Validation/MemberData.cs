@@ -17,7 +17,7 @@ namespace Omnifactotum.Validation
         ///     The expression.
         /// </param>
         /// <param name="container">
-        ///     The object containing the value that is being validated. Can be <c>null</c>.
+        ///     The object containing the value that is being validated. Can be <see langword="null"/>.
         /// </param>
         /// <param name="value">
         ///     The member value.

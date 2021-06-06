@@ -39,7 +39,7 @@ using System.Diagnostics.CodeAnalysis;
 namespace Omnifactotum.Annotations
 {
     /// <summary>
-    ///     Indicates that the value of the marked element could be <c>null</c> sometimes, so checking for <c>null</c> is required
+    ///     Indicates that the value of the marked element could be <see langword="null"/> sometimes, so checking for <see langword="null"/> is required
     ///     before its usage.
     /// </summary>
     /// <example>
@@ -63,7 +63,7 @@ namespace Omnifactotum.Annotations
     }
 
     /// <summary>
-    ///     Indicates that the value of the marked element can never be <c>null</c>.
+    ///     Indicates that the value of the marked element can never be <see langword="null"/>.
     /// </summary>
     /// <example>
     ///     <code>
@@ -467,7 +467,7 @@ namespace Omnifactotum.Annotations
 
     /// <summary>
     ///     Indicates that the value of the marked type (or its derivatives) cannot be compared using '==' or '!=' operators and
-    ///     <c>Equals()</c> should be used instead. However, using '==' or '!=' for comparison with <c>null</c> is always permitted.
+    ///     <c>Equals()</c> should be used instead. However, using '==' or '!=' for comparison with <see langword="null"/> is always permitted.
     /// </summary>
     /// <example>
     ///     <code>

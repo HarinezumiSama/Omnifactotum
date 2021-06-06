@@ -33,9 +33,9 @@ namespace Omnifactotum
         ///     A task that is executing or has executed the specified method asynchronously.
         /// </returns>
         /// <exception cref="System.ArgumentNullException">
-        ///     <para><paramref name="callee"/> is <c>null</c>.</para>
+        ///     <para><paramref name="callee"/> is <see langword="null"/>.</para>
         ///     <para>- or -</para>
-        ///     <para><paramref name="logError"/> is <c>null</c>.</para>
+        ///     <para><paramref name="logError"/> is <see langword="null"/>.</para>
         /// </exception>
         public static Task<TResult> ComputeAsync<TResult>(
             [NotNull] Func<TResult> callee,
@@ -77,9 +77,9 @@ namespace Omnifactotum
         ///     A task that is executing or has executed the specified method asynchronously.
         /// </returns>
         /// <exception cref="System.ArgumentNullException">
-        ///     <para><paramref name="callee"/> is <c>null</c>.</para>
+        ///     <para><paramref name="callee"/> is <see langword="null"/>.</para>
         ///     <para>- or -</para>
-        ///     <para><paramref name="logError"/> is <c>null</c>.</para>
+        ///     <para><paramref name="logError"/> is <see langword="null"/>.</para>
         /// </exception>
         public static Task<TResult> ComputeAsync<TResult>(
             [NotNull] Func<TResult> callee,
@@ -121,9 +121,9 @@ namespace Omnifactotum
         ///     A task that is executing or has executed the specified method asynchronously.
         /// </returns>
         /// <exception cref="System.ArgumentNullException">
-        ///     <para><paramref name="callee"/> is <c>null</c>.</para>
+        ///     <para><paramref name="callee"/> is <see langword="null"/>.</para>
         ///     <para>- or -</para>
-        ///     <para><paramref name="logError"/> is <c>null</c>.</para>
+        ///     <para><paramref name="logError"/> is <see langword="null"/>.</para>
         /// </exception>
         public static Task<TResult> ComputeAsync<TResult>(
             [NotNull] Func<TResult> callee,
@@ -162,7 +162,7 @@ namespace Omnifactotum
         ///     A task that is executing or has executed the specified method asynchronously.
         /// </returns>
         /// <exception cref="System.ArgumentNullException">
-        ///     <para><paramref name="callee"/> is <c>null</c>.</para>
+        ///     <para><paramref name="callee"/> is <see langword="null"/>.</para>
         /// </exception>
         public static Task<TResult> ComputeAsync<TResult>(
             [NotNull] Func<TResult> callee)
@@ -197,9 +197,9 @@ namespace Omnifactotum
         ///     A task that is executing or has executed the specified method asynchronously.
         /// </returns>
         /// <exception cref="System.ArgumentNullException">
-        ///     <para><paramref name="callee"/> is <c>null</c>.</para>
+        ///     <para><paramref name="callee"/> is <see langword="null"/>.</para>
         ///     <para>- or -</para>
-        ///     <para><paramref name="logError"/> is <c>null</c>.</para>
+        ///     <para><paramref name="logError"/> is <see langword="null"/>.</para>
         /// </exception>
         public static Task<TResult> ComputeAsync<T1, TResult>(
             [NotNull] Func<T1, TResult> callee,
@@ -248,9 +248,9 @@ namespace Omnifactotum
         ///     A task that is executing or has executed the specified method asynchronously.
         /// </returns>
         /// <exception cref="System.ArgumentNullException">
-        ///     <para><paramref name="callee"/> is <c>null</c>.</para>
+        ///     <para><paramref name="callee"/> is <see langword="null"/>.</para>
         ///     <para>- or -</para>
-        ///     <para><paramref name="logError"/> is <c>null</c>.</para>
+        ///     <para><paramref name="logError"/> is <see langword="null"/>.</para>
         /// </exception>
         public static Task<TResult> ComputeAsync<T1, TResult>(
             [NotNull] Func<T1, TResult> callee,
@@ -299,9 +299,9 @@ namespace Omnifactotum
         ///     A task that is executing or has executed the specified method asynchronously.
         /// </returns>
         /// <exception cref="System.ArgumentNullException">
-        ///     <para><paramref name="callee"/> is <c>null</c>.</para>
+        ///     <para><paramref name="callee"/> is <see langword="null"/>.</para>
         ///     <para>- or -</para>
-        ///     <para><paramref name="logError"/> is <c>null</c>.</para>
+        ///     <para><paramref name="logError"/> is <see langword="null"/>.</para>
         /// </exception>
         public static Task<TResult> ComputeAsync<T1, TResult>(
             [NotNull] Func<T1, TResult> callee,
@@ -347,7 +347,7 @@ namespace Omnifactotum
         ///     A task that is executing or has executed the specified method asynchronously.
         /// </returns>
         /// <exception cref="System.ArgumentNullException">
-        ///     <para><paramref name="callee"/> is <c>null</c>.</para>
+        ///     <para><paramref name="callee"/> is <see langword="null"/>.</para>
         /// </exception>
         public static Task<TResult> ComputeAsync<T1, TResult>(
             [NotNull] Func<T1, TResult> callee,
@@ -389,9 +389,9 @@ namespace Omnifactotum
         ///     A task that is executing or has executed the specified method asynchronously.
         /// </returns>
         /// <exception cref="System.ArgumentNullException">
-        ///     <para><paramref name="callee"/> is <c>null</c>.</para>
+        ///     <para><paramref name="callee"/> is <see langword="null"/>.</para>
         ///     <para>- or -</para>
-        ///     <para><paramref name="logError"/> is <c>null</c>.</para>
+        ///     <para><paramref name="logError"/> is <see langword="null"/>.</para>
         /// </exception>
         public static Task<TResult> ComputeAsync<T1, T2, TResult>(
             [NotNull] Func<T1, T2, TResult> callee,
@@ -447,9 +447,9 @@ namespace Omnifactotum
         ///     A task that is executing or has executed the specified method asynchronously.
         /// </returns>
         /// <exception cref="System.ArgumentNullException">
-        ///     <para><paramref name="callee"/> is <c>null</c>.</para>
+        ///     <para><paramref name="callee"/> is <see langword="null"/>.</para>
         ///     <para>- or -</para>
-        ///     <para><paramref name="logError"/> is <c>null</c>.</para>
+        ///     <para><paramref name="logError"/> is <see langword="null"/>.</para>
         /// </exception>
         public static Task<TResult> ComputeAsync<T1, T2, TResult>(
             [NotNull] Func<T1, T2, TResult> callee,
@@ -505,9 +505,9 @@ namespace Omnifactotum
         ///     A task that is executing or has executed the specified method asynchronously.
         /// </returns>
         /// <exception cref="System.ArgumentNullException">
-        ///     <para><paramref name="callee"/> is <c>null</c>.</para>
+        ///     <para><paramref name="callee"/> is <see langword="null"/>.</para>
         ///     <para>- or -</para>
-        ///     <para><paramref name="logError"/> is <c>null</c>.</para>
+        ///     <para><paramref name="logError"/> is <see langword="null"/>.</para>
         /// </exception>
         public static Task<TResult> ComputeAsync<T1, T2, TResult>(
             [NotNull] Func<T1, T2, TResult> callee,
@@ -560,7 +560,7 @@ namespace Omnifactotum
         ///     A task that is executing or has executed the specified method asynchronously.
         /// </returns>
         /// <exception cref="System.ArgumentNullException">
-        ///     <para><paramref name="callee"/> is <c>null</c>.</para>
+        ///     <para><paramref name="callee"/> is <see langword="null"/>.</para>
         /// </exception>
         public static Task<TResult> ComputeAsync<T1, T2, TResult>(
             [NotNull] Func<T1, T2, TResult> callee,
@@ -609,9 +609,9 @@ namespace Omnifactotum
         ///     A task that is executing or has executed the specified method asynchronously.
         /// </returns>
         /// <exception cref="System.ArgumentNullException">
-        ///     <para><paramref name="callee"/> is <c>null</c>.</para>
+        ///     <para><paramref name="callee"/> is <see langword="null"/>.</para>
         ///     <para>- or -</para>
-        ///     <para><paramref name="logError"/> is <c>null</c>.</para>
+        ///     <para><paramref name="logError"/> is <see langword="null"/>.</para>
         /// </exception>
         public static Task<TResult> ComputeAsync<T1, T2, T3, TResult>(
             [NotNull] Func<T1, T2, T3, TResult> callee,
@@ -674,9 +674,9 @@ namespace Omnifactotum
         ///     A task that is executing or has executed the specified method asynchronously.
         /// </returns>
         /// <exception cref="System.ArgumentNullException">
-        ///     <para><paramref name="callee"/> is <c>null</c>.</para>
+        ///     <para><paramref name="callee"/> is <see langword="null"/>.</para>
         ///     <para>- or -</para>
-        ///     <para><paramref name="logError"/> is <c>null</c>.</para>
+        ///     <para><paramref name="logError"/> is <see langword="null"/>.</para>
         /// </exception>
         public static Task<TResult> ComputeAsync<T1, T2, T3, TResult>(
             [NotNull] Func<T1, T2, T3, TResult> callee,
@@ -739,9 +739,9 @@ namespace Omnifactotum
         ///     A task that is executing or has executed the specified method asynchronously.
         /// </returns>
         /// <exception cref="System.ArgumentNullException">
-        ///     <para><paramref name="callee"/> is <c>null</c>.</para>
+        ///     <para><paramref name="callee"/> is <see langword="null"/>.</para>
         ///     <para>- or -</para>
-        ///     <para><paramref name="logError"/> is <c>null</c>.</para>
+        ///     <para><paramref name="logError"/> is <see langword="null"/>.</para>
         /// </exception>
         public static Task<TResult> ComputeAsync<T1, T2, T3, TResult>(
             [NotNull] Func<T1, T2, T3, TResult> callee,
@@ -801,7 +801,7 @@ namespace Omnifactotum
         ///     A task that is executing or has executed the specified method asynchronously.
         /// </returns>
         /// <exception cref="System.ArgumentNullException">
-        ///     <para><paramref name="callee"/> is <c>null</c>.</para>
+        ///     <para><paramref name="callee"/> is <see langword="null"/>.</para>
         /// </exception>
         public static Task<TResult> ComputeAsync<T1, T2, T3, TResult>(
             [NotNull] Func<T1, T2, T3, TResult> callee,
@@ -857,9 +857,9 @@ namespace Omnifactotum
         ///     A task that is executing or has executed the specified method asynchronously.
         /// </returns>
         /// <exception cref="System.ArgumentNullException">
-        ///     <para><paramref name="callee"/> is <c>null</c>.</para>
+        ///     <para><paramref name="callee"/> is <see langword="null"/>.</para>
         ///     <para>- or -</para>
-        ///     <para><paramref name="logError"/> is <c>null</c>.</para>
+        ///     <para><paramref name="logError"/> is <see langword="null"/>.</para>
         /// </exception>
         public static Task<TResult> ComputeAsync<T1, T2, T3, T4, TResult>(
             [NotNull] Func<T1, T2, T3, T4, TResult> callee,
@@ -929,9 +929,9 @@ namespace Omnifactotum
         ///     A task that is executing or has executed the specified method asynchronously.
         /// </returns>
         /// <exception cref="System.ArgumentNullException">
-        ///     <para><paramref name="callee"/> is <c>null</c>.</para>
+        ///     <para><paramref name="callee"/> is <see langword="null"/>.</para>
         ///     <para>- or -</para>
-        ///     <para><paramref name="logError"/> is <c>null</c>.</para>
+        ///     <para><paramref name="logError"/> is <see langword="null"/>.</para>
         /// </exception>
         public static Task<TResult> ComputeAsync<T1, T2, T3, T4, TResult>(
             [NotNull] Func<T1, T2, T3, T4, TResult> callee,
@@ -1001,9 +1001,9 @@ namespace Omnifactotum
         ///     A task that is executing or has executed the specified method asynchronously.
         /// </returns>
         /// <exception cref="System.ArgumentNullException">
-        ///     <para><paramref name="callee"/> is <c>null</c>.</para>
+        ///     <para><paramref name="callee"/> is <see langword="null"/>.</para>
         ///     <para>- or -</para>
-        ///     <para><paramref name="logError"/> is <c>null</c>.</para>
+        ///     <para><paramref name="logError"/> is <see langword="null"/>.</para>
         /// </exception>
         public static Task<TResult> ComputeAsync<T1, T2, T3, T4, TResult>(
             [NotNull] Func<T1, T2, T3, T4, TResult> callee,
@@ -1070,7 +1070,7 @@ namespace Omnifactotum
         ///     A task that is executing or has executed the specified method asynchronously.
         /// </returns>
         /// <exception cref="System.ArgumentNullException">
-        ///     <para><paramref name="callee"/> is <c>null</c>.</para>
+        ///     <para><paramref name="callee"/> is <see langword="null"/>.</para>
         /// </exception>
         public static Task<TResult> ComputeAsync<T1, T2, T3, T4, TResult>(
             [NotNull] Func<T1, T2, T3, T4, TResult> callee,
@@ -1133,9 +1133,9 @@ namespace Omnifactotum
         ///     A task that is executing or has executed the specified method asynchronously.
         /// </returns>
         /// <exception cref="System.ArgumentNullException">
-        ///     <para><paramref name="callee"/> is <c>null</c>.</para>
+        ///     <para><paramref name="callee"/> is <see langword="null"/>.</para>
         ///     <para>- or -</para>
-        ///     <para><paramref name="logError"/> is <c>null</c>.</para>
+        ///     <para><paramref name="logError"/> is <see langword="null"/>.</para>
         /// </exception>
         public static Task<TResult> ComputeAsync<T1, T2, T3, T4, T5, TResult>(
             [NotNull] Func<T1, T2, T3, T4, T5, TResult> callee,
@@ -1212,9 +1212,9 @@ namespace Omnifactotum
         ///     A task that is executing or has executed the specified method asynchronously.
         /// </returns>
         /// <exception cref="System.ArgumentNullException">
-        ///     <para><paramref name="callee"/> is <c>null</c>.</para>
+        ///     <para><paramref name="callee"/> is <see langword="null"/>.</para>
         ///     <para>- or -</para>
-        ///     <para><paramref name="logError"/> is <c>null</c>.</para>
+        ///     <para><paramref name="logError"/> is <see langword="null"/>.</para>
         /// </exception>
         public static Task<TResult> ComputeAsync<T1, T2, T3, T4, T5, TResult>(
             [NotNull] Func<T1, T2, T3, T4, T5, TResult> callee,
@@ -1291,9 +1291,9 @@ namespace Omnifactotum
         ///     A task that is executing or has executed the specified method asynchronously.
         /// </returns>
         /// <exception cref="System.ArgumentNullException">
-        ///     <para><paramref name="callee"/> is <c>null</c>.</para>
+        ///     <para><paramref name="callee"/> is <see langword="null"/>.</para>
         ///     <para>- or -</para>
-        ///     <para><paramref name="logError"/> is <c>null</c>.</para>
+        ///     <para><paramref name="logError"/> is <see langword="null"/>.</para>
         /// </exception>
         public static Task<TResult> ComputeAsync<T1, T2, T3, T4, T5, TResult>(
             [NotNull] Func<T1, T2, T3, T4, T5, TResult> callee,
@@ -1367,7 +1367,7 @@ namespace Omnifactotum
         ///     A task that is executing or has executed the specified method asynchronously.
         /// </returns>
         /// <exception cref="System.ArgumentNullException">
-        ///     <para><paramref name="callee"/> is <c>null</c>.</para>
+        ///     <para><paramref name="callee"/> is <see langword="null"/>.</para>
         /// </exception>
         public static Task<TResult> ComputeAsync<T1, T2, T3, T4, T5, TResult>(
             [NotNull] Func<T1, T2, T3, T4, T5, TResult> callee,
@@ -1437,9 +1437,9 @@ namespace Omnifactotum
         ///     A task that is executing or has executed the specified method asynchronously.
         /// </returns>
         /// <exception cref="System.ArgumentNullException">
-        ///     <para><paramref name="callee"/> is <c>null</c>.</para>
+        ///     <para><paramref name="callee"/> is <see langword="null"/>.</para>
         ///     <para>- or -</para>
-        ///     <para><paramref name="logError"/> is <c>null</c>.</para>
+        ///     <para><paramref name="logError"/> is <see langword="null"/>.</para>
         /// </exception>
         public static Task<TResult> ComputeAsync<T1, T2, T3, T4, T5, T6, TResult>(
             [NotNull] Func<T1, T2, T3, T4, T5, T6, TResult> callee,
@@ -1523,9 +1523,9 @@ namespace Omnifactotum
         ///     A task that is executing or has executed the specified method asynchronously.
         /// </returns>
         /// <exception cref="System.ArgumentNullException">
-        ///     <para><paramref name="callee"/> is <c>null</c>.</para>
+        ///     <para><paramref name="callee"/> is <see langword="null"/>.</para>
         ///     <para>- or -</para>
-        ///     <para><paramref name="logError"/> is <c>null</c>.</para>
+        ///     <para><paramref name="logError"/> is <see langword="null"/>.</para>
         /// </exception>
         public static Task<TResult> ComputeAsync<T1, T2, T3, T4, T5, T6, TResult>(
             [NotNull] Func<T1, T2, T3, T4, T5, T6, TResult> callee,
@@ -1609,9 +1609,9 @@ namespace Omnifactotum
         ///     A task that is executing or has executed the specified method asynchronously.
         /// </returns>
         /// <exception cref="System.ArgumentNullException">
-        ///     <para><paramref name="callee"/> is <c>null</c>.</para>
+        ///     <para><paramref name="callee"/> is <see langword="null"/>.</para>
         ///     <para>- or -</para>
-        ///     <para><paramref name="logError"/> is <c>null</c>.</para>
+        ///     <para><paramref name="logError"/> is <see langword="null"/>.</para>
         /// </exception>
         public static Task<TResult> ComputeAsync<T1, T2, T3, T4, T5, T6, TResult>(
             [NotNull] Func<T1, T2, T3, T4, T5, T6, TResult> callee,
@@ -1692,7 +1692,7 @@ namespace Omnifactotum
         ///     A task that is executing or has executed the specified method asynchronously.
         /// </returns>
         /// <exception cref="System.ArgumentNullException">
-        ///     <para><paramref name="callee"/> is <c>null</c>.</para>
+        ///     <para><paramref name="callee"/> is <see langword="null"/>.</para>
         /// </exception>
         public static Task<TResult> ComputeAsync<T1, T2, T3, T4, T5, T6, TResult>(
             [NotNull] Func<T1, T2, T3, T4, T5, T6, TResult> callee,
@@ -1769,9 +1769,9 @@ namespace Omnifactotum
         ///     A task that is executing or has executed the specified method asynchronously.
         /// </returns>
         /// <exception cref="System.ArgumentNullException">
-        ///     <para><paramref name="callee"/> is <c>null</c>.</para>
+        ///     <para><paramref name="callee"/> is <see langword="null"/>.</para>
         ///     <para>- or -</para>
-        ///     <para><paramref name="logError"/> is <c>null</c>.</para>
+        ///     <para><paramref name="logError"/> is <see langword="null"/>.</para>
         /// </exception>
         public static Task<TResult> ComputeAsync<T1, T2, T3, T4, T5, T6, T7, TResult>(
             [NotNull] Func<T1, T2, T3, T4, T5, T6, T7, TResult> callee,
@@ -1862,9 +1862,9 @@ namespace Omnifactotum
         ///     A task that is executing or has executed the specified method asynchronously.
         /// </returns>
         /// <exception cref="System.ArgumentNullException">
-        ///     <para><paramref name="callee"/> is <c>null</c>.</para>
+        ///     <para><paramref name="callee"/> is <see langword="null"/>.</para>
         ///     <para>- or -</para>
-        ///     <para><paramref name="logError"/> is <c>null</c>.</para>
+        ///     <para><paramref name="logError"/> is <see langword="null"/>.</para>
         /// </exception>
         public static Task<TResult> ComputeAsync<T1, T2, T3, T4, T5, T6, T7, TResult>(
             [NotNull] Func<T1, T2, T3, T4, T5, T6, T7, TResult> callee,
@@ -1955,9 +1955,9 @@ namespace Omnifactotum
         ///     A task that is executing or has executed the specified method asynchronously.
         /// </returns>
         /// <exception cref="System.ArgumentNullException">
-        ///     <para><paramref name="callee"/> is <c>null</c>.</para>
+        ///     <para><paramref name="callee"/> is <see langword="null"/>.</para>
         ///     <para>- or -</para>
-        ///     <para><paramref name="logError"/> is <c>null</c>.</para>
+        ///     <para><paramref name="logError"/> is <see langword="null"/>.</para>
         /// </exception>
         public static Task<TResult> ComputeAsync<T1, T2, T3, T4, T5, T6, T7, TResult>(
             [NotNull] Func<T1, T2, T3, T4, T5, T6, T7, TResult> callee,
@@ -2045,7 +2045,7 @@ namespace Omnifactotum
         ///     A task that is executing or has executed the specified method asynchronously.
         /// </returns>
         /// <exception cref="System.ArgumentNullException">
-        ///     <para><paramref name="callee"/> is <c>null</c>.</para>
+        ///     <para><paramref name="callee"/> is <see langword="null"/>.</para>
         /// </exception>
         public static Task<TResult> ComputeAsync<T1, T2, T3, T4, T5, T6, T7, TResult>(
             [NotNull] Func<T1, T2, T3, T4, T5, T6, T7, TResult> callee,
@@ -2129,9 +2129,9 @@ namespace Omnifactotum
         ///     A task that is executing or has executed the specified method asynchronously.
         /// </returns>
         /// <exception cref="System.ArgumentNullException">
-        ///     <para><paramref name="callee"/> is <c>null</c>.</para>
+        ///     <para><paramref name="callee"/> is <see langword="null"/>.</para>
         ///     <para>- or -</para>
-        ///     <para><paramref name="logError"/> is <c>null</c>.</para>
+        ///     <para><paramref name="logError"/> is <see langword="null"/>.</para>
         /// </exception>
         public static Task<TResult> ComputeAsync<T1, T2, T3, T4, T5, T6, T7, T8, TResult>(
             [NotNull] Func<T1, T2, T3, T4, T5, T6, T7, T8, TResult> callee,
@@ -2229,9 +2229,9 @@ namespace Omnifactotum
         ///     A task that is executing or has executed the specified method asynchronously.
         /// </returns>
         /// <exception cref="System.ArgumentNullException">
-        ///     <para><paramref name="callee"/> is <c>null</c>.</para>
+        ///     <para><paramref name="callee"/> is <see langword="null"/>.</para>
         ///     <para>- or -</para>
-        ///     <para><paramref name="logError"/> is <c>null</c>.</para>
+        ///     <para><paramref name="logError"/> is <see langword="null"/>.</para>
         /// </exception>
         public static Task<TResult> ComputeAsync<T1, T2, T3, T4, T5, T6, T7, T8, TResult>(
             [NotNull] Func<T1, T2, T3, T4, T5, T6, T7, T8, TResult> callee,
@@ -2329,9 +2329,9 @@ namespace Omnifactotum
         ///     A task that is executing or has executed the specified method asynchronously.
         /// </returns>
         /// <exception cref="System.ArgumentNullException">
-        ///     <para><paramref name="callee"/> is <c>null</c>.</para>
+        ///     <para><paramref name="callee"/> is <see langword="null"/>.</para>
         ///     <para>- or -</para>
-        ///     <para><paramref name="logError"/> is <c>null</c>.</para>
+        ///     <para><paramref name="logError"/> is <see langword="null"/>.</para>
         /// </exception>
         public static Task<TResult> ComputeAsync<T1, T2, T3, T4, T5, T6, T7, T8, TResult>(
             [NotNull] Func<T1, T2, T3, T4, T5, T6, T7, T8, TResult> callee,
@@ -2426,7 +2426,7 @@ namespace Omnifactotum
         ///     A task that is executing or has executed the specified method asynchronously.
         /// </returns>
         /// <exception cref="System.ArgumentNullException">
-        ///     <para><paramref name="callee"/> is <c>null</c>.</para>
+        ///     <para><paramref name="callee"/> is <see langword="null"/>.</para>
         /// </exception>
         public static Task<TResult> ComputeAsync<T1, T2, T3, T4, T5, T6, T7, T8, TResult>(
             [NotNull] Func<T1, T2, T3, T4, T5, T6, T7, T8, TResult> callee,
@@ -2517,9 +2517,9 @@ namespace Omnifactotum
         ///     A task that is executing or has executed the specified method asynchronously.
         /// </returns>
         /// <exception cref="System.ArgumentNullException">
-        ///     <para><paramref name="callee"/> is <c>null</c>.</para>
+        ///     <para><paramref name="callee"/> is <see langword="null"/>.</para>
         ///     <para>- or -</para>
-        ///     <para><paramref name="logError"/> is <c>null</c>.</para>
+        ///     <para><paramref name="logError"/> is <see langword="null"/>.</para>
         /// </exception>
         public static Task<TResult> ComputeAsync<T1, T2, T3, T4, T5, T6, T7, T8, T9, TResult>(
             [NotNull] Func<T1, T2, T3, T4, T5, T6, T7, T8, T9, TResult> callee,
@@ -2624,9 +2624,9 @@ namespace Omnifactotum
         ///     A task that is executing or has executed the specified method asynchronously.
         /// </returns>
         /// <exception cref="System.ArgumentNullException">
-        ///     <para><paramref name="callee"/> is <c>null</c>.</para>
+        ///     <para><paramref name="callee"/> is <see langword="null"/>.</para>
         ///     <para>- or -</para>
-        ///     <para><paramref name="logError"/> is <c>null</c>.</para>
+        ///     <para><paramref name="logError"/> is <see langword="null"/>.</para>
         /// </exception>
         public static Task<TResult> ComputeAsync<T1, T2, T3, T4, T5, T6, T7, T8, T9, TResult>(
             [NotNull] Func<T1, T2, T3, T4, T5, T6, T7, T8, T9, TResult> callee,
@@ -2731,9 +2731,9 @@ namespace Omnifactotum
         ///     A task that is executing or has executed the specified method asynchronously.
         /// </returns>
         /// <exception cref="System.ArgumentNullException">
-        ///     <para><paramref name="callee"/> is <c>null</c>.</para>
+        ///     <para><paramref name="callee"/> is <see langword="null"/>.</para>
         ///     <para>- or -</para>
-        ///     <para><paramref name="logError"/> is <c>null</c>.</para>
+        ///     <para><paramref name="logError"/> is <see langword="null"/>.</para>
         /// </exception>
         public static Task<TResult> ComputeAsync<T1, T2, T3, T4, T5, T6, T7, T8, T9, TResult>(
             [NotNull] Func<T1, T2, T3, T4, T5, T6, T7, T8, T9, TResult> callee,
@@ -2835,7 +2835,7 @@ namespace Omnifactotum
         ///     A task that is executing or has executed the specified method asynchronously.
         /// </returns>
         /// <exception cref="System.ArgumentNullException">
-        ///     <para><paramref name="callee"/> is <c>null</c>.</para>
+        ///     <para><paramref name="callee"/> is <see langword="null"/>.</para>
         /// </exception>
         public static Task<TResult> ComputeAsync<T1, T2, T3, T4, T5, T6, T7, T8, T9, TResult>(
             [NotNull] Func<T1, T2, T3, T4, T5, T6, T7, T8, T9, TResult> callee,
@@ -2933,9 +2933,9 @@ namespace Omnifactotum
         ///     A task that is executing or has executed the specified method asynchronously.
         /// </returns>
         /// <exception cref="System.ArgumentNullException">
-        ///     <para><paramref name="callee"/> is <c>null</c>.</para>
+        ///     <para><paramref name="callee"/> is <see langword="null"/>.</para>
         ///     <para>- or -</para>
-        ///     <para><paramref name="logError"/> is <c>null</c>.</para>
+        ///     <para><paramref name="logError"/> is <see langword="null"/>.</para>
         /// </exception>
         public static Task<TResult> ComputeAsync<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, TResult>(
             [NotNull] Func<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, TResult> callee,
@@ -3047,9 +3047,9 @@ namespace Omnifactotum
         ///     A task that is executing or has executed the specified method asynchronously.
         /// </returns>
         /// <exception cref="System.ArgumentNullException">
-        ///     <para><paramref name="callee"/> is <c>null</c>.</para>
+        ///     <para><paramref name="callee"/> is <see langword="null"/>.</para>
         ///     <para>- or -</para>
-        ///     <para><paramref name="logError"/> is <c>null</c>.</para>
+        ///     <para><paramref name="logError"/> is <see langword="null"/>.</para>
         /// </exception>
         public static Task<TResult> ComputeAsync<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, TResult>(
             [NotNull] Func<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, TResult> callee,
@@ -3161,9 +3161,9 @@ namespace Omnifactotum
         ///     A task that is executing or has executed the specified method asynchronously.
         /// </returns>
         /// <exception cref="System.ArgumentNullException">
-        ///     <para><paramref name="callee"/> is <c>null</c>.</para>
+        ///     <para><paramref name="callee"/> is <see langword="null"/>.</para>
         ///     <para>- or -</para>
-        ///     <para><paramref name="logError"/> is <c>null</c>.</para>
+        ///     <para><paramref name="logError"/> is <see langword="null"/>.</para>
         /// </exception>
         public static Task<TResult> ComputeAsync<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, TResult>(
             [NotNull] Func<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, TResult> callee,
@@ -3272,7 +3272,7 @@ namespace Omnifactotum
         ///     A task that is executing or has executed the specified method asynchronously.
         /// </returns>
         /// <exception cref="System.ArgumentNullException">
-        ///     <para><paramref name="callee"/> is <c>null</c>.</para>
+        ///     <para><paramref name="callee"/> is <see langword="null"/>.</para>
         /// </exception>
         public static Task<TResult> ComputeAsync<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, TResult>(
             [NotNull] Func<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, TResult> callee,
@@ -3377,9 +3377,9 @@ namespace Omnifactotum
         ///     A task that is executing or has executed the specified method asynchronously.
         /// </returns>
         /// <exception cref="System.ArgumentNullException">
-        ///     <para><paramref name="callee"/> is <c>null</c>.</para>
+        ///     <para><paramref name="callee"/> is <see langword="null"/>.</para>
         ///     <para>- or -</para>
-        ///     <para><paramref name="logError"/> is <c>null</c>.</para>
+        ///     <para><paramref name="logError"/> is <see langword="null"/>.</para>
         /// </exception>
         public static Task<TResult> ComputeAsync<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, TResult>(
             [NotNull] Func<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, TResult> callee,
@@ -3498,9 +3498,9 @@ namespace Omnifactotum
         ///     A task that is executing or has executed the specified method asynchronously.
         /// </returns>
         /// <exception cref="System.ArgumentNullException">
-        ///     <para><paramref name="callee"/> is <c>null</c>.</para>
+        ///     <para><paramref name="callee"/> is <see langword="null"/>.</para>
         ///     <para>- or -</para>
-        ///     <para><paramref name="logError"/> is <c>null</c>.</para>
+        ///     <para><paramref name="logError"/> is <see langword="null"/>.</para>
         /// </exception>
         public static Task<TResult> ComputeAsync<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, TResult>(
             [NotNull] Func<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, TResult> callee,
@@ -3619,9 +3619,9 @@ namespace Omnifactotum
         ///     A task that is executing or has executed the specified method asynchronously.
         /// </returns>
         /// <exception cref="System.ArgumentNullException">
-        ///     <para><paramref name="callee"/> is <c>null</c>.</para>
+        ///     <para><paramref name="callee"/> is <see langword="null"/>.</para>
         ///     <para>- or -</para>
-        ///     <para><paramref name="logError"/> is <c>null</c>.</para>
+        ///     <para><paramref name="logError"/> is <see langword="null"/>.</para>
         /// </exception>
         public static Task<TResult> ComputeAsync<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, TResult>(
             [NotNull] Func<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, TResult> callee,
@@ -3737,7 +3737,7 @@ namespace Omnifactotum
         ///     A task that is executing or has executed the specified method asynchronously.
         /// </returns>
         /// <exception cref="System.ArgumentNullException">
-        ///     <para><paramref name="callee"/> is <c>null</c>.</para>
+        ///     <para><paramref name="callee"/> is <see langword="null"/>.</para>
         /// </exception>
         public static Task<TResult> ComputeAsync<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, TResult>(
             [NotNull] Func<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, TResult> callee,
@@ -3849,9 +3849,9 @@ namespace Omnifactotum
         ///     A task that is executing or has executed the specified method asynchronously.
         /// </returns>
         /// <exception cref="System.ArgumentNullException">
-        ///     <para><paramref name="callee"/> is <c>null</c>.</para>
+        ///     <para><paramref name="callee"/> is <see langword="null"/>.</para>
         ///     <para>- or -</para>
-        ///     <para><paramref name="logError"/> is <c>null</c>.</para>
+        ///     <para><paramref name="logError"/> is <see langword="null"/>.</para>
         /// </exception>
         public static Task<TResult> ComputeAsync<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, TResult>(
             [NotNull] Func<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, TResult> callee,
@@ -3977,9 +3977,9 @@ namespace Omnifactotum
         ///     A task that is executing or has executed the specified method asynchronously.
         /// </returns>
         /// <exception cref="System.ArgumentNullException">
-        ///     <para><paramref name="callee"/> is <c>null</c>.</para>
+        ///     <para><paramref name="callee"/> is <see langword="null"/>.</para>
         ///     <para>- or -</para>
-        ///     <para><paramref name="logError"/> is <c>null</c>.</para>
+        ///     <para><paramref name="logError"/> is <see langword="null"/>.</para>
         /// </exception>
         public static Task<TResult> ComputeAsync<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, TResult>(
             [NotNull] Func<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, TResult> callee,
@@ -4105,9 +4105,9 @@ namespace Omnifactotum
         ///     A task that is executing or has executed the specified method asynchronously.
         /// </returns>
         /// <exception cref="System.ArgumentNullException">
-        ///     <para><paramref name="callee"/> is <c>null</c>.</para>
+        ///     <para><paramref name="callee"/> is <see langword="null"/>.</para>
         ///     <para>- or -</para>
-        ///     <para><paramref name="logError"/> is <c>null</c>.</para>
+        ///     <para><paramref name="logError"/> is <see langword="null"/>.</para>
         /// </exception>
         public static Task<TResult> ComputeAsync<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, TResult>(
             [NotNull] Func<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, TResult> callee,
@@ -4230,7 +4230,7 @@ namespace Omnifactotum
         ///     A task that is executing or has executed the specified method asynchronously.
         /// </returns>
         /// <exception cref="System.ArgumentNullException">
-        ///     <para><paramref name="callee"/> is <c>null</c>.</para>
+        ///     <para><paramref name="callee"/> is <see langword="null"/>.</para>
         /// </exception>
         public static Task<TResult> ComputeAsync<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, TResult>(
             [NotNull] Func<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, TResult> callee,
@@ -4349,9 +4349,9 @@ namespace Omnifactotum
         ///     A task that is executing or has executed the specified method asynchronously.
         /// </returns>
         /// <exception cref="System.ArgumentNullException">
-        ///     <para><paramref name="callee"/> is <c>null</c>.</para>
+        ///     <para><paramref name="callee"/> is <see langword="null"/>.</para>
         ///     <para>- or -</para>
-        ///     <para><paramref name="logError"/> is <c>null</c>.</para>
+        ///     <para><paramref name="logError"/> is <see langword="null"/>.</para>
         /// </exception>
         public static Task<TResult> ComputeAsync<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, TResult>(
             [NotNull] Func<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, TResult> callee,
@@ -4484,9 +4484,9 @@ namespace Omnifactotum
         ///     A task that is executing or has executed the specified method asynchronously.
         /// </returns>
         /// <exception cref="System.ArgumentNullException">
-        ///     <para><paramref name="callee"/> is <c>null</c>.</para>
+        ///     <para><paramref name="callee"/> is <see langword="null"/>.</para>
         ///     <para>- or -</para>
-        ///     <para><paramref name="logError"/> is <c>null</c>.</para>
+        ///     <para><paramref name="logError"/> is <see langword="null"/>.</para>
         /// </exception>
         public static Task<TResult> ComputeAsync<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, TResult>(
             [NotNull] Func<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, TResult> callee,
@@ -4619,9 +4619,9 @@ namespace Omnifactotum
         ///     A task that is executing or has executed the specified method asynchronously.
         /// </returns>
         /// <exception cref="System.ArgumentNullException">
-        ///     <para><paramref name="callee"/> is <c>null</c>.</para>
+        ///     <para><paramref name="callee"/> is <see langword="null"/>.</para>
         ///     <para>- or -</para>
-        ///     <para><paramref name="logError"/> is <c>null</c>.</para>
+        ///     <para><paramref name="logError"/> is <see langword="null"/>.</para>
         /// </exception>
         public static Task<TResult> ComputeAsync<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, TResult>(
             [NotNull] Func<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, TResult> callee,
@@ -4751,7 +4751,7 @@ namespace Omnifactotum
         ///     A task that is executing or has executed the specified method asynchronously.
         /// </returns>
         /// <exception cref="System.ArgumentNullException">
-        ///     <para><paramref name="callee"/> is <c>null</c>.</para>
+        ///     <para><paramref name="callee"/> is <see langword="null"/>.</para>
         /// </exception>
         public static Task<TResult> ComputeAsync<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, TResult>(
             [NotNull] Func<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, TResult> callee,
@@ -4877,9 +4877,9 @@ namespace Omnifactotum
         ///     A task that is executing or has executed the specified method asynchronously.
         /// </returns>
         /// <exception cref="System.ArgumentNullException">
-        ///     <para><paramref name="callee"/> is <c>null</c>.</para>
+        ///     <para><paramref name="callee"/> is <see langword="null"/>.</para>
         ///     <para>- or -</para>
-        ///     <para><paramref name="logError"/> is <c>null</c>.</para>
+        ///     <para><paramref name="logError"/> is <see langword="null"/>.</para>
         /// </exception>
         public static Task<TResult> ComputeAsync<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, T14, TResult>(
             [NotNull] Func<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, T14, TResult> callee,
@@ -5019,9 +5019,9 @@ namespace Omnifactotum
         ///     A task that is executing or has executed the specified method asynchronously.
         /// </returns>
         /// <exception cref="System.ArgumentNullException">
-        ///     <para><paramref name="callee"/> is <c>null</c>.</para>
+        ///     <para><paramref name="callee"/> is <see langword="null"/>.</para>
         ///     <para>- or -</para>
-        ///     <para><paramref name="logError"/> is <c>null</c>.</para>
+        ///     <para><paramref name="logError"/> is <see langword="null"/>.</para>
         /// </exception>
         public static Task<TResult> ComputeAsync<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, T14, TResult>(
             [NotNull] Func<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, T14, TResult> callee,
@@ -5161,9 +5161,9 @@ namespace Omnifactotum
         ///     A task that is executing or has executed the specified method asynchronously.
         /// </returns>
         /// <exception cref="System.ArgumentNullException">
-        ///     <para><paramref name="callee"/> is <c>null</c>.</para>
+        ///     <para><paramref name="callee"/> is <see langword="null"/>.</para>
         ///     <para>- or -</para>
-        ///     <para><paramref name="logError"/> is <c>null</c>.</para>
+        ///     <para><paramref name="logError"/> is <see langword="null"/>.</para>
         /// </exception>
         public static Task<TResult> ComputeAsync<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, T14, TResult>(
             [NotNull] Func<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, T14, TResult> callee,
@@ -5300,7 +5300,7 @@ namespace Omnifactotum
         ///     A task that is executing or has executed the specified method asynchronously.
         /// </returns>
         /// <exception cref="System.ArgumentNullException">
-        ///     <para><paramref name="callee"/> is <c>null</c>.</para>
+        ///     <para><paramref name="callee"/> is <see langword="null"/>.</para>
         /// </exception>
         public static Task<TResult> ComputeAsync<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, T14, TResult>(
             [NotNull] Func<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, T14, TResult> callee,
@@ -5433,9 +5433,9 @@ namespace Omnifactotum
         ///     A task that is executing or has executed the specified method asynchronously.
         /// </returns>
         /// <exception cref="System.ArgumentNullException">
-        ///     <para><paramref name="callee"/> is <c>null</c>.</para>
+        ///     <para><paramref name="callee"/> is <see langword="null"/>.</para>
         ///     <para>- or -</para>
-        ///     <para><paramref name="logError"/> is <c>null</c>.</para>
+        ///     <para><paramref name="logError"/> is <see langword="null"/>.</para>
         /// </exception>
         public static Task<TResult> ComputeAsync<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, T14, T15, TResult>(
             [NotNull] Func<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, T14, T15, TResult> callee,
@@ -5582,9 +5582,9 @@ namespace Omnifactotum
         ///     A task that is executing or has executed the specified method asynchronously.
         /// </returns>
         /// <exception cref="System.ArgumentNullException">
-        ///     <para><paramref name="callee"/> is <c>null</c>.</para>
+        ///     <para><paramref name="callee"/> is <see langword="null"/>.</para>
         ///     <para>- or -</para>
-        ///     <para><paramref name="logError"/> is <c>null</c>.</para>
+        ///     <para><paramref name="logError"/> is <see langword="null"/>.</para>
         /// </exception>
         public static Task<TResult> ComputeAsync<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, T14, T15, TResult>(
             [NotNull] Func<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, T14, T15, TResult> callee,
@@ -5731,9 +5731,9 @@ namespace Omnifactotum
         ///     A task that is executing or has executed the specified method asynchronously.
         /// </returns>
         /// <exception cref="System.ArgumentNullException">
-        ///     <para><paramref name="callee"/> is <c>null</c>.</para>
+        ///     <para><paramref name="callee"/> is <see langword="null"/>.</para>
         ///     <para>- or -</para>
-        ///     <para><paramref name="logError"/> is <c>null</c>.</para>
+        ///     <para><paramref name="logError"/> is <see langword="null"/>.</para>
         /// </exception>
         public static Task<TResult> ComputeAsync<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, T14, T15, TResult>(
             [NotNull] Func<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, T14, T15, TResult> callee,
@@ -5877,7 +5877,7 @@ namespace Omnifactotum
         ///     A task that is executing or has executed the specified method asynchronously.
         /// </returns>
         /// <exception cref="System.ArgumentNullException">
-        ///     <para><paramref name="callee"/> is <c>null</c>.</para>
+        ///     <para><paramref name="callee"/> is <see langword="null"/>.</para>
         /// </exception>
         public static Task<TResult> ComputeAsync<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, T14, T15, TResult>(
             [NotNull] Func<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, T14, T15, TResult> callee,
@@ -6017,9 +6017,9 @@ namespace Omnifactotum
         ///     A task that is executing or has executed the specified method asynchronously.
         /// </returns>
         /// <exception cref="System.ArgumentNullException">
-        ///     <para><paramref name="callee"/> is <c>null</c>.</para>
+        ///     <para><paramref name="callee"/> is <see langword="null"/>.</para>
         ///     <para>- or -</para>
-        ///     <para><paramref name="logError"/> is <c>null</c>.</para>
+        ///     <para><paramref name="logError"/> is <see langword="null"/>.</para>
         /// </exception>
         public static Task<TResult> ComputeAsync<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, T14, T15, T16, TResult>(
             [NotNull] Func<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, T14, T15, T16, TResult> callee,
@@ -6173,9 +6173,9 @@ namespace Omnifactotum
         ///     A task that is executing or has executed the specified method asynchronously.
         /// </returns>
         /// <exception cref="System.ArgumentNullException">
-        ///     <para><paramref name="callee"/> is <c>null</c>.</para>
+        ///     <para><paramref name="callee"/> is <see langword="null"/>.</para>
         ///     <para>- or -</para>
-        ///     <para><paramref name="logError"/> is <c>null</c>.</para>
+        ///     <para><paramref name="logError"/> is <see langword="null"/>.</para>
         /// </exception>
         public static Task<TResult> ComputeAsync<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, T14, T15, T16, TResult>(
             [NotNull] Func<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, T14, T15, T16, TResult> callee,
@@ -6329,9 +6329,9 @@ namespace Omnifactotum
         ///     A task that is executing or has executed the specified method asynchronously.
         /// </returns>
         /// <exception cref="System.ArgumentNullException">
-        ///     <para><paramref name="callee"/> is <c>null</c>.</para>
+        ///     <para><paramref name="callee"/> is <see langword="null"/>.</para>
         ///     <para>- or -</para>
-        ///     <para><paramref name="logError"/> is <c>null</c>.</para>
+        ///     <para><paramref name="logError"/> is <see langword="null"/>.</para>
         /// </exception>
         public static Task<TResult> ComputeAsync<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, T14, T15, T16, TResult>(
             [NotNull] Func<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, T14, T15, T16, TResult> callee,
@@ -6482,7 +6482,7 @@ namespace Omnifactotum
         ///     A task that is executing or has executed the specified method asynchronously.
         /// </returns>
         /// <exception cref="System.ArgumentNullException">
-        ///     <para><paramref name="callee"/> is <c>null</c>.</para>
+        ///     <para><paramref name="callee"/> is <see langword="null"/>.</para>
         /// </exception>
         public static Task<TResult> ComputeAsync<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, T14, T15, T16, TResult>(
             [NotNull] Func<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, T14, T15, T16, TResult> callee,

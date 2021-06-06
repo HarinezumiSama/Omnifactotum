@@ -262,10 +262,10 @@ namespace Omnifactotum.NUnit
         ///     The value to check.
         /// </param>
         /// <returns>
-        ///     The specified value if is not <c>null</c>.
+        ///     The specified value if is not <see langword="null"/>.
         /// </returns>
         /// <exception cref="AssertionException">
-        ///     <paramref name="value"/> is <c>null</c>.
+        ///     <paramref name="value"/> is <see langword="null"/>.
         /// </exception>
         [NotNull]
         public static T AssertNotNull<T>([CanBeNull] this T? value)
@@ -278,8 +278,8 @@ namespace Omnifactotum.NUnit
 #nullable restore
 
         /// <summary>
-        ///     Returns the value which underlies the specified nullable value, if it is not <c>null</c>
-        ///     (that is, if its <see cref="Nullable{T}.HasValue"/> property is <c>true</c>);
+        ///     Returns the value which underlies the specified nullable value, if it is not <see langword="null"/>
+        ///     (that is, if its <see cref="Nullable{T}.HasValue"/> property is <see langword="true"/>);
         ///     otherwise, throws <see cref="AssertionException"/>.
         /// </summary>
         /// <typeparam name="T">
@@ -289,12 +289,12 @@ namespace Omnifactotum.NUnit
         ///     The value to check.
         /// </param>
         /// <returns>
-        ///     The value which underlies the specified nullable value, if it is not <c>null</c>
-        ///     (that is, if its <see cref="Nullable{T}.HasValue"/> property is <c>true</c>).
+        ///     The value which underlies the specified nullable value, if it is not <see langword="null"/>
+        ///     (that is, if its <see cref="Nullable{T}.HasValue"/> property is <see langword="true"/>).
         /// </returns>
         /// <exception cref="AssertionException">
-        ///     <paramref name="value"/> is <c>null</c>, that is, its <see cref="Nullable{T}.HasValue"/> property is
-        ///     <c>false</c>.
+        ///     <paramref name="value"/> is <see langword="null"/>, that is, its <see cref="Nullable{T}.HasValue"/> property is
+        ///     <see langword="false"/>.
         /// </exception>
         public static T AssertNotNull<T>([CanBeNull] this T? value)
             where T : struct
@@ -335,8 +335,8 @@ namespace Omnifactotum.NUnit
         ///     The expected access attribute value.
         /// </param>
         /// <returns>
-        ///     <c>true</c> if the access attribute of the specified method matches the specified attribute;
-        ///     otherwise, <c>false</c>.
+        ///     <see langword="true"/> if the access attribute of the specified method matches the specified attribute;
+        ///     otherwise, <see langword="false"/>.
         /// </returns>
         private static bool AccessAttributesMatch([NotNull] MethodInfo method, MethodAttributes expectedAttribute)
         {

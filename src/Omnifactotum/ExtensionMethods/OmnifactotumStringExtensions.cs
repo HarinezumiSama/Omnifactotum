@@ -18,38 +18,38 @@ namespace System
         private const string DoubleQuote = @"""";
 
         /// <summary>
-        ///     Determines whether the specified string is <c>null</c> or an <see cref="String.Empty"/> string.
+        ///     Determines whether the specified string is <see langword="null"/> or an <see cref="String.Empty"/> string.
         /// </summary>
         /// <param name="value">
         ///     The string value to check.
         /// </param>
         /// <returns>
-        ///     <c>true</c> if the specified string is <c>null</c> or an <see cref="String.Empty"/> string;
-        ///     otherwise, <c>false</c>.
+        ///     <see langword="true"/> if the specified string is <see langword="null"/> or an <see cref="String.Empty"/> string;
+        ///     otherwise, <see langword="false"/>.
         /// </returns>
         [Pure]
         public static bool IsNullOrEmpty([CanBeNull] this string value) => string.IsNullOrEmpty(value);
 
         /// <summary>
-        ///     Determines whether a specified string is <c>null</c>, <see cref="String.Empty"/>,
+        ///     Determines whether a specified string is <see langword="null"/>, <see cref="String.Empty"/>,
         ///     or consists only of white-space characters.
         /// </summary>
         /// <param name="value">
         ///     The string value to check.
         /// </param>
         /// <returns>
-        ///     <c>true</c> if the specified value is <c>null</c> or <see cref="String.Empty"/>, or if it consists
-        ///     exclusively of white-space characters; otherwise, <c>false</c>.
+        ///     <see langword="true"/> if the specified value is <see langword="null"/> or <see cref="String.Empty"/>, or if it consists
+        ///     exclusively of white-space characters; otherwise, <see langword="false"/>.
         /// </returns>
         [Pure]
         public static bool IsNullOrWhiteSpace([CanBeNull] this string value) => string.IsNullOrWhiteSpace(value);
 
         /// <summary>
         ///     Converts the specified string value to an equivalent <see cref="Boolean"/> value.
-        ///     If the specified string value cannot be converted, <c>null</c> is returned.
+        ///     If the specified string value cannot be converted, <see langword="null"/> is returned.
         /// </summary>
         /// <param name="value">
-        ///     The string value to convert. Can be <c>null</c>.
+        ///     The string value to convert. Can be <see langword="null"/>.
         /// </param>
         /// <returns>
         ///     The <see cref="Nullable{Boolean}"/> representation of the specified string value.
@@ -109,7 +109,7 @@ namespace System
         /// </param>
         /// <param name="separator">
         ///     The separator to insert between each element of the <see cref="System.String"/> collection.
-        ///     Can be <c>null</c>.
+        ///     Can be <see langword="null"/>.
         /// </param>
         /// <returns>
         ///     A <see cref="System.String"/> consisting of the elements of <paramref name="values"/> delimited
@@ -120,14 +120,14 @@ namespace System
             => string.Join(separator, values ?? throw new ArgumentNullException(nameof(values)));
 
         /// <summary>
-        ///     Avoids the specified string value to be a <c>null</c> reference: returns the specified string value
-        ///     if it is not <c>null</c> or an empty string otherwise.
+        ///     Avoids the specified string value to be a <see langword="null"/> reference: returns the specified string value
+        ///     if it is not <see langword="null"/> or an empty string otherwise.
         /// </summary>
         /// <param name="source">
-        ///     The string value to secure from a <c>null</c> reference.
+        ///     The string value to secure from a <see langword="null"/> reference.
         /// </param>
         /// <returns>
-        ///     The source string value if it is not <c>null</c>; otherwise, empty string.
+        ///     The source string value if it is not <see langword="null"/>; otherwise, empty string.
         /// </returns>
         [NotNull]
         [Pure]
@@ -143,11 +143,11 @@ namespace System
         ///             <description>The result of the method</description>
         ///         </listheader>
         ///         <item>
-        ///             <term><c>null</c></term>
+        ///             <term><see langword="null"/></term>
         ///             <description>The literal: <b>null</b></description>
         ///         </item>
         ///         <item>
-        ///             <term>not <c>null</c></term>
+        ///             <term>not <see langword="null"/></term>
         ///             <description>
         ///                 An input value enclosed in the double quote characters ("). If the value
         ///                 contains one or more double quote characters, then each of them is
@@ -197,15 +197,15 @@ namespace System
         ///     from the specified <see cref="System.String"/> object.
         /// </summary>
         /// <param name="value">
-        ///     The <see cref="System.String"/> value to trim. Can be <c>null</c>.
+        ///     The <see cref="System.String"/> value to trim. Can be <see langword="null"/>.
         /// </param>
         /// <param name="trimChars">
-        ///     An array of Unicode characters to remove, or <c>null</c>.
+        ///     An array of Unicode characters to remove, or <see langword="null"/>.
         /// </param>
         /// <returns>
         ///     The string that remains after all occurrences of the characters in the <paramref name="trimChars"/>
         ///     parameter are removed from the start and end of the specified string.
-        ///     If <paramref name="trimChars"/> is <c>null</c> or an empty array, Unicode white-space characters
+        ///     If <paramref name="trimChars"/> is <see langword="null"/> or an empty array, Unicode white-space characters
         ///     are removed instead.
         /// </returns>
         [NotNull]
@@ -218,15 +218,15 @@ namespace System
         ///     from the specified <see cref="System.String"/> object.
         /// </summary>
         /// <param name="value">
-        ///     The <see cref="System.String"/> value to trim. Can be <c>null</c>.
+        ///     The <see cref="System.String"/> value to trim. Can be <see langword="null"/>.
         /// </param>
         /// <param name="trimChars">
-        ///     An array of Unicode characters to remove, or <c>null</c>.
+        ///     An array of Unicode characters to remove, or <see langword="null"/>.
         /// </param>
         /// <returns>
         ///     The string that remains after all occurrences of the characters in the <paramref name="trimChars"/>
         ///     parameter are removed from the start of the specified string.
-        ///     If <paramref name="trimChars"/> is <c>null</c> or an empty array, Unicode white-space characters
+        ///     If <paramref name="trimChars"/> is <see langword="null"/> or an empty array, Unicode white-space characters
         ///     are removed instead.
         /// </returns>
         [NotNull]
@@ -239,15 +239,15 @@ namespace System
         ///     from the specified <see cref="System.String"/> object.
         /// </summary>
         /// <param name="value">
-        ///     The <see cref="System.String"/> value to trim. Can be <c>null</c>.
+        ///     The <see cref="System.String"/> value to trim. Can be <see langword="null"/>.
         /// </param>
         /// <param name="trimChars">
-        ///     An array of Unicode characters to remove, or <c>null</c>.
+        ///     An array of Unicode characters to remove, or <see langword="null"/>.
         /// </param>
         /// <returns>
         ///     The string that remains after all occurrences of the characters in the <paramref name="trimChars"/>
         ///     parameter are removed from the end of the specified string.
-        ///     If <paramref name="trimChars"/> is <c>null</c> or an empty array, Unicode white-space characters
+        ///     If <paramref name="trimChars"/> is <see langword="null"/> or an empty array, Unicode white-space characters
         ///     are removed instead.
         /// </returns>
         [NotNull]
@@ -259,7 +259,7 @@ namespace System
         ///     Shortens the specified <see cref="System.String"/> value if its length exceeds the specified length.
         /// </summary>
         /// <param name="value">
-        ///     The <see cref="System.String"/> value to shorten. Can be <c>null</c>.
+        ///     The <see cref="System.String"/> value to shorten. Can be <see langword="null"/>.
         /// </param>
         /// <param name="maximumLength">
         ///     The maximum length of the resulting string.
@@ -296,14 +296,14 @@ namespace System
         ///     Replicates the specified string value the specified number of times.
         /// </summary>
         /// <param name="value">
-        ///     The value to replicate. Can be <c>null</c>.
+        ///     The value to replicate. Can be <see langword="null"/>.
         /// </param>
         /// <param name="count">
         ///     The number of times to replicate the specified string value.
         /// </param>
         /// <returns>
         ///     The specified value repeated the specified number of times, or <see cref="String.Empty"/> if
-        ///     <paramref name="value"/> is <c>null</c> or an empty string or <paramref name="count"/> is zero.
+        ///     <paramref name="value"/> is <see langword="null"/> or an empty string or <paramref name="count"/> is zero.
         /// </returns>
         [NotNull]
         [Pure]

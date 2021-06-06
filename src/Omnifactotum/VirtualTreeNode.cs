@@ -69,7 +69,7 @@ namespace Omnifactotum
         }
 
         /// <summary>
-        ///     Gets the parent node of the current node, or <c>null</c> if the node does not have a parent.
+        ///     Gets the parent node of the current node, or <see langword="null"/> if the node does not have a parent.
         /// </summary>
         [CanBeNull]
         public VirtualTreeNodeBase<T> Parent

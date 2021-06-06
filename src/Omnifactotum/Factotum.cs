@@ -40,10 +40,10 @@ namespace Omnifactotum
         ///     <para>
         ///         Calls the <see cref="IDisposable.Dispose"/> method of the specified reference type instance,
         ///         passed by reference, implementing the <see cref="IDisposable"/> interface and
-        ///         sets the reference to this object to <c>null</c>.
+        ///         sets the reference to this object to <see langword="null"/>.
         ///     </para>
         ///     <para>
-        ///         If the specified instance is already <c>null</c>, nothing is done.
+        ///         If the specified instance is already <see langword="null"/>, nothing is done.
         ///     </para>
         ///     <para>
         ///         If the <see cref="IDisposable.Dispose"/> method implementation throws an exception,
@@ -54,7 +54,7 @@ namespace Omnifactotum
         ///     The type of the disposable instance.
         /// </typeparam>
         /// <param name="disposable">
-        ///     A reference to an object to dispose and set to <c>null</c>.
+        ///     A reference to an object to dispose and set to <see langword="null"/>.
         /// </param>
         public static void DisposeAndNull<T>([CanBeNull] ref T disposable)
             where T : class, IDisposable
@@ -72,11 +72,11 @@ namespace Omnifactotum
         ///     <para>
         ///         Calls the <see cref="IDisposable.Dispose"/> method of the specified nullable instance,
         ///         passed by reference, implementing the <see cref="IDisposable"/> interface and
-        ///         sets the reference to this object to <c>null</c>.
+        ///         sets the reference to this object to <see langword="null"/>.
         ///     </para>
         ///     <para>
-        ///         If the specified instance is already <c>null</c> (that is, <see cref="Nullable{T}.HasValue"/> is
-        ///         <c>false</c>), nothing is done.
+        ///         If the specified instance is already <see langword="null"/> (that is, <see cref="Nullable{T}.HasValue"/> is
+        ///         <see langword="false"/>), nothing is done.
         ///     </para>
         ///     <para>
         ///         If the <see cref="IDisposable.Dispose"/> method implementation throws an exception,
@@ -87,7 +87,7 @@ namespace Omnifactotum
         ///     The type of the disposable instance.
         /// </typeparam>
         /// <param name="disposable">
-        ///     A reference to an object to dispose and set to <c>null</c>.
+        ///     A reference to an object to dispose and set to <see langword="null"/>.
         /// </param>
         public static void DisposeAndNull<T>([CanBeNull] ref T? disposable)
             where T : struct, IDisposable
@@ -682,7 +682,7 @@ namespace Omnifactotum
         ///     The type of the instances to process.
         /// </typeparam>
         /// <param name="instance">
-        ///     The instance to process. Can be <c>null</c>.
+        ///     The instance to process. Can be <see langword="null"/>.
         /// </param>
         /// <param name="getItems">
         ///     A reference to the method that maps <paramref name="instance"/> to the collection of associated objects
@@ -692,15 +692,15 @@ namespace Omnifactotum
         ///     A reference to the method that processes each single item.
         /// </param>
         /// <param name="processingContext">
-        ///     The context of the recursive processing, or <c>null</c> to use a new context.
+        ///     The context of the recursive processing, or <see langword="null"/> to use a new context.
         /// </param>
         /// <exception cref="ArgumentNullException">
         ///     <para>
-        ///         <paramref name="getItems"/> is <c>null</c>.
+        ///         <paramref name="getItems"/> is <see langword="null"/>.
         ///     </para>
         ///     <para>-or-</para>
         ///     <para>
-        ///         <paramref name="processItem"/> is <c>null</c>.
+        ///         <paramref name="processItem"/> is <see langword="null"/>.
         ///     </para>
         /// </exception>
         public static void ProcessRecursively<T>(
@@ -735,7 +735,7 @@ namespace Omnifactotum
         ///     The type of the instances to process.
         /// </typeparam>
         /// <param name="instance">
-        ///     The instance to process. Can be <c>null</c>.
+        ///     The instance to process. Can be <see langword="null"/>.
         /// </param>
         /// <param name="getItems">
         ///     A reference to the method that maps <paramref name="instance"/> to the collection of associated objects
@@ -746,11 +746,11 @@ namespace Omnifactotum
         /// </param>
         /// <exception cref="ArgumentNullException">
         ///     <para>
-        ///         <paramref name="getItems"/> is <c>null</c>.
+        ///         <paramref name="getItems"/> is <see langword="null"/>.
         ///     </para>
         ///     <para>-or-</para>
         ///     <para>
-        ///         <paramref name="processItem"/> is <c>null</c>.
+        ///         <paramref name="processItem"/> is <see langword="null"/>.
         ///     </para>
         /// </exception>
         public static void ProcessRecursively<T>(
@@ -768,7 +768,7 @@ namespace Omnifactotum
         ///     The type of the instances to process.
         /// </typeparam>
         /// <param name="instance">
-        ///     The instance to process. Can be <c>null</c>.
+        ///     The instance to process. Can be <see langword="null"/>.
         /// </param>
         /// <param name="getItems">
         ///     A reference to the method that maps <paramref name="instance"/> to the collection of associated objects
@@ -778,15 +778,15 @@ namespace Omnifactotum
         ///     A reference to the method that processes each single item.
         /// </param>
         /// <param name="processingContext">
-        ///     The context of the recursive processing, or <c>null</c> to use a new context.
+        ///     The context of the recursive processing, or <see langword="null"/> to use a new context.
         /// </param>
         /// <exception cref="ArgumentNullException">
         ///     <para>
-        ///         <paramref name="getItems"/> is <c>null</c>.
+        ///         <paramref name="getItems"/> is <see langword="null"/>.
         ///     </para>
         ///     <para>-or-</para>
         ///     <para>
-        ///         <paramref name="processItem"/> is <c>null</c>.
+        ///         <paramref name="processItem"/> is <see langword="null"/>.
         ///     </para>
         /// </exception>
         public static void ProcessRecursively<T>(
@@ -818,7 +818,7 @@ namespace Omnifactotum
         ///     The type of the instances to process.
         /// </typeparam>
         /// <param name="instance">
-        ///     The instance to process. Can be <c>null</c>.
+        ///     The instance to process. Can be <see langword="null"/>.
         /// </param>
         /// <param name="getItems">
         ///     A reference to the method that maps <paramref name="instance"/> to the collection of associated objects
@@ -829,11 +829,11 @@ namespace Omnifactotum
         /// </param>
         /// <exception cref="ArgumentNullException">
         ///     <para>
-        ///         <paramref name="getItems"/> is <c>null</c>.
+        ///         <paramref name="getItems"/> is <see langword="null"/>.
         ///     </para>
         ///     <para>-or-</para>
         ///     <para>
-        ///         <paramref name="processItem"/> is <c>null</c>.
+        ///         <paramref name="processItem"/> is <see langword="null"/>.
         ///     </para>
         /// </exception>
         public static void ProcessRecursively<T>(

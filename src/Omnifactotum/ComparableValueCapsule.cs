@@ -53,8 +53,8 @@ namespace Omnifactotum
         ///     The second <see cref="ComparableValueCapsule{T}"/> instance to compare.
         /// </param>
         /// <returns>
-        ///     <c>true</c> if the left <see cref="ComparableValueCapsule{T}"/> instance is less than
-        ///     the right <see cref="ComparableValueCapsule{T}"/> instance; otherwise, <c>false</c>.
+        ///     <see langword="true"/> if the left <see cref="ComparableValueCapsule{T}"/> instance is less than
+        ///     the right <see cref="ComparableValueCapsule{T}"/> instance; otherwise, <see langword="false"/>.
         /// </returns>
         public static bool operator <(
             [CanBeNull] ComparableValueCapsule<T> left,
@@ -74,8 +74,8 @@ namespace Omnifactotum
         ///     The second <see cref="ComparableValueCapsule{T}"/> instance to compare.
         /// </param>
         /// <returns>
-        ///     <c>true</c> if the left <see cref="ComparableValueCapsule{T}"/> instance is less than or equal to
-        ///     the right <see cref="ComparableValueCapsule{T}"/> instance; otherwise, <c>false</c>.
+        ///     <see langword="true"/> if the left <see cref="ComparableValueCapsule{T}"/> instance is less than or equal to
+        ///     the right <see cref="ComparableValueCapsule{T}"/> instance; otherwise, <see langword="false"/>.
         /// </returns>
         public static bool operator <=(
             [CanBeNull] ComparableValueCapsule<T> left,
@@ -95,8 +95,8 @@ namespace Omnifactotum
         ///     The second <see cref="ComparableValueCapsule{T}"/> instance to compare.
         /// </param>
         /// <returns>
-        ///     <c>true</c> if the left <see cref="ComparableValueCapsule{T}"/> instance is greater than
-        ///     the right <see cref="ComparableValueCapsule{T}"/> instance; otherwise, <c>false</c>.
+        ///     <see langword="true"/> if the left <see cref="ComparableValueCapsule{T}"/> instance is greater than
+        ///     the right <see cref="ComparableValueCapsule{T}"/> instance; otherwise, <see langword="false"/>.
         /// </returns>
         public static bool operator >(
             [CanBeNull] ComparableValueCapsule<T> left,
@@ -116,8 +116,8 @@ namespace Omnifactotum
         ///     The second <see cref="ComparableValueCapsule{T}"/> instance to compare.
         /// </param>
         /// <returns>
-        ///     <c>true</c> if the left <see cref="ComparableValueCapsule{T}"/> instance is greater than or equal to
-        ///     the right <see cref="ComparableValueCapsule{T}"/> instance; otherwise, <c>false</c>.
+        ///     <see langword="true"/> if the left <see cref="ComparableValueCapsule{T}"/> instance is greater than or equal to
+        ///     the right <see cref="ComparableValueCapsule{T}"/> instance; otherwise, <see langword="false"/>.
         /// </returns>
         public static bool operator >=(
             [CanBeNull] ComparableValueCapsule<T> left,

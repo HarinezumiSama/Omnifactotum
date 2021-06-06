@@ -15,7 +15,7 @@ namespace System.Collections.Generic
         /// <summary>
         ///     Computes the hash code of the specified collection by combining hash codes of the
         ///     elements in the collection into a new hash code. Returns <c>0</c> if the specified
-        ///     collection is <c>null</c> or empty.
+        ///     collection is <see langword="null"/> or empty.
         /// </summary>
         /// <typeparam name="T">
         ///     The type of elements in the collection.
@@ -25,7 +25,7 @@ namespace System.Collections.Generic
         /// </param>
         /// <returns>
         ///     A hash code of the specified collection, or <c>0</c> if the specified collection is
-        ///     <c>null</c> or empty.
+        ///     <see langword="null"/> or empty.
         /// </returns>
         public static int ComputeCollectionHashCode<T>([CanBeNull] [InstantHandle] this IEnumerable<T> collection)
         {

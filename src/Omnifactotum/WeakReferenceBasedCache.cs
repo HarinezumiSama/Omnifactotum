@@ -29,7 +29,7 @@ namespace Omnifactotum
         ///     A reference to a method that creates a value for the specified key once needed.
         /// </param>
         /// <param name="keyEqualityComparer">
-        ///     The equality comparer to use when comparing keys, or <c>null</c> to use
+        ///     The equality comparer to use when comparing keys, or <see langword="null"/> to use
         ///     the default <see cref="EqualityComparer{T}"/> for the type of the key.
         /// </param>
         public WeakReferenceBasedCache(
@@ -150,7 +150,7 @@ namespace Omnifactotum
         ///     The key to remove.
         /// </param>
         /// <returns>
-        ///     <c>true</c> if the element is successfully found and removed; otherwise, <c>false</c>.
+        ///     <see langword="true"/> if the element is successfully found and removed; otherwise, <see langword="false"/>.
         /// </returns>
         public bool Remove([NotNull] TKey key)
         {

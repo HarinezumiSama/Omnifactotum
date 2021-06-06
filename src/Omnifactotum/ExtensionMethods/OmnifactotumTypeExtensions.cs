@@ -50,14 +50,14 @@ namespace System
         ///     The case-sensitive name of the resource to load.
         /// </param>
         /// <returns>
-        ///     A <see cref="System.IO.Stream"/> representing the manifest resource, or <c>null</c> if no resources
+        ///     A <see cref="System.IO.Stream"/> representing the manifest resource, or <see langword="null"/> if no resources
         ///     were specified during compilation or if the resource is not visible to the caller.
         /// </returns>
         /// <exception cref="System.ArgumentNullException">
-        ///     <paramref name="type"/> is <c>null</c>.
+        ///     <paramref name="type"/> is <see langword="null"/>.
         /// </exception>
         /// <exception cref="System.ArgumentException">
-        ///     <paramref name="name"/> is <c>null</c> or an empty string (<see cref="String.Empty"/>).
+        ///     <paramref name="name"/> is <see langword="null"/> or an empty string (<see cref="String.Empty"/>).
         /// </exception>
         public static Stream GetManifestResourceStream([NotNull] this Type type, [NotNull] string name)
         {
@@ -185,8 +185,8 @@ namespace System
         ///     The type to check.
         /// </param>
         /// <returns>
-        ///     <c>true</c> if the specified type is <see cref="Nullable{T}"/> for a certain type T;
-        ///     otherwise, <c>false</c>.
+        ///     <see langword="true"/> if the specified type is <see cref="Nullable{T}"/> for a certain type T;
+        ///     otherwise, <see langword="false"/>.
         /// </returns>
         public static bool IsNullable([NotNull] this Type type)
         {
@@ -203,7 +203,7 @@ namespace System
         /// <summary>
         ///     <para>Determines the type of the elements in the collection represented by the specified type.</para>
         ///     <para>If the specified type is not a collection (<see cref="IEnumerable"/>) or if it is a generic type
-        ///     definition, <c>null</c> is returned.</para>
+        ///     definition, <see langword="null"/> is returned.</para>
         ///     <para>If the specified type is not a generic collection (<see cref="IEnumerable{T}"/>) but it is
         ///     a non-generic collection (<see cref="IEnumerable"/>), <c>typeof(<see cref="System.Object"/>)</c>
         ///     is returned.</para>

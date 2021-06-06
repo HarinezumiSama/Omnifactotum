@@ -38,7 +38,7 @@ namespace Omnifactotum
         ///     The element to add to the set.
         /// </param>
         /// <returns>
-        ///     <c>true</c> if the element is added to the set; <c>false</c> if the element is already in the set.
+        ///     <see langword="true"/> if the element is added to the set; <see langword="false"/> if the element is already in the set.
         /// </returns>
         /// <exception cref="System.NotSupportedException">
         ///     The set is read-only.
@@ -98,11 +98,11 @@ namespace Omnifactotum
         ///     The collection to compare to the current set.
         /// </param>
         /// <returns>
-        ///     <c>true</c> if the current set is a correct subset of <paramref name="other"/>;
-        ///     otherwise, <c>false</c>.
+        ///     <see langword="true"/> if the current set is a correct subset of <paramref name="other"/>;
+        ///     otherwise, <see langword="false"/>.
         /// </returns>
         /// <exception cref="System.ArgumentNullException">
-        ///     <paramref name="other"/> is <c>null</c>.
+        ///     <paramref name="other"/> is <see langword="null"/>.
         /// </exception>
         public bool IsProperSubsetOf(IEnumerable<T> other) => _set.IsProperSubsetOf(other);
 
@@ -113,11 +113,11 @@ namespace Omnifactotum
         ///     The collection to compare to the current set.
         /// </param>
         /// <returns>
-        ///     <c>true</c> if the current set is a correct superset of <paramref name="other"/>;
-        ///     otherwise, <c>false</c>.
+        ///     <see langword="true"/> if the current set is a correct superset of <paramref name="other"/>;
+        ///     otherwise, <see langword="false"/>.
         /// </returns>
         /// <exception cref="System.ArgumentNullException">
-        ///     <paramref name="other"/> is <c>null</c>.
+        ///     <paramref name="other"/> is <see langword="null"/>.
         /// </exception>
         public bool IsProperSupersetOf(IEnumerable<T> other) => _set.IsProperSupersetOf(other);
 
@@ -128,10 +128,10 @@ namespace Omnifactotum
         ///     The collection to compare to the current set.
         /// </param>
         /// <returns>
-        ///     <c>true</c> if the current set is a subset of <paramref name="other"/>; otherwise, <c>false</c>.
+        ///     <see langword="true"/> if the current set is a subset of <paramref name="other"/>; otherwise, <see langword="false"/>.
         /// </returns>
         /// <exception cref="System.ArgumentNullException">
-        ///     <paramref name="other"/> is <c>null</c>.
+        ///     <paramref name="other"/> is <see langword="null"/>.
         /// </exception>
         public bool IsSubsetOf(IEnumerable<T> other) => _set.IsSubsetOf(other);
 
@@ -142,10 +142,10 @@ namespace Omnifactotum
         ///     The collection to compare to the current set.
         /// </param>
         /// <returns>
-        ///     <c>true</c> if the current set is a superset of <paramref name="other"/>; otherwise, <c>false</c>.
+        ///     <see langword="true"/> if the current set is a superset of <paramref name="other"/>; otherwise, <see langword="false"/>.
         /// </returns>
         /// <exception cref="System.ArgumentNullException">
-        ///     <paramref name="other"/> is <c>null</c>.
+        ///     <paramref name="other"/> is <see langword="null"/>.
         /// </exception>
         public bool IsSupersetOf(IEnumerable<T> other) => _set.IsSupersetOf(other);
 
@@ -156,10 +156,10 @@ namespace Omnifactotum
         ///     The collection to compare to the current set.
         /// </param>
         /// <returns>
-        ///     <c>true</c> if the current set and other share at least one common element; otherwise, <c>false</c>.
+        ///     <see langword="true"/> if the current set and other share at least one common element; otherwise, <see langword="false"/>.
         /// </returns>
         /// <exception cref="System.ArgumentNullException">
-        ///     <paramref name="other"/> is <c>null</c>.
+        ///     <paramref name="other"/> is <see langword="null"/>.
         /// </exception>
         public bool Overlaps(IEnumerable<T> other) => _set.Overlaps(other);
 
@@ -170,10 +170,10 @@ namespace Omnifactotum
         ///     The collection to compare to the current set.
         /// </param>
         /// <returns>
-        ///     <c>true</c> if the current set is equal to <paramref name="other"/>; otherwise, <c>false</c>.
+        ///     <see langword="true"/> if the current set is equal to <paramref name="other"/>; otherwise, <see langword="false"/>.
         /// </returns>
         /// <exception cref="System.ArgumentNullException">
-        ///     <paramref name="other"/> is <c>null</c>.
+        ///     <paramref name="other"/> is <see langword="null"/>.
         /// </exception>
         public bool SetEquals(IEnumerable<T> other) => _set.SetEquals(other);
 
@@ -213,8 +213,8 @@ namespace Omnifactotum
         ///     The object to remove from the current set.
         /// </param>
         /// <returns>
-        ///     <c>true</c> if <paramref name="item"/> was successfully removed from the current set;
-        ///     otherwise, <c>false</c>. This method also returns <c>false</c> if <paramref name="item"/> is not found
+        ///     <see langword="true"/> if <paramref name="item"/> was successfully removed from the current set;
+        ///     otherwise, <see langword="false"/>. This method also returns <see langword="false"/> if <paramref name="item"/> is not found
         ///     in the current set.
         /// </returns>
         /// <exception cref="System.NotSupportedException">
@@ -229,7 +229,7 @@ namespace Omnifactotum
         ///     The object to locate in the set.
         /// </param>
         /// <returns>
-        ///     <c>true</c> if <paramref name="item"/> is found in the set; otherwise, <c>false</c>.
+        ///     <see langword="true"/> if <paramref name="item"/> is found in the set; otherwise, <see langword="false"/>.
         /// </returns>
         public bool Contains(T item) => _set.Contains(item);
 

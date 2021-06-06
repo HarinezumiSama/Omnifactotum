@@ -42,7 +42,7 @@ namespace Omnifactotum
         ///     Gets a value indicating whether the trace listener is thread safe.
         /// </summary>
         /// <returns>
-        ///     <c>true</c> if the trace listener is thread safe; otherwise, <c>false</c>.
+        ///     <see langword="true"/> if the trace listener is thread safe; otherwise, <see langword="false"/>.
         /// </returns>
         public override bool IsThreadSafe => true;
 
@@ -637,7 +637,7 @@ namespace Omnifactotum
 
         /// <summary>
         ///     Writes the indent to the listener you create when you implement this class, and resets
-        ///     the <see cref="TraceListener.NeedIndent"/> property to <c>false</c>.
+        ///     the <see cref="TraceListener.NeedIndent"/> property to <see langword="false"/>.
         /// </summary>
         protected override void WriteIndent()
         {

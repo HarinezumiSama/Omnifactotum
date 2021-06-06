@@ -34,7 +34,7 @@ namespace Omnifactotum
         ///     The dictionary to copy the key/values pairs from.
         /// </param>
         /// <exception cref="ArgumentNullException">
-        ///     <paramref name="dictionary"/> is <c>null</c>.
+        ///     <paramref name="dictionary"/> is <see langword="null"/>.
         /// </exception>
         public EnumFixedSizeDictionary([NotNull] IDictionary<TKey, TValue> dictionary)
             : base(dictionary)
@@ -50,7 +50,7 @@ namespace Omnifactotum
         ///     The dictionary to copy the key/values pairs from.
         /// </param>
         /// <exception cref="ArgumentNullException">
-        ///     <paramref name="dictionary"/> is <c>null</c>.
+        ///     <paramref name="dictionary"/> is <see langword="null"/>.
         /// </exception>
         public EnumFixedSizeDictionary(
             [NotNull] FixedSizeDictionary<TKey, TValue, EnumFixedSizeDictionaryDeterminant<TKey>> dictionary)

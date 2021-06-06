@@ -60,7 +60,7 @@ namespace Omnifactotum
         ///     Gets nodes of this graph sorted topologically, leaving the source graph and its nodes unaffected.
         /// </summary>
         /// <param name="compareEquipollentNodes">
-        ///     A reference to a method that is called to compare equipollent nodes, or <c>null</c> to sort
+        ///     A reference to a method that is called to compare equipollent nodes, or <see langword="null"/> to sort
         ///     equipollent nodes by their values, using the default comparer for the type <typeparamref name="T"/>.
         /// </param>
         /// <returns>

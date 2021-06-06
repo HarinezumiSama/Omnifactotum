@@ -34,7 +34,7 @@ namespace Omnifactotum.Validation
         ///         The error.
         ///     </para>
         ///     <para>
-        ///         Can be <c>null</c>, in which case it is simply not added to the collection.
+        ///         Can be <see langword="null"/>, in which case it is simply not added to the collection.
         ///     </para>
         /// </param>
         public void Add([CanBeNull] MemberConstraintValidationError error)
@@ -55,10 +55,10 @@ namespace Omnifactotum.Validation
         ///         The collection of errors.
         ///     </para>
         ///     <para>
-        ///         Can be <c>null</c>, in which case nothing is added to this <see cref="ValidationErrorCollection"/>.
+        ///         Can be <see langword="null"/>, in which case nothing is added to this <see cref="ValidationErrorCollection"/>.
         ///     </para>
         ///     <para>
-        ///         One or more items in the collection can be <c>null</c>, in which case these <c>null</c> items
+        ///         One or more items in the collection can be <see langword="null"/>, in which case these <see langword="null"/> items
         ///         are not added to this <see cref="ValidationErrorCollection"/>.
         ///     </para>
         /// </param>

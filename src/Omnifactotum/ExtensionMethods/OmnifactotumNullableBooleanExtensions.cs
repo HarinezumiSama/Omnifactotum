@@ -18,13 +18,13 @@ namespace System
         ///     The value to get the string representation of.
         /// </param>
         /// <param name="noValueString">
-        ///     A string value to return when <paramref name="value"/> is <c>null</c>.
+        ///     A string value to return when <paramref name="value"/> is <see langword="null"/>.
         /// </param>
         /// <param name="trueValueString">
-        ///     A string value to return when <paramref name="value"/> is <c>true</c>.
+        ///     A string value to return when <paramref name="value"/> is <see langword="true"/>.
         /// </param>
         /// <param name="falseValueString">
-        ///     A string value to return when <paramref name="value"/> is <c>false</c>.
+        ///     A string value to return when <paramref name="value"/> is <see langword="false"/>.
         /// </param>
         /// <returns>
         ///     The string representation of the specified nullable Boolean value.
@@ -46,15 +46,15 @@ namespace System
         /// </param>
         /// <param name="noValueProvider">
         ///     A reference to a method that provides a value to return when <paramref name="value"/>
-        ///     is <c>null</c>.
+        ///     is <see langword="null"/>.
         /// </param>
         /// <param name="trueValueProvider">
         ///     A reference to a method that provides a value to return when <paramref name="value"/>
-        ///     is <c>true</c>.
+        ///     is <see langword="true"/>.
         /// </param>
         /// <param name="falseValueProvider">
         ///     A reference to a method that provides a value to return when <paramref name="value"/>
-        ///     is <c>false</c>.
+        ///     is <see langword="false"/>.
         /// </param>
         /// <returns>
         ///     The string representation of the specified nullable Boolean value.

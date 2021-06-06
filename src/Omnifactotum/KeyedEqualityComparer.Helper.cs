@@ -27,7 +27,7 @@ namespace Omnifactotum
             ///     A reference to a method that provides a key for an object being compared.
             /// </param>
             /// <param name="keyComparer">
-            ///     The equality comparer to use when comparing objects' keys; or <c>null</c> to use the default
+            ///     The equality comparer to use when comparing objects' keys; or <see langword="null"/> to use the default
             ///     equality comparer for type <typeparamref name="TKey"/>.
             /// </param>
             /// <returns>
