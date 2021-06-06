@@ -77,6 +77,7 @@ namespace System
         /// </exception>
         [NotNull]
         [DebuggerStepThrough]
+        [ContractAnnotation("null => stop; notnull => notnull", true)]
         public static T EnsureNotNull<T>([CanBeNull] this T? value)
             where T : class
             => value ?? throw new ArgumentNullException(nameof(value));
