@@ -268,6 +268,7 @@ namespace Omnifactotum.NUnit
         ///     <paramref name="value"/> is <see langword="null"/>.
         /// </exception>
         [NotNull]
+        [ContractAnnotation("null => stop; notnull => notnull", true)]
         public static T AssertNotNull<T>([CanBeNull] this T? value)
             where T : class
         {
