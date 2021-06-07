@@ -1,9 +1,18 @@
-﻿using System.Collections.Generic;
+﻿#nullable enable
+
+using System.Collections.Generic;
 using System.Globalization;
+#if (NETFRAMEWORK && !NET40) || NETSTANDARD || NETCOREAPP
+using System.Runtime.CompilerServices;
+#endif
 using System.Text;
 using Omnifactotum;
 using Omnifactotum.Annotations;
 using static Omnifactotum.FormattableStringFactotum;
+//// Use NETSTANDARD2_1_OR_GREATER once AppVeyor updates their VM image with VS2019 16.10 or higher
+#if NETSTANDARD2_1 || NET5_0_OR_GREATER
+using NotNullWhen = System.Diagnostics.CodeAnalysis.NotNullWhenAttribute;
+#endif
 using PureAttribute = System.Diagnostics.Contracts.PureAttribute;
 
 //// ReSharper disable once CheckNamespace :: Namespace is intentionally named so in order to simplify usage of extension methods
@@ -21,28 +30,46 @@ namespace System
         ///     Determines whether the specified string is <see langword="null"/> or an <see cref="String.Empty"/> string.
         /// </summary>
         /// <param name="value">
-        ///     The string value to check.
+        ///     The string value to test.
         /// </param>
         /// <returns>
         ///     <see langword="true"/> if the specified string is <see langword="null"/> or an <see cref="String.Empty"/> string;
         ///     otherwise, <see langword="false"/>.
         /// </returns>
         [Pure]
-        public static bool IsNullOrEmpty([CanBeNull] this string value) => string.IsNullOrEmpty(value);
+        [ContractAnnotation("false <= notnull", true)]
+#if (NETFRAMEWORK && !NET40) || NETSTANDARD || NETCOREAPP
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+#endif
+        public static bool IsNullOrEmpty(
+#if NETSTANDARD2_1 || NET5_0_OR_GREATER
+            [NotNullWhen(false)]
+#endif
+            [CanBeNull] this string? value)
+            => string.IsNullOrEmpty(value);
 
         /// <summary>
         ///     Determines whether a specified string is <see langword="null"/>, <see cref="String.Empty"/>,
         ///     or consists only of white-space characters.
         /// </summary>
         /// <param name="value">
-        ///     The string value to check.
+        ///     The string value to test.
         /// </param>
         /// <returns>
         ///     <see langword="true"/> if the specified value is <see langword="null"/> or <see cref="String.Empty"/>, or if it consists
         ///     exclusively of white-space characters; otherwise, <see langword="false"/>.
         /// </returns>
         [Pure]
-        public static bool IsNullOrWhiteSpace([CanBeNull] this string value) => string.IsNullOrWhiteSpace(value);
+        [ContractAnnotation("false <= notnull", true)]
+#if (NETFRAMEWORK && !NET40) || NETSTANDARD || NETCOREAPP
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+#endif
+        public static bool IsNullOrWhiteSpace(
+#if NETSTANDARD2_1 || NET5_0_OR_GREATER
+            [NotNullWhen(false)]
+#endif
+            [CanBeNull] this string? value)
+            => string.IsNullOrWhiteSpace(value);
 
         /// <summary>
         ///     Converts the specified string value to an equivalent <see cref="Boolean"/> value.
@@ -56,7 +83,7 @@ namespace System
         /// </returns>
         [CanBeNull]
         [Pure]
-        public static bool? ToNullableBoolean([CanBeNull] this string value)
+        public static bool? ToNullableBoolean([CanBeNull] this string? value)
         {
             if (string.IsNullOrWhiteSpace(value))
             {
@@ -87,7 +114,7 @@ namespace System
         ///     The <see cref="System.Boolean"/> representation of the specified string value.
         /// </returns>
         [Pure]
-        public static bool ToBoolean(this string value)
+        public static bool ToBoolean([NotNull] this string value)
         {
             var proxyResult = ToNullableBoolean(value);
             if (!proxyResult.HasValue)
@@ -116,7 +143,12 @@ namespace System
         ///     by the <paramref name="separator"/> string.
         /// </returns>
         [NotNull]
-        public static string Join([NotNull] [InstantHandle] this IEnumerable<string> values, [CanBeNull] string separator)
+#if (NETFRAMEWORK && !NET40) || NETSTANDARD || NETCOREAPP
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+#endif
+        public static string Join(
+            [NotNull] [ItemCanBeNull] [InstantHandle] this IEnumerable<string?> values,
+            [CanBeNull] string? separator)
             => string.Join(separator, values ?? throw new ArgumentNullException(nameof(values)));
 
         /// <summary>
@@ -131,7 +163,10 @@ namespace System
         /// </returns>
         [NotNull]
         [Pure]
-        public static string AvoidNull([CanBeNull] this string source) => source ?? string.Empty;
+#if (NETFRAMEWORK && !NET40) || NETSTANDARD || NETCOREAPP
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+#endif
+        public static string AvoidNull([CanBeNull] this string? source) => source ?? string.Empty;
 
         /// <summary>
         ///     <para>
@@ -165,25 +200,32 @@ namespace System
         /// <example>
         ///     <code>
         /// <![CDATA[
-        ///         string value;
-        ///
-        ///         value = null;
-        ///         Console.WriteLine("Value is {0}.", value.ToUIString()); // Output: Value is null.
-        ///
-        ///         value = string.Empty;
-        ///         Console.WriteLine("Value is {0}.", value.ToUIString()); // Output: Value is "".
-        ///
-        ///         value = "Hello";
-        ///         Console.WriteLine("Value is {0}.", value.ToUIString()); // Output: Value is "Hello".
-        ///
-        ///         value = "Class 'MyClass' is found in project \"MyProject\".";
-        ///         Console.WriteLine("Value is {0}.", value.ToUIString()); // Output: Value is "Class 'MyClass' is found in project ""MyProject"".".
+        ///         string value1 = null;
+        ///         Console.WriteLine("Value is {0}.", value1.ToUIString()); // Output: Value is null.
+        /// ]]>
+        ///     </code>
+        ///     <code>
+        /// <![CDATA[
+        ///         string value2 = string.Empty;
+        ///         Console.WriteLine("Value is {0}.", value2.ToUIString()); // Output: Value is "".
+        /// ]]>
+        ///     </code>
+        ///     <code>
+        /// <![CDATA[
+        ///         string value3 = "Hello";
+        ///         Console.WriteLine("Value is {0}.", value3.ToUIString()); // Output: Value is "Hello".
+        /// ]]>
+        ///     </code>
+        ///     <code>
+        /// <![CDATA[
+        ///         string value4 = "Class 'MyClass' is found in project \"MyProject\".";
+        ///         Console.WriteLine("Value is {0}.", value4.ToUIString()); // Output: Value is "Class 'MyClass' is found in project ""MyProject"".".
         /// ]]>
         ///     </code>
         /// </example>
         [NotNull]
         [Pure]
-        public static string ToUIString([CanBeNull] this string value)
+        public static string ToUIString([NotNull] this string? value)
         {
             const string DoubleDoubleQuote = DoubleQuote + DoubleQuote;
 
@@ -210,7 +252,10 @@ namespace System
         /// </returns>
         [NotNull]
         [Pure]
-        public static string TrimSafely([CanBeNull] this string value, [CanBeNull] params char[] trimChars)
+#if (NETFRAMEWORK && !NET40) || NETSTANDARD || NETCOREAPP
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+#endif
+        public static string TrimSafely([CanBeNull] this string? value, [CanBeNull] params char[]? trimChars)
             => value?.Trim(trimChars) ?? string.Empty;
 
         /// <summary>
@@ -231,7 +276,10 @@ namespace System
         /// </returns>
         [NotNull]
         [Pure]
-        public static string TrimStartSafely([CanBeNull] this string value, [CanBeNull] params char[] trimChars)
+#if (NETFRAMEWORK && !NET40) || NETSTANDARD || NETCOREAPP
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+#endif
+        public static string TrimStartSafely([CanBeNull] this string? value, [CanBeNull] params char[]? trimChars)
             => value?.TrimStart(trimChars) ?? string.Empty;
 
         /// <summary>
@@ -252,7 +300,10 @@ namespace System
         /// </returns>
         [NotNull]
         [Pure]
-        public static string TrimEndSafely([CanBeNull] this string value, [CanBeNull] params char[] trimChars)
+#if (NETFRAMEWORK && !NET40) || NETSTANDARD || NETCOREAPP
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+#endif
+        public static string TrimEndSafely([CanBeNull] this string? value, [CanBeNull] params char[]? trimChars)
             => value?.TrimEnd(trimChars) ?? string.Empty;
 
         /// <summary>
@@ -274,7 +325,7 @@ namespace System
         /// </exception>
         [NotNull]
         [Pure]
-        public static string Shorten([CanBeNull] this string value, int maximumLength)
+        public static string Shorten([CanBeNull] this string? value, int maximumLength)
         {
             if (maximumLength < 0)
             {
@@ -284,12 +335,9 @@ namespace System
                     "The length must be a non-negative value.");
             }
 
-            if (string.IsNullOrEmpty(value) || maximumLength == 0)
-            {
-                return string.Empty;
-            }
-
-            return value.Length <= maximumLength ? value : value.Substring(0, maximumLength);
+            return value is null || maximumLength == 0
+                ? string.Empty
+                : value.Length <= maximumLength ? value : value.Substring(0, maximumLength);
         }
 
         /// <summary>
@@ -307,22 +355,16 @@ namespace System
         /// </returns>
         [NotNull]
         [Pure]
-        public static string Replicate([CanBeNull] this string value, int count)
+        public static string Replicate([CanBeNull] this string? value, int count)
         {
             if (count < 0)
             {
-                throw new ArgumentOutOfRangeException(
-                    nameof(count),
-                    count,
-                    "The count must be a non-negative value.");
+                throw new ArgumentOutOfRangeException(nameof(count), count, "The count must be greater than or equal to zero.");
             }
 
-            if (string.IsNullOrEmpty(value) || count == 0)
-            {
-                return string.Empty;
-            }
-
-            return new StringBuilder(checked(value.Length * count)).Insert(0, value, count).ToString();
+            return value is null || value.Length == 0 || count == 0
+                ? string.Empty
+                : new StringBuilder(checked(value.Length * count)).Insert(0, value, count).ToString();
         }
     }
 }

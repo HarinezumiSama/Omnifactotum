@@ -1,37 +1,42 @@
-﻿using System;
+﻿#nullable enable
+
+using System;
 using System.Collections.Generic;
-using System.Linq;
 using NUnit.Framework;
 using NUnit.Framework.Constraints;
 
-//// ReSharper disable AssignNullToNotNullAttribute - For negative test cases
-
 namespace Omnifactotum.Tests.ExtensionMethods
 {
-    [TestFixture]
+    [TestFixture(TestOf = typeof(OmnifactotumStringExtensions))]
     internal sealed class OmnifactotumStringExtensionsTests
     {
         [Test]
         [TestCase(null, true)]
         [TestCase("", true)]
-        [TestCase(" ", false)]
-        [TestCase(" A ", false)]
-        public void TestIsNullOrEmpty(string value, bool expectedResult)
-        {
-            var actualResult = value.IsNullOrEmpty();
-            Assert.That(actualResult, Is.EqualTo(expectedResult));
-        }
+        [TestCase("\u0000", false)]
+        [TestCase("\u0020", false)]
+        [TestCase("\t", false)]
+        [TestCase("\r", false)]
+        [TestCase("\n", false)]
+        [TestCase("\u0020\t\r\n", false)]
+        [TestCase("A", false)]
+        [TestCase("\u0020A\u0020", false)]
+        public void TestIsNullOrEmpty(string? value, bool expectedResult)
+            => Assert.That(value.IsNullOrEmpty, Is.EqualTo(expectedResult));
 
         [Test]
         [TestCase(null, true)]
         [TestCase("", true)]
-        [TestCase(" ", true)]
-        [TestCase(" A ", false)]
-        public void TestIsNullOrWhiteSpace(string value, bool expectedResult)
-        {
-            var actualResult = value.IsNullOrWhiteSpace();
-            Assert.That(actualResult, Is.EqualTo(expectedResult));
-        }
+        [TestCase("\u0000", false)]
+        [TestCase("\u0020", true)]
+        [TestCase("\t", true)]
+        [TestCase("\r", true)]
+        [TestCase("\n", true)]
+        [TestCase("\u0020\t\r\n", true)]
+        [TestCase("A", false)]
+        [TestCase("\u0020A\u0020", false)]
+        public void TestIsNullOrWhiteSpace(string? value, bool expectedResult)
+            => Assert.That(value.IsNullOrWhiteSpace, Is.EqualTo(expectedResult));
 
         [Test]
         [TestCase(null, null)]
@@ -48,164 +53,126 @@ namespace Omnifactotum.Tests.ExtensionMethods
         [TestCase(" \n 0 \r ", false)]
         [TestCase("false", false)]
         [TestCase(" FALse ", false)]
-        public void TestToNullableBooleanAndToBoolean(string value, bool? expectedResult)
+        public void TestToNullableBooleanAndToBoolean(string? value, bool? expectedResult)
         {
-            var actualResult = value.ToNullableBoolean();
-            Assert.That(actualResult, Is.EqualTo(expectedResult));
+            Assert.That(value.ToNullableBoolean, Is.EqualTo(expectedResult));
 
             var constraint = expectedResult.HasValue
                 ? (IResolveConstraint)Is.EqualTo(expectedResult.Value)
                 : Throws.ArgumentException;
 
-            Assert.That(value.ToBoolean, constraint);
-        }
-
-        [Test]
-        public void TestJoinNegative()
-        {
-            const IEnumerable<string> NullCollection = null;
-            Assert.That(() => NullCollection.Join(","), Throws.TypeOf<ArgumentNullException>());
-        }
-
-        [Test]
-        public void TestJoinOfMultiItemCollection()
-        {
-            var strings = new[] { "foo", "bar" };
-            var joined = strings.Join(", ");
-            Assert.That(joined, Is.EqualTo("foo, bar"));
-        }
-
-        [Test]
-        public void TestJoinOfSingleItemCollection()
-        {
-            var strings = new[] { "bar" };
-            var joined = strings.Join(", ");
-            Assert.That(joined, Is.EqualTo(strings.Single()));
-        }
-
-        [Test]
-        public void TestJoinOfEmptyCollection()
-        {
-            var strings = new string[0];
-            var joined = strings.Join(", ");
-            Assert.That(joined, Is.EqualTo(string.Empty));
-        }
-
-        [Test]
-        public void TestJoinUsingNullSeparator()
-        {
-            var strings = new[] { "foo", "bar" };
-            var joined = strings.Join(null);
-            Assert.That(joined, Is.EqualTo("foobar"));
-        }
-
-        [Test]
-        public void TestJoinUsingEmptySeparator()
-        {
-            var strings = new[] { "foo", "bar" };
-            var joined = strings.Join(string.Empty);
-            Assert.That(joined, Is.EqualTo("foobar"));
+            Assert.That(value!.ToBoolean, constraint);
         }
 
         [Test]
         [TestCase(null)]
         [TestCase("")]
-        [TestCase(" ")]
-        [TestCase("A")]
-        public void TestAvoidNull(string value)
+        [TestCase("\u0020")]
+        [TestCase(":")]
+        [TestCase(",")]
+        public void TestJoinWhenInvalidArgumentsThenThrows(string? separator)
         {
-            var actualResult = value.AvoidNull();
+            const IEnumerable<string?> NullCollection = null!;
 
-            if (value is null)
-            {
-                Assert.That(actualResult, Is.EqualTo(string.Empty));
-            }
-            else
-            {
-                Assert.That(actualResult, Is.SameAs(value));
-            }
+            Assert.That(
+                () => NullCollection!.Join(separator),
+                Throws.TypeOf<ArgumentNullException>().With.Property(nameof(ArgumentException.ParamName)).EqualTo("values"));
         }
+
+        [Test]
+        [TestCase(new[] { "foo", "bar" }, ",", "foo,bar")]
+        [TestCase(new[] { "foo", "bar" }, ",\u0020", "foo, bar")]
+        [TestCase(new[] { "foo", "bar" }, "\u0020", "foo bar")]
+        [TestCase(new[] { "\u0020foo\u0020", "\u0020bar\u0020" }, "\u0020", " foo   bar ")]
+        [TestCase(new[] { "foo;", "bar;" }, ";", "foo;;bar;")]
+        [TestCase(new[] { "bar" }, ",\u0020", "bar")]
+        [TestCase(new string[0], ",\u0020", "")]
+        [TestCase(new[] { "foo", "bar" }, null, "foobar")]
+        [TestCase(new[] { "foo", "bar" }, "", "foobar")]
+        public void TestJoinWhenValidArgumentsThenSucceeds(string?[] values, string? separator, string expectedResult)
+            => Assert.That(() => values.Join(separator), Is.EqualTo(expectedResult));
+
+        [Test]
+        [TestCase(null)]
+        [TestCase("")]
+        [TestCase("\u0020")]
+        [TestCase("foo bar")]
+        [TestCase("\u0020foo bar\u0020")]
+        public void TestAvoidNull(string? value)
+            => Assert.That(value.AvoidNull, value is null ? (IResolveConstraint)Is.EqualTo(string.Empty) : Is.SameAs(value));
 
         [Test]
         [TestCase(null, "null")]
         [TestCase("", @"""""")]
         [TestCase(@" A ""B"" 'C'", @""" A """"B"""" 'C'""")]
-        public void TestToUIString(string value, string expectedResult)
-        {
-            var actualResult = value.ToUIString();
-            Assert.That(actualResult, Is.EqualTo(expectedResult));
-        }
+        public void TestToUIString(string? value, string expectedResult) => Assert.That(value.ToUIString, Is.EqualTo(expectedResult));
 
         [Test]
-        [TestCase(null, "")]
-        [TestCase("", "")]
-        [TestCase("#A B C#", "A B C")]
-        public void TestTrimSafely(string value, string expectedResult)
-        {
-            var actualResult = value.TrimSafely('#');
-            Assert.That(actualResult, Is.EqualTo(expectedResult));
-        }
+        [TestCase(null, null, "")]
+        [TestCase(null, new[] { '#' }, "")]
+        [TestCase("", null, "")]
+        [TestCase("", new[] { '#' }, "")]
+        [TestCase("\u0020\t\r\nA\u0020\t\r\nB\u0020\t\r\nC\u0020\t\r\n", null, "A \t\r\nB \t\r\nC")]
+        [TestCase("\u0020\t\r\nA\u0020\t\r\nB\u0020\t\r\nC\u0020\t\r\n", new char[0], "A \t\r\nB \t\r\nC")]
+        [TestCase("#A#B#C#", new[] { '#' }, "A#B#C")]
+        [TestCase(@"\/\A/\/B\/\C/\/", new[] { '/', '\\' }, @"A/\/B\/\C")]
+        public void TestTrimSafely(string? value, char[]? trimChars, string expectedResult)
+            => Assert.That(() => value.TrimSafely(trimChars), Is.EqualTo(expectedResult));
 
         [Test]
-        [TestCase(null, "")]
-        [TestCase("", "")]
-        [TestCase("#A B C#", "A B C#")]
-        public void TestTrimStartSafely(string value, string expectedResult)
-        {
-            var actualResult = value.TrimStartSafely('#');
-            Assert.That(actualResult, Is.EqualTo(expectedResult));
-        }
+        [TestCase(null, null, "")]
+        [TestCase(null, new[] { '#' }, "")]
+        [TestCase("", null, "")]
+        [TestCase("", new[] { '#' }, "")]
+        [TestCase("\u0020\t\r\nA\u0020\t\r\nB\u0020\t\r\nC\u0020\t\r\n", null, "A \t\r\nB \t\r\nC\u0020\t\r\n")]
+        [TestCase("\u0020\t\r\nA\u0020\t\r\nB\u0020\t\r\nC\u0020\t\r\n", new char[0], "A \t\r\nB \t\r\nC\u0020\t\r\n")]
+        [TestCase("#A#B#C#", new[] { '#' }, "A#B#C#")]
+        [TestCase(@"\/\A/\/B\/\C/\/", new[] { '/', '\\' }, @"A/\/B\/\C/\/")]
+        public void TestTrimStartSafely(string? value, char[]? trimChars, string expectedResult)
+            => Assert.That(() => value.TrimStartSafely(trimChars), Is.EqualTo(expectedResult));
 
         [Test]
-        [TestCase(null, "")]
-        [TestCase("", "")]
-        [TestCase("#A B C#", "#A B C")]
-        public void TestTrimEndSafely(string value, string expectedResult)
-        {
-            var actualResult = value.TrimEndSafely('#');
-            Assert.That(actualResult, Is.EqualTo(expectedResult));
-        }
+        [TestCase(null, null, "")]
+        [TestCase(null, new[] { '#' }, "")]
+        [TestCase("", null, "")]
+        [TestCase("", new[] { '#' }, "")]
+        [TestCase("\u0020\t\r\nA\u0020\t\r\nB\u0020\t\r\nC\u0020\t\r\n", null, "\u0020\t\r\nA \t\r\nB \t\r\nC")]
+        [TestCase("\u0020\t\r\nA\u0020\t\r\nB\u0020\t\r\nC\u0020\t\r\n", new char[0], "\u0020\t\r\nA \t\r\nB \t\r\nC")]
+        [TestCase("#A#B#C#", new[] { '#' }, "#A#B#C")]
+        [TestCase(@"\/\A/\/B\/\C/\/", new[] { '/', '\\' }, @"\/\A/\/B\/\C")]
+        public void TestTrimEndSafely(string value, char[]? trimChars, string expectedResult)
+            => Assert.That(() => value.TrimEndSafely(trimChars), Is.EqualTo(expectedResult));
 
         [Test]
         [TestCase(-1)]
         [TestCase(int.MinValue)]
-        public void TestShortenNegative(int maximumLength)
-        {
-            Assert.That(() => "ABC".Shorten(maximumLength), Throws.TypeOf<ArgumentOutOfRangeException>());
-        }
+        public void TestShortenWhenInvalidArgumentsThenThrows(int maximumLength)
+            => Assert.That(() => "foo".Shorten(maximumLength), Throws.TypeOf<ArgumentOutOfRangeException>());
 
         [Test]
         [TestCase(null, 0, "")]
         [TestCase(null, int.MaxValue, "")]
         [TestCase("", 0, "")]
         [TestCase("", int.MaxValue, "")]
-        [TestCase(" A B C ", 0, "")]
-        [TestCase(" A B C ", 3, " A ")]
-        public void TestShorten(string value, int maximumLength, string expectedResult)
-        {
-            var actualResult = value.Shorten(maximumLength);
-            Assert.That(actualResult, Is.EqualTo(expectedResult));
-        }
+        [TestCase("\u0020A B C\u0020", 0, "")]
+        [TestCase("\u0020A B C\u0020", 3, "\u0020A\u0020")]
+        public void TestShortenWhenValidArgumentsThenSucceeds(string value, int maximumLength, string expectedResult)
+            => Assert.That(() => value.Shorten(maximumLength), Is.EqualTo(expectedResult));
 
         [Test]
         [TestCase(-1)]
         [TestCase(int.MinValue)]
-        public void TestReplicateNegative(int count)
-        {
-            Assert.That(() => "ABC".Replicate(count), Throws.TypeOf<ArgumentOutOfRangeException>());
-        }
+        public void TestReplicateWhenInvalidArgumentsThenThrows(int count)
+            => Assert.That(() => "ABC".Replicate(count), Throws.TypeOf<ArgumentOutOfRangeException>());
 
         [Test]
         [TestCase(null, 0, "")]
         [TestCase(null, int.MaxValue, "")]
         [TestCase("", 0, "")]
         [TestCase("", int.MaxValue, "")]
-        [TestCase(" A B C ", 0, "")]
-        [TestCase(" A B C ", 3, " A B C  A B C  A B C ")]
-        public void TestReplicate(string value, int count, string expectedResult)
-        {
-            var actualResult = value.Replicate(count);
-            Assert.That(actualResult, Is.EqualTo(expectedResult));
-        }
+        [TestCase("\u0020A\u0020B\u0020C\u0020", 0, "")]
+        [TestCase("\u0020A\u0020B\u0020C\u0020", 3, "\u0020A\u0020B\u0020C\u0020\u0020A\u0020B\u0020C\u0020\u0020A\u0020B\u0020C\u0020")]
+        public void TestReplicateWhenValidArgumentsThenSucceeds(string value, int count, string expectedResult)
+            => Assert.That(() => value.Replicate(count), Is.EqualTo(expectedResult));
     }
 }
