@@ -49,6 +49,7 @@
 
     <ItemGroup>
         <Compile Include="**/*.cs" Exclude="**/obj/**" />
+        <None Include="**/*.md" />
 
         <None Include="..\Common\Omnifactotum.snk">
             <Link>Properties\Omnifactotum.snk</Link>
