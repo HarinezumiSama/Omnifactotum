@@ -1,23 +1,23 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 
 <Project>
+    <PropertyGroup>
+        <Version>0.5.0</Version>
+    </PropertyGroup>
+
+    <PropertyGroup>
+        <VersionSuffix>-debug</VersionSuffix>
+        <BuildDateYear>$([System.String]::Format("{0:yyyy}", $([System.DateTime]::Now)))</BuildDateYear>
+        <ReleaseNotesFilePath>$(SolutionDir)$(SolutionName).ReleaseNotes.md</ReleaseNotesFilePath>
+        <IsAppveyorBuild>false</IsAppveyorBuild>
+    </PropertyGroup>
+
     <Target Name="CheckBuildPropertiesBeforeBuild" BeforeTargets="Clean;Build">
         <Message Text="[$(MSBuildProjectName):$(TargetFramework):$(Configuration):$(Platform)] SolutionDir = &quot;$(SolutionDir)&quot;, SolutionName = &quot;$(SolutionName)&quot;" Importance="high" />
 
         <Error Condition="'$(SolutionDir)' == '' Or '$(SolutionName)' == ''"
                 Text="[$(MSBuildProjectName):$(TargetFramework):$(Configuration):$(Platform)] Individual projects cannot be built. Please build the entire solution." />
     </Target>
-
-    <PropertyGroup>
-        <IsAppveyorBuild>false</IsAppveyorBuild>
-    </PropertyGroup>
-
-    <PropertyGroup>
-        <BuildDateYear>$([System.String]::Format("{0:yyyy}", $([System.DateTime]::Now)))</BuildDateYear>
-        <Version>0.5.0</Version>
-        <VersionSuffix>-debug</VersionSuffix>
-        <ReleaseNotesFilePath>$(SolutionDir)$(SolutionName).ReleaseNotes.md</ReleaseNotesFilePath>
-    </PropertyGroup>
 
     <PropertyGroup>
         <RestoreProjectStyle>PackageReference</RestoreProjectStyle>
