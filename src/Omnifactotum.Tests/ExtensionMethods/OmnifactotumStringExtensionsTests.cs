@@ -174,5 +174,95 @@ namespace Omnifactotum.Tests.ExtensionMethods
         [TestCase("\u0020A\u0020B\u0020C\u0020", 3, "\u0020A\u0020B\u0020C\u0020\u0020A\u0020B\u0020C\u0020\u0020A\u0020B\u0020C\u0020")]
         public void TestReplicateWhenValidArgumentsThenSucceeds(string value, int count, string expectedResult)
             => Assert.That(() => value.Replicate(count), Is.EqualTo(expectedResult));
+
+        [Test]
+        [TestCase(null, false)]
+        [TestCase("", false)]
+        [TestCase("\u0020\t\r\n", false)]
+        [TestCase("/a/b/c", false)]
+        [TestCase("ftp://a/b/c", false)]
+        [TestCase("news://a/b/c", false)]
+        [TestCase("nntp://a/b/c", false)]
+        [TestCase("gopher://a/b/c", false)]
+        [TestCase("mailto:john@example.com", false)]
+        [TestCase("mailto://john@example.com", false)]
+        [TestCase("file://a/b/c", false)]
+        [TestCase("net.pipe://a/b/c", false)]
+        [TestCase("net.tcp://a/b/c", false)]
+        [TestCase("http://a/b/c", true)]
+        [TestCase("https://a/b/c", true)]
+        public void TestIsWebUriSucceeds(string value, bool expectedResult) => Assert.That(value.IsWebUri, Is.EqualTo(expectedResult));
+
+        [Test]
+        public void TestWithSingleTrailingSlashWhenInvalidArgumentThenThrows()
+            => Assert.That(() => default(string)!.WithSingleTrailingSlash(), Throws.ArgumentNullException);
+
+        [Test]
+        [TestCase(@"", @"/", false)]
+        [TestCase(@"foo", @"foo/", false)]
+        [TestCase(@"foo/", @"foo/", true)]
+        [TestCase(@"foo//////////", @"foo/", false)]
+        [TestCase(@"foo/bar", @"foo/bar/", false)]
+        [TestCase(@"foo/bar/", @"foo/bar/", true)]
+        [TestCase(@"foo/bar//////////", @"foo/bar/", false)]
+        [TestCase(@"mailto://example.com", @"mailto://example.com/", false)]
+        [TestCase(@"http://example.com", @"http://example.com/", false)]
+        [TestCase(@"http://example.com/", @"http://example.com/", true)]
+        [TestCase(@"http://example.com//////////", @"http://example.com/", false)]
+        [TestCase(@"http://example.com/api/v1", @"http://example.com/api/v1/", false)]
+        [TestCase(@"http://example.com/api/v1/", @"http://example.com/api/v1/", true)]
+        [TestCase(@"http://example.com/api/v1//////////", @"http://example.com/api/v1/", false)]
+        public void TestWithSingleTrailingSlashWhenValidArgumentThenSucceeds(
+            string value,
+            string expectedResult,
+            bool isSameObjectAsInput)
+        {
+            var actualResult = value.WithSingleTrailingSlash();
+            Assert.That(actualResult, Is.EqualTo(expectedResult));
+
+            Constraint referenceConstraint = Is.SameAs(value);
+            if (!isSameObjectAsInput)
+            {
+                referenceConstraint = !referenceConstraint;
+            }
+
+            Assert.That(actualResult, referenceConstraint);
+        }
+
+        [Test]
+        public void TestWithoutTrailingSlashWhenInvalidArgumentThenThrows()
+            => Assert.That(() => default(string)!.WithoutTrailingSlash(), Throws.ArgumentNullException);
+
+        [Test]
+        [TestCase(@"", @"", true)]
+        [TestCase(@"foo", @"foo", true)]
+        [TestCase(@"foo/", @"foo", false)]
+        [TestCase(@"foo//////////", @"foo", false)]
+        [TestCase(@"foo/bar", @"foo/bar", true)]
+        [TestCase(@"foo/bar/", @"foo/bar", false)]
+        [TestCase(@"foo/bar//////////", @"foo/bar", false)]
+        [TestCase(@"mailto://example.com", @"mailto://example.com", true)]
+        [TestCase(@"http://example.com", @"http://example.com", true)]
+        [TestCase(@"http://example.com/", @"http://example.com", false)]
+        [TestCase(@"http://example.com//////////", @"http://example.com", false)]
+        [TestCase(@"http://example.com/api/v1", @"http://example.com/api/v1", true)]
+        [TestCase(@"http://example.com/api/v1/", @"http://example.com/api/v1", false)]
+        [TestCase(@"http://example.com/api/v1//////////", @"http://example.com/api/v1", false)]
+        public void TestWithoutTrailingSlashWhenValidArgumentThenSucceeds(
+            string value,
+            string expectedResult,
+            bool isSameObjectAsInput)
+        {
+            var actualResult = value.WithoutTrailingSlash();
+            Assert.That(actualResult, Is.EqualTo(expectedResult));
+
+            Constraint referenceConstraint = Is.SameAs(value);
+            if (!isSameObjectAsInput)
+            {
+                referenceConstraint = !referenceConstraint;
+            }
+
+            Assert.That(actualResult, referenceConstraint);
+        }
     }
 }

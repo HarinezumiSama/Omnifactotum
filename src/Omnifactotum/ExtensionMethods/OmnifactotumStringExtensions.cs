@@ -24,8 +24,6 @@ namespace System
     /// </summary>
     public static class OmnifactotumStringExtensions
     {
-        private const string DoubleQuote = @"""";
-
         /// <summary>
         ///     Determines whether the specified string is <see langword="null"/> or an <see cref="String.Empty"/> string.
         /// </summary>
@@ -179,7 +177,7 @@ namespace System
         ///         </listheader>
         ///         <item>
         ///             <term><see langword="null"/></term>
-        ///             <description>The literal: <b>null</b></description>
+        ///             <description>The literal "<b>null</b>".</description>
         ///         </item>
         ///         <item>
         ///             <term>not <see langword="null"/></term>
@@ -226,13 +224,12 @@ namespace System
         [NotNull]
         [Pure]
         public static string ToUIString([NotNull] this string? value)
-        {
-            const string DoubleDoubleQuote = DoubleQuote + DoubleQuote;
-
-            return value is null
+            => value is null
                 ? OmnifactotumRepresentationConstants.NullValueRepresentation
-                : DoubleQuote + value.Replace(DoubleQuote, DoubleDoubleQuote) + DoubleQuote;
-        }
+                : string.Concat(
+                    OmnifactotumConstants.DoubleQuote,
+                    value.Replace(OmnifactotumConstants.DoubleQuote, OmnifactotumConstants.DoubleDoubleQuote),
+                    OmnifactotumConstants.DoubleQuote);
 
         /// <summary>
         ///     Removes all leading and trailing occurrences of a set of characters specified in an array
@@ -365,6 +362,89 @@ namespace System
             return value is null || value.Length == 0 || count == 0
                 ? string.Empty
                 : new StringBuilder(checked(value.Length * count)).Insert(0, value, count).ToString();
+        }
+
+        /// <summary>
+        ///     Determines whether the specified <see cref="string"/> value represents an absolute URI using a Web scheme, such as HTTP
+        ///     or HTTPS.
+        /// </summary>
+        /// <param name="value">
+        ///     The <see cref="string"/> value to test.
+        /// </param>
+        /// <returns>
+        ///     <see langword="true"/> if the specified <see cref="string"/> value represents an absolute URI using a Web scheme;
+        ///     otherwise, <see langword="false"/>.
+        /// </returns>
+        [Pure]
+        public static bool IsWebUri(
+#if NETSTANDARD2_1 || NET5_0_OR_GREATER
+            [NotNullWhen(true)]
+#endif
+            [CanBeNull] this string? value)
+            => Uri.TryCreate(value, UriKind.Absolute, out var uri) && uri.IsWebUri();
+
+        /// <summary>
+        ///     <para>
+        ///         Returns a <see cref="string"/> which is equal to the specified <see cref="string"/> ending with a single trailing
+        ///         forward slash character ("/").
+        ///     </para>
+        ///     <para>
+        ///         If the specified <see cref="string"/> ends with exactly one forward slash character, then the original object is
+        ///         returned; otherwise, a new <see cref="string"/> object is returned with a single forward slash character appended.
+        ///         If the specified <see cref="string"/> ends with multiple forward slash characters, a new <see cref="string"/> object
+        ///         is returned with the number of the trailing forward slash characters reduced to exactly one.
+        ///     </para>
+        /// </summary>
+        /// <param name="value">
+        ///     The <see cref="string"/> value that needs to end with the single forward slash character.
+        /// </param>
+        /// <returns>
+        ///     A <see cref="string"/> which is equal to the specified <see cref="string"/> ending with a single trailing forward slash
+        ///     character ("/").
+        /// </returns>
+        [NotNull]
+        [Pure]
+        public static string WithSingleTrailingSlash([NotNull] this string value)
+        {
+            if (value is null)
+            {
+                throw new ArgumentNullException(nameof(value));
+            }
+
+            return value.EndsWith(OmnifactotumConstants.Slash, StringComparison.Ordinal)
+                && !value.EndsWith(OmnifactotumConstants.DoubleSlash, StringComparison.Ordinal)
+                ? value
+                : value.TrimEnd(OmnifactotumConstants.SlashChar) + OmnifactotumConstants.Slash;
+        }
+
+        /// <summary>
+        ///     <para>
+        ///         Returns a <see cref="string"/> which is equal to the specified <see cref="string"/> with the trailing forward slash
+        ///         characters ("/") removed, if there were any.
+        ///     </para>
+        ///     <para>
+        ///         If the specified <see cref="string"/> does not end with a forward slash character, then the original object is
+        ///         returned; otherwise, a new <see cref="string"/> object is returned with the trailing forward slash characters
+        ///         removed.
+        ///     </para>
+        /// </summary>
+        /// <param name="value">
+        ///     The <see cref="string"/> value that needs to not end with any forward slash characters.
+        /// </param>
+        /// <returns>
+        ///     A <see cref="string"/> which is equal to the specified <see cref="string"/> with the trailing forward slash characters
+        ///     ("/") removed, if there were any.
+        /// </returns>
+        [NotNull]
+        [Pure]
+        public static string WithoutTrailingSlash([NotNull] this string value)
+        {
+            if (value is null)
+            {
+                throw new ArgumentNullException(nameof(value));
+            }
+
+            return value.TrimEnd(OmnifactotumConstants.SlashChar);
         }
     }
 }
