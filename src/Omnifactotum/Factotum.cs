@@ -56,6 +56,9 @@ namespace Omnifactotum
         /// <param name="disposable">
         ///     A reference to an object to dispose and set to <see langword="null"/>.
         /// </param>
+#if (NETFRAMEWORK && !NET40) || NETSTANDARD || NETCOREAPP
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
+#endif
         public static void DisposeAndNull<T>([CanBeNull] ref T disposable)
             where T : class, IDisposable
         {
@@ -89,6 +92,9 @@ namespace Omnifactotum
         /// <param name="disposable">
         ///     A reference to an object to dispose and set to <see langword="null"/>.
         /// </param>
+#if (NETFRAMEWORK && !NET40) || NETSTANDARD || NETCOREAPP
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
+#endif
         public static void DisposeAndNull<T>([CanBeNull] ref T? disposable)
             where T : struct, IDisposable
         {
@@ -113,6 +119,9 @@ namespace Omnifactotum
         /// <param name="value2">
         ///     The second value to exchange with the first value.
         /// </param>
+#if (NETFRAMEWORK && !NET40) || NETSTANDARD || NETCOREAPP
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
+#endif
         public static void Exchange<T>([CanBeNull] ref T value1, [CanBeNull] ref T value2)
         {
             var temporary = value1;
@@ -199,6 +208,9 @@ namespace Omnifactotum
         /// <returns>
         ///     The larger of the two specified values.
         /// </returns>
+#if (NETFRAMEWORK && !NET40) || NETSTANDARD || NETCOREAPP
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
+#endif
         public static T Max<T>(T x, T y)
             where T : IComparable
         {
@@ -220,6 +232,9 @@ namespace Omnifactotum
         /// <returns>
         ///     The smaller of the two specified values.
         /// </returns>
+#if (NETFRAMEWORK && !NET40) || NETSTANDARD || NETCOREAPP
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
+#endif
         public static T Min<T>(T x, T y)
             where T : IComparable
         {
@@ -398,11 +413,18 @@ namespace Omnifactotum
         ///     An empty completed task.
         /// </returns>
         [NotNull]
+#if (NETFRAMEWORK && !NET40) || NETSTANDARD || NETCOREAPP
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+#endif
         public static Task CreateEmptyCompletedTask()
         {
+#if NET40
             var taskCompletionSource = new TaskCompletionSource<int>();
             taskCompletionSource.SetResult(0);
             return taskCompletionSource.Task;
+#else
+            return Task.CompletedTask;
+#endif
         }
 
         /// <summary>
@@ -412,8 +434,12 @@ namespace Omnifactotum
         ///     An empty faulted task.
         /// </returns>
         [NotNull]
+#if (NETFRAMEWORK && !NET40) || NETSTANDARD || NETCOREAPP
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+#endif
         public static Task CreateEmptyFaultedTask([NotNull] Exception exception)
         {
+#if NET40
             if (exception is null)
             {
                 throw new ArgumentNullException(nameof(exception));
@@ -422,6 +448,9 @@ namespace Omnifactotum
             var taskCompletionSource = new TaskCompletionSource<int>();
             taskCompletionSource.SetException(exception);
             return taskCompletionSource.Task;
+#else
+            return Task.FromException(exception);
+#endif
         }
 
         /// <summary>
@@ -440,6 +469,9 @@ namespace Omnifactotum
         ///     The <see cref="MemberInfo"/> containing information about the required field or property.
         /// </returns>
         [NotNull]
+#if (NETFRAMEWORK && !NET40) || NETSTANDARD || NETCOREAPP
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+#endif
         public static MemberInfo GetFieldOrPropertyInfo<TObject, TMember>(
             [NotNull] Expression<Func<TObject, TMember>> memberGetterExpression)
         {
@@ -462,6 +494,9 @@ namespace Omnifactotum
         ///     The <see cref="FieldInfo"/> containing information about the required field.
         /// </returns>
         [NotNull]
+#if (NETFRAMEWORK && !NET40) || NETSTANDARD || NETCOREAPP
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+#endif
         public static FieldInfo GetFieldInfo<TObject, TField>(
             [NotNull] Expression<Func<TObject, TField>> fieldGetterExpression)
         {
@@ -484,6 +519,9 @@ namespace Omnifactotum
         ///     The name of the field specified by the lambda expression.
         /// </returns>
         [NotNull]
+#if (NETFRAMEWORK && !NET40) || NETSTANDARD || NETCOREAPP
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+#endif
         public static string GetFieldName<TObject, TField>(
             [NotNull] Expression<Func<TObject, TField>> fieldGetterExpression)
         {
@@ -506,6 +544,9 @@ namespace Omnifactotum
         ///     The name of the field in the following form: <c>SomeType.Field</c>.
         /// </returns>
         [NotNull]
+#if (NETFRAMEWORK && !NET40) || NETSTANDARD || NETCOREAPP
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+#endif
         public static string GetQualifiedFieldName<TObject, TField>(
             [NotNull] Expression<Func<TObject, TField>> fieldGetterExpression)
         {
@@ -528,6 +569,9 @@ namespace Omnifactotum
         ///     The <see cref="PropertyInfo"/> containing information about the required property.
         /// </returns>
         [NotNull]
+#if (NETFRAMEWORK && !NET40) || NETSTANDARD || NETCOREAPP
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+#endif
         public static PropertyInfo GetPropertyInfo<TObject, TProperty>(
             [NotNull] Expression<Func<TObject, TProperty>> propertyGetterExpression)
         {
@@ -550,6 +594,9 @@ namespace Omnifactotum
         ///     The name of the property.
         /// </returns>
         [NotNull]
+#if (NETFRAMEWORK && !NET40) || NETSTANDARD || NETCOREAPP
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+#endif
         public static string GetPropertyName<TObject, TProperty>(
             [NotNull] Expression<Func<TObject, TProperty>> propertyGetterExpression)
         {
@@ -572,6 +619,9 @@ namespace Omnifactotum
         ///     The name of the property in the following form: <c>SomeType.Property</c>.
         /// </returns>
         [NotNull]
+#if (NETFRAMEWORK && !NET40) || NETSTANDARD || NETCOREAPP
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+#endif
         public static string GetQualifiedPropertyName<TObject, TProperty>(
             [NotNull] Expression<Func<TObject, TProperty>> propertyGetterExpression)
         {
@@ -648,6 +698,9 @@ namespace Omnifactotum
         ///     The name of the static property.
         /// </returns>
         [NotNull]
+#if (NETFRAMEWORK && !NET40) || NETSTANDARD || NETCOREAPP
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+#endif
         public static string GetPropertyName<TProperty>(
             [NotNull] Expression<Func<TProperty>> propertyGetterExpression)
         {
@@ -753,6 +806,9 @@ namespace Omnifactotum
         ///         <paramref name="processItem"/> is <see langword="null"/>.
         ///     </para>
         /// </exception>
+#if (NETFRAMEWORK && !NET40) || NETSTANDARD || NETCOREAPP
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
+#endif
         public static void ProcessRecursively<T>(
             [CanBeNull] T instance,
             [NotNull] [InstantHandle] Func<T, IEnumerable<T>> getItems,
@@ -836,6 +892,9 @@ namespace Omnifactotum
         ///         <paramref name="processItem"/> is <see langword="null"/>.
         ///     </para>
         /// </exception>
+#if (NETFRAMEWORK && !NET40) || NETSTANDARD || NETCOREAPP
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
+#endif
         public static void ProcessRecursively<T>(
             [CanBeNull] T instance,
             [NotNull] [InstantHandle] Func<T, IEnumerable<T>> getItems,
