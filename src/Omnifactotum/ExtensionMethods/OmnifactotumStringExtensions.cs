@@ -5,6 +5,7 @@ using System.Globalization;
 #if (NETFRAMEWORK && !NET40) || NETSTANDARD || NETCOREAPP
 using System.Runtime.CompilerServices;
 #endif
+using System.Security;
 using System.Text;
 using Omnifactotum;
 using Omnifactotum.Annotations;
@@ -12,6 +13,7 @@ using static Omnifactotum.FormattableStringFactotum;
 //// Use NETSTANDARD2_1_OR_GREATER once AppVeyor updates their VM image with VS2019 16.10 or higher
 #if NETSTANDARD2_1 || NET5_0_OR_GREATER
 using NotNullWhen = System.Diagnostics.CodeAnalysis.NotNullWhenAttribute;
+using NotNullIfNotNull = System.Diagnostics.CodeAnalysis.NotNullIfNotNullAttribute;
 #endif
 using PureAttribute = System.Diagnostics.Contracts.PureAttribute;
 
@@ -20,7 +22,7 @@ using PureAttribute = System.Diagnostics.Contracts.PureAttribute;
 namespace System
 {
     /// <summary>
-    ///     Contains extension methods for the <see cref="System.String"/> class.
+    ///     Contains extension methods for the <see cref="string"/> class.
     /// </summary>
     public static class OmnifactotumStringExtensions
     {
@@ -445,6 +447,40 @@ namespace System
             }
 
             return value.TrimEnd(OmnifactotumConstants.SlashChar);
+        }
+
+        /// <summary>
+        ///     Converts the specified plain text value to <see cref="SecureString"/>.
+        /// </summary>
+        /// <param name="value">
+        ///     The plain text value to convert to <see cref="SecureString"/>.
+        /// </param>
+        /// <returns>
+        ///     <see langword="null"/> if the specified plain text value is <see langword="null"/>; otherwise, a new instance of
+        ///     <see cref="SecureString"/> that contains the specified plain text value.
+        /// </returns>
+        [ContractAnnotation("null => null; notnull => notnull", true)]
+        [CanBeNull]
+        [Pure]
+#if NETSTANDARD2_1 || NET5_0_OR_GREATER
+        [return: NotNullIfNotNull(@"value")]
+#endif
+        public static unsafe SecureString? ToSecureString([CanBeNull] this string? value)
+        {
+            switch (value)
+            {
+                case null:
+                    return null;
+
+                case { Length: 0 }:
+                    return new SecureString();
+
+                default:
+                    fixed (char* valuePointer = value)
+                    {
+                        return new SecureString(valuePointer, value.Length);
+                    }
+            }
         }
     }
 }

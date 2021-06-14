@@ -2,6 +2,8 @@
 
 using System;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
+using System.Net;
 using NUnit.Framework;
 using NUnit.Framework.Constraints;
 
@@ -263,6 +265,29 @@ namespace Omnifactotum.Tests.ExtensionMethods
             }
 
             Assert.That(actualResult, referenceConstraint);
+        }
+
+        [Test]
+        [TestCase(null)]
+        [TestCase("")]
+        [TestCase("\u0020")]
+        [TestCase("\t")]
+        [TestCase("\r")]
+        [TestCase("\n")]
+        [TestCase(@"breaKFAst/завтрак/朝ごはん/petiT-DÉjeuner/早餐/")]
+        [SuppressMessage("ReSharper", "StringLiteralTypo")]
+        public void TestToSecureString(string? plainText)
+        {
+            using var secureString = plainText.ToSecureString();
+
+            if (plainText is null)
+            {
+                Assert.That(secureString, Is.Null);
+                return;
+            }
+
+            var actualResult = new NetworkCredential(string.Empty, secureString).Password;
+            Assert.That(actualResult, Is.EqualTo(plainText));
         }
     }
 }
