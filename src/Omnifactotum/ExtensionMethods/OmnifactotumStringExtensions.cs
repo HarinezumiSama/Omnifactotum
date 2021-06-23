@@ -10,8 +10,7 @@ using System.Text;
 using Omnifactotum;
 using Omnifactotum.Annotations;
 using static Omnifactotum.FormattableStringFactotum;
-//// Use NETSTANDARD2_1_OR_GREATER once AppVeyor updates their VM image with VS2019 16.10 or higher
-#if NETSTANDARD2_1 || NET5_0_OR_GREATER
+#if NETSTANDARD2_1_OR_GREATER || NET5_0_OR_GREATER
 using NotNullWhen = System.Diagnostics.CodeAnalysis.NotNullWhenAttribute;
 using NotNullIfNotNull = System.Diagnostics.CodeAnalysis.NotNullIfNotNullAttribute;
 #endif
