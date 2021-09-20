@@ -55,10 +55,13 @@ namespace Omnifactotum.Tests
             var readOnlySet = getReadOnlySet(_set);
             Assert.That(readOnlySet, Is.Not.SameAs(_set));
 
-            Assert.That(readOnlySet.IsReadOnly, Is.True);
+            Assert.That(((ICollection<int>)readOnlySet).IsReadOnly, Is.True);
             Assert.That(_set.Count, Is.EqualTo(count));
             Assert.That(readOnlySet.Count, Is.EqualTo(count));
             Assert.That(readOnlySet, Is.EquivalentTo(_set));
+#if NET5_0_OR_GREATER
+            Assert.That(readOnlySet, Is.InstanceOf<IReadOnlySet<int>>());
+#endif
         }
 
         [Test]
@@ -93,7 +96,7 @@ namespace Omnifactotum.Tests
         {
             var count = _set.Count;
             var readOnlySet = new ReadOnlySet<int>(_set);
-            Assert.That(readOnlySet.IsReadOnly, Is.True);
+            Assert.That(((ICollection<int>)readOnlySet).IsReadOnly, Is.True);
 
             var collection = (ICollection<int>)readOnlySet;
             Assert.That(collection.IsReadOnly, Is.True);

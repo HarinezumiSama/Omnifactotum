@@ -13,6 +13,9 @@ namespace Omnifactotum
     /// </typeparam>
     [Serializable]
     public sealed class ReadOnlySet<T> : ISet<T>
+#if NET5_0_OR_GREATER
+    , IReadOnlySet<T>
+#endif
     {
         private const string ReadOnlyMessage = "The set is read-only and cannot be modified.";
 
@@ -25,10 +28,7 @@ namespace Omnifactotum
         /// <param name="set">
         ///     The set to wrap.
         /// </param>
-        public ReadOnlySet([NotNull] ISet<T> set)
-        {
-            _set = set ?? throw new ArgumentNullException(nameof(set));
-        }
+        public ReadOnlySet([NotNull] ISet<T> set) => _set = set ?? throw new ArgumentNullException(nameof(set));
 
         /// <summary>
         ///     Adds an element to the current set and returns a value to indicate if the
@@ -185,7 +185,7 @@ namespace Omnifactotum
         /// <summary>
         ///     Gets a value indicating whether the current set is read-only.
         /// </summary>
-        public bool IsReadOnly => true;
+        bool ICollection<T>.IsReadOnly => true;
 
         /// <summary>
         ///     Adds an item to the <see cref="ICollection{T}"/>.
