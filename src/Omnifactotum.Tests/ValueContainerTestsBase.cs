@@ -1,6 +1,7 @@
 ﻿using System;
 using NUnit.Framework;
 using NUnit.Framework.Constraints;
+using Omnifactotum.Abstractions;
 using Omnifactotum.NUnit;
 using static Omnifactotum.FormattableStringFactotum;
 

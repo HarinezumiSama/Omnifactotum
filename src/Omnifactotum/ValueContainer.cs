@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using Omnifactotum.Abstractions;
 using Omnifactotum.Annotations;
 using static Omnifactotum.FormattableStringFactotum;
 
