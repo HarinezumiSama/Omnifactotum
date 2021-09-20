@@ -9,13 +9,16 @@
         <VersionSuffix>-debug</VersionSuffix>
         <BuildDateYear>$([System.String]::Format("{0:yyyy}", $([System.DateTime]::Now)))</BuildDateYear>
         <ReleaseNotesFilePath>$(SolutionDir)$(SolutionName).ReleaseNotes.md</ReleaseNotesFilePath>
+        <PackageReleaseNotes></PackageReleaseNotes>
         <IsAppveyorBuild>false</IsAppveyorBuild>
     </PropertyGroup>
 
-    <Target Name="CheckBuildPropertiesBeforeBuild" BeforeTargets="Clean;Build">
-        <Message Text="[$(MSBuildProjectName):$(TargetFramework):$(Configuration):$(Platform)] SolutionDir = &quot;$(SolutionDir)&quot;, SolutionName = &quot;$(SolutionName)&quot;" Importance="high" />
+    <Target Name="CheckBuildPropertiesBeforeBuild" BeforeTargets="Clean;Build;Restore">
+        <Message
+                Text="[$(MSBuildProjectName):$(TargetFramework):$(Configuration):$(Platform)] SolutionDir = &quot;$(SolutionDir)&quot;, SolutionName = &quot;$(SolutionName)&quot;"
+                Importance="high" />
 
-        <Error Condition="'$(SolutionDir)' == '' Or '$(SolutionName)' == ''"
+        <Error Condition="'$(SolutionDir)' == '' Or '$(SolutionName)' == '' Or '$(SolutionDir)' == '*Undefined*' Or '$(SolutionName)' == '*Undefined*'"
                 Text="[$(MSBuildProjectName):$(TargetFramework):$(Configuration):$(Platform)] Individual projects cannot be built. Please build the entire solution." />
     </Target>
 
@@ -44,7 +47,7 @@
         <Company>$(Authors)</Company>
         <Product>$(SolutionName)</Product>
         <Description>$(Product): Provides own helper and functional classes as well as extension methods for standard .NET classes.</Description>
-        <Copyright>Copyright © Vitalii Maklai 2004-$(BuildDateYear)</Copyright>
+        <Copyright>Copyright © $(Authors) 2004-$(BuildDateYear)</Copyright>
         <RepositoryUrl>https://github.com/HarinezumiSama/$(SolutionName)</RepositoryUrl>
         <RepositoryType>git</RepositoryType>
         <PackageProjectUrl>$(RepositoryUrl)</PackageProjectUrl>
