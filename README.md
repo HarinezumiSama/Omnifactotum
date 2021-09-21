@@ -1,6 +1,6 @@
 ﻿# Omnifactotum
 
-Provides own **helper** and **functional** classes as well as **extension methods** for the standard .NET types.
+Provides own **helper** and **functional** classes and interfaces as well as **extension methods** for the standard .NET types.
 
 **Note**: `Factotum` is a Latin word literally meaning "*do everything*" (that is, a *handyman* or *Jack-of-all-trades*).
 
@@ -43,8 +43,10 @@ Provides own **helper** and **functional** classes as well as **extension method
 - Math extension methods for numeric types
 - [**`Nullable<Boolean> (bool?)`**](https://docs.microsoft.com/en-us/dotnet/api/system.nullable-1) extension methods
 - [**`ISet`**](https://docs.microsoft.com/en-us/dotnet/api/system.collections.generic.iset-1) extension methods
+- [**`SecureString`**](https://docs.microsoft.com/en-us/dotnet/api/system.security.securestring) extension methods
 - [**`String`**](https://docs.microsoft.com/en-us/dotnet/api/system.string) extension methods
 - [**`TimeSpan`**](https://docs.microsoft.com/en-us/dotnet/api/system.timespan) extension methods
+- [**`Uri`**](https://docs.microsoft.com/en-us/dotnet/api/system.uri) extension methods
 
 ### The *non-exaustive* list of own helper classes
 
@@ -56,18 +58,28 @@ Provides own **helper** and **functional** classes as well as **extension method
 
 - `ByReferenceEqualityComparer<T>`
 - `ColoredConsoleTraceListener`
-- `ObjectValidator`
 - `DirectedGraph<T>` and `DirectedGraphNode<T>`
 - `EnumFixedSizeDictionary<TKey, TValue>`
 - `FixedSizeDictionary<TKey, TValue>`
 - `KeyedEqualityComparer<T, TKey>`
+- `LocalComputerCurrentDateTimeProvider` (implements `ICurrentDateTimeProvider`)
+- `ObjectValidator`
 - `ReadOnlyDictionary<TKey, TValue>`
   - **NOTE**: `.NET Framework 4.0` only; as of `.NET Framework 4.5+` [`System.Collections.ObjectModel.ReadOnlyDictionary<TKey, TValue>`](https://docs.microsoft.com/en-us/dotnet/api/system.collections.objectmodel.readonlydictionary-2?view=netframework-4.5) is available.
 - `ReadOnlyItemCollection<T>` (the read-only wrapper for [`ICollection<T>`](https://docs.microsoft.com/en-us/dotnet/api/system.collections.generic.icollection-1))
 - `ReadOnlySet<T>`
+- `StopwatchElapsedTimeProvider` (implements `IElapsedTimeProvider`)
+- `SyncValueContainer<T>` (implements `IValueContainer<T>`)
+- `ValueContainer<T>` (implements `IValueContainer<T>`)
 - `ValueRange<T>`
 - `VirtualTreeNode<T>` and `VirtualTreeNodeRoot<T>`
 - `WeakReferenceBasedCache<TKey, TValue>`
+
+### The *non-exaustive* list of own abstractions (interfaces)
+
+- `ICurrentDateTimeProvider`
+- `IElapsedTimeProvider`
+- `IValueContainer<T>`
 
 ### Dealing with Compatibility Issues
 

@@ -1,4 +1,43 @@
-﻿### Changes in 0.4.1 (since 0.4.0)
+﻿### Changes in 0.5.0 (since 0.4.1)
+
+#### Breaking Changes
+- `ReadOnlySet` class:
+  - `IsReadOnly` property now implements `ICollection<T>.IsReadOnly` **explicitly**
+- `IValueContainer<T>` moved from the namespace `Omnifactotum` to `Omnifactotum.Abstractions`
+
+#### New features
+- Added `ICurrentDateTimeProvider`, `CurrentDateTimeProviderExtensions`, and `LocalComputerCurrentDateTimeProvider`
+- Added `IElapsedTimeProvider`, `ElapsedTimeProviderExtensions`, and `StopwatchElapsedTimeProvider`
+- The `ReadOnlySet` class now implements `IReadOnlySet` (.NET 5+)
+- Added new extension methods for `System.String`:
+  - `IsWebUri(string)`
+  - `ToSecureString(string)`
+  - `WithoutTrailingSlash(string)`
+  - `WithSingleTrailingSlash(string)`
+- Added new extension methods for `System.Uri`:
+  - `IsWebUri(Uri)`
+  - `ToUIString(Uri)`
+  - `WithoutTrailingSlash(Uri)`
+  - `WithSingleTrailingSlash(Uri)`
+- Added new extension methods for `System.Security.SecureString`:
+  - `IsNullOrEmpty(SecureString)`
+  - `ToPlainText(SecureString)`
+- Added `ContractAnnotation` to `OmnifactotumGenericObjectExtensions.EnsureNotNull`
+- Improvements in the `OmnifactotumStringExtensions` class:
+  - Using Nullable Reference Types feature (where applicable)
+  - Added the `ContractAnnotation` annotations (where applicable)
+  - Added the `AggressiveInlining` flag (where applicable)
+  - Improved parameter annotations (using `NotNullWhen`, `ItemCanBeNull` etc. where applicable)
+  - Other minor improvements
+
+#### Minor Updates
+- Polished the XML documentation
+- Minor optimizations in the `Factotum` class:
+  - Applied `MethodImplOptions.AggressiveInlining` where applicable
+  - Forwarding `CreateEmptyCompletedTask()` to `Task.CompletedTask` (except for NET 4.0)
+  - Forwarding `CreateEmptyFaultedTask(Exception)` to `Task.FromException(Exception)` (except for NET 4.0)
+
+### Changes in 0.4.1 (since 0.4.0)
 - Added the `Factotum.For<TObject>.Identity` method (same as `Factotum.Identity<T>`)
 - Added `Factotum.For<TObject>.IdentityMethod` (the cached reference to the `Factotum.For<TObject>.Identity` method)
 - Using the `Deterministic` build option
