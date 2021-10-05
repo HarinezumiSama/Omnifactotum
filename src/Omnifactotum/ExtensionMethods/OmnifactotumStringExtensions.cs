@@ -224,7 +224,7 @@ namespace System
         /// </example>
         [NotNull]
         [Pure]
-        public static string ToUIString([NotNull] this string? value)
+        public static string ToUIString([CanBeNull] this string? value)
             => value is null
                 ? OmnifactotumRepresentationConstants.NullValueRepresentation
                 : string.Concat(
