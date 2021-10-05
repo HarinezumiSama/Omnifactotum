@@ -34,7 +34,7 @@ namespace Omnifactotum
 
         private static readonly int GuidSize = Marshal.SizeOf(typeof(Guid));
 
-        private static readonly RNGCryptoServiceProvider IdGenerator = new RNGCryptoServiceProvider();
+        private static readonly RNGCryptoServiceProvider IdGenerator = new();
 
         /// <summary>
         ///     <para>
@@ -649,14 +649,14 @@ namespace Omnifactotum
                 throw new ArgumentNullException(nameof(propertyGetterExpression));
             }
 
-            if (!(propertyGetterExpression.Body is MemberExpression { NodeType: ExpressionType.MemberAccess } memberExpression))
+            if (propertyGetterExpression.Body is not MemberExpression { NodeType: ExpressionType.MemberAccess } memberExpression)
             {
                 throw new ArgumentException(
                     string.Format(CultureInfo.InvariantCulture, InvalidExpressionMessageAutoFormat, propertyGetterExpression),
                     nameof(propertyGetterExpression));
             }
 
-            if (!(memberExpression.Member is PropertyInfo result))
+            if (memberExpression.Member is not PropertyInfo result)
             {
                 throw new ArgumentException(
                     string.Format(CultureInfo.InvariantCulture, InvalidExpressionMessageAutoFormat, propertyGetterExpression),

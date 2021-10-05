@@ -1,5 +1,7 @@
 ﻿#nullable enable
 
+//// ReSharper disable RedundantNullnessAttributeWithNullableReferenceTypes
+
 using System;
 #if !NET40
 using System.Globalization;
@@ -10,13 +12,11 @@ using Omnifactotum.Annotations;
 namespace Omnifactotum
 {
 #if NET40
-
     /// <summary>
     ///     Provides the fake helper methods for interpolated strings since <c>System.FormattableString</c> is not available prior to
     ///     .NET Framework 4.6.
     /// </summary>
 #else
-
     /// <summary>
     ///     <list type="table">
     ///         <listheader>
@@ -40,7 +40,6 @@ namespace Omnifactotum
     internal static class FormattableStringFactotum
     {
 #if NET40
-
         /// <summary>
         ///     Returns the specified string as is (the fake method for .NET Framework prior to 4.6.1).
         /// </summary>
@@ -56,7 +55,6 @@ namespace Omnifactotum
         internal static string AsInvariant([NotNull] string value) => value ?? throw new ArgumentNullException(nameof(value));
 
 #else
-
         /// <summary>
         ///     Returns a result string in which arguments are formatted by using the conventions of the invariant culture.
         /// </summary>

@@ -1,17 +1,15 @@
 ﻿<#@ assembly name="System.Core" #>
 <#@ import namespace="System" #>
-<#@ import namespace="System.Collections.Generic" #>
 <#@ import namespace="System.Globalization" #>
-<#@ import namespace="System.Linq" #>
 <#@ import namespace="System.Text" #><#+
     private const int MaxParameterCount = 16;
-    
+
     private static string ToNumeral(int number)
     {
         const string DefaultSuffix = "th";
 
         var rem100 = Math.Abs(number) % 100;
-        var isTeen = rem100 >= 11 && rem100 <= 19;
+        var isTeen = rem100 is >= 11 and <= 19;
         var rem10 = Math.Abs(number) % 10;
 
         string suffix;
@@ -44,8 +42,8 @@
 
     private static string EnumerateTypeArgs(string template, int count)
     {
-        return count == 0 
-            ? string.Empty 
+        return count == 0
+            ? string.Empty
             : "<" + EnumeratePrefixedValues(template, ", ", false, count, false) + ">";
     }
 

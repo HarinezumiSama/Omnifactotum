@@ -65,7 +65,7 @@ namespace Omnifactotum.Tests.ExtensionMethods
 
                 default:
                     var secureString = new SecureString();
-                    foreach (var ch in plainText!)
+                    foreach (var ch in plainText)
                     {
                         secureString.AppendChar(ch);
                     }

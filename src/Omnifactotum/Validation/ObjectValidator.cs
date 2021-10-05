@@ -152,7 +152,7 @@ namespace Omnifactotum.Validation
             var allDataMemberInfos = instanceType.FindMembers(
                 MemberTypes.Field | MemberTypes.Property,
                 BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic,
-                (info, criteria) => info is FieldInfo || IsReadableProperty(info),
+                (info, _) => info is FieldInfo || IsReadableProperty(info),
                 null);
 
             var internalMembers = allDataMemberInfos

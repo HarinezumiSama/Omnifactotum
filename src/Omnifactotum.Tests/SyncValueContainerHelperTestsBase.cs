@@ -1,6 +1,5 @@
 ﻿using System;
 using NUnit.Framework;
-using NUnit.Framework.Constraints;
 
 //// ReSharper disable AssignNullToNotNullAttribute - For negative test cases
 
@@ -32,7 +31,7 @@ namespace Omnifactotum.Tests
 
                 Assert.That(
                     container.Value,
-                    typeof(T).IsValueType ? (IResolveConstraint)Is.EqualTo(value) : Is.SameAs(value));
+                    typeof(T).IsValueType ? Is.EqualTo(value) : Is.SameAs(value));
             }
         }
 
@@ -48,7 +47,7 @@ namespace Omnifactotum.Tests
 
                 Assert.That(
                     container.Value,
-                    typeof(T).IsValueType ? (IResolveConstraint)Is.EqualTo(value) : Is.SameAs(value));
+                    typeof(T).IsValueType ? Is.EqualTo(value) : Is.SameAs(value));
             }
         }
 

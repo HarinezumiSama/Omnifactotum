@@ -101,7 +101,7 @@ namespace Omnifactotum.Tests.ExtensionMethods
         [TestCase("foo bar")]
         [TestCase("\u0020foo bar\u0020")]
         public void TestAvoidNull(string? value)
-            => Assert.That(value.AvoidNull, value is null ? (IResolveConstraint)Is.EqualTo(string.Empty) : Is.SameAs(value));
+            => Assert.That(value.AvoidNull, value is null ? Is.EqualTo(string.Empty) : Is.SameAs(value));
 
         [Test]
         [TestCase(null, "null")]

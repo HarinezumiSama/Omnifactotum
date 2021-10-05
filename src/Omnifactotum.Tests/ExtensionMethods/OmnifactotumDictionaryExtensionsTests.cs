@@ -15,8 +15,8 @@ namespace Omnifactotum.Tests.ExtensionMethods
         private const int Key2 = 2;
         private const Dictionary<int?, Version> NullDictionary = null;
 
-        private static readonly Version Value1 = new Version(1, 0);
-        private static readonly Version ExplicitValue2 = new Version(2, 34);
+        private static readonly Version Value1 = new(1, 0);
+        private static readonly Version ExplicitValue2 = new(2, 34);
 
         private Dictionary<int?, Version> _dictionary;
         private int _initialCount;
@@ -112,11 +112,11 @@ namespace Omnifactotum.Tests.ExtensionMethods
             AssertValueCreatedDictionaryState(new Version());
 
             RecreateDictionary();
-            Assert.That(_dictionary.GetOrCreateValue(Key2, key => null), Is.EqualTo(null));
+            Assert.That(_dictionary.GetOrCreateValue(Key2, _ => null), Is.EqualTo(null));
             AssertValueCreatedDictionaryState(null);
 
             RecreateDictionary();
-            Assert.That(_dictionary.GetOrCreateValue(Key2, key => ExplicitValue2), Is.EqualTo(ExplicitValue2));
+            Assert.That(_dictionary.GetOrCreateValue(Key2, _ => ExplicitValue2), Is.EqualTo(ExplicitValue2));
             AssertValueCreatedDictionaryState(ExplicitValue2);
         }
 

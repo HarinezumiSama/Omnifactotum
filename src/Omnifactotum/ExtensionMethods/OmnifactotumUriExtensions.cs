@@ -1,5 +1,7 @@
 ﻿#nullable enable
 
+//// ReSharper disable RedundantNullnessAttributeWithNullableReferenceTypes
+
 using System.Collections.Generic;
 using Omnifactotum;
 using Omnifactotum.Annotations;
@@ -17,7 +19,7 @@ namespace System
     /// </summary>
     public static class OmnifactotumUriExtensions
     {
-        private static readonly HashSet<string> WebSchemes = new HashSet<string>(StringComparer.Ordinal)
+        private static readonly HashSet<string> WebSchemes = new(StringComparer.Ordinal)
         {
             Uri.UriSchemeHttp,
             Uri.UriSchemeHttps

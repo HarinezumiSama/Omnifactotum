@@ -28,10 +28,7 @@ namespace Omnifactotum
         /// <summary>
         ///     Gets the sole instance of the <see cref="ByReferenceEqualityComparer{T}"/> class.
         /// </summary>
-        public static ByReferenceEqualityComparer<T> Instance
-        {
-            get;
-        } = new ByReferenceEqualityComparer<T>();
+        public static ByReferenceEqualityComparer<T> Instance { get; } = new();
 
         /// <summary>
         ///     Determines whether the specified objects are equal by reference.
@@ -45,10 +42,7 @@ namespace Omnifactotum
         /// <returns>
         ///     <see langword="true"/> if the specified objects are equal by reference; otherwise, <see langword="false"/>.
         /// </returns>
-        public bool Equals(T x, T y)
-        {
-            return _isReferenceType ? ReferenceEquals(x, y) : EqualityComparer<T>.Default.Equals(x, y);
-        }
+        public bool Equals(T x, T y) => _isReferenceType ? ReferenceEquals(x, y) : EqualityComparer<T>.Default.Equals(x, y);
 
         /// <summary>
         ///     Returns a hash code for the specified object, based on object's reference.
@@ -59,9 +53,6 @@ namespace Omnifactotum
         /// <returns>
         ///     A hash code for the specified object, based on object's reference.
         /// </returns>
-        public int GetHashCode(T obj)
-        {
-            return _isReferenceType ? RuntimeHelpers.GetHashCode(obj) : obj.GetHashCodeSafely();
-        }
+        public int GetHashCode(T obj) => _isReferenceType ? RuntimeHelpers.GetHashCode(obj) : obj.GetHashCodeSafely();
     }
 }

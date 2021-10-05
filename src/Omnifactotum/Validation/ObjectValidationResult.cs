@@ -13,8 +13,7 @@ namespace Omnifactotum.Validation
     /// </summary>
     public sealed class ObjectValidationResult
     {
-        internal static readonly ObjectValidationResult SuccessfulResult =
-            new ObjectValidationResult(new MemberConstraintValidationError[0]);
+        internal static readonly ObjectValidationResult SuccessfulResult = new(new MemberConstraintValidationError[0]);
 
         /// <summary>
         ///     Initializes a new instance of the <see cref="ObjectValidationResult"/> class.
@@ -49,10 +48,7 @@ namespace Omnifactotum.Validation
         /// <summary>
         ///     Gets the collection of the validation errors found. Can be empty.
         /// </summary>
-        public ReadOnlyCollection<MemberConstraintValidationError> Errors
-        {
-            get;
-        }
+        public ReadOnlyCollection<MemberConstraintValidationError> Errors { get; }
 
         /// <summary>
         ///     <para>Gets the validation exception based on the validation result.</para>

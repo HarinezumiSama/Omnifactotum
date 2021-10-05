@@ -40,7 +40,7 @@ namespace Omnifactotum.Tests.ExtensionMethods
         [Test]
         public void TestInitializeWithOldValueNegative()
         {
-            Assert.That(() => NullArray.Initialize((s, i) => s), Throws.TypeOf<ArgumentNullException>());
+            Assert.That(() => NullArray.Initialize((s, _) => s), Throws.TypeOf<ArgumentNullException>());
 
             var nonNullArray = new[] { "foo", "bar" }.AssertNotNull();
 
@@ -130,7 +130,7 @@ namespace Omnifactotum.Tests.ExtensionMethods
             public int Value { private get; set; }
 
             [UsedImplicitly]
-            public CopyableObject Copy() => new CopyableObject { Value = Value };
+            public CopyableObject Copy() => new() { Value = Value };
 
             public object Clone() => Copy();
         }

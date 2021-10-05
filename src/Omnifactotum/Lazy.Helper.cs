@@ -27,7 +27,7 @@ namespace System
         /// <exception cref="System.ArgumentNullException">
         ///     <paramref name="valueFactory"/> is <see langword="null"/>.
         /// </exception>
-        public static Lazy<T> Create<T>([NotNull] Func<T> valueFactory) => new Lazy<T>(valueFactory);
+        public static Lazy<T> Create<T>([NotNull] Func<T> valueFactory) => new(valueFactory);
 
         /// <summary>
         ///     Creates a new instance of the <see cref="System.Lazy{T}"/> class. When lazy initialization
@@ -49,7 +49,7 @@ namespace System
         /// <exception cref="System.ArgumentNullException">
         ///     <paramref name="valueFactory"/> is <see langword="null"/>.
         /// </exception>
-        public static Lazy<T> Create<T>([NotNull] Func<T> valueFactory, bool isThreadSafe) => new Lazy<T>(valueFactory, isThreadSafe);
+        public static Lazy<T> Create<T>([NotNull] Func<T> valueFactory, bool isThreadSafe) => new(valueFactory, isThreadSafe);
 
         /// <summary>
         ///     Creates a new instance of the <see cref="System.Lazy{T}"/> class that uses the specified
@@ -73,6 +73,6 @@ namespace System
         /// <exception cref="System.ArgumentOutOfRangeException">
         ///     <paramref name="mode"/> contains an invalid value.
         /// </exception>
-        public static Lazy<T> Create<T>([NotNull] Func<T> valueFactory, LazyThreadSafetyMode mode) => new Lazy<T>(valueFactory, mode);
+        public static Lazy<T> Create<T>([NotNull] Func<T> valueFactory, LazyThreadSafetyMode mode) => new(valueFactory, mode);
     }
 }

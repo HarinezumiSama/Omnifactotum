@@ -29,6 +29,6 @@ namespace Omnifactotum.Tests
             Assert.That(actualValue2, Is.GreaterThan(actualValue1));
         }
 
-        private static LocalComputerCurrentDateTimeProvider CreateTestee() => new LocalComputerCurrentDateTimeProvider();
+        private static LocalComputerCurrentDateTimeProvider CreateTestee() => new();
     }
 }

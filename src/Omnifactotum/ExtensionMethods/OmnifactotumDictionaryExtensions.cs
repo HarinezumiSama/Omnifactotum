@@ -168,7 +168,7 @@ namespace System.Collections.Generic
             [NotNull] this IDictionary<TKey, TValue> dictionary,
             [NotNull] TKey key)
             where TValue : new()
-            => GetOrCreateValue(dictionary, key, obj => new TValue());
+            => GetOrCreateValue(dictionary, key, _ => new TValue());
 
         /// <summary>
         ///     Creates a read-only wrapper for the specified dictionary.

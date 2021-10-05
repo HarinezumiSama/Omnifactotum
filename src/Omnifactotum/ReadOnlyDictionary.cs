@@ -281,8 +281,7 @@ namespace Omnifactotum
         IEnumerator IEnumerable.GetEnumerator() => _dictionary.GetEnumerator();
 
         private NotSupportedException CreateReadOnlyInstanceException()
-            => new NotSupportedException(
-                AsInvariant($@"The {GetType().GetQualifiedName()} instance cannot be modified because it is read-only."));
+            => new(AsInvariant($@"The {GetType().GetQualifiedName()} instance cannot be modified because it is read-only."));
     }
 }
 

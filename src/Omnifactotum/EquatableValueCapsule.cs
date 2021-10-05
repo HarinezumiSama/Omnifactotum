@@ -108,7 +108,7 @@ namespace Omnifactotum
         ///     otherwise, <see langword="false"/>.
         /// </returns>
         public bool Equals(EquatableValueCapsule<T> other)
-            => !(other is null) && other.GetType() == GetType()
+            => other is not null && other.GetType() == GetType()
                 && (ReferenceEquals(other, this) || ValueEqualityComparer.Equals(other.Value, Value));
 
         /// <summary>

@@ -9,7 +9,7 @@
         <VersionSuffix>-debug</VersionSuffix>
         <BuildDateYear>$([System.String]::Format("{0:yyyy}", $([System.DateTime]::Now)))</BuildDateYear>
         <ReleaseNotesFilePath>$(SolutionDir)$(SolutionName).ReleaseNotes.md</ReleaseNotesFilePath>
-        <PackageReleaseNotes></PackageReleaseNotes>
+        <PackageReleaseNotes>N/A</PackageReleaseNotes>
         <IsAppveyorBuild>false</IsAppveyorBuild>
     </PropertyGroup>
 
@@ -28,7 +28,7 @@
     </PropertyGroup>
 
     <PropertyGroup>
-        <LangVersion>8.0</LangVersion>
+        <LangVersion>9.0</LangVersion>
         <Nullable>disable</Nullable>
         <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
         <WarningsAsErrors />

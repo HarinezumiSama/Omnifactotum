@@ -51,7 +51,7 @@ namespace Omnifactotum.Tests
             var container = new SyncValueContainer<T>();
 
             Assert.That(container.SyncObject, Is.Not.Null & Is.TypeOf<object>());
-            Assert.That(container.Value, GetDefaultValueConstraint());
+            Assert.That(container.Value, CreateDefaultValueConstraint());
         }
 
         [Test]
@@ -62,7 +62,7 @@ namespace Omnifactotum.Tests
                 var container = new SyncValueContainer<T>(value);
 
                 Assert.That(container.SyncObject, Is.Not.Null & Is.TypeOf<object>());
-                Assert.That(container.Value, GetEqualityConstraint(value));
+                Assert.That(container.Value, CreateEqualityConstraint(value));
             }
         }
 
@@ -75,7 +75,7 @@ namespace Omnifactotum.Tests
                 var container = new SyncValueContainer<T>(value, syncObject);
 
                 Assert.That(container.SyncObject, Is.Not.Null & Is.SameAs(syncObject));
-                Assert.That(container.Value, GetEqualityConstraint(value));
+                Assert.That(container.Value, CreateEqualityConstraint(value));
             }
         }
 
@@ -92,10 +92,10 @@ namespace Omnifactotum.Tests
         public void TestValue()
         {
             var container = new SyncValueContainer<T>(_value);
-            Assert.That(container.Value, GetEqualityConstraint(_value));
+            Assert.That(container.Value, CreateEqualityConstraint(_value));
 
             container.Value = _anotherValue;
-            Assert.That(container.Value, GetEqualityConstraint(_anotherValue));
+            Assert.That(container.Value, CreateEqualityConstraint(_anotherValue));
         }
 
         [Test]
@@ -104,7 +104,7 @@ namespace Omnifactotum.Tests
             const int ConditionWaitTimeoutInSeconds = 1;
 
             var container = new SyncValueContainer<T>();
-            Assert.That(container.Value, GetDefaultValueConstraint());
+            Assert.That(container.Value, CreateDefaultValueConstraint());
 
             var canAnotherThreadChangeValue = false;
             var isAnotherThreadEntered = false;
@@ -118,6 +118,7 @@ namespace Omnifactotum.Tests
                 isAnotherThreadEntered = true;
 
                 //// ReSharper disable once AccessToModifiedClosure - Seems to be false alarm
+                //// ReSharper disable once LoopVariableIsNeverChangedInsideLoop :: Changed in another thread
                 while (!canAnotherThreadChangeValue)
                 {
                     cancellationToken.ThrowIfCancellationRequested();
@@ -157,7 +158,7 @@ namespace Omnifactotum.Tests
                 thread.Start();
                 WaitForCondition(false, () => isAnotherThreadEntered);
                 WaitForCondition(false, () => !isAnotherThreadExited);
-                Assert.That(container.Value, GetDefaultValueConstraint());
+                Assert.That(container.Value, CreateDefaultValueConstraint());
 
                 lock (container.SyncObject)
                 {
@@ -166,13 +167,13 @@ namespace Omnifactotum.Tests
                     WaitForCondition(true, () => !isAnotherThreadExited);
 
                     container.Value = _value;
-                    Assert.That(container.Value, GetEqualityConstraint(_value));
+                    Assert.That(container.Value, CreateEqualityConstraint(_value));
 
                     WaitForCondition(true, () => !isAnotherThreadExited);
                 }
 
                 WaitForCondition(false, () => isAnotherThreadExited);
-                Assert.That(container.Value, GetEqualityConstraint(_anotherValue));
+                Assert.That(container.Value, CreateEqualityConstraint(_anotherValue));
             }
             finally
             {
@@ -215,10 +216,10 @@ namespace Omnifactotum.Tests
             }
         }
 
-        private static IResolveConstraint GetEqualityConstraint(T value)
-            => typeof(T).IsValueType ? (IResolveConstraint)Is.EqualTo(value) : Is.SameAs(value);
+        private static IResolveConstraint CreateEqualityConstraint(T value)
+            => typeof(T).IsValueType ? Is.EqualTo(value) : Is.SameAs(value);
 
-        private static IResolveConstraint GetDefaultValueConstraint()
-            => typeof(T).IsValueType ? (IResolveConstraint)Is.EqualTo(default(T)) : Is.Null;
+        private static IResolveConstraint CreateDefaultValueConstraint()
+            => typeof(T).IsValueType ? Is.EqualTo(default(T)) : Is.Null;
     }
 }

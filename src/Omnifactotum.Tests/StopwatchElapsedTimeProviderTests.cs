@@ -82,6 +82,6 @@ namespace Omnifactotum.Tests
             Assert.That(testee.Elapsed, Is.EqualTo(TimeSpan.Zero));
         }
 
-        private static StopwatchElapsedTimeProvider CreateTestee() => new StopwatchElapsedTimeProvider();
+        private static StopwatchElapsedTimeProvider CreateTestee() => new();
     }
 }

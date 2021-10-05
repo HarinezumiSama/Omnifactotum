@@ -71,7 +71,7 @@ namespace Omnifactotum
             {
                 var memberInfo = GetDataMemberInfo(fieldGetterExpression);
 
-                if (!(memberInfo is FieldInfo result))
+                if (memberInfo is not FieldInfo result)
                 {
                     throw new ArgumentException(
                         string.Format(
@@ -143,7 +143,7 @@ namespace Omnifactotum
             {
                 var memberInfo = GetDataMemberInfo(propertyGetterExpression);
 
-                if (!(memberInfo is PropertyInfo result))
+                if (memberInfo is not PropertyInfo result)
                 {
                     throw new ArgumentException(
                         string.Format(
@@ -208,7 +208,7 @@ namespace Omnifactotum
 
                 var objectType = typeof(TObject);
 
-                if (!(memberGetterExpression.Body is MemberExpression { NodeType: ExpressionType.MemberAccess } memberExpression))
+                if (memberGetterExpression.Body is not MemberExpression { NodeType: ExpressionType.MemberAccess } memberExpression)
                 {
                     throw new ArgumentException(
                         string.Format(
@@ -221,7 +221,7 @@ namespace Omnifactotum
 
                 var propertyInfo = memberExpression.Member as PropertyInfo;
 
-                if (!(memberExpression.Member is FieldInfo) && propertyInfo is null)
+                if (memberExpression.Member is not FieldInfo && propertyInfo is null)
                 {
                     throw new ArgumentException(
                         string.Format(
@@ -265,7 +265,7 @@ namespace Omnifactotum
                 }
                 else
                 {
-                    if (!(memberExpression.Expression is ParameterExpression { NodeType: ExpressionType.Parameter } parameterExpression)
+                    if (memberExpression.Expression is not ParameterExpression { NodeType: ExpressionType.Parameter } parameterExpression
                         || parameterExpression.Type != typeof(TObject))
                     {
                         throw new ArgumentException(

@@ -38,13 +38,13 @@ namespace Omnifactotum
             if (Enum.GetUnderlyingType(type) == typeof(ulong))
             {
                 var max = Convert.ToUInt64(maxObject);
-                upperBound = max <= MaxValue ? Convert.ToInt32(max) : (int?)null;
+                upperBound = max <= MaxValue ? Convert.ToInt32(max) : null;
             }
             else
             {
                 var min = Convert.ToInt64(minObject);
                 var max = Convert.ToInt64(maxObject);
-                upperBound = min >= MinValue && max <= MaxValue ? Convert.ToInt32(max) : (int?)null;
+                upperBound = min >= MinValue && max <= MaxValue ? Convert.ToInt32(max) : null;
             }
 
             if (!upperBound.HasValue)

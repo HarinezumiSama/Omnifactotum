@@ -83,7 +83,7 @@ namespace System
                 throw new ArgumentNullException(nameof(getElementValue));
             }
 
-            Initialize(array, (element, index) => getElementValue(index));
+            Initialize(array, (_, index) => getElementValue(index));
         }
 
         /// <summary>

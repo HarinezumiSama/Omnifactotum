@@ -35,7 +35,7 @@ namespace System.Reflection
             }
 
             ArgumentException CreateNoLocalPathException()
-                => new ArgumentException(
+                => new(
                     AsInvariant($@"The assembly {{ {assembly.FullName} }} does not have a local path."),
                     nameof(assembly));
 

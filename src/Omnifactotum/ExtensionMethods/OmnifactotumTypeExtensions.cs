@@ -19,7 +19,7 @@ namespace System
         /// </summary>
         private const char GenericArgumentDelimiter = '`';
 
-        private static readonly Dictionary<Type, string> ShortTypeNameMap = new Dictionary<Type, string>
+        private static readonly Dictionary<Type, string> ShortTypeNameMap = new()
         {
             { typeof(bool), @"bool" },
             { typeof(byte), @"byte" },

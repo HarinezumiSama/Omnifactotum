@@ -33,7 +33,6 @@ namespace Omnifactotum
 #if (NETFRAMEWORK && !NET40) || NETSTANDARD || NETCOREAPP
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
 #endif
-        public static KeyValuePair<TKey, TValue> Create<TKey, TValue>([CanBeNull] TKey key, [CanBeNull] TValue value)
-            => new KeyValuePair<TKey, TValue>(key, value);
+        public static KeyValuePair<TKey, TValue> Create<TKey, TValue>([CanBeNull] TKey key, [CanBeNull] TValue value) => new(key, value);
     }
 }

@@ -77,7 +77,7 @@ namespace Omnifactotum.Tests
             testeeContainer.AssertNotSupportedExceptionAndEnsureUnchanged(() => testeeContainer.TesteeAsCollection.Remove(Item1));
         }
 
-        private static TesteeContainer CreateTesteeContainer() => new TesteeContainer();
+        private static TesteeContainer CreateTesteeContainer() => new();
 
         private sealed class TesteeContainer
         {

@@ -8,7 +8,7 @@ namespace Omnifactotum.Tests.ExtensionMethods
 {
     internal sealed class MethodBaseTestHelper
     {
-        public static readonly MethodBaseTestHelper Instance = new MethodBaseTestHelper();
+        public static readonly MethodBaseTestHelper Instance = new();
 
         private MethodBaseTestHelper()
         {

@@ -501,7 +501,7 @@ namespace Omnifactotum.Tests.ExtensionMethods
             private const int PointerAddress1 = 0x20EF3478;
             private const int PointerAddress2 = 0x30EF3478;
 
-            private static readonly unsafe PointerContainer PointerContainer = new PointerContainer
+            private static readonly unsafe PointerContainer PointerContainer = new()
             {
                 Value = "SomePointer",
                 IntPointer = (int*)PointerAddress0,
@@ -830,7 +830,7 @@ namespace Omnifactotum.Tests.ExtensionMethods
 
                 public bool MoveNext()
                 {
-                    if (_index < -1 || _index >= 2)
+                    if (_index is < -1 or >= 2)
                     {
                         return false;
                     }

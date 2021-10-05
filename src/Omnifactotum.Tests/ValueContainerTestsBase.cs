@@ -46,7 +46,7 @@ namespace Omnifactotum.Tests
 
             Assert.That(
                 container.Value,
-                typeof(T).IsValueType ? (IResolveConstraint)Is.EqualTo(default(T)) : Is.Null);
+                typeof(T).IsValueType ? Is.EqualTo(default(T)) : Is.Null);
         }
 
         [Test]
@@ -98,6 +98,6 @@ namespace Omnifactotum.Tests
         }
 
         private static IResolveConstraint GetEqualityConstraint(T value)
-            => typeof(T).IsValueType ? (IResolveConstraint)Is.EqualTo(value) : Is.SameAs(value);
+            => typeof(T).IsValueType ? Is.EqualTo(value) : Is.SameAs(value);
     }
 }

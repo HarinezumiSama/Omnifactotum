@@ -47,9 +47,6 @@ namespace System
         /// </example>
         [DebuggerNonUserCode]
         public static bool IsFatal([CanBeNull] this Exception exception)
-            => exception is ThreadAbortException
-                || exception is OperationCanceledException
-                || exception is OutOfMemoryException
-                || exception is StackOverflowException;
+            => exception is ThreadAbortException or OperationCanceledException or OutOfMemoryException or StackOverflowException;
     }
 }

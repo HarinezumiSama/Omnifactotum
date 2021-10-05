@@ -7,7 +7,7 @@ namespace Omnifactotum.Validation
         /// <summary>
         ///     The sole instance of the <see cref="InternalMemberDataEqualityComparer"/> class.
         /// </summary>
-        public static readonly InternalMemberDataEqualityComparer Instance = new InternalMemberDataEqualityComparer();
+        public static readonly InternalMemberDataEqualityComparer Instance = new();
 
         private InternalMemberDataEqualityComparer()
         {

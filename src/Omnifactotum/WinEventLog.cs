@@ -160,11 +160,14 @@ namespace Omnifactotum
         private static string GetDefaultSource()
         {
             var result = _defaultSource.TrimSafely();
+
+            //// ReSharper disable once ConditionIsAlwaysTrueOrFalse :: False detection
             if (!result.IsNullOrWhiteSpace())
             {
                 return result.EnsureNotNull();
             }
 
+            //// ReSharper disable once HeuristicUnreachableCode :: False detection
             var assembly = Assembly.GetEntryAssembly() ?? Assembly.GetExecutingAssembly();
             result = assembly.GetName().Name;
 

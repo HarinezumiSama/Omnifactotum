@@ -1,5 +1,7 @@
 ﻿#nullable enable
 
+//// ReSharper disable RedundantNullnessAttributeWithNullableReferenceTypes
+
 using System.Collections.Generic;
 using System.Globalization;
 #if (NETFRAMEWORK && !NET40) || NETSTANDARD || NETCOREAPP

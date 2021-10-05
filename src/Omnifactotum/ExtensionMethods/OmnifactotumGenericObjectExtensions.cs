@@ -10,6 +10,8 @@ using Omnifactotum;
 using Omnifactotum.Annotations;
 using static Omnifactotum.FormattableStringFactotum;
 
+//// ReSharper disable RedundantNullnessAttributeWithNullableReferenceTypes
+
 //// ReSharper disable once CheckNamespace :: Namespace is intentionally named so in order to simplify usage of extension methods
 
 namespace System
@@ -37,8 +39,7 @@ namespace System
         private static readonly MethodInfo ToPropertyStringInternalMethodDefinition =
             new ToPropertyStringInternalMethod(ToPropertyStringInternal).Method.GetGenericMethodDefinition();
 
-        private static readonly WeakReferenceBasedCache<Type, FieldInfo[]> ContentFieldsCache =
-            new WeakReferenceBasedCache<Type, FieldInfo[]>(GetContentFieldsCacheFields);
+        private static readonly WeakReferenceBasedCache<Type, FieldInfo[]> ContentFieldsCache = new(GetContentFieldsCacheFields);
 
         [ThreadStatic]
         private static HashSet<object> _toPropertyStringObjectsBeingProcessed;
@@ -266,7 +267,7 @@ namespace System
         ///     A strongly-typed list containing the specified value as its sole element.
         /// </returns>
         [NotNull]
-        public static List<T> AsList<T>([CanBeNull] this T value) => new List<T> { value };
+        public static List<T> AsList<T>([CanBeNull] this T value) => new() { value };
 
         /// <summary>
         ///     Creates a strongly-typed collection containing the specified value as its sole element.
