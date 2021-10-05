@@ -281,16 +281,6 @@ namespace Omnifactotum.Tests.ExtensionMethods
         }
 
         [Test]
-        [TestCase(17, new[] { 17 })]
-        [TestCase(17, new[] { 17, 18 })]
-        [TestCase(17, new[] { 18 })]
-        public void TestIsOneOfWhenNonEnumerationArgumentsArePassedThenThrows(int input, int[] otherValues)
-        {
-            Assert.That(() => input.IsOneOf(otherValues), Throws.ArgumentException);
-            Assert.That(() => input.IsOneOf((IEnumerable<int>)otherValues), Throws.ArgumentException);
-        }
-
-        [Test]
         public void TestIsOneOfWhenNullOtherValuesArgumentIsPassedThenThrows()
         {
             Assert.That(() => ConsoleColor.Gray.IsOneOf(null), Throws.ArgumentNullException);

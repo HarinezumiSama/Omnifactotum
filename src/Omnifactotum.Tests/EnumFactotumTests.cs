@@ -16,8 +16,6 @@ namespace Omnifactotum.Tests
             var enumValueString = EnumValue.ToString();
             var enumValueStringLower = enumValueString.ToLowerInvariant();
 
-            Assert.That(() => EnumFactotum.GetValue<int>(enumValueString), Throws.ArgumentException);
-
             Assert.That(() => EnumFactotum.GetValue<FileMode>(enumValueString), Is.EqualTo(EnumValue));
             Assert.That(() => EnumFactotum.GetValue<FileMode>(enumValueString, false), Is.EqualTo(EnumValue));
             Assert.That(() => EnumFactotum.GetValue<FileMode>(enumValueString, true), Is.EqualTo(EnumValue));
@@ -32,8 +30,6 @@ namespace Omnifactotum.Tests
         [Test]
         public void TestGetAllValues()
         {
-            Assert.That(EnumFactotum.GetAllValues<int>, Throws.ArgumentException);
-
             Assert.That(
                 EnumFactotum.GetAllValues<FileMode>,
                 Is.EquivalentTo(Enum.GetValues(typeof(FileMode))));
@@ -46,8 +42,6 @@ namespace Omnifactotum.Tests
         [Test]
         public void TestGetAllFlagValues()
         {
-            Assert.That(EnumFactotum.GetAllFlagValues<int>, Throws.ArgumentException);
-
             Assert.That(EnumFactotum.GetAllFlagValues<FileMode>, Throws.ArgumentException);
 
             Assert.That(

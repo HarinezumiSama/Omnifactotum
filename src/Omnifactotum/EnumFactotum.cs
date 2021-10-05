@@ -27,7 +27,7 @@ namespace Omnifactotum
         ///     A strongly-typed value of the enumeration.
         /// </returns>
         public static TEnum GetValue<TEnum>(string enumValueName, bool ignoreCase)
-            where TEnum : struct
+            where TEnum : struct, Enum
         {
             if (string.IsNullOrEmpty(enumValueName))
             {
@@ -59,7 +59,7 @@ namespace Omnifactotum
         ///     A strongly-typed value of the enumeration.
         /// </returns>
         public static TEnum GetValue<TEnum>(string enumValueName)
-            where TEnum : struct
+            where TEnum : struct, Enum
         {
             return GetValue<TEnum>(enumValueName, false);
         }
@@ -74,7 +74,7 @@ namespace Omnifactotum
         ///     A collection of the enumeration values.
         /// </returns>
         public static TEnum[] GetAllValues<TEnum>()
-            where TEnum : struct
+            where TEnum : struct, Enum
         {
             var enumType = typeof(TEnum);
             if (!enumType.IsEnum)
@@ -97,7 +97,7 @@ namespace Omnifactotum
         ///     An array of all the flag values defined in the specified enumeration.
         /// </returns>
         public static TEnum[] GetAllFlagValues<TEnum>()
-            where TEnum : struct
+            where TEnum : struct, Enum
         {
             var enumType = typeof(TEnum);
             if (!enumType.IsEnum || !enumType.IsDefined(typeof(FlagsAttribute), false))

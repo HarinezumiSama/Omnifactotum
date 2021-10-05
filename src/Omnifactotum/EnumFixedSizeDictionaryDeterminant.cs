@@ -10,7 +10,7 @@ namespace Omnifactotum
     ///     Represents the determinant for the <see cref="EnumFixedSizeDictionary{TKey,TValue}"/> class.
     /// </summary>
     public sealed class EnumFixedSizeDictionaryDeterminant<TKey> : FixedSizeDictionaryDeterminant<TKey>
-        where TKey : struct
+        where TKey : struct, Enum
     {
         private readonly Func<TKey, int> _getIndex;
         private readonly Func<int, TKey> _getKey;

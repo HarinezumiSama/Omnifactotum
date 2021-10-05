@@ -16,7 +16,7 @@ namespace Omnifactotum
     /// </typeparam>
     public sealed class EnumFixedSizeDictionary<TKey, TValue>
         : FixedSizeDictionary<TKey, TValue, EnumFixedSizeDictionaryDeterminant<TKey>>
-        where TKey : struct
+        where TKey : struct, Enum
     {
         /// <summary>
         ///     Initializes a new instance of the <see cref="EnumFixedSizeDictionary{TKey,TValue}"/> class.

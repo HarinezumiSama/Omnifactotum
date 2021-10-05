@@ -90,7 +90,7 @@ namespace System
         /// </exception>
         [Pure]
         public static bool IsAllSet<TEnum>(this TEnum enumerationValue, TEnum flags)
-            where TEnum : struct
+            where TEnum : struct, Enum
         {
             return IsSetInternal(enumerationValue, flags, true);
         }
@@ -125,7 +125,7 @@ namespace System
         /// </exception>
         [Pure]
         public static bool IsAnySet<TEnum>(this TEnum enumerationValue, TEnum flags)
-            where TEnum : struct
+            where TEnum : struct, Enum
         {
             return IsSetInternal(enumerationValue, flags, false);
         }
@@ -155,7 +155,7 @@ namespace System
         /// </exception>
         [Pure]
         public static bool IsOneOf<TEnum>(this TEnum enumerationValue, [NotNull] [InstantHandle] IEnumerable<TEnum> otherValues)
-            where TEnum : struct
+            where TEnum : struct, Enum
         {
             var enumType = typeof(TEnum);
             if (!enumType.IsEnum)
@@ -198,7 +198,7 @@ namespace System
         /// </exception>
         [Pure]
         public static bool IsOneOf<TEnum>(this TEnum enumerationValue, params TEnum[] otherValues)
-            where TEnum : struct
+            where TEnum : struct, Enum
         {
             return IsOneOf(enumerationValue, (IEnumerable<TEnum>)otherValues);
         }
@@ -385,7 +385,7 @@ namespace System
         /// </returns>
         [Pure]
         private static bool IsSetInternal<TEnum>(this TEnum enumerationValue, TEnum flags, bool all)
-            where TEnum : struct
+            where TEnum : struct, Enum
         {
             var enumType = typeof(TEnum);
             if (!enumType.IsEnum || !enumType.IsDefined(typeof(FlagsAttribute), false))
