@@ -4,6 +4,7 @@
 **/packages/*
 **/.vs/*
 **/_ReSharper*/*
+.idea/
 *.suo
 *.*proj.user
 *.DotSettings.user
