@@ -1,12 +1,17 @@
-﻿using System;
+﻿#nullable enable
+
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
 using System.Reflection;
 using NUnit.Framework;
+using NUnit.Framework.Constraints;
 using Omnifactotum.Annotations;
 using static Omnifactotum.FormattableStringFactotum;
+
+//// ReSharper disable RedundantNullnessAttributeWithNullableReferenceTypes
 
 //// ReSharper disable once CheckNamespace :: Compatibility (Omnifactotum.NUnit)
 
@@ -20,8 +25,7 @@ namespace Omnifactotum.NUnit
         private const string EqualityOperatorMethodName = "op_Equality";
         private const string InequalityOperatorMethodName = "op_Inequality";
 
-        private const BindingFlags OperatorBindingFlags =
-            BindingFlags.Static | BindingFlags.Public | BindingFlags.FlattenHierarchy;
+        private const BindingFlags OperatorBindingFlags = BindingFlags.Static | BindingFlags.Public | BindingFlags.DeclaredOnly;
 
         /// <summary>
         ///     Asserts the readability and writability of the specified property.
@@ -39,23 +43,24 @@ namespace Omnifactotum.NUnit
         /// <param name="expectedAccessMode">
         ///     The expected readability and writability of the specified property.
         /// </param>
-        /// <param name="visibleAccessorAttribute">
+        /// <param name="accessorVisibilityAttributes">
         ///     The attribute from <see cref="MethodAttributes.MemberAccessMask"/> specifying the visibility of the
         ///     accessors.
         /// </param>
         public static void AssertReadableWritable<TObject, TProperty>(
             [NotNull] Expression<Func<TObject, TProperty>> propertyGetterExpression,
             PropertyAccessMode expectedAccessMode,
-            MethodAttributes visibleAccessorAttribute = MethodAttributes.Public)
+            MethodAttributes accessorVisibilityAttributes = MethodAttributes.Public)
         {
-            Assert.That(propertyGetterExpression, Is.Not.Null);
-            Assert.That(Enum.IsDefined(typeof(PropertyAccessMode), expectedAccessMode), Is.True);
+            Assert.That(propertyGetterExpression, Is.Not.Null, @"The property expression cannot be null.");
+            Assert.That(Enum.IsDefined(typeof(PropertyAccessMode), expectedAccessMode), Is.True, @"Invalid expected access mode.");
 
             Assert.That(
-                (int)(visibleAccessorAttribute & ~MethodAttributes.MemberAccessMask),
+                (int)(accessorVisibilityAttributes & ~MethodAttributes.MemberAccessMask),
                 Is.EqualTo(0),
                 () => AsInvariant(
-                    $"Invalid accessor visibility. Must match {MethodAttributes.MemberAccessMask.GetQualifiedName().ToUIString()} mask."));
+                    $@"Invalid accessor visibility. Must match the ""{nameof(MethodAttributes)}{Type.Delimiter}{
+                        nameof(MethodAttributes.MemberAccessMask)}"" mask."));
 
             var propertyInfo = Factotum.For<TObject>.GetPropertyInfo(propertyGetterExpression);
             Assert.That(propertyInfo, Is.Not.Null);
@@ -67,28 +72,35 @@ namespace Omnifactotum.NUnit
             var expectedReadability = expectedAccessMode != PropertyAccessMode.WriteOnly;
 
             var actualReadability = propertyInfo.CanRead
-                && AccessAttributesMatch(propertyInfo.GetGetMethod(true).AssertNotNull(), visibleAccessorAttribute);
+                && AccessAttributesMatch(propertyInfo.GetGetMethod(true).AssertNotNull(), accessorVisibilityAttributes);
 
             Assert.That(
                 actualReadability,
                 Is.EqualTo(expectedReadability),
                 () => AsInvariant(
-                    $@"The property {GetFullPropertyNameUIString()} MUST {(expectedReadability ? string.Empty : "NOT ")}be readable."));
+                    $@"The property {GetFullPropertyNameUIString()} MUST {
+                        (expectedReadability ? string.Empty : "NOT ")}be readable (visibility: {
+                            GetVisibilityName()})."));
 
             var expectedWritability = expectedAccessMode != PropertyAccessMode.ReadOnly;
 
             var actualWritability = propertyInfo.CanWrite
-                && AccessAttributesMatch(propertyInfo.GetSetMethod(true).AssertNotNull(), visibleAccessorAttribute);
+                && AccessAttributesMatch(propertyInfo.GetSetMethod(true).AssertNotNull(), accessorVisibilityAttributes);
 
             Assert.That(
                 actualWritability,
                 Is.EqualTo(expectedWritability),
                 () => AsInvariant(
-                    $@"The property {GetFullPropertyNameUIString()} MUST {(expectedWritability ? string.Empty : "NOT ")}be writable."));
+                    $@"The property {GetFullPropertyNameUIString()} MUST {
+                        (expectedWritability ? string.Empty : "NOT ")}be writable (visibility: {
+                            Enum.GetName(accessorVisibilityAttributes.GetType(), accessorVisibilityAttributes)})."));
+
+            string GetVisibilityName()
+                => Enum.GetName(accessorVisibilityAttributes.GetType(), accessorVisibilityAttributes).EnsureNotNull();
         }
 
         /// <summary>
-        ///     Asserts the equality of two specified values as well as ensures that they are not the same reference.
+        ///     Asserts the equality of two specified values of the same types.
         /// </summary>
         /// <typeparam name="T">
         ///     The type of the values.
@@ -102,69 +114,116 @@ namespace Omnifactotum.NUnit
         /// <param name="equalityExpectation">
         ///     The equality expectation for the specified values.
         /// </param>
-        public static void AssertEquality<T>(T value1, T value2, AssertEqualityExpectation equalityExpectation)
+        /// <param name="operatorExpectation">
+        ///     The expectation for the overloaded equality and inequality operators.
+        /// </param>
+        public static void AssertEquality<T>(
+            T value1,
+            T value2,
+            AssertEqualityExpectation equalityExpectation,
+            AssertEqualityOperatorExpectation operatorExpectation = AssertEqualityOperatorExpectation.MayDefine)
         {
-            if (!(value1 is null))
+            if (value1 is not null)
             {
                 Assert.That(value1, Is.TypeOf<T>());
             }
 
-            if (!(value2 is null))
+            if (value2 is not null)
             {
                 Assert.That(value2, Is.TypeOf<T>());
             }
 
-            if (!(value1 is null) && !(value2 is null) && equalityExpectation != AssertEqualityExpectation.EqualAndMayBeSame)
+            if (value1 is not null && value2 is not null && equalityExpectation != AssertEqualityExpectation.EqualAndMayBeSame)
             {
                 Assert.That(value1, Is.Not.SameAs(value2));
             }
 
-            var equals = equalityExpectation == AssertEqualityExpectation.EqualAndMayBeSame
-                || equalityExpectation == AssertEqualityExpectation.EqualAndCannotBeSame;
+            var equals =
+                equalityExpectation switch
+                {
+                    AssertEqualityExpectation.NotEqual => false,
+                    AssertEqualityExpectation.EqualAndMayBeSame or AssertEqualityExpectation.EqualAndCannotBeSame => true,
+                    _ => throw equalityExpectation.CreateEnumValueNotImplementedException()
+                };
 
-            Assert.That(EqualityComparer<T>.Default.Equals(value1, value2), Is.EqualTo(equals));
-            Assert.That(EqualityComparer<T>.Default.Equals(value2, value1), Is.EqualTo(equals));
+            Assert.That(() => EqualityComparer<T>.Default.Equals(value1, value2), Is.EqualTo(equals));
+            Assert.That(() => EqualityComparer<T>.Default.Equals(value2, value1), Is.EqualTo(equals));
 
-            var value1AsObject = (object)value1;
-            var value2AsObject = (object)value2;
+            var value1AsObject = (object?)value1;
+            var value2AsObject = (object?)value2;
 
-            Assert.That(Equals(value1AsObject, value2AsObject), Is.EqualTo(equals));
-            Assert.That(Equals(value2AsObject, value1AsObject), Is.EqualTo(equals));
+            Assert.That(() => Equals(value1AsObject, value2AsObject), Is.EqualTo(equals));
+            Assert.That(() => Equals(value2AsObject, value1AsObject), Is.EqualTo(equals));
 
-            if (!(value1 is null))
+            if (value1 is not null)
             {
-                Assert.That(value1AsObject.Equals(value2AsObject), Is.EqualTo(equals));
+                Assert.That(() => value1AsObject!.Equals(value2AsObject), Is.EqualTo(equals));
             }
 
-            if (!(value2 is null))
+            if (value2 is not null)
             {
-                Assert.That(value2AsObject.Equals(value1AsObject), Is.EqualTo(equals));
+                Assert.That(() => value2AsObject!.Equals(value1AsObject), Is.EqualTo(equals));
             }
 
-            if (equals && !(value1 is null) && !(value2 is null))
+            if (equals && value1 is not null && value2 is not null)
             {
-                Assert.That(value1.GetHashCode(), Is.EqualTo(value2.GetHashCode()));
+                Assert.That(
+                    value2.GetHashCode,
+                    Is.EqualTo(value1.GetHashCode()),
+                    @"When the values are equal, their hash codes must also be equal.");
             }
 
-            var equalityOperatorMethod = typeof(T).GetMethod(EqualityOperatorMethodName, OperatorBindingFlags);
+            var type = typeof(T);
 
-            Assert.That(
-                equalityOperatorMethod,
-                Is.Not.Null,
-                AsInvariant($@"Equality operator (==) must be defined for the type {typeof(T).GetFullName()}."));
+            var equalityOperatorMethod = type.GetMethod(EqualityOperatorMethodName, OperatorBindingFlags);
+            var inequalityOperatorMethod = type.GetMethod(InequalityOperatorMethodName, OperatorBindingFlags);
 
-            Assert.That(equalityOperatorMethod.Invoke(null, new object[] { value1, value2 }), Is.EqualTo(equals));
-            Assert.That(equalityOperatorMethod.Invoke(null, new object[] { value2, value1 }), Is.EqualTo(equals));
+            Func<IResolveConstraint>? createOperatorConstraint;
+            string? verb;
+            switch (operatorExpectation)
+            {
+                case AssertEqualityOperatorExpectation.MayDefine:
+                    createOperatorConstraint = null;
+                    verb = null;
+                    break;
+                case AssertEqualityOperatorExpectation.MustNotDefine:
+                    createOperatorConstraint = () => Is.Null;
+                    verb = @"must not";
+                    break;
+                case AssertEqualityOperatorExpectation.MustDefine:
+                    createOperatorConstraint = () => Is.Not.Null;
+                    verb = @"must";
+                    break;
+                default:
+                    throw operatorExpectation.CreateEnumValueNotImplementedException();
+            }
 
-            var inequalityOperatorMethod = typeof(T).GetMethod(InequalityOperatorMethodName, OperatorBindingFlags);
+            if (createOperatorConstraint is not null)
+            {
+                Assert.That(verb, Is.Not.Null.And.Not.Empty);
 
-            Assert.That(
-                inequalityOperatorMethod,
-                Is.Not.Null,
-                AsInvariant($@"Inequality operator (!=) must be defined for the 1type {typeof(T).GetFullName()}."));
+                Assert.That(
+                    equalityOperatorMethod,
+                    createOperatorConstraint(),
+                    AsInvariant($@"Equality operator (==) {verb} be defined for the type {type.GetFullName().ToUIString()}."));
 
-            Assert.That(inequalityOperatorMethod.Invoke(null, new object[] { value1, value2 }), Is.EqualTo(!equals));
-            Assert.That(inequalityOperatorMethod.Invoke(null, new object[] { value2, value1 }), Is.EqualTo(!equals));
+                Assert.That(
+                    inequalityOperatorMethod,
+                    createOperatorConstraint(),
+                    AsInvariant($@"Inequality operator (!=) {verb} be defined for the type {type.GetFullName().ToUIString()}."));
+            }
+
+            if (equalityOperatorMethod is not null)
+            {
+                Assert.That(() => equalityOperatorMethod.Invoke(null, new object?[] { value1, value2 }), Is.EqualTo(equals));
+                Assert.That(() => equalityOperatorMethod.Invoke(null, new object?[] { value2, value1 }), Is.EqualTo(equals));
+            }
+
+            if (inequalityOperatorMethod is not null)
+            {
+                Assert.That(() => inequalityOperatorMethod.Invoke(null, new object?[] { value1, value2 }), Is.EqualTo(!equals));
+                Assert.That(() => inequalityOperatorMethod.Invoke(null, new object?[] { value2, value1 }), Is.EqualTo(!equals));
+            }
         }
 
         /// <summary>
@@ -181,11 +240,10 @@ namespace Omnifactotum.NUnit
         ///     A list of the test cases generated.
         /// </returns>
         public static List<TestCaseData> GenerateCombinatorialTestCases(
-            [CanBeNull] Action<TestCaseData> processTestCase,
-            [NotNull] params object[] arguments)
+            [CanBeNull] Action<TestCaseData>? processTestCase,
+            [NotNull] params object?[] arguments)
         {
-            Assert.That(arguments, Is.Not.Null);
-            CollectionAssert.IsNotEmpty(arguments);
+            Assert.That(arguments, Is.Not.Null.And.Not.Empty);
 
             var result = new List<TestCaseData>();
 
@@ -246,10 +304,8 @@ namespace Omnifactotum.NUnit
         /// <returns>
         ///     A list of the test cases generated.
         /// </returns>
-        public static List<TestCaseData> GenerateCombinatorialTestCases([NotNull] params object[] arguments)
+        public static List<TestCaseData> GenerateCombinatorialTestCases([NotNull] params object?[] arguments)
             => GenerateCombinatorialTestCases(null, arguments);
-
-#nullable enable
 
         /// <summary>
         ///     Returns the specified value if is not null;
@@ -261,6 +317,9 @@ namespace Omnifactotum.NUnit
         /// <param name="value">
         ///     The value to check.
         /// </param>
+        /// <param name="failureMessage">
+        ///     Optional. The message that will be displayed on failure.
+        /// </param>
         /// <returns>
         ///     The specified value if is not <see langword="null"/>.
         /// </returns>
@@ -268,15 +327,13 @@ namespace Omnifactotum.NUnit
         ///     <paramref name="value"/> is <see langword="null"/>.
         /// </exception>
         [NotNull]
-        [ContractAnnotation("null => stop; notnull => notnull", true)]
-        public static T AssertNotNull<T>([CanBeNull] this T? value)
+        [ContractAnnotation("value:null => stop; value:notnull => notnull", true)]
+        public static T AssertNotNull<T>([CanBeNull] this T? value, string? failureMessage = null)
             where T : class
         {
-            Assert.That(value, Is.Not.Null);
+            Assert.That(value, Is.Not.Null, failureMessage);
             return value.EnsureNotNull();
         }
-
-#nullable restore
 
         /// <summary>
         ///     Returns the value which underlies the specified nullable value, if it is not <see langword="null"/>
@@ -289,6 +346,9 @@ namespace Omnifactotum.NUnit
         /// <param name="value">
         ///     The value to check.
         /// </param>
+        /// <param name="failureMessage">
+        ///     Optional. The message that will be displayed on failure.
+        /// </param>
         /// <returns>
         ///     The value which underlies the specified nullable value, if it is not <see langword="null"/>
         ///     (that is, if its <see cref="Nullable{T}.HasValue"/> property is <see langword="true"/>).
@@ -297,11 +357,11 @@ namespace Omnifactotum.NUnit
         ///     <paramref name="value"/> is <see langword="null"/>, that is, its <see cref="Nullable{T}.HasValue"/> property is
         ///     <see langword="false"/>.
         /// </exception>
-        public static T AssertNotNull<T>([CanBeNull] this T? value)
+        public static T AssertNotNull<T>([CanBeNull] this T? value, string? failureMessage = null)
             where T : struct
         {
-            Assert.That(value.HasValue, Is.True, "The specified nullable value is unexpectedly null.");
-            return value.EnsureNotNull();
+            Assert.That(value.HasValue, Is.True, failureMessage);
+            return value!.Value;
         }
 
         /// <summary>
@@ -323,8 +383,7 @@ namespace Omnifactotum.NUnit
         ///         var castCustomer = customer.AssertCast().To&lt;Customer&gt;();
         ///     </code>
         /// </example>
-        public static AssertCastHelper<TSource> AssertCast<TSource>(this TSource source)
-            => new AssertCastHelper<TSource>(source);
+        public static AssertCastHelper<TSource> AssertCast<TSource>(this TSource source) => new(source);
 
         /// <summary>
         ///     Determines if the access attribute of the specified method matches the specified attribute.
@@ -394,10 +453,7 @@ namespace Omnifactotum.NUnit
         {
             private readonly TSource _source;
 
-            internal AssertCastHelper(TSource source)
-            {
-                _source = source;
-            }
+            internal AssertCastHelper(TSource source) => _source = source;
 
             /// <summary>
             ///     Asserts the type of the source value to be compatible with the destination type
@@ -413,7 +469,7 @@ namespace Omnifactotum.NUnit
                 where TDestination : TSource
             {
                 Assert.That(_source, /*Is.Not.Null &*/ Is.InstanceOf<TDestination>());
-                return (TDestination)_source;
+                return (TDestination)_source!;
             }
         }
     }

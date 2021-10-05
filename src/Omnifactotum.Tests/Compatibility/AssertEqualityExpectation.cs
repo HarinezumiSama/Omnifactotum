@@ -3,8 +3,9 @@
 namespace Omnifactotum.NUnit
 {
     /// <summary>
-    ///     Represents the equality expectation used in the <see cref="NUnitFactotum.AssertEquality{T}"/> method.
+    ///     Represents the equality expectation for the compared values.
     /// </summary>
+    /// <seealso cref="NUnitFactotum.AssertEquality{T}"/>
     internal enum AssertEqualityExpectation
     {
         /// <summary>
@@ -18,7 +19,7 @@ namespace Omnifactotum.NUnit
         EqualAndMayBeSame,
 
         /// <summary>
-        ///     The values must be equal and cannot be the same reference.
+        ///     The values must be equal, but cannot be the same reference unless they are <see langword="null"/>.
         /// </summary>
         EqualAndCannotBeSame
     }
