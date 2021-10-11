@@ -9,29 +9,16 @@
     public class NotNullConstraint<T> : TypedMemberConstraintBase<T>
         where T : class
     {
-        /// <summary>
-        ///     Validates the specified strongly-typed value is scope of the specified context.
-        /// </summary>
-        /// <param name="validatorContext">
-        ///     The context of the <see cref="ObjectValidator"/>.
-        /// </param>
-        /// <param name="memberContext">
-        ///     The context of validation.
-        /// </param>
-        /// <param name="value">
-        ///     The value to validate.
-        /// </param>
+        /// <inheritdoc />
         protected sealed override void ValidateTypedValue(
             ObjectValidatorContext validatorContext,
             MemberConstraintValidationContext memberContext,
             T value)
         {
-            if (value != null)
+            if (value is null)
             {
-                return;
+                AddError(validatorContext, memberContext, ValidationMessages.CannotBeNull);
             }
-
-            AddError(validatorContext, memberContext, "The value cannot be null.");
         }
     }
 }

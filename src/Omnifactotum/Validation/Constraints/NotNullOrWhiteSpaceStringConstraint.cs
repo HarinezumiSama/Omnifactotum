@@ -3,36 +3,20 @@
 namespace Omnifactotum.Validation.Constraints
 {
     /// <summary>
-    ///     Specifies that the annotated member of type <see cref="String"/> should not be <see langword="null"/> or empty.
+    ///     Specifies that the annotated member of the <see cref="String"/> type should not be <see langword="null"/> or blank.
     /// </summary>
     public sealed class NotNullOrWhiteSpaceStringConstraint : TypedMemberConstraintBase<string>
     {
-        /// <summary>
-        ///     Validates the specified strongly-typed value is scope of the specified context.
-        /// </summary>
-        /// <param name="validatorContext">
-        ///     The context of the <see cref="ObjectValidator"/>.
-        /// </param>
-        /// <param name="memberContext">
-        ///     The context of validation.
-        /// </param>
-        /// <param name="value">
-        ///     The value to validate.
-        /// </param>
+        /// <inheritdoc />
         protected override void ValidateTypedValue(
             ObjectValidatorContext validatorContext,
             MemberConstraintValidationContext memberContext,
             string value)
         {
-            if (!string.IsNullOrWhiteSpace(value))
+            if (string.IsNullOrWhiteSpace(value))
             {
-                return;
+                AddError(validatorContext, memberContext, ValidationMessages.StringCannotBeNullOrBlank);
             }
-
-            AddError(
-                validatorContext,
-                memberContext,
-                "The value must not be null or an empty string or a whitespace-only string.");
         }
     }
 }

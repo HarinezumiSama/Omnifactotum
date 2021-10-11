@@ -1,52 +1,24 @@
 ﻿using System;
-using System.Linq;
+using System.Collections.Generic;
 using NUnit.Framework;
 using Omnifactotum.Validation.Constraints;
 
 namespace Omnifactotum.Tests.Validation.Constraints
 {
-    [TestFixture]
-    internal sealed class NotNullConstraintTests : ConstraintTestsBase
+    [TestFixture(TestOf = typeof(NotNullConstraint))]
+    internal sealed class NotNullConstraintTests : ConstraintTestsBase<NotNullConstraint>
     {
-        [Test]
-        public void TestValidateNegativeContextNull()
-        {
-            var objectValidatorContext = CreateObjectValidatorContext();
-            var constraint = new NotNullConstraint();
+        [Ignore("Not applicable.")]
+        public override void TestValidateWhenIncorrectValueTypeThenThrows() => throw new NotSupportedException();
 
-            Assert.That(
-                //// ReSharper disable once AssignNullToNotNullAttribute - OK for test
-                () => constraint.Validate(objectValidatorContext, null, new object()),
-                Throws.TypeOf<ArgumentNullException>());
+        protected override IEnumerable<object> GetValidValues()
+        {
+            yield return new object();
         }
 
-        [Test]
-        public void TestValidateAgainstNotNull()
+        protected override IEnumerable<object> GetInvalidValues()
         {
-            var objectValidatorContext = CreateObjectValidatorContext();
-            var constraint = new NotNullConstraint();
-            var validationContext = CreateTestValidationContext();
-
-            constraint.Validate(objectValidatorContext, validationContext, new object());
-            var validationErrors = objectValidatorContext.Errors.Items;
-
-            Assert.That(validationErrors, Is.Not.Null);
-            Assert.That(validationErrors, Is.Empty);
-        }
-
-        [Test]
-        public void TestValidateAgainstNull()
-        {
-            var objectValidatorContext = CreateObjectValidatorContext();
-            var constraint = new NotNullConstraint();
-            var validationContext = CreateTestValidationContext();
-
-            constraint.Validate(objectValidatorContext, validationContext, null);
-            var validationError = objectValidatorContext.Errors.Items.Single();
-
-            Assert.That(validationError, Is.Not.Null);
-            Assert.That(validationError.FailedConstraintType, Is.EqualTo(constraint.GetType()));
-            Assert.That(validationError.Context, Is.SameAs(validationContext));
+            yield return null;
         }
     }
 }

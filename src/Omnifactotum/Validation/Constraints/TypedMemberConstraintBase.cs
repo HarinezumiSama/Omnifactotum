@@ -16,18 +16,7 @@ namespace Omnifactotum.Validation.Constraints
     /// </typeparam>
     public abstract class TypedMemberConstraintBase<T> : MemberConstraintBase
     {
-        /// <summary>
-        ///     Validates the specified value is scope of the specified memberContext.
-        /// </summary>
-        /// <param name="validatorContext">
-        ///     The context of the <see cref="ObjectValidator"/>.
-        /// </param>
-        /// <param name="memberContext">
-        ///     The context of the validated member.
-        /// </param>
-        /// <param name="value">
-        ///     The value to validate.
-        /// </param>
+        /// <inheritdoc />
         protected sealed override void ValidateValue(
             ObjectValidatorContext validatorContext,
             MemberConstraintValidationContext memberContext,

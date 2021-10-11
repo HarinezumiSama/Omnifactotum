@@ -5,17 +5,33 @@ using Omnifactotum.Validation.Constraints;
 
 namespace Omnifactotum.Tests.Validation.Constraints
 {
-    [TestFixture]
-    internal sealed class MemberConstraintBaseTests
+    [TestFixture(TestOf = typeof(MemberConstraintBase))]
+    internal sealed class MemberConstraintBaseTests : ConstraintTestsBase
     {
+        [Test]
+        public void TestValidateWhenInvalidContextArgumentThenThrows()
+        {
+            var objectValidatorContext = CreateObjectValidatorContext();
+            var memberContext = CreateMemberConstraintValidationContext();
+            var testee = CreateTestee();
+
+            Assert.That(
+                () => testee.Validate(null!, memberContext, this),
+                Throws.TypeOf<ArgumentNullException>());
+
+            Assert.That(
+                () => testee.Validate(objectValidatorContext, null!, this),
+                Throws.TypeOf<ArgumentNullException>());
+        }
+
         [Test]
         [TestCase(null)]
         [TestCase(int.MinValue)]
         [TestCase(0)]
         [TestCase(int.MaxValue)]
-        public void TestCastToSucceedsWithValidInput(object value)
+        public void TestCastToWhenValidInputThenSucceeds(object value)
         {
-            var testee = new ExposedMemberConstraintBase();
+            var testee = CreateTestee();
             var castValue = testee.CallCastTo<int?>(value);
 
             Assert.That(castValue, Is.EqualTo(value));
@@ -25,35 +41,31 @@ namespace Omnifactotum.Tests.Validation.Constraints
             }
             else
             {
-                // ReSharper disable once PossibleInvalidOperationException
-                Assert.That(castValue.Value, Is.EqualTo((int)value));
+                Assert.That(castValue!.Value, Is.EqualTo((int)value));
             }
         }
 
         [Test]
-        public void TestCastToFailsWithInvalidInput()
+        public void TestCastToWhenInvalidInputThenThrows()
         {
-            var testee = new ExposedMemberConstraintBase();
+            var testee = CreateTestee();
             Assert.That(() => testee.CallCastTo<int?>(new object()), Throws.InvalidOperationException);
             Assert.That(() => testee.CallCastTo<int?>("1"), Throws.InvalidOperationException);
             Assert.That(() => testee.CallCastTo<string>(1), Throws.InvalidOperationException);
             Assert.That(() => testee.CallCastTo<int>(null), Throws.InvalidOperationException);
         }
 
+        private static ExposedMemberConstraintBase CreateTestee() => new();
+
         private sealed class ExposedMemberConstraintBase : MemberConstraintBase
         {
-            public TTarget CallCastTo<TTarget>(object value)
-            {
-                return CastTo<TTarget>(value);
-            }
+            public TTarget CallCastTo<TTarget>(object value) => CastTo<TTarget>(value);
 
             protected override void ValidateValue(
                 ObjectValidatorContext validatorContext,
                 MemberConstraintValidationContext memberContext,
                 object value)
-            {
-                throw new NotImplementedException();
-            }
+                => throw new NotImplementedException();
         }
     }
 }

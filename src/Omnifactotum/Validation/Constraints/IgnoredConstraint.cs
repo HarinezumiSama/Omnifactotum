@@ -8,18 +8,7 @@ namespace Omnifactotum.Validation.Constraints
     /// </typeparam>
     public sealed class IgnoredConstraint<T> : TypedMemberConstraintBase<T>
     {
-        /// <summary>
-        ///     Validates the specified strongly-typed value is scope of the specified context.
-        /// </summary>
-        /// <param name="validatorContext">
-        ///     The context of the <see cref="ObjectValidator"/>.
-        /// </param>
-        /// <param name="memberContext">
-        ///     The context of validation.
-        /// </param>
-        /// <param name="value">
-        ///     The value to validate.
-        /// </param>
+        /// <inheritdoc />
         protected override void ValidateTypedValue(
             ObjectValidatorContext validatorContext,
             MemberConstraintValidationContext memberContext,
