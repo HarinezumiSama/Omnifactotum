@@ -5,6 +5,7 @@ using System.Diagnostics.CodeAnalysis;
 using System.Globalization;
 using System.IO;
 using System.Reflection;
+using System.Runtime.CompilerServices;
 using NUnit.Framework;
 using NUnit.Framework.Constraints;
 using Omnifactotum.Annotations;
@@ -129,6 +130,49 @@ namespace Omnifactotum.Tests.ExtensionMethods
             Assert.That(
                 nullableDateTime.ToUIString(japaneseCultureInfo),
                 Is.EqualTo("2016/11/19 22:14:23"));
+        }
+
+        [Test]
+        public void TestGetObjectReferenceDescription()
+        {
+            Assert.That(() => default(TestClass).GetObjectReferenceDescription(), Is.EqualTo("null"));
+
+            var obj1 = new TestClass();
+            var hashCode1 = RuntimeHelpers.GetHashCode(obj1);
+
+            Assert.That(
+                () => obj1.GetObjectReferenceDescription(),
+                Is.EqualTo(
+                    $@"Omnifactotum.Tests.ExtensionMethods.OmnifactotumGenericObjectExtensionsTests.TestClass:0x{hashCode1:X8}"));
+
+            var obj2 = new object();
+            var hashCode2 = RuntimeHelpers.GetHashCode(obj2);
+            Assert.That(() => obj2.GetObjectReferenceDescription(), Is.EqualTo($@"System.Object:0x{hashCode2:X8}"));
+
+            var obj3 = new string('w', 17);
+            var hashCode3 = RuntimeHelpers.GetHashCode(obj3);
+            Assert.That(() => obj3.GetObjectReferenceDescription(), Is.EqualTo($@"System.String:0x{hashCode3:X8}"));
+        }
+
+        [Test]
+        public void TestGetShortObjectReferenceDescription()
+        {
+            Assert.That(() => default(TestClass).GetObjectReferenceDescription(), Is.EqualTo("null"));
+
+            var obj1 = new TestClass();
+            var hashCode1 = RuntimeHelpers.GetHashCode(obj1);
+
+            Assert.That(
+                () => obj1.GetShortObjectReferenceDescription(),
+                Is.EqualTo($@"OmnifactotumGenericObjectExtensionsTests.TestClass:0x{hashCode1:X8}"));
+
+            var obj2 = new object();
+            var hashCode2 = RuntimeHelpers.GetHashCode(obj2);
+            Assert.That(() => obj2.GetShortObjectReferenceDescription(), Is.EqualTo($@"object:0x{hashCode2:X8}"));
+
+            var obj3 = new string('z', 17);
+            var hashCode3 = RuntimeHelpers.GetHashCode(obj3);
+            Assert.That(() => obj3.GetShortObjectReferenceDescription(), Is.EqualTo($@"string:0x{hashCode3:X8}"));
         }
 
         [Test]
@@ -512,24 +556,24 @@ namespace Omnifactotum.Tests.ExtensionMethods
             protected override IEnumerable<TestCaseData> GetCases()
             {
                 yield return new TestCaseData(
-                    typeof(string),
-                    null,
-                    new ToPropertyStringOptions().SetAllFlags(true),
-                    "string :: <null>")
+                        typeof(string),
+                        null,
+                        new ToPropertyStringOptions().SetAllFlags(true),
+                        "string :: <null>")
                     .SetDescription("Null string, all flags");
 
                 yield return new TestCaseData(
-                    typeof(RecursiveNode),
-                    null,
-                    new ToPropertyStringOptions().SetAllFlags(true),
-                    "OmnifactotumGenericObjectExtensionsTests.RecursiveNode :: <null>")
+                        typeof(RecursiveNode),
+                        null,
+                        new ToPropertyStringOptions().SetAllFlags(true),
+                        "OmnifactotumGenericObjectExtensionsTests.RecursiveNode :: <null>")
                     .SetDescription("Null RecursiveNode, all flags");
 
                 yield return new TestCaseData(
-                    typeof(int),
-                    15789632,
-                    new ToPropertyStringOptions().SetAllFlags(true),
-                    "int :: 15789632")
+                        typeof(int),
+                        15789632,
+                        new ToPropertyStringOptions().SetAllFlags(true),
+                        "int :: 15789632")
                     .SetDescription("Int32, all flags");
 
                 {
@@ -537,10 +581,10 @@ namespace Omnifactotum.Tests.ExtensionMethods
 
                     yield return
                         new TestCaseData(
-                            typeof(int),
-                            IntValue,
-                            new ToPropertyStringOptions(),
-                            IntValue.ToString(CultureInfo.InvariantCulture))
+                                typeof(int),
+                                IntValue,
+                                new ToPropertyStringOptions(),
+                                IntValue.ToString(CultureInfo.InvariantCulture))
                             .SetDescription("Int32, default options");
                 }
 
@@ -573,28 +617,28 @@ namespace Omnifactotum.Tests.ExtensionMethods
 
                     yield return
                         new TestCaseData(
-                            typeof(PointerContainer),
-                            PointerContainer,
-                            new ToPropertyStringOptions().SetAllFlags(true),
-                            expectedPointerContainerToPropertyString)
+                                typeof(PointerContainer),
+                                PointerContainer,
+                                new ToPropertyStringOptions().SetAllFlags(true),
+                                expectedPointerContainerToPropertyString)
                             .SetDescription("PointerContainer, all flags");
                 }
 
                 yield return
                     new TestCaseData(
-                        typeof(object),
-                        VirtualTreeNode.Create(new DateTime(2011, 12, 31, 13, 59, 58, 321)),
-                        new ToPropertyStringOptions().SetAllFlags(true),
-                        Resources.ExpectedVirtualTreeNodeWithDateTimeToPropertyString)
+                            typeof(object),
+                            VirtualTreeNode.Create(new DateTime(2011, 12, 31, 13, 59, 58, 321)),
+                            new ToPropertyStringOptions().SetAllFlags(true),
+                            Resources.ExpectedVirtualTreeNodeWithDateTimeToPropertyString)
                         .SetDescription("VirtualTreeNode with DateTime, all flags");
 
                 yield return
                     new TestCaseData(
-                        typeof(object),
-                        VirtualTreeNode.Create(
-                            new DateTimeOffset(2011, 12, 31, 13, 59, 58, 321, TimeSpan.FromHours(-2d))),
-                        new ToPropertyStringOptions().SetAllFlags(true),
-                        Resources.ExpectedVirtualTreeNodeWithDateTimeOffsetToPropertyString)
+                            typeof(object),
+                            VirtualTreeNode.Create(
+                                new DateTimeOffset(2011, 12, 31, 13, 59, 58, 321, TimeSpan.FromHours(-2d))),
+                            new ToPropertyStringOptions().SetAllFlags(true),
+                            Resources.ExpectedVirtualTreeNodeWithDateTimeOffsetToPropertyString)
                         .SetDescription("VirtualTreeNode with DateTimeOffset, all flags");
 
                 var keyTuple = Tuple.Create(GetType().ToString(), (Array)new[] { 1, 2, 5 });
@@ -603,42 +647,42 @@ namespace Omnifactotum.Tests.ExtensionMethods
 
                 yield return
                     new TestCaseData(
-                        typeof(KeyValuePair<Tuple<string, Array>, Tuple<object, string>>),
-                        kvp,
-                        new ToPropertyStringOptions().SetAllFlags(true),
-                        Resources.ExpectedComplexObjectAllFlagsToPropertyString)
+                            typeof(KeyValuePair<Tuple<string, Array>, Tuple<object, string>>),
+                            kvp,
+                            new ToPropertyStringOptions().SetAllFlags(true),
+                            Resources.ExpectedComplexObjectAllFlagsToPropertyString)
                         .SetDescription("Complex object (KeyValuePair), all flags");
 
                 yield return
                     new TestCaseData(
-                        typeof(KeyValuePair<Tuple<string, Array>, Tuple<object, string>>),
-                        kvp,
-                        new ToPropertyStringOptions(),
-                        Resources.ExpectedComplexObjectDefaultOptionsToPropertyString)
+                            typeof(KeyValuePair<Tuple<string, Array>, Tuple<object, string>>),
+                            kvp,
+                            new ToPropertyStringOptions(),
+                            Resources.ExpectedComplexObjectDefaultOptionsToPropertyString)
                         .SetDescription("Complex object (KeyValuePair), default options");
 
                 yield return
                     new TestCaseData(
-                        typeof(KeyValuePair<Tuple<string, Array>, Tuple<object, string>>),
-                        kvp,
-                        new ToPropertyStringOptions { RenderComplexProperties = true, MaxCollectionItemCount = 1 },
-                        Resources.ExpectedComplexObjectMaxOneItemToPropertyString)
+                            typeof(KeyValuePair<Tuple<string, Array>, Tuple<object, string>>),
+                            kvp,
+                            new ToPropertyStringOptions { RenderComplexProperties = true, MaxCollectionItemCount = 1 },
+                            Resources.ExpectedComplexObjectMaxOneItemToPropertyString)
                         .SetDescription("Complex object (KeyValuePair), complex properties and max 1 item from collection");
 
                 yield return
                     new TestCaseData(
-                        typeof(KeyValuePair<Tuple<string, Array>, Tuple<object, string>>),
-                        kvp,
-                        new ToPropertyStringOptions { RenderComplexProperties = true, RenderMemberType = true },
-                        Resources.ExpectedComplexObjectWithMemberTypeToPropertyString)
+                            typeof(KeyValuePair<Tuple<string, Array>, Tuple<object, string>>),
+                            kvp,
+                            new ToPropertyStringOptions { RenderComplexProperties = true, RenderMemberType = true },
+                            Resources.ExpectedComplexObjectWithMemberTypeToPropertyString)
                         .SetDescription("Complex object (KeyValuePair), complex properties and member types");
 
                 yield return
                     new TestCaseData(
-                        typeof(KeyValuePair<Tuple<string, Array>, Tuple<object, string>>),
-                        kvp,
-                        new ToPropertyStringOptions { RenderComplexProperties = true, RenderActualType = true },
-                        Resources.ExpectedComplexObjectWithActualTypeToPropertyString)
+                            typeof(KeyValuePair<Tuple<string, Array>, Tuple<object, string>>),
+                            kvp,
+                            new ToPropertyStringOptions { RenderComplexProperties = true, RenderActualType = true },
+                            Resources.ExpectedComplexObjectWithActualTypeToPropertyString)
                         .SetDescription("Complex object (KeyValuePair), complex properties and actual types");
 
                 var rootNode = new RecursiveNode { Value = "Root" };
@@ -649,43 +693,43 @@ namespace Omnifactotum.Tests.ExtensionMethods
 
                 yield return
                     new TestCaseData(
-                        typeof(RecursiveNode[]),
-                        nodes,
-                        new ToPropertyStringOptions().SetAllFlags(true),
-                        Resources.ExpectedComplexObjectWithCyclesAllFlagsToPropertyString)
+                            typeof(RecursiveNode[]),
+                            nodes,
+                            new ToPropertyStringOptions().SetAllFlags(true),
+                            Resources.ExpectedComplexObjectWithCyclesAllFlagsToPropertyString)
                         .SetDescription("Complex object (RecursiveNode[]) with cyclic dependency, all flags");
 
                 yield return
                     new TestCaseData(
-                        typeof(RecursiveNode[]),
-                        nodes,
-                        new ToPropertyStringOptions { RenderRootActualType = true, RenderComplexProperties = true },
-                        Resources.ExpectedComplexObjectWithCyclesWithComplexPropertiesToPropertyString)
+                            typeof(RecursiveNode[]),
+                            nodes,
+                            new ToPropertyStringOptions { RenderRootActualType = true, RenderComplexProperties = true },
+                            Resources.ExpectedComplexObjectWithCyclesWithComplexPropertiesToPropertyString)
                         .SetDescription("Complex object (RecursiveNode[]) with cyclic dependency, complex properties");
 
                 yield return
                     new TestCaseData(
-                        typeof(RecursiveNode[]),
-                        nodes,
-                        new ToPropertyStringOptions { RenderComplexProperties = true, MaxRecursionLevel = 2 },
-                        Resources.ExpectedMaxRecursionToPropertyString)
+                            typeof(RecursiveNode[]),
+                            nodes,
+                            new ToPropertyStringOptions { RenderComplexProperties = true, MaxRecursionLevel = 2 },
+                            Resources.ExpectedMaxRecursionToPropertyString)
                         .SetDescription(
                             "Complex object (RecursiveNode[]) with cyclic dependency, all flags, with max recursion");
 
                 yield return
                     new TestCaseData(
-                        typeof(Delegate),
-                        new Func<string>(typeof(object).ToString),
-                        new ToPropertyStringOptions().SetAllFlags(true),
-                        "Func<string> :: System.Func`1[System.String]")
+                            typeof(Delegate),
+                            new Func<string>(typeof(object).ToString),
+                            new ToPropertyStringOptions().SetAllFlags(true),
+                            "Func<string> :: System.Func`1[System.String]")
                         .SetDescription("Delegate");
 
                 yield return
                     new TestCaseData(
-                        typeof(ClassWithPropertyGetterThrowingException),
-                        new ClassWithPropertyGetterThrowingException(),
-                        new ToPropertyStringOptions().SetAllFlags(true),
-                        Resources.ExpectedClassWithPropertyGetterThrowingExceptionToPropertyString)
+                            typeof(ClassWithPropertyGetterThrowingException),
+                            new ClassWithPropertyGetterThrowingException(),
+                            new ToPropertyStringOptions().SetAllFlags(true),
+                            Resources.ExpectedClassWithPropertyGetterThrowingExceptionToPropertyString)
                         .SetDescription(nameof(ClassWithPropertyGetterThrowingException));
 
                 {
@@ -699,10 +743,10 @@ namespace Omnifactotum.Tests.ExtensionMethods
 
                     yield return
                         new TestCaseData(
-                            typeof(ClassWithFlagsEnumAndTypeAndAssemblyProperties),
-                            input,
-                            new ToPropertyStringOptions().SetAllFlags(true),
-                            expectedClassWithFlagsEnumAndTypeAndAssemblyPropertiesToPropertyString)
+                                typeof(ClassWithFlagsEnumAndTypeAndAssemblyProperties),
+                                input,
+                                new ToPropertyStringOptions().SetAllFlags(true),
+                                expectedClassWithFlagsEnumAndTypeAndAssemblyPropertiesToPropertyString)
                             .SetDescription(nameof(ClassWithFlagsEnumAndTypeAndAssemblyProperties));
                 }
             }
@@ -719,7 +763,6 @@ namespace Omnifactotum.Tests.ExtensionMethods
             {
                 [UsedImplicitly]
                 get;
-
                 set;
             }
         }
@@ -750,7 +793,6 @@ namespace Omnifactotum.Tests.ExtensionMethods
             {
                 [UsedImplicitly]
                 get;
-
                 set;
             }
 
@@ -758,7 +800,6 @@ namespace Omnifactotum.Tests.ExtensionMethods
             {
                 [UsedImplicitly]
                 get;
-
                 set;
             }
         }
@@ -769,7 +810,6 @@ namespace Omnifactotum.Tests.ExtensionMethods
             {
                 [UsedImplicitly]
                 get;
-
                 set;
             }
 
@@ -777,7 +817,6 @@ namespace Omnifactotum.Tests.ExtensionMethods
             {
                 [UsedImplicitly]
                 get;
-
                 set;
             }
 
@@ -785,7 +824,6 @@ namespace Omnifactotum.Tests.ExtensionMethods
             {
                 [UsedImplicitly]
                 get;
-
                 set;
             }
 
@@ -793,7 +831,6 @@ namespace Omnifactotum.Tests.ExtensionMethods
             {
                 [UsedImplicitly]
                 get;
-
                 set;
             }
         }

@@ -19,6 +19,9 @@ namespace System
         /// </summary>
         private const char GenericArgumentDelimiter = '`';
 
+        internal static readonly Func<Type, string> GetFullNameMethod = GetFullName;
+        internal static readonly Func<Type, string> GetQualifiedNameMethod = GetQualifiedName;
+
         private static readonly Dictionary<Type, string> ShortTypeNameMap = new()
         {
             { typeof(bool), @"bool" },

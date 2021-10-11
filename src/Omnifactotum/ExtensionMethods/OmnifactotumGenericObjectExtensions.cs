@@ -4,6 +4,7 @@ using System.Diagnostics;
 using System.Globalization;
 using System.Linq;
 using System.Reflection;
+using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 using System.Text;
 using Omnifactotum;
@@ -456,6 +457,46 @@ namespace System
         public static string ToUIString<T>([CanBeNull] this T? value, IFormatProvider formatProvider)
             where T : struct, IFormattable
             => value.ToUIString(null, formatProvider);
+
+#nullable enable
+
+        /// <summary>
+        ///     Gets the description of the specified object reference. The resulting description contains
+        ///     the full type name of the object and the hash code based on the object reference.
+        /// </summary>
+        /// <param name="obj">
+        ///     The object to get the reference description of.
+        /// </param>
+        /// <typeparam name="T">
+        ///     The type of the object.
+        /// </typeparam>
+        /// <returns>
+        ///     The description of the specified object reference.
+        /// </returns>
+        /// <seealso cref="OmnifactotumTypeExtensions.GetFullName"/>
+        public static string GetObjectReferenceDescription<T>(this T? obj)
+            where T : class
+            => GetObjectReferenceDescriptionInternal(obj, OmnifactotumTypeExtensions.GetFullNameMethod);
+
+        /// <summary>
+        ///     Gets the short description of the specified object reference. The resulting short description contains
+        ///     the qualified type name of the object and the hash code based on the object reference.
+        /// </summary>
+        /// <param name="obj">
+        ///     The object to get the reference description of.
+        /// </param>
+        /// <typeparam name="T">
+        ///     The type of the object.
+        /// </typeparam>
+        /// <returns>
+        ///     The short description of the specified object reference.
+        /// </returns>
+        /// <seealso cref="OmnifactotumTypeExtensions.GetQualifiedName"/>
+        public static string GetShortObjectReferenceDescription<T>(this T? obj)
+            where T : class
+            => GetObjectReferenceDescriptionInternal(obj, OmnifactotumTypeExtensions.GetQualifiedNameMethod);
+
+#nullable restore
 
         /// <summary>
         ///     Gets a string representing the properties of the specified object.
@@ -1097,6 +1138,16 @@ namespace System
 
             return true;
         }
+
+#nullable enable
+
+        private static string GetObjectReferenceDescriptionInternal<T>(T? obj, Func<Type, string> formatType)
+            where T : class
+            => obj is null
+                ? OmnifactotumRepresentationConstants.NullValueRepresentation
+                : $@"{formatType(obj.GetType())}:0x{RuntimeHelpers.GetHashCode(obj):X8}";
+
+#nullable restore
 
         private readonly struct PairReferenceHolder : IEquatable<PairReferenceHolder>
         {
