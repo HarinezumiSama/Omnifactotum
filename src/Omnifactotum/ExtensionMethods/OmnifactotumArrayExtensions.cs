@@ -1,6 +1,11 @@
-﻿using System.Diagnostics;
+﻿#nullable enable
+
 using System.Text;
 using Omnifactotum.Annotations;
+using SuppressMessage = System.Diagnostics.CodeAnalysis.SuppressMessageAttribute;
+
+//// ReSharper disable RedundantNullnessAttributeWithNullableReferenceTypes
+//// ReSharper disable once UseNullableReferenceTypesAnnotationSyntax
 
 //// ReSharper disable once CheckNamespace :: Namespace is intentionally named so in order to simplify usage of extension methods
 
@@ -9,6 +14,10 @@ namespace System
     /// <summary>
     ///     Contains extension methods for array types.
     /// </summary>
+
+    // ReSharper disable once RedundantNameQualifier
+    [SuppressMessage("ReSharper", "UseArrayEmptyMethod", Justification = "Cannot be used due to multi-targeting.")]
+    [SuppressMessage("Performance", "CA1825", Justification = "Cannot be used due to multi-targeting.")]
     public static class OmnifactotumArrayExtensions
     {
         /// <summary>
@@ -24,10 +33,7 @@ namespace System
         ///     A shallow copy of the specified array, or <see langword="null"/> if this array is <see langword="null"/>.
         /// </returns>
         [CanBeNull]
-        public static T[] Copy<T>([CanBeNull] this T[] array)
-        {
-            return (T[])array?.Clone();
-        }
+        public static T[]? Copy<T>([CanBeNull] this T[]? array) => (T[]?)array?.Clone();
 
         /// <summary>
         ///     Initializes all the elements of the specified array using the specified method to initialize
@@ -44,7 +50,8 @@ namespace System
         ///     the first parameter represents the previous value of the element;
         ///     the second parameter represents the index of the element in the array.
         /// </param>
-        public static void Initialize<T>([NotNull] this T[] array, [NotNull] [InstantHandle] Func<T, int, T> getElementValue)
+        [NotNull]
+        public static T[] Initialize<T>([NotNull] this T[] array, [NotNull] [InstantHandle] Func<T, int, T> getElementValue)
         {
             if (array is null)
             {
@@ -60,6 +67,8 @@ namespace System
             {
                 array[index] = getElementValue(array[index], index);
             }
+
+            return array;
         }
 
         /// <summary>
@@ -76,14 +85,53 @@ namespace System
         ///     A reference to a method that returns a new value for each array's element;
         ///     the parameter represents the index of the element in the array.
         /// </param>
-        public static void Initialize<T>([NotNull] this T[] array, [NotNull] [InstantHandle] Func<int, T> getElementValue)
+        [NotNull]
+        public static T[] Initialize<T>([NotNull] this T[] array, [NotNull] [InstantHandle] Func<int, T> getElementValue)
         {
+            if (array is null)
+            {
+                throw new ArgumentNullException(nameof(array));
+            }
+
             if (getElementValue is null)
             {
                 throw new ArgumentNullException(nameof(getElementValue));
             }
 
-            Initialize(array, (_, index) => getElementValue(index));
+            for (var index = 0; index < array.Length; index++)
+            {
+                array[index] = getElementValue(index);
+            }
+
+            return array;
+        }
+
+        /// <summary>
+        ///     Initializes all the elements of the specified array with the specified value.
+        /// </summary>
+        /// <typeparam name="T">
+        ///     The type of the elements in the array.
+        /// </typeparam>
+        /// <param name="array">
+        ///     The array whose elements to initialize.
+        /// </param>
+        /// <param name="value">
+        ///     The value to set to all the elements of the specified array.
+        /// </param>
+        [NotNull]
+        public static T[] Initialize<T>([NotNull] this T[] array, T value)
+        {
+            if (array is null)
+            {
+                throw new ArgumentNullException(nameof(array));
+            }
+
+            for (var index = 0; index < array.Length; index++)
+            {
+                array[index] = value;
+            }
+
+            return array;
         }
 
         /// <summary>
@@ -100,10 +148,13 @@ namespace System
         ///     The source array if it is not <see langword="null"/>; otherwise, empty array.
         /// </returns>
         [NotNull]
-        public static T[] AvoidNull<T>([CanBeNull] this T[] source)
-        {
-            return source ?? StrongTypeHelper<T>.EmptyArray;
-        }
+        public static T[] AvoidNull<T>([CanBeNull] this T[]? source)
+            => source
+#if NET40
+                ?? GetEmptyArray<T>();
+#else
+                ?? Array.Empty<T>();
+#endif
 
         /// <summary>
         ///     Converts the specified array of bytes to the hexadecimal string.
@@ -152,44 +203,15 @@ namespace System
         ///     A hexadecimal string (in lower case).
         /// </returns>
         [NotNull]
-        public static string ToHexString([NotNull] this byte[] byteArray)
+        public static string ToHexString([NotNull] this byte[] byteArray) => ToHexString(byteArray, false);
+
+#if NET40
+        private static T[] GetEmptyArray<T>() => EmptyArrayContainer<T>.Value;
+
+        private static class EmptyArrayContainer<T>
         {
-            return ToHexString(byteArray, false);
+            internal static readonly T[] Value = new T[0];
         }
-
-        /// <summary>
-        ///     The strong type helper.
-        /// </summary>
-        /// <typeparam name="T">
-        ///     The type of a value or values.
-        /// </typeparam>
-        private static class StrongTypeHelper<T>
-        {
-            /// <summary>
-            ///     The empty array.
-            /// </summary>
-            private static volatile T[] _emptyArray;
-
-            /// <summary>
-            ///     Gets the empty array.
-            /// </summary>
-            [NotNull]
-            public static T[] EmptyArray
-            {
-                [DebuggerNonUserCode]
-                get
-                {
-                    //// Thread-safe lock is not needed here
-
-                    // ReSharper disable once ConvertIfStatementToNullCoalescingExpression
-                    if (_emptyArray is null)
-                    {
-                        _emptyArray = new T[0];
-                    }
-
-                    return _emptyArray;
-                }
-            }
-        }
+#endif
     }
 }
