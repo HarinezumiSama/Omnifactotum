@@ -33,6 +33,7 @@
         <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
         <WarningsAsErrors />
         <RunSettingsFilePath>$(SolutionDir)$(SolutionName).runsettings</RunSettingsFilePath>
+        <CheckEolTargetFramework>false</CheckEolTargetFramework>
     </PropertyGroup>
 
     <PropertyGroup>
