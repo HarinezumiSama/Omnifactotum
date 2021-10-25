@@ -10,6 +10,9 @@ using System.Text;
 using Omnifactotum;
 using Omnifactotum.Annotations;
 using static Omnifactotum.FormattableStringFactotum;
+#if NETSTANDARD2_1_OR_GREATER || NET5_0_OR_GREATER
+using NotNullIfNotNull = System.Diagnostics.CodeAnalysis.NotNullIfNotNullAttribute;
+#endif
 
 //// ReSharper disable RedundantNullnessAttributeWithNullableReferenceTypes
 
@@ -77,6 +80,9 @@ namespace System
         /// <exception cref="ArgumentNullException">
         ///     <paramref name="value"/> is <see langword="null"/>.
         /// </exception>
+#if NETSTANDARD2_1 || NET5_0_OR_GREATER
+        [return: NotNullIfNotNull(@"value")]
+#endif
         [NotNull]
         [DebuggerStepThrough]
         [ContractAnnotation("null => stop; notnull => notnull", true)]
