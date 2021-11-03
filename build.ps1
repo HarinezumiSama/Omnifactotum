@@ -605,6 +605,8 @@ process
             [string] $binariesDirectoryPath = $AppveyorBinariesSubdirectory | Resolve-WorkspacePath
             [string] $binariesArchiveFilePath = "$resolvedArtifactsDirectoryPath\$($solutionNameOnly).bin$($archiveVersionSuffix).zip"
 
+            Write-MajorSeparator
+
             Execute-Command `
                 -Verbose `
                 -Title '* Archive binaries' `
