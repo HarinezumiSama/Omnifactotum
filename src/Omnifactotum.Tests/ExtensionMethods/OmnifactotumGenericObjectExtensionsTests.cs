@@ -230,6 +230,25 @@ namespace Omnifactotum.Tests.ExtensionMethods
         }
 
         [Test]
+        [TestCase(int.MinValue)]
+        [TestCase(0)]
+        [TestCase(17)]
+        [TestCase(42)]
+        [TestCase(int.MaxValue)]
+        public void TestAsNullableWhenInt32Value(int value)
+        {
+            var nullableIntValue = value.AsNullable();
+            Assert.That(nullableIntValue, Is.EqualTo(value));
+        }
+
+        [Test]
+        public void TestAsNullableWhenDateTimeKindValue([Values] DateTimeKind value)
+        {
+            var nullableIntValue = value.AsNullable();
+            Assert.That(nullableIntValue, Is.EqualTo(value));
+        }
+
+        [Test]
         [SuppressMessage("ReSharper", "AssignNullToNotNullAttribute")]
         public void TestAvoidNullWhenDefaultValueProviderIsNullThenThrows()
             => Assert.That(() => new object().AvoidNull(null), Throws.ArgumentNullException);

@@ -295,6 +295,30 @@ namespace System
         }
 
         /// <summary>
+        ///     Converts the specified value of the value type to a corresponding <see cref="Nullable{T}"/> value.
+        /// </summary>
+        /// <param name="value">
+        ///     The value of the value type to convert to a corresponding <see cref="Nullable{T}"/> value.
+        /// </param>
+        /// <typeparam name="T">
+        ///     The type of the value to convert.
+        /// </typeparam>
+        /// <returns>
+        ///     A <see cref="Nullable{T}"/> value that contains <paramref name="value"/>.
+        /// </returns>
+#if (NETFRAMEWORK && !NET40) || NETSTANDARD || NETCOREAPP
+        [MethodImpl(
+            MethodImplOptions.AggressiveInlining
+#if NET5_0_OR_GREATER
+            | MethodImplOptions.AggressiveOptimization
+#endif
+        )]
+#endif
+        public static T? AsNullable<T>(this T value)
+            where T : struct
+            => value;
+
+        /// <summary>
         ///     Avoids the specified reference type value to be a <see langword="null"/> reference: returns the specified value
         ///     if it is not <see langword="null"/> or a default value which is returned by the specified ad-hoc method.
         /// </summary>
