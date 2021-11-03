@@ -16,6 +16,10 @@
         <Reference Include="System.ServiceModel" />
     </ItemGroup>
 
+    <ItemGroup Condition="'$(TargetFramework)'=='net461' or '$(TargetFramework)'=='net472' or '$(TargetFramework)'=='netstandard2.0'">
+        <PackageReference Include="System.Threading.Tasks.Extensions" Version="4.5.4" />
+    </ItemGroup>
+    
     <ItemGroup>
         <!-- {508349b6-6b84-4df5-91f0-309beebad82d} is for T4 Templates -->
         <Service Include="{508349b6-6b84-4df5-91f0-309beebad82d}" />
