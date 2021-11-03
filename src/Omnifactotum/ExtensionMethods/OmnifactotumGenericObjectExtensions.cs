@@ -1,4 +1,6 @@
-﻿using System.Collections;
+﻿#nullable enable
+
+using System.Collections;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Globalization;
@@ -46,23 +48,21 @@ namespace System
         private static readonly WeakReferenceBasedCache<Type, FieldInfo[]> ContentFieldsCache = new(GetContentFieldsCacheFields);
 
         [ThreadStatic]
-        private static HashSet<object> _toPropertyStringObjectsBeingProcessed;
+        private static HashSet<object>? _toPropertyStringObjectsBeingProcessed;
 
         [ThreadStatic]
-        private static StringBuilder _toPropertyStringResultBuilder;
+        private static StringBuilder? _toPropertyStringResultBuilder;
 
         [ThreadStatic]
-        private static HashSet<PairReferenceHolder> _assertEqualityByContentsObjectsBeingProcessed;
+        private static HashSet<PairReferenceHolder>? _assertEqualityByContentsObjectsBeingProcessed;
 
         private delegate void ToPropertyStringInternalMethod(
-            object obj,
+            object? obj,
             bool isRoot,
             ToPropertyStringOptions options,
             Func<Type, PropertyInfo[]> getProperties,
             StringBuilder resultBuilder,
             int recursionLevel);
-
-#nullable enable
 
         /// <summary>
         ///     Returns the specified value if is not <see langword="null"/>;
@@ -98,8 +98,6 @@ namespace System
             where T : class
             => value ?? throw new ArgumentNullException(nameof(value));
 
-#nullable restore
-
         /// <summary>
         ///     Returns the value which underlies the specified nullable value, if it is not <see langword="null"/>
         ///     (that is, if its <see cref="Nullable{T}.HasValue"/> property is <see langword="true"/>);
@@ -133,8 +131,16 @@ namespace System
             => value ?? throw new ArgumentNullException(nameof(value));
 
         /// <summary>
-        ///     Returns a <see cref="System.String"/> that represents the specified value, considering that this value
-        ///     may be <see langword="null"/>.
+        ///     <para>
+        ///         Safely gets a <see cref="System.String"/> that represents the specified value.
+        ///     </para>
+        ///     <para>
+        ///         Returns the result of the <see cref="object.ToString()"/> method call for the specified value, considering that this
+        ///         value may be <see langword="null"/>. If the specified value is <see langword="null"/> or its
+        ///         <see cref="object.ToString()"/> method call returns <see langword="null"/>, then
+        ///         the <paramref name="fallbackResult"/> value is used. And if the <paramref name="fallbackResult"/> value is
+        ///         <see langword="null"/>, then <see cref="string.Empty"/> is returned.
+        ///     </para>
         /// </summary>
         /// <typeparam name="T">
         ///     The type of the value to get a string representation of.
@@ -142,12 +148,11 @@ namespace System
         /// <param name="value">
         ///     The value to get a string representation of.
         /// </param>
-        /// <param name="nullValueString">
+        /// <param name="fallbackResult">
         ///     A <see cref="System.String"/> to return if <paramref name="value"/> is <see langword="null"/>.
         /// </param>
         /// <returns>
-        ///     A <see cref="System.String"/> that represents the specified value, or the value of
-        ///     the <paramref name="nullValueString"/> parameter if <paramref name="value"/> is <see langword="null"/>.
+        ///     A <see cref="System.String"/> that represents the specified value.
         /// </returns>
 #if (NETFRAMEWORK && !NET40) || NETSTANDARD || NETCOREAPP
         [MethodImpl(
@@ -157,12 +162,95 @@ namespace System
 #endif
         )]
 #endif
-        public static string ToStringSafely<T>([CanBeNull] this T value, [CanBeNull] string nullValueString)
-            => value is null ? nullValueString : value.ToString();
+        [NotNull]
+        [DebuggerStepThrough]
+        public static string ToStringSafely<T>(this T value, [CanBeNull] string? fallbackResult)
+            => value?.ToString() ?? fallbackResult ?? string.Empty;
 
         /// <summary>
-        ///     Returns a <see cref="System.String"/> that represents the specified value, considering that this value
-        ///     may be <see langword="null"/>. In the latter case, the empty string is returned.
+        ///     <para>
+        ///         Safely gets a <see cref="System.String"/> that represents the specified value.
+        ///     </para>
+        ///     <para>
+        ///         Returns the result of the <see cref="object.ToString()"/> method call for the specified value, considering that this
+        ///         value may be <see langword="null"/>. If the specified value is <see langword="null"/> or its
+        ///         <see cref="object.ToString()"/> method call returns <see langword="null"/>, then <see cref="string.Empty"/> is
+        ///         returned.
+        ///     </para>
+        /// </summary>
+        /// <typeparam name="T">
+        ///     The type of the value to get a string representation of.
+        /// </typeparam>
+        /// <param name="value">
+        ///     The value to get a string representation of.
+        /// </param>
+        /// <returns>
+        ///     A <see cref="System.String"/> that represents the specified value.
+        /// </returns>
+#if (NETFRAMEWORK && !NET40) || NETSTANDARD || NETCOREAPP
+        [MethodImpl(
+            MethodImplOptions.AggressiveInlining
+#if NET5_0_OR_GREATER
+            | MethodImplOptions.AggressiveOptimization
+#endif
+        )]
+#endif
+        [NotNull]
+        [DebuggerStepThrough]
+        public static string ToStringSafely<T>(this T value) => ToStringSafely(value, null);
+
+        /// <summary>
+        ///     <para>
+        ///         Safely gets a <see cref="System.String"/> that represents the specified value, using
+        ///         <see cref="CultureInfo.InvariantCulture"/>.
+        ///     </para>
+        ///     <para>
+        ///         Returns the result of the <see cref="object.ToString()"/> method call for the specified value, considering that this
+        ///         value may be <see langword="null"/>. If the specified value is <see langword="null"/> or its
+        ///         <see cref="object.ToString()"/> method call returns <see langword="null"/>, then
+        ///         the <paramref name="fallbackResult"/> value is used. And if the <paramref name="fallbackResult"/> value is
+        ///         <see langword="null"/>, then <see cref="string.Empty"/> is returned.
+        ///     </para>
+        /// </summary>
+        /// <typeparam name="T">
+        ///     The type of the value to get a string representation of.
+        /// </typeparam>
+        /// <param name="value">
+        ///     The value to get a string representation of.
+        /// </param>
+        /// <param name="fallbackResult">
+        ///     A <see cref="System.String"/> to return if <paramref name="value"/> is <see langword="null"/>.
+        /// </param>
+        /// <returns>
+        ///     A <see cref="System.String"/> that represents the specified value, or the value of
+        ///     the <paramref name="fallbackResult"/> parameter if <paramref name="value"/> is <see langword="null"/>.
+        /// </returns>
+#if (NETFRAMEWORK && !NET40) || NETSTANDARD || NETCOREAPP
+        [MethodImpl(
+            MethodImplOptions.AggressiveInlining
+#if NET5_0_OR_GREATER
+            | MethodImplOptions.AggressiveOptimization
+#endif
+        )]
+#endif
+        [NotNull]
+        [DebuggerStepThrough]
+        public static string ToStringSafelyInvariant<T>(this T value, [CanBeNull] string? fallbackResult)
+            => (value is IFormattable formattable ? formattable.ToString(null, CultureInfo.InvariantCulture) : value?.ToString())
+                ?? fallbackResult
+                ?? string.Empty;
+
+        /// <summary>
+        ///     <para>
+        ///         Safely gets a <see cref="System.String"/> that represents the specified value, using
+        ///         <see cref="CultureInfo.InvariantCulture"/>.
+        ///     </para>
+        ///     <para>
+        ///         Returns the result of the <see cref="object.ToString()"/> method call for the specified value, considering that this
+        ///         value may be <see langword="null"/>. If the specified value is <see langword="null"/> or its
+        ///         <see cref="object.ToString()"/> method call returns <see langword="null"/>, then <see cref="string.Empty"/> is
+        ///         returned.
+        ///     </para>
         /// </summary>
         /// <typeparam name="T">
         ///     The type of the value to get a string representation of.
@@ -182,65 +270,7 @@ namespace System
 #endif
         )]
 #endif
-        public static string ToStringSafely<T>([CanBeNull] this T value) => ToStringSafely(value, string.Empty);
-
-        /// <summary>
-        ///     Returns a <see cref="System.String"/> that represents the specified value, using invariant culture and
-        ///     considering that this value may be <see langword="null"/>.
-        /// </summary>
-        /// <typeparam name="T">
-        ///     The type of the value to get a string representation of.
-        /// </typeparam>
-        /// <param name="value">
-        ///     The value to get a string representation of.
-        /// </param>
-        /// <param name="nullValueString">
-        ///     A <see cref="System.String"/> to return if <paramref name="value"/> is <see langword="null"/>.
-        /// </param>
-        /// <returns>
-        ///     A <see cref="System.String"/> that represents the specified value, or the value of
-        ///     the <paramref name="nullValueString"/> parameter if <paramref name="value"/> is <see langword="null"/>.
-        /// </returns>
-#if (NETFRAMEWORK && !NET40) || NETSTANDARD || NETCOREAPP
-        [MethodImpl(
-            MethodImplOptions.AggressiveInlining
-#if NET5_0_OR_GREATER
-            | MethodImplOptions.AggressiveOptimization
-#endif
-        )]
-#endif
-        public static string ToStringSafelyInvariant<T>([CanBeNull] this T value, [CanBeNull] string nullValueString)
-            => value is null
-                ? nullValueString
-                : value is IFormattable formattable
-                    ? formattable.ToString(null, CultureInfo.InvariantCulture)
-                    : value.ToString();
-
-        /// <summary>
-        ///     Returns a <see cref="System.String"/> that represents the specified value, using invariant culture and
-        ///     considering that this value may be <see langword="null"/>.
-        ///     If the value is <see langword="null"/>, the empty string is returned.
-        /// </summary>
-        /// <typeparam name="T">
-        ///     The type of the value to get a string representation of.
-        /// </typeparam>
-        /// <param name="value">
-        ///     The value to get a string representation of.
-        /// </param>
-        /// <returns>
-        ///     A <see cref="System.String"/> that represents the specified value it is not <see langword="null"/>;
-        ///     otherwise, the empty string.
-        /// </returns>
-#if (NETFRAMEWORK && !NET40) || NETSTANDARD || NETCOREAPP
-        [MethodImpl(
-            MethodImplOptions.AggressiveInlining
-#if NET5_0_OR_GREATER
-            | MethodImplOptions.AggressiveOptimization
-#endif
-        )]
-#endif
-        public static string ToStringSafelyInvariant<T>([CanBeNull] this T value)
-            => ToStringSafelyInvariant(value, string.Empty);
+        public static string ToStringSafelyInvariant<T>(this T value) => ToStringSafelyInvariant(value, string.Empty);
 
         /// <summary>
         ///     Gets a hash code of the specified value safely, that is, <n>null</n> does not cause an exception.
@@ -267,7 +297,7 @@ namespace System
 #endif
         )]
 #endif
-        public static int GetHashCodeSafely<T>([CanBeNull] this T value, int nullValueHashCode)
+        public static int GetHashCodeSafely<T>(this T value, int nullValueHashCode)
             => value is null ? nullValueHashCode : value.GetHashCode();
 
         /// <summary>
@@ -291,7 +321,7 @@ namespace System
 #endif
         )]
 #endif
-        public static int GetHashCodeSafely<T>([CanBeNull] this T value) => GetHashCodeSafely(value, 0);
+        public static int GetHashCodeSafely<T>(this T value) => GetHashCodeSafely(value, 0);
 
         /// <summary>
         ///     Gets the type of the specified value, considering that this value may be <see langword="null"/>.
@@ -315,8 +345,7 @@ namespace System
         )]
 #endif
         [NotNull]
-        public static Type GetTypeSafely<T>([CanBeNull] this T value)
-            => value is null ? typeof(T) : value.GetType();
+        public static Type GetTypeSafely<T>(this T value) => value is null ? typeof(T) : value.GetType();
 
         /// <summary>
         ///     Creates an array containing the specified value as its sole element.
@@ -339,7 +368,7 @@ namespace System
         )]
 #endif
         [NotNull]
-        public static T[] AsArray<T>([CanBeNull] this T value) => new[] { value };
+        public static T[] AsArray<T>(this T value) => new[] { value };
 
         /// <summary>
         ///     Creates a strongly-typed list containing the specified value as its sole element.
@@ -362,7 +391,7 @@ namespace System
         )]
 #endif
         [NotNull]
-        public static List<T> AsList<T>([CanBeNull] this T value) => new() { value };
+        public static List<T> AsList<T>(this T value) => new() { value };
 
         /// <summary>
         ///     Creates a strongly-typed collection containing the specified value as its sole element.
@@ -385,7 +414,7 @@ namespace System
         )]
 #endif
         [NotNull]
-        public static IEnumerable<T> AsCollection<T>([CanBeNull] this T value)
+        public static IEnumerable<T> AsCollection<T>(this T value)
         {
             yield return value;
         }
@@ -432,7 +461,7 @@ namespace System
         ///     <paramref name="getDefault"/> method.
         /// </returns>
         [NotNull]
-        public static T AvoidNull<T>([CanBeNull] this T source, [NotNull] [InstantHandle] Func<T> getDefault)
+        public static T AvoidNull<T>([CanBeNull] this T? source, [NotNull] [InstantHandle] Func<T> getDefault)
             where T : class
         {
             if (getDefault is null)
@@ -443,8 +472,7 @@ namespace System
             var result = source ?? getDefault();
             if (result is null)
             {
-                throw new InvalidOperationException(
-                    "The method that had to return non-null value returned null.");
+                throw new InvalidOperationException("The method that had to return non-null value returned null.");
             }
 
             return result;
@@ -502,6 +530,7 @@ namespace System
 #endif
         )]
 #endif
+        [NotNull]
         public static string ToUIString<T>([CanBeNull] this T? value)
             where T : struct
             => (value is IFormattable formattable ? formattable.ToString(null, CultureInfo.InvariantCulture) : value?.ToString())
@@ -555,7 +584,11 @@ namespace System
 #endif
         )]
 #endif
-        public static string ToUIString<T>([CanBeNull] this T? value, string format, IFormatProvider formatProvider)
+        [NotNull]
+        public static string ToUIString<T>(
+            [CanBeNull] this T? value,
+            [CanBeNull] string? format,
+            [CanBeNull] IFormatProvider? formatProvider)
             where T : struct, IFormattable
             => value?.ToString(format, formatProvider) ?? OmnifactotumRepresentationConstants.NullValueRepresentation;
 
@@ -604,11 +637,10 @@ namespace System
 #endif
         )]
 #endif
-        public static string ToUIString<T>([CanBeNull] this T? value, IFormatProvider formatProvider)
+        [NotNull]
+        public static string ToUIString<T>([CanBeNull] this T? value, [CanBeNull] IFormatProvider? formatProvider)
             where T : struct, IFormattable
             => value.ToUIString(null, formatProvider);
-
-#nullable enable
 
         /// <summary>
         ///     Gets the description of the specified object reference. The resulting description contains
@@ -632,6 +664,7 @@ namespace System
 #endif
         )]
 #endif
+        [NotNull]
         public static string GetObjectReferenceDescription<T>(this T? obj)
             where T : class
             => GetObjectReferenceDescriptionInternal(obj, OmnifactotumTypeExtensions.GetFullNameMethod);
@@ -658,11 +691,10 @@ namespace System
 #endif
         )]
 #endif
+        [NotNull]
         public static string GetShortObjectReferenceDescription<T>(this T? obj)
             where T : class
             => GetObjectReferenceDescriptionInternal(obj, OmnifactotumTypeExtensions.GetQualifiedNameMethod);
-
-#nullable restore
 
         /// <summary>
         ///     Gets a string representing the properties of the specified object.
@@ -679,7 +711,8 @@ namespace System
         /// <returns>
         ///     A string representing the properties of the specified object.
         /// </returns>
-        public static string ToPropertyString<T>([CanBeNull] this T obj, [CanBeNull] ToPropertyStringOptions options)
+        [NotNull]
+        public static string ToPropertyString<T>(this T obj, [CanBeNull] ToPropertyStringOptions? options)
         {
             var actualOptions = options ?? new ToPropertyStringOptions();
 
@@ -739,7 +772,8 @@ namespace System
 #endif
         )]
 #endif
-        public static string ToPropertyString<T>([CanBeNull] this T obj) => ToPropertyString(obj, null);
+        [NotNull]
+        public static string ToPropertyString<T>(this T obj) => ToPropertyString(obj, null);
 
         /// <summary>
         ///     Determines if the contents of the specified object are equal to the contents of another specified
@@ -770,8 +804,7 @@ namespace System
 #endif
         )]
 #endif
-        public static bool IsEqualByContentsTo<T>([CanBeNull] this T obj, [CanBeNull] T other)
-            => AreEqualByContentsInternal(obj, other);
+        public static bool IsEqualByContentsTo<T>(this T obj, T other) => AreEqualByContentsInternal(obj, other);
 
         /// <summary>
         ///     Metamorphoses the specified reference type input value into an output value using the specified
@@ -801,9 +834,9 @@ namespace System
         ///     <paramref name="transform"/> is <see langword="null"/>.
         /// </exception>
         public static TOutput Morph<TInput, TOutput>(
-            [CanBeNull] this TInput input,
+            [CanBeNull] this TInput? input,
             [NotNull] [InstantHandle] Func<TInput, TOutput> transform,
-            [CanBeNull] TOutput defaultOutput)
+            TOutput defaultOutput)
             where TInput : class
         {
             if (transform is null)
@@ -838,9 +871,10 @@ namespace System
         /// <exception cref="ArgumentNullException">
         ///     <paramref name="transform"/> is <see langword="null"/>.
         /// </exception>
-        public static TOutput Morph<TInput, TOutput>(
-            [CanBeNull] this TInput input,
-            [NotNull] [InstantHandle] Func<TInput, TOutput> transform)
+        [CanBeNull]
+        public static TOutput? Morph<TInput, TOutput>(
+            [CanBeNull] this TInput? input,
+            [NotNull] [InstantHandle] Func<TInput, TOutput?> transform)
             where TInput : class
             => Morph(input, transform, default);
 
@@ -874,7 +908,7 @@ namespace System
         public static TOutput Morph<TInput, TOutput>(
             [CanBeNull] this TInput? input,
             [NotNull] [InstantHandle] Func<TInput, TOutput> transform,
-            [CanBeNull] TOutput defaultOutput)
+            TOutput defaultOutput)
             where TInput : struct
         {
             if (transform is null)
@@ -909,13 +943,14 @@ namespace System
         /// <exception cref="ArgumentNullException">
         ///     <paramref name="transform"/> is <see langword="null"/>.
         /// </exception>
-        public static TOutput Morph<TInput, TOutput>(
+        [CanBeNull]
+        public static TOutput? Morph<TInput, TOutput>(
             [CanBeNull] this TInput? input,
-            [NotNull] [InstantHandle] Func<TInput, TOutput> transform)
+            [NotNull] [InstantHandle] Func<TInput, TOutput?> transform)
             where TInput : struct
             => Morph(input, transform, default);
 
-        private static bool IsSimpleTypeInternal([NotNull] this Type type)
+        private static bool IsSimpleTypeInternal(this Type type)
             => type.IsPrimitive
                 || type.IsEnum
                 || type.IsPointer
@@ -946,8 +981,7 @@ namespace System
                 {
                     isToPropertyStringObjectsBeingProcessedCreated = true;
 
-                    _toPropertyStringObjectsBeingProcessed = new HashSet<object>(
-                        ByReferenceEqualityComparer<object>.Instance);
+                    _toPropertyStringObjectsBeingProcessed = new HashSet<object>(ByReferenceEqualityComparer<object>.Instance);
                 }
 
                 void OpenBrace()
@@ -1062,7 +1096,7 @@ namespace System
 
                     resultBuilder.Append(PropertyNameValueSeparator);
 
-                    object propertyValue;
+                    object? propertyValue;
                     try
                     {
                         propertyValue = propertyInfo.GetValue(obj, null);
@@ -1106,7 +1140,8 @@ namespace System
 
                 if (isObjectAddedToBeingProcessed)
                 {
-                    _toPropertyStringObjectsBeingProcessed.Remove(obj);
+                    //// ReSharper disable once RedundantSuppressNullableWarningExpression
+                    _toPropertyStringObjectsBeingProcessed!.Remove(obj!);
                 }
 
                 if (isToPropertyStringObjectsBeingProcessedCreated)
@@ -1122,20 +1157,20 @@ namespace System
             {
                 unsafe
                 {
-                    resultBuilder.AppendFormat(PointerStringFormat, (long)Pointer.Unbox(obj));
+                    resultBuilder.AppendFormat(PointerStringFormat, (long)Pointer.Unbox(obj!));
                 }
             }
             else if (type == typeof(IntPtr))
             {
-                resultBuilder.AppendFormat(PointerStringFormat, ((IntPtr)(object)obj).ToInt64());
+                resultBuilder.AppendFormat(PointerStringFormat, ((IntPtr)((object)obj!)).ToInt64());
             }
             else if (type == typeof(UIntPtr))
             {
-                resultBuilder.AppendFormat(PointerStringFormat, ((UIntPtr)(object)obj).ToUInt64());
+                resultBuilder.AppendFormat(PointerStringFormat, ((UIntPtr)((object)obj!)).ToUInt64());
             }
             else if (type == typeof(string))
             {
-                resultBuilder.Append(((string)(object)obj).ToUIString());
+                resultBuilder.Append(((string)(object)obj!).ToUIString());
             }
             else if (type.IsEnum && type.IsDefined(typeof(FlagsAttribute), false))
             {
@@ -1143,19 +1178,19 @@ namespace System
             }
             else if (type == typeof(DateTime))
             {
-                resultBuilder.Append(((DateTime)(object)obj).ToPreciseFixedString());
+                resultBuilder.Append(((DateTime)((object)obj!)).ToPreciseFixedString());
             }
             else if (type == typeof(DateTimeOffset))
             {
-                resultBuilder.Append(((DateTimeOffset)(object)obj).ToPreciseFixedString());
+                resultBuilder.Append(((DateTimeOffset)(object)obj!).ToPreciseFixedString());
             }
             else if (typeof(Type).IsAssignableFrom(type))
             {
-                resultBuilder.Append(((Type)(object)obj).AssemblyQualifiedName.ToUIString());
+                resultBuilder.Append(((Type)(object)obj!).AssemblyQualifiedName.ToUIString());
             }
             else if (typeof(Assembly).IsAssignableFrom(type))
             {
-                resultBuilder.Append(((Assembly)(object)obj).Location.ToUIString());
+                resultBuilder.Append(((Assembly)(object)obj!).Location.ToUIString());
             }
             else
             {
@@ -1210,7 +1245,7 @@ namespace System
 
                 count++;
 
-                object currentValue;
+                object? currentValue;
                 try
                 {
                     currentValue = enumeratorWrapper.Instance.Current;
@@ -1247,7 +1282,7 @@ namespace System
             resultBuilder.Append(ComplexObjectClosingBrace);
         }
 
-        private static bool AreEqualByContentsInternal(object valueA, object valueB)
+        private static bool AreEqualByContentsInternal(object? valueA, object? valueB)
         {
             var isAssertEqualityByContentObjectsBeingProcessedCreated = false;
             var isObjectPairAddedToBeingProcessed = false;
@@ -1309,7 +1344,9 @@ namespace System
             {
                 if (isObjectPairAddedToBeingProcessed)
                 {
-                    _assertEqualityByContentsObjectsBeingProcessed.Remove(new PairReferenceHolder(valueA, valueB));
+                    //// ReSharper disable RedundantSuppressNullableWarningExpression
+                    _assertEqualityByContentsObjectsBeingProcessed!.Remove(new PairReferenceHolder(valueA!, valueB!));
+                    //// ReSharper restore RedundantSuppressNullableWarningExpression
                 }
 
                 if (isAssertEqualityByContentObjectsBeingProcessedCreated)
@@ -1320,8 +1357,6 @@ namespace System
 
             return true;
         }
-
-#nullable enable
 
 #if (NETFRAMEWORK && !NET40) || NETSTANDARD || NETCOREAPP
         [MethodImpl(
@@ -1337,8 +1372,6 @@ namespace System
                 ? OmnifactotumRepresentationConstants.NullValueRepresentation
                 : $@"{formatType(obj.GetType())}:0x{RuntimeHelpers.GetHashCode(obj):X8}";
 
-#nullable restore
-
         private readonly struct PairReferenceHolder : IEquatable<PairReferenceHolder>
         {
             private static readonly ByReferenceEqualityComparer<object> EqualityComparer =
@@ -1353,7 +1386,7 @@ namespace System
                 _valueB = valueB;
             }
 
-            public override bool Equals(object obj) => obj is PairReferenceHolder holder && Equals(holder);
+            public override bool Equals(object? obj) => obj is PairReferenceHolder holder && Equals(holder);
 
             public override int GetHashCode()
                 => EqualityComparer.GetHashCode(_valueA).CombineHashCodeValues(EqualityComparer.GetHashCode(_valueB));

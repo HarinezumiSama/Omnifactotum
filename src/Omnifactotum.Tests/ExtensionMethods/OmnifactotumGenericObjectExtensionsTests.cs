@@ -1,4 +1,6 @@
-﻿using System;
+﻿#nullable enable
+
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
@@ -12,13 +14,16 @@ using Omnifactotum.Annotations;
 using Omnifactotum.NUnit;
 using Omnifactotum.Tests.Properties;
 
+#pragma warning disable CA1822 //// Mark members as static
+
 namespace Omnifactotum.Tests.ExtensionMethods
 {
     [TestFixture(TestOf = typeof(OmnifactotumGenericObjectExtensions))]
+    [SuppressMessage("ReSharper", "PropertyCanBeMadeInitOnly.Local", Justification = "Multiple target frameworks.")]
     internal sealed class OmnifactotumGenericObjectExtensionsTests
     {
-        private const string NullString = null;
-        private const object NullObject = null;
+        private const string? NullString = null;
+        private const object? NullObject = null;
 
         private static readonly MethodInfo ToPropertyStringWithSpecificOptionsMethodDefinition =
             new Func<object, ToPropertyStringOptions, string>(OmnifactotumGenericObjectExtensions.ToPropertyString)
@@ -251,17 +256,17 @@ namespace Omnifactotum.Tests.ExtensionMethods
         [Test]
         [SuppressMessage("ReSharper", "AssignNullToNotNullAttribute")]
         public void TestAvoidNullWhenDefaultValueProviderIsNullThenThrows()
-            => Assert.That(() => new object().AvoidNull(null), Throws.ArgumentNullException);
+            => Assert.That(() => new object().AvoidNull(null!), Throws.ArgumentNullException);
 
         [Test]
         public void TestAvoidNullWhenNullValueIsPassedAndDefaultValueProviderReturnsNullThenThrows()
-            => Assert.That(() => ((TestClass)null).AvoidNull(() => null), Throws.InvalidOperationException);
+            => Assert.That(() => ((TestClass?)null).AvoidNull(() => null!), Throws.InvalidOperationException);
 
         [Test]
         public void TestAvoidNullWhenNonNullValueIsPassedThenSucceedsAndReturnsPassedValue()
         {
             var input = new TestClass();
-            Assert.That(() => input.AvoidNull(() => null), Is.SameAs(input));
+            Assert.That(() => input.AvoidNull(() => null!), Is.SameAs(input));
             Assert.That(() => input.AvoidNull(() => new TestClass()), Is.SameAs(input));
         }
 
@@ -269,7 +274,7 @@ namespace Omnifactotum.Tests.ExtensionMethods
         public void TestAvoidNullWhenNullValueIsPassedThenSucceedsAndReturnsValueProvidedByDefaultValueProvider()
         {
             var output = new TestClass();
-            Assert.That(() => ((TestClass)null).AvoidNull(() => output), Is.SameAs(output));
+            Assert.That(() => ((TestClass?)null).AvoidNull(() => output), Is.SameAs(output));
         }
 
         [Test]
@@ -282,9 +287,9 @@ namespace Omnifactotum.Tests.ExtensionMethods
             Assert.That(() => StringValue.GetHashCodeSafely(), Is.EqualTo(StringValue.GetHashCode()));
 
             Assert.That(() => ((int?)null).GetHashCodeSafely(), Is.EqualTo(0));
-            Assert.That(() => ((string)null).GetHashCodeSafely(), Is.EqualTo(0));
-            Assert.That(() => ((object)null).GetHashCodeSafely(), Is.EqualTo(0));
-            Assert.That(() => ((TestClass)null).GetHashCodeSafely(), Is.EqualTo(0));
+            Assert.That(() => ((string?)null).GetHashCodeSafely(), Is.EqualTo(0));
+            Assert.That(() => ((object?)null).GetHashCodeSafely(), Is.EqualTo(0));
+            Assert.That(() => ((TestClass?)null).GetHashCodeSafely(), Is.EqualTo(0));
         }
 
         [Test]
@@ -299,9 +304,9 @@ namespace Omnifactotum.Tests.ExtensionMethods
             Assert.That(() => StringValue.GetHashCodeSafely(NullValueHashCode), Is.EqualTo(StringValue.GetHashCode()));
 
             Assert.That(() => ((int?)null).GetHashCodeSafely(NullValueHashCode), Is.EqualTo(NullValueHashCode));
-            Assert.That(() => ((string)null).GetHashCodeSafely(NullValueHashCode), Is.EqualTo(NullValueHashCode));
-            Assert.That(() => ((object)null).GetHashCodeSafely(NullValueHashCode), Is.EqualTo(NullValueHashCode));
-            Assert.That(() => ((TestClass)null).GetHashCodeSafely(NullValueHashCode), Is.EqualTo(NullValueHashCode));
+            Assert.That(() => ((string?)null).GetHashCodeSafely(NullValueHashCode), Is.EqualTo(NullValueHashCode));
+            Assert.That(() => ((object?)null).GetHashCodeSafely(NullValueHashCode), Is.EqualTo(NullValueHashCode));
+            Assert.That(() => ((TestClass?)null).GetHashCodeSafely(NullValueHashCode), Is.EqualTo(NullValueHashCode));
         }
 
         [Test]
@@ -328,7 +333,7 @@ namespace Omnifactotum.Tests.ExtensionMethods
             var nodeDParentB = new RecursiveNode { Value = ValueD, Parent = nodeB };
 
             AssertResultForIsEqualByContentsTo(nodeC1, nodeC1, Is.True);
-            AssertResultForIsEqualByContentsTo(nodeC1, null, Is.False);
+            AssertResultForIsEqualByContentsTo(nodeC1, default, Is.False);
             AssertResultForIsEqualByContentsTo(nodeC1, nodeC2, Is.True);
             AssertResultForIsEqualByContentsTo(nodeC1, nodeDParentA, Is.False);
             AssertResultForIsEqualByContentsTo(nodeDParentA, nodeDParentB, Is.False);
@@ -368,7 +373,7 @@ namespace Omnifactotum.Tests.ExtensionMethods
                 ToPropertyStringWithSpecificOptionsMethodDefinition.MakeGenericMethod(objectType);
 
             var actualResultWithSpecificOptions =
-                (string)methodWithSpecificOptions.Invoke(null, new[] { obj, options });
+                (string?)methodWithSpecificOptions.Invoke(null, new[] { obj, options });
 
             Assert.That(actualResultWithSpecificOptions, Is.EqualTo(expectedString));
 
@@ -378,7 +383,7 @@ namespace Omnifactotum.Tests.ExtensionMethods
                 var methodWithDefaultOptions =
                     ToPropertyStringWithDefaultOptionsMethodDefinition.MakeGenericMethod(objectType);
 
-                var actualResultWithDefaultOptions = (string)methodWithDefaultOptions.Invoke(null, new[] { obj });
+                var actualResultWithDefaultOptions = (string?)methodWithDefaultOptions.Invoke(null, new[] { obj });
                 Assert.That(actualResultWithDefaultOptions, Is.EqualTo(expectedString));
             }
         }
@@ -387,7 +392,7 @@ namespace Omnifactotum.Tests.ExtensionMethods
         [SetCulture("ru-RU")]
         public void TestToStringSafelyWithDefaultNullValueStringSucceeds()
         {
-            Assert.That(() => ((TestClass)null).ToStringSafely(), Is.EqualTo(string.Empty));
+            Assert.That(() => ((TestClass?)null).ToStringSafely(), Is.EqualTo(string.Empty));
             Assert.That(() => new TestClass().ToStringSafely(), Is.EqualTo(typeof(TestClass).FullName));
 
             Assert.That(() => ((long?)null).ToStringSafely(), Is.EqualTo(string.Empty));
@@ -404,24 +409,29 @@ namespace Omnifactotum.Tests.ExtensionMethods
 
         [Test]
         [SetCulture("ru-RU")]
-        public void TestToStringSafelyWithSpecifiedNullValueStringSucceeds()
+        [TestCase(null)]
+        [TestCase("")]
+        [TestCase("default")]
+        public void TestToStringSafelyWithSpecifiedNullValueStringSucceeds(string? fallbackResult)
         {
-            const string NullValueString = "default";
+            var expectedResultForNullInput = fallbackResult ?? string.Empty;
 
-            Assert.That(() => ((TestClass)null).ToStringSafely(NullValueString), Is.EqualTo(NullValueString));
-            Assert.That(() => new TestClass().ToStringSafely(NullValueString), Is.EqualTo(typeof(TestClass).FullName));
+            Assert.That(() => ((TestClass?)null).ToStringSafely(fallbackResult), Is.EqualTo(expectedResultForNullInput));
+            Assert.That(() => new TestClass().ToStringSafely(fallbackResult), Is.EqualTo(typeof(TestClass).FullName));
 
-            Assert.That(() => ((long?)null).ToStringSafely(NullValueString), Is.EqualTo(NullValueString));
-            Assert.That(() => ((long?)42).ToStringSafely(NullValueString), Is.EqualTo("42"));
+            Assert.That(() => ((long?)null).ToStringSafely(fallbackResult), Is.EqualTo(expectedResultForNullInput));
+            Assert.That(() => ((long?)42).ToStringSafely(fallbackResult), Is.EqualTo("42"));
 
-            Assert.That(() => ((DateTime?)null).ToStringSafely(NullValueString), Is.EqualTo(NullValueString));
+            Assert.That(() => ((DateTime?)null).ToStringSafely(fallbackResult), Is.EqualTo(expectedResultForNullInput));
+
             Assert.That(
-                () => ((DateTime?)new DateTime(2017, 11, 17, 21, 10, 44)).ToStringSafely(NullValueString),
+                () => ((DateTime?)new DateTime(2017, 11, 17, 21, 10, 44)).ToStringSafely(expectedResultForNullInput),
                 Is.EqualTo("17.11.2017 21:10:44"));
 
-            Assert.That(() => true.ToStringSafely(NullValueString), Is.EqualTo(bool.TrueString));
+            Assert.That(() => true.ToStringSafely(fallbackResult), Is.EqualTo(bool.TrueString));
+
             Assert.That(
-                () => FileMode.OpenOrCreate.ToStringSafely(NullValueString),
+                () => FileMode.OpenOrCreate.ToStringSafely(fallbackResult),
                 Is.EqualTo(nameof(FileMode.OpenOrCreate)));
         }
 
@@ -429,7 +439,7 @@ namespace Omnifactotum.Tests.ExtensionMethods
         [SetCulture("ru-RU")]
         public void TestToStringSafelyInvariantWithDefaultNullValueStringSucceeds()
         {
-            Assert.That(() => ((TestClass)null).ToStringSafelyInvariant(), Is.EqualTo(string.Empty));
+            Assert.That(() => ((TestClass?)null).ToStringSafelyInvariant(), Is.EqualTo(string.Empty));
             Assert.That(() => new TestClass().ToStringSafelyInvariant(), Is.EqualTo(typeof(TestClass).FullName));
 
             Assert.That(() => ((long?)null).ToStringSafelyInvariant(), Is.EqualTo(string.Empty));
@@ -452,7 +462,7 @@ namespace Omnifactotum.Tests.ExtensionMethods
         {
             const string NullValueString = "default";
 
-            Assert.That(() => ((TestClass)null).ToStringSafelyInvariant(NullValueString), Is.EqualTo(NullValueString));
+            Assert.That(() => ((TestClass?)null).ToStringSafelyInvariant(NullValueString), Is.EqualTo(NullValueString));
             Assert.That(
                 () => new TestClass().ToStringSafelyInvariant(NullValueString),
                 Is.EqualTo(typeof(TestClass).FullName));
@@ -474,14 +484,14 @@ namespace Omnifactotum.Tests.ExtensionMethods
         [Test]
         public void TestGetTypeSafelySucceeds()
         {
-            Assert.That(() => ((object)null).GetTypeSafely(), Is.EqualTo(typeof(object)));
+            Assert.That(() => ((object?)null).GetTypeSafely(), Is.EqualTo(typeof(object)));
             Assert.That(() => new object().GetTypeSafely(), Is.EqualTo(typeof(object)));
 
             Assert.That(() => ((int?)null).GetTypeSafely(), Is.EqualTo(typeof(int?)));
             Assert.That(() => 17.GetTypeSafely(), Is.EqualTo(typeof(int)));
             Assert.That(() => ((int?)17).GetTypeSafely(), Is.EqualTo(typeof(int)));
 
-            Assert.That(() => ((TestClass)null).GetTypeSafely(), Is.EqualTo(typeof(TestClass)));
+            Assert.That(() => ((TestClass?)null).GetTypeSafely(), Is.EqualTo(typeof(TestClass)));
             Assert.That(() => new TestClass().GetTypeSafely(), Is.EqualTo(typeof(TestClass)));
             Assert.That(() => ((object)new TestClass()).GetTypeSafely(), Is.EqualTo(typeof(TestClass)));
         }
@@ -492,14 +502,14 @@ namespace Omnifactotum.Tests.ExtensionMethods
         {
             var validInstance = new TestClass();
 
-            Assert.That(() => validInstance.Morph<TestClass, string>(null), Throws.ArgumentNullException);
-            Assert.That(() => validInstance.Morph(null, "anyValue"), Throws.ArgumentNullException);
+            Assert.That(() => validInstance.Morph<TestClass, string>(null!), Throws.ArgumentNullException);
+            Assert.That(() => validInstance.Morph(null!, "anyValue"), Throws.ArgumentNullException);
         }
 
         [Test]
         public void TestMorphForReferenceTypeWithValidArgumentsSucceeds()
         {
-            const RecursiveNode NullInput = null;
+            const RecursiveNode? NullInput = null;
             const string Value = "value";
             const string DefaultOutput = "default";
 
@@ -524,11 +534,9 @@ namespace Omnifactotum.Tests.ExtensionMethods
         {
             var validInstance = new ConsoleKeyInfo?(new ConsoleKeyInfo());
 
-            Assert.That(() => validInstance.Morph<ConsoleKeyInfo, string>(null), Throws.ArgumentNullException);
+            Assert.That(() => validInstance.Morph<ConsoleKeyInfo, string>(null!), Throws.ArgumentNullException);
 
-            Assert.That(
-                () => validInstance.Morph(null, @"anyValue"),
-                Throws.ArgumentNullException);
+            Assert.That(() => validInstance.Morph(null!, @"anyValue"), Throws.ArgumentNullException);
         }
 
         [Test]
@@ -660,13 +668,13 @@ namespace Omnifactotum.Tests.ExtensionMethods
                             Resources.ExpectedVirtualTreeNodeWithDateTimeOffsetToPropertyString)
                         .SetDescription("VirtualTreeNode with DateTimeOffset, all flags");
 
-                var keyTuple = Tuple.Create(GetType().ToString(), (Array)new[] { 1, 2, 5 });
-                var valueTuple = Tuple.Create((object)keyTuple, ToString());
-                var kvp = new KeyValuePair<Tuple<string, Array>, Tuple<object, string>>(keyTuple, valueTuple);
+                var keyTuple = new Tuple<string, Array>(GetType().ToString(), new[] { 1, 2, 5 });
+                var valueTuple = new Tuple<object, string?>(keyTuple, ToString());
+                var kvp = new KeyValuePair<Tuple<string, Array>, Tuple<object, string?>>(keyTuple, valueTuple);
 
                 yield return
                     new TestCaseData(
-                            typeof(KeyValuePair<Tuple<string, Array>, Tuple<object, string>>),
+                            typeof(KeyValuePair<Tuple<string, Array>, Tuple<object, string?>>),
                             kvp,
                             new ToPropertyStringOptions().SetAllFlags(true),
                             Resources.ExpectedComplexObjectAllFlagsToPropertyString)
@@ -674,7 +682,7 @@ namespace Omnifactotum.Tests.ExtensionMethods
 
                 yield return
                     new TestCaseData(
-                            typeof(KeyValuePair<Tuple<string, Array>, Tuple<object, string>>),
+                            typeof(KeyValuePair<Tuple<string, Array>, Tuple<object, string?>>),
                             kvp,
                             new ToPropertyStringOptions(),
                             Resources.ExpectedComplexObjectDefaultOptionsToPropertyString)
@@ -682,7 +690,7 @@ namespace Omnifactotum.Tests.ExtensionMethods
 
                 yield return
                     new TestCaseData(
-                            typeof(KeyValuePair<Tuple<string, Array>, Tuple<object, string>>),
+                            typeof(KeyValuePair<Tuple<string, Array>, Tuple<object, string?>>),
                             kvp,
                             new ToPropertyStringOptions { RenderComplexProperties = true, MaxCollectionItemCount = 1 },
                             Resources.ExpectedComplexObjectMaxOneItemToPropertyString)
@@ -690,7 +698,7 @@ namespace Omnifactotum.Tests.ExtensionMethods
 
                 yield return
                     new TestCaseData(
-                            typeof(KeyValuePair<Tuple<string, Array>, Tuple<object, string>>),
+                            typeof(KeyValuePair<Tuple<string, Array>, Tuple<object, string?>>),
                             kvp,
                             new ToPropertyStringOptions { RenderComplexProperties = true, RenderMemberType = true },
                             Resources.ExpectedComplexObjectWithMemberTypeToPropertyString)
@@ -698,7 +706,7 @@ namespace Omnifactotum.Tests.ExtensionMethods
 
                 yield return
                     new TestCaseData(
-                            typeof(KeyValuePair<Tuple<string, Array>, Tuple<object, string>>),
+                            typeof(KeyValuePair<Tuple<string, Array>, Tuple<object, string?>>),
                             kvp,
                             new ToPropertyStringOptions { RenderComplexProperties = true, RenderActualType = true },
                             Resources.ExpectedComplexObjectWithActualTypeToPropertyString)
@@ -778,7 +786,7 @@ namespace Omnifactotum.Tests.ExtensionMethods
 
         private class SimpleContainer
         {
-            public string Value
+            public string? Value
             {
                 [UsedImplicitly]
                 get;
@@ -808,14 +816,14 @@ namespace Omnifactotum.Tests.ExtensionMethods
 
         private sealed class RecursiveNode
         {
-            public string Value
+            public string? Value
             {
                 [UsedImplicitly]
                 get;
                 set;
             }
 
-            public RecursiveNode Parent
+            public RecursiveNode? Parent
             {
                 [UsedImplicitly]
                 get;
@@ -825,7 +833,7 @@ namespace Omnifactotum.Tests.ExtensionMethods
 
         private sealed class PointerContainer
         {
-            public string Value
+            public string? Value
             {
                 [UsedImplicitly]
                 get;
