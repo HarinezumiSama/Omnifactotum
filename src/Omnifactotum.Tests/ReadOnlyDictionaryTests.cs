@@ -13,7 +13,7 @@ namespace Omnifactotum.Tests
 {
     //// ReSharper disable AssignNullToNotNullAttribute - for negative test cases
 
-    [TestFixture]
+    [TestFixture(TestOf = typeof(ReadOnlyDictionary<,>))]
     internal sealed class ReadOnlyDictionaryTests
     {
         private const int Key1 = 1;
@@ -52,7 +52,6 @@ namespace Omnifactotum.Tests
         }
 
         [Test]
-        [Category(TestCategory.Negative)]
         public void TestInvalidConstruction()
         {
             Assert.That(() => ((IDictionary<int, string>)null).AsReadOnly(), Throws.TypeOf<ArgumentNullException>());
@@ -62,7 +61,6 @@ namespace Omnifactotum.Tests
 
         [Test]
         [TestCaseSource(typeof(ConstructionCases))]
-        [Category(TestCategory.Positive)]
         public void TestConstruction(Func<IDictionary<int, string>, ReadOnlyDictionary<int, string>> getReadOnlyDictionary)
         {
             var count = _dictionary.Count;
@@ -86,7 +84,6 @@ namespace Omnifactotum.Tests
         }
 
         [Test]
-        [Category(TestCategory.Positive)]
         public void TestTrackingChanges()
         {
             var rod = new ReadOnlyDictionary<int, string>(_dictionary);
@@ -120,7 +117,6 @@ namespace Omnifactotum.Tests
         }
 
         [Test]
-        [Category(TestCategory.Negative)]
         public void TestReadOnlyBehavior()
         {
             var originalPairs = _dictionary.ToArray();
@@ -188,7 +184,6 @@ namespace Omnifactotum.Tests
         }
 
         [Test]
-        [Category(TestCategory.Positive)]
         public void TestGetEnumerator()
         {
             var rod = new ReadOnlyDictionary<int, string>(_dictionary);
@@ -199,8 +194,6 @@ namespace Omnifactotum.Tests
         }
 
         [Test]
-        [Category(TestCategory.Positive)]
-        [Category(TestCategory.Negative)]
         public void TestIndexer()
         {
             var rod = new ReadOnlyDictionary<int, string>(_dictionary);
@@ -214,7 +207,6 @@ namespace Omnifactotum.Tests
         }
 
         [Test]
-        [Category(TestCategory.Positive)]
         public void TestContainsKey()
         {
             var rod = new ReadOnlyDictionary<int, string>(_dictionary);
@@ -228,7 +220,6 @@ namespace Omnifactotum.Tests
         }
 
         [Test]
-        [Category(TestCategory.Positive)]
         public void TestTryGetValue()
         {
             var rod = new ReadOnlyDictionary<int, string>(_dictionary);
@@ -250,7 +241,6 @@ namespace Omnifactotum.Tests
         }
 
         [Test]
-        [Category(TestCategory.Positive)]
         public void TestCollectionContains()
         {
             var rod = new ReadOnlyDictionary<int, string>(_dictionary);
@@ -266,7 +256,6 @@ namespace Omnifactotum.Tests
         }
 
         [Test]
-        [Category(TestCategory.Positive)]
         public void TestCollectionCopyTo()
         {
             var rod = new ReadOnlyDictionary<int, string>(_dictionary);
@@ -278,18 +267,18 @@ namespace Omnifactotum.Tests
             Assert.That(array, Is.EquivalentTo(_dictionary));
         }
 
-        internal sealed class ConstructionCases : TestCasesBase
+        private sealed class ConstructionCases : TestCasesBase
         {
             protected override IEnumerable<TestCaseData> GetCases()
             {
                 yield return new TestCaseData(
-                    new Func<IDictionary<int, string>, ReadOnlyDictionary<int, string>>(
-                        obj => obj.AsReadOnly()))
+                        new Func<IDictionary<int, string>, ReadOnlyDictionary<int, string>>(
+                            obj => obj.AsReadOnly()))
                     .SetDescription("Implicit creation");
 
                 yield return new TestCaseData(
-                    new Func<IDictionary<int, string>, ReadOnlyDictionary<int, string>>(
-                        obj => new ReadOnlyDictionary<int, string>(obj)))
+                        new Func<IDictionary<int, string>, ReadOnlyDictionary<int, string>>(
+                            obj => new ReadOnlyDictionary<int, string>(obj)))
                     .SetDescription("Explicit creation");
             }
         }

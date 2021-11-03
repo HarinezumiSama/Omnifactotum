@@ -6,11 +6,10 @@ using NUnit.Framework.Constraints;
 
 namespace Omnifactotum.Tests
 {
-    [TestFixture]
+    [TestFixture(TestOf = typeof(DirectedGraph<>))]
     internal sealed class DirectedGraphTests
     {
         [Test]
-        [Category(TestCategory.Positive)]
         public void TestParameterlessConstructionSucceeds()
         {
             var graph = new DirectedGraph<string>();
@@ -20,7 +19,6 @@ namespace Omnifactotum.Tests
         }
 
         [Test]
-        [Category(TestCategory.Positive)]
         public void TestConstructionWithNodesSucceeds()
         {
             var nodeA = DirectedGraphNode.Create("A");
@@ -33,7 +31,6 @@ namespace Omnifactotum.Tests
         }
 
         [Test]
-        [Category(TestCategory.Negative)]
         public void TestConstructionWithInvalidArgumentThrows()
         {
             Assert.That(() => new DirectedGraph<string>(null), Throws.ArgumentNullException);
@@ -56,7 +53,6 @@ namespace Omnifactotum.Tests
         }
 
         [Test]
-        [Category(TestCategory.Positive)]
         public void TestObjectConnection()
         {
             var nodeA = DirectedGraphNode.Create("A");
@@ -150,7 +146,6 @@ namespace Omnifactotum.Tests
         }
 
         [Test]
-        [Category(TestCategory.Positive)]
         public void TestSortTopologicallyBasic()
         {
             var nodeA = DirectedGraphNode.Create("A");
@@ -208,7 +203,6 @@ namespace Omnifactotum.Tests
         }
 
         [Test]
-        [Category(TestCategory.Positive)]
         public void TestSortTopologicallyWithMultipleRoots()
         {
             var graph = new DirectedGraph<string>();
@@ -263,7 +257,6 @@ namespace Omnifactotum.Tests
         }
 
         [Test]
-        [Category(TestCategory.Positive)]
         public void TestSortTopologicallyWithEmptyGraph()
         {
             var graph = new DirectedGraph<string>();
@@ -277,7 +270,6 @@ namespace Omnifactotum.Tests
         }
 
         [Test]
-        [Category(TestCategory.Negative)]
         public void TestSortTopologicallyWithSelfCycle()
         {
             var graph = new DirectedGraph<string>();
@@ -291,7 +283,6 @@ namespace Omnifactotum.Tests
         }
 
         [Test]
-        [Category(TestCategory.Negative)]
         public void TestSortTopologicallyWithSimpleCycle()
         {
             var graph = new DirectedGraph<string>();
@@ -309,7 +300,6 @@ namespace Omnifactotum.Tests
         }
 
         [Test]
-        [Category(TestCategory.Negative)]
         public void TestSortTopologicallyWithComplexCycle()
         {
             var graph = new DirectedGraph<string>();

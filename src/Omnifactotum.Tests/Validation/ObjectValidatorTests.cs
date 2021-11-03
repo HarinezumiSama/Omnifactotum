@@ -15,7 +15,7 @@ using static Omnifactotum.FormattableStringFactotum;
 
 namespace Omnifactotum.Tests.Validation
 {
-    [TestFixture]
+    [TestFixture(TestOf = typeof(ObjectValidator))]
     internal sealed class ObjectValidatorTests
     {
         private static readonly string ValidationResultPropertyName =

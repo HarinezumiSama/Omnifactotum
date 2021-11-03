@@ -6,7 +6,7 @@ using Omnifactotum.NUnit;
 
 namespace Omnifactotum.Tests.ExtensionMethods
 {
-    [TestFixture]
+    [TestFixture(TestOf = typeof(OmnifactotumCollectionExtensions))]
     internal sealed class OmnifactotumCollectionExtensionsTests
     {
         [Test]

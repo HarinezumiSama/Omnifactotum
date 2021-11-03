@@ -6,7 +6,7 @@ using Omnifactotum.Annotations;
 
 namespace Omnifactotum.Tests
 {
-    [TestFixture]
+    [TestFixture(TestOf = typeof(EnumFactotum))]
     internal sealed class EnumFactotumTests
     {
         [Test]

@@ -9,7 +9,7 @@ namespace Omnifactotum.Tests.ExtensionMethods
 {
     //// ReSharper disable AssignNullToNotNullAttribute - Intentionally for tests
 
-    [TestFixture]
+    [TestFixture(TestOf = typeof(OmnifactotumArrayExtensions))]
     internal sealed class OmnifactotumArrayExtensionsTests
     {
         private static readonly string[] NullArray = null;

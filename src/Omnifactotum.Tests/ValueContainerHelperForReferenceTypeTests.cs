@@ -2,7 +2,7 @@
 
 namespace Omnifactotum.Tests
 {
-    [TestFixture]
+    [TestFixture(TestOf = typeof(ValueContainer))]
     internal sealed class ValueContainerHelperForReferenceTypeTests : ValueContainerHelperTestsBase<string>
     {
         public ValueContainerHelperForReferenceTypeTests()

@@ -8,7 +8,7 @@ using Omnifactotum.NUnit;
 
 namespace Omnifactotum.Tests.ExtensionMethods
 {
-    [TestFixture]
+    [TestFixture(TestOf = typeof(OmnifactotumExpressionExtensions))]
     internal sealed class OmnifactotumExpressionExtensionsTests
     {
         [Test]

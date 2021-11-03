@@ -9,7 +9,7 @@ using Omnifactotum.Annotations;
 
 namespace Omnifactotum.Tests.ExtensionMethods
 {
-    [TestFixture]
+    [TestFixture(TestOf = typeof(OmnifactotumCustomAttributeProviderExtensions))]
     internal sealed class OmnifactotumCustomAttributeProviderExtensionsTests
     {
         [Test]

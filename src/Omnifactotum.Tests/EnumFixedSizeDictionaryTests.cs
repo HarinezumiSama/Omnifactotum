@@ -7,7 +7,7 @@ using Omnifactotum.NUnit;
 
 namespace Omnifactotum.Tests
 {
-    [TestFixture]
+    [TestFixture(TestOf = typeof(EnumFixedSizeDictionary<,>))]
     internal sealed class EnumFixedSizeDictionaryTests
     {
         [Test]

@@ -8,7 +8,7 @@ using Omnifactotum.Annotations;
 
 namespace Omnifactotum.Tests.ExtensionMethods
 {
-    [TestFixture]
+    [TestFixture(TestOf = typeof(OmnifactotumDictionaryExtensions))]
     internal sealed class OmnifactotumDictionaryExtensionsTests
     {
         private const int Key1 = 1;

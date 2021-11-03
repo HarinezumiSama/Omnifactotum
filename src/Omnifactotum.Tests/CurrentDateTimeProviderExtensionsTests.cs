@@ -11,7 +11,6 @@ namespace Omnifactotum.Tests
     internal sealed class CurrentDateTimeProviderExtensionsTests
     {
         [Test]
-        [Category(TestCategory.Positive)]
         public void TestGetLocalTimeWhenValidArgumentsThenSucceeds()
         {
             var currentTime = new DateTime(2021, 9, 20, 19, 10, 36, DateTimeKind.Utc);
@@ -25,12 +24,10 @@ namespace Omnifactotum.Tests
         }
 
         [Test]
-        [Category(TestCategory.Negative)]
         public void TestGetLocalTimeWhenInvalidArgumentThenThrows()
             => Assert.That(() => default(ICurrentDateTimeProvider)!.GetLocalTime(), Throws.ArgumentNullException);
 
         [Test]
-        [Category(TestCategory.Negative)]
         public void TestGetLocalTimeWhenProviderReturnsNonUtcThenThrows(
             [Values(DateTimeKind.Unspecified, DateTimeKind.Local)] DateTimeKind dateTimeKind)
         {

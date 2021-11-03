@@ -10,7 +10,7 @@ using static Omnifactotum.FormattableStringFactotum;
 
 namespace Omnifactotum.Tests
 {
-    [TestFixture]
+    [TestFixture(TestOf = typeof(Factotum))]
     internal sealed class FactotumTests
     {
         [Test]

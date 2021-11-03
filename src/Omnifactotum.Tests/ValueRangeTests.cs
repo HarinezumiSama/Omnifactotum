@@ -8,7 +8,6 @@ namespace Omnifactotum.Tests
     internal sealed class ValueRangeTests
     {
         [Test]
-        [Category(TestCategory.Negative)]
         public void TestInvalidConstruction()
         {
             Assert.That(() => new ValueRange<int>(2, 1), Throws.ArgumentException);
@@ -17,7 +16,6 @@ namespace Omnifactotum.Tests
 
         [Test]
         [TestCaseSource(typeof(ConstructionCases))]
-        [Category(TestCategory.Positive)]
         public void TestConstruction(int lower, int upper)
         {
             var objExplicit = new ValueRange<int>(lower, upper);
@@ -33,7 +31,6 @@ namespace Omnifactotum.Tests
 
         [Test]
         [TestCaseSource(typeof(ContainsValueCases))]
-        [Category(TestCategory.Positive)]
         public void TestContainsValue(ValueRange<int> range, int value, bool expectedResult)
         {
             var actualResult = range.Contains(value);
@@ -42,7 +39,6 @@ namespace Omnifactotum.Tests
 
         [Test]
         [TestCaseSource(typeof(ContainsRangeCases))]
-        [Category(TestCategory.Positive)]
         public void TestContainsRange(ValueRange<int> range, ValueRange<int> otherRange, bool expectedResult)
         {
             var actualResult = range.Contains(otherRange);
@@ -51,7 +47,6 @@ namespace Omnifactotum.Tests
 
         [Test]
         [TestCaseSource(typeof(IntersectsWithCases))]
-        [Category(TestCategory.Positive)]
         public void TestIntersectsWith(ValueRange<int> range, ValueRange<int> otherRange, bool expectedResult)
         {
             Assert.That(range.IntersectsWith(otherRange), Is.EqualTo(expectedResult));
@@ -60,7 +55,6 @@ namespace Omnifactotum.Tests
 
         [Test]
         [TestCaseSource(typeof(EqualityCases))]
-        [Category(TestCategory.Positive)]
         public void TestEquality(ValueRange<int> range1, ValueRange<int> range2, bool equal)
         {
             NUnitFactotum.AssertEquality(
@@ -74,7 +68,6 @@ namespace Omnifactotum.Tests
 
         [Test]
         [TestCaseSource(typeof(ToStringCases))]
-        [Category(TestCategory.Positive)]
         public void TestToString(ValueRange<int> range, string expectedString)
         {
             var actualString = range.ToString();

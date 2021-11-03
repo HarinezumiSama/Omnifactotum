@@ -7,7 +7,7 @@ using Omnifactotum.Tests.Auxiliary;
 namespace Omnifactotum.Tests.ExtensionMethods
 {
     //// ReSharper disable AssignNullToNotNullAttribute - Intentionally for tests
-    [TestFixture]
+    [TestFixture(TestOf = typeof(OmnifactotumDisposableExtensions))]
     internal sealed class OmnifactotumDisposableExtensionsTests
     {
         [Test]

@@ -8,7 +8,7 @@ namespace Omnifactotum.Tests
 {
     //// ReSharper disable AssignNullToNotNullAttribute - for negative test cases
 
-    [TestFixture]
+    [TestFixture(TestOf = typeof(KeyedEqualityComparer<,>))]
     internal sealed class KeyedEqualityComparerTests
     {
         [OneTimeSetUp]

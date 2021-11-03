@@ -29,7 +29,7 @@ using static Omnifactotum.FormattableStringFactotum;
 
 namespace Omnifactotum.Tests.ExtensionMethods
 {
-    [TestFixture]
+    [TestFixture(TestOf = typeof(OmnifactotumAssemblyExtensions))]
     internal sealed class OmnifactotumAssemblyExtensionsTests
     {
         [Test]

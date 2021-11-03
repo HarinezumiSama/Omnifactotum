@@ -3,7 +3,7 @@ using NUnit.Framework;
 
 namespace Omnifactotum.Tests
 {
-    [TestFixture]
+    [TestFixture(TestOf = typeof(ByReferenceEqualityComparer<>))]
     internal sealed class ByReferenceEqualityComparerTests
     {
         [Test]

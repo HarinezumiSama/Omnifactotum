@@ -8,7 +8,7 @@ using Omnifactotum.NUnit;
 
 namespace Omnifactotum.Tests
 {
-    [TestFixture]
+    [TestFixture(TestOf = typeof(ReadOnlySet<>))]
     internal sealed class ReadOnlySetTests
     {
         private const int Value1 = 1;
@@ -32,7 +32,6 @@ namespace Omnifactotum.Tests
         }
 
         [Test]
-        [Category(TestCategory.Negative)]
         public void TestInvalidConstruction()
         {
             Assert.That(
@@ -46,7 +45,6 @@ namespace Omnifactotum.Tests
 
         [Test]
         [TestCaseSource(typeof(ConstructionCases))]
-        [Category(TestCategory.Positive)]
         public void TestConstruction(Func<ISet<int>, ReadOnlySet<int>> getReadOnlySet)
         {
             Assert.That(getReadOnlySet, Is.Not.Null);
@@ -65,7 +63,6 @@ namespace Omnifactotum.Tests
         }
 
         [Test]
-        [Category(TestCategory.Positive)]
         public void TestChangeTrackingScenario()
         {
             var readOnlySet = new ReadOnlySet<int>(_set);
@@ -91,7 +88,6 @@ namespace Omnifactotum.Tests
         }
 
         [Test]
-        [Category(TestCategory.Negative)]
         public void TestReadOnly()
         {
             var count = _set.Count;
@@ -161,7 +157,6 @@ namespace Omnifactotum.Tests
         }
 
         [Test]
-        [Category(TestCategory.Positive)]
         public void TestGetEnumerator()
         {
             var readOnlySet = new ReadOnlySet<int>(_set);
@@ -172,7 +167,6 @@ namespace Omnifactotum.Tests
         }
 
         [Test]
-        [Category(TestCategory.Positive)]
         public void TestContains()
         {
             var readOnlySet = new ReadOnlySet<int>(_set);
@@ -186,7 +180,6 @@ namespace Omnifactotum.Tests
         }
 
         [Test]
-        [Category(TestCategory.Positive)]
         public void TestCollectionContains()
         {
             var readOnlySet = new ReadOnlySet<int>(_set);
@@ -201,7 +194,6 @@ namespace Omnifactotum.Tests
         }
 
         [Test]
-        [Category(TestCategory.Positive)]
         public void TestCollectionCopyTo()
         {
             var readOnlySet = new ReadOnlySet<int>(_set);
@@ -214,7 +206,6 @@ namespace Omnifactotum.Tests
         }
 
         [Test]
-        [Category(TestCategory.Positive)]
         public void TestIsProperSubsetOf()
         {
             var readOnlySet = new ReadOnlySet<int>(_set);
@@ -233,7 +224,6 @@ namespace Omnifactotum.Tests
         }
 
         [Test]
-        [Category(TestCategory.Positive)]
         public void TestIsProperSupersetOf()
         {
             var readOnlySet = new ReadOnlySet<int>(_set);
@@ -252,7 +242,6 @@ namespace Omnifactotum.Tests
         }
 
         [Test]
-        [Category(TestCategory.Positive)]
         public void TestIsSubsetOf()
         {
             var readOnlySet = new ReadOnlySet<int>(_set);
@@ -271,7 +260,6 @@ namespace Omnifactotum.Tests
         }
 
         [Test]
-        [Category(TestCategory.Positive)]
         public void TestIsSupersetOf()
         {
             var readOnlySet = new ReadOnlySet<int>(_set);
@@ -290,7 +278,6 @@ namespace Omnifactotum.Tests
         }
 
         [Test]
-        [Category(TestCategory.Positive)]
         public void TestOverlaps()
         {
             var readOnlySet = new ReadOnlySet<int>(_set);
@@ -303,7 +290,6 @@ namespace Omnifactotum.Tests
         }
 
         [Test]
-        [Category(TestCategory.Positive)]
         public void TestSetEquals()
         {
             var readOnlySet = new ReadOnlySet<int>(_set);
@@ -312,7 +298,7 @@ namespace Omnifactotum.Tests
             Assert.That(readOnlySet.SetEquals(_set.ToArray().Concat(ValueExtra.AsCollection())), Is.False);
         }
 
-        internal sealed class ConstructionCases : TestCasesBase
+        private sealed class ConstructionCases : TestCasesBase
         {
             protected override IEnumerable<TestCaseData> GetCases()
             {
