@@ -80,6 +80,14 @@ namespace System
         /// <exception cref="ArgumentNullException">
         ///     <paramref name="value"/> is <see langword="null"/>.
         /// </exception>
+#if (NETFRAMEWORK && !NET40) || NETSTANDARD || NETCOREAPP
+        [MethodImpl(
+            MethodImplOptions.AggressiveInlining
+#if NET5_0_OR_GREATER
+            | MethodImplOptions.AggressiveOptimization
+#endif
+        )]
+#endif
 #if NETSTANDARD2_1 || NET5_0_OR_GREATER
         [return: NotNullIfNotNull(@"value")]
 #endif
@@ -111,6 +119,14 @@ namespace System
         ///     <paramref name="value"/> is <see langword="null"/>, that is, its <see cref="Nullable{T}.HasValue"/> property is
         ///     <see langword="false"/>.
         /// </exception>
+#if (NETFRAMEWORK && !NET40) || NETSTANDARD || NETCOREAPP
+        [MethodImpl(
+            MethodImplOptions.AggressiveInlining
+#if NET5_0_OR_GREATER
+            | MethodImplOptions.AggressiveOptimization
+#endif
+        )]
+#endif
         [DebuggerStepThrough]
         public static T EnsureNotNull<T>([CanBeNull] this T? value)
             where T : struct
@@ -133,6 +149,14 @@ namespace System
         ///     A <see cref="System.String"/> that represents the specified value, or the value of
         ///     the <paramref name="nullValueString"/> parameter if <paramref name="value"/> is <see langword="null"/>.
         /// </returns>
+#if (NETFRAMEWORK && !NET40) || NETSTANDARD || NETCOREAPP
+        [MethodImpl(
+            MethodImplOptions.AggressiveInlining
+#if NET5_0_OR_GREATER
+            | MethodImplOptions.AggressiveOptimization
+#endif
+        )]
+#endif
         public static string ToStringSafely<T>([CanBeNull] this T value, [CanBeNull] string nullValueString)
             => value is null ? nullValueString : value.ToString();
 
@@ -150,6 +174,14 @@ namespace System
         ///     A <see cref="System.String"/> that represents the specified value it is not <see langword="null"/>;
         ///     otherwise, the empty string.
         /// </returns>
+#if (NETFRAMEWORK && !NET40) || NETSTANDARD || NETCOREAPP
+        [MethodImpl(
+            MethodImplOptions.AggressiveInlining
+#if NET5_0_OR_GREATER
+            | MethodImplOptions.AggressiveOptimization
+#endif
+        )]
+#endif
         public static string ToStringSafely<T>([CanBeNull] this T value) => ToStringSafely(value, string.Empty);
 
         /// <summary>
@@ -169,6 +201,14 @@ namespace System
         ///     A <see cref="System.String"/> that represents the specified value, or the value of
         ///     the <paramref name="nullValueString"/> parameter if <paramref name="value"/> is <see langword="null"/>.
         /// </returns>
+#if (NETFRAMEWORK && !NET40) || NETSTANDARD || NETCOREAPP
+        [MethodImpl(
+            MethodImplOptions.AggressiveInlining
+#if NET5_0_OR_GREATER
+            | MethodImplOptions.AggressiveOptimization
+#endif
+        )]
+#endif
         public static string ToStringSafelyInvariant<T>([CanBeNull] this T value, [CanBeNull] string nullValueString)
             => value is null
                 ? nullValueString
@@ -191,6 +231,14 @@ namespace System
         ///     A <see cref="System.String"/> that represents the specified value it is not <see langword="null"/>;
         ///     otherwise, the empty string.
         /// </returns>
+#if (NETFRAMEWORK && !NET40) || NETSTANDARD || NETCOREAPP
+        [MethodImpl(
+            MethodImplOptions.AggressiveInlining
+#if NET5_0_OR_GREATER
+            | MethodImplOptions.AggressiveOptimization
+#endif
+        )]
+#endif
         public static string ToStringSafelyInvariant<T>([CanBeNull] this T value)
             => ToStringSafelyInvariant(value, string.Empty);
 
@@ -211,6 +259,14 @@ namespace System
         ///     if it is not <see langword="null"/>; otherwise, the value specified in the <paramref name="nullValueHashCode"/>
         ///     parameter.
         /// </returns>
+#if (NETFRAMEWORK && !NET40) || NETSTANDARD || NETCOREAPP
+        [MethodImpl(
+            MethodImplOptions.AggressiveInlining
+#if NET5_0_OR_GREATER
+            | MethodImplOptions.AggressiveOptimization
+#endif
+        )]
+#endif
         public static int GetHashCodeSafely<T>([CanBeNull] this T value, int nullValueHashCode)
             => value is null ? nullValueHashCode : value.GetHashCode();
 
@@ -227,6 +283,14 @@ namespace System
         ///     A hash code of the specified value obtained by calling <see cref="object.GetHashCode"/> for this value
         ///     if it is not <see langword="null"/>; otherwise, <c>0</c>.
         /// </returns>
+#if (NETFRAMEWORK && !NET40) || NETSTANDARD || NETCOREAPP
+        [MethodImpl(
+            MethodImplOptions.AggressiveInlining
+#if NET5_0_OR_GREATER
+            | MethodImplOptions.AggressiveOptimization
+#endif
+        )]
+#endif
         public static int GetHashCodeSafely<T>([CanBeNull] this T value) => GetHashCodeSafely(value, 0);
 
         /// <summary>
@@ -242,6 +306,14 @@ namespace System
         /// <returns>
         ///     The actual type of the value if it is not <see langword="null"/>; otherwise, <typeparamref name="T"/>.
         /// </returns>
+#if (NETFRAMEWORK && !NET40) || NETSTANDARD || NETCOREAPP
+        [MethodImpl(
+            MethodImplOptions.AggressiveInlining
+#if NET5_0_OR_GREATER
+            | MethodImplOptions.AggressiveOptimization
+#endif
+        )]
+#endif
         [NotNull]
         public static Type GetTypeSafely<T>([CanBeNull] this T value)
             => value is null ? typeof(T) : value.GetType();
@@ -258,6 +330,14 @@ namespace System
         /// <returns>
         ///     An array containing the specified value as its sole element.
         /// </returns>
+#if (NETFRAMEWORK && !NET40) || NETSTANDARD || NETCOREAPP
+        [MethodImpl(
+            MethodImplOptions.AggressiveInlining
+#if NET5_0_OR_GREATER
+            | MethodImplOptions.AggressiveOptimization
+#endif
+        )]
+#endif
         [NotNull]
         public static T[] AsArray<T>([CanBeNull] this T value) => new[] { value };
 
@@ -273,6 +353,14 @@ namespace System
         /// <returns>
         ///     A strongly-typed list containing the specified value as its sole element.
         /// </returns>
+#if (NETFRAMEWORK && !NET40) || NETSTANDARD || NETCOREAPP
+        [MethodImpl(
+            MethodImplOptions.AggressiveInlining
+#if NET5_0_OR_GREATER
+            | MethodImplOptions.AggressiveOptimization
+#endif
+        )]
+#endif
         [NotNull]
         public static List<T> AsList<T>([CanBeNull] this T value) => new() { value };
 
@@ -288,6 +376,14 @@ namespace System
         /// <returns>
         ///     A strongly-typed collection containing the specified value as its sole element.
         /// </returns>
+#if (NETFRAMEWORK && !NET40) || NETSTANDARD || NETCOREAPP
+        [MethodImpl(
+            MethodImplOptions.AggressiveInlining
+#if NET5_0_OR_GREATER
+            | MethodImplOptions.AggressiveOptimization
+#endif
+        )]
+#endif
         [NotNull]
         public static IEnumerable<T> AsCollection<T>([CanBeNull] this T value)
         {
@@ -398,6 +494,14 @@ namespace System
         /// ]]>
         ///     </code>
         /// </example>
+#if (NETFRAMEWORK && !NET40) || NETSTANDARD || NETCOREAPP
+        [MethodImpl(
+            MethodImplOptions.AggressiveInlining
+#if NET5_0_OR_GREATER
+            | MethodImplOptions.AggressiveOptimization
+#endif
+        )]
+#endif
         public static string ToUIString<T>([CanBeNull] this T? value)
             where T : struct
             => (value is IFormattable formattable ? formattable.ToString(null, CultureInfo.InvariantCulture) : value?.ToString())
@@ -443,6 +547,14 @@ namespace System
         /// <returns>
         ///     The UI representation of the specified nullable value.
         /// </returns>
+#if (NETFRAMEWORK && !NET40) || NETSTANDARD || NETCOREAPP
+        [MethodImpl(
+            MethodImplOptions.AggressiveInlining
+#if NET5_0_OR_GREATER
+            | MethodImplOptions.AggressiveOptimization
+#endif
+        )]
+#endif
         public static string ToUIString<T>([CanBeNull] this T? value, string format, IFormatProvider formatProvider)
             where T : struct, IFormattable
             => value?.ToString(format, formatProvider) ?? OmnifactotumRepresentationConstants.NullValueRepresentation;
@@ -484,6 +596,14 @@ namespace System
         /// <returns>
         ///     The UI representation of the specified nullable value.
         /// </returns>
+#if (NETFRAMEWORK && !NET40) || NETSTANDARD || NETCOREAPP
+        [MethodImpl(
+            MethodImplOptions.AggressiveInlining
+#if NET5_0_OR_GREATER
+            | MethodImplOptions.AggressiveOptimization
+#endif
+        )]
+#endif
         public static string ToUIString<T>([CanBeNull] this T? value, IFormatProvider formatProvider)
             where T : struct, IFormattable
             => value.ToUIString(null, formatProvider);
@@ -504,6 +624,14 @@ namespace System
         ///     The description of the specified object reference.
         /// </returns>
         /// <seealso cref="OmnifactotumTypeExtensions.GetFullName"/>
+#if (NETFRAMEWORK && !NET40) || NETSTANDARD || NETCOREAPP
+        [MethodImpl(
+            MethodImplOptions.AggressiveInlining
+#if NET5_0_OR_GREATER
+            | MethodImplOptions.AggressiveOptimization
+#endif
+        )]
+#endif
         public static string GetObjectReferenceDescription<T>(this T? obj)
             where T : class
             => GetObjectReferenceDescriptionInternal(obj, OmnifactotumTypeExtensions.GetFullNameMethod);
@@ -522,6 +650,14 @@ namespace System
         ///     The short description of the specified object reference.
         /// </returns>
         /// <seealso cref="OmnifactotumTypeExtensions.GetQualifiedName"/>
+#if (NETFRAMEWORK && !NET40) || NETSTANDARD || NETCOREAPP
+        [MethodImpl(
+            MethodImplOptions.AggressiveInlining
+#if NET5_0_OR_GREATER
+            | MethodImplOptions.AggressiveOptimization
+#endif
+        )]
+#endif
         public static string GetShortObjectReferenceDescription<T>(this T? obj)
             where T : class
             => GetObjectReferenceDescriptionInternal(obj, OmnifactotumTypeExtensions.GetQualifiedNameMethod);
@@ -595,6 +731,14 @@ namespace System
         /// <returns>
         ///     A string representing the properties of the specified object.
         /// </returns>
+#if (NETFRAMEWORK && !NET40) || NETSTANDARD || NETCOREAPP
+        [MethodImpl(
+            MethodImplOptions.AggressiveInlining
+#if NET5_0_OR_GREATER
+            | MethodImplOptions.AggressiveOptimization
+#endif
+        )]
+#endif
         public static string ToPropertyString<T>([CanBeNull] this T obj) => ToPropertyString(obj, null);
 
         /// <summary>
@@ -618,6 +762,14 @@ namespace System
         /// <returns>
         ///     <see langword="true"/> if the contents of the two specified objects are equal; otherwise, <see langword="false"/>.
         /// </returns>
+#if (NETFRAMEWORK && !NET40) || NETSTANDARD || NETCOREAPP
+        [MethodImpl(
+            MethodImplOptions.AggressiveInlining
+#if NET5_0_OR_GREATER
+            | MethodImplOptions.AggressiveOptimization
+#endif
+        )]
+#endif
         public static bool IsEqualByContentsTo<T>([CanBeNull] this T obj, [CanBeNull] T other)
             => AreEqualByContentsInternal(obj, other);
 
@@ -1171,6 +1323,14 @@ namespace System
 
 #nullable enable
 
+#if (NETFRAMEWORK && !NET40) || NETSTANDARD || NETCOREAPP
+        [MethodImpl(
+            MethodImplOptions.AggressiveInlining
+#if NET5_0_OR_GREATER
+            | MethodImplOptions.AggressiveOptimization
+#endif
+        )]
+#endif
         private static string GetObjectReferenceDescriptionInternal<T>(T? obj, Func<Type, string> formatType)
             where T : class
             => obj is null
