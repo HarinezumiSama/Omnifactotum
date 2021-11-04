@@ -1,6 +1,7 @@
 ﻿#if !NET40
 #nullable enable
 
+using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using System.Runtime.CompilerServices;
 using NotNullAttribute = Omnifactotum.Annotations.NotNullAttribute;
@@ -11,7 +12,8 @@ using NotNullAttribute = Omnifactotum.Annotations.NotNullAttribute;
 namespace System.Threading.Tasks
 {
     /// <summary>
-    ///     Contains extension methods for the <see cref="Task"/> type.
+    ///     Contains extension methods for the <see cref="Task"/> and <see cref="Task{TResult}"/> types as well as
+    ///     the respective collections.
     /// </summary>
     [SuppressMessage("ReSharper", "RedundantNullnessAttributeWithNullableReferenceTypes")]
     public static class OmnifactotumTaskExtensions
@@ -66,6 +68,49 @@ namespace System.Threading.Tasks
         public static ConfiguredTaskAwaitable<TResult> ConfigureAwaitNoCapturedContext<TResult>(
             [NotNull] this Task<TResult> task)
             => (task ?? throw new ArgumentNullException(nameof(task))).ConfigureAwait(false);
+
+        /// <summary>
+        ///     Creates a task that will complete when all of the <see cref="Task"/> objects in an enumerable collection
+        ///     have completed.
+        /// </summary>
+        /// <param name="tasks">
+        ///     The tasks to wait on for completion.
+        /// </param>
+        /// <returns>
+        ///     A task that represents the completion of all of the supplied tasks.
+        /// </returns>
+#if (NETFRAMEWORK && !NET40) || NETSTANDARD || NETCOREAPP
+        [MethodImpl(
+            MethodImplOptions.AggressiveInlining
+#if NET5_0_OR_GREATER
+            | MethodImplOptions.AggressiveOptimization
+#endif
+        )]
+#endif
+        public static Task AwaitAllAsync([NotNull] this IEnumerable<Task> tasks) => Task.WhenAll(tasks);
+
+        /// <summary>
+        ///     Creates a task that will complete when all of the <see cref="Task{TResult}"/> objects in an enumerable collection
+        ///     have completed.
+        /// </summary>
+        /// <param name="tasks">
+        ///     The tasks to wait on for completion.
+        /// </param>
+        /// <typeparam name="TResult">
+        ///     The type of the completed task.
+        /// </typeparam>
+        /// <returns>
+        ///     A task that represents the completion of all of the supplied tasks.
+        /// </returns>
+#if (NETFRAMEWORK && !NET40) || NETSTANDARD || NETCOREAPP
+        [MethodImpl(
+            MethodImplOptions.AggressiveInlining
+#if NET5_0_OR_GREATER
+            | MethodImplOptions.AggressiveOptimization
+#endif
+        )]
+#endif
+        public static Task<TResult[]> AwaitAllAsync<TResult>([NotNull] this IEnumerable<Task<TResult>> tasks) => Task.WhenAll(tasks);
     }
 }
 #endif
