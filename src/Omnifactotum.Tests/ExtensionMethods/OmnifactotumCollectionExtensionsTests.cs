@@ -1,6 +1,10 @@
-﻿using System;
+﻿#nullable enable
+
+using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Text;
+using System.Threading.Tasks;
 using NUnit.Framework;
 using Omnifactotum.NUnit;
 
@@ -9,6 +13,94 @@ namespace Omnifactotum.Tests.ExtensionMethods
     [TestFixture(TestOf = typeof(OmnifactotumCollectionExtensions))]
     internal sealed class OmnifactotumCollectionExtensionsTests
     {
+        [Test]
+        public void TestDoForEachWhenInvalidArgumentsThenThrows()
+        {
+            const int[]? NullArray = null;
+
+            Assert.That(() => NullArray!.DoForEach(_ => { }), Throws.ArgumentNullException);
+            Assert.That(() => new[] { "a" }.DoForEach(default(Action<string>)!), Throws.ArgumentNullException);
+        }
+
+        [Test]
+        public void TestDoForEachWhenValidArgumentsThenSucceeds()
+        {
+            var stringBuilder = new StringBuilder();
+
+            new[] { 'A', '/', 'z' }.DoForEach(c => stringBuilder.Append(c).Append('.'));
+
+            Assert.That(stringBuilder.ToString(), Is.EqualTo("A./.z."));
+        }
+
+        [Test]
+        public void TestDoForEachWithIndexWhenInvalidArgumentsThenThrows()
+        {
+            const int[]? NullArray = null;
+
+            Assert.That(() => NullArray!.DoForEach((_, _) => { }), Throws.ArgumentNullException);
+            Assert.That(() => new[] { "a" }.DoForEach(default(Action<string, int>)!), Throws.ArgumentNullException);
+        }
+
+        [Test]
+        public void TestDoForEachWithIndexWhenValidArgumentsThenSucceeds()
+        {
+            var stringBuilder = new StringBuilder();
+
+            new[] { 'A', '/', 'z' }.DoForEach((c, i) => stringBuilder.Append(c).Append(':').Append(i).Append('.'));
+
+            Assert.That(stringBuilder.ToString(), Is.EqualTo("A:0./:1.z:2."));
+        }
+
+#if !NET40
+        [Test]
+        public void TestDoForEachAsyncWhenInvalidArgumentsThenThrows()
+        {
+            const int[]? NullArray = null;
+
+            Assert.That(() => NullArray!.DoForEachAsync(_ => Task.CompletedTask), Throws.ArgumentNullException);
+            Assert.That(() => new[] { "a" }.DoForEachAsync(default(Func<string, Task>)!), Throws.ArgumentNullException);
+        }
+
+        [Test]
+        public async Task TestDoForEachAsyncWhenValidArgumentsThenSucceedsAsync()
+        {
+            var stringBuilder = new StringBuilder();
+
+            await new[] { 'a', '/', 'Z' }.DoForEachAsync(
+                async c =>
+                {
+                    await Task.Delay(0);
+                    stringBuilder.Append(c).Append('.');
+                });
+
+            Assert.That(stringBuilder.ToString(), Is.EqualTo("a./.Z."));
+        }
+
+        [Test]
+        public void TestDoForEachAsyncWithIndexWhenInvalidArgumentsThenThrows()
+        {
+            const int[]? NullArray = null;
+
+            Assert.That(() => NullArray!.DoForEachAsync((_, _) => Task.CompletedTask), Throws.ArgumentNullException);
+            Assert.That(() => new[] { "a" }.DoForEachAsync(default(Func<string, int, Task>)!), Throws.ArgumentNullException);
+        }
+
+        [Test]
+        public async Task TestDoForEachAsyncWithIndexWhenValidArgumentsThenSucceedsAsync()
+        {
+            var stringBuilder = new StringBuilder();
+
+            await new[] { 'a', '/', 'Z' }.DoForEachAsync(
+                async (c, i) =>
+                {
+                    await Task.Delay(0);
+                    stringBuilder.Append(c).Append(':').Append(i).Append('.');
+                });
+
+            Assert.That(stringBuilder.ToString(), Is.EqualTo("a:0./:1.Z:2."));
+        }
+#endif
+
         [Test]
         [TestCaseSource(typeof(ToUIStringForStringCollectionTestCases))]
         public void TestToUIStringForStringCollection(string[] values, string expectedResult)
@@ -27,7 +119,7 @@ namespace Omnifactotum.Tests.ExtensionMethods
 
         [Test]
         public void TestAsReadOnlyNegative()
-            => Assert.That(() => ((IList<string>)null)!.AsReadOnly(), Throws.TypeOf<ArgumentNullException>());
+            => Assert.That(() => ((IList<string>?)null)!.AsReadOnly(), Throws.TypeOf<ArgumentNullException>());
 
         [Test]
         public void TestAsReadOnly()
@@ -73,8 +165,8 @@ namespace Omnifactotum.Tests.ExtensionMethods
                 yield return new TestCaseData(null, "<null>").SetDescription("Null collection of strings");
 
                 yield return new TestCaseData(
-                    new[] { null, "", "Hello", "Class \"MyClass\"" },
-                    @"null, """", ""Hello"", ""Class """"MyClass""""""")
+                        new[] { null, "", "Hello", "Class \"MyClass\"" },
+                        @"null, """", ""Hello"", ""Class """"MyClass""""""")
                     .SetDescription("Collection containing various string values");
             }
         }
