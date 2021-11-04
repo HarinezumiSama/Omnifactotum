@@ -273,7 +273,7 @@ namespace System
         public static string ToStringSafelyInvariant<T>(this T value) => ToStringSafelyInvariant(value, string.Empty);
 
         /// <summary>
-        ///     Gets a hash code of the specified value safely, that is, <n>null</n> does not cause an exception.
+        ///     Gets a hash code of the specified value safely, that is, <see langword="null"/> does not cause an exception.
         /// </summary>
         /// <typeparam name="T">
         ///     The type of the value to get a hash code of.
@@ -286,7 +286,7 @@ namespace System
         /// </param>
         /// <returns>
         ///     A hash code of the specified value obtained by calling <see cref="object.GetHashCode"/> for this value
-        ///     if it is not <see langword="null"/>; otherwise, the value specified in the <paramref name="nullValueHashCode"/>
+        ///     if it is not <see langword="null"/>; otherwise, the value specified by the <paramref name="nullValueHashCode"/>
         ///     parameter.
         /// </returns>
 #if (NETFRAMEWORK && !NET40) || NETSTANDARD || NETCOREAPP
@@ -301,7 +301,7 @@ namespace System
             => value is null ? nullValueHashCode : value.GetHashCode();
 
         /// <summary>
-        ///     Gets a hash code of the specified value safely, that is, <n>null</n> does not cause an exception.
+        ///     Gets a hash code of the specified value safely, that is, <see langword="null"/> does not cause an exception.
         /// </summary>
         /// <typeparam name="T">
         ///     The type of the value to get a hash code of.
