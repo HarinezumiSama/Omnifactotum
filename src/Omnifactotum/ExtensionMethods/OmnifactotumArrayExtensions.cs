@@ -14,8 +14,6 @@ namespace System
     /// <summary>
     ///     Contains extension methods for array types.
     /// </summary>
-
-    // ReSharper disable once RedundantNameQualifier
     [SuppressMessage("ReSharper", "UseArrayEmptyMethod", Justification = "Cannot be used due to multi-targeting.")]
     [SuppressMessage("Performance", "CA1825", Justification = "Cannot be used due to multi-targeting.")]
     public static class OmnifactotumArrayExtensions
