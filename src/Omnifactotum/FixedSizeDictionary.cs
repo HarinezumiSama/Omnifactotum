@@ -145,7 +145,6 @@ namespace Omnifactotum
         {
             [DebuggerStepThrough]
             get;
-
             [DebuggerStepThrough]
             private set;
         }
@@ -335,7 +334,7 @@ namespace Omnifactotum
             {
                 throw new ArgumentException(
                     "The number of elements is greater than the available space from the array index to the end"
-                        + " of the destination array.");
+                    + " of the destination array.");
             }
 
             var currentArrayIndex = arrayIndex;
@@ -498,7 +497,7 @@ namespace Omnifactotum
                 {
                     throw new ArgumentException(
                         "The number of elements is greater than the available space from the array index to the end"
-                            + " of the destination array.");
+                        + " of the destination array.");
                 }
 
                 var index = arrayIndex;
@@ -573,7 +572,7 @@ namespace Omnifactotum
                 {
                     throw new ArgumentException(
                         "The number of elements is greater than the available space from the array index to the end"
-                            + " of the destination array.");
+                        + " of the destination array.");
                 }
 
                 var index = arrayIndex;

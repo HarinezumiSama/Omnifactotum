@@ -1,8 +1,11 @@
 ﻿using System;
 using System.Diagnostics;
 using System.IO;
-using System.Runtime.CompilerServices;
 using static Omnifactotum.FormattableStringFactotum;
+
+#if !NET5_0
+using System.Runtime.CompilerServices;
+#endif
 
 //// TODO [HarinezumiSama] Create a wrapper interface for System.Console to make possible writing unit tests
 
@@ -740,7 +743,9 @@ namespace Omnifactotum
                 {
                     if (!_originalForegroundColor.HasValue)
                     {
+#pragma warning disable CA2219
                         throw new InvalidOperationException("Internal logic error.");
+#pragma warning restore CA2219
                     }
 
                     Console.ForegroundColor = _originalForegroundColor.Value;

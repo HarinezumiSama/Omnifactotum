@@ -76,18 +76,11 @@ namespace Omnifactotum
         }
 
         private DirectedGraphNodeCollection<T> GetRelatedCollection([NotNull] DirectedGraphNode<T> item)
-        {
-            switch (_ownerRelation)
+            => _ownerRelation switch
             {
-                case DirectedGraphOwnerRelation.Head:
-                    return item.Heads;
-
-                case DirectedGraphOwnerRelation.Tail:
-                    return item.Tails;
-
-                default:
-                    throw _ownerRelation.CreateEnumValueNotSupportedException();
-            }
-        }
+                DirectedGraphOwnerRelation.Head => item.Heads,
+                DirectedGraphOwnerRelation.Tail => item.Tails,
+                _ => throw _ownerRelation.CreateEnumValueNotSupportedException()
+            };
     }
 }

@@ -906,25 +906,13 @@ namespace Omnifactotum.Tests.ExtensionMethods
                 public void Reset() => throw new NotSupportedException();
 
                 public string Current
-                {
-                    get
+                    => _index switch
                     {
-                        switch (_index)
-                        {
-                            case 0:
-                                return @"Item0";
-
-                            case 1:
-                                throw new NotImplementedException(@"No item at index 1.");
-
-                            case 2:
-                                return @"Item2";
-
-                            default:
-                                throw new InvalidOperationException(@"Cannot access items outside range.");
-                        }
-                    }
-                }
+                        0 => @"Item0",
+                        1 => throw new NotImplementedException(@"No item at index 1."),
+                        2 => @"Item2",
+                        _ => throw new InvalidOperationException(@"Cannot access items outside range.")
+                    };
 
                 object IEnumerator.Current => Current;
             }

@@ -40,22 +40,17 @@ namespace System.Reflection
             ////    parameter of GetCustomAttributes is true does not walk the type hierarchy. Use System.Attribute to
             ////    inherit custom attributes.
 
-            switch (provider)
+            return provider switch
             {
-                //// ReSharper disable once HeuristicUnreachableCode :: False detection
-                case null:
-                    //// ReSharper disable once HeuristicUnreachableCode :: False detection
-                    throw new ArgumentNullException(nameof(provider));
+                null => throw new ArgumentNullException(nameof(provider)),
 
-                case MemberInfo memberInfo:
-                    return Attribute
-                        .GetCustomAttributes(memberInfo, typeof(TAttribute), inherit)
-                        .Cast<TAttribute>()
-                        .ToArray();
+                MemberInfo memberInfo => Attribute
+                    .GetCustomAttributes(memberInfo, typeof(TAttribute), inherit)
+                    .Cast<TAttribute>()
+                    .ToArray(),
 
-                default:
-                    return provider.GetCustomAttributes(typeof(TAttribute), inherit).Cast<TAttribute>().ToArray();
-            }
+                _ => provider.GetCustomAttributes(typeof(TAttribute), inherit).Cast<TAttribute>().ToArray()
+            };
         }
 
         /// <summary>

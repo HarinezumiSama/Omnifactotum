@@ -160,19 +160,12 @@ namespace Omnifactotum.Tests
             public override int GetIndex(bool key) => key ? 1 : 0;
 
             public override bool GetKey(int index)
-            {
-                switch (index)
+                => index switch
                 {
-                    case 0:
-                        return false;
-
-                    case 1:
-                        return true;
-
-                    default:
-                        throw new InvalidOperationException();
-                }
-            }
+                    0 => false,
+                    1 => true,
+                    _ => throw new InvalidOperationException()
+                };
         }
     }
 }

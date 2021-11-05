@@ -57,7 +57,7 @@ namespace Omnifactotum
         ///     A reference to an object to dispose and set to <see langword="null"/>.
         /// </param>
 #if (NETFRAMEWORK && !NET40) || NETSTANDARD || NETCOREAPP
-            [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
 #endif
         public static void DisposeAndNull<T>([CanBeNull] ref T disposable)
             where T : class, IDisposable
@@ -93,7 +93,7 @@ namespace Omnifactotum
         ///     A reference to an object to dispose and set to <see langword="null"/>.
         /// </param>
 #if (NETFRAMEWORK && !NET40) || NETSTANDARD || NETCOREAPP
-            [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
 #endif
         public static void DisposeAndNull<T>([CanBeNull] ref T? disposable)
             where T : struct, IDisposable
@@ -120,7 +120,7 @@ namespace Omnifactotum
         ///     The second value to exchange with the first value.
         /// </param>
 #if (NETFRAMEWORK && !NET40) || NETSTANDARD || NETCOREAPP
-            [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
 #endif
         public static void Exchange<T>([CanBeNull] ref T value1, [CanBeNull] ref T value2)
         {
@@ -209,7 +209,7 @@ namespace Omnifactotum
         ///     The larger of the two specified values.
         /// </returns>
 #if (NETFRAMEWORK && !NET40) || NETSTANDARD || NETCOREAPP
-            [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
 #endif
         public static T Max<T>(T x, T y)
             where T : IComparable
@@ -233,7 +233,7 @@ namespace Omnifactotum
         ///     The smaller of the two specified values.
         /// </returns>
 #if (NETFRAMEWORK && !NET40) || NETSTANDARD || NETCOREAPP
-            [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
 #endif
         public static T Min<T>(T x, T y)
             where T : IComparable
@@ -807,7 +807,7 @@ namespace Omnifactotum
         ///     </para>
         /// </exception>
 #if (NETFRAMEWORK && !NET40) || NETSTANDARD || NETCOREAPP
-            [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
 #endif
         public static void ProcessRecursively<T>(
             [CanBeNull] T instance,
@@ -893,7 +893,7 @@ namespace Omnifactotum
         ///     </para>
         /// </exception>
 #if (NETFRAMEWORK && !NET40) || NETSTANDARD || NETCOREAPP
-            [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
 #endif
         public static void ProcessRecursively<T>(
             [CanBeNull] T instance,

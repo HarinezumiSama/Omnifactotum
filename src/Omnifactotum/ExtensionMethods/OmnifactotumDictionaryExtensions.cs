@@ -39,7 +39,7 @@ namespace System.Collections.Generic
         public static TValue GetValueOrDefault<TKey, TValue>(
             [NotNull]
 #if NETFRAMEWORK
-                this
+            this
 #endif
                 IDictionary<TKey, TValue> dictionary,
             [NotNull] TKey key,
@@ -82,7 +82,7 @@ namespace System.Collections.Generic
         public static TValue GetValueOrDefault<TKey, TValue>(
             [NotNull]
 #if NETFRAMEWORK
-                this
+            this
 #endif
                 IDictionary<TKey, TValue> dictionary,
             [NotNull] TKey key)

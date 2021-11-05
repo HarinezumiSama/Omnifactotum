@@ -36,6 +36,8 @@ using System.Diagnostics.CodeAnalysis;
 //// ReSharper disable IntroduceOptionalParameters.Global
 //// ReSharper disable MemberCanBeProtected.Global
 //// ReSharper disable InconsistentNaming
+//// ReSharper disable BadIndent
+//// ReSharper disable UnusedType.Global
 
 namespace Omnifactotum.Annotations
 {

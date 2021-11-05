@@ -8,6 +8,8 @@ using Omnifactotum.Annotations;
 using Omnifactotum.Tests.Auxiliary;
 using static Omnifactotum.FormattableStringFactotum;
 
+#pragma warning disable CA1822
+
 namespace Omnifactotum.Tests
 {
     [TestFixture(TestOf = typeof(Factotum))]
@@ -307,14 +309,15 @@ namespace Omnifactotum.Tests
             Assert.That(name, Is.EqualTo($@"{nameof(FactotumTests)}.{nameof(TestObjectBase)}.{nameof(TestObjectBase.StaticProperty)}"));
         }
 
-        public abstract class TestObjectBase
+        private abstract class TestObjectBase
         {
             public static string StaticProperty { get; set; }
 
             public string InstanceProperty { get; set; }
         }
 
-        public sealed class TestObject : TestObjectBase
+        [UsedImplicitly]
+        private sealed class TestObject : TestObjectBase
         {
             // No members
         }

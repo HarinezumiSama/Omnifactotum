@@ -41,6 +41,6 @@ namespace Omnifactotum.Validation.Constraints
             => AsInvariant(
                 $@"{{{GetType().GetQualifiedName()}: {
                     Factotum.For<BaseMemberConstraintAttribute>.GetPropertyName(obj => obj.ConstraintType)} = {
-                    ConstraintType.GetQualifiedName().ToUIString()}}}");
+                        ConstraintType.GetQualifiedName().ToUIString()}}}");
     }
 }

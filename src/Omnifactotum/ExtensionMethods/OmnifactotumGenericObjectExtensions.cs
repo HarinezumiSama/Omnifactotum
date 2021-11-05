@@ -1162,11 +1162,11 @@ namespace System
             }
             else if (type == typeof(IntPtr))
             {
-                resultBuilder.AppendFormat(PointerStringFormat, ((IntPtr)((object)obj!)).ToInt64());
+                resultBuilder.AppendFormat(PointerStringFormat, ((IntPtr)(object)obj!).ToInt64());
             }
             else if (type == typeof(UIntPtr))
             {
-                resultBuilder.AppendFormat(PointerStringFormat, ((UIntPtr)((object)obj!)).ToUInt64());
+                resultBuilder.AppendFormat(PointerStringFormat, ((UIntPtr)(object)obj!).ToUInt64());
             }
             else if (type == typeof(string))
             {
@@ -1178,7 +1178,7 @@ namespace System
             }
             else if (type == typeof(DateTime))
             {
-                resultBuilder.Append(((DateTime)((object)obj!)).ToPreciseFixedString());
+                resultBuilder.Append(((DateTime)(object)obj!).ToPreciseFixedString());
             }
             else if (type == typeof(DateTimeOffset))
             {

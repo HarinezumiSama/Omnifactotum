@@ -349,20 +349,13 @@ namespace System
             var enumType = value.GetType();
             var enumValueName = value.ToString();
 
-            switch (mode)
+            return mode switch
             {
-                case EnumNameMode.Short:
-                    return enumValueName;
-
-                case EnumNameMode.Qualified:
-                    return string.Format(CultureInfo.InvariantCulture, NameFormat, enumType.Name, enumValueName);
-
-                case EnumNameMode.Full:
-                    return string.Format(CultureInfo.InvariantCulture, NameFormat, enumType.GetFullName(), enumValueName);
-
-                default:
-                    throw mode.CreateEnumValueNotImplementedException();
-            }
+                EnumNameMode.Short => enumValueName,
+                EnumNameMode.Qualified => string.Format(CultureInfo.InvariantCulture, NameFormat, enumType.Name, enumValueName),
+                EnumNameMode.Full => string.Format(CultureInfo.InvariantCulture, NameFormat, enumType.GetFullName(), enumValueName),
+                _ => throw mode.CreateEnumValueNotImplementedException()
+            };
         }
 
         /// <summary>

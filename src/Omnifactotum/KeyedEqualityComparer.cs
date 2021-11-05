@@ -125,25 +125,25 @@ namespace Omnifactotum
         /// <returns>
         ///     <see langword="true"/> if the specified objects are equal; otherwise, <see langword="false"/>.
         /// </returns>
-        /// <param name="x">
+        /// <param name="left">
         ///     The first object to compare.
         /// </param>
-        /// <param name="y">
+        /// <param name="right">
         ///     The second object to compare.
         /// </param>
-        bool IEqualityComparer.Equals([CanBeNull] object x, [CanBeNull] object y)
+        bool IEqualityComparer.Equals(object left, object right)
         {
-            if (ReferenceEquals(x, y))
+            if (ReferenceEquals(left, right))
             {
                 return true;
             }
 
-            if (x is null || y is null)
+            if (left is null || right is null)
             {
                 return false;
             }
 
-            return x is T castX && y is T castY && Equals(castX, castY);
+            return left is T castLeft && right is T castRight && Equals(castLeft, castRight);
         }
 
         /// <summary>

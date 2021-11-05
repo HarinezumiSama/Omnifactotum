@@ -46,7 +46,8 @@ namespace System
 #if NETSTANDARD2_1 || NET5_0_OR_GREATER
             [NotNullWhen(false)]
 #endif
-            [CanBeNull] this string? value)
+            [CanBeNull]
+            this string? value)
             => string.IsNullOrEmpty(value);
 
         /// <summary>
@@ -69,7 +70,8 @@ namespace System
 #if NETSTANDARD2_1 || NET5_0_OR_GREATER
             [NotNullWhen(false)]
 #endif
-            [CanBeNull] this string? value)
+            [CanBeNull]
+            this string? value)
             => string.IsNullOrWhiteSpace(value);
 
         /// <summary>
@@ -337,7 +339,9 @@ namespace System
 
             return value is null || maximumLength == 0
                 ? string.Empty
-                : value.Length <= maximumLength ? value : value.Substring(0, maximumLength);
+                : value.Length <= maximumLength
+                    ? value
+                    : value.Substring(0, maximumLength);
         }
 
         /// <summary>
@@ -383,7 +387,8 @@ namespace System
 #if NETSTANDARD2_1 || NET5_0_OR_GREATER
             [NotNullWhen(true)]
 #endif
-            [CanBeNull] this string? value)
+            [CanBeNull]
+            this string? value)
             => Uri.TryCreate(value, UriKind.Absolute, out var uri) && uri.IsWebUri();
 
         /// <summary>
@@ -416,8 +421,8 @@ namespace System
 
             return value.EndsWith(OmnifactotumConstants.Slash, StringComparison.Ordinal)
                 && !value.EndsWith(OmnifactotumConstants.DoubleSlash, StringComparison.Ordinal)
-                ? value
-                : value.TrimEnd(OmnifactotumConstants.SlashChar) + OmnifactotumConstants.Slash;
+                    ? value
+                    : value.TrimEnd(OmnifactotumConstants.SlashChar) + OmnifactotumConstants.Slash;
         }
 
         /// <summary>

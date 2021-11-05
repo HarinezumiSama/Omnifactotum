@@ -12,25 +12,13 @@
         var isTeen = rem100 is >= 11 and <= 19;
         var rem10 = Math.Abs(number) % 10;
 
-        string suffix;
-        switch (rem10)
+        var suffix = rem10 switch
         {
-            case 1:
-                suffix = isTeen ? DefaultSuffix : "st";
-                break;
-
-            case 2:
-                suffix = isTeen ? DefaultSuffix : "nd";
-                break;
-
-            case 3:
-                suffix = isTeen ? DefaultSuffix : "rd";
-                break;
-
-            default:
-                suffix = DefaultSuffix;
-                break;
-        }
+            1 => isTeen ? DefaultSuffix : "st",
+            2 => isTeen ? DefaultSuffix : "nd",
+            3 => isTeen ? DefaultSuffix : "rd",
+            _ => DefaultSuffix
+        };
 
         return string.Format(CultureInfo.InvariantCulture, "{0}{1}", number, suffix);
     }
