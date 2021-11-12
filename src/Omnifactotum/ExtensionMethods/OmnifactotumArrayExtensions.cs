@@ -4,6 +4,10 @@ using System.Text;
 using Omnifactotum.Annotations;
 using SuppressMessage = System.Diagnostics.CodeAnalysis.SuppressMessageAttribute;
 
+#if !NET40
+using System.Runtime.CompilerServices;
+#endif
+
 //// ReSharper disable RedundantNullnessAttributeWithNullableReferenceTypes
 //// ReSharper disable once UseNullableReferenceTypesAnnotationSyntax
 
@@ -30,6 +34,14 @@ namespace System
         /// <returns>
         ///     A shallow copy of the specified array, or <see langword="null"/> if this array is <see langword="null"/>.
         /// </returns>
+#if (NETFRAMEWORK && !NET40) || NETSTANDARD || NETCOREAPP
+        [MethodImpl(
+            MethodImplOptions.AggressiveInlining
+#if NET5_0_OR_GREATER
+            | MethodImplOptions.AggressiveOptimization
+#endif
+        )]
+#endif
         [CanBeNull]
         public static T[]? Copy<T>([CanBeNull] this T[]? array) => (T[]?)array?.Clone();
 
@@ -145,6 +157,14 @@ namespace System
         /// <returns>
         ///     The source array if it is not <see langword="null"/>; otherwise, empty array.
         /// </returns>
+#if (NETFRAMEWORK && !NET40) || NETSTANDARD || NETCOREAPP
+        [MethodImpl(
+            MethodImplOptions.AggressiveInlining
+#if NET5_0_OR_GREATER
+            | MethodImplOptions.AggressiveOptimization
+#endif
+        )]
+#endif
         [NotNull]
         public static T[] AvoidNull<T>([CanBeNull] this T[]? source)
             => source
@@ -200,6 +220,14 @@ namespace System
         /// <returns>
         ///     A hexadecimal string (in lower case).
         /// </returns>
+#if (NETFRAMEWORK && !NET40) || NETSTANDARD || NETCOREAPP
+        [MethodImpl(
+            MethodImplOptions.AggressiveInlining
+#if NET5_0_OR_GREATER
+            | MethodImplOptions.AggressiveOptimization
+#endif
+        )]
+#endif
         [NotNull]
         public static string ToHexString([NotNull] this byte[] byteArray) => ToHexString(byteArray, false);
 
