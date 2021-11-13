@@ -24,7 +24,7 @@ Provides own **helper** and **functional** classes and interfaces as well as **e
 
 - [![GitHub open issues](https://img.shields.io/github/issues-raw/HarinezumiSama/Omnifactotum)](https://github.com/HarinezumiSama/Omnifactotum/issues?q=is%3Aissue+is%3Aopen) [![GitHub open pull requests](https://img.shields.io/github/issues-pr-raw/HarinezumiSama/Omnifactotum)](https://github.com/HarinezumiSama/Omnifactotum/pulls?q=is%3Apr+is%3Aopen)
 
-### The *non-exaustive* list of .NET classes covered
+### The *non-exhaustive* list of .NET classes covered
 
 - Reflection
   - [**`Assembly`**](https://docs.microsoft.com/en-us/dotnet/api/system.reflection.assembly) extension methods
@@ -48,13 +48,13 @@ Provides own **helper** and **functional** classes and interfaces as well as **e
 - [**`TimeSpan`**](https://docs.microsoft.com/en-us/dotnet/api/system.timespan) extension methods
 - [**`Uri`**](https://docs.microsoft.com/en-us/dotnet/api/system.uri) extension methods
 
-### The *non-exaustive* list of own helper classes
+### The *non-exhaustive* list of own helper classes
 
 - `AsyncFactotum`
 - `EnumFactotum`
 - `Factotum`
 
-### The *non-exaustive* list of own functional classes
+### The *non-exhaustive* list of own functional classes
 
 - `ByReferenceEqualityComparer<T>`
 - `ColoredConsoleTraceListener`
@@ -75,7 +75,7 @@ Provides own **helper** and **functional** classes and interfaces as well as **e
 - `VirtualTreeNode<T>` and `VirtualTreeNodeRoot<T>`
 - `WeakReferenceBasedCache<TKey, TValue>`
 
-### The *non-exaustive* list of own abstractions (interfaces)
+### The *non-exhaustive* list of own abstractions (interfaces)
 
 - `ICurrentDateTimeProvider`
 - `IElapsedTimeProvider`
