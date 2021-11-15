@@ -32,21 +32,30 @@ Provides own **helper** and **functional** classes and interfaces as well as **e
   - [**`MethodBase`**](https://docs.microsoft.com/en-us/dotnet/api/system.reflection.methodbase) extension methods
   - [**`Type`**](https://docs.microsoft.com/en-us/dotnet/api/system.type) extension methods
 - Array (**`T[]`**) and collection ([**`IEnumerable<T>`**](https://docs.microsoft.com/en-us/dotnet/api/system.collections.generic.ienumerable-1) and [**`ICollection<T>`**](https://docs.microsoft.com/en-us/dotnet/api/system.collections.generic.icollection-1)) extension methods
+- Arbitrary [**`Object`**](https://docs.microsoft.com/en-us/dotnet/api/system.object) generic extension methods
 - [**`DateTime`**](https://docs.microsoft.com/en-us/dotnet/api/system.datetime) extension methods
 - [**`DateTimeOffset`**](https://docs.microsoft.com/en-us/dotnet/api/system.datetimeoffset) extension methods
+- [**`Delegate`**](https://docs.microsoft.com/en-us/dotnet/api/system.delegate) extension methods
 - [**`Dictionary<TKey, TValue>`**](https://docs.microsoft.com/en-us/dotnet/api/system.collections.generic.dictionary-2) extension methods
-- [**`IDisposable`**](https://docs.microsoft.com/en-us/dotnet/api/system.idisposable) extension methods
 - [**`Enum`**](https://docs.microsoft.com/en-us/dotnet/api/system.enum) extension methods
 - [**`Exception`**](https://docs.microsoft.com/en-us/dotnet/api/system.exception) extension methods
 - [**`Expression<TDelegate>`**](https://docs.microsoft.com/en-us/dotnet/api/system.linq.expressions.expression-1) extension methods
-- Arbitrary [**`Object`**](https://docs.microsoft.com/en-us/dotnet/api/system.object) generic extension methods
+- [**`HttpStatusCode`**](https://docs.microsoft.com/en-us/dotnet/api/system.net.httpstatuscode) extension methods
+- [**`IDisposable`**](https://docs.microsoft.com/en-us/dotnet/api/system.idisposable) extension methods
+- [**`IEqualityComparer<T>`**](https://docs.microsoft.com/en-us/dotnet/api/system.collections.generic.iequalitycomparer-1) extension methods
+- [**`ISet<T>`**](https://docs.microsoft.com/en-us/dotnet/api/system.collections.generic.iset-1) extension methods
 - Math extension methods for numeric types
-- [**`Nullable<Boolean> (bool?)`**](https://docs.microsoft.com/en-us/dotnet/api/system.nullable-1) extension methods
-- [**`ISet`**](https://docs.microsoft.com/en-us/dotnet/api/system.collections.generic.iset-1) extension methods
+- [**`Nullable<Boolean>` (`bool?`)**](https://docs.microsoft.com/en-us/dotnet/api/system.nullable-1) extension methods
+- [**`Nullable<DateTime>` (`DateTime?`)**](https://docs.microsoft.com/en-us/dotnet/api/system.nullable-1) extension methods
+- [**`Nullable<DateTimeOffset>` (`DateTimeOffset?`)**](https://docs.microsoft.com/en-us/dotnet/api/system.nullable-1) extension methods
 - [**`SecureString`**](https://docs.microsoft.com/en-us/dotnet/api/system.security.securestring) extension methods
 - [**`String`**](https://docs.microsoft.com/en-us/dotnet/api/system.string) extension methods
+- [**`Task`**](https://docs.microsoft.com/en-us/dotnet/api/system.threading.tasks.task) extension methods (excluding .NET Framework 4.0)
+- [**`Task<TResult>`**](https://docs.microsoft.com/en-us/dotnet/api/system.threading.tasks.task-1) extension methods (excluding .NET Framework 4.0)
 - [**`TimeSpan`**](https://docs.microsoft.com/en-us/dotnet/api/system.timespan) extension methods
 - [**`Uri`**](https://docs.microsoft.com/en-us/dotnet/api/system.uri) extension methods
+- [**`ValueTask`**](https://docs.microsoft.com/en-us/dotnet/api/system.threading.tasks.valuetask) extension methods (excluding .NET Framework 4.0)
+- [**`ValueTask<TResult>`**](https://docs.microsoft.com/en-us/dotnet/api/system.threading.tasks.valuetask-1) extension methods (excluding .NET Framework 4.0)
 
 ### The *non-exhaustive* list of own helper classes
 
@@ -68,6 +77,7 @@ Provides own **helper** and **functional** classes and interfaces as well as **e
   - **NOTE**: `.NET Framework 4.0` only; as of `.NET Framework 4.5+` [`System.Collections.ObjectModel.ReadOnlyDictionary<TKey, TValue>`](https://docs.microsoft.com/en-us/dotnet/api/system.collections.objectmodel.readonlydictionary-2?view=netframework-4.5) is available.
 - `ReadOnlyItemCollection<T>` (the read-only wrapper for [`ICollection<T>`](https://docs.microsoft.com/en-us/dotnet/api/system.collections.generic.icollection-1))
 - `ReadOnlySet<T>`
+- `SemaphoreSlimBasedLock`
 - `StopwatchElapsedTimeProvider` (implements `IElapsedTimeProvider`)
 - `SyncValueContainer<T>` (implements `IValueContainer<T>`)
 - `ValueContainer<T>` (implements `IValueContainer<T>`)
@@ -80,6 +90,14 @@ Provides own **helper** and **functional** classes and interfaces as well as **e
 - `ICurrentDateTimeProvider`
 - `IElapsedTimeProvider`
 - `IValueContainer<T>`
+
+### The *non-exhaustive* list of own delegates
+
+- `Task EventHandlerAsync<>(...)` (excluding .NET Framework 4.0)
+- `OutFunc<TOutput, out TResult>`
+- `OutFunc<in T, TOutput, out TResult>`
+- `OutFunc<in T1, in T2, TOutput, out TResult>`
+- `OutFunc<in T1, in T2, in T3, TOutput, out TResult>`
 
 ### Dealing with Compatibility Issues
 
