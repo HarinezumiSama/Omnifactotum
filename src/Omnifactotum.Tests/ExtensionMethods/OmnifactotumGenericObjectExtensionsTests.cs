@@ -137,6 +137,7 @@ namespace Omnifactotum.Tests.ExtensionMethods
                 Is.EqualTo("2016/11/19 22:14:23"));
         }
 
+        [SuppressMessage("Microsoft.CodeAnalysis.CSharp", "RS1024")]
         [Test]
         public void TestGetObjectReferenceDescription()
         {
@@ -159,6 +160,7 @@ namespace Omnifactotum.Tests.ExtensionMethods
             Assert.That(() => obj3.GetObjectReferenceDescription(), Is.EqualTo($@"System.String:0x{hashCode3:X8}"));
         }
 
+        [SuppressMessage("Microsoft.CodeAnalysis.CSharp", "RS1024")]
         [Test]
         public void TestGetShortObjectReferenceDescription()
         {
