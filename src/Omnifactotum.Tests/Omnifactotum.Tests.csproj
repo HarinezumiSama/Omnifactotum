@@ -17,22 +17,16 @@
         <Reference Include="System.Windows.Forms" />
     </ItemGroup>
 
-    <ItemGroup Condition="'$(TargetFramework)'!='net40' and '$(TargetFramework)'!='net461' and '$(TargetFramework)'!='net472'">
-        <PackageReference Include="Microsoft.CodeAnalysis.CSharp" Version="3.8.0" />
-        <PackageReference Include="System.Runtime.Loader" Version="4.3.0" />
-        <PackageReference Include="System.Reflection.Emit" Version="4.7.0" />
-    </ItemGroup>
-
     <ItemGroup>
-        <PackageReference Include="Moq" Version="4.14.5" Condition="'$(TargetFramework)'!='net40'" />
-        <PackageReference Include="Moq" Version="4.2.1510.2205" Condition="'$(TargetFramework)'=='net40'" />
-    </ItemGroup>
-
-    <ItemGroup>
-        <PackageReference Include="NUnit" Version="3.13.2" />
-        <PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.0.0" />
-        <PackageReference Include="NUnit3TestAdapter" Version="4.0.0" />
         <PackageReference Include="Appveyor.TestLogger" Version="2.0.0" Condition="$(IsAppveyorBuild)" />
+        <PackageReference Include="Microsoft.CodeAnalysis.CSharp" Version="3.8.0" Condition="'$(TargetFramework)'!='net40' and '$(TargetFramework)'!='net461' and '$(TargetFramework)'!='net472'" />
+        <PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.0.0" />
+        <PackageReference Include="Moq" Version="4.2.1510.2205" Condition="'$(TargetFramework)'=='net40'" />
+        <PackageReference Include="Moq" Version="4.14.5" Condition="'$(TargetFramework)'!='net40'" />
+        <PackageReference Include="NUnit" Version="3.13.2" />
+        <PackageReference Include="NUnit3TestAdapter" Version="4.0.0" />
+        <PackageReference Include="System.Reflection.Emit" Version="4.7.0" Condition="'$(TargetFramework)'!='net40' and '$(TargetFramework)'!='net461' and '$(TargetFramework)'!='net472'" />
+        <PackageReference Include="System.Runtime.Loader" Version="4.3.0" Condition="'$(TargetFramework)'!='net40' and '$(TargetFramework)'!='net461' and '$(TargetFramework)'!='net472'" />
     </ItemGroup>
 
     <ItemGroup>
