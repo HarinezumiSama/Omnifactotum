@@ -2,29 +2,10 @@
 
 using System;
 using System.Threading;
-#if !NET40
 using System.Threading.Tasks;
-#endif
 
 namespace Omnifactotum.Threading
 {
-#if NET40
-    /// <summary>
-    ///     Represents a <see cref="SemaphoreSlim"/> based lock that limits the number of threads that can access a resource or pool of
-    ///     resources concurrently.
-    /// </summary>
-    /// <example>
-    ///     <code>
-    ///         private readonly SemaphoreSlimBasedLock _lock;
-    ///         // ...
-    ///         using (_lock.Acquire())
-    ///         {
-    ///             // Execute thread-safe/task-safe operation(s)
-    ///         }
-    ///     </code>
-    /// </example>
-    /// <seealso cref="IDisposable"/>
-#else
     /// <summary>
     ///     Represents a <see cref="SemaphoreSlim"/> based lock that limits the number of threads that can access a resource or pool of
     ///     resources concurrently.
@@ -50,7 +31,6 @@ namespace Omnifactotum.Threading
     ///     </code>
     /// </example>
     /// <seealso cref="IDisposable"/>
-#endif
     public sealed class SemaphoreSlimBasedLock : IDisposable
     {
         private const int SingleThreadAccessCount = 1;
@@ -114,7 +94,6 @@ namespace Omnifactotum.Threading
             return new LockHolder(_releaseCachedDelegate);
         }
 
-#if !NET40
         /// <summary>
         ///     Asynchronously acquires access to a resource or pool of resources, while observing a <see cref="CancellationToken"/>.
         /// </summary>
@@ -129,7 +108,6 @@ namespace Omnifactotum.Threading
             await UnderlyingSemaphore.WaitAsync(cancellationToken);
             return new LockHolder(_releaseCachedDelegate);
         }
-#endif
 
         /// <summary>
         ///     Disposes of the underlying <see cref="SemaphoreSlim"/>.

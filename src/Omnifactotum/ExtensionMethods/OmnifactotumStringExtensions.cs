@@ -4,9 +4,7 @@
 
 using System.Collections.Generic;
 using System.Globalization;
-#if (NETFRAMEWORK && !NET40) || NETSTANDARD || NETCOREAPP
 using System.Runtime.CompilerServices;
-#endif
 using System.Security;
 using System.Text;
 using Omnifactotum;
@@ -39,9 +37,7 @@ namespace System
         /// </returns>
         [Pure]
         [ContractAnnotation("false <= notnull", true)]
-#if (NETFRAMEWORK && !NET40) || NETSTANDARD || NETCOREAPP
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-#endif
         public static bool IsNullOrEmpty(
 #if NETSTANDARD2_1 || NET5_0_OR_GREATER
             [NotNullWhen(false)]
@@ -63,9 +59,7 @@ namespace System
         /// </returns>
         [Pure]
         [ContractAnnotation("false <= notnull", true)]
-#if (NETFRAMEWORK && !NET40) || NETSTANDARD || NETCOREAPP
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-#endif
         public static bool IsNullOrWhiteSpace(
 #if NETSTANDARD2_1 || NET5_0_OR_GREATER
             [NotNullWhen(false)]
@@ -146,9 +140,7 @@ namespace System
         ///     by the <paramref name="separator"/> string.
         /// </returns>
         [NotNull]
-#if (NETFRAMEWORK && !NET40) || NETSTANDARD || NETCOREAPP
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-#endif
         public static string Join(
             [NotNull] [ItemCanBeNull] [InstantHandle] this IEnumerable<string?> values,
             [CanBeNull] string? separator)
@@ -166,9 +158,7 @@ namespace System
         /// </returns>
         [NotNull]
         [Pure]
-#if (NETFRAMEWORK && !NET40) || NETSTANDARD || NETCOREAPP
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-#endif
         public static string AvoidNull([CanBeNull] this string? source) => source ?? string.Empty;
 
         /// <summary>
@@ -254,9 +244,7 @@ namespace System
         /// </returns>
         [NotNull]
         [Pure]
-#if (NETFRAMEWORK && !NET40) || NETSTANDARD || NETCOREAPP
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-#endif
         public static string TrimSafely([CanBeNull] this string? value, [CanBeNull] params char[]? trimChars)
             => value?.Trim(trimChars) ?? string.Empty;
 
@@ -278,9 +266,7 @@ namespace System
         /// </returns>
         [NotNull]
         [Pure]
-#if (NETFRAMEWORK && !NET40) || NETSTANDARD || NETCOREAPP
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-#endif
         public static string TrimStartSafely([CanBeNull] this string? value, [CanBeNull] params char[]? trimChars)
             => value?.TrimStart(trimChars) ?? string.Empty;
 
@@ -302,9 +288,7 @@ namespace System
         /// </returns>
         [NotNull]
         [Pure]
-#if (NETFRAMEWORK && !NET40) || NETSTANDARD || NETCOREAPP
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-#endif
         public static string TrimEndSafely([CanBeNull] this string? value, [CanBeNull] params char[]? trimChars)
             => value?.TrimEnd(trimChars) ?? string.Empty;
 

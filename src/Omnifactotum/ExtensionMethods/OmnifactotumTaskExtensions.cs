@@ -1,5 +1,4 @@
-﻿#if !NET40
-#nullable enable
+﻿#nullable enable
 
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
@@ -32,14 +31,12 @@ namespace System.Threading.Tasks
         /// <exception cref="ArgumentNullException">
         ///     <paramref name="task"/> is <see langword="null"/>.
         /// </exception>
-#if (NETFRAMEWORK && !NET40) || NETSTANDARD || NETCOREAPP
         [MethodImpl(
             MethodImplOptions.AggressiveInlining
 #if NET5_0_OR_GREATER
             | MethodImplOptions.AggressiveOptimization
 #endif
         )]
-#endif
         public static ConfiguredTaskAwaitable ConfigureAwaitNoCapturedContext([NotNull] this Task task)
             => (task ?? throw new ArgumentNullException(nameof(task))).ConfigureAwait(false);
 
@@ -57,14 +54,12 @@ namespace System.Threading.Tasks
         /// <exception cref="ArgumentNullException">
         ///     <paramref name="task"/> is <see langword="null"/>.
         /// </exception>
-#if (NETFRAMEWORK && !NET40) || NETSTANDARD || NETCOREAPP
         [MethodImpl(
             MethodImplOptions.AggressiveInlining
 #if NET5_0_OR_GREATER
             | MethodImplOptions.AggressiveOptimization
 #endif
         )]
-#endif
         public static ConfiguredTaskAwaitable<TResult> ConfigureAwaitNoCapturedContext<TResult>(
             [NotNull] this Task<TResult> task)
             => (task ?? throw new ArgumentNullException(nameof(task))).ConfigureAwait(false);
@@ -79,14 +74,12 @@ namespace System.Threading.Tasks
         /// <returns>
         ///     A task that represents the completion of all of the supplied tasks.
         /// </returns>
-#if (NETFRAMEWORK && !NET40) || NETSTANDARD || NETCOREAPP
         [MethodImpl(
             MethodImplOptions.AggressiveInlining
 #if NET5_0_OR_GREATER
             | MethodImplOptions.AggressiveOptimization
 #endif
         )]
-#endif
         public static Task AwaitAllAsync([NotNull] this IEnumerable<Task> tasks) => Task.WhenAll(tasks);
 
         /// <summary>
@@ -102,15 +95,12 @@ namespace System.Threading.Tasks
         /// <returns>
         ///     A task that represents the completion of all of the supplied tasks.
         /// </returns>
-#if (NETFRAMEWORK && !NET40) || NETSTANDARD || NETCOREAPP
         [MethodImpl(
             MethodImplOptions.AggressiveInlining
 #if NET5_0_OR_GREATER
             | MethodImplOptions.AggressiveOptimization
 #endif
         )]
-#endif
         public static Task<TResult[]> AwaitAllAsync<TResult>([NotNull] this IEnumerable<Task<TResult>> tasks) => Task.WhenAll(tasks);
     }
 }
-#endif

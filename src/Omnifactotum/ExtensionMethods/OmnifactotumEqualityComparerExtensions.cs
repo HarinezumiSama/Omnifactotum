@@ -1,11 +1,8 @@
 ﻿#nullable enable
 
 using System.Diagnostics.CodeAnalysis;
-using NotNullAttribute = Omnifactotum.Annotations.NotNullAttribute;
-
-#if (NETFRAMEWORK && !NET40) || NETSTANDARD || NETCOREAPP
 using System.Runtime.CompilerServices;
-#endif
+using NotNullAttribute = Omnifactotum.Annotations.NotNullAttribute;
 
 //// ReSharper disable once CheckNamespace :: Namespace is intentionally named so in order to simplify usage of extension methods
 namespace System.Collections.Generic
@@ -36,14 +33,12 @@ namespace System.Collections.Generic
         ///     if it is not <see langword="null"/>; otherwise, the value specified by the <paramref name="nullValueHashCode"/>
         ///     parameter.
         /// </returns>
-#if (NETFRAMEWORK && !NET40) || NETSTANDARD || NETCOREAPP
         [MethodImpl(
             MethodImplOptions.AggressiveInlining
 #if NET5_0_OR_GREATER
             | MethodImplOptions.AggressiveOptimization
 #endif
         )]
-#endif
         public static int GetHashCodeSafely<T>([NotNull] this IEqualityComparer<T> equalityComparer, T value, int nullValueHashCode = 0)
             => equalityComparer is null
                 ? throw new ArgumentNullException(nameof(equalityComparer))

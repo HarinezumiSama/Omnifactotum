@@ -1,8 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
-#if !NET40
 using System.Collections.ObjectModel;
-#endif
 using NUnit.Framework;
 using Omnifactotum.Annotations;
 

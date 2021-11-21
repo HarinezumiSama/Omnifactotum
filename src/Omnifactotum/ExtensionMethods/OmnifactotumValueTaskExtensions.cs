@@ -1,5 +1,4 @@
-﻿#if !NET40
-#nullable enable
+﻿#nullable enable
 
 using System.Runtime.CompilerServices;
 
@@ -27,14 +26,12 @@ namespace System.Threading.Tasks
         /// <exception cref="ArgumentNullException">
         ///     <paramref name="task"/> is <see langword="null"/>.
         /// </exception>
-#if (NETFRAMEWORK && !NET40) || NETSTANDARD || NETCOREAPP
         [MethodImpl(
             MethodImplOptions.AggressiveInlining
 #if NET5_0_OR_GREATER
             | MethodImplOptions.AggressiveOptimization
 #endif
         )]
-#endif
         public static ConfiguredValueTaskAwaitable ConfigureAwaitNoCapturedContext(this in ValueTask task)
             => task.ConfigureAwait(false);
 
@@ -52,16 +49,13 @@ namespace System.Threading.Tasks
         /// <exception cref="ArgumentNullException">
         ///     <paramref name="task"/> is <see langword="null"/>.
         /// </exception>
-#if (NETFRAMEWORK && !NET40) || NETSTANDARD || NETCOREAPP
         [MethodImpl(
             MethodImplOptions.AggressiveInlining
 #if NET5_0_OR_GREATER
             | MethodImplOptions.AggressiveOptimization
 #endif
         )]
-#endif
         public static ConfiguredValueTaskAwaitable<TResult> ConfigureAwaitNoCapturedContext<TResult>(this in ValueTask<TResult> task)
             => task.ConfigureAwait(false);
     }
 }
-#endif

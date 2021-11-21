@@ -2,18 +2,15 @@
 
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using System.Reflection;
+using System.Runtime.CompilerServices;
 using System.Threading;
+using System.Threading.Tasks;
 using NUnit.Framework;
 using Omnifactotum.Threading;
-
-#if !NET40
-using System.Diagnostics;
-using System.Runtime.CompilerServices;
-using System.Threading.Tasks;
-#endif
 
 namespace Omnifactotum.Tests.Threading
 {
@@ -26,12 +23,8 @@ namespace Omnifactotum.Tests.Threading
         private const int TimeSensitiveTestTimeout = WaitIntervalInMilliseconds * 50;
 
         private static readonly TimeSpan WaitInterval = TimeSpan.FromMilliseconds(WaitIntervalInMilliseconds);
-
-#if !NET40
         private static readonly TimeSpan ConditionTimeout = TimeSpan.FromMilliseconds(WaitIntervalInMilliseconds * 10);
-#endif
 
-#if !NET40
         [OneTimeSetUp]
         public void OneTimeSetUp() => AdjustThreadPoolSettingsForHigherLoad();
 
@@ -41,7 +34,6 @@ namespace Omnifactotum.Tests.Threading
 
         [TearDown]
         public void TearDown() => ReportThreadPoolInformation();
-#endif
 
         [Test]
         [TestCase(0)]
@@ -269,7 +261,6 @@ namespace Omnifactotum.Tests.Threading
             }
         }
 
-#if !NET40
         [Test]
         [Timeout(TimeSensitiveTestTimeout)]
         [SuppressMessage("ReSharper", "AccessToDisposedClosure")]
@@ -463,13 +454,11 @@ namespace Omnifactotum.Tests.Threading
             throw new TimeoutException(
                 $@"Failed to transition to the required state within the allotted time ({ConditionTimeout}).");
         }
-#endif
 
         private static SemaphoreSlimBasedLock CreateTestee(int count) => new(count);
 
         private static SemaphoreSlimBasedLock CreateTestee() => new();
 
-#if !NET40
         private static void ReportThreadPoolInformation(string? suffix = null, [CallerMemberName] string callerName = null!)
         {
             var marker = new[] { callerName, suffix }.Where(s => !s.IsNullOrWhiteSpace()).Join("\x0020:\x0020");
@@ -505,7 +494,6 @@ namespace Omnifactotum.Tests.Threading
             ThreadPool.SetMinThreads(Math.Max(minWorkerThreads, RequiredMinWorkerThreads), minCompletionPortThreads);
             ReportThreadPoolInformation("AFTER", fullCallerName);
         }
-#endif
 
         private enum WorkItemState
         {

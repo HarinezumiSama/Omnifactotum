@@ -224,7 +224,10 @@ namespace Omnifactotum.Tests
         [Test]
         public void TestCreateEmptyCompletedTask()
         {
+#pragma warning disable CS0618
             using var task = Factotum.CreateEmptyCompletedTask();
+#pragma warning restore CS0618
+
             Assert.That(task, Is.Not.Null);
             Assert.That(task.Status, Is.EqualTo(TaskStatus.RanToCompletion));
             Assert.That(task.Exception, Is.Null);
@@ -235,7 +238,10 @@ namespace Omnifactotum.Tests
         {
             var exception = new InvalidOperationException();
 
+#pragma warning disable CS0618
             using var task = Factotum.CreateEmptyFaultedTask(exception);
+#pragma warning restore CS0618
+
             Assert.That(task, Is.Not.Null);
             Assert.That(task.Status, Is.EqualTo(TaskStatus.Faulted));
             Assert.That(task.Exception.EnsureNotNull().InnerExceptions.Single(), Is.SameAs(exception));

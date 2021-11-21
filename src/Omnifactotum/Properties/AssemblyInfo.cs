@@ -2,7 +2,7 @@
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 
-#if NETFRAMEWORK && !NET40_OR_GREATER
+#if NETFRAMEWORK && !NET461_OR_GREATER
 #error [NETFRAMEWORK] The compiler does not support `NET*_OR_GREATER` preprocessor symbols required to compile this project.
 #endif
 

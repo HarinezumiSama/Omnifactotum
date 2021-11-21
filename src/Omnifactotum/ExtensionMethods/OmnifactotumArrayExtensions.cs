@@ -1,12 +1,8 @@
 ﻿#nullable enable
 
+using System.Runtime.CompilerServices;
 using System.Text;
 using Omnifactotum.Annotations;
-using SuppressMessage = System.Diagnostics.CodeAnalysis.SuppressMessageAttribute;
-
-#if !NET40
-using System.Runtime.CompilerServices;
-#endif
 
 //// ReSharper disable RedundantNullnessAttributeWithNullableReferenceTypes
 //// ReSharper disable once UseNullableReferenceTypesAnnotationSyntax
@@ -18,8 +14,6 @@ namespace System
     /// <summary>
     ///     Contains extension methods for array types.
     /// </summary>
-    [SuppressMessage("ReSharper", "UseArrayEmptyMethod", Justification = "Cannot be used due to multi-targeting.")]
-    [SuppressMessage("Performance", "CA1825", Justification = "Cannot be used due to multi-targeting.")]
     public static class OmnifactotumArrayExtensions
     {
         /// <summary>
@@ -34,14 +28,12 @@ namespace System
         /// <returns>
         ///     A shallow copy of the specified array, or <see langword="null"/> if this array is <see langword="null"/>.
         /// </returns>
-#if (NETFRAMEWORK && !NET40) || NETSTANDARD || NETCOREAPP
         [MethodImpl(
             MethodImplOptions.AggressiveInlining
 #if NET5_0_OR_GREATER
             | MethodImplOptions.AggressiveOptimization
 #endif
         )]
-#endif
         [CanBeNull]
         public static T[]? Copy<T>([CanBeNull] this T[]? array) => (T[]?)array?.Clone();
 
@@ -157,22 +149,14 @@ namespace System
         /// <returns>
         ///     The source array if it is not <see langword="null"/>; otherwise, empty array.
         /// </returns>
-#if (NETFRAMEWORK && !NET40) || NETSTANDARD || NETCOREAPP
         [MethodImpl(
             MethodImplOptions.AggressiveInlining
 #if NET5_0_OR_GREATER
             | MethodImplOptions.AggressiveOptimization
 #endif
         )]
-#endif
         [NotNull]
-        public static T[] AvoidNull<T>([CanBeNull] this T[]? source)
-            => source
-#if NET40
-                ?? GetEmptyArray<T>();
-#else
-                ?? Array.Empty<T>();
-#endif
+        public static T[] AvoidNull<T>([CanBeNull] this T[]? source) => source ?? Array.Empty<T>();
 
         /// <summary>
         ///     Converts the specified array of bytes to the hexadecimal string.
@@ -220,24 +204,13 @@ namespace System
         /// <returns>
         ///     A hexadecimal string (in lower case).
         /// </returns>
-#if (NETFRAMEWORK && !NET40) || NETSTANDARD || NETCOREAPP
         [MethodImpl(
             MethodImplOptions.AggressiveInlining
 #if NET5_0_OR_GREATER
             | MethodImplOptions.AggressiveOptimization
 #endif
         )]
-#endif
         [NotNull]
         public static string ToHexString([NotNull] this byte[] byteArray) => ToHexString(byteArray, false);
-
-#if NET40
-        private static T[] GetEmptyArray<T>() => EmptyArrayContainer<T>.Value;
-
-        private static class EmptyArrayContainer<T>
-        {
-            internal static readonly T[] Value = new T[0];
-        }
-#endif
     }
 }

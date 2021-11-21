@@ -14,11 +14,7 @@ namespace Omnifactotum
     /// </typeparam>
     [Serializable]
     public sealed class ReadOnlyItemCollection<T>
-        : ICollection<T>
-#if !NET40
-            ,
-            IReadOnlyCollection<T>
-#endif
+        : ICollection<T>, IReadOnlyCollection<T>
     {
         private readonly ICollection<T> _collection;
 
@@ -34,10 +30,8 @@ namespace Omnifactotum
         /// <inheritdoc />
         public int Count => _collection.Count;
 
-#if !NET40
         /// <inheritdoc />
         int IReadOnlyCollection<T>.Count => _collection.Count;
-#endif
 
         /// <inheritdoc />
         bool ICollection<T>.IsReadOnly => true;

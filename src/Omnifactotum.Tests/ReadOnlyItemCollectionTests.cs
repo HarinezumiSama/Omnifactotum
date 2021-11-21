@@ -41,17 +41,13 @@ namespace Omnifactotum.Tests
             Assert.That(testeeContainer.ReferenceCollection.Count, Is.EqualTo(testeeContainer.OriginalCount + 1));
             Assert.That(testeeContainer.Testee.Contains(ExtraItem), Is.True);
             Assert.That(testeeContainer.TesteeAsCollection.Contains(ExtraItem), Is.True);
-#if !NET40
             Assert.That(testeeContainer.TesteeAsReadOnlyCollection.Contains(ExtraItem), Is.True);
-#endif
             testeeContainer.ReferenceCollection.Remove(Item2);
             testeeContainer.EnsureMatchesWrappedCollection();
             Assert.That(testeeContainer.ReferenceCollection.Count, Is.EqualTo(testeeContainer.OriginalCount));
             Assert.That(testeeContainer.Testee.Contains(Item2), Is.False);
             Assert.That(testeeContainer.TesteeAsCollection.Contains(Item2), Is.False);
-#if !NET40
             Assert.That(testeeContainer.TesteeAsReadOnlyCollection.Contains(Item2), Is.False);
-#endif
             testeeContainer.ReferenceCollection.Clear();
             testeeContainer.EnsureMatchesWrappedCollection();
             Assert.That(testeeContainer.ReferenceCollection.Count, Is.Zero);
@@ -60,10 +56,8 @@ namespace Omnifactotum.Tests
             Assert.That(testeeContainer.Testee, Is.Empty);
             Assert.That(testeeContainer.TesteeAsCollection.Count, Is.Zero);
             Assert.That(testeeContainer.TesteeAsCollection, Is.Empty);
-#if !NET40
             Assert.That(testeeContainer.TesteeAsReadOnlyCollection.Count, Is.Zero);
             Assert.That(testeeContainer.TesteeAsReadOnlyCollection, Is.Empty);
-#endif
         }
 
         [Test]
@@ -99,9 +93,7 @@ namespace Omnifactotum.Tests
 
             public ICollection<string> TesteeAsCollection => Testee;
 
-#if !NET40
             public IReadOnlyCollection<string> TesteeAsReadOnlyCollection => Testee;
-#endif
 
             public void EnsureMatchesWrappedCollection()
             {
@@ -129,7 +121,6 @@ namespace Omnifactotum.Tests
                 TesteeAsCollection.CopyTo(testeeAsCollectionItems, 0);
                 Assert.That(testeeAsCollectionItems, Is.EquivalentTo(ReferenceCollection));
 
-#if !NET40
                 Assert.That(TesteeAsReadOnlyCollection.Count, Is.EqualTo(ReferenceCollection.Count));
                 Assert.That(TesteeAsReadOnlyCollection, Is.EquivalentTo(ReferenceCollection));
                 Assert.That(TesteeAsReadOnlyCollection.Contains(AbsentItem), Is.False);
@@ -137,7 +128,6 @@ namespace Omnifactotum.Tests
                 {
                     Assert.That(TesteeAsReadOnlyCollection.Contains(item), Is.True);
                 }
-#endif
             }
 
             public void EnsureUnchanged()

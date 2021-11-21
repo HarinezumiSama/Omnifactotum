@@ -1,11 +1,8 @@
 ﻿#nullable enable
 
 using System.Linq;
-using Omnifactotum.Annotations;
-
-#if (NETFRAMEWORK && !NET40) || NETSTANDARD || NETCOREAPP
 using System.Runtime.CompilerServices;
-#endif
+using Omnifactotum.Annotations;
 
 //// ReSharper disable RedundantNullnessAttributeWithNullableReferenceTypes
 
@@ -53,14 +50,12 @@ namespace System
         /// ]]>
         ///     </code>
         /// </example>
-#if (NETFRAMEWORK && !NET40) || NETSTANDARD || NETCOREAPP
         [MethodImpl(
             MethodImplOptions.AggressiveInlining
 #if NET5_0_OR_GREATER
             | MethodImplOptions.AggressiveOptimization
 #endif
         )]
-#endif
         [NotNull]
         public static TDelegate[] GetTypedInvocations<TDelegate>([CanBeNull] this TDelegate? @delegate)
             where TDelegate : Delegate

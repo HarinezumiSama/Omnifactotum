@@ -51,7 +51,6 @@ namespace Omnifactotum.Tests.ExtensionMethods
             Assert.That(stringBuilder.ToString(), Is.EqualTo("A:0./:1.z:2."));
         }
 
-#if !NET40
         [Test]
         public void TestDoForEachAsyncWhenInvalidArgumentsThenThrows()
         {
@@ -99,7 +98,6 @@ namespace Omnifactotum.Tests.ExtensionMethods
 
             Assert.That(stringBuilder.ToString(), Is.EqualTo("a:0./:1.Z:2."));
         }
-#endif
 
         [Test]
         [TestCaseSource(typeof(ToUIStringForStringCollectionTestCases))]

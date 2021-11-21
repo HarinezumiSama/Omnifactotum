@@ -2,7 +2,7 @@
 
 <Project Sdk="Microsoft.NET.Sdk">
     <PropertyGroup>
-        <TargetFrameworks>net40;net461;net472;netcoreapp2.1;netcoreapp3.1;net5.0</TargetFrameworks>
+        <TargetFrameworks>net461;net472;netcoreapp2.1;netcoreapp3.1;net5.0</TargetFrameworks>
     </PropertyGroup>
 
     <PropertyGroup>
@@ -12,21 +12,20 @@
         <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
     </PropertyGroup>
 
-    <ItemGroup Condition="'$(TargetFramework)'=='net40' or '$(TargetFramework)'=='net461' or '$(TargetFramework)'=='net472'">
+    <ItemGroup Condition="'$(TargetFramework)'=='net461' or '$(TargetFramework)'=='net472'">
         <Reference Include="Microsoft.CSharp" />
         <Reference Include="System.Windows.Forms" />
     </ItemGroup>
 
     <ItemGroup>
         <PackageReference Include="Appveyor.TestLogger" Version="2.0.0" Condition="$(IsAppveyorBuild)" />
-        <PackageReference Include="Microsoft.CodeAnalysis.CSharp" Version="4.0.1" Condition="'$(TargetFramework)'!='net40' and '$(TargetFramework)'!='net461' and '$(TargetFramework)'!='net472'" />
+        <PackageReference Include="Microsoft.CodeAnalysis.CSharp" Version="4.0.1" Condition="'$(TargetFramework)'!='net461' and '$(TargetFramework)'!='net472'" />
         <PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.0.0" />
-        <PackageReference Include="Moq" Version="4.2.1510.2205" Condition="'$(TargetFramework)'=='net40'" />
-        <PackageReference Include="Moq" Version="4.16.1" Condition="'$(TargetFramework)'!='net40'" />
+        <PackageReference Include="Moq" Version="4.16.1" />
         <PackageReference Include="NUnit" Version="3.13.2" />
         <PackageReference Include="NUnit3TestAdapter" Version="4.1.0" />
-        <PackageReference Include="System.Reflection.Emit" Version="4.7.0" Condition="'$(TargetFramework)'!='net40' and '$(TargetFramework)'!='net461' and '$(TargetFramework)'!='net472'" />
-        <PackageReference Include="System.Runtime.Loader" Version="4.3.0" Condition="'$(TargetFramework)'!='net40' and '$(TargetFramework)'!='net461' and '$(TargetFramework)'!='net472'" />
+        <PackageReference Include="System.Reflection.Emit" Version="4.7.0" Condition="'$(TargetFramework)'!='net461' and '$(TargetFramework)'!='net472'" />
+        <PackageReference Include="System.Runtime.Loader" Version="4.3.0" Condition="'$(TargetFramework)'!='net461' and '$(TargetFramework)'!='net472'" />
     </ItemGroup>
 
     <ItemGroup>

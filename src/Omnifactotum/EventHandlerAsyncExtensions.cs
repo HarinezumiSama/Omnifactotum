@@ -1,5 +1,4 @@
-﻿#if !NET40
-#nullable enable
+﻿#nullable enable
 
 using System;
 using System.Linq;
@@ -85,4 +84,3 @@ namespace Omnifactotum
         }
     }
 }
-#endif

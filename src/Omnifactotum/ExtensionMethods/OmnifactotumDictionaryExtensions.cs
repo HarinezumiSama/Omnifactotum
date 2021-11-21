@@ -1,8 +1,4 @@
-﻿#if NET40
-using Omnifactotum;
-#else
-using System.Collections.ObjectModel;
-#endif
+﻿using System.Collections.ObjectModel;
 using Omnifactotum.Annotations;
 
 //// ReSharper disable once CheckNamespace :: Namespace is intentionally named so in order to simplify usage of extension methods

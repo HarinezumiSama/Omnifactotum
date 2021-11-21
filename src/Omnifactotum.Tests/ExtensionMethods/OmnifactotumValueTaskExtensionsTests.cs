@@ -1,5 +1,4 @@
-﻿#if !NET40
-#nullable enable
+﻿#nullable enable
 
 using System.Runtime.CompilerServices;
 using System.Threading.Tasks;
@@ -53,4 +52,3 @@ namespace Omnifactotum.Tests.ExtensionMethods
         }
     }
 }
-#endif

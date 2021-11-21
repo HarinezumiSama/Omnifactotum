@@ -3,14 +3,11 @@
 using System.Collections.ObjectModel;
 using System.Diagnostics.CodeAnalysis;
 using System.Linq;
+using System.Runtime.CompilerServices;
+using System.Threading.Tasks;
 using Omnifactotum;
 using Omnifactotum.Annotations;
 using NotNullAttribute = Omnifactotum.Annotations.NotNullAttribute;
-
-#if !NET40
-using System.Runtime.CompilerServices;
-using System.Threading.Tasks;
-#endif
 
 //// ReSharper disable RedundantNullnessAttributeWithNullableReferenceTypes
 
@@ -125,7 +122,6 @@ namespace System.Collections.Generic
             }
         }
 
-#if !NET40
         /// <summary>
         ///     Performs the specified asynchronous action for each element of the collection.
         /// </summary>
@@ -204,7 +200,6 @@ namespace System.Collections.Generic
                 index++;
             }
         }
-#endif
 
         /// <summary>
         ///     Sets the items in the specified collection to the specified items.
@@ -531,14 +526,12 @@ namespace System.Collections.Generic
         /// <returns>
         ///     The source collection if it is not <see langword="null"/>; otherwise, empty collection.
         /// </returns>
-#if (NETFRAMEWORK && !NET40) || NETSTANDARD || NETCOREAPP
         [MethodImpl(
             MethodImplOptions.AggressiveInlining
 #if NET5_0_OR_GREATER
             | MethodImplOptions.AggressiveOptimization
 #endif
         )]
-#endif
         [NotNull]
         public static IEnumerable<T> AvoidNull<T>([CanBeNull] [NoEnumeration] this IEnumerable<T>? source)
             => source ?? Enumerable.Empty<T>();
@@ -560,14 +553,12 @@ namespace System.Collections.Generic
         /// <returns>
         ///     A created hash set.
         /// </returns>
-#if (NETFRAMEWORK && !NET40) || NETSTANDARD || NETCOREAPP
         [MethodImpl(
             MethodImplOptions.AggressiveInlining
 #if NET5_0_OR_GREATER
             | MethodImplOptions.AggressiveOptimization
 #endif
         )]
-#endif
         [NotNull]
         public static HashSet<T> ToHashSet<T>(
             [NotNull] [InstantHandle]
@@ -592,14 +583,12 @@ namespace System.Collections.Generic
         /// <returns>
         ///     A created hash set.
         /// </returns>
-#if (NETFRAMEWORK && !NET40) || NETSTANDARD || NETCOREAPP
         [MethodImpl(
             MethodImplOptions.AggressiveInlining
 #if NET5_0_OR_GREATER
             | MethodImplOptions.AggressiveOptimization
 #endif
         )]
-#endif
         [NotNull]
         public static HashSet<T> ToHashSet<T>(
             [NotNull] [InstantHandle]
@@ -618,14 +607,12 @@ namespace System.Collections.Generic
         /// <returns>
         ///     An object that can be used to synchronize access to the specified collection.
         /// </returns>
-#if (NETFRAMEWORK && !NET40) || NETSTANDARD || NETCOREAPP
         [MethodImpl(
             MethodImplOptions.AggressiveInlining
 #if NET5_0_OR_GREATER
             | MethodImplOptions.AggressiveOptimization
 #endif
         )]
-#endif
         public static object GetSyncRoot([NotNull] [NoEnumeration] this ICollection collection)
             => collection is null ? throw new ArgumentNullException(nameof(collection)) : collection.SyncRoot;
 
@@ -824,14 +811,12 @@ namespace System.Collections.Generic
         /// <returns>
         ///     A read-only wrapper for the specified list.
         /// </returns>
-#if (NETFRAMEWORK && !NET40) || NETSTANDARD || NETCOREAPP
         [MethodImpl(
             MethodImplOptions.AggressiveInlining
 #if NET5_0_OR_GREATER
             | MethodImplOptions.AggressiveOptimization
 #endif
         )]
-#endif
         [NotNull]
         public static ReadOnlyCollection<T> AsReadOnly<T>([NotNull] this IList<T> list)
             => list is null ? throw new ArgumentNullException(nameof(list)) : new ReadOnlyCollection<T>(list);

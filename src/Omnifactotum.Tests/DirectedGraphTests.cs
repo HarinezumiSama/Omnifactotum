@@ -15,7 +15,7 @@ namespace Omnifactotum.Tests
             var graph = new DirectedGraph<string>();
             Assert.That(graph.Graph, Is.SameAs(graph));
             Assert.That(graph.Count, Is.EqualTo(0));
-            Assert.That(graph, Is.EquivalentTo(new DirectedGraphNode<string>[0]));
+            Assert.That(graph, Is.EquivalentTo(Array.Empty<DirectedGraphNode<string>>()));
         }
 
         [Test]

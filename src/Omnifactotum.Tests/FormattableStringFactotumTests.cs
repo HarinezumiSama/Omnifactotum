@@ -12,13 +12,7 @@ namespace Omnifactotum.Tests
         [SuppressMessage("ReSharper", "ExpressionIsAlwaysNull")]
         public void TestAsInvariantWhenInvalidArgumentThenThrows()
         {
-#if NET40
-            string
-#else
-            FormattableString
-#endif
-                sourceInterpolationValue = null;
-
+            FormattableString sourceInterpolationValue = null;
             Assert.That(() => FormattableStringFactotum.AsInvariant(sourceInterpolationValue!), Throws.ArgumentNullException);
         }
 
@@ -32,23 +26,10 @@ namespace Omnifactotum.Tests
             //// ReSharper disable once StringLiteralTypo :: Non-English word
             const string CurrentCultureExpectedResult = @"3 141 592 653,589|воскресенье, 30.мая.2021 13:01:51";
 
-            //// ReSharper disable once InlineTemporaryVariable :: Conditional multi-target compilation
-            const string InvariantCultureExpectedResult =
-#if NET40
-                CurrentCultureExpectedResult
-#else
-                @"3,141,592,653.589|Sunday, 30/May/2021 13:01:51"
-#endif
-                ;
+            const string InvariantCultureExpectedResult = @"3,141,592,653.589|Sunday, 30/May/2021 13:01:51";
 
-#if NET40
-            var
-#else
-            FormattableString
-#endif
-                sourceInterpolationValue = $@"{Number:N3}|{dateTime:dddd, d/MMMM/yyyy HH:mm:ss}";
+            FormattableString sourceInterpolationValue = $@"{Number:N3}|{dateTime:dddd, d/MMMM/yyyy HH:mm:ss}";
 
-            //// ReSharper disable once RedundantToStringCall :: Conditional multi-target compilation
             var currentCultureActualResult = sourceInterpolationValue.ToString(CultureInfo.CurrentCulture);
             Assert.That(currentCultureActualResult, Is.EqualTo(CurrentCultureExpectedResult));
 

@@ -1,7 +1,5 @@
 ﻿using System.Collections.Generic;
-#if (NETFRAMEWORK && !NET40) || NETSTANDARD || NETCOREAPP
 using System.Runtime.CompilerServices;
-#endif
 using Omnifactotum.Annotations;
 
 namespace Omnifactotum
@@ -30,9 +28,7 @@ namespace Omnifactotum
         /// <returns>
         ///     A new <see cref="KeyValuePair{TKey,TValue}"/> having the specified key and value set.
         /// </returns>
-#if (NETFRAMEWORK && !NET40) || NETSTANDARD || NETCOREAPP
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-#endif
         public static KeyValuePair<TKey, TValue> Create<TKey, TValue>([CanBeNull] TKey key, [CanBeNull] TValue value) => new(key, value);
     }
 }

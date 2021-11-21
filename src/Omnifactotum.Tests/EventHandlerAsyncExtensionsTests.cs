@@ -1,5 +1,4 @@
-﻿#if !NET40
-#nullable enable
+﻿#nullable enable
 
 using System.Collections.Generic;
 using System.Threading;
@@ -147,4 +146,3 @@ namespace Omnifactotum.Tests
         }
     }
 }
-#endif

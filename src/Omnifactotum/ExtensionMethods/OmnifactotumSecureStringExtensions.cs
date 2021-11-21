@@ -2,9 +2,7 @@
 
 //// ReSharper disable RedundantNullnessAttributeWithNullableReferenceTypes
 
-#if (NETFRAMEWORK && !NET40) || NETSTANDARD || NETCOREAPP
 using System.Runtime.CompilerServices;
-#endif
 using System.Runtime.InteropServices;
 using System.Security;
 using Omnifactotum.Annotations;
@@ -36,9 +34,7 @@ namespace System
         /// </returns>
         [Pure]
         [ContractAnnotation("false <= notnull", true)]
-#if (NETFRAMEWORK && !NET40) || NETSTANDARD || NETCOREAPP
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-#endif
         public static bool IsNullOrEmpty(
 #if NETSTANDARD2_1 || NET5_0_OR_GREATER
             [NotNullWhen(false)]

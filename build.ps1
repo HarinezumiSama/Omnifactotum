@@ -670,7 +670,7 @@ process
         }
 
         # TODO: Autodiscover from the *.Tests project(s)
-        [string[]] $testFrameworks = @('net40', 'net461', 'net472', 'netcoreapp2.1', 'netcoreapp3.1', 'net5.0')
+        [string[]] $testFrameworks = @('net461', 'net472', 'netcoreapp2.1', 'netcoreapp3.1', 'net5.0')
 
         foreach ($testFramework in $testFrameworks)
         {
@@ -700,10 +700,7 @@ process
             [hashtable] $testExecutionCommandParameters = `
                 Create-DotNetCliExecuteCommandParameters -TitleDetails $testFramework test @testExecutionCliOptions
 
-            # When running via dotCover, the Appveyor Test Adapter DLL cannot be found for 'net40'
-            [bool] $actualEnableDotCover = $EnableDotCover -and $testFramework -ine 'net40'
-
-            if ($actualEnableDotCover)
+            if ($EnableDotCover)
             {
                 [string] $dotCoverExecutableName = 'dotcover.exe'
 
@@ -771,7 +768,7 @@ process
             }
             catch
             {
-                if (!$actualEnableDotCover -and !$AppveyorBuild)
+                if (!$EnableDotCover -and !$AppveyorBuild)
                 {
                     throw
                 }
@@ -783,7 +780,7 @@ process
                 Write-Host ''
             }
 
-            if ($actualEnableDotCover)
+            if ($EnableDotCover)
             {
                 if (![File]::Exists($coverageSnapshotFilePath))
                 {

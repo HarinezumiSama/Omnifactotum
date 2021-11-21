@@ -1,4 +1,3 @@
-#if !NET40
 #nullable enable
 
 using System.Threading;
@@ -23,4 +22,3 @@ namespace Omnifactotum
     /// </param>
     public delegate Task EventHandlerAsync<in TEventArgs>(object? sender, TEventArgs eventArgs, CancellationToken cancellationToken);
 }
-#endif
