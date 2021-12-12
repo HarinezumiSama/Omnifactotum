@@ -676,7 +676,7 @@ namespace System
         ///     A string representing the properties of the specified object.
         /// </returns>
         [NotNull]
-        public static string ToPropertyString<T>(this T obj, [CanBeNull] ToPropertyStringOptions? options)
+        public static string ToPropertyString<T>([CanBeNull] this T? obj, [CanBeNull] ToPropertyStringOptions? options)
         {
             var actualOptions = options ?? new ToPropertyStringOptions();
 
@@ -735,7 +735,7 @@ namespace System
 #endif
         )]
         [NotNull]
-        public static string ToPropertyString<T>(this T obj) => ToPropertyString(obj, null);
+        public static string ToPropertyString<T>([CanBeNull] this T? obj) => ToPropertyString(obj, null);
 
         /// <summary>
         ///     Determines if the contents of the specified object are equal to the contents of another specified
@@ -781,7 +781,7 @@ namespace System
 
         [DebuggerNonUserCode]
         private static void ToPropertyStringInternal<T>(
-            T obj,
+            [CanBeNull] T? obj,
             bool isRoot,
             ToPropertyStringOptions options,
             Func<Type, PropertyInfo[]> getProperties,
