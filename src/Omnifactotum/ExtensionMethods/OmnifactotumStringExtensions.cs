@@ -36,7 +36,7 @@ namespace System
         ///     otherwise, <see langword="false"/>.
         /// </returns>
         [Pure]
-        [ContractAnnotation("false <= notnull", true)]
+        [ContractAnnotation("null => true", true)]
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static bool IsNullOrEmpty(
 #if NETSTANDARD2_1 || NET5_0_OR_GREATER
@@ -58,7 +58,7 @@ namespace System
         ///     exclusively of white-space characters; otherwise, <see langword="false"/>.
         /// </returns>
         [Pure]
-        [ContractAnnotation("false <= notnull", true)]
+        [ContractAnnotation("null => true", true)]
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static bool IsNullOrWhiteSpace(
 #if NETSTANDARD2_1 || NET5_0_OR_GREATER
