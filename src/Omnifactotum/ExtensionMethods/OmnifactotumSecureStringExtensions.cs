@@ -33,7 +33,7 @@ namespace System
         ///     <see cref="SecureString.Length"/> is zero; otherwise, <see langword="false"/>.
         /// </returns>
         [Pure]
-        [ContractAnnotation("false <= notnull", true)]
+        [ContractAnnotation("null => true", true)]
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static bool IsNullOrEmpty(
 #if NETSTANDARD2_1 || NET5_0_OR_GREATER
