@@ -1180,7 +1180,7 @@ namespace System
             | MethodImplOptions.AggressiveOptimization
 #endif
         )]
-        private static string GetObjectReferenceDescriptionInternal<T>(T? obj, Func<Type, string> formatType)
+        private static string GetObjectReferenceDescriptionInternal<T>(T? obj, [InstantHandle] Func<Type, string> formatType)
             where T : class
             => obj is null
                 ? OmnifactotumRepresentationConstants.NullValueRepresentation

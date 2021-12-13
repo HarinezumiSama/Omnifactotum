@@ -67,7 +67,7 @@ namespace Omnifactotum.Validation
         /// </returns>
         [CanBeNull]
         public ObjectValidationException GetException(
-            Func<MemberConstraintValidationError, string> getErrorDescription,
+            [InstantHandle] Func<MemberConstraintValidationError, string> getErrorDescription,
             string errorDescriptionSeparator)
         {
             if (getErrorDescription is null)
@@ -110,6 +110,7 @@ namespace Omnifactotum.Validation
         public void EnsureSucceeded()
         {
             var exception = GetException();
+
             if (exception is null)
             {
                 return;
