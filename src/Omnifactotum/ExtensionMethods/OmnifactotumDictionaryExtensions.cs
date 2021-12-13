@@ -1,12 +1,17 @@
-﻿using System.Collections.ObjectModel;
+﻿#nullable enable
+
+using System.Collections.ObjectModel;
+using System.Runtime.CompilerServices;
 using Omnifactotum.Annotations;
+
+//// ReSharper disable RedundantNullnessAttributeWithNullableReferenceTypes
 
 //// ReSharper disable once CheckNamespace :: Namespace is intentionally named so in order to simplify usage of extension methods
 
 namespace System.Collections.Generic
 {
     /// <summary>
-    ///     Contains extension methods for the generic dictionary interface.
+    ///     Contains extension methods for <see cref="IDictionary{TKey,TValue}"/>.
     /// </summary>
     public static class OmnifactotumDictionaryExtensions
     {
@@ -75,16 +80,15 @@ namespace System.Collections.Generic
         ///     The value associated with the specified key if the key is found; otherwise, the default value for
         ///     the type of the value parameter.
         /// </returns>
-        public static TValue GetValueOrDefault<TKey, TValue>(
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static TValue? GetValueOrDefault<TKey, TValue>(
             [NotNull]
 #if NETFRAMEWORK
             this
 #endif
                 IDictionary<TKey, TValue> dictionary,
             [NotNull] TKey key)
-        {
-            return GetValueOrDefault(dictionary, key, default);
-        }
+            => GetValueOrDefault(dictionary, key, default!);
 
         /// <summary>
         ///     Gets the value associated with the specified key from the specified dictionary.
@@ -160,6 +164,7 @@ namespace System.Collections.Generic
         /// <returns>
         ///     A value that was associated with the specified key, or has been associated if it was not.
         /// </returns>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static TValue GetOrCreateValue<TKey, TValue>(
             [NotNull] this IDictionary<TKey, TValue> dictionary,
             [NotNull] TKey key)
@@ -181,11 +186,13 @@ namespace System.Collections.Generic
         /// <returns>
         ///     A read-only wrapper for the specified dictionary.
         /// </returns>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         [NotNull]
         public static ReadOnlyDictionary<TKey, TValue> AsReadOnly<TKey, TValue>(
             [NotNull] this IDictionary<TKey, TValue> dictionary)
-        {
-            return new ReadOnlyDictionary<TKey, TValue>(dictionary);
-        }
+#if !NETFRAMEWORK
+            where TKey : notnull
+#endif
+            => new(dictionary);
     }
 }
