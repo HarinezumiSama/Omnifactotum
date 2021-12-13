@@ -4,6 +4,7 @@ using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 using NUnit.Framework;
 using Omnifactotum.NUnit;
@@ -56,8 +57,11 @@ namespace Omnifactotum.Tests.ExtensionMethods
         {
             const int[]? NullArray = null;
 
-            Assert.That(() => NullArray!.DoForEachAsync(_ => Task.CompletedTask), Throws.ArgumentNullException);
-            Assert.That(() => new[] { "a" }.DoForEachAsync(default(Func<string, Task>)!), Throws.ArgumentNullException);
+            Assert.That(() => NullArray!.DoForEachAsync((_, _) => Task.CompletedTask), Throws.ArgumentNullException);
+
+            Assert.That(
+                () => new[] { "a" }.DoForEachAsync(default(Func<string, CancellationToken, Task>)!),
+                Throws.ArgumentNullException);
         }
 
         [Test]
@@ -66,13 +70,61 @@ namespace Omnifactotum.Tests.ExtensionMethods
             var stringBuilder = new StringBuilder();
 
             await new[] { 'a', '/', 'Z' }.DoForEachAsync(
-                async c =>
+                async (item, token) =>
                 {
-                    await Task.Delay(0);
-                    stringBuilder.Append(c).Append('.');
+                    await Task.Delay(0, token);
+                    stringBuilder.Append(item).Append('.');
                 });
 
             Assert.That(stringBuilder.ToString(), Is.EqualTo("a./.Z."));
+        }
+
+        [Test]
+        public void TestDoForEachAsyncWhenValidArgumentsAndCancelledThenThrowsOperationCanceledException()
+        {
+            using var cancellationTokenSource = new CancellationTokenSource();
+            var cancellationToken = cancellationTokenSource.Token;
+
+            var stringBuilder = new StringBuilder();
+
+            const char LastItem = 'Z';
+
+            Assert.That(
+                async () =>
+                    await new[] { 'a', '/', LastItem }.DoForEachAsync(
+                        async (item, token) =>
+                        {
+                            if (item == LastItem)
+                            {
+                                cancellationTokenSource.Cancel();
+                            }
+
+                            await Task.Delay(0, token);
+                            stringBuilder.Append(item).Append('.');
+                        },
+                        cancellationToken),
+                Throws.InstanceOf<OperationCanceledException>()
+                    .With
+                    .Property(nameof(OperationCanceledException.CancellationToken))
+                    .EqualTo(cancellationToken));
+
+            Assert.That(stringBuilder.ToString(), Is.EqualTo("a./."));
+
+            Assert.That(
+                async () =>
+                    await new[] { 42 }.DoForEachAsync(
+                        async (item, _) =>
+                        {
+                            await Task.CompletedTask;
+                            stringBuilder.Append(item).Append('.');
+                        },
+                        cancellationToken),
+                Throws.InstanceOf<OperationCanceledException>()
+                    .With
+                    .Property(nameof(OperationCanceledException.CancellationToken))
+                    .EqualTo(cancellationToken));
+
+            Assert.That(stringBuilder.ToString(), Is.EqualTo("a./."));
         }
 
         [Test]
@@ -80,8 +132,11 @@ namespace Omnifactotum.Tests.ExtensionMethods
         {
             const int[]? NullArray = null;
 
-            Assert.That(() => NullArray!.DoForEachAsync((_, _) => Task.CompletedTask), Throws.ArgumentNullException);
-            Assert.That(() => new[] { "a" }.DoForEachAsync(default(Func<string, int, Task>)!), Throws.ArgumentNullException);
+            Assert.That(() => NullArray!.DoForEachAsync((_, _, _) => Task.CompletedTask), Throws.ArgumentNullException);
+
+            Assert.That(
+                () => new[] { "a" }.DoForEachAsync(default(Func<string, int, CancellationToken, Task>)!),
+                Throws.ArgumentNullException);
         }
 
         [Test]
@@ -90,13 +145,61 @@ namespace Omnifactotum.Tests.ExtensionMethods
             var stringBuilder = new StringBuilder();
 
             await new[] { 'a', '/', 'Z' }.DoForEachAsync(
-                async (c, i) =>
+                async (item, index, token) =>
                 {
-                    await Task.Delay(0);
-                    stringBuilder.Append(c).Append(':').Append(i).Append('.');
+                    await Task.Delay(0, token);
+                    stringBuilder.Append(item).Append(':').Append(index).Append('.');
                 });
 
             Assert.That(stringBuilder.ToString(), Is.EqualTo("a:0./:1.Z:2."));
+        }
+
+        [Test]
+        public void TestDoForEachAsyncWithIndexWhenValidArgumentsAndCancelledThenThrowsOperationCanceledException()
+        {
+            using var cancellationTokenSource = new CancellationTokenSource();
+            var cancellationToken = cancellationTokenSource.Token;
+
+            var stringBuilder = new StringBuilder();
+
+            const char LastItem = 'Z';
+
+            Assert.That(
+                async () =>
+                    await new[] { 'a', '/', LastItem }.DoForEachAsync(
+                        async (item, index, token) =>
+                        {
+                            if (item == LastItem)
+                            {
+                                cancellationTokenSource.Cancel();
+                            }
+
+                            await Task.Delay(0, token);
+                            stringBuilder.Append(item).Append(':').Append(index).Append('.');
+                        },
+                        cancellationToken),
+                Throws.InstanceOf<OperationCanceledException>()
+                    .With
+                    .Property(nameof(OperationCanceledException.CancellationToken))
+                    .EqualTo(cancellationToken));
+
+            Assert.That(stringBuilder.ToString(), Is.EqualTo("a:0./:1."));
+
+            Assert.That(
+                async () =>
+                    await new[] { 42 }.DoForEachAsync(
+                        async (item, index, _) =>
+                        {
+                            await Task.CompletedTask;
+                            stringBuilder.Append(item).Append(':').Append(index).Append('.');
+                        },
+                        cancellationToken),
+                Throws.InstanceOf<OperationCanceledException>()
+                    .With
+                    .Property(nameof(OperationCanceledException.CancellationToken))
+                    .EqualTo(cancellationToken));
+
+            Assert.That(stringBuilder.ToString(), Is.EqualTo("a:0./:1."));
         }
 
         [Test]

@@ -4,6 +4,7 @@ using System.Collections.ObjectModel;
 using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using System.Runtime.CompilerServices;
+using System.Threading;
 using System.Threading.Tasks;
 using Omnifactotum;
 using Omnifactotum.Annotations;
@@ -133,7 +134,11 @@ namespace System.Collections.Generic
         /// </param>
         /// <param name="actionAsync">
         ///     A reference to a method representing the asynchronous action to perform on an item;
-        ///     the parameter represents the item to perform the action on.
+        ///     the first parameter is the item to perform the action on;
+        ///     the second parameter is the token to be monitored for cancellation requests.
+        /// </param>
+        /// <param name="cancellationToken">
+        ///     The token to monitor for cancellation requests.
         /// </param>
         /// <exception cref="System.ArgumentNullException">
         ///     <para><paramref name="collection"/> is <see langword="null"/>.</para>
@@ -142,7 +147,8 @@ namespace System.Collections.Generic
         /// </exception>
         public static async Task DoForEachAsync<T>(
             [NotNull] this IEnumerable<T> collection,
-            [NotNull] [InstantHandle] Func<T, Task> actionAsync)
+            [NotNull] [InstantHandle] Func<T, CancellationToken, Task> actionAsync,
+            CancellationToken cancellationToken = default)
         {
             if (collection is null)
             {
@@ -154,9 +160,12 @@ namespace System.Collections.Generic
                 throw new ArgumentNullException(nameof(actionAsync));
             }
 
+            cancellationToken.ThrowIfCancellationRequested();
+
             foreach (var item in collection)
             {
-                await actionAsync(item);
+                cancellationToken.ThrowIfCancellationRequested();
+                await actionAsync(item, cancellationToken);
             }
         }
 
@@ -171,8 +180,12 @@ namespace System.Collections.Generic
         /// </param>
         /// <param name="actionAsync">
         ///     A reference to a method representing the asynchronous action to perform on an item;
-        ///     the first parameter represents the item to perform the action on;
-        ///     the second parameter represents the zero-based index of the element in the collection.
+        ///     the first parameter is the item to perform the action on;
+        ///     the second parameter is the zero-based index of the element in the collection.
+        ///     the third parameter is the token to be monitored for cancellation requests.
+        /// </param>
+        /// <param name="cancellationToken">
+        ///     The token to monitor for cancellation requests.
         /// </param>
         /// <exception cref="System.ArgumentNullException">
         ///     <para><paramref name="collection"/> is <see langword="null"/>.</para>
@@ -181,7 +194,8 @@ namespace System.Collections.Generic
         /// </exception>
         public static async Task DoForEachAsync<T>(
             [NotNull] this IEnumerable<T> collection,
-            [NotNull] [InstantHandle] Func<T, int, Task> actionAsync)
+            [NotNull] [InstantHandle] Func<T, int, CancellationToken, Task> actionAsync,
+            CancellationToken cancellationToken = default)
         {
             if (collection is null)
             {
@@ -193,10 +207,13 @@ namespace System.Collections.Generic
                 throw new ArgumentNullException(nameof(actionAsync));
             }
 
+            cancellationToken.ThrowIfCancellationRequested();
+
             var index = 0;
             foreach (var item in collection)
             {
-                await actionAsync(item, index);
+                cancellationToken.ThrowIfCancellationRequested();
+                await actionAsync(item, index, cancellationToken);
                 index++;
             }
         }
@@ -565,7 +582,7 @@ namespace System.Collections.Generic
 #if NETFRAMEWORK && !NET472_OR_GREATER
             this
 #endif
-            IEnumerable<T> collection,
+                IEnumerable<T> collection,
             [CanBeNull] IEqualityComparer<T>? comparer)
             => collection is null ? throw new ArgumentNullException(nameof(collection)) : new HashSet<T>(collection, comparer);
 
@@ -595,7 +612,7 @@ namespace System.Collections.Generic
 #if NETFRAMEWORK && !NET472_OR_GREATER
             this
 #endif
-            IEnumerable<T> collection)
+                IEnumerable<T> collection)
             => collection is null ? throw new ArgumentNullException(nameof(collection)) : new HashSet<T>(collection);
 
         /// <summary>
