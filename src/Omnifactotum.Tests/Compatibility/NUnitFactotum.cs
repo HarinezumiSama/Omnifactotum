@@ -329,7 +329,7 @@ namespace Omnifactotum.NUnit
         /// <exception cref="AssertionException">
         ///     <paramref name="value"/> is <see langword="null"/>.
         /// </exception>
-#if NETSTANDARD2_1 || NET5_0_OR_GREATER
+#if NETSTANDARD2_1_OR_GREATER || NET5_0_OR_GREATER
         [return: NotNullIfNotNull(@"value")]
 #endif
         [NotNull]

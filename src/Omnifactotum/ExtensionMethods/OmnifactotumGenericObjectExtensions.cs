@@ -65,8 +65,8 @@ namespace System
             int recursionLevel);
 
         /// <summary>
-        ///     Returns the specified value if is not <see langword="null"/>;
-        ///     otherwise, throws <see cref="ArgumentNullException"/>.
+        ///     Returns the specified value if it is not <see langword="null"/>;
+        ///     otherwise, throws an <see cref="ArgumentNullException"/>.
         /// </summary>
         /// <typeparam name="T">
         ///     The reference type of the value to check.
@@ -75,7 +75,7 @@ namespace System
         ///     The value to check.
         /// </param>
         /// <returns>
-        ///     The specified value if is not <see langword="null"/>.
+        ///     The specified value if it is not <see langword="null"/>.
         /// </returns>
         /// <exception cref="ArgumentNullException">
         ///     <paramref name="value"/> is <see langword="null"/>.
@@ -86,7 +86,7 @@ namespace System
             | MethodImplOptions.AggressiveOptimization
 #endif
         )]
-#if NETSTANDARD2_1 || NET5_0_OR_GREATER
+#if NETSTANDARD2_1_OR_GREATER || NET5_0_OR_GREATER
         [return: NotNullIfNotNull(@"value")]
 #endif
         [NotNull]

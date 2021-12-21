@@ -36,7 +36,7 @@ namespace System
         [ContractAnnotation("null => true", true)]
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static bool IsNullOrEmpty(
-#if NETSTANDARD2_1 || NET5_0_OR_GREATER
+#if NETSTANDARD2_1_OR_GREATER || NET5_0_OR_GREATER
             [NotNullWhen(false)]
 #endif
             [CanBeNull] this SecureString? value)
@@ -55,7 +55,7 @@ namespace System
         [ContractAnnotation("null => null; notnull => notnull", true)]
         [CanBeNull]
         [Pure]
-#if NETSTANDARD2_1 || NET5_0_OR_GREATER
+#if NETSTANDARD2_1_OR_GREATER || NET5_0_OR_GREATER
         [return: NotNullIfNotNull(@"value")]
 #endif
         public static string? ToPlainText([CanBeNull] this SecureString? value)
