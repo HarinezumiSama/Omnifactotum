@@ -32,6 +32,35 @@ namespace Omnifactotum.Tests.ExtensionMethods
         }
 
         [Test]
+        [TestCase("http://a/b/c")]
+        [TestCase("https://a/b/c")]
+        public void TestEnsureWebUriWhenWebUriThenSucceeds(string? uriString)
+        {
+            var uri = uriString is null ? null : new Uri(uriString, UriKind.RelativeOrAbsolute);
+            Assert.That(() => uri.EnsureWebUri(), Is.SameAs(uri));
+        }
+
+        [Test]
+        [TestCase(null)]
+        [TestCase("")]
+        [TestCase("\u0020\t\r\n")]
+        [TestCase("/a/b/c")]
+        [TestCase("ftp://a/b/c")]
+        [TestCase("news://a/b/c")]
+        [TestCase("nntp://a/b/c")]
+        [TestCase("gopher://a/b/c")]
+        [TestCase("mailto:john@example.com")]
+        [TestCase("mailto://john@example.com")]
+        [TestCase("file://a/b/c")]
+        [TestCase("net.pipe://a/b/c")]
+        [TestCase("net.tcp://a/b/c")]
+        public void TestEnsureWebUriWhenNotWebUriThenThrows(string? uriString)
+        {
+            var uri = uriString is null ? null : new Uri(uriString, UriKind.RelativeOrAbsolute);
+            Assert.That(() => uri.EnsureWebUri(), Throws.ArgumentException);
+        }
+
+        [Test]
         [TestCase(null, "null")]
         [TestCase("", "\"\"")]
         [TestCase("\u0020\t\r\n", "\"\u0020\t\r\n\"")]
