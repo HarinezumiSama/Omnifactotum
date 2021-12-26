@@ -6,10 +6,8 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using Omnifactotum;
 using Omnifactotum.Annotations;
-#if NETSTANDARD2_1_OR_GREATER || NET5_0_OR_GREATER
 using NotNullWhen = System.Diagnostics.CodeAnalysis.NotNullWhenAttribute;
 using NotNullIfNotNull = System.Diagnostics.CodeAnalysis.NotNullIfNotNullAttribute;
-#endif
 using PureAttribute = System.Diagnostics.Contracts.PureAttribute;
 
 //// ReSharper disable once CheckNamespace :: Namespace is intentionally named so in order to simplify usage of extension methods
@@ -40,12 +38,7 @@ namespace System
         [Pure]
         [DebuggerStepThrough]
         [ContractAnnotation("null => false", true)]
-        public static bool IsWebUri(
-#if NETSTANDARD2_1_OR_GREATER || NET5_0_OR_GREATER
-            [NotNullWhen(true)]
-#endif
-            [CanBeNull]
-            this Uri? value)
+        public static bool IsWebUri([NotNullWhen(true)] [CanBeNull] this Uri? value)
             => value is { IsAbsoluteUri: true } && WebSchemes.Contains(value.Scheme);
 
         /// <summary>
@@ -61,20 +54,15 @@ namespace System
         /// <exception cref="ArgumentException">
         ///     The specified value is not an absolute URI or it is not using a Web scheme, such as HTTP or HTTPS.
         /// </exception>
-#if NETSTANDARD2_1_OR_GREATER || NET5_0_OR_GREATER
+        //// ReSharper disable once RedundantNullableFlowAttribute
         [return: NotNullIfNotNull(@"value")]
-#endif
         [NotNull]
         [DebuggerStepThrough]
         [ContractAnnotation("null => stop", true)]
         public static Uri EnsureWebUri(
             [CanBeNull] this Uri? value)
             => value.IsWebUri()
-#if NETSTANDARD2_1_OR_GREATER || NET5_0_OR_GREATER
                 ? value
-#else
-                ? value!
-#endif
                 : throw new ArgumentException($@"{value.ToUIString()} is not an absolute URI using a Web scheme.", nameof(value));
 
         /// <summary>

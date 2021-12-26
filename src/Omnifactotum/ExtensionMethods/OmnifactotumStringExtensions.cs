@@ -10,10 +10,8 @@ using System.Text;
 using Omnifactotum;
 using Omnifactotum.Annotations;
 using static Omnifactotum.FormattableStringFactotum;
-#if NETSTANDARD2_1_OR_GREATER || NET5_0_OR_GREATER
 using NotNullWhen = System.Diagnostics.CodeAnalysis.NotNullWhenAttribute;
 using NotNullIfNotNull = System.Diagnostics.CodeAnalysis.NotNullIfNotNullAttribute;
-#endif
 using PureAttribute = System.Diagnostics.Contracts.PureAttribute;
 
 //// ReSharper disable once CheckNamespace :: Namespace is intentionally named so in order to simplify usage of extension methods
@@ -38,12 +36,7 @@ namespace System
         [Pure]
         [ContractAnnotation("null => true", true)]
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static bool IsNullOrEmpty(
-#if NETSTANDARD2_1_OR_GREATER || NET5_0_OR_GREATER
-            [NotNullWhen(false)]
-#endif
-            [CanBeNull]
-            this string? value)
+        public static bool IsNullOrEmpty([NotNullWhen(false)] [CanBeNull] this string? value)
             => string.IsNullOrEmpty(value);
 
         /// <summary>
@@ -60,12 +53,7 @@ namespace System
         [Pure]
         [ContractAnnotation("null => true", true)]
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static bool IsNullOrWhiteSpace(
-#if NETSTANDARD2_1_OR_GREATER || NET5_0_OR_GREATER
-            [NotNullWhen(false)]
-#endif
-            [CanBeNull]
-            this string? value)
+        public static bool IsNullOrWhiteSpace([NotNullWhen(false)] [CanBeNull] this string? value)
             => string.IsNullOrWhiteSpace(value);
 
         /// <summary>
@@ -367,12 +355,7 @@ namespace System
         ///     otherwise, <see langword="false"/>.
         /// </returns>
         [Pure]
-        public static bool IsWebUri(
-#if NETSTANDARD2_1_OR_GREATER || NET5_0_OR_GREATER
-            [NotNullWhen(true)]
-#endif
-            [CanBeNull]
-            this string? value)
+        public static bool IsWebUri([NotNullWhen(true)] [CanBeNull] this string? value)
             => Uri.TryCreate(value, UriKind.Absolute, out var uri) && uri.IsWebUri();
 
         /// <summary>
@@ -452,9 +435,7 @@ namespace System
         [ContractAnnotation("null => null; notnull => notnull", true)]
         [CanBeNull]
         [Pure]
-#if NETSTANDARD2_1_OR_GREATER || NET5_0_OR_GREATER
         [return: NotNullIfNotNull(@"value")]
-#endif
         public static unsafe SecureString? ToSecureString([CanBeNull] this string? value)
         {
             switch (value)

@@ -6,10 +6,8 @@ using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 using System.Security;
 using Omnifactotum.Annotations;
-#if NETSTANDARD2_1_OR_GREATER || NET5_0_OR_GREATER
 using NotNullWhen = System.Diagnostics.CodeAnalysis.NotNullWhenAttribute;
 using NotNullIfNotNull = System.Diagnostics.CodeAnalysis.NotNullIfNotNullAttribute;
-#endif
 using PureAttribute = System.Diagnostics.Contracts.PureAttribute;
 
 //// ReSharper disable once CheckNamespace :: Namespace is intentionally named so in order to simplify usage of extension methods
@@ -35,11 +33,7 @@ namespace System
         [Pure]
         [ContractAnnotation("null => true", true)]
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static bool IsNullOrEmpty(
-#if NETSTANDARD2_1_OR_GREATER || NET5_0_OR_GREATER
-            [NotNullWhen(false)]
-#endif
-            [CanBeNull] this SecureString? value)
+        public static bool IsNullOrEmpty([NotNullWhen(false)] [CanBeNull] this SecureString? value)
             => value is null || value.Length == 0;
 
         /// <summary>
@@ -55,9 +49,7 @@ namespace System
         [ContractAnnotation("null => null; notnull => notnull", true)]
         [CanBeNull]
         [Pure]
-#if NETSTANDARD2_1_OR_GREATER || NET5_0_OR_GREATER
         [return: NotNullIfNotNull(@"value")]
-#endif
         public static string? ToPlainText([CanBeNull] this SecureString? value)
         {
             switch (value)
