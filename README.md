@@ -9,9 +9,9 @@ Provides own **helper** and **functional** classes and interfaces as well as **e
 - [Release Notes](./src/Omnifactotum.ReleaseNotes.md)
 
 ### Build Status
-| Branch  | Status  |
-| :------ | :------ |
-| `master` | [![Build status (master)](https://ci.appveyor.com/api/projects/status/8kcys4vgvk1cd1gg/branch/master?svg=true)](https://ci.appveyor.com/project/HarinezumiSama/omnifactotum/branch/master) |
+| Branch    | Status                                                                                                                                                                                        |
+|:----------|:----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| `master`  | [![Build status (master)](https://ci.appveyor.com/api/projects/status/8kcys4vgvk1cd1gg/branch/master?svg=true)](https://ci.appveyor.com/project/HarinezumiSama/omnifactotum/branch/master)    |
 | `develop` | [![Build status (develop)](https://ci.appveyor.com/api/projects/status/8kcys4vgvk1cd1gg/branch/develop?svg=true)](https://ci.appveyor.com/project/HarinezumiSama/omnifactotum/branch/develop) |
 
 ### Statistics
@@ -48,18 +48,18 @@ Provides own **helper** and **functional** classes and interfaces as well as **e
 - [**`Nullable<Boolean>` (`bool?`)**](https://docs.microsoft.com/en-us/dotnet/api/system.nullable-1) extension methods
 - [**`Nullable<DateTime>` (`DateTime?`)**](https://docs.microsoft.com/en-us/dotnet/api/system.nullable-1) extension methods
 - [**`Nullable<DateTimeOffset>` (`DateTimeOffset?`)**](https://docs.microsoft.com/en-us/dotnet/api/system.nullable-1) extension methods
+- [**`Nullable<TimeSpan>` (`TimeSpan?`)**](https://docs.microsoft.com/en-us/dotnet/api/system.nullable-1) extension methods
 - [**`SecureString`**](https://docs.microsoft.com/en-us/dotnet/api/system.security.securestring) extension methods
 - [**`String`**](https://docs.microsoft.com/en-us/dotnet/api/system.string) extension methods
-- [**`Task`**](https://docs.microsoft.com/en-us/dotnet/api/system.threading.tasks.task) extension methods (excluding .NET Framework 4.0)
-- [**`Task<TResult>`**](https://docs.microsoft.com/en-us/dotnet/api/system.threading.tasks.task-1) extension methods (excluding .NET Framework 4.0)
+- [**`Task`**](https://docs.microsoft.com/en-us/dotnet/api/system.threading.tasks.task) extension methods
+- [**`Task<TResult>`**](https://docs.microsoft.com/en-us/dotnet/api/system.threading.tasks.task-1) extension methods
 - [**`TimeSpan`**](https://docs.microsoft.com/en-us/dotnet/api/system.timespan) extension methods
 - [**`Uri`**](https://docs.microsoft.com/en-us/dotnet/api/system.uri) extension methods
-- [**`ValueTask`**](https://docs.microsoft.com/en-us/dotnet/api/system.threading.tasks.valuetask) extension methods (excluding .NET Framework 4.0)
-- [**`ValueTask<TResult>`**](https://docs.microsoft.com/en-us/dotnet/api/system.threading.tasks.valuetask-1) extension methods (excluding .NET Framework 4.0)
+- [**`ValueTask`**](https://docs.microsoft.com/en-us/dotnet/api/system.threading.tasks.valuetask) extension methods
+- [**`ValueTask<TResult>`**](https://docs.microsoft.com/en-us/dotnet/api/system.threading.tasks.valuetask-1) extension methods
 
 ### The *non-exhaustive* list of own helper classes
 
-- `AsyncFactotum`
 - `EnumFactotum`
 - `Factotum`
 
@@ -73,8 +73,6 @@ Provides own **helper** and **functional** classes and interfaces as well as **e
 - `KeyedEqualityComparer<T, TKey>`
 - `LocalComputerCurrentDateTimeProvider` (implements `ICurrentDateTimeProvider`)
 - `ObjectValidator`
-- `ReadOnlyDictionary<TKey, TValue>`
-  - **NOTE**: `.NET Framework 4.0` only; as of `.NET Framework 4.5+` [`System.Collections.ObjectModel.ReadOnlyDictionary<TKey, TValue>`](https://docs.microsoft.com/en-us/dotnet/api/system.collections.objectmodel.readonlydictionary-2?view=netframework-4.5) is available.
 - `ReadOnlyItemCollection<T>` (the read-only wrapper for [`ICollection<T>`](https://docs.microsoft.com/en-us/dotnet/api/system.collections.generic.icollection-1))
 - `ReadOnlySet<T>`
 - `SemaphoreSlimBasedLock`
@@ -93,7 +91,7 @@ Provides own **helper** and **functional** classes and interfaces as well as **e
 
 ### The *non-exhaustive* list of own delegates
 
-- `Task EventHandlerAsync<>(...)` (excluding .NET Framework 4.0)
+- `Task EventHandlerAsync<>(...)`
 - `OutFunc<TOutput, out TResult>`
 - `OutFunc<in T, TOutput, out TResult>`
 - `OutFunc<in T1, in T2, TOutput, out TResult>`
@@ -103,8 +101,8 @@ Provides own **helper** and **functional** classes and interfaces as well as **e
 
 Due to certain inconsistencies between `.NET Standard 2.0` and `.NET Core 2.x`, you may need to apply one or more workarounds as described below when using **`Omnifactotum`** with your projects compiled for `.NET Standard 2.0` or `.NET Core 2.x` **-or-** a mix of `.NET Standard 2.0` and/or `.NET Core 2.x` and/or `.NET Framework 4.x`:
 
-| Omnifactotum's Class or Method | Workaround |
-| :----------------------------- | :--------- |
-| `System.Collections.Generic.KeyValuePair` | Use [`Omnifactotum.OmnifactotumKeyValuePair`](./src/Omnifactotum/OmnifactotumKeyValuePair.cs). |
-| <code>[OmnifactotumCollectionExtensions](./src/Omnifactotum/ExtensionMethods/OmnifactotumCollectionExtensions.cs).ToHashSet(...)</code> | Use static method invocation instead of extension method invocation. That is: `OmnifactotumCollectionExtensions.ToHashSet(collection)` instead of `collection.ToHashSet()`. |
+| Omnifactotum's Class or Method                                                                                                             | Workaround                                                                                                                                                                                  |
+|:-------------------------------------------------------------------------------------------------------------------------------------------|:--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| `System.Collections.Generic.KeyValuePair`                                                                                                  | Use [`Omnifactotum.OmnifactotumKeyValuePair`](./src/Omnifactotum/OmnifactotumKeyValuePair.cs).                                                                                              |
+| <code>[OmnifactotumCollectionExtensions](./src/Omnifactotum/ExtensionMethods/OmnifactotumCollectionExtensions.cs).ToHashSet(...)</code>    | Use static method invocation instead of extension method invocation. That is: `OmnifactotumCollectionExtensions.ToHashSet(collection)` instead of `collection.ToHashSet()`.                 |
 | <code>[OmnifactotumDictionaryExtensions](./src/Omnifactotum/ExtensionMethods/OmnifactotumDictionaryExtensions.cs).GetValueOrDefault</code> | Use static method invocation instead of extension method invocation. That is: `OmnifactotumDictionaryExtensions.GetValueOrDefault(dictionary)` instead of `dictionary.GetValueOrDefault()`. |

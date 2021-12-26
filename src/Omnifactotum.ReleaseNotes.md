@@ -1,4 +1,60 @@
-﻿### Changes in 0.6.0 (since 0.5.0)
+﻿### Changes in 0.7.0 (since 0.6.0)
+
+#### Breaking Changes
+
+- **Removed** support of **.NET Framework 4.0**
+- `OmnifactotumGenericObjectExtensions`: Removed the `Morph()` methods (null propagation can be used instead)
+- Removed the `AsyncFactotum` class in favor of `async`/`await`
+- The `OmnifactotumCollectionExtensions.DoForEachAsync()` overloads now accept `CancellationToken` and pass it to `actionAsync`
+
+#### Deprecations
+
+- `Factotum.CreateEmptyCompletedTask()` (use `Task.CompletedTask`)
+- `Factotum.CreateEmptyFaultedTask()` (use `Task.FromException(Exception)`)
+
+#### New features
+
+- Extension Methods
+  - `OmnifactotumNullableTimeSpanExtensions`:
+    - Added the `ToFixedString()` method
+    - Added the `ToFixedStringWithMilliseconds()` method
+    - Added the `ToPreciseFixedString()` method
+  - `OmnifactotumTimeSpanExtensions`:
+    - Added the `ToFixedString()` method
+    - Added the `ToFixedStringWithMilliseconds()` method
+    - Added the `ToPreciseFixedString()` method
+  - `OmnifactotumUriExtensions`:
+    - Added the `EnsureAbsoluteUri()` method
+    - Added the `EnsureWebUri()` method
+- Internally added `System.Diagnostics.CodeAnalysis.NotNullIfNotNullAttribute` and `System.Diagnostics.CodeAnalysis.NotNullWhenAttribute` to make these attributes available when targeting older frameworks (prior to .NET Standard 2.1 and .NET 5.0). Affected methods:
+  - `OmnifactotumGenericObjectExtensions`
+    - `EnsureNotNull<T>()`
+  - `OmnifactotumSecureStringExtensions`
+    - `IsNullOrEmpty()`
+    - `ToPlainText()`
+  - `OmnifactotumStringExtensions`
+    - `IsNullOrEmpty()`
+    - `IsNullOrWhiteSpace()`
+    - `IsWebUri`
+    - `ToSecureString()`
+  - `OmnifactotumUriExtensions`
+    - `EnsureAbsoluteUri()`
+    - `EnsureWebUri()`
+    - `IsWebUri`
+
+#### Minor updates and fixes
+
+- `OmnifactotumGenericObjectExtensions`:
+  - Fixed nullability annotations on the `ToPropertyString()` methods
+  - Fixed documentation on the `EnsureNotNull()` method
+- `OmnifactotumSecureStringExtensions`: Fixed `ContractAnnotation` on the `IsNullOrEmpty()` method
+- `OmnifactotumStringExtensions`: Fixed `ContractAnnotation` on the `IsNullOrEmpty()` and `IsNullOrWhiteSpace()` methods
+- Applied missing `InstantHandle` annotation on `ObjectValidationResult.GetException(...)`
+- Improvements in `OmnifactotumDictionaryExtensions`:
+  - Using Nullable Reference Types (where applicable)
+  - Applied `AggressiveInlining` (where applicable)
+
+### Changes in 0.6.0 (since 0.5.0)
 
 #### Breaking Changes
 
@@ -242,7 +298,7 @@
 - **BREAKING CHANGE** `OmnifactotumCustomAttributeProviderExtensions`: `GetCustomAttributes` has been renamed to `GetCustomAttributeArray` (for compatibility with FW 4.5+)
 
 ### Changes in 0.3.0.86 (since 0.3.0.83)
-- **BREAKING CHANGE** `OmnifactotumDictionaryExtensions`: The method `GetValueOrCreate` has been renamed to `GetOrCreateValue` for readablity and in order to avoid confusion with `GetValueOrDefault`
+- **BREAKING CHANGE** `OmnifactotumDictionaryExtensions`: The method `GetValueOrCreate` has been renamed to `GetOrCreateValue` for readability and in order to avoid confusion with `GetValueOrDefault`
 - `OmnifactotumDictionaryExtensions`: Improved annotations
 - `ValueContainer` and `SyncValueContainer`:
     - Support for equality comparison
