@@ -52,7 +52,7 @@ namespace System
         ///     The specified value if it is an absolute URI using a Web scheme, such as HTTP or HTTPS.
         /// </returns>
         /// <exception cref="ArgumentException">
-        ///     The specified value is not an absolute URI or it is not using a Web scheme, such as HTTP or HTTPS.
+        ///     The specified value is <see langword="null"/> or is not an absolute URI or it is not using a Web scheme, such as HTTP or HTTPS.
         /// </exception>
         //// ReSharper disable once RedundantNullableFlowAttribute
         [return: NotNullIfNotNull(@"value")]
@@ -64,6 +64,29 @@ namespace System
             => value.IsWebUri()
                 ? value
                 : throw new ArgumentException($@"{value.ToUIString()} is not an absolute URI using a Web scheme.", nameof(value));
+
+        /// <summary>
+        ///     Returns the specified value if it is an absolute URI; otherwise, throws an <see cref="ArgumentException"/>.
+        /// </summary>
+        /// <param name="value">
+        ///     The <see cref="Uri"/> value to check.
+        /// </param>
+        /// <returns>
+        ///     The specified value if it is an absolute URI.
+        /// </returns>
+        /// <exception cref="ArgumentException">
+        ///     The specified value is <see langword="null"/> or is not an absolute URI.
+        /// </exception>
+        //// ReSharper disable once RedundantNullableFlowAttribute
+        [return: NotNullIfNotNull(@"value")]
+        [NotNull]
+        [DebuggerStepThrough]
+        [ContractAnnotation("null => stop", true)]
+        public static Uri EnsureAbsoluteUri(
+            [CanBeNull] this Uri? value)
+            => value is { IsAbsoluteUri: true }
+                ? value
+                : throw new ArgumentException($@"{value.ToUIString()} is not an absolute URI.", nameof(value));
 
         /// <summary>
         ///     <para>Converts the specified <see cref="Uri"/> to its UI representation.</para>
