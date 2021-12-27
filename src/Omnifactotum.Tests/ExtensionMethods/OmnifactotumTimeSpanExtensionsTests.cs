@@ -1,10 +1,12 @@
-﻿using System;
+﻿#nullable enable
+
+using System;
 using NUnit.Framework;
 
 namespace Omnifactotum.Tests.ExtensionMethods
 {
     [TestFixture(TestOf = typeof(OmnifactotumTimeSpanExtensions))]
-    internal sealed class OmnifactotumTimeSpanExtensionsTests
+    internal sealed class OmnifactotumTimeSpanExtensionsTests : OmnifactotumTimeSpanExtensionsTestsBase
     {
         [Test]
         public void TestMultiply()
@@ -17,7 +19,7 @@ namespace Omnifactotum.Tests.ExtensionMethods
         }
 
         [Test]
-        public void TestDivide()
+        public void TestDivideWhenValidArgumentThenSucceeds()
         {
             const decimal Coefficient = 1.2m;
 
@@ -27,10 +29,23 @@ namespace Omnifactotum.Tests.ExtensionMethods
         }
 
         [Test]
-        public void TestInvalidDivide()
+        public void TestDivideWhenInvalidArgumentThenThrows()
         {
             var ts = new TimeSpan(3, 2, 1);
             Assert.That(() => ts.Divide(0m), Throws.ArgumentException);
+        }
+
+        [Test]
+        [TestCaseSource(nameof(GetToFixedStringMethodsTestCases), new object?[] { false })]
+        public void TestToFixedStringMethods(
+            TimeSpan value,
+            string expectedFixedString,
+            string expectedFixedStringWithMilliseconds,
+            string expectedPreciseFixedString)
+        {
+            Assert.That(() => value.ToFixedString(), Is.EqualTo(expectedFixedString));
+            Assert.That(() => value.ToFixedStringWithMilliseconds(), Is.EqualTo(expectedFixedStringWithMilliseconds));
+            Assert.That(() => value.ToPreciseFixedString(), Is.EqualTo(expectedPreciseFixedString));
         }
     }
 }
