@@ -8,7 +8,6 @@ using PureAttribute = System.Diagnostics.Contracts.PureAttribute;
 //// ReSharper disable RedundantNullnessAttributeWithNullableReferenceTypes
 
 //// ReSharper disable once CheckNamespace :: Namespace is intentionally named so in order to simplify usage of extension methods
-
 namespace System
 {
     /// <summary>
@@ -18,7 +17,7 @@ namespace System
     {
         /// <summary>
         ///     Converts the specified nullable <see cref="DateTime"/> value to its string representation using
-        ///     <see cref="OmnifactotumDateTimeExtensions.ToFixedString"/> if the the value is not <see langword="null"/>;
+        ///     <see cref="OmnifactotumDateTimeExtensions.ToFixedString"/> if the value is not <see langword="null"/>;
         ///     otherwise, returns <see cref="OmnifactotumRepresentationConstants.NullValueRepresentation"/>.
         /// </summary>
         /// <param name="value">
@@ -37,7 +36,7 @@ namespace System
 
         /// <summary>
         ///     Converts the specified nullable <see cref="DateTime"/> value to its string representation using
-        ///     <see cref="OmnifactotumDateTimeExtensions.ToFixedStringWithMilliseconds"/> if the the value is not <see langword="null"/>;
+        ///     <see cref="OmnifactotumDateTimeExtensions.ToFixedStringWithMilliseconds"/> if the value is not <see langword="null"/>;
         ///     otherwise, returns <see cref="OmnifactotumRepresentationConstants.NullValueRepresentation"/>.
         /// </summary>
         /// <param name="value">
@@ -56,7 +55,7 @@ namespace System
 
         /// <summary>
         ///     Converts the specified nullable <see cref="DateTime"/> value to its string representation using
-        ///     <see cref="OmnifactotumDateTimeExtensions.ToPreciseFixedString"/> if the the value is not <see langword="null"/>;
+        ///     <see cref="OmnifactotumDateTimeExtensions.ToPreciseFixedString"/> if the value is not <see langword="null"/>;
         ///     otherwise, returns <see cref="OmnifactotumRepresentationConstants.NullValueRepresentation"/>.
         /// </summary>
         /// <param name="value">
