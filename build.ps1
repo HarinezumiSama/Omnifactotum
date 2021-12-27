@@ -489,7 +489,14 @@ process
                 -Value "v$version [build $resolvedBuildNumber] [$dateStamp]"
         }
 
+        [string] $temporaryDirectoryPath = [Path]::GetFullPath([Path]::Combine($PSScriptRoot, '.temp'))
+        Ensure-CleanDirectory -LiteralPath $temporaryDirectoryPath
+
+        Write-MajorSeparator
         [string] $dotNetCliPath = Get-ApplicationPath -Verbose -Name dotnet
+
+        Write-MajorSeparator
+        Execute-Command -Title '* DotNet CLI Version' -Command $dotNetCliPath -CommandArguments '--version'
 
         function Create-DotNetCliExecuteCommandParameters
         {
@@ -575,9 +582,6 @@ process
                 Execute-Command @executeCommandParameters
             }
         }
-
-        [string] $temporaryDirectoryPath = [Path]::GetFullPath([Path]::Combine($PSScriptRoot, '.temp'))
-        Ensure-CleanDirectory -LiteralPath $temporaryDirectoryPath
 
         [string] $coverageOutputDirectoryPath = $null
         if ($EnableDotCover)
