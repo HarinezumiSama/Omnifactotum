@@ -8,7 +8,7 @@ using Omnifactotum.Annotations;
 using Omnifactotum.NUnit;
 
 //// ReSharper disable RedundantNullnessAttributeWithNullableReferenceTypes
-//// ReSharper disable once UseNullableReferenceTypesAnnotationSyntax
+//// ReSharper disable UseNullableReferenceTypesAnnotationSyntax
 
 namespace Omnifactotum.Tests.ExtensionMethods
 {

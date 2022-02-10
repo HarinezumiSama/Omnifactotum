@@ -6,9 +6,9 @@ using Omnifactotum.Annotations;
 using PureAttribute = System.Diagnostics.Contracts.PureAttribute;
 
 //// ReSharper disable RedundantNullnessAttributeWithNullableReferenceTypes
+//// ReSharper disable UseNullableReferenceTypesAnnotationSyntax
 
 //// ReSharper disable once CheckNamespace :: Namespace is intentionally named so in order to simplify usage of extension methods
-
 namespace System
 {
     /// <summary>
@@ -19,18 +19,21 @@ namespace System
         /// <summary>
         ///     The format used in the <see cref="ToFixedString"/> method.
         /// </summary>
+        //// ReSharper disable once MemberCanBePrivate.Global
         public static readonly string FixedStringFormat =
             OmnifactotumDateTimeExtensions.FixedStringFormat + TimeZoneFormatPart;
 
         /// <summary>
         ///     The format used in the <see cref="ToFixedStringWithMilliseconds"/> method..
         /// </summary>
+        //// ReSharper disable once MemberCanBePrivate.Global
         public static readonly string FixedStringWithMillisecondsFormat =
             OmnifactotumDateTimeExtensions.FixedStringWithMillisecondsFormat + TimeZoneFormatPart;
 
         /// <summary>
         ///     The format used in the <see cref="ToPreciseFixedString"/> method.
         /// </summary>
+        //// ReSharper disable once MemberCanBePrivate.Global
         public static readonly string PreciseFixedStringFormat =
             OmnifactotumDateTimeExtensions.PreciseFixedStringFormat + TimeZoneFormatPart;
 

@@ -7,7 +7,6 @@ using static Omnifactotum.FormattableStringFactotum;
 using PureAttribute = System.Diagnostics.Contracts.PureAttribute;
 
 //// ReSharper disable once CheckNamespace :: Namespace is intentionally named so in order to simplify usage of extension methods
-
 namespace System
 {
     /// <summary>
@@ -15,11 +14,8 @@ namespace System
     /// </summary>
     public static class OmnifactotumEnumExtensions
     {
-        private const string EnumValueSeparator = ", ";
+        private const string EnumValueSeparator = ",\x0020";
 
-        /// <summary>
-        ///     The type name format.
-        /// </summary>
         private static readonly string NameFormat = "{0}" + Type.Delimiter + "{1}";
 
         /// <summary>
@@ -91,9 +87,7 @@ namespace System
         [Pure]
         public static bool IsAllSet<TEnum>(this TEnum enumerationValue, TEnum flags)
             where TEnum : struct, Enum
-        {
-            return IsSetInternal(enumerationValue, flags, true);
-        }
+            => IsSetInternal(enumerationValue, flags, true);
 
         /// <summary>
         ///     Determines whether the specified enumeration value contains any of the specified flags set.
@@ -126,9 +120,7 @@ namespace System
         [Pure]
         public static bool IsAnySet<TEnum>(this TEnum enumerationValue, TEnum flags)
             where TEnum : struct, Enum
-        {
-            return IsSetInternal(enumerationValue, flags, false);
-        }
+            => IsSetInternal(enumerationValue, flags, false);
 
         /// <summary>
         ///     Determines whether the specified enumeration value equals to one of other specified enumeration
@@ -199,9 +191,7 @@ namespace System
         [Pure]
         public static bool IsOneOf<TEnum>(this TEnum enumerationValue, params TEnum[] otherValues)
             where TEnum : struct, Enum
-        {
-            return IsOneOf(enumerationValue, (IEnumerable<TEnum>)otherValues);
-        }
+            => IsOneOf(enumerationValue, (IEnumerable<TEnum>)otherValues);
 
         /// <summary>
         ///     Checks if the specified enumeration value is defined in the corresponding enumeration.
@@ -358,24 +348,6 @@ namespace System
             };
         }
 
-        /// <summary>
-        ///     Checks the flags.
-        /// </summary>
-        /// <typeparam name="TEnum">
-        ///     The type of the enumeration.
-        /// </typeparam>
-        /// <param name="enumerationValue">
-        ///     The enumeration value.
-        /// </param>
-        /// <param name="flags">
-        ///     The flags.
-        /// </param>
-        /// <param name="all">
-        ///     Specifies whether to check all flags.
-        /// </param>
-        /// <returns>
-        ///   A <see cref="System.Boolean"/> value.
-        /// </returns>
         [Pure]
         private static bool IsSetInternal<TEnum>(this TEnum enumerationValue, TEnum flags, bool all)
             where TEnum : struct, Enum

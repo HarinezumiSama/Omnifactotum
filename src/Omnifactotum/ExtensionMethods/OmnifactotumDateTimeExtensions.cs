@@ -6,6 +6,7 @@ using Omnifactotum.Annotations;
 using PureAttribute = System.Diagnostics.Contracts.PureAttribute;
 
 //// ReSharper disable RedundantNullnessAttributeWithNullableReferenceTypes
+//// ReSharper disable UseNullableReferenceTypesAnnotationSyntax
 
 //// ReSharper disable once CheckNamespace :: Namespace is intentionally named so in order to simplify usage of extension methods
 namespace System
@@ -18,6 +19,7 @@ namespace System
         /// <summary>
         ///     The format used in the <see cref="ToFixedString"/> method.
         /// </summary>
+        //// ReSharper disable once ConvertToConstant.Global
         public static readonly string FixedStringFormat = "yyyy'-'MM'-'dd' 'HH':'mm':'ss";
 
         /// <summary>
