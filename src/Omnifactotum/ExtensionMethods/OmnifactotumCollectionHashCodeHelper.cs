@@ -1,8 +1,12 @@
-﻿using System.Linq;
+﻿#nullable enable
+
+using System.Linq;
 using Omnifactotum.Annotations;
 
-//// ReSharper disable once CheckNamespace :: Namespace is intentionally named so in order to simplify usage of extension methods
+//// ReSharper disable RedundantNullnessAttributeWithNullableReferenceTypes
+//// ReSharper disable UseNullableReferenceTypesAnnotationSyntax
 
+//// ReSharper disable once CheckNamespace :: Namespace is intentionally named so in order to simplify usage of extension methods
 namespace System.Collections.Generic
 {
     /// <summary>
@@ -27,7 +31,7 @@ namespace System.Collections.Generic
         ///     A hash code of the specified collection, or <c>0</c> if the specified collection is
         ///     <see langword="null"/> or empty.
         /// </returns>
-        public static int ComputeCollectionHashCode<T>([CanBeNull] [InstantHandle] this IEnumerable<T> collection)
+        public static int ComputeCollectionHashCode<T>([CanBeNull] [InstantHandle] this IEnumerable<T>? collection)
         {
             if (collection is null)
             {
