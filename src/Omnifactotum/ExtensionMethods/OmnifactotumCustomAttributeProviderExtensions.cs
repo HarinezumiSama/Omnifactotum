@@ -1,8 +1,12 @@
-﻿using System.Linq;
+﻿#nullable enable
+
+using System.Linq;
 using Omnifactotum.Annotations;
 
-//// ReSharper disable once CheckNamespace :: Namespace is intentionally named so in order to simplify usage of extension methods
+//// ReSharper disable RedundantNullnessAttributeWithNullableReferenceTypes
+//// ReSharper disable UseNullableReferenceTypesAnnotationSyntax
 
+//// ReSharper disable once CheckNamespace :: Namespace is intentionally named so in order to simplify usage of extension methods
 namespace System.Reflection
 {
     /// <summary>
@@ -30,6 +34,7 @@ namespace System.Reflection
         /// <exception cref="System.ArgumentNullException">
         ///     <paramref name="provider"/> is <see langword="null"/>.
         /// </exception>
+        [NotNull]
         public static TAttribute[] GetCustomAttributeArray<TAttribute>(
             [NotNull] this ICustomAttributeProvider provider,
             bool inherit)
@@ -76,6 +81,7 @@ namespace System.Reflection
         ///     The specified attribute either is not applied to the specified provider at all
         ///     or is applied more than once.
         /// </exception>
+        [NotNull]
         public static TAttribute GetSingleCustomAttribute<TAttribute>(
             [NotNull] this ICustomAttributeProvider provider,
             bool inherit)
@@ -105,7 +111,8 @@ namespace System.Reflection
         /// <exception cref="System.InvalidOperationException">
         ///     The specified attribute is applied more than once.
         /// </exception>
-        public static TAttribute GetSingleOrDefaultCustomAttribute<TAttribute>(
+        [CanBeNull]
+        public static TAttribute? GetSingleOrDefaultCustomAttribute<TAttribute>(
             [NotNull] this ICustomAttributeProvider provider,
             bool inherit)
             where TAttribute : Attribute

@@ -1,4 +1,6 @@
-﻿using System;
+﻿#nullable enable
+
+using System;
 using System.Linq;
 using System.Reflection;
 using System.Runtime.InteropServices;
@@ -40,7 +42,7 @@ namespace Omnifactotum.Tests.ExtensionMethods
         public void TestGetCustomAttributeArrayNegative(bool inherit)
         {
             Assert.That(
-                () => ((Type)null).GetCustomAttributeArray<SerializableAttribute>(inherit),
+                () => ((Type?)null)!.GetCustomAttributeArray<SerializableAttribute>(inherit),
                 Throws.TypeOf<ArgumentNullException>());
         }
 
@@ -60,7 +62,7 @@ namespace Omnifactotum.Tests.ExtensionMethods
         public void TestGetSingleCustomAttributeNegative(bool inherit)
         {
             Assert.That(
-                () => ((Type)null).GetSingleCustomAttribute<Attribute>(inherit),
+                () => ((Type?)null)!.GetSingleCustomAttribute<Attribute>(inherit),
                 Throws.TypeOf<ArgumentNullException>());
 
             Assert.That(
@@ -96,7 +98,7 @@ namespace Omnifactotum.Tests.ExtensionMethods
         public void TestGetSingleOrDefaultCustomAttributeNegative(bool inherit)
         {
             Assert.That(
-                () => ((Type)null).GetSingleOrDefaultCustomAttribute<Attribute>(inherit),
+                () => ((Type?)null)!.GetSingleOrDefaultCustomAttribute<Attribute>(inherit),
                 Throws.TypeOf<ArgumentNullException>());
 
             Assert.That(
