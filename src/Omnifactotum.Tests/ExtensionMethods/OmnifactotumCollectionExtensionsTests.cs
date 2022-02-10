@@ -203,6 +203,39 @@ namespace Omnifactotum.Tests.ExtensionMethods
         }
 
         [Test]
+        public void TestSetItemsWhenInvalidArgumentThenThrows()
+        {
+            List<string>? nullList = null;
+
+            Assert.That(() => nullList!.SetItems(new[] { string.Empty }), Throws.ArgumentNullException);
+            Assert.That(() => new List<string>().SetItems(nullList!), Throws.ArgumentNullException);
+        }
+
+        [Test]
+        public void TestSetItemsValidArgumentsThenSucceeds()
+        {
+            static int[] CreateIntItems1() => new[] { 17, 42, -19 };
+            static int[] CreateIntItems2() => new[] { 19, -37, 17, 0 };
+
+            InvokeTestSetItems<int, Collection<int>>(CreateIntItems1, CreateIntItems2);
+            InvokeTestSetItems<int, List<int>>(CreateIntItems1, CreateIntItems2);
+
+            static string[] CreateStringItems1() => new[] { "az", "zA", "qwerty" };
+            static string[] CreateStringItems2() => new[] { nameof(TestSetItemsValidArgumentsThenSucceeds), string.Empty };
+
+            InvokeTestSetItems<string, Collection<string>>(CreateStringItems1, CreateStringItems2);
+            InvokeTestSetItems<string, List<string>>(CreateStringItems1, CreateStringItems2);
+
+            static KeyValuePair<int, string>[] CreateKeyValuePairItems1()
+                => new[] { KeyValuePair.Create(17, "seventeen"), KeyValuePair.Create(-1, "minus one") };
+
+            static KeyValuePair<int, string>[] CreateKeyValuePairItems2()
+                => new[] { KeyValuePair.Create(-13, "minus thirteen"), KeyValuePair.Create(0, "zero"), KeyValuePair.Create(int.MaxValue, "wow") };
+
+            InvokeTestSetItems<KeyValuePair<int, string>, Dictionary<int, string>>(CreateKeyValuePairItems1, CreateKeyValuePairItems2);
+        }
+
+        [Test]
         [TestCaseSource(typeof(ToUIStringForStringCollectionTestCases))]
         public void TestToUIStringForStringCollection(string[] values, string expectedResult)
         {
@@ -257,6 +290,28 @@ namespace Omnifactotum.Tests.ExtensionMethods
 
             list.Add("double bar");
             Assert.That(readOnly, Is.EqualTo(list));
+        }
+
+        private static void InvokeTestSetItems<T, TCollection>(Func<T[]> createItems1, Func<T[]> createItems2)
+            where TCollection : ICollection<T>, new()
+        {
+            var collection = new TCollection();
+
+            Assert.That(collection, Is.Not.Null);
+            Assert.That(createItems1, Is.Not.Null);
+            Assert.That(createItems2, Is.Not.Null);
+
+            var items1 = createItems1().AssertNotNull();
+            var items2 = createItems2().AssertNotNull();
+
+            collection.SetItems(items1);
+            Assert.That(collection, Is.EqualTo(items1));
+
+            collection.SetItems(items2);
+            Assert.That(collection, Is.EqualTo(items2));
+
+            collection.SetItems(Array.Empty<T>());
+            Assert.That(collection, Is.Empty);
         }
 
         private sealed class ToUIStringForStringCollectionTestCases : TestCasesBase
