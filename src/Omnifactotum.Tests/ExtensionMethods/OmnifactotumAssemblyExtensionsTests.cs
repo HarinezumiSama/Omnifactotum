@@ -1,4 +1,6 @@
-﻿#if NETFRAMEWORK
+﻿#nullable enable
+
+#if NETFRAMEWORK
 using System;
 using System.CodeDom.Compiler;
 using System.IO;
@@ -11,7 +13,6 @@ using Omnifactotum.NUnit;
 using static Omnifactotum.FormattableStringFactotum;
 
 #else
-
 using System;
 using System.Diagnostics.CodeAnalysis;
 using System.IO;
@@ -43,7 +44,7 @@ namespace Omnifactotum.Tests.ExtensionMethods
         [Test]
         [SuppressMessage("ReSharper", "AssignNullToNotNullAttribute")]
         public void TestGetLocalPathWhenNullAssemblyIsPassedThenThrows()
-            => Assert.That(() => ((Assembly)null).GetLocalPath(), Throws.TypeOf<ArgumentNullException>());
+            => Assert.That(() => ((Assembly?)null)!.GetLocalPath(), Throws.TypeOf<ArgumentNullException>());
 
         [Test]
 #if NETFRAMEWORK
@@ -59,7 +60,7 @@ namespace Omnifactotum.Tests.ExtensionMethods
 #else
             OutputKind outputKind
 #endif
-            )
+        )
         {
             const string SourceCode = @"static class Program { static void Main() { } }";
 

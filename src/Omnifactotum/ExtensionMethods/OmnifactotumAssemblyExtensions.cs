@@ -1,9 +1,13 @@
-﻿using System.IO;
+﻿#nullable enable
+
+using System.IO;
 using Omnifactotum.Annotations;
 using static Omnifactotum.FormattableStringFactotum;
 
-//// ReSharper disable once CheckNamespace :: Namespace is intentionally named so in order to simplify usage of extension methods
+//// ReSharper disable RedundantNullnessAttributeWithNullableReferenceTypes
+//// ReSharper disable UseNullableReferenceTypesAnnotationSyntax
 
+//// ReSharper disable once CheckNamespace :: Namespace is intentionally named so in order to simplify usage of extension methods
 namespace System.Reflection
 {
     /// <summary>
@@ -34,23 +38,21 @@ namespace System.Reflection
                 throw new ArgumentNullException(nameof(assembly));
             }
 
-            ArgumentException CreateNoLocalPathException()
-                => new(
-                    AsInvariant($@"The assembly {{ {assembly.FullName} }} does not have a local path."),
-                    nameof(assembly));
-
             if (assembly.IsDynamic || string.IsNullOrEmpty(assembly.Location))
             {
-                throw CreateNoLocalPathException();
+                throw CreateNoLocalPathException(assembly, nameof(assembly));
             }
 
             var uri = new Uri(assembly.Location);
             if (!uri.IsFile || !uri.IsAbsoluteUri || string.IsNullOrWhiteSpace(uri.LocalPath))
             {
-                throw CreateNoLocalPathException();
+                throw CreateNoLocalPathException(assembly, nameof(assembly));
             }
 
             return Path.GetFullPath(uri.LocalPath);
+
+            static ArgumentException CreateNoLocalPathException(Assembly assembly, string argumentName)
+                => new(AsInvariant($@"The assembly {{ {assembly.FullName} }} does not have a local path."), argumentName);
         }
     }
 }
