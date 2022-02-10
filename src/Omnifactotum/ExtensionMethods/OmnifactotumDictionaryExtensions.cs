@@ -4,10 +4,15 @@ using System.Collections.ObjectModel;
 using System.Runtime.CompilerServices;
 using Omnifactotum.Annotations;
 
+#if NET5_0_OR_GREATER || NETSTANDARD2_1_OR_GREATER
+using DisallowNullAttribute = System.Diagnostics.CodeAnalysis.DisallowNullAttribute;
+#endif
+
 //// ReSharper disable RedundantNullnessAttributeWithNullableReferenceTypes
+//// ReSharper disable UseNullableReferenceTypesAnnotationSyntax
+//// ReSharper disable UseNullableAttributesSupportedByCompiler
 
 //// ReSharper disable once CheckNamespace :: Namespace is intentionally named so in order to simplify usage of extension methods
-
 namespace System.Collections.Generic
 {
     /// <summary>
@@ -40,10 +45,15 @@ namespace System.Collections.Generic
         public static TValue GetValueOrDefault<TKey, TValue>(
             [NotNull]
 #if NETFRAMEWORK
-            this
+            this IDictionary<TKey, TValue> dictionary,
+#else
+            IDictionary<TKey, TValue> dictionary,
 #endif
-                IDictionary<TKey, TValue> dictionary,
+#if NET5_0_OR_GREATER || NETSTANDARD2_1_OR_GREATER
+            [NotNull] [DisallowNull] TKey key,
+#else
             [NotNull] TKey key,
+#endif
             TValue defaultValue)
         {
             if (dictionary is null)
@@ -81,13 +91,20 @@ namespace System.Collections.Generic
         ///     the type of the value parameter.
         /// </returns>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        //// ReSharper disable once ReturnTypeCanBeNotNullable
         public static TValue? GetValueOrDefault<TKey, TValue>(
             [NotNull]
 #if NETFRAMEWORK
-            this
+            this IDictionary<TKey, TValue> dictionary,
+#else
+            IDictionary<TKey, TValue> dictionary,
 #endif
-                IDictionary<TKey, TValue> dictionary,
-            [NotNull] TKey key)
+#if NET5_0_OR_GREATER || NETSTANDARD2_1_OR_GREATER
+            [NotNull] [DisallowNull] TKey key
+#else
+            [NotNull] TKey key
+#endif
+        )
             => GetValueOrDefault(dictionary, key, default!);
 
         /// <summary>
@@ -115,7 +132,11 @@ namespace System.Collections.Generic
         /// </returns>
         public static TValue GetOrCreateValue<TKey, TValue>(
             [NotNull] this IDictionary<TKey, TValue> dictionary,
+#if NET5_0_OR_GREATER || NETSTANDARD2_1_OR_GREATER
+            [NotNull] [DisallowNull] TKey key,
+#else
             [NotNull] TKey key,
+#endif
             [NotNull] [InstantHandle] Func<TKey, TValue> valueFactory)
         {
             if (dictionary is null)
@@ -167,7 +188,12 @@ namespace System.Collections.Generic
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static TValue GetOrCreateValue<TKey, TValue>(
             [NotNull] this IDictionary<TKey, TValue> dictionary,
-            [NotNull] TKey key)
+#if NET5_0_OR_GREATER || NETSTANDARD2_1_OR_GREATER
+            [NotNull] [DisallowNull] TKey key
+#else
+            [NotNull] TKey key
+#endif
+        )
             where TValue : new()
             => GetOrCreateValue(dictionary, key, _ => new TValue());
 
