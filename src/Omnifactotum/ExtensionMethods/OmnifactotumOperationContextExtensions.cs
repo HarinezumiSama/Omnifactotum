@@ -1,20 +1,25 @@
 ﻿#if NETFRAMEWORK
 
-using System.Collections.Generic;
+#nullable enable
+
 using System.Diagnostics.CodeAnalysis;
 using System.IdentityModel.Claims;
 using System.Linq;
+using System.Runtime.CompilerServices;
 using System.Security.Cryptography.X509Certificates;
 using Omnifactotum.Annotations;
 
-//// ReSharper disable once CheckNamespace :: Namespace is intentionally named so in order to simplify usage of extension methods
+//// ReSharper disable RedundantNullnessAttributeWithNullableReferenceTypes
+//// ReSharper disable UseNullableReferenceTypesAnnotationSyntax
 
+//// ReSharper disable once CheckNamespace :: Namespace is intentionally named so in order to simplify usage of extension methods
 namespace System.ServiceModel
 {
     /// <summary>
     ///     Contains extension methods for <see cref="OperationContext"/> class.
     /// </summary>
     [ExcludeFromCodeCoverage]
+    [PublicAPI]
     public static class OmnifactotumOperationContextExtensions
     {
         /// <summary>
@@ -26,29 +31,19 @@ namespace System.ServiceModel
         /// <returns>
         ///     An <see cref="X509Certificate2"/> if the client has provided its certificate, or <see langword="null"/> otherwise.
         /// </returns>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         [CanBeNull]
-        public static X509Certificate2 GetClientCertificate([CanBeNull] this OperationContext operationContext)
-        {
-            var certificates = GetAllClientCertificates(operationContext);
-            return certificates.FirstOrDefault();
-        }
+        public static X509Certificate2? GetClientCertificate([CanBeNull] this OperationContext? operationContext)
+            => operationContext.GetAllClientCertificates().FirstOrDefault();
 
         [NotNull]
-        private static IEnumerable<X509Certificate2> GetAllClientCertificates(
-            [CanBeNull] OperationContext operationContext)
-        {
-            var claimSets = operationContext?.ServiceSecurityContext?.AuthorizationContext?.ClaimSets;
-            if (claimSets is null)
-            {
-                return Enumerable.Empty<X509Certificate2>();
-            }
-
-            return claimSets
-                .OfType<X509CertificateClaimSet>()
-                .Select(claimSet => claimSet.X509Certificate)
-                .Where(certificate => certificate != null)
-                .ToArray();
-        }
+        private static X509Certificate2[] GetAllClientCertificates([CanBeNull] this OperationContext? operationContext)
+            => operationContext?.ServiceSecurityContext?.AuthorizationContext?.ClaimSets?
+                    .OfType<X509CertificateClaimSet>()
+                    .Select(claimSet => claimSet.X509Certificate)
+                    .Where(certificate => certificate is not null)
+                    .ToArray()
+                ?? Array.Empty<X509Certificate2>();
     }
 }
 
