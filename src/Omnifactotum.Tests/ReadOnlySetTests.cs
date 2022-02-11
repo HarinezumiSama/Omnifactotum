@@ -1,14 +1,15 @@
-﻿using System;
+﻿#nullable enable
+
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using NUnit.Framework;
 using Omnifactotum.NUnit;
 
-//// ReSharper disable AssignNullToNotNullAttribute - For negative test cases
-
 namespace Omnifactotum.Tests
 {
     [TestFixture(TestOf = typeof(ReadOnlySet<>))]
+    [TestFixture(TestOf = typeof(OmnifactotumSetExtensions))]
     internal sealed class ReadOnlySetTests
     {
         private const int Value1 = 1;
@@ -17,46 +18,34 @@ namespace Omnifactotum.Tests
         private const int Value17 = 17;
         private const int ValueExtra = 42;
 
-        private HashSet<int> _set;
-
-        [SetUp]
-        public void SetUp()
-        {
-            _set = new HashSet<int> { Value1, Value2, Value3, Value17 };
-        }
-
-        [TearDown]
-        public void TearDown()
-        {
-            _set = null;
-        }
-
         [Test]
         public void TestInvalidConstruction()
         {
             Assert.That(
-                () => ((ISet<int>)null).AsReadOnly(),
-                Throws.TypeOf<ArgumentNullException>());
+                () => ((ISet<int>?)null)!.AsReadOnly(),
+                Throws.TypeOf<ArgumentNullException>().With.Property(nameof(ArgumentException.ParamName)).EqualTo("set"));
 
             Assert.That(
-                () => new ReadOnlySet<int>(null),
-                Throws.TypeOf<ArgumentNullException>());
+                () => new ReadOnlySet<int>(null!),
+                Throws.TypeOf<ArgumentNullException>().With.Property(nameof(ArgumentException.ParamName)).EqualTo("set"));
         }
 
         [Test]
         [TestCaseSource(typeof(ConstructionCases))]
         public void TestConstruction(Func<ISet<int>, ReadOnlySet<int>> getReadOnlySet)
         {
-            Assert.That(getReadOnlySet, Is.Not.Null);
-            var count = _set.Count;
+            var set = CreateSet();
 
-            var readOnlySet = getReadOnlySet(_set);
-            Assert.That(readOnlySet, Is.Not.SameAs(_set));
+            Assert.That(getReadOnlySet, Is.Not.Null);
+            var count = set.Count;
+
+            var readOnlySet = getReadOnlySet(set);
+            Assert.That(readOnlySet, Is.Not.SameAs(set));
 
             Assert.That(((ICollection<int>)readOnlySet).IsReadOnly, Is.True);
-            Assert.That(_set.Count, Is.EqualTo(count));
+            Assert.That(set.Count, Is.EqualTo(count));
             Assert.That(readOnlySet.Count, Is.EqualTo(count));
-            Assert.That(readOnlySet, Is.EquivalentTo(_set));
+            Assert.That(readOnlySet, Is.EquivalentTo(set));
 #if NET5_0_OR_GREATER
             Assert.That(readOnlySet, Is.InstanceOf<IReadOnlySet<int>>());
 #endif
@@ -65,24 +54,26 @@ namespace Omnifactotum.Tests
         [Test]
         public void TestChangeTrackingScenario()
         {
-            var readOnlySet = new ReadOnlySet<int>(_set);
-            Assert.That(readOnlySet.Count, Is.EqualTo(_set.Count));
-            Assert.That(readOnlySet, Is.EquivalentTo(_set));
+            var set = CreateSet();
+
+            var readOnlySet = new ReadOnlySet<int>(set);
+            Assert.That(readOnlySet.Count, Is.EqualTo(set.Count));
+            Assert.That(readOnlySet, Is.EquivalentTo(set));
 
             Assert.That(readOnlySet.Contains(ValueExtra), Is.False);
 
-            _set.Add(ValueExtra);
+            set.Add(ValueExtra);
             Assert.That(readOnlySet.Contains(ValueExtra), Is.True);
-            Assert.That(readOnlySet.Count, Is.EqualTo(_set.Count));
-            Assert.That(readOnlySet, Is.EquivalentTo(_set));
+            Assert.That(readOnlySet.Count, Is.EqualTo(set.Count));
+            Assert.That(readOnlySet, Is.EquivalentTo(set));
 
             Assert.That(readOnlySet.Contains(Value2), Is.True);
-            _set.Remove(Value2);
+            set.Remove(Value2);
             Assert.That(readOnlySet.Contains(Value2), Is.False);
-            Assert.That(readOnlySet.Count, Is.EqualTo(_set.Count));
-            Assert.That(readOnlySet, Is.EquivalentTo(_set));
+            Assert.That(readOnlySet.Count, Is.EqualTo(set.Count));
+            Assert.That(readOnlySet, Is.EquivalentTo(set));
 
-            _set.Clear();
+            set.Clear();
             Assert.That(readOnlySet.Count, Is.EqualTo(0));
             Assert.That(readOnlySet.Any(), Is.False);
         }
@@ -90,8 +81,10 @@ namespace Omnifactotum.Tests
         [Test]
         public void TestReadOnly()
         {
-            var count = _set.Count;
-            var readOnlySet = new ReadOnlySet<int>(_set);
+            var set = CreateSet();
+
+            var count = set.Count;
+            var readOnlySet = new ReadOnlySet<int>(set);
             Assert.That(((ICollection<int>)readOnlySet).IsReadOnly, Is.True);
 
             var collection = (ICollection<int>)readOnlySet;
@@ -100,10 +93,10 @@ namespace Omnifactotum.Tests
             void AssertNoChanges()
             {
                 Assert.That(readOnlySet.Count, Is.EqualTo(count));
-                CollectionAssert.AreEquivalent(_set, readOnlySet);
+                CollectionAssert.AreEquivalent(set, readOnlySet);
 
                 Assert.That(collection.Count, Is.EqualTo(count));
-                CollectionAssert.AreEquivalent(_set, collection);
+                CollectionAssert.AreEquivalent(set, collection);
             }
 
             AssertNoChanges();
@@ -111,31 +104,37 @@ namespace Omnifactotum.Tests
             Assert.That(
                 () => ((ISet<int>)readOnlySet).Add(ValueExtra),
                 Throws.TypeOf<NotSupportedException>());
+
             AssertNoChanges();
 
             Assert.That(
                 () => ((ISet<int>)readOnlySet).Remove(Value1),
                 Throws.TypeOf<NotSupportedException>());
+
             AssertNoChanges();
 
             Assert.That(
                 () => ((ISet<int>)readOnlySet).ExceptWith(Value1.AsCollection()),
                 Throws.TypeOf<NotSupportedException>());
+
             AssertNoChanges();
 
             Assert.That(
                 () => ((ISet<int>)readOnlySet).IntersectWith(Value1.AsCollection()),
                 Throws.TypeOf<NotSupportedException>());
+
             AssertNoChanges();
 
             Assert.That(
                 () => ((ISet<int>)readOnlySet).SymmetricExceptWith(Value1.AsCollection()),
                 Throws.TypeOf<NotSupportedException>());
+
             AssertNoChanges();
 
             Assert.That(
                 () => ((ISet<int>)readOnlySet).UnionWith(ValueExtra.AsCollection()),
                 Throws.TypeOf<NotSupportedException>());
+
             AssertNoChanges();
 
             //// As collection
@@ -143,33 +142,40 @@ namespace Omnifactotum.Tests
             Assert.That(
                 () => collection.Add(ValueExtra),
                 Throws.TypeOf<NotSupportedException>());
+
             AssertNoChanges();
 
             Assert.That(
                 collection.Clear,
                 Throws.TypeOf<NotSupportedException>());
+
             AssertNoChanges();
 
             Assert.That(
                 () => collection.Remove(Value1),
                 Throws.TypeOf<NotSupportedException>());
+
             AssertNoChanges();
         }
 
         [Test]
         public void TestGetEnumerator()
         {
-            var readOnlySet = new ReadOnlySet<int>(_set);
+            var set = CreateSet();
+
+            var readOnlySet = new ReadOnlySet<int>(set);
 
             var values = readOnlySet.AsEnumerable().ToList();
-            Assert.That(values.Count, Is.EqualTo(_set.Count));
-            Assert.That(values, Is.EquivalentTo(_set));
+            Assert.That(values.Count, Is.EqualTo(set.Count));
+            Assert.That(values, Is.EquivalentTo(set));
         }
 
         [Test]
         public void TestContains()
         {
-            var readOnlySet = new ReadOnlySet<int>(_set);
+            var set = CreateSet();
+
+            var readOnlySet = new ReadOnlySet<int>(set);
 
             Assert.That(readOnlySet.Contains(Value1), Is.True);
             Assert.That(readOnlySet.Contains(Value2), Is.True);
@@ -182,7 +188,9 @@ namespace Omnifactotum.Tests
         [Test]
         public void TestCollectionContains()
         {
-            var readOnlySet = new ReadOnlySet<int>(_set);
+            var set = CreateSet();
+
+            var readOnlySet = new ReadOnlySet<int>(set);
             var collection = (ICollection<int>)readOnlySet;
 
             Assert.That(collection.Contains(Value1), Is.True);
@@ -196,19 +204,23 @@ namespace Omnifactotum.Tests
         [Test]
         public void TestCollectionCopyTo()
         {
-            var readOnlySet = new ReadOnlySet<int>(_set);
+            var set = CreateSet();
+
+            var readOnlySet = new ReadOnlySet<int>(set);
             var collection = (ICollection<int>)readOnlySet;
 
             var array = new int[collection.Count];
             collection.CopyTo(array, 0);
 
-            Assert.That(array, Is.EquivalentTo(_set));
+            Assert.That(array, Is.EquivalentTo(set));
         }
 
         [Test]
         public void TestIsProperSubsetOf()
         {
-            var readOnlySet = new ReadOnlySet<int>(_set);
+            var set = CreateSet();
+
+            var readOnlySet = new ReadOnlySet<int>(set);
 
             Assert.That(
                 readOnlySet.IsProperSubsetOf(new[] { Value1, Value2, Value3, Value17, ValueExtra }),
@@ -219,14 +231,16 @@ namespace Omnifactotum.Tests
                 Is.False);
 
             Assert.That(
-                readOnlySet.IsProperSubsetOf(_set.ToArray()),
+                readOnlySet.IsProperSubsetOf(set.ToArray()),
                 Is.False);
         }
 
         [Test]
         public void TestIsProperSupersetOf()
         {
-            var readOnlySet = new ReadOnlySet<int>(_set);
+            var set = CreateSet();
+
+            var readOnlySet = new ReadOnlySet<int>(set);
 
             Assert.That(
                 readOnlySet.IsProperSupersetOf(new[] { Value1, Value2, Value3 }),
@@ -237,14 +251,16 @@ namespace Omnifactotum.Tests
                 Is.False);
 
             Assert.That(
-                readOnlySet.IsProperSupersetOf(_set.ToArray()),
+                readOnlySet.IsProperSupersetOf(set.ToArray()),
                 Is.False);
         }
 
         [Test]
         public void TestIsSubsetOf()
         {
-            var readOnlySet = new ReadOnlySet<int>(_set);
+            var set = CreateSet();
+
+            var readOnlySet = new ReadOnlySet<int>(set);
 
             Assert.That(
                 readOnlySet.IsSubsetOf(new[] { Value1, Value2, Value3, Value17, ValueExtra }),
@@ -255,14 +271,16 @@ namespace Omnifactotum.Tests
                 Is.False);
 
             Assert.That(
-                readOnlySet.IsSubsetOf(_set.ToArray()),
+                readOnlySet.IsSubsetOf(set.ToArray()),
                 Is.True);
         }
 
         [Test]
         public void TestIsSupersetOf()
         {
-            var readOnlySet = new ReadOnlySet<int>(_set);
+            var set = CreateSet();
+
+            var readOnlySet = new ReadOnlySet<int>(set);
 
             Assert.That(
                 readOnlySet.IsSupersetOf(new[] { Value1, Value2, Value3 }),
@@ -273,14 +291,16 @@ namespace Omnifactotum.Tests
                 Is.False);
 
             Assert.That(
-                readOnlySet.IsSupersetOf(_set.ToArray()),
+                readOnlySet.IsSupersetOf(set.ToArray()),
                 Is.True);
         }
 
         [Test]
         public void TestOverlaps()
         {
-            var readOnlySet = new ReadOnlySet<int>(_set);
+            var set = CreateSet();
+
+            var readOnlySet = new ReadOnlySet<int>(set);
 
             Assert.That(readOnlySet.Overlaps(new[] { Value1 }), Is.True);
             Assert.That(readOnlySet.Overlaps(new[] { Value17, Value1 }), Is.True);
@@ -292,11 +312,15 @@ namespace Omnifactotum.Tests
         [Test]
         public void TestSetEquals()
         {
-            var readOnlySet = new ReadOnlySet<int>(_set);
+            var set = CreateSet();
 
-            Assert.That(readOnlySet.SetEquals(_set.ToArray()), Is.True);
-            Assert.That(readOnlySet.SetEquals(_set.ToArray().Concat(ValueExtra.AsCollection())), Is.False);
+            var readOnlySet = new ReadOnlySet<int>(set);
+
+            Assert.That(readOnlySet.SetEquals(set.ToArray()), Is.True);
+            Assert.That(readOnlySet.SetEquals(set.ToArray().Concat(ValueExtra.AsCollection())), Is.False);
         }
+
+        private static HashSet<int> CreateSet() => new() { Value1, Value2, Value3, Value17 };
 
         private sealed class ConstructionCases : TestCasesBase
         {

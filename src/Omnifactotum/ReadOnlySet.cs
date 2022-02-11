@@ -1,7 +1,12 @@
-﻿using System;
+﻿#nullable enable
+
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using Omnifactotum.Annotations;
+
+//// ReSharper disable RedundantNullnessAttributeWithNullableReferenceTypes
+//// ReSharper disable UseNullableReferenceTypesAnnotationSyntax
 
 namespace Omnifactotum
 {
@@ -163,7 +168,7 @@ namespace Omnifactotum
         /// <exception cref="System.ArgumentNullException">
         ///     <paramref name="other"/> is <see langword="null"/>.
         /// </exception>
-        public bool Overlaps(IEnumerable<T> other) => _set.Overlaps(other);
+        public bool Overlaps([InstantHandle] IEnumerable<T> other) => _set.Overlaps(other);
 
         /// <summary>
         ///     Determines whether the current set and the specified collection contain the same elements.
@@ -177,7 +182,7 @@ namespace Omnifactotum
         /// <exception cref="System.ArgumentNullException">
         ///     <paramref name="other"/> is <see langword="null"/>.
         /// </exception>
-        public bool SetEquals(IEnumerable<T> other) => _set.SetEquals(other);
+        public bool SetEquals([InstantHandle] IEnumerable<T> other) => _set.SetEquals(other);
 
         /// <summary>
         ///     Gets the number of elements contained in the current set.

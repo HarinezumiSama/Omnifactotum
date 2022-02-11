@@ -1,8 +1,13 @@
-﻿using Omnifactotum;
+﻿#nullable enable
+
+using System.Runtime.CompilerServices;
+using Omnifactotum;
 using Omnifactotum.Annotations;
 
-//// ReSharper disable once CheckNamespace :: Namespace is intentionally named so in order to simplify usage of extension methods
+//// ReSharper disable RedundantNullnessAttributeWithNullableReferenceTypes
+//// ReSharper disable UseNullableReferenceTypesAnnotationSyntax
 
+//// ReSharper disable once CheckNamespace :: Namespace is intentionally named so in order to simplify usage of extension methods
 namespace System.Collections.Generic
 {
     /// <summary>
@@ -22,15 +27,9 @@ namespace System.Collections.Generic
         /// <returns>
         ///     A read-only wrapper for the specified set.
         /// </returns>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         [NotNull]
         public static ReadOnlySet<T> AsReadOnly<T>([NotNull] this ISet<T> set)
-        {
-            if (set is null)
-            {
-                throw new ArgumentNullException(nameof(set));
-            }
-
-            return new ReadOnlySet<T>(set);
-        }
+            => set is null ? throw new ArgumentNullException(nameof(set)) : new ReadOnlySet<T>(set);
     }
 }
