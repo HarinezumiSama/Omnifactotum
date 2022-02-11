@@ -19,8 +19,8 @@ namespace System
     /// </summary>
     public static class OmnifactotumTypeExtensions
     {
-        private const char GenericArgumentsOpening = '<';
-        private const char GenericArgumentsClosing = '>';
+        internal const char GenericArgumentsOpening = '<';
+        internal const char GenericArgumentsClosing = '>';
 
         /// <summary>
         ///     The generic argument delimiter.

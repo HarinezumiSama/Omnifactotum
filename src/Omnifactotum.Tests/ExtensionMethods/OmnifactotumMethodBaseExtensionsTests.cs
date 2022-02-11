@@ -1,28 +1,25 @@
-﻿using System;
+﻿#nullable enable
+
+using System;
 using System.Collections.Generic;
 using System.Reflection;
 using NUnit.Framework;
 using static Omnifactotum.FormattableStringFactotum;
-
-//// ReSharper disable AssignNullToNotNullAttribute - For negative test cases
 
 namespace Omnifactotum.Tests.ExtensionMethods
 {
     [TestFixture(TestOf = typeof(OmnifactotumMethodBaseExtensions))]
     internal sealed class OmnifactotumMethodBaseExtensionsTests
     {
-        private const MethodBase NullMethod = null;
+        private const MethodBase? NullMethod = null;
 
         private readonly MethodBaseTestHelper _testHelper;
 
-        public OmnifactotumMethodBaseExtensionsTests()
-        {
-            _testHelper = MethodBaseTestHelper.Instance;
-        }
+        public OmnifactotumMethodBaseExtensionsTests() => _testHelper = MethodBaseTestHelper.Instance;
 
         [Test]
         public void TestGetFullNameWhenInvalidArgumentThenThrows()
-            => Assert.That(() => NullMethod.GetFullName(), Throws.ArgumentNullException);
+            => Assert.That(() => NullMethod!.GetFullName(), Throws.ArgumentNullException);
 
         [Test]
         public void TestGetFullNameWhenConstructorIsPassedThenSucceeds()
@@ -63,7 +60,7 @@ namespace Omnifactotum.Tests.ExtensionMethods
 
         [Test]
         public void TestGetQualifiedNameWhenInvalidArgumentThenThrows()
-            => Assert.That(() => NullMethod.GetQualifiedName(), Throws.ArgumentNullException);
+            => Assert.That(() => NullMethod!.GetQualifiedName(), Throws.ArgumentNullException);
 
         [Test]
         public void TestGetQualifiedNameWhenConstructorIsPassedThenSucceeds()
@@ -96,7 +93,7 @@ namespace Omnifactotum.Tests.ExtensionMethods
 
         [Test]
         public void TestGetSignatureWhenInvalidArgumentThenThrows()
-            => Assert.That(() => NullMethod.GetSignature(), Throws.ArgumentNullException);
+            => Assert.That(() => NullMethod!.GetSignature(), Throws.ArgumentNullException);
 
         [Test]
         public void TestGetSignatureWhenConstructorIsPassedThenSucceeds()
@@ -155,7 +152,7 @@ namespace Omnifactotum.Tests.ExtensionMethods
 
         [Test]
         public void TestGetFullSignatureWhenInvalidArgumentThenThrows()
-            => Assert.That(() => NullMethod.GetFullSignature(), Throws.ArgumentNullException);
+            => Assert.That(() => NullMethod!.GetFullSignature(), Throws.ArgumentNullException);
 
         [Test]
         public void TestGetFullSignatureWhenConstructorIsPassedThenSucceeds()
