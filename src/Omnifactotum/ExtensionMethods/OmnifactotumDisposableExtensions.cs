@@ -1,7 +1,12 @@
-﻿using Omnifactotum.Annotations;
+﻿#nullable enable
+
+using System.Runtime.CompilerServices;
+using Omnifactotum.Annotations;
+
+//// ReSharper disable RedundantNullnessAttributeWithNullableReferenceTypes
+//// ReSharper disable UseNullableReferenceTypesAnnotationSyntax
 
 //// ReSharper disable once CheckNamespace :: Namespace is intentionally named so in order to simplify usage of extension methods
-
 namespace System
 {
     /// <summary>
@@ -20,7 +25,8 @@ namespace System
         /// <param name="disposable">
         ///     A reference to an object to dispose.
         /// </param>
-        public static void DisposeSafely<T>([CanBeNull] this T disposable)
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static void DisposeSafely<T>([CanBeNull] this T? disposable)
             where T : class, IDisposable
             => disposable?.Dispose();
 
@@ -35,6 +41,7 @@ namespace System
         /// <param name="disposable">
         ///     A reference to an object to dispose.
         /// </param>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static void DisposeSafely<T>([CanBeNull] this T? disposable)
             where T : struct, IDisposable
             => disposable?.Dispose();

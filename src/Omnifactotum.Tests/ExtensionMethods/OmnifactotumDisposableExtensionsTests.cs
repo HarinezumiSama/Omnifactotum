@@ -1,20 +1,21 @@
-﻿using System;
+﻿#nullable enable
+
+using System;
 using System.IO;
 using Moq;
 using NUnit.Framework;
 using Omnifactotum.Tests.Auxiliary;
 
+//// ReSharper disable RedundantNullnessAttributeWithNullableReferenceTypes
+//// ReSharper disable UseNullableReferenceTypesAnnotationSyntax
+
 namespace Omnifactotum.Tests.ExtensionMethods
 {
-    //// ReSharper disable AssignNullToNotNullAttribute - Intentionally for tests
     [TestFixture(TestOf = typeof(OmnifactotumDisposableExtensions))]
     internal sealed class OmnifactotumDisposableExtensionsTests
     {
         [Test]
-        public void TestDisposeSafelyOfReferenceTypeNullInstance()
-        {
-            ((Stream)null).DisposeSafely();
-        }
+        public void TestDisposeSafelyOfReferenceTypeNullInstance() => ((Stream?)null).DisposeSafely();
 
         [Test]
         public void TestDisposeSafelyOfReferenceTypeRealInstance()
@@ -34,10 +35,7 @@ namespace Omnifactotum.Tests.ExtensionMethods
         }
 
         [Test]
-        public void TestDisposeSafelyOfNullableTypeNullValue()
-        {
-            ((DisposableStruct?)null).DisposeSafely();
-        }
+        public void TestDisposeSafelyOfNullableTypeNullValue() => ((DisposableStruct?)null).DisposeSafely();
 
         [Test]
         public void TestDisposeSafelyOfNullableTypeRealValue()
