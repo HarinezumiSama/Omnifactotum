@@ -1,11 +1,15 @@
-﻿using System.Diagnostics;
+﻿#nullable enable
+
+using System.Diagnostics;
 using System.Threading;
 
 //// Namespace is intentionally named so in order to simplify usage of extension methods
 using Omnifactotum.Annotations;
 
-//// ReSharper disable CheckNamespace - Namespace is intentionally named so in order to simplify usage of extension methods
+//// ReSharper disable RedundantNullnessAttributeWithNullableReferenceTypes
+//// ReSharper disable UseNullableReferenceTypesAnnotationSyntax
 
+//// ReSharper disable once CheckNamespace :: Namespace is intentionally named so in order to simplify usage of extension methods
 namespace System
 {
     /// <summary>
@@ -16,7 +20,7 @@ namespace System
         /// <summary>
         ///     <para>Determines whether the specified exception should NOT be handled by a user code.</para>
         ///     <para>
-        ///         The following exceptions (and their descendants) are considered by this method as the ones that should not be
+        ///         The following exceptions (and their descendants) are considered by this method as the ones that generally should not be
         ///         handled by a user code:
         ///         <list type="bullet">
         ///             <item><see cref="ThreadAbortException"/></item>
@@ -46,7 +50,7 @@ namespace System
         ///     </code>
         /// </example>
         [DebuggerNonUserCode]
-        public static bool IsFatal([CanBeNull] this Exception exception)
+        public static bool IsFatal([CanBeNull] this Exception? exception)
             => exception is ThreadAbortException or OperationCanceledException or OutOfMemoryException or StackOverflowException;
     }
 }
