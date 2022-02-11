@@ -1,5 +1,6 @@
-﻿using System;
-using System.Diagnostics.CodeAnalysis;
+﻿#nullable enable
+
+using System;
 using NUnit.Framework;
 
 namespace Omnifactotum.Tests.ExtensionMethods
@@ -19,10 +20,10 @@ namespace Omnifactotum.Tests.ExtensionMethods
         [TestCase(false, "Dunno", "Yup", "", "")]
         public void TestToStringOverloadsSucceed(
             bool? value,
-            string noValueString,
-            string trueValueString,
-            string falseValueString,
-            string expectedResult)
+            string? noValueString,
+            string? trueValueString,
+            string? falseValueString,
+            string? expectedResult)
         {
             Assert.That(new[] { noValueString, trueValueString, falseValueString }, Is.Unique);
 
@@ -34,25 +35,24 @@ namespace Omnifactotum.Tests.ExtensionMethods
         }
 
         [Test]
-        [SuppressMessage("ReSharper", "AssignNullToNotNullAttribute")]
         public void TestToStringWithNullProviderThrows()
         {
             Assert.That(
-                () => ((bool?)null).ToString(null, () => "Yes", () => "No"),
+                () => ((bool?)null).ToString(null!, () => "Yes", () => "No"),
                 Throws.ArgumentNullException
                     .With
                     .Property(nameof(ArgumentException.ParamName))
                     .EqualTo("noValueProvider"));
 
             Assert.That(
-                () => ((bool?)true).ToString(() => "Dunno", null, () => "No"),
+                () => ((bool?)true).ToString(() => "Dunno", null!, () => "No"),
                 Throws.ArgumentNullException
                     .With
                     .Property(nameof(ArgumentException.ParamName))
                     .EqualTo("trueValueProvider"));
 
             Assert.That(
-                () => ((bool?)false).ToString(() => "Dunno", () => "Yes", null),
+                () => ((bool?)false).ToString(() => "Dunno", () => "Yes", null!),
                 Throws.ArgumentNullException
                     .With
                     .Property(nameof(ArgumentException.ParamName))

@@ -1,9 +1,14 @@
-﻿using Omnifactotum.Annotations;
+﻿#nullable enable
+
+using System.Runtime.CompilerServices;
+using Omnifactotum.Annotations;
 using PureAttribute = System.Diagnostics.Contracts.PureAttribute;
 using SuppressMessageAttribute = System.Diagnostics.CodeAnalysis.SuppressMessageAttribute;
 
-//// ReSharper disable once CheckNamespace :: Namespace is intentionally named so in order to simplify usage of extension methods
+//// ReSharper disable RedundantNullnessAttributeWithNullableReferenceTypes
+//// ReSharper disable UseNullableReferenceTypesAnnotationSyntax
 
+//// ReSharper disable once CheckNamespace :: Namespace is intentionally named so in order to simplify usage of extension methods
 namespace System
 {
     /// <summary>
@@ -31,12 +36,14 @@ namespace System
         ///     The string representation of the specified nullable Boolean value.
         /// </returns>
         [Pure]
-        [SuppressMessage("ReSharper", "ArrangeRedundantParentheses")]
-        public static string ToString(
+        [SuppressMessage("ReSharper", "ArrangeRedundantParentheses", Justification = "For clarity.")]
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        [CanBeNull]
+        public static string? ToString(
             [CanBeNull] this bool? value,
-            [CanBeNull] string noValueString,
-            [CanBeNull] string trueValueString,
-            [CanBeNull] string falseValueString)
+            [CanBeNull] string? noValueString,
+            [CanBeNull] string? trueValueString,
+            [CanBeNull] string? falseValueString)
             => value.HasValue ? (value.Value ? trueValueString : falseValueString) : noValueString;
 
         /// <summary>
@@ -60,12 +67,13 @@ namespace System
         /// <returns>
         ///     The string representation of the specified nullable Boolean value.
         /// </returns>
-        [SuppressMessage("ReSharper", "ArrangeRedundantParentheses")]
-        public static string ToString(
+        [SuppressMessage("ReSharper", "ArrangeRedundantParentheses", Justification = "For clarity.")]
+        [CanBeNull]
+        public static string? ToString(
             [CanBeNull] this bool? value,
-            [NotNull] [InstantHandle] Func<string> noValueProvider,
-            [NotNull] [InstantHandle] Func<string> trueValueProvider,
-            [NotNull] [InstantHandle] Func<string> falseValueProvider)
+            [NotNull] [InstantHandle] Func<string?> noValueProvider,
+            [NotNull] [InstantHandle] Func<string?> trueValueProvider,
+            [NotNull] [InstantHandle] Func<string?> falseValueProvider)
             => value.HasValue
                 ? (value.Value
                     ? (trueValueProvider ?? throw new ArgumentNullException(nameof(trueValueProvider))).Invoke()
