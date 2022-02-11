@@ -1,4 +1,6 @@
-﻿using System.Collections.Generic;
+﻿#nullable enable
+
+using System.Collections.Generic;
 using System.ComponentModel;
 using System.Globalization;
 using System.Linq;
@@ -7,6 +9,9 @@ using Omnifactotum;
 using Omnifactotum.Annotations;
 using static Omnifactotum.FormattableStringFactotum;
 using PureAttribute = System.Diagnostics.Contracts.PureAttribute;
+
+//// ReSharper disable RedundantNullnessAttributeWithNullableReferenceTypes
+//// ReSharper disable UseNullableReferenceTypesAnnotationSyntax
 
 //// ReSharper disable once CheckNamespace :: Namespace is intentionally named so in order to simplify usage of extension methods
 namespace System
@@ -202,7 +207,7 @@ namespace System
         [Pure]
         [Omnifactotum.Annotations.Pure]
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static bool IsOneOf<TEnum>(this TEnum enumerationValue, params TEnum[] otherValues)
+        public static bool IsOneOf<TEnum>(this TEnum enumerationValue, [NotNull] params TEnum[] otherValues)
             where TEnum : struct, Enum
             => IsOneOf(enumerationValue, (IEnumerable<TEnum>)otherValues);
 

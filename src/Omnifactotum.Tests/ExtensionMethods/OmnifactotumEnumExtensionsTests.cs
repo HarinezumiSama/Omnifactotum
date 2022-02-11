@@ -1,4 +1,6 @@
-﻿using System;
+﻿#nullable enable
+
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.IO;
@@ -264,10 +266,10 @@ namespace Omnifactotum.Tests.ExtensionMethods
         [Test]
         public void TestIsOneOfWhenNullOtherValuesArgumentIsPassedThenThrows()
         {
-            Assert.That(() => ConsoleColor.Gray.IsOneOf(null), Throws.ArgumentNullException);
+            Assert.That(() => ConsoleColor.Gray.IsOneOf(null!), Throws.ArgumentNullException);
 
             Assert.That(
-                () => ConsoleColor.Gray.IsOneOf(((IEnumerable<ConsoleColor>)null)!),
+                () => ConsoleColor.Gray.IsOneOf(((IEnumerable<ConsoleColor>?)null)!),
                 Throws.ArgumentNullException);
         }
 
