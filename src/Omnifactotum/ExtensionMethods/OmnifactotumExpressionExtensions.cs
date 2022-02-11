@@ -1,8 +1,13 @@
-﻿using System.Reflection;
+﻿#nullable enable
+
+using System.Reflection;
 using Omnifactotum.Annotations;
+using NotNullIfNotNullAttribute = System.Diagnostics.CodeAnalysis.NotNullIfNotNullAttribute;
 
-//// ReSharper disable CheckNamespace
+//// ReSharper disable RedundantNullnessAttributeWithNullableReferenceTypes
+//// ReSharper disable UseNullableReferenceTypesAnnotationSyntax
 
+//// ReSharper disable once CheckNamespace :: Namespace is intentionally named so in order to simplify usage of extension methods
 namespace System.Linq.Expressions
 {
     /// <summary>
@@ -22,7 +27,8 @@ namespace System.Linq.Expressions
         /// <returns>
         ///     The last called method, or <see langword="null"/> if the last element in the expression is not a method call.
         /// </returns>
-        public static MethodInfo GetLastMethod<TDelegate>([NotNull] this Expression<TDelegate> expression)
+        [CanBeNull]
+        public static MethodInfo? GetLastMethod<TDelegate>([NotNull] this Expression<TDelegate> expression)
         {
             if (expression is null)
             {
@@ -172,10 +178,9 @@ namespace System.Linq.Expressions
             ///     The modified expression, if it or any subexpression was modified;
             ///     otherwise, returns the original expression.
             /// </returns>
-            public override Expression Visit(Expression node)
-            {
-                return node == _sourceExpression ? _targetExpression : base.Visit(node);
-            }
+            [return: NotNullIfNotNull("node")]
+            //// ReSharper disable once ReturnTypeCanBeNotNullable :: No nullability annotations in `ExpressionVisitor` in the older .NET versions
+            public override Expression? Visit(Expression? node) => node == _sourceExpression ? _targetExpression : base.Visit(node);
         }
     }
 }
