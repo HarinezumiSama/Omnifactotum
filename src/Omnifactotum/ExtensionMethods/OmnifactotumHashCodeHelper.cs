@@ -1,8 +1,13 @@
-﻿using Omnifactotum.Annotations;
+﻿#nullable enable
+
+using System.Runtime.CompilerServices;
+using Omnifactotum.Annotations;
 using PureAttribute = System.Diagnostics.Contracts.PureAttribute;
 
-//// ReSharper disable once CheckNamespace :: Namespace is intentionally named so in order to simplify usage of extension methods
+//// ReSharper disable RedundantNullnessAttributeWithNullableReferenceTypes
+//// ReSharper disable UseNullableReferenceTypesAnnotationSyntax
 
+//// ReSharper disable once CheckNamespace :: Namespace is intentionally named so in order to simplify usage of extension methods
 namespace System
 {
     /// <summary>
@@ -25,6 +30,8 @@ namespace System
         ///     A new hash code produced from the specified hash codes.
         /// </returns>
         [Pure]
+        [Omnifactotum.Annotations.Pure]
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static int CombineHashCodeValues(this int previousHashCode, int nextHashCode)
             => unchecked(previousHashCode * HashCodeMagicMultiplier) ^ nextHashCode;
 
@@ -47,6 +54,8 @@ namespace System
         ///     A new hash code produced from the hash codes obtained from the specified instances.
         /// </returns>
         [Pure]
+        [Omnifactotum.Annotations.Pure]
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static int CombineHashCodes<TPrevious, TNext>(
             [CanBeNull] this TPrevious previous,
             [CanBeNull] TNext next)
@@ -70,6 +79,8 @@ namespace System
         ///     of the specified instance.
         /// </returns>
         [Pure]
+        [Omnifactotum.Annotations.Pure]
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static int CombineHashCodes<TNext>(this int previousHashCode, [CanBeNull] TNext next)
             => CombineHashCodeValues(previousHashCode, next.GetHashCodeSafely());
     }

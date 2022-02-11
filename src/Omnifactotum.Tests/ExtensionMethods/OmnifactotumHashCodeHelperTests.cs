@@ -1,4 +1,6 @@
-﻿using System;
+﻿#nullable enable
+
+using System;
 using NUnit.Framework;
 
 namespace Omnifactotum.Tests.ExtensionMethods
