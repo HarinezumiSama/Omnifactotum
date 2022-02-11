@@ -1,12 +1,17 @@
-﻿using System.Collections;
+﻿#nullable enable
+
+using System.Collections;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Runtime.CompilerServices;
 using System.Text;
 using Omnifactotum.Annotations;
 
-//// ReSharper disable once CheckNamespace :: Namespace is intentionally named so in order to simplify usage of extension methods
+//// ReSharper disable RedundantNullnessAttributeWithNullableReferenceTypes
+//// ReSharper disable UseNullableReferenceTypesAnnotationSyntax
 
+//// ReSharper disable once CheckNamespace :: Namespace is intentionally named so in order to simplify usage of extension methods
 namespace System
 {
     /// <summary>
@@ -14,6 +19,9 @@ namespace System
     /// </summary>
     public static class OmnifactotumTypeExtensions
     {
+        private const char GenericArgumentsOpening = '<';
+        private const char GenericArgumentsClosing = '>';
+
         /// <summary>
         ///     The generic argument delimiter.
         /// </summary>
@@ -62,7 +70,8 @@ namespace System
         /// <exception cref="System.ArgumentException">
         ///     <paramref name="name"/> is <see langword="null"/> or an empty string (<see cref="String.Empty"/>).
         /// </exception>
-        public static Stream GetManifestResourceStream([NotNull] this Type type, [NotNull] string name)
+        [CanBeNull]
+        public static Stream? GetManifestResourceStream([NotNull] this Type type, [NotNull] string name)
         {
             if (type is null)
             {
@@ -71,7 +80,7 @@ namespace System
 
             if (string.IsNullOrEmpty(name))
             {
-                throw new ArgumentException("The value can be neither empty string nor null.", nameof(name));
+                throw new ArgumentException(@"The value can be neither empty string nor null.", nameof(name));
             }
 
             return type.Assembly.GetManifestResourceStream(type, name);
@@ -123,10 +132,8 @@ namespace System
         ///         </item>
         ///     </list>
         /// </example>
-        public static string GetQualifiedName([NotNull] this Type type)
-        {
-            return GetNameInternal(type, false);
-        }
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static string GetQualifiedName([NotNull] this Type type) => GetNameInternal(type, false);
 
         /// <summary>
         ///     Gets the full name of the specified type, including its declaring type, if any, and generic
@@ -176,10 +183,8 @@ namespace System
         ///         </item>
         ///     </list>
         /// </example>
-        public static string GetFullName([NotNull] this Type type)
-        {
-            return GetNameInternal(type, true);
-        }
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static string GetFullName([NotNull] this Type type) => GetNameInternal(type, true);
 
         /// <summary>
         ///     Determines whether the specified type is <see cref="Nullable{T}"/> for a certain type T.
@@ -217,7 +222,8 @@ namespace System
         /// <returns>
         ///     The type of the elements in the collection represented by the specified type.
         /// </returns>
-        public static Type GetCollectionElementType([NotNull] this Type type)
+        [CanBeNull]
+        public static Type? GetCollectionElementType([NotNull] this Type type)
         {
             if (type is null)
             {
@@ -268,11 +274,17 @@ namespace System
         /// <returns>
         ///     The short type name.
         /// </returns>
-        internal static string GetShortTypeNameInternal(Type type)
+        [NotNull]
+        internal static string GetShortTypeNameInternal([NotNull] Type type)
         {
+            if (type is null)
+            {
+                throw new ArgumentNullException(nameof(type));
+            }
+
             if (type.IsNullable())
             {
-                var underlyingTypeName = GetShortTypeNameInternal(Nullable.GetUnderlyingType(type));
+                var underlyingTypeName = GetShortTypeNameInternal(Nullable.GetUnderlyingType(type)!);
                 return underlyingTypeName + "?";
             }
 
@@ -281,14 +293,14 @@ namespace System
                 if (type.IsPointer)
                 {
                     var elementType = type.GetElementType();
-                    var elementTypeName = GetShortTypeNameInternal(elementType);
+                    var elementTypeName = GetShortTypeNameInternal(elementType!);
                     return elementTypeName + "*";
                 }
 
                 if (type.IsArray)
                 {
                     var elementType = type.GetElementType();
-                    var elementTypeName = GetShortTypeNameInternal(elementType);
+                    var elementTypeName = GetShortTypeNameInternal(elementType!);
                     return elementTypeName + "[]";
                 }
             }
@@ -297,26 +309,26 @@ namespace System
             {
                 var resultBuilder = new StringBuilder();
                 resultBuilder.Append(GetGenericTypeNameBase(type));
-                resultBuilder.Append("<");
+                resultBuilder.Append(GenericArgumentsOpening);
 
                 var genericArguments = type.GetGenericArguments();
                 for (var index = 0; index < genericArguments.Length; index++)
                 {
                     if (index > 0)
                     {
-                        resultBuilder.Append(", ");
+                        resultBuilder.Append(",\x0020");
                     }
 
                     var shortName = GetShortTypeNameInternal(genericArguments[index]);
                     resultBuilder.Append(shortName);
                 }
 
-                resultBuilder.Append(">");
+                resultBuilder.Append(GenericArgumentsClosing);
 
                 return resultBuilder.ToString();
             }
 
-            if (type.IsNested || type.DeclaringType != null)
+            if (type.IsNested || type.DeclaringType is not null)
             {
                 return type.Name;
             }
@@ -329,7 +341,7 @@ namespace System
             [NotNull] StringBuilder resultBuilder,
             [NotNull] Type type,
             bool fullName,
-            [CanBeNull] List<Type> genericParameters,
+            [CanBeNull] List<Type>? genericParameters,
             ref int genericParameterOffset)
         {
             if (genericParameterOffset < 0)
@@ -392,6 +404,7 @@ namespace System
                     fullName,
                     genericParameters,
                     ref genericParameterOffset);
+
                 resultBuilder.Append(Type.Delimiter);
             }
 
@@ -420,27 +433,29 @@ namespace System
                 throw new InvalidOperationException("INTERNAL ERROR: Generic parameter list is not initialized.");
             }
 
-            resultBuilder.Append('<');
+            resultBuilder.Append(GenericArgumentsOpening);
 
             var genericArguments = genericParameters
                 .Skip(genericParameterOffset)
                 .Take(argumentCount)
                 .ToArray();
+
             genericParameterOffset += argumentCount;
             for (var index = 0; index < argumentCount; index++)
             {
                 if (index > 0)
                 {
-                    resultBuilder.Append(", ");
+                    resultBuilder.Append(",\x0020");
                 }
 
                 var offset = 0;
                 GetNameInternal(resultBuilder, genericArguments[index], fullName, null, ref offset);
             }
 
-            resultBuilder.Append('>');
+            resultBuilder.Append(GenericArgumentsClosing);
         }
 
+        [NotNull]
         private static string GetNameInternal([NotNull] Type type, bool fullName)
         {
             if (type is null)
@@ -454,6 +469,8 @@ namespace System
             return resultBuilder.ToString();
         }
 
+        [NotNull]
+        //// ReSharper disable once SuggestBaseTypeForParameter
         private static string GetGenericTypeNameBase([NotNull] Type type)
         {
             var result = type.Name;

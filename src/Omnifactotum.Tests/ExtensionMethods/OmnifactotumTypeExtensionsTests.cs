@@ -1,5 +1,6 @@
-﻿using System;
-using System.Diagnostics.CodeAnalysis;
+﻿#nullable enable
+
+using System;
 using System.IO;
 using NUnit.Framework;
 
@@ -9,15 +10,14 @@ namespace Omnifactotum.Tests.ExtensionMethods
     internal sealed class OmnifactotumTypeExtensionsTests
     {
         [Test]
-        [SuppressMessage("ReSharper", "AssignNullToNotNullAttribute")]
         public void TestGetManifestResourceStreamWhenNullTypeIsPassedThenThrows()
-            => Assert.That(() => ((Type)null).GetManifestResourceStream("ValidName"), Throws.ArgumentNullException);
+            => Assert.That(() => ((Type?)null)!.GetManifestResourceStream("ValidName"), Throws.ArgumentNullException);
 
         [Test]
         [TestCase(null)]
         [TestCase("")]
-        public void TestGetManifestResourceStreamWhenInvalidNameIsPassedThenThrows(string name)
-            => Assert.That(() => GetType().GetManifestResourceStream(name), Throws.ArgumentException);
+        public void TestGetManifestResourceStreamWhenInvalidNameIsPassedThenThrows(string? name)
+            => Assert.That(() => GetType().GetManifestResourceStream(name!), Throws.ArgumentException);
 
         [Test]
         public void TestGetManifestResourceStreamNonExistentResourceNameIsPassedThenReturnsNull()
@@ -32,15 +32,14 @@ namespace Omnifactotum.Tests.ExtensionMethods
             using var stream = GetType().GetManifestResourceStream("OmnifactotumTypeExtensionsTests.TestResource.txt");
             Assert.That(stream, Is.Not.Null);
 
-            using var reader = new StreamReader(stream);
+            using var reader = new StreamReader(stream!);
             var actualValue = reader.ReadToEnd();
             Assert.That(actualValue, Is.EqualTo("Test"));
         }
 
         [Test]
-        [SuppressMessage("ReSharper", "AssignNullToNotNullAttribute")]
         public void TestIsNullableWhenNullArgumentIsPassedThenThrows()
-            => Assert.That(() => ((Type)null).IsNullable(), Throws.ArgumentNullException);
+            => Assert.That(() => ((Type?)null)!.IsNullable(), Throws.ArgumentNullException);
 
         [Test]
         [TestCase(typeof(bool), false)]
