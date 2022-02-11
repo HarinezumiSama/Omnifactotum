@@ -2,6 +2,8 @@
 using System.ComponentModel;
 using System.Globalization;
 using System.Linq;
+using System.Runtime.CompilerServices;
+using Omnifactotum;
 using Omnifactotum.Annotations;
 using static Omnifactotum.FormattableStringFactotum;
 using PureAttribute = System.Diagnostics.Contracts.PureAttribute;
@@ -28,7 +30,11 @@ namespace System
         ///     The name of the specified enumeration value.
         /// </returns>
         [Pure]
-        public static string GetName([NotNull] this Enum value) => value.GetName(EnumNameMode.Short);
+        [Omnifactotum.Annotations.Pure]
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static string GetName<TEnum>(this TEnum value)
+            where TEnum : struct, Enum
+            => value.GetName(EnumNameMode.Short);
 
         /// <summary>
         ///     Gets the qualified name of the specified enumeration value in the following form:
@@ -41,7 +47,11 @@ namespace System
         ///     The qualified name of the specified enumeration value.
         /// </returns>
         [Pure]
-        public static string GetQualifiedName([NotNull] this Enum value) => value.GetName(EnumNameMode.Qualified);
+        [Omnifactotum.Annotations.Pure]
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static string GetQualifiedName<TEnum>(this TEnum value)
+            where TEnum : struct, Enum
+            => value.GetName(EnumNameMode.Qualified);
 
         /// <summary>
         ///     Gets the full name of the specified enumeration value in the following form:
@@ -54,7 +64,11 @@ namespace System
         ///     The full name of the specified enumeration value.
         /// </returns>
         [Pure]
-        public static string GetFullName([NotNull] this Enum value) => value.GetName(EnumNameMode.Full);
+        [Omnifactotum.Annotations.Pure]
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static string GetFullName<TEnum>(this TEnum value)
+            where TEnum : struct, Enum
+            => value.GetName(EnumNameMode.Full);
 
         /// <summary>
         ///     Determines whether the specified enumeration value contains all the specified flags set.
@@ -85,6 +99,8 @@ namespace System
         ///     </para>
         /// </exception>
         [Pure]
+        [Omnifactotum.Annotations.Pure]
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static bool IsAllSet<TEnum>(this TEnum enumerationValue, TEnum flags)
             where TEnum : struct, Enum
             => IsSetInternal(enumerationValue, flags, true);
@@ -118,6 +134,8 @@ namespace System
         ///     </para>
         /// </exception>
         [Pure]
+        [Omnifactotum.Annotations.Pure]
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static bool IsAnySet<TEnum>(this TEnum enumerationValue, TEnum flags)
             where TEnum : struct, Enum
             => IsSetInternal(enumerationValue, flags, false);
@@ -146,17 +164,10 @@ namespace System
         ///     <paramref name="otherValues"/> is <see langword="null"/>.
         /// </exception>
         [Pure]
+        [Omnifactotum.Annotations.Pure]
         public static bool IsOneOf<TEnum>(this TEnum enumerationValue, [NotNull] [InstantHandle] IEnumerable<TEnum> otherValues)
             where TEnum : struct, Enum
         {
-            var enumType = typeof(TEnum);
-            if (!enumType.IsEnum)
-            {
-                throw new ArgumentException(
-                    AsInvariant($@"The type {enumType.GetFullName().ToUIString()} is not an enumeration."),
-                    nameof(TEnum));
-            }
-
             if (otherValues is null)
             {
                 throw new ArgumentNullException(nameof(otherValues));
@@ -189,6 +200,8 @@ namespace System
         ///     <paramref name="otherValues"/> is <see langword="null"/>.
         /// </exception>
         [Pure]
+        [Omnifactotum.Annotations.Pure]
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static bool IsOneOf<TEnum>(this TEnum enumerationValue, params TEnum[] otherValues)
             where TEnum : struct, Enum
             => IsOneOf(enumerationValue, (IEnumerable<TEnum>)otherValues);
@@ -204,9 +217,11 @@ namespace System
         ///     otherwise, <see langword="false"/>.
         /// </returns>
         [Pure]
-        public static bool IsDefined([NotNull] this Enum enumerationValue)
-            //// ReSharper disable once ConditionIsAlwaysTrueOrFalse
-            => enumerationValue != null && IsDefinedInternal(enumerationValue);
+        [Omnifactotum.Annotations.Pure]
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool IsDefined<TEnum>(this TEnum enumerationValue)
+            where TEnum : struct, Enum
+            => IsDefinedInternal(enumerationValue);
 
         /// <summary>
         ///     Ensures that the specified enumeration value is defined in the corresponding enumeration and
@@ -221,13 +236,10 @@ namespace System
         /// <exception cref="System.ComponentModel.InvalidEnumArgumentException">
         ///     <paramref name="enumerationValue"/> is not defined in the corresponding enumeration.
         /// </exception>
-        public static void EnsureDefined([NotNull] this Enum enumerationValue)
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static void EnsureDefined<TEnum>(this TEnum enumerationValue)
+            where TEnum : struct, Enum
         {
-            if (enumerationValue is null)
-            {
-                throw new ArgumentNullException(nameof(enumerationValue));
-            }
-
             if (!IsDefinedInternal(enumerationValue))
             {
                 throw new InvalidEnumArgumentException(
@@ -249,17 +261,11 @@ namespace System
         ///     the specified enumeration value.
         /// </returns>
         [Pure]
-        public static NotImplementedException CreateEnumValueNotImplementedException([NotNull] this Enum enumerationValue)
-        {
-            if (enumerationValue is null)
-            {
-                throw new ArgumentNullException(nameof(enumerationValue));
-            }
-
-            return new NotImplementedException(
-                AsInvariant(
-                    $@"The operation for the enumeration value {enumerationValue.GetQualifiedName().ToUIString()} is not implemented."));
-        }
+        [Omnifactotum.Annotations.Pure]
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static NotImplementedException CreateEnumValueNotImplementedException<TEnum>(this TEnum enumerationValue)
+            where TEnum : struct, Enum
+            => new(AsInvariant($@"The operation for the enumeration value {enumerationValue.GetQualifiedName().ToUIString()} is not implemented."));
 
         /// <summary>
         ///     Creates a <see cref="System.NotSupportedException"/> with the descriptive message regarding
@@ -273,20 +279,16 @@ namespace System
         ///     the specified enumeration value.
         /// </returns>
         [Pure]
-        public static NotSupportedException CreateEnumValueNotSupportedException([NotNull] this Enum enumerationValue)
-        {
-            if (enumerationValue is null)
-            {
-                throw new ArgumentNullException(nameof(enumerationValue));
-            }
-
-            return new NotSupportedException(
-                AsInvariant(
-                    $@"The operation for the enumeration value {enumerationValue.GetQualifiedName().ToUIString()} is not supported."));
-        }
+        [Omnifactotum.Annotations.Pure]
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static NotSupportedException CreateEnumValueNotSupportedException<TEnum>(this TEnum enumerationValue)
+            where TEnum : struct, Enum
+            => new(AsInvariant($@"The operation for the enumeration value {enumerationValue.GetQualifiedName().ToUIString()} is not supported."));
 
         [Pure]
-        private static IEnumerable<Enum> DecomposeEnumFlags(this Enum enumValue)
+        [Omnifactotum.Annotations.Pure]
+        private static IEnumerable<TEnum> DecomposeEnumFlags<TEnum>(this TEnum enumValue)
+            where TEnum : struct, Enum
         {
             var castEnumValue = enumValue.ToUlongInternal();
             var enumType = enumValue.GetType();
@@ -296,18 +298,19 @@ namespace System
                 return new[] { enumValue };
             }
 
-            var values = Enum.GetValues(enumType);
+            var values = EnumFactotum.GetAllFlagValues<TEnum>();
 
-            var result = new List<Enum>(values.Length);
+            var result = new List<TEnum>(values.Length);
 
             //// ReSharper disable once LoopCanBePartlyConvertedToQuery
             foreach (var value in values)
             {
                 var castValue = value.ToUlongInternal();
+
                 //// ReSharper disable once InvertIf
                 if (castValue != 0 && (castEnumValue & castValue) == castValue)
                 {
-                    result.Add((Enum)Enum.ToObject(enumType, castValue));
+                    result.Add((TEnum)Enum.ToObject(enumType, castValue));
                     castEnumValue &= ~castValue;
                 }
             }
@@ -321,20 +324,17 @@ namespace System
         }
 
         [Pure]
-        private static string GetName([NotNull] this Enum value, EnumNameMode mode)
-        {
-            if (value is null)
-            {
-                throw new ArgumentNullException(nameof(value));
-            }
-
-            return value.GetType().IsDefined(typeof(FlagsAttribute), false)
+        [Omnifactotum.Annotations.Pure]
+        private static string GetName<TEnum>(this TEnum value, EnumNameMode mode)
+            where TEnum : struct, Enum
+            => value.GetType().IsDefined(typeof(FlagsAttribute), false)
                 ? value.DecomposeEnumFlags().Select(flag => flag.GetSingleValueName(mode)).Join(EnumValueSeparator)
                 : value.GetSingleValueName(mode);
-        }
 
         [Pure]
-        private static string GetSingleValueName([NotNull] this Enum value, EnumNameMode mode)
+        [Omnifactotum.Annotations.Pure]
+        private static string GetSingleValueName<TEnum>(this TEnum value, EnumNameMode mode)
+            where TEnum : struct, Enum
         {
             var enumType = value.GetType();
             var enumValueName = value.ToString();
@@ -349,11 +349,12 @@ namespace System
         }
 
         [Pure]
+        [Omnifactotum.Annotations.Pure]
         private static bool IsSetInternal<TEnum>(this TEnum enumerationValue, TEnum flags, bool all)
             where TEnum : struct, Enum
         {
             var enumType = typeof(TEnum);
-            if (!enumType.IsEnum || !enumType.IsDefined(typeof(FlagsAttribute), false))
+            if (!enumType.IsDefined(typeof(FlagsAttribute), false))
             {
                 throw new ArgumentException(
                     AsInvariant($@"The type {enumType.GetFullName().ToUIString()} is not a bit-field enumeration."),
@@ -376,15 +377,23 @@ namespace System
         }
 
         [Pure]
-        private static bool IsDefinedInternal([NotNull] Enum enumerationValue)
+        [Omnifactotum.Annotations.Pure]
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        private static bool IsDefinedInternal<TEnum>(TEnum enumerationValue)
+            where TEnum : struct, Enum
+#if NET5_0_OR_GREATER
+            => Enum.IsDefined(enumerationValue);
+#else
             => Enum.IsDefined(enumerationValue.GetType(), enumerationValue);
+#endif
 
         [Pure]
-        private static ulong ToUlongInternal(this object value)
+        [Omnifactotum.Annotations.Pure]
+        private static ulong ToUlongInternal<TEnum>(this TEnum value)
+            where TEnum : struct, Enum
         {
             var typeCode = Convert.GetTypeCode(value);
 
-            //// ReSharper disable once SwitchStatementMissingSomeCases
             switch (typeCode)
             {
                 case TypeCode.Boolean:
@@ -401,8 +410,18 @@ namespace System
                 case TypeCode.Int64:
                     return (ulong)Convert.ToInt64(value, CultureInfo.InvariantCulture);
 
-                default:
+                case TypeCode.Empty:
+                case TypeCode.Object:
+                case TypeCode.DBNull:
+                case TypeCode.Single:
+                case TypeCode.Double:
+                case TypeCode.Decimal:
+                case TypeCode.DateTime:
+                case TypeCode.String:
                     throw typeCode.CreateEnumValueNotSupportedException();
+
+                default:
+                    throw typeCode.CreateEnumValueNotImplementedException();
             }
         }
 

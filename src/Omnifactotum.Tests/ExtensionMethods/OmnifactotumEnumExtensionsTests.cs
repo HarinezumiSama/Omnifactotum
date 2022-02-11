@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel;
-using System.Diagnostics.CodeAnalysis;
 using System.IO;
 using NUnit.Framework;
 using static Omnifactotum.FormattableStringFactotum;
@@ -12,26 +11,23 @@ namespace Omnifactotum.Tests.ExtensionMethods
     internal sealed class OmnifactotumEnumExtensionsTests
     {
         [Test]
-        [SuppressMessage("ReSharper", "AssignNullToNotNullAttribute")]
-        public void TestEnsureDefinedWhenNullArgumentIsPassedThenThrows()
-            => Assert.That(() => ((Enum)null).EnsureDefined(), Throws.ArgumentNullException);
-
-        [Test]
         [TestCase(FileAccess.Read)]
         [TestCase(ConsoleModifiers.Alt)]
         [TestCase(ConsoleColor.Green)]
         [TestCase(TestEnumeration.NoZeroValue)]
         [TestCase(UIntTestFlags.Flag2)]
-        public void TestEnsureDefinedWhenDefinedEnumerationValueArgumentIsPassedThenSucceeds(Enum enumValue)
-            => Assert.That(enumValue.EnsureDefined, Throws.Nothing);
+        public void TestEnsureDefinedWhenDefinedEnumerationValueArgumentIsPassedThenSucceeds<TEnum>(TEnum enumValue)
+            where TEnum : struct, Enum
+            => Assert.That(() => enumValue.EnsureDefined(), Throws.Nothing);
 
         [Test]
         [TestCase((ConsoleColor)(-1))]
         [TestCase((TestEnumeration)0)]
         [TestCase(UIntTestFlags.Flag1 | UIntTestFlags.Flag2)]
         [TestCase((UIntTestFlags)1024)]
-        public void TestEnsureDefinedWhenUndefinedEnumerationValueArgumentIsPassedThenThrows(Enum enumValue)
-            => Assert.That(enumValue.EnsureDefined, Throws.TypeOf<InvalidEnumArgumentException>());
+        public void TestEnsureDefinedWhenUndefinedEnumerationValueArgumentIsPassedThenThrows<TEnum>(TEnum enumValue)
+            where TEnum : struct, Enum
+            => Assert.That(() => enumValue.EnsureDefined(), Throws.TypeOf<InvalidEnumArgumentException>());
 
         [Test]
         [TestCase(FileAccess.Read, true)]
@@ -39,19 +35,14 @@ namespace Omnifactotum.Tests.ExtensionMethods
         [TestCase(ConsoleColor.Green, true)]
         [TestCase(TestEnumeration.NoZeroValue, true)]
         [TestCase(UIntTestFlags.Flag2, true)]
-        [TestCase(null, false)]
         [TestCase(ConsoleModifiers.Alt | ConsoleModifiers.Shift | ConsoleModifiers.Control, false)]
         [TestCase((ConsoleColor)(-1), false)]
         [TestCase((TestEnumeration)0, false)]
         [TestCase(UIntTestFlags.Flag1 | UIntTestFlags.Flag2, false)]
         [TestCase((UIntTestFlags)1024, false)]
-        public void TestIsDefinedWhenEnumerationValueArgumentIsPassedThenSucceeds(Enum enumValue, bool expectedResult)
-            => Assert.That(enumValue.IsDefined, Is.EqualTo(expectedResult));
-
-        [Test]
-        [SuppressMessage("ReSharper", "AssignNullToNotNullAttribute")]
-        public void TestGetNameWhenNullArgumentIsPassedThenThrows()
-            => Assert.That(() => ((Enum)null).GetName(), Throws.ArgumentNullException);
+        public void TestIsDefinedWhenEnumerationValueArgumentIsPassedThenSucceeds<TEnum>(TEnum enumValue, bool expectedResult)
+            where TEnum : struct, Enum
+            => Assert.That(() => enumValue.IsDefined(), Is.EqualTo(expectedResult));
 
         [Test]
         [TestCase(FileAccess.Read, nameof(FileAccess.Read))]
@@ -62,23 +53,20 @@ namespace Omnifactotum.Tests.ExtensionMethods
         [TestCase(
             ConsoleModifiers.Alt | ConsoleModifiers.Shift | ConsoleModifiers.Control,
             nameof(ConsoleModifiers.Alt) + ", " + nameof(ConsoleModifiers.Shift) + ", "
-                + nameof(ConsoleModifiers.Control))]
+            + nameof(ConsoleModifiers.Control))]
         [TestCase(
             ConsoleModifiers.Alt | ConsoleModifiers.Shift | ConsoleModifiers.Control | (ConsoleModifiers)1024,
             "1031")]
         [TestCase((ConsoleColor)(-1), "-1")]
         [TestCase((TestEnumeration)0, "0")]
         [TestCase((UIntTestFlags)0, "0")]
-        [TestCase(UIntTestFlags.Flag1 | UIntTestFlags.Flag2,
+        [TestCase(
+            UIntTestFlags.Flag1 | UIntTestFlags.Flag2,
             nameof(UIntTestFlags.Flag1) + ", " + nameof(UIntTestFlags.Flag2))]
         [TestCase((UIntTestFlags)1024, "1024")]
-        public void TestGetNameWhenEnumerationValueArgumentIsPassedThenSucceeds(Enum enumValue, string expectedResult)
-            => Assert.That(enumValue.GetName, Is.EqualTo(expectedResult));
-
-        [Test]
-        [SuppressMessage("ReSharper", "AssignNullToNotNullAttribute")]
-        public void TestGetQualifiedNameWhenNullArgumentIsPassedThenThrows()
-            => Assert.That(() => ((Enum)null).GetQualifiedName(), Throws.ArgumentNullException);
+        public void TestGetNameWhenEnumerationValueArgumentIsPassedThenSucceeds<TEnum>(TEnum enumValue, string expectedResult)
+            where TEnum : struct, Enum
+            => Assert.That(() => enumValue.GetName(), Is.EqualTo(expectedResult));
 
         [Test]
         [TestCase(FileAccess.Read, nameof(FileAccess) + "." + nameof(FileAccess.Read))]
@@ -89,8 +77,8 @@ namespace Omnifactotum.Tests.ExtensionMethods
         [TestCase(
             ConsoleModifiers.Alt | ConsoleModifiers.Shift | ConsoleModifiers.Control,
             nameof(ConsoleModifiers) + "." + nameof(ConsoleModifiers.Alt) + ", "
-                + nameof(ConsoleModifiers) + "." + nameof(ConsoleModifiers.Shift) + ", "
-                + nameof(ConsoleModifiers) + "." + nameof(ConsoleModifiers.Control))]
+            + nameof(ConsoleModifiers) + "." + nameof(ConsoleModifiers.Shift) + ", "
+            + nameof(ConsoleModifiers) + "." + nameof(ConsoleModifiers.Control))]
         [TestCase(
             ConsoleModifiers.Alt | ConsoleModifiers.Shift | ConsoleModifiers.Control | (ConsoleModifiers)1024,
             nameof(ConsoleModifiers) + "." + "1031")]
@@ -100,17 +88,11 @@ namespace Omnifactotum.Tests.ExtensionMethods
         [TestCase(
             UIntTestFlags.Flag1 | UIntTestFlags.Flag2,
             nameof(UIntTestFlags) + "." + nameof(UIntTestFlags.Flag1) + ", "
-                + nameof(UIntTestFlags) + "." + nameof(UIntTestFlags.Flag2))]
+            + nameof(UIntTestFlags) + "." + nameof(UIntTestFlags.Flag2))]
         [TestCase((UIntTestFlags)1024, nameof(UIntTestFlags) + "." + "1024")]
-        public void TestGetQualifiedNameWhenEnumerationValueArgumentIsPassedThenSucceeds(
-            Enum enumValue,
-            string expectedResult)
-            => Assert.That(enumValue.GetQualifiedName, Is.EqualTo(expectedResult));
-
-        [Test]
-        [SuppressMessage("ReSharper", "AssignNullToNotNullAttribute")]
-        public void TestGetFullNameWhenNullArgumentIsPassedThenThrows()
-            => Assert.That(() => ((Enum)null).GetFullName(), Throws.ArgumentNullException);
+        public void TestGetQualifiedNameWhenEnumerationValueArgumentIsPassedThenSucceeds<TEnum>(TEnum enumValue, string expectedResult)
+            where TEnum : struct, Enum
+            => Assert.That(() => enumValue.GetQualifiedName(), Is.EqualTo(expectedResult));
 
         [Test]
         [TestCase(
@@ -125,18 +107,18 @@ namespace Omnifactotum.Tests.ExtensionMethods
         [TestCase(
             TestEnumeration.NoZeroValue,
             nameof(Omnifactotum) + "." + nameof(Tests) + "." + nameof(ExtensionMethods) + "."
-                + nameof(OmnifactotumEnumExtensionsTests) + "." + nameof(TestEnumeration) + "."
-                + nameof(TestEnumeration.NoZeroValue))]
+            + nameof(OmnifactotumEnumExtensionsTests) + "." + nameof(TestEnumeration) + "."
+            + nameof(TestEnumeration.NoZeroValue))]
         [TestCase(
             UIntTestFlags.Flag2,
             nameof(Omnifactotum) + "." + nameof(Tests) + "." + nameof(ExtensionMethods) + "."
-                + nameof(OmnifactotumEnumExtensionsTests) + "." + nameof(UIntTestFlags) + "."
-                + nameof(UIntTestFlags.Flag2))]
+            + nameof(OmnifactotumEnumExtensionsTests) + "." + nameof(UIntTestFlags) + "."
+            + nameof(UIntTestFlags.Flag2))]
         [TestCase(
             ConsoleModifiers.Alt | ConsoleModifiers.Shift | ConsoleModifiers.Control,
             nameof(System) + "." + nameof(ConsoleModifiers) + "." + nameof(ConsoleModifiers.Alt) + ", "
-                + nameof(System) + "." + nameof(ConsoleModifiers) + "." + nameof(ConsoleModifiers.Shift) + ", "
-                + nameof(System) + "." + nameof(ConsoleModifiers) + "." + nameof(ConsoleModifiers.Control))]
+            + nameof(System) + "." + nameof(ConsoleModifiers) + "." + nameof(ConsoleModifiers.Shift) + ", "
+            + nameof(System) + "." + nameof(ConsoleModifiers) + "." + nameof(ConsoleModifiers.Control))]
         [TestCase(
             ConsoleModifiers.Alt | ConsoleModifiers.Shift | ConsoleModifiers.Control | (ConsoleModifiers)1024,
             nameof(System) + "." + nameof(ConsoleModifiers) + "." + "1031")]
@@ -144,27 +126,26 @@ namespace Omnifactotum.Tests.ExtensionMethods
         [TestCase(
             (TestEnumeration)0,
             nameof(Omnifactotum) + "." + nameof(Tests) + "." + nameof(ExtensionMethods) + "."
-                + nameof(OmnifactotumEnumExtensionsTests) + "." + nameof(TestEnumeration) + "." + "0")]
+            + nameof(OmnifactotumEnumExtensionsTests) + "." + nameof(TestEnumeration) + "." + "0")]
         [TestCase(
             (UIntTestFlags)0,
             nameof(Omnifactotum) + "." + nameof(Tests) + "." + nameof(ExtensionMethods) + "."
-                + nameof(OmnifactotumEnumExtensionsTests) + "." + nameof(UIntTestFlags) + "." + "0")]
+            + nameof(OmnifactotumEnumExtensionsTests) + "." + nameof(UIntTestFlags) + "." + "0")]
         [TestCase(
             UIntTestFlags.Flag1 | UIntTestFlags.Flag2,
             nameof(Omnifactotum) + "." + nameof(Tests) + "." + nameof(ExtensionMethods) + "."
-                + nameof(OmnifactotumEnumExtensionsTests) + "."
-                + nameof(UIntTestFlags) + "." + nameof(UIntTestFlags.Flag1) + ", "
-                + nameof(Omnifactotum) + "." + nameof(Tests) + "." + nameof(ExtensionMethods) + "."
-                + nameof(OmnifactotumEnumExtensionsTests) + "." + nameof(UIntTestFlags) + "."
-                + nameof(UIntTestFlags.Flag2))]
+            + nameof(OmnifactotumEnumExtensionsTests) + "."
+            + nameof(UIntTestFlags) + "." + nameof(UIntTestFlags.Flag1) + ", "
+            + nameof(Omnifactotum) + "." + nameof(Tests) + "." + nameof(ExtensionMethods) + "."
+            + nameof(OmnifactotumEnumExtensionsTests) + "." + nameof(UIntTestFlags) + "."
+            + nameof(UIntTestFlags.Flag2))]
         [TestCase(
             (UIntTestFlags)1024,
             nameof(Omnifactotum) + "." + nameof(Tests) + "." + nameof(ExtensionMethods) + "."
-                + nameof(OmnifactotumEnumExtensionsTests) + "." + nameof(UIntTestFlags) + "." + "1024")]
-        public void TestGetFullNameWhenEnumerationValueArgumentIsPassedThenSucceeds(
-            Enum enumValue,
-            string expectedResult)
-            => Assert.That(enumValue.GetFullName, Is.EqualTo(expectedResult));
+            + nameof(OmnifactotumEnumExtensionsTests) + "." + nameof(UIntTestFlags) + "." + "1024")]
+        public void TestGetFullNameWhenEnumerationValueArgumentIsPassedThenSucceeds<TEnum>(TEnum enumValue, string expectedResult)
+            where TEnum : struct, Enum
+            => Assert.That(() => enumValue.GetFullName(), Is.EqualTo(expectedResult));
 
         [Test]
         [TestCase(FileAttributes.Hidden, FileAttributes.Hidden, true)]
@@ -300,11 +281,6 @@ namespace Omnifactotum.Tests.ExtensionMethods
                     .Contains(AsInvariant($@"""{nameof(ConsoleColor)}.{nameof(ConsoleColor.DarkRed)}""")));
 
         [Test]
-        [SuppressMessage("ReSharper", "AssignNullToNotNullAttribute")]
-        public void TestCreateEnumValueNotImplementedExceptionWhenNullArgumentIsPassedThenThrows()
-            => Assert.That(() => ((Enum)null).CreateEnumValueNotImplementedException(), Throws.ArgumentNullException);
-
-        [Test]
         public void TestCreateEnumValueNotSupportedExceptionWhenValidArgumentIsPassedThenSucceeds()
             => Assert.That(
                 () => ConsoleColor.DarkRed.CreateEnumValueNotSupportedException(),
@@ -312,23 +288,6 @@ namespace Omnifactotum.Tests.ExtensionMethods
                     .With
                     .Message
                     .Contains(AsInvariant($@"""{nameof(ConsoleColor)}.{nameof(ConsoleColor.DarkRed)}""")));
-
-        [Test]
-        [SuppressMessage("ReSharper", "AssignNullToNotNullAttribute")]
-        public void TestCreateEnumValueNotSupportedExceptionWhenNullArgumentIsPassedThenThrows()
-            => Assert.That(() => ((Enum)null).CreateEnumValueNotSupportedException(), Throws.ArgumentNullException);
-
-        private enum TestEnumeration
-        {
-            NoZeroValue = 1
-        }
-
-        [Flags]
-        public enum UIntTestFlags : uint
-        {
-            Flag1 = 0b1,
-            Flag2 = 0b10
-        }
 
         [Flags]
         public enum ULongTestFlags : ulong
@@ -338,6 +297,18 @@ namespace Omnifactotum.Tests.ExtensionMethods
             Flag3 = 0b100,
             Flag4 = 0b1000,
             Flag5 = 0b10000
+        }
+
+        private enum TestEnumeration
+        {
+            NoZeroValue = 1
+        }
+
+        [Flags]
+        private enum UIntTestFlags : uint
+        {
+            Flag1 = 0b1,
+            Flag2 = 0b10
         }
     }
 }
