@@ -8,7 +8,7 @@ branches:
   - master
   - develop
   - /feature\/.*/
-image: Visual Studio 2019
+image: Visual Studio 2022
 configuration: Release
 platform: Any CPU
 shallow_clone: true
