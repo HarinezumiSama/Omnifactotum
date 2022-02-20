@@ -3,6 +3,7 @@
 <Project>
     <PropertyGroup>
         <Version>0.8.0</Version>
+        <!--<PackageValidationBaselineVersion>0.7.0</PackageValidationBaselineVersion>-->
     </PropertyGroup>
 
     <PropertyGroup>
@@ -59,6 +60,9 @@
         <IncludeSymbols>true</IncludeSymbols>
         <IncludeSource>true</IncludeSource>
         <SymbolPackageFormat>snupkg</SymbolPackageFormat>
+        <EnablePackageValidation>false</EnablePackageValidation>
+        <EnableStrictModeForCompatibleTfms>true</EnableStrictModeForCompatibleTfms>
+        <EnableStrictModeForCompatibleFrameworksInPackage>false</EnableStrictModeForCompatibleFrameworksInPackage>
     </PropertyGroup>
 
     <PropertyGroup>
