@@ -3,6 +3,7 @@
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Linq;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
@@ -291,6 +292,39 @@ namespace Omnifactotum.Tests.ExtensionMethods
             list.Add("double bar");
             Assert.That(readOnly, Is.EqualTo(list));
         }
+
+#if !NET6_0_OR_GREATER
+
+        [Test]
+        public void TestChunkWhenInvalidArgumentThenThrows()
+        {
+            Assert.That(() => ((int[]?)null!).Chunk(1), Throws.ArgumentNullException);
+            Assert.That(() => Array.Empty<int>().Chunk(0), Throws.TypeOf<ArgumentOutOfRangeException>());
+            Assert.That(() => Array.Empty<int>().Chunk(-1), Throws.TypeOf<ArgumentOutOfRangeException>());
+            Assert.That(() => Array.Empty<int>().Chunk(int.MinValue), Throws.TypeOf<ArgumentOutOfRangeException>());
+        }
+
+        [Test]
+        public void TestChunkWhenValidArgumentsThenSucceeds()
+        {
+            var chunks0By3 = Array.Empty<int>().Chunk(3).ToArray();
+            Assert.That(chunks0By3, Is.Empty);
+
+            var chunks10By3 = Enumerable.Range(1, 10).Chunk(3).ToArray();
+            Assert.That(chunks10By3.Length, Is.EqualTo(4));
+            Assert.That(chunks10By3[0], Is.EqualTo(new[] { 1, 2, 3 }));
+            Assert.That(chunks10By3[1], Is.EqualTo(new[] { 4, 5, 6 }));
+            Assert.That(chunks10By3[2], Is.EqualTo(new[] { 7, 8, 9 }));
+            Assert.That(chunks10By3[3], Is.EqualTo(new[] { 10 }));
+
+            var chunks3By1 = Enumerable.Range(1, 3).Chunk(1).ToArray();
+            Assert.That(chunks3By1.Length, Is.EqualTo(3));
+            Assert.That(chunks3By1[0], Is.EqualTo(new[] { 1 }));
+            Assert.That(chunks3By1[1], Is.EqualTo(new[] { 2 }));
+            Assert.That(chunks3By1[2], Is.EqualTo(new[] { 3 }));
+        }
+
+#endif
 
         private static void InvokeTestSetItems<T, TCollection>(Func<T[]> createItems1, Func<T[]> createItems2)
             where TCollection : ICollection<T>, new()
