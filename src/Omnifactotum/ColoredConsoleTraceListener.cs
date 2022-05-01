@@ -1,11 +1,17 @@
-﻿using System;
+﻿#nullable enable
+
+using System;
 using System.Diagnostics;
 using System.IO;
+using Omnifactotum.Annotations;
 using static Omnifactotum.FormattableStringFactotum;
 
 #if !NET5_0
 using System.Runtime.CompilerServices;
 #endif
+
+//// ReSharper disable RedundantNullnessAttributeWithNullableReferenceTypes
+//// ReSharper disable AnnotationRedundancyInHierarchy
 
 //// TODO [HarinezumiSama] Create a wrapper interface for System.Console to make possible writing unit tests
 
@@ -14,11 +20,13 @@ namespace Omnifactotum
     /// <summary>
     ///     Represents the colored console trace listener.
     /// </summary>
+    [PublicAPI]
     public sealed class ColoredConsoleTraceListener : TextWriterTraceListener
     {
         private const TraceEventType DefaultEventType = TraceEventType.Verbose;
 
         private readonly object _syncLock;
+
         private ConsoleColor _errorColor;
         private ConsoleColor _warningColor;
         private ConsoleColor _messageColor;
@@ -33,7 +41,7 @@ namespace Omnifactotum
             : base(CreateSynchronizedWrapper(Console.Out))
         {
             // In .NET Framework, a synchronized TextWriter locks on itself
-            _syncLock = Writer;
+            _syncLock = Writer.EnsureNotNull();
 
             ErrorColor = ConsoleColor.Red;
             WarningColor = ConsoleColor.Yellow;
@@ -161,7 +169,7 @@ namespace Omnifactotum
         /// <param name="message">
         ///     A message to emit.
         /// </param>
-        public override void Fail(string message)
+        public override void Fail([CanBeNull] string? message)
         {
             lock (_syncLock)
             {
@@ -170,7 +178,13 @@ namespace Omnifactotum
                 ChangeColor(TraceEventType.Error);
                 try
                 {
+#if !NET5_0_OR_GREATER
+                    //// ReSharper disable AssignNullToNotNullAttribute
+#endif
                     base.Fail(message);
+#if !NET5_0_OR_GREATER
+                    //// ReSharper restore AssignNullToNotNullAttribute
+#endif
                 }
                 finally
                 {
@@ -185,14 +199,20 @@ namespace Omnifactotum
         /// </summary>
         /// <param name="message">A message to emit.</param>
         /// <param name="detailMessage">A detailed message to emit.</param>
-        public override void Fail(string message, string detailMessage)
+        public override void Fail([CanBeNull] string? message, [CanBeNull] string? detailMessage)
         {
             lock (_syncLock)
             {
                 ChangeColor(TraceEventType.Error);
                 try
                 {
+#if !NET5_0_OR_GREATER
+                    //// ReSharper disable AssignNullToNotNullAttribute
+#endif
                     base.Fail(message, detailMessage);
+#if !NET5_0_OR_GREATER
+                    //// ReSharper restore AssignNullToNotNullAttribute
+#endif
                 }
                 finally
                 {
@@ -222,18 +242,24 @@ namespace Omnifactotum
         ///     The trace data to emit.
         /// </param>
         public override void TraceData(
-            TraceEventCache eventCache,
+            [CanBeNull] TraceEventCache? eventCache,
             string source,
             TraceEventType eventType,
             int id,
-            object data)
+            [CanBeNull] object? data)
         {
             lock (_syncLock)
             {
                 ChangeColor(eventType);
                 try
                 {
+#if !NET5_0_OR_GREATER
+                    //// ReSharper disable AssignNullToNotNullAttribute
+#endif
                     base.TraceData(eventCache, source, eventType, id, data);
+#if !NET5_0_OR_GREATER
+                    //// ReSharper restore AssignNullToNotNullAttribute
+#endif
                 }
                 finally
                 {
@@ -264,18 +290,24 @@ namespace Omnifactotum
         ///     An array of objects to emit as data.
         /// </param>
         public override void TraceData(
-            TraceEventCache eventCache,
+            [CanBeNull] TraceEventCache? eventCache,
             string source,
             TraceEventType eventType,
             int id,
-            params object[] data)
+            [CanBeNull] params object?[]? data)
         {
             lock (_syncLock)
             {
                 ChangeColor(eventType);
                 try
                 {
+#if !NET5_0_OR_GREATER
+                    //// ReSharper disable AssignNullToNotNullAttribute
+#endif
                     base.TraceData(eventCache, source, eventType, id, data);
+#if !NET5_0_OR_GREATER
+                    //// ReSharper restore AssignNullToNotNullAttribute
+#endif
                 }
                 finally
                 {
@@ -300,14 +332,20 @@ namespace Omnifactotum
         /// <param name="id">
         ///     A numeric identifier for the event.
         /// </param>
-        public override void TraceEvent(TraceEventCache eventCache, string source, TraceEventType eventType, int id)
+        public override void TraceEvent([CanBeNull] TraceEventCache? eventCache, string source, TraceEventType eventType, int id)
         {
             lock (_syncLock)
             {
                 ChangeColor(eventType);
                 try
                 {
+#if !NET5_0_OR_GREATER
+                    //// ReSharper disable AssignNullToNotNullAttribute
+#endif
                     base.TraceEvent(eventCache, source, eventType, id);
+#if !NET5_0_OR_GREATER
+                    //// ReSharper restore AssignNullToNotNullAttribute
+#endif
                 }
                 finally
                 {
@@ -337,18 +375,24 @@ namespace Omnifactotum
         ///     A message to write.
         /// </param>
         public override void TraceEvent(
-            TraceEventCache eventCache,
+            [CanBeNull] TraceEventCache? eventCache,
             string source,
             TraceEventType eventType,
             int id,
-            string message)
+            [CanBeNull] string? message)
         {
             lock (_syncLock)
             {
                 ChangeColor(eventType);
                 try
                 {
+#if !NET5_0_OR_GREATER
+                    //// ReSharper disable AssignNullToNotNullAttribute
+#endif
                     base.TraceEvent(eventCache, source, eventType, id, message);
+#if !NET5_0_OR_GREATER
+                    //// ReSharper restore AssignNullToNotNullAttribute
+#endif
                 }
                 finally
                 {
@@ -383,19 +427,25 @@ namespace Omnifactotum
         ///     An object array containing zero or more objects to format.
         /// </param>
         public override void TraceEvent(
-            TraceEventCache eventCache,
+            [CanBeNull] TraceEventCache? eventCache,
             string source,
             TraceEventType eventType,
             int id,
             string format,
-            params object[] args)
+            [CanBeNull] params object?[]? args)
         {
             lock (_syncLock)
             {
                 ChangeColor(eventType);
                 try
                 {
+#if !NET5_0_OR_GREATER
+                    //// ReSharper disable AssignNullToNotNullAttribute
+#endif
                     base.TraceEvent(eventCache, source, eventType, id, format, args);
+#if !NET5_0_OR_GREATER
+                    //// ReSharper restore AssignNullToNotNullAttribute
+#endif
                 }
                 finally
                 {
@@ -426,10 +476,10 @@ namespace Omnifactotum
         ///     A <see cref="Guid"/> object identifying a related activity.
         /// </param>
         public override void TraceTransfer(
-            TraceEventCache eventCache,
+            [CanBeNull] TraceEventCache? eventCache,
             string source,
             int id,
-            string message,
+            [CanBeNull] string? message,
             Guid relatedActivityId)
         {
             lock (_syncLock)
@@ -437,7 +487,13 @@ namespace Omnifactotum
                 ChangeColor(DefaultEventType);
                 try
                 {
+#if !NET5_0_OR_GREATER
+                    //// ReSharper disable AssignNullToNotNullAttribute
+#endif
                     base.TraceTransfer(eventCache, source, id, message, relatedActivityId);
+#if !NET5_0_OR_GREATER
+                    //// ReSharper restore AssignNullToNotNullAttribute
+#endif
                 }
                 finally
                 {
@@ -450,7 +506,7 @@ namespace Omnifactotum
         ///     Writes a message to this instance's <see cref="TextWriterTraceListener.Writer"/>.
         /// </summary>
         /// <param name="message">A message to write.</param>
-        public override void Write(string message)
+        public override void Write([CanBeNull] string? message)
         {
             lock (_syncLock)
             {
@@ -471,7 +527,7 @@ namespace Omnifactotum
         ///     a line terminator. The default line terminator is a carriage return followed by a line feed (\r\n).
         /// </summary>
         /// <param name="message">A message to write.</param>
-        public override void WriteLine(string message)
+        public override void WriteLine([CanBeNull] string? message)
         {
             lock (_syncLock)
             {
@@ -494,7 +550,7 @@ namespace Omnifactotum
         /// <param name="o">
         ///     An <see cref="System.Object"/> whose fully qualified class name you want to write.
         /// </param>
-        public override void Write(object o)
+        public override void Write([CanBeNull] object? o)
         {
             lock (_syncLock)
             {
@@ -520,7 +576,7 @@ namespace Omnifactotum
         /// <param name="category">
         ///     A category name used to organize the output.
         /// </param>
-        public override void Write(string message, string category)
+        public override void Write([CanBeNull] string? message, [CanBeNull] string? category)
         {
             lock (_syncLock)
             {
@@ -546,7 +602,7 @@ namespace Omnifactotum
         /// <param name="category">
         ///     A category name used to organize the output.
         /// </param>
-        public override void Write(object o, string category)
+        public override void Write([CanBeNull] object? o, [CanBeNull] string? category)
         {
             lock (_syncLock)
             {
@@ -569,7 +625,7 @@ namespace Omnifactotum
         /// <param name="o">
         ///     An <see cref="Object"/> whose fully qualified class name you want to write.
         /// </param>
-        public override void WriteLine(object o)
+        public override void WriteLine([CanBeNull] object? o)
         {
             lock (_syncLock)
             {
@@ -595,7 +651,7 @@ namespace Omnifactotum
         /// <param name="category">
         ///     A category name used to organize the output.
         /// </param>
-        public override void WriteLine(string message, string category)
+        public override void WriteLine([CanBeNull] string? message, [CanBeNull] string? category)
         {
             lock (_syncLock)
             {
@@ -622,7 +678,7 @@ namespace Omnifactotum
         /// <param name="category">
         ///     A category name used to organize the output.
         /// </param>
-        public override void WriteLine(object o, string category)
+        public override void WriteLine([CanBeNull] object? o, [CanBeNull] string? category)
         {
             lock (_syncLock)
             {
@@ -658,18 +714,16 @@ namespace Omnifactotum
             }
         }
 
-        private static TextWriter CreateSynchronizedWrapper(TextWriter textWriter)
-        {
-            return TextWriter.Synchronized(textWriter);
-        }
+        private static TextWriter CreateSynchronizedWrapper(TextWriter textWriter) => TextWriter.Synchronized(textWriter);
 
         private void ChangeColorInternal(TraceEventType eventType)
         {
             if (_originalForegroundColor.HasValue)
             {
                 throw new InvalidOperationException(
-                    AsInvariant($@"Internal logic error ({nameof(_colorChangedCount)} = {_colorChangedCount}, {
-                        nameof(_originalForegroundColor)} = {_originalForegroundColor})."));
+                    AsInvariant(
+                        $@"Internal logic error ({nameof(_colorChangedCount)} = {_colorChangedCount}, {
+                            nameof(_originalForegroundColor)} = {_originalForegroundColor})."));
             }
 
             _originalForegroundColor = Console.ForegroundColor;
