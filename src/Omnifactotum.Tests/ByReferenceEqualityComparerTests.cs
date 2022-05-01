@@ -1,4 +1,6 @@
-﻿using System;
+﻿#nullable enable
+
+using System;
 using NUnit.Framework;
 
 namespace Omnifactotum.Tests
@@ -11,7 +13,9 @@ namespace Omnifactotum.Tests
         {
             Assert.That(typeof(SomeReferenceType).IsClass, Is.True);
 
-            var equalityComparer = ByReferenceEqualityComparer<SomeReferenceType>.Instance;
+            var testee = ByReferenceEqualityComparer<SomeReferenceType>.Instance;
+
+            Assert.That(testee.Equals(null, null), Is.True);
 
             const string ValueA = "A";
             const string ValueB = "B";
@@ -20,64 +24,33 @@ namespace Omnifactotum.Tests
             var objA2 = new SomeReferenceType(ValueA);
             var objB = new SomeReferenceType(ValueB);
 
-            Assert.That(equalityComparer.Equals(objA1, objA1), Is.True);
-            Assert.That(equalityComparer.GetHashCode(objA1), Is.EqualTo(equalityComparer.GetHashCode(objA1)));
+            Assert.That(testee.Equals(objA1, objA1), Is.True);
+            Assert.That(testee.GetHashCode(objA1), Is.EqualTo(testee.GetHashCode(objA1)));
 
-            Assert.That(equalityComparer.Equals(objA1, objA2), Is.False);
-            Assert.That(equalityComparer.GetHashCode(objA1), Is.Not.EqualTo(equalityComparer.GetHashCode(objA2)));
+            Assert.That(testee.Equals(objA1, objA2), Is.False);
+            Assert.That(testee.GetHashCode(objA1), Is.Not.EqualTo(testee.GetHashCode(objA2)));
 
-            Assert.That(equalityComparer.Equals(objA1, objB), Is.False);
-            Assert.That(equalityComparer.GetHashCode(objA1), Is.Not.EqualTo(equalityComparer.GetHashCode(objB)));
-        }
+            Assert.That(testee.Equals(objA1, objB), Is.False);
+            Assert.That(testee.GetHashCode(objA1), Is.Not.EqualTo(testee.GetHashCode(objB)));
 
-        [Test]
-        public void TestValueType()
-        {
-            Assert.That(typeof(SomeValueType).IsValueType, Is.True);
-
-            var equalityComparer = ByReferenceEqualityComparer<SomeValueType>.Instance;
-
-            const string ValueA = "A";
-            const string ValueB = "B";
-
-            var objA1 = new SomeValueType(ValueA);
-            var objA2 = new SomeValueType(ValueA);
-            var objB = new SomeValueType(ValueB);
-
-            Assert.That(equalityComparer.Equals(objA1, objA1), Is.True);
-            Assert.That(equalityComparer.GetHashCode(objA1), Is.EqualTo(equalityComparer.GetHashCode(objA1)));
-
-            Assert.That(equalityComparer.Equals(objA1, objA2), Is.True);
-            Assert.That(equalityComparer.GetHashCode(objA1), Is.EqualTo(equalityComparer.GetHashCode(objA1)));
-
-            Assert.That(equalityComparer.Equals(objA1, objB), Is.False);
-            Assert.That(equalityComparer.GetHashCode(objA1), Is.Not.EqualTo(equalityComparer.GetHashCode(objB)));
+            Assert.That(testee.Equals(objA1, null), Is.False);
+            Assert.That(testee.Equals(objA2, null), Is.False);
+            Assert.That(testee.Equals(objB, null), Is.False);
         }
 
         private sealed class SomeReferenceType : IEquatable<SomeReferenceType>
         {
-            private readonly string _value;
+            private static readonly StringComparer ValueComparer = StringComparer.Ordinal;
 
-            public SomeReferenceType(string value) => _value = value;
+            private readonly string? _value;
 
-            public override bool Equals(object obj) => Equals(obj as SomeReferenceType);
+            public SomeReferenceType(string? value) => _value = value;
 
-            public override int GetHashCode() => _value is null ? 0 : StringComparer.Ordinal.GetHashCode(_value);
+            public override bool Equals(object? obj) => Equals(obj as SomeReferenceType);
 
-            public bool Equals(SomeReferenceType other) => other != null && StringComparer.Ordinal.Equals(_value, other._value);
-        }
+            public override int GetHashCode() => _value is null ? 0 : ValueComparer.GetHashCode(_value);
 
-        private readonly struct SomeValueType : IEquatable<SomeValueType>
-        {
-            private readonly string _value;
-
-            public SomeValueType(string value) => _value = value;
-
-            public override bool Equals(object obj) => obj is SomeValueType type && Equals(type);
-
-            public override int GetHashCode() => _value is null ? 0 : StringComparer.Ordinal.GetHashCode(_value);
-
-            public bool Equals(SomeValueType other) => StringComparer.Ordinal.Equals(_value, other._value);
+            public bool Equals(SomeReferenceType? other) => other is not null && ValueComparer.Equals(_value, other._value);
         }
     }
 }

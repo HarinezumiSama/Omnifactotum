@@ -5,7 +5,7 @@ namespace Omnifactotum
 {
     /// <summary>
     ///     Represents the recursive processing result used
-    ///     in the <see cref="Factotum.ProcessRecursively{T}(T,Func{T,IEnumerable{T}},Func{T,RecursiveProcessingDirective})"/>
+    ///     in the <see cref="Factotum.ProcessRecursively{T}(T,Func{T,IEnumerable{T}},Func{T,RecursiveProcessingDirective},RecursiveProcessingContext{T})"/>
     ///     method.
     /// </summary>
     public enum RecursiveProcessingDirective
@@ -16,13 +16,12 @@ namespace Omnifactotum
         Continue,
 
         /// <summary>
-        ///     The processing should not go recursively for the item being process but should continue processing
-        ///     other items.
+        ///     The processing should not go recursively for the item being processed but should continue for other items.
         /// </summary>
         NoRecursionForItem,
 
         /// <summary>
-        ///     The processing should immediately stop processing all items.
+        ///     The processing should stop immediately.
         /// </summary>
         Terminate
     }

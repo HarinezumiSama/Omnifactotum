@@ -709,7 +709,7 @@ namespace Omnifactotum
             [CanBeNull] T instance,
             [NotNull] [InstantHandle] Func<T, IEnumerable<T>> getItems,
             [NotNull] [InstantHandle] Func<T, RecursiveProcessingDirective> processItem,
-            [CanBeNull] RecursiveProcessingContext<T> processingContext)
+            [CanBeNull] RecursiveProcessingContext<T> processingContext = null)
         {
             if (getItems is null)
             {
@@ -746,38 +746,6 @@ namespace Omnifactotum
         /// <param name="processItem">
         ///     A reference to the method that processes each single item.
         /// </param>
-        /// <exception cref="ArgumentNullException">
-        ///     <para>
-        ///         <paramref name="getItems"/> is <see langword="null"/>.
-        ///     </para>
-        ///     <para>-or-</para>
-        ///     <para>
-        ///         <paramref name="processItem"/> is <see langword="null"/>.
-        ///     </para>
-        /// </exception>
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static void ProcessRecursively<T>(
-            [CanBeNull] T instance,
-            [NotNull] [InstantHandle] Func<T, IEnumerable<T>> getItems,
-            [NotNull] [InstantHandle] Func<T, RecursiveProcessingDirective> processItem)
-            => ProcessRecursively(instance, getItems, processItem, null);
-
-        /// <summary>
-        ///     Processes the specified instance recursively.
-        /// </summary>
-        /// <typeparam name="T">
-        ///     The type of the instances to process.
-        /// </typeparam>
-        /// <param name="instance">
-        ///     The instance to process. Can be <see langword="null"/>.
-        /// </param>
-        /// <param name="getItems">
-        ///     A reference to the method that maps <paramref name="instance"/> to the collection of associated objects
-        ///     to process them recursively.
-        /// </param>
-        /// <param name="processItem">
-        ///     A reference to the method that processes each single item.
-        /// </param>
         /// <param name="processingContext">
         ///     The context of the recursive processing, or <see langword="null"/> to use a new context.
         /// </param>
@@ -794,55 +762,21 @@ namespace Omnifactotum
             [CanBeNull] T instance,
             [NotNull] [InstantHandle] Func<T, IEnumerable<T>> getItems,
             [NotNull] [InstantHandle] Action<T> processItem,
-            [CanBeNull] RecursiveProcessingContext<T> processingContext)
+            [CanBeNull] RecursiveProcessingContext<T> processingContext = null)
         {
             if (processItem is null)
             {
                 throw new ArgumentNullException(nameof(processItem));
             }
 
-            ProcessRecursively(
-                instance,
-                getItems,
-                item =>
-                {
-                    processItem(item);
-                    return RecursiveProcessingDirective.Continue;
-                },
-                processingContext);
-        }
+            ProcessRecursively(instance, getItems, InternalProcessItem, processingContext);
 
-        /// <summary>
-        ///     Processes the specified instance recursively.
-        /// </summary>
-        /// <typeparam name="T">
-        ///     The type of the instances to process.
-        /// </typeparam>
-        /// <param name="instance">
-        ///     The instance to process. Can be <see langword="null"/>.
-        /// </param>
-        /// <param name="getItems">
-        ///     A reference to the method that maps <paramref name="instance"/> to the collection of associated objects
-        ///     to process them recursively.
-        /// </param>
-        /// <param name="processItem">
-        ///     A reference to the method that processes each single item.
-        /// </param>
-        /// <exception cref="ArgumentNullException">
-        ///     <para>
-        ///         <paramref name="getItems"/> is <see langword="null"/>.
-        ///     </para>
-        ///     <para>-or-</para>
-        ///     <para>
-        ///         <paramref name="processItem"/> is <see langword="null"/>.
-        ///     </para>
-        /// </exception>
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static void ProcessRecursively<T>(
-            [CanBeNull] T instance,
-            [NotNull] [InstantHandle] Func<T, IEnumerable<T>> getItems,
-            [NotNull] [InstantHandle] Action<T> processItem)
-            => ProcessRecursively(instance, getItems, processItem, null);
+            RecursiveProcessingDirective InternalProcessItem(T item)
+            {
+                processItem(item);
+                return RecursiveProcessingDirective.Continue;
+            }
+        }
 
         private static bool ProcessRecursivelyInternal<T>(
             [CanBeNull] T instance,

@@ -8,8 +8,9 @@ using Omnifactotum.NUnit;
 
 namespace Omnifactotum.Tests
 {
+    // TODO: Temporarily commented out due to the issue in RIDER: https://youtrack.jetbrains.com/issue/RIDER-77015
+    //// [TestFixture(TestOf = typeof(OmnifactotumSetExtensions))]
     [TestFixture(TestOf = typeof(ReadOnlySet<>))]
-    [TestFixture(TestOf = typeof(OmnifactotumSetExtensions))]
     internal sealed class ReadOnlySetTests
     {
         private const int Value1 = 1;

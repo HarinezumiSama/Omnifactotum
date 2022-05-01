@@ -21,7 +21,7 @@ namespace Omnifactotum.Validation
         internal ObjectValidatorContext([CanBeNull] RecursiveProcessingContext<MemberData> recursiveProcessingContext)
         {
             var actualRecursiveProcessingContext = recursiveProcessingContext
-                ?? new RecursiveProcessingContext<MemberData>(InternalMemberDataEqualityComparer.Instance);
+                ?? Omnifactotum.RecursiveProcessingContext.Create(InternalMemberDataEqualityComparer.Instance);
 
             _constraintCache = new Dictionary<Type, IMemberConstraint>();
             Errors = new ValidationErrorCollection();
@@ -31,15 +31,9 @@ namespace Omnifactotum.Validation
         /// <summary>
         ///     Gets the collection of errors.
         /// </summary>
-        public ValidationErrorCollection Errors
-        {
-            get;
-        }
+        public ValidationErrorCollection Errors { get; }
 
-        internal RecursiveProcessingContext<MemberData> RecursiveProcessingContext
-        {
-            get;
-        }
+        internal RecursiveProcessingContext<MemberData> RecursiveProcessingContext { get; }
 
         /// <summary>
         ///     Resolves the constraint with the specified type.

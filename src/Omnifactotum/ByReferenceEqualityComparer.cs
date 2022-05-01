@@ -1,4 +1,5 @@
-﻿using System;
+﻿#nullable enable
+
 using System.Collections.Generic;
 using System.Runtime.CompilerServices;
 
@@ -6,20 +7,13 @@ namespace Omnifactotum
 {
     /// <summary>
     ///     Represents the equality comparer that compares objects of the specified type by their references.
-    ///     If the type <typeparamref name="T"/> represents a value type, then the objects are compared using
-    ///     the default comparer for the type <typeparamref name="T"/>.
     /// </summary>
     /// <typeparam name="T">
     ///     The type of objects to compare.
     /// </typeparam>
     public sealed class ByReferenceEqualityComparer<T> : IEqualityComparer<T>
+        where T : class
     {
-        private readonly bool _isReferenceType = !typeof(T).IsValueType;
-
-        /// <summary>
-        ///     Prevents a default instance of the <see cref="ByReferenceEqualityComparer{T}"/> class
-        ///     from being created.
-        /// </summary>
         private ByReferenceEqualityComparer()
         {
             // Nothing to do
@@ -42,7 +36,7 @@ namespace Omnifactotum
         /// <returns>
         ///     <see langword="true"/> if the specified objects are equal by reference; otherwise, <see langword="false"/>.
         /// </returns>
-        public bool Equals(T x, T y) => _isReferenceType ? ReferenceEquals(x, y) : EqualityComparer<T>.Default.Equals(x, y);
+        public bool Equals(T? x, T? y) => ReferenceEquals(x, y);
 
         /// <summary>
         ///     Returns a hash code for the specified object, based on object's reference.
@@ -53,6 +47,6 @@ namespace Omnifactotum
         /// <returns>
         ///     A hash code for the specified object, based on object's reference.
         /// </returns>
-        public int GetHashCode(T obj) => _isReferenceType ? RuntimeHelpers.GetHashCode(obj) : obj.GetHashCodeSafely();
+        public int GetHashCode(T? obj) => obj is null ? 0 : RuntimeHelpers.GetHashCode(obj);
     }
 }
