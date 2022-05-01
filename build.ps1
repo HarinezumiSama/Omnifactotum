@@ -14,9 +14,11 @@ using namespace System.Xml.Linq
 param
 (
     [Parameter()]
+    [ValidateSet('Debug', 'Release')]
     [string] $BuildConfiguration = 'Debug',
 
     [Parameter()]
+    [ValidateSet('Any CPU')]
     [string] $BuildPlatform = 'Any CPU',
 
     [Parameter()]
@@ -304,6 +306,7 @@ process
     [Console]::ResetColor()
     Write-MajorSeparator
 
+    [Stopwatch] $entireBuildStopwatch = [Stopwatch]::StartNew()
     try
     {
         Write-Host -ForegroundColor Green "BuildConfiguration: ""$BuildConfiguration"""
@@ -833,5 +836,10 @@ process
         Write-MajorSeparator
 
         throw
+    }
+    finally
+    {
+        Write-Host -ForegroundColor Cyan "* Total build time: $($entireBuildStopwatch.Elapsed)"
+        Write-MajorSeparator
     }
 }
