@@ -1,6 +1,11 @@
-﻿using System;
-using System.Collections.Generic;
+﻿#nullable enable
+
+using System;
+using System.Runtime.CompilerServices;
 using Omnifactotum.Annotations;
+
+//// ReSharper disable RedundantNullnessAttributeWithNullableReferenceTypes
+//// ReSharper disable AnnotationRedundancyInHierarchy
 
 namespace Omnifactotum
 {
@@ -22,10 +27,8 @@ namespace Omnifactotum
         ///     <see langword="true"/> if the two specified <see cref="EquatableObjectBase"/> instances are equal;
         ///     otherwise, <see langword="false"/>.
         /// </returns>
-        public static bool operator ==([CanBeNull] EquatableObjectBase left, [CanBeNull] EquatableObjectBase right)
-        {
-            return EqualityComparer<EquatableObjectBase>.Default.Equals(left, right);
-        }
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool operator ==([CanBeNull] EquatableObjectBase? left, [CanBeNull] EquatableObjectBase? right) => Equals(left, right);
 
         /// <summary>
         ///     Determines whether the two specified <see cref="EquatableObjectBase"/> instances are not equal.
@@ -40,10 +43,8 @@ namespace Omnifactotum
         ///     <see langword="true"/> if the two specified <see cref="EquatableObjectBase"/> instances are not equal;
         ///     otherwise, <see langword="false"/>.
         /// </returns>
-        public static bool operator !=([CanBeNull] EquatableObjectBase left, [CanBeNull] EquatableObjectBase right)
-        {
-            return !(left == right);
-        }
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool operator !=([CanBeNull] EquatableObjectBase? left, [CanBeNull] EquatableObjectBase? right) => !Equals(left, right);
 
         /// <summary>
         ///     Determines whether the specified <see cref="Object"/> is equal to
@@ -56,10 +57,8 @@ namespace Omnifactotum
         ///     <see langword="true"/> if the specified <see cref="System.Object"/> is equal to
         ///     this <see cref="EquatableObjectBase"/>; otherwise, <see langword="false"/>.
         /// </returns>
-        public sealed override bool Equals(object obj)
-        {
-            return Equals(obj as EquatableObjectBase);
-        }
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public sealed override bool Equals(object? obj) => Equals(obj as EquatableObjectBase);
 
         /// <summary>
         ///     Returns a hash code for this <see cref="EquatableObjectBase"/>.
@@ -68,10 +67,8 @@ namespace Omnifactotum
         ///     A hash code for this instance, suitable for use in hashing algorithms and data structures like
         ///     a hash table.
         /// </returns>
-        public sealed override int GetHashCode()
-        {
-            return GetHashCodeInternal();
-        }
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public sealed override int GetHashCode() => GetHashCodeInternal();
 
         /// <summary>
         ///     Determines whether the current object is equal to another object of the same type.
@@ -83,8 +80,8 @@ namespace Omnifactotum
         ///     <see langword="true"/> if the current object is equal to the <paramref name="other"/> parameter;
         ///     otherwise, <see langword="false"/>.
         /// </returns>
-        public bool Equals(EquatableObjectBase other)
-            => other is not null && other.GetType() == GetType() && (ReferenceEquals(other, this) || EqualsInternal(other));
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public bool Equals([CanBeNull] EquatableObjectBase? other) => Equals(this, other);
 
         /// <summary>
         ///     Returns a hash code for this <see cref="EquatableObjectBase"/>.
@@ -107,5 +104,20 @@ namespace Omnifactotum
         ///     otherwise, <see langword="false"/>.
         /// </returns>
         protected abstract bool EqualsInternal([NotNull] EquatableObjectBase other);
+
+        private static bool Equals([CanBeNull] EquatableObjectBase? left, [CanBeNull] EquatableObjectBase? right)
+        {
+            if (ReferenceEquals(left, right))
+            {
+                return true;
+            }
+
+            if (left is null || right is null || left.GetType() != right.GetType())
+            {
+                return false;
+            }
+
+            return left.EqualsInternal(right);
+        }
     }
 }
