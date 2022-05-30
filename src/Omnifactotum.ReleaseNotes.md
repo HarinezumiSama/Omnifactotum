@@ -1,4 +1,10 @@
-﻿### Changes in 0.7.0 (since 0.6.0)
+﻿### Changes in 0.8.0 (since 0.7.0)
+
+#### New features
+
+- Added `TemplatedStringResolver` (a templated string is defined in a way similar to C# interpolated string)
+
+### Changes in 0.7.0 (since 0.6.0)
 
 #### Breaking Changes
 

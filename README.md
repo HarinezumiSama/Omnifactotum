@@ -78,6 +78,7 @@ Provides own **helper** and **functional** classes and interfaces as well as **e
 - `SemaphoreSlimBasedLock`
 - `StopwatchElapsedTimeProvider` (implements `IElapsedTimeProvider`)
 - `SyncValueContainer<T>` (implements `IValueContainer<T>`)
+- `TemplatedStringResolver`
 - `ValueContainer<T>` (implements `IValueContainer<T>`)
 - `ValueRange<T>`
 - `VirtualTreeNode<T>` and `VirtualTreeNodeRoot<T>`
