@@ -1,13 +1,17 @@
-﻿using System;
-using System.Collections.Generic;
+﻿#nullable enable
+
+using System;
+using System.Runtime.CompilerServices;
 using Omnifactotum.Annotations;
+
+//// ReSharper disable RedundantNullnessAttributeWithNullableReferenceTypes
 
 namespace Omnifactotum
 {
     /// <summary>
     ///     Represents the abstract container that supports comparison.
     /// </summary>
-    public abstract class ComparableObjectBase : EquatableObjectBase, IComparable<ComparableObjectBase>
+    public abstract class ComparableObjectBase : EquatableObjectBase, IComparable<ComparableObjectBase>, IComparable
     {
         /// <summary>
         ///     Determines whether the left <see cref="ComparableObjectBase"/> instance is less than
@@ -23,10 +27,8 @@ namespace Omnifactotum
         ///     <see langword="true"/> if the left <see cref="ComparableObjectBase"/> instance is less than
         ///     the right <see cref="ComparableObjectBase"/> instance; otherwise, <see langword="false"/>.
         /// </returns>
-        public static bool operator <([CanBeNull] ComparableObjectBase left, [CanBeNull] ComparableObjectBase right)
-        {
-            return Comparer<ComparableObjectBase>.Default.Compare(left, right) < 0;
-        }
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool operator <([CanBeNull] ComparableObjectBase? left, [CanBeNull] ComparableObjectBase? right) => CompareObjects(left, right) < 0;
 
         /// <summary>
         ///     Determines whether the left <see cref="ComparableObjectBase"/> instance is less than or equal
@@ -42,10 +44,8 @@ namespace Omnifactotum
         ///     <see langword="true"/> if the left <see cref="ComparableObjectBase"/> instance is less than or equal to
         ///     the right <see cref="ComparableObjectBase"/> instance; otherwise, <see langword="false"/>.
         /// </returns>
-        public static bool operator <=([CanBeNull] ComparableObjectBase left, [CanBeNull] ComparableObjectBase right)
-        {
-            return Comparer<ComparableObjectBase>.Default.Compare(left, right) <= 0;
-        }
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool operator <=([CanBeNull] ComparableObjectBase? left, [CanBeNull] ComparableObjectBase? right) => CompareObjects(left, right) <= 0;
 
         /// <summary>
         ///     Determines whether the left <see cref="ComparableObjectBase"/> instance is greater than
@@ -61,10 +61,8 @@ namespace Omnifactotum
         ///     <see langword="true"/> if the left <see cref="ComparableObjectBase"/> instance is greater than
         ///     the right <see cref="ComparableObjectBase"/> instance; otherwise, <see langword="false"/>.
         /// </returns>
-        public static bool operator >([CanBeNull] ComparableObjectBase left, [CanBeNull] ComparableObjectBase right)
-        {
-            return Comparer<ComparableObjectBase>.Default.Compare(left, right) > 0;
-        }
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool operator >([CanBeNull] ComparableObjectBase? left, [CanBeNull] ComparableObjectBase? right) => CompareObjects(left, right) > 0;
 
         /// <summary>
         ///     Determines whether the left <see cref="ComparableObjectBase"/> instance is greater than or equal
@@ -80,61 +78,32 @@ namespace Omnifactotum
         ///     <see langword="true"/> if the left <see cref="ComparableObjectBase"/> instance is greater than or equal to
         ///     the right <see cref="ComparableObjectBase"/> instance; otherwise, <see langword="false"/>.
         /// </returns>
-        public static bool operator >=([CanBeNull] ComparableObjectBase left, [CanBeNull] ComparableObjectBase right)
-        {
-            return Comparer<ComparableObjectBase>.Default.Compare(left, right) >= 0;
-        }
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool operator >=([CanBeNull] ComparableObjectBase? left, [CanBeNull] ComparableObjectBase? right) => CompareObjects(left, right) >= 0;
 
-        /// <summary>
-        ///     Compares the current object with another object of the same type.
-        /// </summary>
-        /// <param name="other">
-        ///     An object to compare with this object.
-        /// </param>
-        /// <returns>
-        ///     A value that indicates the relative order of the objects being compared.
-        ///     See <see cref="IComparable{T}.CompareTo"/>.
-        /// </returns>
-        /// <exception cref="ArgumentException">
-        ///     The <paramref name="other"/> object's type differs from this object's type.
-        /// </exception>
-        public int CompareTo([CanBeNull] ComparableObjectBase other)
+        /// <inheritdoc />
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public int CompareTo([CanBeNull] ComparableObjectBase? other) => CompareObjects(this, other);
+
+        /// <inheritdoc />
+        int IComparable.CompareTo(object? obj)
         {
-            if (other is null)
+            if (obj is null)
             {
-                return 1;
+                return CompareObjects(this, null);
             }
 
-            if (other.GetType() != GetType())
+            if (obj is not ComparableObjectBase castObj)
             {
-                throw new ArgumentException("Incompatible comparand type.", nameof(other));
+                throw new ArgumentException($@"Incompatible comparand type: {obj.GetType().GetFullName().ToUIString()}.", nameof(obj));
             }
 
-            return CompareToInternal(other);
+            return CompareObjects(this, castObj);
         }
 
-        /// <summary>
-        ///     <para>
-        ///         Determines whether the current object is equal to another object of the same type.
-        ///     </para>
-        ///     <para>
-        ///         <b>IMPORTANT NOTE</b>: Default implementation of this method simply calls
-        ///         the <see cref="ComparableObjectBase.CompareToInternal"/> method, which may not always be
-        ///         the best option from the performance perspective.
-        ///     </para>
-        /// </summary>
-        /// <param name="other">
-        ///     An object to compare with this object. The parameter is checked prior to calling this method, therefore
-        ///     it is never <see langword="null"/> and can also be safely cast to an actual derived type.
-        /// </param>
-        /// <returns>
-        ///     <see langword="true"/> if the current object is equal to the <paramref name="other"/> parameter;
-        ///     otherwise, <see langword="false"/>.
-        /// </returns>
-        protected override bool EqualsInternal(EquatableObjectBase other)
-        {
-            return CompareToInternal((ComparableObjectBase)other) == 0;
-        }
+        /// <inheritdoc />
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        protected sealed override bool EqualsInternal(EquatableObjectBase other) => CompareToInternal((ComparableObjectBase)other) == 0;
 
         /// <summary>
         ///     Compares the current object with another object of the same type.
@@ -147,5 +116,34 @@ namespace Omnifactotum
         ///     See <see cref="IComparable{T}.CompareTo"/>.
         /// </returns>
         protected abstract int CompareToInternal([NotNull] ComparableObjectBase other);
+
+        private static int CompareObjects([CanBeNull] ComparableObjectBase? left, [CanBeNull] ComparableObjectBase? right)
+        {
+            if (ReferenceEquals(left, right))
+            {
+                return 0;
+            }
+
+            if (left is null)
+            {
+                return -1;
+            }
+
+            if (right is null)
+            {
+                return 1;
+            }
+
+            var leftType = left.GetType();
+            var rightType = right.GetType();
+
+            if (leftType != rightType)
+            {
+                throw new ArgumentException(
+                    $@"Incompatible comparand types: {leftType.GetFullName().ToUIString()} and {rightType.GetFullName().ToUIString()}.");
+            }
+
+            return left.CompareToInternal(right);
+        }
     }
 }
