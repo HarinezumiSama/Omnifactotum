@@ -1,6 +1,11 @@
-﻿using System.Reflection;
+﻿#nullable enable
+
+using System.Reflection;
 using NUnit.Framework;
 using Omnifactotum.Annotations;
+
+//// ReSharper disable RedundantNullnessAttributeWithNullableReferenceTypes
+//// ReSharper disable AnnotationRedundancyInHierarchy
 
 namespace Omnifactotum.Tests
 {
@@ -11,7 +16,7 @@ namespace Omnifactotum.Tests
         [TestCase(null)]
         [TestCase("")]
         [TestCase("ab81a1846da744d1a38284a57713564e")]
-        public void TestConstruction(string value)
+        public void TestConstruction(string? value)
         {
             var capsule = new StringCapsule(value);
             Assert.That(capsule.Value, Is.EqualTo(value));
@@ -26,13 +31,13 @@ namespace Omnifactotum.Tests
 
             Assert.That(valuePropertyInfo, Is.Not.Null);
 
-            Assert.That(valuePropertyInfo.GetGetMethod(false), Is.Not.Null);
-            Assert.That(valuePropertyInfo.GetSetMethod(true), Is.Null);
+            Assert.That(() => valuePropertyInfo!.GetGetMethod(false), Is.Not.Null);
+            Assert.That(() => valuePropertyInfo!.GetSetMethod(true), Is.Null);
         }
 
-        private sealed class StringCapsule : ValueCapsule<string>
+        private sealed class StringCapsule : ValueCapsule<string?>
         {
-            public StringCapsule([CanBeNull] string value)
+            public StringCapsule([CanBeNull] string? value)
                 : base(value)
             {
                 // Nothing to do

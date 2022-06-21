@@ -1,4 +1,4 @@
-﻿using Omnifactotum.Annotations;
+﻿#nullable enable
 
 namespace Omnifactotum
 {
@@ -11,23 +11,16 @@ namespace Omnifactotum
     public abstract class ValueCapsule<T>
     {
         /// <summary>
-        ///     Initializes a new instance of the <see cref="ValueCapsule{T}"/> class
-        ///     using the specified value.
+        ///     Initializes a new instance of the <see cref="ValueCapsule{T}"/> class using the specified value.
         /// </summary>
         /// <param name="value">
         ///     The value to initialize this instance with.
         /// </param>
-        protected ValueCapsule([CanBeNull] T value)
-        {
-            Value = value;
-        }
+        protected ValueCapsule(T value) => Value = value;
 
         /// <summary>
         ///     Gets the contained value.
         /// </summary>
-        public T Value
-        {
-            get;
-        }
+        public T Value { get; }
     }
 }
