@@ -1,7 +1,12 @@
-﻿using System;
+﻿#nullable enable
+
+using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using Omnifactotum.Annotations;
+
+//// ReSharper disable RedundantNullnessAttributeWithNullableReferenceTypes
+//// ReSharper disable AnnotationRedundancyInHierarchy
 
 namespace Omnifactotum
 {
@@ -27,7 +32,7 @@ namespace Omnifactotum
         /// <param name="value">
         ///     The value to initialize this instance with.
         /// </param>
-        protected ComparableValueCapsule([CanBeNull] T value)
+        protected ComparableValueCapsule(T value)
             : base(value)
         {
             // Nothing to do
@@ -36,11 +41,9 @@ namespace Omnifactotum
         /// <summary>
         ///     Gets the <see cref="IComparer{T}"/> used for comparing contained values.
         /// </summary>
-        public IComparer<T> ValueComparer
-        {
-            [DebuggerNonUserCode]
-            get => GetValueComparer().EnsureNotNull();
-        }
+        [DebuggerNonUserCode]
+        [NotNull]
+        public IComparer<T> ValueComparer => GetValueComparer().EnsureNotNull();
 
         /// <summary>
         ///     Determines whether the left <see cref="ComparableValueCapsule{T}"/> instance is less than
@@ -57,11 +60,9 @@ namespace Omnifactotum
         ///     the right <see cref="ComparableValueCapsule{T}"/> instance; otherwise, <see langword="false"/>.
         /// </returns>
         public static bool operator <(
-            [CanBeNull] ComparableValueCapsule<T> left,
-            [CanBeNull] ComparableValueCapsule<T> right)
-        {
-            return Comparer<ComparableValueCapsule<T>>.Default.Compare(left, right) < 0;
-        }
+            [CanBeNull] ComparableValueCapsule<T>? left,
+            [CanBeNull] ComparableValueCapsule<T>? right)
+            => Comparer<ComparableValueCapsule<T>>.Default.Compare(left!, right!) < 0;
 
         /// <summary>
         ///     Determines whether the left <see cref="ComparableValueCapsule{T}"/> instance is less than or equal
@@ -78,11 +79,9 @@ namespace Omnifactotum
         ///     the right <see cref="ComparableValueCapsule{T}"/> instance; otherwise, <see langword="false"/>.
         /// </returns>
         public static bool operator <=(
-            [CanBeNull] ComparableValueCapsule<T> left,
-            [CanBeNull] ComparableValueCapsule<T> right)
-        {
-            return Comparer<ComparableValueCapsule<T>>.Default.Compare(left, right) <= 0;
-        }
+            [CanBeNull] ComparableValueCapsule<T>? left,
+            [CanBeNull] ComparableValueCapsule<T>? right)
+            => Comparer<ComparableValueCapsule<T>>.Default.Compare(left!, right!) <= 0;
 
         /// <summary>
         ///     Determines whether the left <see cref="ComparableValueCapsule{T}"/> instance is greater than
@@ -99,11 +98,9 @@ namespace Omnifactotum
         ///     the right <see cref="ComparableValueCapsule{T}"/> instance; otherwise, <see langword="false"/>.
         /// </returns>
         public static bool operator >(
-            [CanBeNull] ComparableValueCapsule<T> left,
-            [CanBeNull] ComparableValueCapsule<T> right)
-        {
-            return Comparer<ComparableValueCapsule<T>>.Default.Compare(left, right) > 0;
-        }
+            [CanBeNull] ComparableValueCapsule<T>? left,
+            [CanBeNull] ComparableValueCapsule<T>? right)
+            => Comparer<ComparableValueCapsule<T>>.Default.Compare(left!, right!) > 0;
 
         /// <summary>
         ///     Determines whether the left <see cref="ComparableValueCapsule{T}"/> instance is greater than or equal
@@ -120,11 +117,9 @@ namespace Omnifactotum
         ///     the right <see cref="ComparableValueCapsule{T}"/> instance; otherwise, <see langword="false"/>.
         /// </returns>
         public static bool operator >=(
-            [CanBeNull] ComparableValueCapsule<T> left,
-            [CanBeNull] ComparableValueCapsule<T> right)
-        {
-            return Comparer<ComparableValueCapsule<T>>.Default.Compare(left, right) >= 0;
-        }
+            [CanBeNull] ComparableValueCapsule<T>? left,
+            [CanBeNull] ComparableValueCapsule<T>? right)
+            => Comparer<ComparableValueCapsule<T>>.Default.Compare(left!, right!) >= 0;
 
         /// <summary>
         ///     Compares the current object with another object of the same type.
@@ -139,16 +134,17 @@ namespace Omnifactotum
         /// <exception cref="ArgumentException">
         ///     The <paramref name="other"/> object's type differs from this instance's type.
         /// </exception>
-        public int CompareTo([CanBeNull] ComparableValueCapsule<T> other)
+        public int CompareTo([CanBeNull] ComparableValueCapsule<T>? other)
         {
             if (other is null)
             {
                 return 1;
             }
 
-            if (other.GetType() != GetType())
+            var otherType = other.GetType();
+            if (GetType() != otherType)
             {
-                throw new ArgumentException("Incompatible comparand type.", nameof(other));
+                throw new ArgumentException($@"Incompatible comparand type: {otherType.GetFullName().ToUIString()}.", nameof(other));
             }
 
             return ValueComparer.Compare(Value, other.Value);
@@ -162,9 +158,7 @@ namespace Omnifactotum
         ///     The <see cref="IComparer{T}"/> used for comparing contained values.
         /// </returns>
         [DebuggerNonUserCode]
-        protected virtual IComparer<T> GetValueComparer()
-        {
-            return Comparer<T>.Default;
-        }
+        [NotNull]
+        protected virtual IComparer<T> GetValueComparer() => Comparer<T>.Default;
     }
 }
