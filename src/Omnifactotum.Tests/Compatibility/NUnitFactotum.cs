@@ -455,7 +455,11 @@ namespace Omnifactotum.NUnit
         {
             private readonly TSource _source;
 
-            internal AssertCastHelper(TSource source) => _source = source;
+            internal AssertCastHelper(TSource source)
+            {
+                Assert.That(source, Is.Not.Null);
+                _source = source;
+            }
 
             /// <summary>
             ///     Asserts the type of the source value to be compatible with the destination type
@@ -468,10 +472,10 @@ namespace Omnifactotum.NUnit
             ///     The source value cast to the destination type.
             /// </returns>
             public TDestination To<TDestination>()
-                where TDestination : TSource
+                where TDestination : class, TSource
             {
-                Assert.That(_source, /*Is.Not.Null &*/ Is.InstanceOf<TDestination>());
-                return (TDestination)_source!;
+                Assert.That(_source, Is.InstanceOf<TDestination>());
+                return ((TDestination?)_source!).EnsureNotNull();
             }
         }
     }
