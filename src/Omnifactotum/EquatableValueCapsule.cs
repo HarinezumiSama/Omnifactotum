@@ -1,7 +1,12 @@
-﻿using System;
+﻿#nullable enable
+
+using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using Omnifactotum.Annotations;
+
+//// ReSharper disable RedundantNullnessAttributeWithNullableReferenceTypes
+//// ReSharper disable AnnotationRedundancyInHierarchy
 
 namespace Omnifactotum
 {
@@ -27,7 +32,7 @@ namespace Omnifactotum
         /// <param name="value">
         ///     The value to initialize this instance with.
         /// </param>
-        protected EquatableValueCapsule([CanBeNull] T value)
+        protected EquatableValueCapsule(T value)
             : base(value)
         {
             // Nothing to do
@@ -36,7 +41,9 @@ namespace Omnifactotum
         /// <summary>
         ///     Gets the <see cref="IEqualityComparer{T}"/> used for comparing contained values for equality.
         /// </summary>
-        public IEqualityComparer<T> ValueEqualityComparer => GetValueEqualityComparer().EnsureNotNull();
+        [DebuggerNonUserCode]
+        [NotNull]
+        public IEqualityComparer<T?> ValueEqualityComparer => GetValueEqualityComparer().EnsureNotNull();
 
         /// <summary>
         ///     Determines whether the two specified <see cref="EquatableValueCapsule{T}"/> instances are equal.
@@ -52,9 +59,9 @@ namespace Omnifactotum
         ///     otherwise, <see langword="false"/>.
         /// </returns>
         public static bool operator ==(
-            [CanBeNull] EquatableValueCapsule<T> left,
-            [CanBeNull] EquatableValueCapsule<T> right)
-            => EqualityComparer<EquatableValueCapsule<T>>.Default.Equals(left, right);
+            [CanBeNull] EquatableValueCapsule<T>? left,
+            [CanBeNull] EquatableValueCapsule<T>? right)
+            => EqualityComparer<EquatableValueCapsule<T>>.Default.Equals(left!, right!);
 
         /// <summary>
         ///     Determines whether the two specified <see cref="EquatableValueCapsule{T}"/> instances are not equal.
@@ -70,9 +77,9 @@ namespace Omnifactotum
         ///     otherwise, <see langword="false"/>.
         /// </returns>
         public static bool operator !=(
-            [CanBeNull] EquatableValueCapsule<T> left,
-            [CanBeNull] EquatableValueCapsule<T> right)
-            => !(left == right);
+            [CanBeNull] EquatableValueCapsule<T>? left,
+            [CanBeNull] EquatableValueCapsule<T>? right)
+            => !EqualityComparer<EquatableValueCapsule<T>>.Default.Equals(left!, right!);
 
         /// <summary>
         ///     Determines whether the specified <see cref="Object"/> is equal to
@@ -85,7 +92,7 @@ namespace Omnifactotum
         ///     <see langword="true"/> if the specified <see cref="System.Object"/> is equal to
         ///     this <see cref="EquatableValueCapsule{T}"/>; otherwise, <see langword="false"/>.
         /// </returns>
-        public sealed override bool Equals(object obj) => Equals(obj as EquatableValueCapsule<T>);
+        public sealed override bool Equals([CanBeNull] object? obj) => Equals(obj as EquatableValueCapsule<T>);
 
         /// <summary>
         ///     Returns a hash code for this <see cref="EquatableValueCapsule{T}"/>.
@@ -107,7 +114,7 @@ namespace Omnifactotum
         ///     <see langword="true"/> if the current object is equal to the <paramref name="other"/> parameter;
         ///     otherwise, <see langword="false"/>.
         /// </returns>
-        public bool Equals(EquatableValueCapsule<T> other)
+        public bool Equals(EquatableValueCapsule<T>? other)
             => other is not null && other.GetType() == GetType()
                 && (ReferenceEquals(other, this) || ValueEqualityComparer.Equals(other.Value, Value));
 
@@ -119,6 +126,7 @@ namespace Omnifactotum
         ///     The <see cref="IEqualityComparer{T}"/> used for comparing contained values for equality.
         /// </returns>
         [DebuggerNonUserCode]
-        protected virtual IEqualityComparer<T> GetValueEqualityComparer() => EqualityComparer<T>.Default;
+        [NotNull]
+        protected virtual IEqualityComparer<T?> GetValueEqualityComparer() => EqualityComparer<T?>.Default;
     }
 }
