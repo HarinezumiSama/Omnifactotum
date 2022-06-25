@@ -3,6 +3,7 @@
 using System.Runtime.CompilerServices;
 using System.Text;
 using Omnifactotum.Annotations;
+using NotNullIfNotNull = System.Diagnostics.CodeAnalysis.NotNullIfNotNullAttribute;
 
 //// ReSharper disable RedundantNullnessAttributeWithNullableReferenceTypes
 //// ReSharper disable UseNullableReferenceTypesAnnotationSyntax
@@ -34,6 +35,7 @@ namespace System
 #endif
         )]
         [CanBeNull]
+        [return: NotNullIfNotNull("array")]
         public static T[]? Copy<T>([CanBeNull] this T[]? array) => (T[]?)array?.Clone();
 
         /// <summary>
