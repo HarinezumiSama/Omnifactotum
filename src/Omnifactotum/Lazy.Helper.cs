@@ -1,8 +1,12 @@
-﻿using System.Threading;
+﻿#nullable enable
+
+using System.Threading;
 using Omnifactotum.Annotations;
 
-//// ReSharper disable once CheckNamespace :: Namespace is intentionally named so in order to simplify usage
+//// ReSharper disable RedundantNullnessAttributeWithNullableReferenceTypes
+//// ReSharper disable AnnotationRedundancyInHierarchy
 
+//// ReSharper disable once CheckNamespace :: Namespace is intentionally named so in order to simplify usage
 namespace System
 {
     /// <summary>
