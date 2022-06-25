@@ -1,7 +1,12 @@
-﻿using System;
+﻿#nullable enable
+
+using System;
 using System.Collections.Generic;
 using System.Linq;
+using Omnifactotum.Annotations;
 using static Omnifactotum.FormattableStringFactotum;
+
+//// ReSharper disable RedundantNullnessAttributeWithNullableReferenceTypes
 
 namespace Omnifactotum
 {
@@ -26,7 +31,7 @@ namespace Omnifactotum
         /// <returns>
         ///     A strongly-typed value of the enumeration.
         /// </returns>
-        public static TEnum GetValue<TEnum>(string enumValueName, bool ignoreCase)
+        public static TEnum GetValue<TEnum>([NotNull] string enumValueName, bool ignoreCase)
             where TEnum : struct, Enum
         {
             if (string.IsNullOrEmpty(enumValueName))
@@ -42,7 +47,14 @@ namespace Omnifactotum
                     nameof(TEnum));
             }
 
-            return (TEnum)Enum.Parse(enumType, enumValueName, ignoreCase);
+            if (!Enum.TryParse<TEnum>(enumValueName, ignoreCase, out var result))
+            {
+                throw new ArgumentException(
+                    AsInvariant($@"Cannot parse the value {enumValueName.ToUIString()} as {typeof(TEnum).GetFullName().ToUIString()}"),
+                    nameof(enumValueName));
+            }
+
+            return result;
         }
 
         /// <summary>
@@ -58,11 +70,9 @@ namespace Omnifactotum
         /// <returns>
         ///     A strongly-typed value of the enumeration.
         /// </returns>
-        public static TEnum GetValue<TEnum>(string enumValueName)
+        public static TEnum GetValue<TEnum>([NotNull] string enumValueName)
             where TEnum : struct, Enum
-        {
-            return GetValue<TEnum>(enumValueName, false);
-        }
+            => GetValue<TEnum>(enumValueName, false);
 
         /// <summary>
         ///     Gets all values of the specified enumeration.

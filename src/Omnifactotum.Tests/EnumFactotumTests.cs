@@ -1,4 +1,6 @@
-﻿using System;
+﻿#nullable enable
+
+using System;
 using System.IO;
 using System.Linq;
 using NUnit.Framework;
@@ -20,7 +22,7 @@ namespace Omnifactotum.Tests
             Assert.That(() => EnumFactotum.GetValue<FileMode>(enumValueString, false), Is.EqualTo(EnumValue));
             Assert.That(() => EnumFactotum.GetValue<FileMode>(enumValueString, true), Is.EqualTo(EnumValue));
 
-            Assert.That(() => EnumFactotum.GetValue<FileMode>(null), Throws.ArgumentException);
+            Assert.That(() => EnumFactotum.GetValue<FileMode>(null!), Throws.ArgumentException);
             Assert.That(() => EnumFactotum.GetValue<FileMode>(string.Empty), Throws.ArgumentException);
             Assert.That(() => EnumFactotum.GetValue<FileMode>(enumValueStringLower), Throws.ArgumentException);
             Assert.That(() => EnumFactotum.GetValue<FileMode>(enumValueStringLower, false), Throws.ArgumentException);
