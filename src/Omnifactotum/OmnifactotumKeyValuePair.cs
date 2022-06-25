@@ -1,6 +1,7 @@
-﻿using System.Collections.Generic;
+﻿#nullable enable
+
+using System.Collections.Generic;
 using System.Runtime.CompilerServices;
-using Omnifactotum.Annotations;
 
 namespace Omnifactotum
 {
@@ -29,6 +30,6 @@ namespace Omnifactotum
         ///     A new <see cref="KeyValuePair{TKey,TValue}"/> having the specified key and value set.
         /// </returns>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static KeyValuePair<TKey, TValue> Create<TKey, TValue>([CanBeNull] TKey key, [CanBeNull] TValue value) => new(key, value);
+        public static KeyValuePair<TKey, TValue> Create<TKey, TValue>(TKey key, TValue value) => new(key, value);
     }
 }

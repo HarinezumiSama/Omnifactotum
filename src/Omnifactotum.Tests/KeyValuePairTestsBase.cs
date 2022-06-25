@@ -1,13 +1,13 @@
-﻿using System.Collections.Generic;
+﻿#nullable enable
+
+using System.Collections.Generic;
 using NUnit.Framework;
-using Omnifactotum.Annotations;
 
 namespace Omnifactotum.Tests
 {
     [TestFixture]
     internal abstract class KeyValuePairTestsBase
     {
-        [CanBeNull]
         public static IEnumerable<TestCaseData> CreateTestCases
         {
             get

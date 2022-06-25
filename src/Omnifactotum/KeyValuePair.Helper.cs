@@ -1,11 +1,11 @@
-﻿#if NETFRAMEWORK
+﻿#nullable enable
+
+#if NETFRAMEWORK
 
 using System.Runtime.CompilerServices;
 using Omnifactotum;
-using Omnifactotum.Annotations;
 
 //// ReSharper disable once CheckNamespace :: Namespace is intentionally named so in order to simplify usage
-
 namespace System.Collections.Generic
 {
     /// <summary>
@@ -33,8 +33,7 @@ namespace System.Collections.Generic
         ///     A new <see cref="KeyValuePair{TKey,TValue}"/> having the specified key and value set.
         /// </returns>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static KeyValuePair<TKey, TValue> Create<TKey, TValue>([CanBeNull] TKey key, [CanBeNull] TValue value)
-            => OmnifactotumKeyValuePair.Create(key, value);
+        public static KeyValuePair<TKey, TValue> Create<TKey, TValue>(TKey key, TValue value) => OmnifactotumKeyValuePair.Create(key, value);
     }
 }
 
