@@ -1,4 +1,6 @@
-﻿using System;
+﻿#nullable enable
+
+using System;
 using System.ComponentModel;
 using System.Linq;
 using System.Threading.Tasks;
@@ -7,8 +9,6 @@ using NUnit.Framework;
 using Omnifactotum.Annotations;
 using Omnifactotum.Tests.Auxiliary;
 using static Omnifactotum.FormattableStringFactotum;
-
-#pragma warning disable CA1822
 
 namespace Omnifactotum.Tests
 {
@@ -101,11 +101,11 @@ namespace Omnifactotum.Tests
         [TestCase(null)]
         [TestCase("")]
         [TestCase("TestString")]
-        public void TestIdentityReferenceType(string value)
+        public void TestIdentityReferenceType(string? value)
         {
             Assert.That(() => Factotum.Identity(value), Is.SameAs(value));
-            Assert.That(() => Factotum.For<string>.Identity(value), Is.SameAs(value));
-            Assert.That(() => Factotum.For<string>.IdentityMethod(value), Is.SameAs(value));
+            Assert.That(() => Factotum.For<string?>.Identity(value), Is.SameAs(value));
+            Assert.That(() => Factotum.For<string?>.IdentityMethod(value), Is.SameAs(value));
         }
 
         [Test]
@@ -317,9 +317,9 @@ namespace Omnifactotum.Tests
 
         private abstract class TestObjectBase
         {
-            public static string StaticProperty { get; set; }
+            public static string? StaticProperty { get; set; }
 
-            public string InstanceProperty { get; set; }
+            public string? InstanceProperty { get; set; }
         }
 
         [UsedImplicitly]
@@ -334,12 +334,12 @@ namespace Omnifactotum.Tests
             public const string NonDefaultStringValue = "NonDefaultStringValue";
 
             [DefaultValue(DefaultStringValue)]
-            public static string StaticStringValueWithDefault { get; set; }
+            public static string? StaticStringValueWithDefault { get; set; }
 
-            public string StringValueNoDefault { get; set; }
+            public string? StringValueNoDefault { get; set; }
 
             [DefaultValue(DefaultStringValue)]
-            public string StringValueWithDefault { get; internal set; }
+            public string? StringValueWithDefault { get; internal set; }
 
             [DefaultValue(DefaultStringValue)]
             //// ReSharper disable once MemberCanBeMadeStatic.Local

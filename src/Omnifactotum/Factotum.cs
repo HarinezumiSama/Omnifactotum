@@ -1,4 +1,6 @@
-﻿using System;
+﻿#nullable enable
+
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Globalization;
@@ -11,7 +13,11 @@ using System.Runtime.InteropServices;
 using System.Security.Cryptography;
 using System.Threading.Tasks;
 using Omnifactotum.Annotations;
+using NotNullIfNotNullAttribute = System.Diagnostics.CodeAnalysis.NotNullIfNotNullAttribute;
 using static Omnifactotum.FormattableStringFactotum;
+
+//// ReSharper disable RedundantNullnessAttributeWithNullableReferenceTypes
+//// ReSharper disable AnnotationRedundancyInHierarchy
 
 namespace Omnifactotum
 {
@@ -33,7 +39,6 @@ namespace Omnifactotum
             "Invalid expression (must be a getter of a property of some type): {{ {0} }}.";
 
         private static readonly int GuidSize = Marshal.SizeOf(typeof(Guid));
-
         private static readonly RNGCryptoServiceProvider IdGenerator = new();
 
         /// <summary>
@@ -57,7 +62,7 @@ namespace Omnifactotum
         ///     A reference to an object to dispose and set to <see langword="null"/>.
         /// </param>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static void DisposeAndNull<T>([CanBeNull] ref T disposable)
+        public static void DisposeAndNull<T>([CanBeNull] ref T? disposable)
             where T : class, IDisposable
         {
             if (disposable is null)
@@ -116,11 +121,16 @@ namespace Omnifactotum
         ///     The second value to exchange with the first value.
         /// </param>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static void Exchange<T>([CanBeNull] ref T value1, [CanBeNull] ref T value2)
+        public static void Exchange<T>(ref T value1, ref T value2)
         {
+#if NETSTANDARD2_0_OR_GREATER || NETCOREAPP3_1_OR_GREATER
+            (value1, value2) = (value2, value1);
+#else
+            //// ReSharper disable once SwapViaDeconstruction :: Avoiding multi-target issues
             var temporary = value1;
             value1 = value2;
             value2 = temporary;
+#endif
         }
 
         /// <summary>
@@ -136,7 +146,8 @@ namespace Omnifactotum
         /// <returns>
         ///     The instance passed as an argument.
         /// </returns>
-        public static T Identity<T>([CanBeNull] T obj) => obj;
+        [return: NotNullIfNotNull("obj")]
+        public static T Identity<T>(T obj) => obj;
 
         /// <summary>
         ///     Sets the values of the public instance properties of the specified object to the values indicated
@@ -161,27 +172,18 @@ namespace Omnifactotum
                 throw new ArgumentNullException(nameof(obj));
             }
 
-            var propertyRecords = obj.GetType()
+            var propertyRecords = obj
+                .GetType()
                 .GetProperties(BindingFlags.Public | BindingFlags.Instance)
-                .Where(item => item.CanWrite && item.GetIndexParameters().Length == 0)
-                .Select(
-                    item => new
-                    {
-                        Property = item,
-                        Attribute = item.GetSingleOrDefaultCustomAttribute<DefaultValueAttribute>(false)
-                    })
-                .Where(item => item.Attribute != null)
-                .Select(
-                    item => new
-                    {
-                        item.Property,
-                        Default = item.Attribute.Value
-                    })
+                .Where(info => info.CanWrite && info.GetIndexParameters().Length == 0)
+                .Select(info => OmnifactotumKeyValuePair.Create(info, info.GetSingleOrDefaultCustomAttribute<DefaultValueAttribute>(false)))
+                .Where(pair => pair.Value is not null)
+                .Select(pair => OmnifactotumKeyValuePair.Create(pair.Key, pair.Value!.Value))
                 .ToArray();
 
             foreach (var propertyRecord in propertyRecords)
             {
-                propertyRecord.Property.SetValue(obj, propertyRecord.Default, null);
+                propertyRecord.Key.SetValue(obj, propertyRecord.Value, null);
             }
 
             return obj;
@@ -205,9 +207,7 @@ namespace Omnifactotum
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static T Max<T>(T x, T y)
             where T : IComparable
-        {
-            return Comparer<T>.Default.Compare(x, y) > 0 ? x : y;
-        }
+            => Comparer<T>.Default.Compare(x, y) > 0 ? x : y;
 
         /// <summary>
         ///     Compares the two specified values and returns the smaller of those.
@@ -227,9 +227,7 @@ namespace Omnifactotum
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static T Min<T>(T x, T y)
             where T : IComparable
-        {
-            return Comparer<T>.Default.Compare(x, y) < 0 ? x : y;
-        }
+            => Comparer<T>.Default.Compare(x, y) < 0 ? x : y;
 
         /// <summary>
         ///     Generates an identifier which is unique, cryptographically random, or both.
@@ -435,11 +433,8 @@ namespace Omnifactotum
         /// </returns>
         [NotNull]
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static MemberInfo GetFieldOrPropertyInfo<TObject, TMember>(
-            [NotNull] Expression<Func<TObject, TMember>> memberGetterExpression)
-        {
-            return For<TObject>.GetFieldOrPropertyInfo(memberGetterExpression);
-        }
+        public static MemberInfo GetFieldOrPropertyInfo<TObject, TMember>([NotNull] Expression<Func<TObject, TMember>> memberGetterExpression)
+            => For<TObject>.GetFieldOrPropertyInfo(memberGetterExpression);
 
         /// <summary>
         ///     Gets the <see cref="FieldInfo"/> of the field specified by the lambda expression.
@@ -458,11 +453,8 @@ namespace Omnifactotum
         /// </returns>
         [NotNull]
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static FieldInfo GetFieldInfo<TObject, TField>(
-            [NotNull] Expression<Func<TObject, TField>> fieldGetterExpression)
-        {
-            return For<TObject>.GetFieldInfo(fieldGetterExpression);
-        }
+        public static FieldInfo GetFieldInfo<TObject, TField>([NotNull] Expression<Func<TObject, TField>> fieldGetterExpression)
+            => For<TObject>.GetFieldInfo(fieldGetterExpression);
 
         /// <summary>
         ///     Gets the name of the field specified by the lambda expression.
@@ -481,11 +473,8 @@ namespace Omnifactotum
         /// </returns>
         [NotNull]
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static string GetFieldName<TObject, TField>(
-            [NotNull] Expression<Func<TObject, TField>> fieldGetterExpression)
-        {
-            return For<TObject>.GetFieldName(fieldGetterExpression);
-        }
+        public static string GetFieldName<TObject, TField>([NotNull] Expression<Func<TObject, TField>> fieldGetterExpression)
+            => For<TObject>.GetFieldName(fieldGetterExpression);
 
         /// <summary>
         ///     Gets the type-qualified name of the field specified by the lambda expression.
@@ -504,11 +493,8 @@ namespace Omnifactotum
         /// </returns>
         [NotNull]
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static string GetQualifiedFieldName<TObject, TField>(
-            [NotNull] Expression<Func<TObject, TField>> fieldGetterExpression)
-        {
-            return For<TObject>.GetQualifiedFieldName(fieldGetterExpression);
-        }
+        public static string GetQualifiedFieldName<TObject, TField>([NotNull] Expression<Func<TObject, TField>> fieldGetterExpression)
+            => For<TObject>.GetQualifiedFieldName(fieldGetterExpression);
 
         /// <summary>
         ///     Gets the <see cref="PropertyInfo"/> of the property specified by the lambda expression.
@@ -527,11 +513,8 @@ namespace Omnifactotum
         /// </returns>
         [NotNull]
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static PropertyInfo GetPropertyInfo<TObject, TProperty>(
-            [NotNull] Expression<Func<TObject, TProperty>> propertyGetterExpression)
-        {
-            return For<TObject>.GetPropertyInfo(propertyGetterExpression);
-        }
+        public static PropertyInfo GetPropertyInfo<TObject, TProperty>([NotNull] Expression<Func<TObject, TProperty>> propertyGetterExpression)
+            => For<TObject>.GetPropertyInfo(propertyGetterExpression);
 
         /// <summary>
         ///     Gets the name of the property specified by the lambda expression.
@@ -550,11 +533,8 @@ namespace Omnifactotum
         /// </returns>
         [NotNull]
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static string GetPropertyName<TObject, TProperty>(
-            [NotNull] Expression<Func<TObject, TProperty>> propertyGetterExpression)
-        {
-            return For<TObject>.GetPropertyName(propertyGetterExpression);
-        }
+        public static string GetPropertyName<TObject, TProperty>([NotNull] Expression<Func<TObject, TProperty>> propertyGetterExpression)
+            => For<TObject>.GetPropertyName(propertyGetterExpression);
 
         /// <summary>
         ///     Gets the type-qualified name of the property specified by the lambda expression.
@@ -573,11 +553,8 @@ namespace Omnifactotum
         /// </returns>
         [NotNull]
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static string GetQualifiedPropertyName<TObject, TProperty>(
-            [NotNull] Expression<Func<TObject, TProperty>> propertyGetterExpression)
-        {
-            return For<TObject>.GetQualifiedPropertyName(propertyGetterExpression);
-        }
+        public static string GetQualifiedPropertyName<TObject, TProperty>([NotNull] Expression<Func<TObject, TProperty>> propertyGetterExpression)
+            => For<TObject>.GetQualifiedPropertyName(propertyGetterExpression);
 
         /// <summary>
         ///     Gets the <see cref="PropertyInfo"/> of the static property specified by the lambda expression.
@@ -592,8 +569,7 @@ namespace Omnifactotum
         ///     The <see cref="PropertyInfo"/> containing information about the required static property.
         /// </returns>
         [NotNull]
-        public static PropertyInfo GetPropertyInfo<TProperty>(
-            [NotNull] Expression<Func<TProperty>> propertyGetterExpression)
+        public static PropertyInfo GetPropertyInfo<TProperty>([NotNull] Expression<Func<TProperty>> propertyGetterExpression)
         {
             if (propertyGetterExpression is null)
             {
@@ -650,8 +626,7 @@ namespace Omnifactotum
         /// </returns>
         [NotNull]
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static string GetPropertyName<TProperty>(
-            [NotNull] Expression<Func<TProperty>> propertyGetterExpression)
+        public static string GetPropertyName<TProperty>([NotNull] Expression<Func<TProperty>> propertyGetterExpression)
         {
             var propertyInfo = GetPropertyInfo(propertyGetterExpression);
             return propertyInfo.Name;
@@ -670,8 +645,7 @@ namespace Omnifactotum
         ///     The type-qualified name of the static property.
         /// </returns>
         [NotNull]
-        public static string GetQualifiedPropertyName<TProperty>(
-            [NotNull] Expression<Func<TProperty>> propertyGetterExpression)
+        public static string GetQualifiedPropertyName<TProperty>([NotNull] Expression<Func<TProperty>> propertyGetterExpression)
         {
             var propertyInfo = GetPropertyInfo(propertyGetterExpression);
             return propertyInfo.DeclaringType.EnsureNotNull().GetQualifiedName() + Type.Delimiter + propertyInfo.Name;
@@ -706,10 +680,10 @@ namespace Omnifactotum
         ///     </para>
         /// </exception>
         public static void ProcessRecursively<T>(
-            [CanBeNull] T instance,
+            T instance,
             [NotNull] [InstantHandle] Func<T, IEnumerable<T>> getItems,
             [NotNull] [InstantHandle] Func<T, RecursiveProcessingDirective> processItem,
-            [CanBeNull] RecursiveProcessingContext<T> processingContext = null)
+            [CanBeNull] RecursiveProcessingContext<T>? processingContext = null)
         {
             if (getItems is null)
             {
@@ -759,10 +733,10 @@ namespace Omnifactotum
         ///     </para>
         /// </exception>
         public static void ProcessRecursively<T>(
-            [CanBeNull] T instance,
+            T instance,
             [NotNull] [InstantHandle] Func<T, IEnumerable<T>> getItems,
             [NotNull] [InstantHandle] Action<T> processItem,
-            [CanBeNull] RecursiveProcessingContext<T> processingContext = null)
+            [CanBeNull] RecursiveProcessingContext<T>? processingContext = null)
         {
             if (processItem is null)
             {
@@ -779,17 +753,17 @@ namespace Omnifactotum
         }
 
         private static bool ProcessRecursivelyInternal<T>(
-            [CanBeNull] T instance,
+            T instance,
             [NotNull] [InstantHandle] Func<T, IEnumerable<T>> getItems,
             [NotNull] [InstantHandle] Func<T, RecursiveProcessingDirective> processItem,
-            RecursiveProcessingContext<T> processingContext)
+            [NotNull] RecursiveProcessingContext<T> processingContext)
         {
             if (instance is null)
             {
                 return true;
             }
 
-            if (processingContext.ItemsBeingProcessed != null)
+            if (processingContext.ItemsBeingProcessed is not null)
             {
                 if (processingContext.ItemsBeingProcessed.Contains(instance))
                 {
@@ -817,12 +791,13 @@ namespace Omnifactotum
             }
 
             var items = getItems(instance);
+            //// ReSharper disable once ConditionIsAlwaysTrueOrFalseAccordingToNullableAPIContract :: Double checking
             if (items is null)
             {
                 return true;
             }
 
-            // ReSharper disable once LoopCanBeConvertedToQuery - More readable in 'foreach' style
+            // ReSharper disable once LoopCanBeConvertedToQuery :: More readable in 'foreach' style
             foreach (var item in items)
             {
                 var processResult = ProcessRecursivelyInternal(item, getItems, processItem, processingContext);
