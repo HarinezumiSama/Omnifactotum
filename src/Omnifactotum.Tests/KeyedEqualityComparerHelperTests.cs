@@ -1,20 +1,21 @@
-﻿using System;
+﻿#nullable enable
+
+using System;
 using System.Collections.Generic;
 using System.Globalization;
 using NUnit.Framework;
 
 namespace Omnifactotum.Tests
 {
-    //// ReSharper disable AssignNullToNotNullAttribute - for negative test cases
-
     [TestFixture(TestOf = typeof(KeyedEqualityComparer))]
     internal sealed class KeyedEqualityComparerHelperTests
     {
         [Test]
         public void TestConstruction()
         {
-            //// ReSharper disable once ConvertToLocalFunction
-            Func<string, int> keySelector = s => s.Length;
+            int KeySelector(string s) => s.Length;
+
+            Func<string, int> keySelector = KeySelector;
 
             var instance = KeyedEqualityComparer.For<string>.Create(keySelector);
             Assert.That(instance.KeySelector, Is.SameAs(keySelector));
@@ -22,17 +23,14 @@ namespace Omnifactotum.Tests
 
         [Test]
         public void TestConstructionNegative()
-        {
-            Assert.That(
-                () => KeyedEqualityComparer.For<string>.Create<int>(null),
-                Throws.TypeOf<ArgumentNullException>());
-        }
+            => Assert.That(() => KeyedEqualityComparer.For<string>.Create<int>(null!), Throws.TypeOf<ArgumentNullException>());
 
         [Test]
         public void TestConstructionWithKeyComparer()
         {
-            //// ReSharper disable once ConvertToLocalFunction
-            Func<int, string> keySelector = i => i.ToString(CultureInfo.InvariantCulture);
+            static string KeySelector(int i) => i.ToString(CultureInfo.InvariantCulture);
+
+            Func<int, string> keySelector = KeySelector;
             var keyComparer = StringComparer.OrdinalIgnoreCase;
 
             var instance = KeyedEqualityComparer.For<int>.Create(keySelector, keyComparer);
@@ -41,11 +39,25 @@ namespace Omnifactotum.Tests
         }
 
         [Test]
+        public void TestConstructionWithDefaultKeyComparer()
+        {
+            static string KeySelector(int i) => i.ToString(CultureInfo.InvariantCulture);
+
+            Func<int, string> keySelector = KeySelector;
+
+            var instance = KeyedEqualityComparer.For<int>.Create(keySelector);
+            Assert.That(instance.KeySelector, Is.SameAs(keySelector));
+            Assert.That(instance.KeyComparer, Is.EqualTo(EqualityComparer<string>.Default));
+        }
+
+        [Test]
         public void TestConstructionWithNullKeyComparer()
         {
-            //// ReSharper disable once ConvertToLocalFunction
-            Func<int, string> keySelector = i => i.ToString(CultureInfo.InvariantCulture);
+            static string KeySelector(int i) => i.ToString(CultureInfo.InvariantCulture);
 
+            Func<int, string> keySelector = KeySelector;
+
+            // ReSharper disable once RedundantArgumentDefaultValue :: Test case
             var instance = KeyedEqualityComparer.For<int>.Create(keySelector, null);
             Assert.That(instance.KeySelector, Is.SameAs(keySelector));
             Assert.That(instance.KeyComparer, Is.EqualTo(EqualityComparer<string>.Default));
@@ -53,10 +65,8 @@ namespace Omnifactotum.Tests
 
         [Test]
         public void TestConstructionWithKeyComparerNegative()
-        {
-            Assert.That(
-                () => KeyedEqualityComparer.For<int>.Create(null, StringComparer.Ordinal),
+            => Assert.That(
+                () => KeyedEqualityComparer.For<int>.Create(null!, StringComparer.Ordinal),
                 Throws.TypeOf<ArgumentNullException>());
-        }
     }
 }

@@ -1,6 +1,12 @@
-﻿using System;
+﻿#nullable enable
+
+using System;
 using System.Collections.Generic;
+using System.Runtime.CompilerServices;
 using Omnifactotum.Annotations;
+
+//// ReSharper disable RedundantNullnessAttributeWithNullableReferenceTypes
+//// ReSharper disable AnnotationRedundancyInHierarchy
 
 namespace Omnifactotum
 {
@@ -33,27 +39,11 @@ namespace Omnifactotum
             /// <returns>
             ///     A created and initialized instance of the <see cref="KeyedEqualityComparer{T,TKey}"/>.
             /// </returns>
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
             public static KeyedEqualityComparer<T, TKey> Create<TKey>(
                 [NotNull] Func<T, TKey> keySelector,
-                [CanBeNull] IEqualityComparer<TKey> keyComparer)
-            {
-                return new KeyedEqualityComparer<T, TKey>(keySelector, keyComparer);
-            }
-
-            /// <summary>
-            ///     Creates and initializes a new instance of the <see cref="KeyedEqualityComparer{T,TKey}"/>
-            ///     class with the specified key selector and default key equality comparer.
-            /// </summary>
-            /// <param name="keySelector">
-            ///     A reference to a method that provides a key for an object being compared.
-            /// </param>
-            /// <returns>
-            ///     A created and initialized instance of the <see cref="KeyedEqualityComparer{T,TKey}"/>.
-            /// </returns>
-            public static KeyedEqualityComparer<T, TKey> Create<TKey>([NotNull] Func<T, TKey> keySelector)
-            {
-                return new KeyedEqualityComparer<T, TKey>(keySelector);
-            }
+                [CanBeNull] IEqualityComparer<TKey>? keyComparer = null)
+                => new(keySelector, keyComparer);
         }
     }
 }

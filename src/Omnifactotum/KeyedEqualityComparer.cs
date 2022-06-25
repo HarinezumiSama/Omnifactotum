@@ -1,7 +1,12 @@
-﻿using System;
+﻿#nullable enable
+
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using Omnifactotum.Annotations;
+
+//// ReSharper disable RedundantNullnessAttributeWithNullableReferenceTypes
+//// ReSharper disable AnnotationRedundancyInHierarchy
 
 namespace Omnifactotum
 {
@@ -29,58 +34,35 @@ namespace Omnifactotum
         /// </param>
         public KeyedEqualityComparer(
             [NotNull] Func<T, TKey> keySelector,
-            [CanBeNull] IEqualityComparer<TKey> keyComparer)
+            [CanBeNull] IEqualityComparer<TKey>? keyComparer = null)
         {
             KeySelector = keySelector ?? throw new ArgumentNullException(nameof(keySelector));
             KeyComparer = keyComparer ?? EqualityComparer<TKey>.Default;
         }
 
         /// <summary>
-        ///     Initializes a new instance of the <see cref="KeyedEqualityComparer{T,TKey}"/> class
-        ///     with the specified key selector and default key equality comparer.
-        /// </summary>
-        /// <param name="keySelector">
-        ///     A reference to a method that provides a key for an object being compared.
-        /// </param>
-        public KeyedEqualityComparer([NotNull] Func<T, TKey> keySelector)
-            : this(keySelector, null)
-        {
-            // Nothing to do
-        }
-
-        /// <summary>
         ///     Gets a reference to a method that provides a key for an object being compared.
         /// </summary>
         [NotNull]
-        public Func<T, TKey> KeySelector
-        {
-            get;
-        }
+        public Func<T, TKey> KeySelector { get; }
 
         /// <summary>
         ///     Gets the equality comparer to use when comparing objects' keys.
         /// </summary>
         [NotNull]
-        public IEqualityComparer<TKey> KeyComparer
-        {
-            get;
-        }
+        public IEqualityComparer<TKey> KeyComparer { get; }
 
-        /// <summary>
-        ///     Determines whether the keys of the specified objects are equal.
-        /// </summary>
-        /// <param name="x">
-        ///     The first object of type <typeparamref name="T"/> to compare.
-        /// </param>
-        /// <param name="y">
-        ///     The second object of type <typeparamref name="T"/> to compare.
-        /// </param>
-        /// <returns>
-        ///     <see langword="true"/> if the keys of the specified objects are equal; otherwise, <see langword="false"/>.
-        /// </returns>
-        public bool Equals(T x, T y)
+        /// <inheritdoc />
+        public bool Equals([CanBeNull] T? x, [CanBeNull] T? y)
         {
-            if (!typeof(T).IsValueType)
+            if (typeof(T).IsValueType)
+            {
+                if (x is null || y is null)
+                {
+                    return x is null && y is null;
+                }
+            }
+            else
             {
                 if (ReferenceEquals(x, y))
                 {
@@ -99,18 +81,10 @@ namespace Omnifactotum
             return KeyComparer.Equals(keyX, keyY);
         }
 
-        /// <summary>
-        ///     Returns a hash code for the key of the specified object.
-        /// </summary>
-        /// <param name="obj">
-        ///     The object of type <typeparamref name="T"/> for which key a hash code is to be returned.
-        /// </param>
-        /// <returns>
-        ///     A hash code for the key of the specified object.
-        /// </returns>
-        public int GetHashCode([CanBeNull] T obj)
+        /// <inheritdoc />
+        public int GetHashCode([CanBeNull] T? obj)
         {
-            if (!typeof(T).IsValueType && obj is null)
+            if (obj is null)
             {
                 return 0;
             }
@@ -131,7 +105,7 @@ namespace Omnifactotum
         /// <param name="right">
         ///     The second object to compare.
         /// </param>
-        bool IEqualityComparer.Equals(object left, object right)
+        bool IEqualityComparer.Equals([CanBeNull] object? left, [CanBeNull] object? right)
         {
             if (ReferenceEquals(left, right))
             {
@@ -155,8 +129,11 @@ namespace Omnifactotum
         /// <returns>
         ///     A hash code for the key of the specified object.
         /// </returns>
-        int IEqualityComparer.GetHashCode([CanBeNull] object obj)
-            //// ReSharper disable once ArrangeRedundantParentheses :: For clarity
-            => obj is null ? 0 : obj is T castObj ? GetHashCode(castObj) : obj.GetHashCode();
+        int IEqualityComparer.GetHashCode([CanBeNull] object? obj)
+            => obj is null
+                ? 0
+                : obj is T castObj
+                    ? GetHashCode(castObj)
+                    : obj.GetHashCode();
     }
 }
