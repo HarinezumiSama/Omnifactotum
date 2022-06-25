@@ -1,4 +1,6 @@
-﻿using System;
+﻿#nullable enable
+
+using System;
 using System.Diagnostics;
 using System.Linq;
 using System.Linq.Expressions;
@@ -12,8 +14,8 @@ namespace Omnifactotum
     public sealed class EnumFixedSizeDictionaryDeterminant<TKey> : FixedSizeDictionaryDeterminant<TKey>
         where TKey : struct, Enum
     {
-        private readonly Func<TKey, int> _getIndex;
-        private readonly Func<int, TKey> _getKey;
+        private static readonly Func<TKey, int> InternalGetIndex = CreateConversionMethod<TKey, int>();
+        private static readonly Func<int, TKey> InternalGetKey = CreateConversionMethod<int, TKey>();
 
         /// <summary>
         ///     Initializes a new instance of the <see cref="EnumFixedSizeDictionaryDeterminant{TKey}"/> class.
@@ -50,20 +52,19 @@ namespace Omnifactotum
             if (!upperBound.HasValue)
             {
                 throw new InvalidOperationException(
-                    AsInvariant($@"The values of the enumeration {type.GetFullName().ToUIString()} must be in the valid range ({
-                        MinValue} to {MaxValue})."));
+                    AsInvariant(
+                        $@"The values of the enumeration {type.GetFullName().ToUIString()} must be in the valid range ({
+                            MinValue} to {MaxValue})."));
             }
 
             Size = upperBound.Value + 1;
-            _getIndex = CreateConversionMethod<TKey, int>();
-            _getKey = CreateConversionMethod<int, TKey>();
         }
 
         /// <summary>
         ///     Gets the constant size of an internal array used in
         ///     the <see cref="FixedSizeDictionary{TKey,TValue,TDeterminant}"/>.
         /// </summary>
-        public override int Size
+        protected override int Size
         {
             [DebuggerStepThrough]
             get;
@@ -78,7 +79,7 @@ namespace Omnifactotum
         /// <returns>
         ///     The internal index corresponding to the specified key.
         /// </returns>
-        public override int GetIndex(TKey key) => _getIndex(key);
+        public override int GetIndex(TKey key) => InternalGetIndex(key);
 
         /// <summary>
         ///     Gets the key corresponding to the specified internal index.
@@ -89,7 +90,7 @@ namespace Omnifactotum
         /// <returns>
         ///     The key corresponding to the specified internal index.
         /// </returns>
-        public override TKey GetKey(int index) => _getKey(index);
+        public override TKey GetKey(int index) => InternalGetKey(index);
 
         private static Func<TSource, TTarget> CreateConversionMethod<TSource, TTarget>()
         {

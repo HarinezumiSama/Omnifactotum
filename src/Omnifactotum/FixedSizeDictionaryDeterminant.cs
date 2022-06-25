@@ -1,10 +1,16 @@
-﻿using Omnifactotum.Annotations;
+﻿#nullable enable
+
+using System;
+using static Omnifactotum.FormattableStringFactotum;
+
+//// ReSharper disable RedundantNullnessAttributeWithNullableReferenceTypes
+//// ReSharper disable AnnotationRedundancyInHierarchy
 
 namespace Omnifactotum
 {
     /// <summary>
     ///     Specifies the size of a <see cref="FixedSizeDictionary{TKey,TValue,TDeterminant}"/> as well as mapping
-    ///     of between keys and internal indexes.
+    ///     between keys and internal indexes.
     /// </summary>
     /// <typeparam name="TKey">
     ///     The type of the key in the <see cref="FixedSizeDictionary{TKey,TValue,TDeterminant}"/>.
@@ -12,13 +18,28 @@ namespace Omnifactotum
     public abstract class FixedSizeDictionaryDeterminant<TKey>
     {
         /// <summary>
-        ///     Gets the constant size of an internal array used in
-        ///     the <see cref="FixedSizeDictionary{TKey,TValue,TDeterminant}"/>.
+        ///     Gets the validated value of <see cref="Size"/>.
         /// </summary>
-        public abstract int Size
+        public int ValidatedSize
         {
-            get;
+            get
+            {
+                var size = Size;
+                if (size <= 0)
+                {
+                    throw new InvalidOperationException(
+                        AsInvariant(
+                            $@"The determinant {GetType().GetFullName().ToUIString()} returned invalid size: {size}. The size must be greater than zero."));
+                }
+
+                return size;
+            }
         }
+
+        /// <summary>
+        ///     Gets the constant size of an internal array used in <see cref="FixedSizeDictionary{TKey,TValue,TDeterminant}"/>.
+        /// </summary>
+        protected abstract int Size { get; }
 
         /// <summary>
         ///     Gets the internal index corresponding to the specified key.
@@ -29,7 +50,7 @@ namespace Omnifactotum
         /// <returns>
         ///     The internal index corresponding to the specified key.
         /// </returns>
-        public abstract int GetIndex([NotNull] TKey key);
+        public abstract int GetIndex(TKey key);
 
         /// <summary>
         ///     Gets the key corresponding to the specified internal index.

@@ -1,4 +1,6 @@
-﻿using System;
+﻿#nullable enable
+
+using System;
 using System.Collections.Generic;
 using NUnit.Framework;
 using Omnifactotum.NUnit;
@@ -144,7 +146,7 @@ namespace Omnifactotum.Tests
 
             var actualPairs = new List<KeyValuePair<TKey, TValue>>(dictionary.Count);
 
-            // ReSharper disable once LoopCanBeConvertedToQuery - Explicitly testing enumerator
+            //// ReSharper disable once LoopCanBeConvertedToQuery :: Explicitly testing the enumerator
             foreach (var pair in dictionary)
             {
                 actualPairs.Add(pair);
@@ -155,7 +157,7 @@ namespace Omnifactotum.Tests
 
         private sealed class BooleanDeterminant : FixedSizeDictionaryDeterminant<bool>
         {
-            public override int Size => 2;
+            protected override int Size => 2;
 
             public override int GetIndex(bool key) => key ? 1 : 0;
 
@@ -164,7 +166,7 @@ namespace Omnifactotum.Tests
                 {
                     0 => false,
                     1 => true,
-                    _ => throw new InvalidOperationException()
+                    _ => throw new ArgumentOutOfRangeException(nameof(index), index, null)
                 };
         }
     }

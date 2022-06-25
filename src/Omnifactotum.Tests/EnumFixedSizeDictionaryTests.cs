@@ -1,4 +1,6 @@
-﻿using System;
+﻿#nullable enable
+
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -18,16 +20,16 @@ namespace Omnifactotum.Tests
             const string Value = @"V.alue";
 
             var dictionary = new EnumFixedSizeDictionary<FileMode, string>();
-            Assert.That(dictionary.Count, Is.EqualTo(0));
+            Assert.That(() => dictionary.Count, Is.EqualTo(0));
 
             dictionary.Add(fileMode, Value);
-            Assert.That(dictionary.Count, Is.EqualTo(1));
-            Assert.That(dictionary.ContainsKey(fileMode), Is.True);
-            Assert.That(dictionary.Keys.ToArray(), Is.EquivalentTo(fileMode.AsArray()));
-            Assert.That(dictionary.Values.ToArray(), Is.EquivalentTo(Value.AsArray()));
+            Assert.That(() => dictionary.Count, Is.EqualTo(1));
+            Assert.That(() => dictionary.ContainsKey(fileMode), Is.True);
+            Assert.That(() => dictionary.Keys.ToArray(), Is.EquivalentTo(fileMode.AsArray()));
+            Assert.That(() => dictionary.Values.ToArray(), Is.EquivalentTo(Value.AsArray()));
         }
 
-        internal sealed class BasicScenarioCases : TestCasesBase
+        private sealed class BasicScenarioCases : TestCasesBase
         {
             protected override IEnumerable<TestCaseData> GetCases()
             {

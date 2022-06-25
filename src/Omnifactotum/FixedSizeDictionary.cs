@@ -1,10 +1,19 @@
-﻿using System;
+﻿#nullable enable
+
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using Omnifactotum.Annotations;
 using static Omnifactotum.FormattableStringFactotum;
+
+#if NET5_0_OR_GREATER
+using MaybeNullWhenAttribute = System.Diagnostics.CodeAnalysis.MaybeNullWhenAttribute;
+#endif
+
+//// ReSharper disable RedundantNullnessAttributeWithNullableReferenceTypes
+//// ReSharper disable AnnotationRedundancyInHierarchy
 
 namespace Omnifactotum
 {
@@ -21,10 +30,10 @@ namespace Omnifactotum
     /// <typeparam name="TDeterminant">
     ///     The type of the determinant. See <see cref="FixedSizeDictionaryDeterminant{TKey}"/>.
     /// </typeparam>
-    public class FixedSizeDictionary<TKey, TValue, TDeterminant> : IDictionary<TKey, TValue>
+    public class FixedSizeDictionary<TKey, TValue, TDeterminant> : IDictionary<TKey, TValue>, IReadOnlyDictionary<TKey, TValue>
         where TDeterminant : FixedSizeDictionaryDeterminant<TKey>, new()
     {
-        private static readonly FixedSizeDictionaryDeterminant<TKey> Determinant = new SafeDeterminant();
+        private static readonly TDeterminant Determinant = new();
 
         private readonly DictionaryValueHolder[] _items;
         private int _version;
@@ -33,32 +42,30 @@ namespace Omnifactotum
         ///     Initializes a new instance of the <see cref="FixedSizeDictionary{TKey, TValue, TDeterminant}"/> class.
         /// </summary>
         public FixedSizeDictionary()
-            : this(new DictionaryValueHolder[Determinant.Size])
+            : this(new DictionaryValueHolder[Determinant.ValidatedSize])
         {
             // Nothing to do
         }
 
         /// <summary>
         ///     Initializes a new instance of the <see cref="FixedSizeDictionary{TKey, TValue, TDeterminant}"/> class
-        ///     by copying the key/values pairs from the specified dictionary.
+        ///     by copying the key/values pairs from the specified collection.
         /// </summary>
-        /// <param name="dictionary">
-        ///     The dictionary to copy the key/values pairs from.
+        /// <param name="pairs">
+        ///     The collection of the key/values pairs to copy from.
         /// </param>
         /// <exception cref="ArgumentNullException">
-        ///     <paramref name="dictionary"/> is <see langword="null"/>.
+        ///     <paramref name="pairs"/> is <see langword="null"/>.
         /// </exception>
-        public FixedSizeDictionary(
-            //// ReSharper disable once ParameterTypeCanBeEnumerable.Local :: By design
-            [NotNull] IDictionary<TKey, TValue> dictionary)
+        public FixedSizeDictionary([NotNull] IEnumerable<KeyValuePair<TKey, TValue>> pairs)
             : this()
         {
-            if (dictionary is null)
+            if (pairs is null)
             {
-                throw new ArgumentNullException(nameof(dictionary));
+                throw new ArgumentNullException(nameof(pairs));
             }
 
-            foreach (var pair in dictionary)
+            foreach (var pair in pairs)
             {
                 Add(pair.Key, pair.Value);
             }
@@ -77,15 +84,16 @@ namespace Omnifactotum
         public FixedSizeDictionary([NotNull] FixedSizeDictionary<TKey, TValue, TDeterminant> dictionary)
             : this(dictionary.EnsureNotNull()._items.Copy())
         {
-            if (_items.Length != Determinant.Size)
+            var validatedSize = Determinant.ValidatedSize;
+            if (_items.Length != validatedSize)
             {
-                throw new InvalidOperationException("Invalid item array length in the source dictionary.");
+                throw new InvalidOperationException($@"Invalid item array length in the source dictionary: {_items.Length}. Expected: {validatedSize}.");
             }
 
             Count = dictionary.Count;
         }
 
-        private FixedSizeDictionary(DictionaryValueHolder[] items)
+        private FixedSizeDictionary([NotNull] DictionaryValueHolder[] items)
         {
             _items = items.EnsureNotNull();
 
@@ -93,33 +101,13 @@ namespace Omnifactotum
             Values = new ValueCollection(this);
         }
 
-        /// <summary>
-        ///     Gets an <see cref="ICollection{TKey}" /> containing the keys of
-        ///     the <see cref="FixedSizeDictionary{TKey,TValue,TDeterminant}" />.
-        /// </summary>
+        /// <inheritdoc />
         public ICollection<TKey> Keys { get; }
 
-        /// <summary>
-        ///     Gets an <see cref="ICollection{TValue}" /> containing the values of
-        ///     the <see cref="FixedSizeDictionary{TKey,TValue,TDeterminant}" />.
-        /// </summary>
+        /// <inheritdoc />
         public ICollection<TValue> Values { get; }
 
-        /// <summary>
-        ///     Gets or sets the element with the specified key.
-        /// </summary>
-        /// <param name="key">
-        ///     The key of the element to get or set.
-        /// </param>
-        /// <returns>
-        ///     The element with the specified key.
-        /// </returns>
-        /// <exception cref="ArgumentNullException">
-        ///     <paramref name="key"/> is <see langword="null"/>.
-        /// </exception>
-        /// <exception cref="KeyNotFoundException">
-        ///     An element with the specified key was not found.
-        /// </exception>
+        /// <inheritdoc cref="IDictionary{TKey,TValue}.this" />
         public TValue this[TKey key]
         {
             get
@@ -127,11 +115,10 @@ namespace Omnifactotum
                 var found = TryGetValue(key, out var result);
                 if (!found)
                 {
-                    throw new KeyNotFoundException(
-                        AsInvariant($@"The specified key was not present in the dictionary (key: {key})."));
+                    throw new KeyNotFoundException(AsInvariant($@"The specified key is not found in the dictionary (key: {key})."));
                 }
 
-                return result;
+                return result!;
             }
 
             set => SetItemInternal(key, value, true);
@@ -155,39 +142,19 @@ namespace Omnifactotum
         /// </summary>
         public bool IsReadOnly => false;
 
-        /// <summary>
-        ///     Adds an element with the specified key and value to
-        ///     the <see cref="FixedSizeDictionary{TKey,TValue,TDeterminant}"/>.
-        /// </summary>
-        /// <param name="key">
-        ///     The object to use as the key of the element to add.
-        /// </param>
-        /// <param name="value">
-        ///     The object to use as the value of the element to add.
-        /// </param>
-        /// <exception cref="ArgumentNullException">
-        ///     <paramref name="key"/> is <see langword="null"/>.
-        /// </exception>
-        /// <exception cref="ArgumentException">
-        ///     An element with the same key already exists in
-        ///     the <see cref="FixedSizeDictionary{TKey,TValue,TDeterminant}"/>.
-        /// </exception>
-        public void Add(TKey key, [CanBeNull] TValue value)
+        /// <inheritdoc />
+        IEnumerable<TKey> IReadOnlyDictionary<TKey, TValue>.Keys => Keys;
+
+        /// <inheritdoc />
+        IEnumerable<TValue> IReadOnlyDictionary<TKey, TValue>.Values => Values;
+
+        /// <inheritdoc />
+        public void Add(TKey key, TValue value)
         {
             SetItemInternal(key, value, false);
         }
 
-        /// <summary>
-        ///     Determines whether the <see cref="FixedSizeDictionary{TKey,TValue,TDeterminant}" /> contains
-        ///     an element with the specified key.
-        /// </summary>
-        /// <param name="key">
-        ///     The key to locate in the <see cref="FixedSizeDictionary{TKey,TValue,TDeterminant}" />.
-        /// </param>
-        /// <returns>
-        ///     <see langword="true"/> if the <see cref="FixedSizeDictionary{TKey,TValue,TDeterminant}" /> contains an element
-        ///     with the specified key; otherwise, <see langword="false"/>.
-        /// </returns>
+        /// <inheritdoc cref="IReadOnlyDictionary{TKey,TValue}.ContainsKey" />
         public bool ContainsKey(TKey key)
         {
             if (key is null)
@@ -200,16 +167,7 @@ namespace Omnifactotum
             return item.IsSet;
         }
 
-        /// <summary>
-        ///     Removes the element with the specified key from
-        ///     the <see cref="FixedSizeDictionary{TKey,TValue,TDeterminant}" />.
-        /// </summary>
-        /// <param name="key">
-        ///     The key of the element to remove.
-        /// </param>
-        /// <returns>
-        ///     <see langword="true"/> if the element is successfully removed; otherwise, <see langword="false"/>.
-        /// </returns>
+        /// <inheritdoc />
         public bool Remove(TKey key)
         {
             var index = Determinant.GetIndex(key);
@@ -226,47 +184,25 @@ namespace Omnifactotum
             return result;
         }
 
-        /// <summary>
-        ///     Gets the value associated with the specified key.
-        /// </summary>
-        /// <param name="key">
-        ///     The key whose value to get.
-        /// </param>
-        /// <param name="value">
-        ///     When this method returns, the value associated with the specified key, if the key is found;
-        ///     otherwise, the default value for the type of the <paramref name="value" /> parameter.
-        ///     This parameter is passed uninitialized.
-        /// </param>
-        /// <returns>
-        ///     <see langword="true"/> if the <see cref="FixedSizeDictionary{TKey,TValue,TDeterminant}" /> contains an element
-        ///     with the specified key; otherwise, <see langword="false"/>.
-        /// </returns>
-        public bool TryGetValue(
-            //// ReSharper disable once CommentTypo :: ReSharper term :)
-            //// ReSharper disable once AnnotationRedundanceInHierarchy :: To emphasize
-            [NotNull] TKey key,
-            [CanBeNull] out TValue value)
+        /// <inheritdoc cref="IReadOnlyDictionary{TKey,TValue}.TryGetValue" />
+#if NET5_0_OR_GREATER
+        public bool TryGetValue(TKey key, [MaybeNullWhen(false)] out TValue value)
+#else
+        public bool TryGetValue(TKey key, out TValue value)
+#endif
         {
             var index = Determinant.GetIndex(key);
             var item = _items[index];
 
             var result = item.IsSet;
-            value = result ? item.Value : default;
+            value = result ? item.Value : default!;
             return result;
         }
 
-        /// <summary>
-        ///     Adds an item to the <see cref="ICollection{T}"/>.
-        /// </summary>
-        /// <param name="item">
-        ///     The object to add to the <see cref="ICollection{T}"/>.
-        /// </param>
-        void ICollection<KeyValuePair<TKey, TValue>>.Add(KeyValuePair<TKey, TValue> item)
-            => Add(item.Key, item.Value);
+        /// <inheritdoc />
+        void ICollection<KeyValuePair<TKey, TValue>>.Add(KeyValuePair<TKey, TValue> item) => Add(item.Key, item.Value);
 
-        /// <summary>
-        ///     Removes all items from the <see cref="FixedSizeDictionary{TKey,TValue,TDeterminant}" />.
-        /// </summary>
+        /// <inheritdoc />
         public void Clear()
         {
             _version++;
@@ -279,40 +215,11 @@ namespace Omnifactotum
             Count = 0;
         }
 
-        /// <summary>
-        ///     Determines whether the <see cref="ICollection{T}"/> contains the specified value.
-        /// </summary>
-        /// <param name="item">
-        ///     The object to locate in the <see cref="ICollection{T}"/>.
-        /// </param>
-        /// <returns>
-        ///     <see langword="true"/> if <paramref name="item"/> is found in the <see cref="ICollection{T}"/>;
-        ///     otherwise, <see langword="false"/>.
-        /// </returns>
+        /// <inheritdoc />
         bool ICollection<KeyValuePair<TKey, TValue>>.Contains(KeyValuePair<TKey, TValue> item)
             => TryGetValue(item.Key, out var value) && EqualityComparer<TValue>.Default.Equals(value, item.Value);
 
-        /// <summary>
-        ///     Copies the elements of the <see cref="ICollection{T}"/> to an <see cref="Array"/>,
-        ///     starting at a particular <see cref="Array"/> index.
-        /// </summary>
-        /// <param name="array">
-        ///     The one-dimensional <see cref="Array"/> that is the destination of the elements copied
-        ///     from <see cref="ICollection{T}"/>. The <see cref="Array"/> must have zero-based indexing.
-        /// </param>
-        /// <param name="arrayIndex">
-        ///     The zero-based index in <paramref name="array"/> at which copying begins.
-        /// </param>
-        /// <exception cref="ArgumentNullException">
-        ///     <paramref name="array"/> is <see langword="null"/>.
-        /// </exception>
-        /// <exception cref="ArgumentOutOfRangeException">
-        ///     <paramref name="arrayIndex"/> is less than 0.
-        /// </exception>
-        /// <exception cref="ArgumentException">
-        ///     The number of elements in the source <see cref="ICollection{T}"/> is greater than the available
-        ///     space from <paramref name="arrayIndex"/> to the end of the destination <paramref name="array"/>.
-        /// </exception>
+        /// <inheritdoc />
         void ICollection<KeyValuePair<TKey, TValue>>.CopyTo(
             KeyValuePair<TKey, TValue>[] array,
             int arrayIndex)
@@ -352,41 +259,20 @@ namespace Omnifactotum
             }
         }
 
-        /// <summary>
-        ///     Removes the first occurrence of a specific object from the <see cref="ICollection{T}"/>.
-        /// </summary>
-        /// <param name="item">
-        ///     The object to remove from the <see cref="ICollection{T}"/>.
-        /// </param>
-        /// <returns>
-        ///     <see langword="true"/> if <paramref name="item"/> was successfully removed from the <see cref="ICollection{T}"/>;
-        ///     otherwise, <see langword="false"/>.
-        /// </returns>
+        /// <inheritdoc />
         bool ICollection<KeyValuePair<TKey, TValue>>.Remove(KeyValuePair<TKey, TValue> item)
             => TryGetValue(item.Key, out var value)
                 && EqualityComparer<TValue>.Default.Equals(value, item.Value)
                 && Remove(item.Key);
 
-        /// <summary>
-        ///     Returns an enumerator that iterates through
-        ///     the <see cref="FixedSizeDictionary{TKey,TValue,TDeterminant}"/>.
-        /// </summary>
-        /// <returns>
-        ///     An <see cref="IEnumerator{T}" /> that can be used to iterate through the collection.
-        /// </returns>
+        /// <inheritdoc />
         public IEnumerator<KeyValuePair<TKey, TValue>> GetEnumerator() => new Enumerator(this);
 
-        /// <summary>
-        ///     Returns an enumerator that iterates through
-        ///     the <see cref="FixedSizeDictionary{TKey,TValue,TDeterminant}"/>..
-        /// </summary>
-        /// <returns>
-        ///     An <see cref="IEnumerator" /> object that can be used to iterate through the collection.
-        /// </returns>
+        /// <inheritdoc />
         IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();
 
         //// ReSharper disable once ParameterOnlyUsedForPreconditionCheck.Local
-        private void SetItemInternal([NotNull] TKey key, [CanBeNull] TValue value, bool replaceExisting)
+        private void SetItemInternal(TKey key, TValue value, bool replaceExisting)
         {
             var index = Determinant.GetIndex(key);
             var previousItem = _items[index];
@@ -407,76 +293,21 @@ namespace Omnifactotum
             }
         }
 
-        private sealed class SafeDeterminant : FixedSizeDictionaryDeterminant<TKey>
-        {
-            private readonly TDeterminant _determinant;
-
-            internal SafeDeterminant()
-            {
-                _determinant = new TDeterminant();
-
-                var determinantSize = _determinant.Size;
-                if (determinantSize <= 0)
-                {
-                    throw new InvalidOperationException(
-                        AsInvariant(
-                            $@"The determinant {typeof(TDeterminant).GetFullName().ToUIString()} returned invalid size {
-                                determinantSize}. The size must be positive."));
-                }
-
-                Size = determinantSize;
-            }
-
-            public override int Size
-            {
-                [DebuggerStepThrough]
-                get;
-            }
-
-            public override int GetIndex(TKey key)
-            {
-                var index = _determinant.GetIndex(key);
-                return index;
-            }
-
-            public override TKey GetKey(int index)
-            {
-                return _determinant.GetKey(index);
-            }
-        }
-
         private sealed class KeyCollection : ICollection<TKey>
         {
             private readonly FixedSizeDictionary<TKey, TValue, TDeterminant> _dictionary;
 
-            internal KeyCollection(FixedSizeDictionary<TKey, TValue, TDeterminant> dictionary)
-            {
-                _dictionary = dictionary.EnsureNotNull();
-            }
+            internal KeyCollection(FixedSizeDictionary<TKey, TValue, TDeterminant> dictionary) => _dictionary = dictionary.EnsureNotNull();
 
             public int Count => _dictionary.Count;
 
             public bool IsReadOnly => true;
 
-            void ICollection<TKey>.Add(TKey item)
-            {
-                throw new NotSupportedException();
-            }
+            void ICollection<TKey>.Add(TKey item) => throw new NotSupportedException();
 
-            void ICollection<TKey>.Clear()
-            {
-                throw new NotSupportedException();
-            }
+            void ICollection<TKey>.Clear() => throw new NotSupportedException();
 
-            public bool Contains(TKey item)
-            {
-                if (item is null)
-                {
-                    throw new ArgumentNullException(nameof(item));
-                }
-
-                return _dictionary.ContainsKey(item);
-            }
+            public bool Contains(TKey item) => _dictionary.ContainsKey(item);
 
             public void CopyTo(TKey[] array, int arrayIndex)
             {
@@ -496,8 +327,8 @@ namespace Omnifactotum
                 if (arrayIndex + Count > array.Length)
                 {
                     throw new ArgumentException(
-                        "The number of elements is greater than the available space from the array index to the end"
-                        + " of the destination array.");
+                        @"The number of elements is greater than the available space from the array index to the end of the destination array.",
+                        nameof(arrayIndex));
                 }
 
                 var index = arrayIndex;
@@ -508,50 +339,28 @@ namespace Omnifactotum
                 }
             }
 
-            bool ICollection<TKey>.Remove(TKey item)
-            {
-                throw new NotSupportedException();
-            }
+            bool ICollection<TKey>.Remove(TKey item) => throw new NotSupportedException();
 
-            public IEnumerator<TKey> GetEnumerator()
-            {
-                return _dictionary.Select(pair => pair.Key).GetEnumerator();
-            }
+            public IEnumerator<TKey> GetEnumerator() => _dictionary.Select(pair => pair.Key).GetEnumerator();
 
-            IEnumerator IEnumerable.GetEnumerator()
-            {
-                return GetEnumerator();
-            }
+            IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();
         }
 
         private sealed class ValueCollection : ICollection<TValue>
         {
             private readonly FixedSizeDictionary<TKey, TValue, TDeterminant> _dictionary;
 
-            internal ValueCollection(FixedSizeDictionary<TKey, TValue, TDeterminant> dictionary)
-            {
-                _dictionary = dictionary.EnsureNotNull();
-            }
+            internal ValueCollection(FixedSizeDictionary<TKey, TValue, TDeterminant> dictionary) => _dictionary = dictionary.EnsureNotNull();
 
             public int Count => _dictionary.Count;
 
             public bool IsReadOnly => true;
 
-            void ICollection<TValue>.Add(TValue item)
-            {
-                throw new NotSupportedException();
-            }
+            void ICollection<TValue>.Add(TValue item) => throw new NotSupportedException();
 
-            void ICollection<TValue>.Clear()
-            {
-                throw new NotSupportedException();
-            }
+            void ICollection<TValue>.Clear() => throw new NotSupportedException();
 
-            public bool Contains(TValue item)
-            {
-                return _dictionary._items.Any(
-                    obj => obj.IsSet && EqualityComparer<TValue>.Default.Equals(obj.Value, item));
-            }
+            public bool Contains(TValue item) => _dictionary._items.Any(obj => obj.IsSet && EqualityComparer<TValue>.Default.Equals(obj.Value, item));
 
             public void CopyTo(TValue[] array, int arrayIndex)
             {
@@ -571,8 +380,7 @@ namespace Omnifactotum
                 if (arrayIndex + Count > array.Length)
                 {
                     throw new ArgumentException(
-                        "The number of elements is greater than the available space from the array index to the end"
-                        + " of the destination array.");
+                        @"The number of elements is greater than the available space from the array index to the end of the destination array.");
                 }
 
                 var index = arrayIndex;
@@ -583,20 +391,11 @@ namespace Omnifactotum
                 }
             }
 
-            bool ICollection<TValue>.Remove(TValue item)
-            {
-                throw new NotSupportedException();
-            }
+            bool ICollection<TValue>.Remove(TValue item) => throw new NotSupportedException();
 
-            public IEnumerator<TValue> GetEnumerator()
-            {
-                return _dictionary.Select(pair => pair.Value).GetEnumerator();
-            }
+            public IEnumerator<TValue> GetEnumerator() => _dictionary.Select(pair => pair.Value).GetEnumerator();
 
-            IEnumerator IEnumerable.GetEnumerator()
-            {
-                return GetEnumerator();
-            }
+            IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();
         }
 
         private sealed class Enumerator : IEnumerator<KeyValuePair<TKey, TValue>>
@@ -612,7 +411,7 @@ namespace Omnifactotum
                 _dictionary = dictionary ?? throw new ArgumentNullException(nameof(dictionary));
 
                 _initialVersion = dictionary._version;
-                _size = Determinant.Size;
+                _size = Determinant.ValidatedSize;
                 _initialCount = dictionary.Count;
 
                 ResetInternal();
@@ -667,15 +466,9 @@ namespace Omnifactotum
                 return false;
             }
 
-            public void Reset()
-            {
-                ResetInternal();
-            }
+            public void Reset() => ResetInternal();
 
-            private void ResetInternal()
-            {
-                _index = -1;
-            }
+            private void ResetInternal() => _index = -1;
 
             private void EnsureVersionConsistency()
             {

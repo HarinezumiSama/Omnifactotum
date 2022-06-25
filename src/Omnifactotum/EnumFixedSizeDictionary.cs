@@ -1,6 +1,11 @@
-﻿using System;
+﻿#nullable enable
+
+using System;
 using System.Collections.Generic;
 using Omnifactotum.Annotations;
+
+//// ReSharper disable RedundantNullnessAttributeWithNullableReferenceTypes
+//// ReSharper disable AnnotationRedundancyInHierarchy
 
 namespace Omnifactotum
 {
@@ -14,8 +19,7 @@ namespace Omnifactotum
     /// <typeparam name="TValue">
     ///     The type of the values in the dictionary.
     /// </typeparam>
-    public sealed class EnumFixedSizeDictionary<TKey, TValue>
-        : FixedSizeDictionary<TKey, TValue, EnumFixedSizeDictionaryDeterminant<TKey>>
+    public sealed class EnumFixedSizeDictionary<TKey, TValue> : FixedSizeDictionary<TKey, TValue, EnumFixedSizeDictionaryDeterminant<TKey>>
         where TKey : struct, Enum
     {
         /// <summary>
@@ -28,16 +32,16 @@ namespace Omnifactotum
 
         /// <summary>
         ///     Initializes a new instance of the <see cref="EnumFixedSizeDictionary{TKey,TValue}"/> class
-        ///     by copying the key/values pairs from the specified dictionary.
+        ///     by copying the key/values pairs from the specified collection.
         /// </summary>
-        /// <param name="dictionary">
-        ///     The dictionary to copy the key/values pairs from.
+        /// <param name="pairs">
+        ///     The collection of the key/values pairs to copy from.
         /// </param>
         /// <exception cref="ArgumentNullException">
-        ///     <paramref name="dictionary"/> is <see langword="null"/>.
+        ///     <paramref name="pairs"/> is <see langword="null"/>.
         /// </exception>
-        public EnumFixedSizeDictionary([NotNull] IDictionary<TKey, TValue> dictionary)
-            : base(dictionary)
+        public EnumFixedSizeDictionary([NotNull] IEnumerable<KeyValuePair<TKey, TValue>> pairs)
+            : base(pairs)
         {
             // Nothing to do
         }
