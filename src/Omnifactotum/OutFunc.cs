@@ -1,4 +1,8 @@
-﻿namespace Omnifactotum
+﻿#nullable enable
+
+using Omnifactotum.Annotations;
+
+namespace Omnifactotum
 {
     /// <summary>
     ///     Encapsulates a method that has an <see langword="out"/> parameter and that returns a value
@@ -16,6 +20,7 @@
     /// <returns>
     ///     The return value of the method that this delegate encapsulates.
     /// </returns>
+    [PublicAPI]
     public delegate TResult OutFunc<TOutput, out TResult>(out TOutput outArg);
 
     /// <summary>
@@ -40,6 +45,7 @@
     /// <returns>
     ///     The return value of the method that this delegate encapsulates.
     /// </returns>
+    [PublicAPI]
     public delegate TResult OutFunc<in T, TOutput, out TResult>(T arg, out TOutput outArg);
 
     /// <summary>
@@ -70,6 +76,7 @@
     /// <returns>
     ///     The return value of the method that this delegate encapsulates.
     /// </returns>
+    [PublicAPI]
     public delegate TResult OutFunc<in T1, in T2, TOutput, out TResult>(T1 arg1, T2 arg2, out TOutput outArg);
 
     /// <summary>
@@ -106,5 +113,6 @@
     /// <returns>
     ///     The return value of the method that this delegate encapsulates.
     /// </returns>
+    [PublicAPI]
     public delegate TResult OutFunc<in T1, in T2, in T3, TOutput, out TResult>(T1 arg1, T2 arg2, T3 arg3, out TOutput outArg);
 }
