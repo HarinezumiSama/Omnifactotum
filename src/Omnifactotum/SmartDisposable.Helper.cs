@@ -1,16 +1,14 @@
-﻿using Omnifactotum.Annotations;
+﻿#nullable enable
 
 namespace Omnifactotum
 {
     /// <summary>
-    ///     Provides helper functionality for creating instances of the <see cref="SmartDisposable{T}"/> type
-    ///     using type inference in a friendly way.
+    ///     Provides helper functionality for creating instances of the <see cref="SmartDisposable{T}"/> type using type inference in a friendly way.
     /// </summary>
     public static class SmartDisposable
     {
         /// <summary>
-        ///     Creates a new instance of the <see cref="SmartDisposable{T}"/>
-        ///     using the specified underlying object.
+        ///     Creates a new instance of the <see cref="SmartDisposable{T}"/> using the specified underlying object.
         /// </summary>
         /// <typeparam name="T">
         ///     The type of the underlying object to dispose of.
@@ -21,9 +19,6 @@ namespace Omnifactotum
         /// <returns>
         ///     A new <see cref="SmartDisposable{T}"/> instance.
         /// </returns>
-        public static SmartDisposable<T> Create<T>([CanBeNull] T instance)
-        {
-            return new SmartDisposable<T>(instance);
-        }
+        public static SmartDisposable<T> Create<T>(T instance) => new(instance);
     }
 }

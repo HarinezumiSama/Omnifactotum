@@ -1,5 +1,9 @@
-﻿using System;
-using Omnifactotum.Annotations;
+﻿#nullable enable
+
+using System;
+
+//// ReSharper disable RedundantNullnessAttributeWithNullableReferenceTypes
+//// ReSharper disable AnnotationRedundancyInHierarchy
 
 namespace Omnifactotum
 {
@@ -18,26 +22,17 @@ namespace Omnifactotum
         /// <param name="instance">
         ///     The object to dispose of.
         /// </param>
-        public SmartDisposable([CanBeNull] T instance)
-        {
-            Instance = instance;
-        }
+        public SmartDisposable(T instance) => Instance = instance;
 
         /// <summary>
         ///     Gets the underlying object.
         /// </summary>
-        public T Instance
-        {
-            get;
-        }
+        public T Instance { get; }
 
         /// <summary>
         ///     Calls <see cref="IDisposable.Dispose"/> for the underlying object,
         ///     if it implements <see cref="IDisposable"/>; otherwise, does nothing.
         /// </summary>
-        public void Dispose()
-        {
-            (Instance as IDisposable).DisposeSafely();
-        }
+        public void Dispose() => (Instance as IDisposable).DisposeSafely();
     }
 }
