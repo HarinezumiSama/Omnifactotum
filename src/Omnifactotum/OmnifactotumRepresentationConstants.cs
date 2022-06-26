@@ -1,4 +1,6 @@
-﻿namespace Omnifactotum
+﻿#nullable enable
+
+namespace Omnifactotum
 {
     /// <summary>
     ///     Contains the constant string values used to render the UI representation of objects.
