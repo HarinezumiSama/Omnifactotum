@@ -1,4 +1,6 @@
-﻿using System;
+﻿#nullable enable
+
+using System;
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using System.Linq;
@@ -19,7 +21,7 @@ namespace Omnifactotum.Tests
         [Test]
         [SuppressMessage("ReSharper", "AssignNullToNotNullAttribute")]
         public void TestInvalidConstruction()
-            => Assert.That(() => new ReadOnlyItemCollection<int>(null), Throws.TypeOf<ArgumentNullException>());
+            => Assert.That(() => new ReadOnlyItemCollection<int>(null!), Throws.TypeOf<ArgumentNullException>());
 
         [Test]
         public void TestConstruction()
@@ -105,6 +107,7 @@ namespace Omnifactotum.Tests
                 {
                     Assert.That(Testee.Contains(item), Is.True);
                 }
+
                 var testeeItems = new string[Testee.Count];
                 Testee.CopyTo(testeeItems, 0);
                 Assert.That(testeeItems, Is.EquivalentTo(ReferenceCollection));
@@ -117,6 +120,7 @@ namespace Omnifactotum.Tests
                 {
                     Assert.That(TesteeAsCollection.Contains(item), Is.True);
                 }
+
                 var testeeAsCollectionItems = new string[TesteeAsCollection.Count];
                 TesteeAsCollection.CopyTo(testeeAsCollectionItems, 0);
                 Assert.That(testeeAsCollectionItems, Is.EquivalentTo(ReferenceCollection));

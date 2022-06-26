@@ -1,8 +1,13 @@
-﻿using System;
+﻿#nullable enable
+
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using Omnifactotum.Annotations;
 using static Omnifactotum.FormattableStringFactotum;
+
+//// ReSharper disable RedundantNullnessAttributeWithNullableReferenceTypes
+//// ReSharper disable AnnotationRedundancyInHierarchy
 
 namespace Omnifactotum
 {
@@ -13,8 +18,7 @@ namespace Omnifactotum
     ///     The type of items in the collection.
     /// </typeparam>
     [Serializable]
-    public sealed class ReadOnlyItemCollection<T>
-        : ICollection<T>, IReadOnlyCollection<T>
+    public sealed class ReadOnlyItemCollection<T> : ICollection<T>, IReadOnlyCollection<T>
     {
         private readonly ICollection<T> _collection;
 
