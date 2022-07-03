@@ -20,6 +20,6 @@ namespace Omnifactotum
         /// <summary>
         ///     The string value used to separate items in the collection in its UI representation.
         /// </summary>
-        internal const string CollectionItemSeparator = @", ";
+        internal const string CollectionItemSeparator = ",\x0020";
     }
 }

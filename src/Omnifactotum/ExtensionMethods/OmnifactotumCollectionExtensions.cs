@@ -676,7 +676,7 @@ namespace System.Collections.Generic
         ///     </code>
         /// </example>
         public static string ToUIString([CanBeNull] [InstantHandle] this IEnumerable<string>? values)
-            => values?.Select(value => value.ToUIString()).Join(@", ")
+            => values?.Select(value => value.ToUIString()).Join(OmnifactotumRepresentationConstants.CollectionItemSeparator)
                 ?? OmnifactotumRepresentationConstants.NullCollectionRepresentation;
 
         /// <summary>
@@ -725,7 +725,7 @@ namespace System.Collections.Generic
         /// </example>
         public static string ToUIString<T>([CanBeNull] [InstantHandle] this IEnumerable<T?>? values)
             where T : struct
-            => values?.Select(value => value.ToUIString()).Join(", ")
+            => values?.Select(value => value.ToUIString()).Join(OmnifactotumRepresentationConstants.CollectionItemSeparator)
                 ?? OmnifactotumRepresentationConstants.NullCollectionRepresentation;
 
         /// <summary>
@@ -772,7 +772,7 @@ namespace System.Collections.Generic
             [CanBeNull] string? format,
             [CanBeNull] IFormatProvider? formatProvider)
             where T : struct, IFormattable
-            => values?.Select(value => value.ToUIString(format, formatProvider)).Join(@", ")
+            => values?.Select(value => value.ToUIString(format, formatProvider)).Join(OmnifactotumRepresentationConstants.CollectionItemSeparator)
                 ?? OmnifactotumRepresentationConstants.NullCollectionRepresentation;
 
         /// <summary>
