@@ -1,101 +1,60 @@
-﻿using System;
+﻿#nullable enable
+
+using System;
 using System.Diagnostics;
 using System.Diagnostics.CodeAnalysis;
 using System.Linq.Expressions;
 using System.Threading;
 using NUnit.Framework;
-using NUnit.Framework.Constraints;
-using Omnifactotum.Abstractions;
 using Omnifactotum.NUnit;
 using static Omnifactotum.FormattableStringFactotum;
 
 namespace Omnifactotum.Tests
 {
-    internal abstract class SyncValueContainerTestsBase<T>
-        where T : IEquatable<T>
+    [SuppressMessage("ReSharper", "InconsistentlySynchronizedField")]
+    internal abstract class SyncValueContainerTestsBase<TValue> : ValueContainerBaseTestsBase<SyncValueContainer<TValue>, TValue>
+        where TValue : IEquatable<TValue>
     {
-        private readonly T _value;
-        private readonly T _anotherValue;
-        private readonly T[] _values;
-
-        protected SyncValueContainerTestsBase(T value, T anotherValue)
+        protected SyncValueContainerTestsBase(TValue value, TValue anotherValue)
+            : base(value, anotherValue)
         {
-            Assert.That(value, Is.Not.EqualTo(default(T)));
-
-            _value = value;
-            _anotherValue = anotherValue;
-            _values = new[] { value, anotherValue, default(T) };
+            // Nothing to do
         }
 
-        [Test]
-        public void TestSupportedInterfaces()
-        {
-            Assert.That(typeof(IValueContainer<T>).IsAssignableFrom(typeof(SyncValueContainer<T>)), Is.True);
-        }
+        protected abstract TValue ValueThreadSafetyInitialValue { get; }
+
+        [OneTimeSetUp]
+        public void OneTimeSetUp() => Assert.That(new[] { Value, AnotherValue, ValueThreadSafetyInitialValue }, Is.Unique);
 
         [Test]
-        public void TestPropertyAccess()
+        public override void TestPropertyAccess()
         {
-            NUnitFactotum.For<SyncValueContainer<T>>.AssertReadableWritable(
-                obj => obj.SyncObject,
-                PropertyAccessMode.ReadOnly);
-
-            NUnitFactotum.For<SyncValueContainer<T>>.AssertReadableWritable(
-                obj => obj.Value,
-                PropertyAccessMode.ReadWrite);
-        }
-
-        [Test]
-        public void TestConstructionDefault()
-        {
-            var container = new SyncValueContainer<T>();
-
-            Assert.That(container.SyncObject, Is.Not.Null & Is.TypeOf<object>());
-            Assert.That(container.Value, CreateDefaultValueConstraint());
-        }
-
-        [Test]
-        public void TestConstructionWithValue()
-        {
-            foreach (var value in _values)
-            {
-                var container = new SyncValueContainer<T>(value);
-
-                Assert.That(container.SyncObject, Is.Not.Null & Is.TypeOf<object>());
-                Assert.That(container.Value, CreateEqualityConstraint(value));
-            }
+            base.TestPropertyAccess();
+            NUnitFactotum.For<SyncValueContainer<TValue>>.AssertReadableWritable(obj => obj.Value, PropertyAccessMode.ReadWrite);
+            NUnitFactotum.For<SyncValueContainer<TValue>>.AssertReadableWritable(obj => obj.SyncObject, PropertyAccessMode.ReadOnly);
         }
 
         [Test]
         public void TestConstructionWithValueAndSyncObject()
         {
-            foreach (var value in _values)
+            foreach (var value in Values)
             {
                 var syncObject = new object();
-                var container = new SyncValueContainer<T>(value, syncObject);
+                var container = CreateContainer(value, syncObject);
 
                 Assert.That(container.SyncObject, Is.Not.Null & Is.SameAs(syncObject));
-                Assert.That(container.Value, CreateEqualityConstraint(value));
+                Assert.That(container.Value, CreateValueEqualityConstraint(value));
             }
         }
 
         [Test]
-        [SuppressMessage("ReSharper", "AssignNullToNotNullAttribute", Justification = "Negative test case.")]
         public void TestConstructionWithValueAndSyncObjectNegative()
         {
-            Assert.That(() => new SyncValueContainer<T>(_value, null), Throws.TypeOf<ArgumentNullException>());
+            Assert.That(() => CreateContainer(Value, null!), Throws.TypeOf<ArgumentNullException>());
 
-            Assert.That(() => new SyncValueContainer<T>(_value, 123), Throws.TypeOf<ArgumentException>());
-        }
-
-        [Test]
-        public void TestValue()
-        {
-            var container = new SyncValueContainer<T>(_value);
-            Assert.That(container.Value, CreateEqualityConstraint(_value));
-
-            container.Value = _anotherValue;
-            Assert.That(container.Value, CreateEqualityConstraint(_anotherValue));
+            Assert.That(
+                () => CreateContainer(Value, 123),
+                Throws.TypeOf<ArgumentException>().With.Message.EqualTo("The synchronization object cannot be a value type object."));
         }
 
         [Test]
@@ -103,8 +62,8 @@ namespace Omnifactotum.Tests
         {
             const int ConditionWaitTimeoutInSeconds = 1;
 
-            var container = new SyncValueContainer<T>();
-            Assert.That(container.Value, CreateDefaultValueConstraint());
+            var container = new SyncValueContainer<TValue>(ValueThreadSafetyInitialValue);
+            Assert.That(container.Value, CreateValueEqualityConstraint(ValueThreadSafetyInitialValue));
 
             var canAnotherThreadChangeValue = false;
             var isAnotherThreadEntered = false;
@@ -117,15 +76,20 @@ namespace Omnifactotum.Tests
             {
                 isAnotherThreadEntered = true;
 
-                //// ReSharper disable once AccessToModifiedClosure - Seems to be false alarm
+                //// ReSharper disable once AccessToModifiedClosure :: Seems to be false alarm
                 //// ReSharper disable once LoopVariableIsNeverChangedInsideLoop :: Changed in another thread
                 while (!canAnotherThreadChangeValue)
                 {
-                    cancellationToken.ThrowIfCancellationRequested();
+                    if (cancellationToken.IsCancellationRequested)
+                    {
+                        isAnotherThreadExited = true;
+                        return;
+                    }
+
                     Thread.Sleep(1);
                 }
 
-                container.Value = _anotherValue;
+                container.Value = AnotherValue;
 
                 isAnotherThreadExited = true;
             }
@@ -153,73 +117,64 @@ namespace Omnifactotum.Tests
                 IsBackground = true,
                 Name = AsInvariant($@"{nameof(TestValueThreadSafety)}_{nameof(ExecuteAnotherThread)}")
             };
+
             try
             {
-                thread.Start();
-                WaitForCondition(false, () => isAnotherThreadEntered);
-                WaitForCondition(false, () => !isAnotherThreadExited);
-                Assert.That(container.Value, CreateDefaultValueConstraint());
-
-                lock (container.SyncObject)
+                try
                 {
+                    thread.Start();
+                    WaitForCondition(false, () => isAnotherThreadEntered);
                     WaitForCondition(false, () => !isAnotherThreadExited);
-                    canAnotherThreadChangeValue = true;
-                    WaitForCondition(true, () => !isAnotherThreadExited);
+                    Assert.That(container.Value, CreateValueEqualityConstraint(ValueThreadSafetyInitialValue));
 
-                    container.Value = _value;
-                    Assert.That(container.Value, CreateEqualityConstraint(_value));
+                    lock (container.SyncObject)
+                    {
+                        WaitForCondition(false, () => !isAnotherThreadExited);
 
-                    WaitForCondition(true, () => !isAnotherThreadExited);
+                        // ReSharper disable once RedundantAssignment :: False detection
+                        canAnotherThreadChangeValue = true;
+
+                        WaitForCondition(true, () => !isAnotherThreadExited);
+
+                        container.Value = Value;
+                        Assert.That(container.Value, CreateValueEqualityConstraint(Value));
+
+                        WaitForCondition(true, () => !isAnotherThreadExited);
+                    }
+
+                    WaitForCondition(false, () => isAnotherThreadExited);
+                    Assert.That(container.Value, CreateValueEqualityConstraint(AnotherValue));
                 }
-
-                WaitForCondition(false, () => isAnotherThreadExited);
-                Assert.That(container.Value, CreateEqualityConstraint(_anotherValue));
-            }
-            finally
-            {
-                cancellationTokenSource.Cancel();
-
-                if (!thread.Join(TimeSpan.FromSeconds(ConditionWaitTimeoutInSeconds)))
+                finally
                 {
-                    Assert.Inconclusive(
-                        AsInvariant(
-                            $@"Failed to gracefully finish the thread {thread.Name.ToUIString()} (ID: {thread.ManagedThreadId:N0})."));
+                    cancellationTokenSource.Cancel();
+
+                    if (!thread.Join(TimeSpan.FromSeconds(ConditionWaitTimeoutInSeconds)))
+                    {
+                        Assert.Inconclusive(
+                            AsInvariant($@"Failed to gracefully finish the thread {thread.Name.ToUIString()} (ID: {thread.ManagedThreadId:N0})."));
+                    }
                 }
             }
-        }
-
-        [Test]
-        public void TestEquality()
-        {
-            var container1 = new SyncValueContainer<T>(_value);
-            var container2 = new SyncValueContainer<T>(_value);
-            var containerAnother = new SyncValueContainer<T>(_anotherValue);
-            var containerDefault = new SyncValueContainer<T>();
-
-            NUnitFactotum.AssertEquality(container1, container1, AssertEqualityExpectation.EqualAndMayBeSame);
-            NUnitFactotum.AssertEquality(container1, container2, AssertEqualityExpectation.EqualAndCannotBeSame);
-            NUnitFactotum.AssertEquality(container1, containerAnother, AssertEqualityExpectation.NotEqual);
-            NUnitFactotum.AssertEquality(container1, containerDefault, AssertEqualityExpectation.NotEqual);
-            NUnitFactotum.AssertEquality(container1, null, AssertEqualityExpectation.NotEqual);
-        }
-
-        [Test]
-        public void TestToString()
-        {
-            foreach (var value in _values)
+            catch (OperationCanceledException ex)
+                when (ex.CancellationToken == cancellationToken)
             {
-                var container = new SyncValueContainer<T>(value);
-
-                Assert.That(
-                    container.ToString(),
-                    Is.EqualTo(AsInvariant($@"{{ {nameof(SyncValueContainer<T>.Value)} = {value.ToStringSafelyInvariant()} }}")));
+                Assert.Fail(AsInvariant($@"Cancellation occurred before thread exited."));
             }
         }
 
-        private static IResolveConstraint CreateEqualityConstraint(T value)
-            => typeof(T).IsValueType ? Is.EqualTo(value) : Is.SameAs(value);
+        protected override SyncValueContainer<TValue> CreateContainer(TValue value) => new(value);
 
-        private static IResolveConstraint CreateDefaultValueConstraint()
-            => typeof(T).IsValueType ? Is.EqualTo(default(T)) : Is.Null;
+        protected virtual SyncValueContainer<TValue> CreateContainer(TValue value, object syncObject) => new(value, syncObject);
+
+        protected sealed override TValue GetContainerValue(SyncValueContainer<TValue> container) => container.Value;
+
+        protected sealed override void SetContainerValue(SyncValueContainer<TValue> container, TValue value) => container.Value = value;
+
+        protected sealed override void AssertConstructionWithValueTestCase(SyncValueContainer<TValue> container, TValue value)
+        {
+            base.AssertConstructionWithValueTestCase(container, value);
+            Assert.That(container.SyncObject, Is.Not.Null & Is.TypeOf<object>());
+        }
     }
 }

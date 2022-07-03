@@ -1,4 +1,9 @@
-﻿using Omnifactotum.Annotations;
+﻿#nullable enable
+
+using Omnifactotum.Annotations;
+
+//// ReSharper disable RedundantNullnessAttributeWithNullableReferenceTypes
+//// ReSharper disable AnnotationRedundancyInHierarchy
 
 namespace Omnifactotum
 {
@@ -22,10 +27,7 @@ namespace Omnifactotum
         /// <returns>
         ///     A created and initialized instance of the <see cref="SyncValueContainer{T}" /> class.
         /// </returns>
-        public static SyncValueContainer<T> Create<T>([CanBeNull] T value, [NotNull] object syncObject)
-        {
-            return new SyncValueContainer<T>(value, syncObject);
-        }
+        public static SyncValueContainer<T> Create<T>(T value, [NotNull] object syncObject) => new(value, syncObject);
 
         /// <summary>
         ///     Creates and initializes a new instance of the <see cref="SyncValueContainer{T}"/> class
@@ -37,9 +39,6 @@ namespace Omnifactotum
         /// <returns>
         ///     A created and initialized instance of the <see cref="SyncValueContainer{T}" /> class.
         /// </returns>
-        public static SyncValueContainer<T> Create<T>([CanBeNull] T value)
-        {
-            return new SyncValueContainer<T>(value);
-        }
+        public static SyncValueContainer<T> Create<T>(T value) => new(value);
     }
 }

@@ -1,4 +1,4 @@
-﻿using Omnifactotum.Annotations;
+﻿#nullable enable
 
 namespace Omnifactotum
 {
@@ -18,9 +18,6 @@ namespace Omnifactotum
         /// <returns>
         ///     A created and initialized instance of the <see cref="ValueContainer{T}" /> class.
         /// </returns>
-        public static ValueContainer<T> Create<T>([CanBeNull] T value)
-        {
-            return new ValueContainer<T>(value);
-        }
+        public static ValueContainer<T> Create<T>(T value) => new(value);
     }
 }

@@ -1,4 +1,4 @@
-﻿using Omnifactotum.Annotations;
+﻿#nullable enable
 
 namespace Omnifactotum.Abstractions
 {
@@ -13,11 +13,6 @@ namespace Omnifactotum.Abstractions
         /// <summary>
         ///     Gets or sets the encapsulated value.
         /// </summary>
-        [CanBeNull]
-        T Value
-        {
-            get;
-            set;
-        }
+        T Value { get; set; }
     }
 }

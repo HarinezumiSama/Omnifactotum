@@ -1,4 +1,6 @@
-﻿using NUnit.Framework;
+﻿#nullable enable
+
+using NUnit.Framework;
 
 namespace Omnifactotum.Tests
 {
@@ -10,5 +12,13 @@ namespace Omnifactotum.Tests
         {
             // Nothing to do
         }
+
+        protected override int ValueThreadSafetyInitialValue => int.MinValue;
+
+        public override void TestConstructionWithValueIncludingDefaultValue() => Assert.Ignore();
+
+        public override void TestEqualityIncludingDefaultValue() => Assert.Ignore();
+
+        public override void TestToStringIncludingDefaultValue() => Assert.Ignore();
     }
 }
