@@ -30,11 +30,6 @@ namespace Omnifactotum.Tests.ExtensionMethods
                 .Method
                 .GetGenericMethodDefinition();
 
-        private static readonly MethodInfo ToPropertyStringWithDefaultOptionsMethodDefinition =
-            new Func<object, string>(OmnifactotumGenericObjectExtensions.ToPropertyString)
-                .Method
-                .GetGenericMethodDefinition();
-
         [Test]
         public void TestEnsureNotNullForReferenceTypeSucceeds()
         {
@@ -368,8 +363,8 @@ namespace Omnifactotum.Tests.ExtensionMethods
         public void TestToPropertyStringSucceeds(
             Type objectType,
             object obj,
-            ToPropertyStringOptions options,
-            string expectedString)
+            ToPropertyStringOptions? options,
+            string? expectedString)
         {
             var methodWithSpecificOptions =
                 ToPropertyStringWithSpecificOptionsMethodDefinition.MakeGenericMethod(objectType);
@@ -378,16 +373,6 @@ namespace Omnifactotum.Tests.ExtensionMethods
                 (string?)methodWithSpecificOptions.Invoke(null, new[] { obj, options });
 
             Assert.That(actualResultWithSpecificOptions, Is.EqualTo(expectedString));
-
-            //// ReSharper disable once InvertIf
-            if (options is null)
-            {
-                var methodWithDefaultOptions =
-                    ToPropertyStringWithDefaultOptionsMethodDefinition.MakeGenericMethod(objectType);
-
-                var actualResultWithDefaultOptions = (string?)methodWithDefaultOptions.Invoke(null, new[] { obj });
-                Assert.That(actualResultWithDefaultOptions, Is.EqualTo(expectedString));
-            }
         }
 
         [Test]

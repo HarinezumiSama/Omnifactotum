@@ -17,7 +17,6 @@ using NotNullIfNotNull = System.Diagnostics.CodeAnalysis.NotNullIfNotNullAttribu
 //// ReSharper disable RedundantNullnessAttributeWithNullableReferenceTypes
 
 //// ReSharper disable once CheckNamespace :: Namespace is intentionally named so in order to simplify usage of extension methods
-
 namespace System
 {
     /// <summary>
@@ -27,8 +26,8 @@ namespace System
     {
         private const string NullString = @"<null>";
 
-        private const string ItemSeparator = @", ";
-        private const string PropertyNameValueSeparator = @" = ";
+        private const string ItemSeparator = ",\x0020";
+        private const string PropertyNameValueSeparator = "\x0020=\x0020";
         private const string CollectionElementsPropertyName = @"Elements";
         private const string CollectionElementsOpeningBrace = @"[";
         private const string CollectionElementsClosingBrace = @"]";
@@ -666,13 +665,13 @@ namespace System
         ///     The object to convert.
         /// </param>
         /// <param name="options">
-        ///     The options specifying how to build the string representation.
+        ///     The options specifying how to build the string representation, or <see langword="null"/> to use the default options.
         /// </param>
         /// <returns>
         ///     A string representing the properties of the specified object.
         /// </returns>
         [NotNull]
-        public static string ToPropertyString<T>([CanBeNull] this T? obj, [CanBeNull] ToPropertyStringOptions? options)
+        public static string ToPropertyString<T>([CanBeNull] this T? obj, [CanBeNull] ToPropertyStringOptions? options = null)
         {
             var actualOptions = options ?? new ToPropertyStringOptions();
 
@@ -711,27 +710,6 @@ namespace System
             _toPropertyStringResultBuilder.Clear();
             return result;
         }
-
-        /// <summary>
-        ///     Gets a string representing the properties of the specified object using the default options.
-        /// </summary>
-        /// <typeparam name="T">
-        ///     The type of the object to convert.
-        /// </typeparam>
-        /// <param name="obj">
-        ///     The object to convert.
-        /// </param>
-        /// <returns>
-        ///     A string representing the properties of the specified object.
-        /// </returns>
-        [MethodImpl(
-            MethodImplOptions.AggressiveInlining
-#if NET5_0_OR_GREATER
-            | MethodImplOptions.AggressiveOptimization
-#endif
-        )]
-        [NotNull]
-        public static string ToPropertyString<T>([CanBeNull] this T? obj) => ToPropertyString(obj, null);
 
         /// <summary>
         ///     Determines if the contents of the specified object are equal to the contents of another specified
@@ -792,7 +770,6 @@ namespace System
                 if (_toPropertyStringObjectsBeingProcessed is null)
                 {
                     isToPropertyStringObjectsBeingProcessedCreated = true;
-
                     _toPropertyStringObjectsBeingProcessed = new HashSet<object>(ByReferenceEqualityComparer<object>.Instance);
                 }
 
@@ -836,8 +813,7 @@ namespace System
                 {
                     resultBuilder.Append(
                         AsInvariant(
-                            $@"{ComplexObjectOpeningBrace} {(shouldRenderActualType ? string.Empty : RenderActualType())}<- {
-                                ComplexObjectClosingBrace}"));
+                            $@"{ComplexObjectOpeningBrace} {(shouldRenderActualType ? string.Empty : RenderActualType())}<- {ComplexObjectClosingBrace}"));
 
                     return;
                 }
@@ -916,12 +892,11 @@ namespace System
                     catch (Exception ex)
                     {
                         //// ReSharper disable once ConstantNullCoalescingCondition
+                        //// ReSharper disable once NullCoalescingConditionIsAlwaysNotNullAccordingToAPIContract
                         var underlyingException = ex.GetBaseException() ?? ex;
 
                         resultBuilder.Append(
-                            AsInvariant(
-                                $@"{{ Error getting the property value: [{underlyingException.GetType().Name}] {
-                                    underlyingException.Message} }}"));
+                            AsInvariant($@"{{ Error getting the property value: [{underlyingException.GetType().Name}] {underlyingException.Message} }}"));
 
                         return;
                     }
@@ -950,10 +925,9 @@ namespace System
                     resultBuilder.Append(ComplexObjectClosingBrace);
                 }
 
-                if (isObjectAddedToBeingProcessed)
+                if (isObjectAddedToBeingProcessed && _toPropertyStringObjectsBeingProcessed is not null && obj is not null)
                 {
-                    //// ReSharper disable once RedundantSuppressNullableWarningExpression
-                    _toPropertyStringObjectsBeingProcessed!.Remove(obj!);
+                    _toPropertyStringObjectsBeingProcessed.Remove(obj);
                 }
 
                 if (isToPropertyStringObjectsBeingProcessedCreated)
@@ -1065,6 +1039,7 @@ namespace System
                 catch (Exception ex)
                 {
                     //// ReSharper disable once ConstantNullCoalescingCondition
+                    //// ReSharper disable once NullCoalescingConditionIsAlwaysNotNullAccordingToAPIContract
                     var underlyingException = ex.GetBaseException() ?? ex;
 
                     resultBuilder.Append(
