@@ -1,8 +1,12 @@
-﻿using System;
+﻿#nullable enable
+
+using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using System.Reflection;
+
+//// ReSharper disable PropertyCanBeMadeInitOnly.Global :: Framework multi-targeting
 
 namespace Omnifactotum
 {
@@ -42,47 +46,27 @@ namespace Omnifactotum
         /// <summary>
         ///     Gets or sets a value indicating whether the actual type of the root object should be rendered..
         /// </summary>
-        public bool RenderRootActualType
-        {
-            get;
-            set;
-        }
+        public bool RenderRootActualType { get; set; }
 
         /// <summary>
         ///     Gets or sets a value indicating whether the actual type of each inner object should be rendered..
         /// </summary>
-        public bool RenderActualType
-        {
-            get;
-            set;
-        }
+        public bool RenderActualType { get; set; }
 
         /// <summary>
         ///     Gets or sets a value indicating whether the complex properties should be rendered.
         /// </summary>
-        public bool RenderComplexProperties
-        {
-            get;
-            set;
-        }
+        public bool RenderComplexProperties { get; set; }
 
         /// <summary>
         ///     Gets or sets a value indicating whether the non-public members should be included.
         /// </summary>
-        public bool IncludeNonPublicMembers
-        {
-            get;
-            set;
-        }
+        public bool IncludeNonPublicMembers { get; set; }
 
         /// <summary>
         ///     Gets or sets a value indicating whether the declared type of each member should be rendered.
         /// </summary>
-        public bool RenderMemberType
-        {
-            get;
-            set;
-        }
+        public bool RenderMemberType { get; set; }
 
         // TODO [HarinezumiSama] Add AutoRenderStringRepresentation flag
         // TODO [HarinezumiSama] Add AlwaysRenderStringRepresentation flag
@@ -93,11 +77,7 @@ namespace Omnifactotum
         /// <summary>
         ///     Gets or sets a value indicating whether the members should be sorted alphabetically.
         /// </summary>
-        public bool SortMembersAlphabetically
-        {
-            get;
-            set;
-        }
+        public bool SortMembersAlphabetically { get; set; }
 
         /// <summary>
         ///     Gets or sets the maximum number of items to render from collections.
@@ -145,10 +125,7 @@ namespace Omnifactotum
         /// <returns>
         ///     A new <see cref="ToPropertyStringOptions"/> that is a copy of this instance.
         /// </returns>
-        public ToPropertyStringOptions Clone()
-        {
-            return (ToPropertyStringOptions)MemberwiseClone();
-        }
+        public ToPropertyStringOptions Clone() => (ToPropertyStringOptions)MemberwiseClone();
 
         /// <summary>
         ///     Sets all the possible flags in the options.
@@ -171,9 +148,6 @@ namespace Omnifactotum
         /// <returns>
         ///     A new object that is a copy of this instance.
         /// </returns>
-        object ICloneable.Clone()
-        {
-            return Clone();
-        }
+        object ICloneable.Clone() => Clone();
     }
 }
