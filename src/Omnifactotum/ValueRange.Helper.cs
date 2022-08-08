@@ -1,10 +1,13 @@
-﻿using System;
+﻿#nullable enable
+
+using System;
+using System.Diagnostics.Contracts;
+using System.Runtime.CompilerServices;
 
 namespace Omnifactotum
 {
     /// <summary>
-    ///     Provides helper functionality for creating instances of
-    ///     the <see cref="ValueRange{T}"/> type using type inference in a friendly way.
+    ///     Provides helper functionality for creating instances of the <see cref="ValueRange{T}"/> type using type inference in a friendly way.
     /// </summary>
     public static class ValueRange
     {
@@ -23,10 +26,11 @@ namespace Omnifactotum
         /// <returns>
         ///     A new instance of the <see cref="ValueRange{T}"/> class.
         /// </returns>
+        [Pure]
+        [Omnifactotum.Annotations.Pure]
+        [MethodImpl(OmnifactotumConstants.MethodOptimizationOptions.Maximum)]
         public static ValueRange<T> Create<T>(T lower, T upper)
             where T : IComparable
-        {
-            return new ValueRange<T>(lower, upper);
-        }
+            => new(lower, upper);
     }
 }

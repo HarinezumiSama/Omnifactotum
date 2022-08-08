@@ -1,23 +1,36 @@
-﻿using System.Collections.Generic;
+﻿#nullable enable
+
 using NUnit.Framework;
 using Omnifactotum.NUnit;
 
 namespace Omnifactotum.Tests
 {
-    [TestFixture]
+    [TestFixture(TestOf = typeof(ValueRange<>))]
+    [TestFixture(TestOf = typeof(ValueRange))]
     internal sealed class ValueRangeTests
     {
         [Test]
-        public void TestInvalidConstruction()
+        [TestCase(2, 1, @"The lower boundary (2) cannot be greater than the upper boundary (1).")]
+        [TestCase(0, -1, @"The lower boundary (0) cannot be greater than the upper boundary (-1).")]
+        [TestCase(int.MaxValue, int.MaxValue - 1, @"The lower boundary (2147483647) cannot be greater than the upper boundary (2147483646).")]
+        public void TestInvalidConstruction(int lower, int upper, string expectedExceptionMessage)
         {
-            Assert.That(() => new ValueRange<int>(2, 1), Throws.ArgumentException);
-            Assert.That(() => ValueRange.Create(2, 1), Throws.ArgumentException);
+            Assert.That(lower, Is.GreaterThan(upper));
+
+            Assert.That(() => new ValueRange<int>(lower, upper), Throws.ArgumentException.With.Message.EqualTo(expectedExceptionMessage));
+            Assert.That(() => ValueRange.Create(lower, upper), Throws.ArgumentException.With.Message.EqualTo(expectedExceptionMessage));
         }
 
         [Test]
-        [TestCaseSource(typeof(ConstructionCases))]
+        [TestCase(1, 2)]
+        [TestCase(-17, 42)]
+        [TestCase(int.MinValue, int.MinValue)]
+        [TestCase(int.MinValue, int.MaxValue)]
+        [TestCase(int.MaxValue, int.MaxValue)]
         public void TestConstruction(int lower, int upper)
         {
+            Assert.That(lower, Is.LessThanOrEqualTo(upper));
+
             var objExplicit = new ValueRange<int>(lower, upper);
             Assert.That(objExplicit.Lower, Is.EqualTo(lower));
             Assert.That(objExplicit.Upper, Is.EqualTo(upper));
@@ -25,139 +38,94 @@ namespace Omnifactotum.Tests
             var objImplicit = ValueRange.Create(lower, upper);
             Assert.That(objImplicit.Lower, Is.EqualTo(lower));
             Assert.That(objImplicit.Upper, Is.EqualTo(upper));
-
-            Assert.That(lower, Is.LessThanOrEqualTo(upper));
         }
 
         [Test]
-        [TestCaseSource(typeof(ContainsValueCases))]
-        public void TestContainsValue(ValueRange<int> range, int value, bool expectedResult)
+        [TestCase(1, 3, 0, false)]
+        [TestCase(1, 3, 1, true)]
+        [TestCase(1, 3, 2, true)]
+        [TestCase(1, 3, 3, true)]
+        [TestCase(1, 3, 4, false)]
+        public void TestContainsValue(int rangeLower, int rangeUpper, int value, bool expectedResult)
         {
-            var actualResult = range.Contains(value);
-            Assert.That(actualResult, Is.EqualTo(expectedResult));
+            var range = new ValueRange<int>(rangeLower, rangeUpper);
+            Assert.That(() => range.Contains(value), Is.EqualTo(expectedResult));
         }
 
         [Test]
-        [TestCaseSource(typeof(ContainsRangeCases))]
-        public void TestContainsRange(ValueRange<int> range, ValueRange<int> otherRange, bool expectedResult)
+        [TestCase(1, 3, 2, 4, false)]
+        [TestCase(1, 3, 0, 2, false)]
+        [TestCase(1, 3, 1, 1, true)]
+        [TestCase(1, 3, 2, 2, true)]
+        [TestCase(1, 3, 3, 3, true)]
+        [TestCase(1, 3, 1, 2, true)]
+        [TestCase(1, 3, 1, 3, true)]
+        [TestCase(1, 3, 2, 3, true)]
+        public void TestContainsRange(int rangeLower, int rangeUpper, int otherRangeLower, int otherRangeUpper, bool expectedResult)
         {
-            var actualResult = range.Contains(otherRange);
-            Assert.That(actualResult, Is.EqualTo(expectedResult));
+            var range = new ValueRange<int>(rangeLower, rangeUpper);
+            var otherRange = new ValueRange<int>(otherRangeLower, otherRangeUpper);
+
+            Assert.That(() => range.Contains(otherRange), Is.EqualTo(expectedResult));
+            Assert.That(() => range.Contains(in otherRange), Is.EqualTo(expectedResult));
         }
 
         [Test]
-        [TestCaseSource(typeof(IntersectsWithCases))]
-        public void TestIntersectsWith(ValueRange<int> range, ValueRange<int> otherRange, bool expectedResult)
+        [TestCase(1, 3, -1, 0, false)]
+        [TestCase(1, 3, 0, 0, false)]
+        [TestCase(1, 3, 4, 4, false)]
+        [TestCase(1, 3, 4, 5, false)]
+        [TestCase(1, 3, -1, 1, true)]
+        [TestCase(1, 3, -1, 2, true)]
+        [TestCase(1, 3, -1, 3, true)]
+        [TestCase(1, 3, -1, 4, true)]
+        [TestCase(1, 3, 1, 1, true)]
+        [TestCase(1, 3, 2, 2, true)]
+        [TestCase(1, 3, 3, 3, true)]
+        [TestCase(1, 3, 1, 3, true)]
+        [TestCase(1, 3, 3, 4, true)]
+        [TestCase(1, 3, 3, 5, true)]
+        public void TestIntersectsWith(int rangeLower, int rangeUpper, int otherRangeLower, int otherRangeUpper, bool expectedResult)
         {
-            Assert.That(range.IntersectsWith(otherRange), Is.EqualTo(expectedResult));
-            Assert.That(otherRange.IntersectsWith(range), Is.EqualTo(expectedResult));
+            var range = new ValueRange<int>(rangeLower, rangeUpper);
+            var otherRange = new ValueRange<int>(otherRangeLower, otherRangeUpper);
+
+            Assert.That(() => range.IntersectsWith(otherRange), Is.EqualTo(expectedResult));
+            Assert.That(() => range.IntersectsWith(in otherRange), Is.EqualTo(expectedResult));
+            Assert.That(() => otherRange.IntersectsWith(range), Is.EqualTo(expectedResult));
+            Assert.That(() => otherRange.IntersectsWith(in range), Is.EqualTo(expectedResult));
         }
 
         [Test]
-        [TestCaseSource(typeof(EqualityCases))]
-        public void TestEquality(ValueRange<int> range1, ValueRange<int> range2, bool equal)
+        [TestCase(default(int), default(int), default(int), default(int), true)]
+        [TestCase(1, 1, 1, 1, true)]
+        [TestCase(1, 2, 1, 2, true)]
+        [TestCase(-10, 3, -10, 3, true)]
+        [TestCase(1, 3, 1, 1, false)]
+        [TestCase(1, 3, 2, 2, false)]
+        [TestCase(1, 3, 3, 3, false)]
+        public void TestEquality(int rangeLeftLower, int rangeLeftUpper, int rangeRightLower, int rangeRightUpper, bool expectedEqual)
         {
+            var rangeLeft = new ValueRange<int>(rangeLeftLower, rangeLeftUpper);
+            var rangeRight = new ValueRange<int>(rangeRightLower, rangeRightUpper);
+
             NUnitFactotum.AssertEquality(
-                range1,
-                range2,
-                equal ? AssertEqualityExpectation.EqualAndMayBeSame : AssertEqualityExpectation.NotEqual);
+                rangeLeft,
+                rangeRight,
+                expectedEqual ? AssertEqualityExpectation.EqualAndMayBeSame : AssertEqualityExpectation.NotEqual);
 
-            Assert.That(range1 == range2, Is.EqualTo(equal));
-            Assert.That(range1 != range2, Is.Not.EqualTo(equal));
+            Assert.That(rangeLeft == rangeRight, Is.EqualTo(expectedEqual));
+            Assert.That(rangeLeft != rangeRight, Is.EqualTo(!expectedEqual));
         }
 
         [Test]
-        [TestCaseSource(typeof(ToStringCases))]
-        public void TestToString(ValueRange<int> range, string expectedString)
+        [TestCase(default(int), default(int), "[0; 0]")]
+        [TestCase(1, 2, "[1; 2]")]
+        [TestCase(-5, 4, "[-5; 4]")]
+        public void TestToString(int rangeLower, int rangeUpper, string expectedString)
         {
-            var actualString = range.ToString();
-            Assert.That(actualString, Is.EqualTo(expectedString));
-        }
-
-        private sealed class ConstructionCases : TestCasesBase
-        {
-            protected override IEnumerable<TestCaseData> GetCases()
-            {
-                yield return new TestCaseData(1, 2);
-                yield return new TestCaseData(int.MinValue, int.MaxValue);
-            }
-        }
-
-        private sealed class ContainsValueCases : TestCasesBase
-        {
-            protected override IEnumerable<TestCaseData> GetCases()
-            {
-                yield return new TestCaseData(ValueRange.Create(1, 3), 0, false);
-                yield return new TestCaseData(ValueRange.Create(1, 3), 1, true);
-                yield return new TestCaseData(ValueRange.Create(1, 3), 2, true);
-                yield return new TestCaseData(ValueRange.Create(1, 3), 3, true);
-                yield return new TestCaseData(ValueRange.Create(1, 3), 4, false);
-            }
-        }
-
-        private sealed class ContainsRangeCases : TestCasesBase
-        {
-            protected override IEnumerable<TestCaseData> GetCases()
-            {
-                yield return new TestCaseData(ValueRange.Create(1, 3), ValueRange.Create(2, 4), false);
-                yield return new TestCaseData(ValueRange.Create(1, 3), ValueRange.Create(0, 2), false);
-
-                yield return new TestCaseData(ValueRange.Create(1, 3), ValueRange.Create(1, 1), true);
-                yield return new TestCaseData(ValueRange.Create(1, 3), ValueRange.Create(2, 2), true);
-                yield return new TestCaseData(ValueRange.Create(1, 3), ValueRange.Create(3, 3), true);
-                yield return new TestCaseData(ValueRange.Create(1, 3), ValueRange.Create(1, 2), true);
-                yield return new TestCaseData(ValueRange.Create(1, 3), ValueRange.Create(1, 3), true);
-                yield return new TestCaseData(ValueRange.Create(1, 3), ValueRange.Create(2, 3), true);
-            }
-        }
-
-        private sealed class IntersectsWithCases : TestCasesBase
-        {
-            protected override IEnumerable<TestCaseData> GetCases()
-            {
-                yield return new TestCaseData(ValueRange.Create(1, 3), ValueRange.Create(-1, 0), false);
-                yield return new TestCaseData(ValueRange.Create(1, 3), ValueRange.Create(0, 0), false);
-                yield return new TestCaseData(ValueRange.Create(1, 3), ValueRange.Create(4, 4), false);
-                yield return new TestCaseData(ValueRange.Create(1, 3), ValueRange.Create(4, 5), false);
-
-                yield return new TestCaseData(ValueRange.Create(1, 3), ValueRange.Create(-1, 1), true);
-                yield return new TestCaseData(ValueRange.Create(1, 3), ValueRange.Create(-1, 2), true);
-                yield return new TestCaseData(ValueRange.Create(1, 3), ValueRange.Create(-1, 3), true);
-                yield return new TestCaseData(ValueRange.Create(1, 3), ValueRange.Create(-1, 4), true);
-
-                yield return new TestCaseData(ValueRange.Create(1, 3), ValueRange.Create(1, 1), true);
-                yield return new TestCaseData(ValueRange.Create(1, 3), ValueRange.Create(2, 2), true);
-                yield return new TestCaseData(ValueRange.Create(1, 3), ValueRange.Create(3, 3), true);
-                yield return new TestCaseData(ValueRange.Create(1, 3), ValueRange.Create(1, 3), true);
-                yield return new TestCaseData(ValueRange.Create(1, 3), ValueRange.Create(3, 4), true);
-                yield return new TestCaseData(ValueRange.Create(1, 3), ValueRange.Create(3, 5), true);
-            }
-        }
-
-        private sealed class EqualityCases : TestCasesBase
-        {
-            protected override IEnumerable<TestCaseData> GetCases()
-            {
-                yield return new TestCaseData(new ValueRange<int>(), new ValueRange<int>(), true);
-
-                yield return new TestCaseData(ValueRange.Create(1, 1), ValueRange.Create(1, 1), true);
-                yield return new TestCaseData(ValueRange.Create(1, 2), ValueRange.Create(1, 2), true);
-                yield return new TestCaseData(ValueRange.Create(-10, 3), ValueRange.Create(-10, 3), true);
-
-                yield return new TestCaseData(ValueRange.Create(1, 3), ValueRange.Create(1, 1), false);
-                yield return new TestCaseData(ValueRange.Create(1, 3), ValueRange.Create(2, 2), false);
-                yield return new TestCaseData(ValueRange.Create(1, 3), ValueRange.Create(3, 3), false);
-            }
-        }
-
-        private sealed class ToStringCases : TestCasesBase
-        {
-            protected override IEnumerable<TestCaseData> GetCases()
-            {
-                yield return new TestCaseData(new ValueRange<int>(), "[0; 0]");
-                yield return new TestCaseData(new ValueRange<int>(1, 2), "[1; 2]");
-                yield return new TestCaseData(new ValueRange<int>(-5, 4), "[-5; 4]");
-            }
+            var range = new ValueRange<int>(rangeLower, rangeUpper);
+            Assert.That(range.ToString, Is.EqualTo(expectedString));
         }
     }
 }
