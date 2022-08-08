@@ -25,5 +25,12 @@ namespace Omnifactotum
             internal const MethodImplOptions Maximum = Standard;
 #endif
         }
+
+        internal static class ComparisonResult
+        {
+            internal const int LessThan = -1;
+            internal const int Equal = 0;
+            internal const int GreaterThan = 1;
+        }
     }
 }
