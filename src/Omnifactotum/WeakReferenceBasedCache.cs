@@ -1,7 +1,14 @@
-﻿using System;
+﻿#nullable enable
+
+using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Runtime.CompilerServices;
 using Omnifactotum.Annotations;
+using static Omnifactotum.FormattableStringFactotum;
+
+//// ReSharper disable RedundantNullnessAttributeWithNullableReferenceTypes
+//// ReSharper disable AnnotationRedundancyInHierarchy
 
 namespace Omnifactotum
 {
@@ -15,7 +22,9 @@ namespace Omnifactotum
     /// <typeparam name="TValue">
     ///     The type of the values in the cache.
     /// </typeparam>
+    [DebuggerDisplay("{ToDebuggerString(),nq}")]
     public sealed class WeakReferenceBasedCache<TKey, TValue>
+        where TKey : notnull
         where TValue : class
     {
         private readonly Func<TKey, TValue> _valueFactory;
@@ -34,24 +43,10 @@ namespace Omnifactotum
         /// </param>
         public WeakReferenceBasedCache(
             [NotNull] Func<TKey, TValue> valueFactory,
-            [CanBeNull] IEqualityComparer<TKey> keyEqualityComparer)
+            [CanBeNull] IEqualityComparer<TKey>? keyEqualityComparer = null)
         {
             _valueFactory = valueFactory ?? throw new ArgumentNullException(nameof(valueFactory));
             _dictionary = new Dictionary<TKey, WeakReference>(keyEqualityComparer);
-        }
-
-        /// <summary>
-        ///     Initializes a new instance of the <see cref="WeakReferenceBasedCache{TKey,TValue}"/> class
-        ///     using the specified value factory and default <see cref="EqualityComparer{T}"/> for the type of
-        ///     the key.
-        /// </summary>
-        /// <param name="valueFactory">
-        ///     A reference to a method that creates a value for the specified key once needed.
-        /// </param>
-        public WeakReferenceBasedCache([NotNull] Func<TKey, TValue> valueFactory)
-            : this(valueFactory, null)
-        {
-            // Nothing to do
         }
 
         /// <summary>
@@ -60,15 +55,17 @@ namespace Omnifactotum
         /// <remarks>
         ///     This property is thread-safe.
         /// </remarks>
+        [DebuggerBrowsable(DebuggerBrowsableState.Never)]
         [NotNull]
         public IEqualityComparer<TKey> KeyEqualityComparer
         {
             [DebuggerNonUserCode]
+            [MethodImpl(OmnifactotumConstants.MethodOptimizationOptions.Maximum)]
             get
             {
                 lock (_dictionary)
                 {
-                    return _dictionary.Comparer;
+                    return _dictionary.Comparer.EnsureNotNull();
                 }
             }
         }
@@ -80,11 +77,12 @@ namespace Omnifactotum
         public int Count
         {
             [DebuggerNonUserCode]
+            [MethodImpl(OmnifactotumConstants.MethodOptimizationOptions.Maximum)]
             get
             {
                 lock (_dictionary)
                 {
-                    return _dictionary.Count;
+                    return UnsafeCount;
                 }
             }
         }
@@ -109,7 +107,7 @@ namespace Omnifactotum
                     throw new ArgumentNullException(nameof(key));
                 }
 
-                TValue result;
+                TValue? result;
                 lock (_dictionary)
                 {
                     //// ReSharper disable once InvokeAsExtensionMethod :: Avoiding multi-target issues
@@ -132,9 +130,17 @@ namespace Omnifactotum
             }
         }
 
+        private int UnsafeCount
+        {
+            [DebuggerNonUserCode]
+            [MethodImpl(OmnifactotumConstants.MethodOptimizationOptions.Maximum)]
+            get => _dictionary.Count;
+        }
+
         /// <summary>
         ///     Clears the cache.
         /// </summary>
+        [MethodImpl(OmnifactotumConstants.MethodOptimizationOptions.Maximum)]
         public void Clear()
         {
             lock (_dictionary)
@@ -152,6 +158,7 @@ namespace Omnifactotum
         /// <returns>
         ///     <see langword="true"/> if the element is successfully found and removed; otherwise, <see langword="false"/>.
         /// </returns>
+        [MethodImpl(OmnifactotumConstants.MethodOptimizationOptions.Maximum)]
         public bool Remove([NotNull] TKey key)
         {
             if (key is null)
@@ -165,9 +172,10 @@ namespace Omnifactotum
             }
         }
 
-        private TValue CreateValue(TKey key)
-        {
-            return _valueFactory(key).EnsureNotNull();
-        }
+        [NotNull]
+        private string ToDebuggerString() => AsInvariant($@"{{ {GetType().GetQualifiedName()}: {nameof(Count)} = {UnsafeCount} }}");
+
+        [MethodImpl(OmnifactotumConstants.MethodOptimizationOptions.Maximum)]
+        private TValue CreateValue([NotNull] TKey key) => _valueFactory(key).EnsureNotNull();
     }
 }
