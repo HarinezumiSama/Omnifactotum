@@ -1,4 +1,6 @@
-﻿#if NETFRAMEWORK
+﻿#nullable enable
+
+#if NETFRAMEWORK
 
 using System;
 using System.Diagnostics;
@@ -6,6 +8,9 @@ using System.Diagnostics.CodeAnalysis;
 using System.Globalization;
 using System.Reflection;
 using Omnifactotum.Annotations;
+
+//// ReSharper disable RedundantNullnessAttributeWithNullableReferenceTypes
+//// ReSharper disable AnnotationRedundancyInHierarchy
 
 namespace Omnifactotum
 {
@@ -15,18 +20,19 @@ namespace Omnifactotum
     ///     Provides the simple interface to write to the Windows <b>Event Log</b>.
     /// </summary>
     [ExcludeFromCodeCoverage]
+    [PublicAPI]
     public static class WinEventLog
     {
         private const string LogName = "Application";
 
-        private static volatile string _defaultSource;
+        private static volatile string? _defaultSource;
 
         /// <summary>
         ///     Gets or sets the default source for the entries written
         ///     using <see cref="WinEventLog.Write(EventLogEntryType,string)"/>.
         /// </summary>
         [CanBeNull]
-        public static string DefaultSource
+        public static string? DefaultSource
         {
             [DebuggerStepThrough]
             get => _defaultSource;
@@ -51,9 +57,7 @@ namespace Omnifactotum
         {
             if (string.IsNullOrWhiteSpace(source))
             {
-                throw new ArgumentException(
-                    @"The value can be neither empty or whitespace-only string nor null.",
-                    nameof(source));
+                throw new ArgumentException(@"The value can be neither empty or whitespace-only string nor null.", nameof(source));
             }
 
             if (message is null)
@@ -161,15 +165,13 @@ namespace Omnifactotum
         {
             var result = _defaultSource.TrimSafely();
 
-            //// ReSharper disable once ConditionIsAlwaysTrueOrFalse :: False detection
             if (!result.IsNullOrWhiteSpace())
             {
                 return result.EnsureNotNull();
             }
 
-            //// ReSharper disable once HeuristicUnreachableCode :: False detection
             var assembly = Assembly.GetEntryAssembly() ?? Assembly.GetExecutingAssembly();
-            result = assembly.GetName().Name;
+            result = assembly.GetName().Name.EnsureNotNull();
 
             return result;
         }
