@@ -1,4 +1,6 @@
-﻿using Omnifactotum.Annotations;
+﻿#nullable enable
+
+using System.Runtime.CompilerServices;
 
 namespace Omnifactotum
 {
@@ -20,9 +22,7 @@ namespace Omnifactotum
         /// <returns>
         ///     A new instance of the <see cref="DirectedGraphNode{T}"/> class.
         /// </returns>
-        public static DirectedGraphNode<T> Create<T>([CanBeNull] T value)
-        {
-            return new DirectedGraphNode<T>(value);
-        }
+        [MethodImpl(OmnifactotumConstants.MethodOptimizationOptions.Maximum)]
+        public static DirectedGraphNode<T> Create<T>(T value) => new(value);
     }
 }

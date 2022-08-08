@@ -1,7 +1,14 @@
-﻿using System;
+﻿#nullable enable
+
+using System;
+using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.CompilerServices;
 using Omnifactotum.Annotations;
 using static Omnifactotum.FormattableStringFactotum;
+
+//// ReSharper disable RedundantNullnessAttributeWithNullableReferenceTypes
+//// ReSharper disable AnnotationRedundancyInHierarchy
 
 namespace Omnifactotum
 {
@@ -20,7 +27,7 @@ namespace Omnifactotum
         /// <param name="value">
         ///     The value associated with the graph node.
         /// </param>
-        public DirectedGraphNode([CanBeNull] T value)
+        public DirectedGraphNode(T value)
         {
             Heads = new DirectedGraphNodeCollection<T>(this, DirectedGraphOwnerRelation.Tail);
             Tails = new DirectedGraphNodeCollection<T>(this, DirectedGraphOwnerRelation.Head);
@@ -28,25 +35,14 @@ namespace Omnifactotum
         }
 
         /// <summary>
-        ///     Initializes a new instance of the <see cref="DirectedGraphNode{T}"/> class
-        ///     using the default value for the type <typeparamref name="T"/>.
-        /// </summary>
-        public DirectedGraphNode()
-            : this(default)
-        {
-            // Nothing to do
-        }
-
-        /// <summary>
         ///     Gets the graph which this node belongs to.
         /// </summary>
         [CanBeNull]
-        public DirectedGraph<T> Graph { get; internal set; }
+        public DirectedGraph<T>? Graph { get; private set; }
 
         /// <summary>
         ///     Gets or sets the value associated with this <see cref="DirectedGraphNode{T}"/>.
         /// </summary>
-        [CanBeNull]
         public T Value { get; set; }
 
         /// <summary>
@@ -67,39 +63,44 @@ namespace Omnifactotum
         /// <returns>
         ///     A <see cref="System.String"/> that represents this <see cref="DirectedGraphNode{T}"/>.
         /// </returns>
-        public override string ToString() => AsInvariant($@"{GetType().GetQualifiedName()}. {nameof(Value)} = {Value.ToStringSafely()}");
+        public override string ToString() => AsInvariant($@"{GetType().GetQualifiedName()}: {nameof(Value)} = {Value.ToStringSafelyInvariant()}");
 
-        internal void AssignGraph([CanBeNull] DirectedGraph<T> graph)
+        internal void AssignGraph([CanBeNull] DirectedGraph<T>? graph)
         {
             if (graph is null)
             {
                 return;
             }
 
-            Factotum.ProcessRecursively(
-                this,
-                item => item.Heads.Concat(item.Tails),
-                node =>
+            Factotum.ProcessRecursively(this, GetItems, ProcessItem);
+
+            IEnumerable<DirectedGraphNode<T>> GetItems(DirectedGraphNode<T> item) => item.Heads.Concat(item.Tails);
+
+            RecursiveProcessingDirective ProcessItem(DirectedGraphNode<T> node)
+            {
+                if (node.Graph == graph)
                 {
-                    if (node.Graph == graph)
-                    {
-                        return RecursiveProcessingDirective.NoRecursionForItem;
-                    }
+                    return RecursiveProcessingDirective.NoRecursionForItem;
+                }
 
-                    if (node.Graph != null)
-                    {
-                        throw new InvalidOperationException(
-                            AsInvariant($@"The directed graph node {{ {node} }} belongs to another graph."));
-                    }
+                if (node.Graph != null)
+                {
+                    throw new InvalidOperationException(AsInvariant($@"The directed graph node {{ {node} }} belongs to another graph."));
+                }
 
-                    node.Graph = graph;
-                    if (!graph.Contains(node))
-                    {
-                        graph.AddInternal(node);
-                    }
+                node.Graph = graph;
+                if (!graph.Contains(node))
+                {
+                    graph.AddInternal(node);
+                }
 
-                    return RecursiveProcessingDirective.Continue;
-                });
+                return RecursiveProcessingDirective.Continue;
+            }
         }
+
+        [MethodImpl(OmnifactotumConstants.MethodOptimizationOptions.Maximum)]
+        internal void ResetGraph() => Graph = null;
+
+        private string ToDebuggerString() => ToString();
     }
 }

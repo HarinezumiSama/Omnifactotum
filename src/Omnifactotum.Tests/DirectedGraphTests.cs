@@ -1,8 +1,8 @@
-﻿using System;
+﻿#nullable enable
+
+using System;
 using NUnit.Framework;
 using NUnit.Framework.Constraints;
-
-//// ReSharper disable AssignNullToNotNullAttribute - For negative test cases
 
 namespace Omnifactotum.Tests
 {
@@ -31,10 +31,7 @@ namespace Omnifactotum.Tests
         }
 
         [Test]
-        public void TestConstructionWithInvalidArgumentThrows()
-        {
-            Assert.That(() => new DirectedGraph<string>(null), Throws.ArgumentNullException);
-        }
+        public void TestConstructionWithInvalidArgumentThrows() => Assert.That(() => new DirectedGraph<string>(null!), Throws.ArgumentNullException);
 
         [Test]
         public void TestGraphPropertyCanOnlyBeSameGraphObject()
@@ -42,7 +39,7 @@ namespace Omnifactotum.Tests
             var graph = new DirectedGraph<string>();
             Assert.That(graph.Graph, Is.SameAs(graph));
 
-            Assert.That(() => graph.Graph = null, Throws.InvalidOperationException);
+            Assert.That(() => graph.Graph = null!, Throws.InvalidOperationException);
             Assert.That(graph.Graph, Is.SameAs(graph));
 
             Assert.That(() => graph.Graph = new DirectedGraph<string>(), Throws.InvalidOperationException);
@@ -185,7 +182,8 @@ namespace Omnifactotum.Tests
             AssertGraphState();
 
             var sortedNodes = graph.SortTopologically(
-                (left, right) => StringComparer.Ordinal.Compare(left.Value, right.Value));
+                (left, right) => StringComparer.Ordinal.Compare(left.EnsureNotNull().Value, right.EnsureNotNull().Value));
+
             Assert.That(sortedNodes, Is.Not.Null);
             CollectionAssert.AreEqual(sortedNodes, new[] { nodeA, nodeB, nodeC, nodeD, nodeE });
             AssertGraphState();
@@ -196,7 +194,8 @@ namespace Omnifactotum.Tests
             AssertGraphState();
 
             var sortedNodesReverseAlpha = graph.SortTopologically(
-                (left, right) => -StringComparer.Ordinal.Compare(left.Value, right.Value));
+                (left, right) => -StringComparer.Ordinal.Compare(left.EnsureNotNull().Value, right.EnsureNotNull().Value));
+
             Assert.That(sortedNodesReverseAlpha, Is.Not.Null);
             CollectionAssert.AreEqual(sortedNodesReverseAlpha, new[] { nodeA, nodeC, nodeB, nodeD, nodeE });
             AssertGraphState();
@@ -250,7 +249,8 @@ namespace Omnifactotum.Tests
             AssertGraphState();
 
             var sortedNodesReverseAlpha = graph.SortTopologically(
-                (left, right) => -StringComparer.Ordinal.Compare(left.Value, right.Value));
+                (left, right) => -StringComparer.Ordinal.Compare(left.EnsureNotNull().Value, right.EnsureNotNull().Value));
+
             Assert.That(sortedNodesReverseAlpha, Is.Not.Null);
             CollectionAssert.AreEqual(sortedNodesReverseAlpha, new[] { nodeC, nodeD, nodeA, nodeB, nodeE });
             AssertGraphState();
@@ -351,10 +351,7 @@ namespace Omnifactotum.Tests
             Assert.That(notRelatedNode.Tails, Has.No.Member(node));
         }
 
-        private static void AssertBelongsToGraph<T>(
-            DirectedGraphNode<T> node,
-            DirectedGraph<T> expectedGraph,
-            bool belongs)
+        private static void AssertBelongsToGraph<T>(DirectedGraphNode<T> node, DirectedGraph<T> expectedGraph, bool belongs)
         {
             Assert.That(node, Is.Not.Null);
             Assert.That(expectedGraph, Is.Not.Null);
@@ -366,9 +363,6 @@ namespace Omnifactotum.Tests
             Assert.That(expectedGraph.Contains(node), AutoNegate(Is.True, negateCondition));
         }
 
-        private static Constraint AutoNegate(Constraint constraint, bool negateCondition)
-        {
-            return negateCondition ? !constraint : constraint;
-        }
+        private static Constraint AutoNegate(Constraint constraint, bool negateCondition) => negateCondition ? !constraint : constraint;
     }
 }

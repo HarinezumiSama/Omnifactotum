@@ -1,6 +1,12 @@
-﻿using System;
+﻿#nullable enable
+
+using System;
 using System.Diagnostics;
+using System.Runtime.CompilerServices;
 using Omnifactotum.Annotations;
+
+//// ReSharper disable RedundantNullnessAttributeWithNullableReferenceTypes
+//// ReSharper disable AnnotationRedundancyInHierarchy
 
 namespace Omnifactotum
 {
@@ -11,7 +17,6 @@ namespace Omnifactotum
     ///     The type of the node value.
     /// </typeparam>
     [Serializable]
-    [DebuggerDisplay("{GetType().Name,nq}. Count = {Count}")]
     public sealed class DirectedGraphNodeCollection<T> : DirectedGraphNodeCollectionBase<T>
     {
         private readonly DirectedGraphNode<T> _owner;
@@ -26,9 +31,7 @@ namespace Omnifactotum
         /// <param name="ownerRelation">
         ///     The relation of the owner node to the items contained in this collection.
         /// </param>
-        internal DirectedGraphNodeCollection(
-            [NotNull] DirectedGraphNode<T> owner,
-            DirectedGraphOwnerRelation ownerRelation)
+        internal DirectedGraphNodeCollection([NotNull] DirectedGraphNode<T> owner, DirectedGraphOwnerRelation ownerRelation)
         {
             if (owner is null)
             {
@@ -41,20 +44,19 @@ namespace Omnifactotum
             _ownerRelation = ownerRelation;
         }
 
-        internal override DirectedGraph<T> Graph
+        /// <inheritdoc />
+        [CanBeNull]
+        internal override DirectedGraph<T>? Graph
         {
             [DebuggerNonUserCode]
+            [MethodImpl(OmnifactotumConstants.MethodOptimizationOptions.Maximum)]
             get => _owner.Graph;
 
+            [MethodImpl(OmnifactotumConstants.MethodOptimizationOptions.Maximum)]
             set => _owner.AssignGraph(value);
         }
 
-        /// <summary>
-        ///     Called right after an item has been added to this collection.
-        /// </summary>
-        /// <param name="item">
-        ///     The item that has been added.
-        /// </param>
+        /// <inheritdoc />
         protected override void OnItemAdded(DirectedGraphNode<T> item)
         {
             base.OnItemAdded(item);
@@ -62,12 +64,7 @@ namespace Omnifactotum
             GetRelatedCollection(item).AddInternal(_owner);
         }
 
-        /// <summary>
-        ///     Called right after an item has been removed from this collection.
-        /// </summary>
-        /// <param name="item">
-        ///     The item that has been removed.
-        /// </param>
+        /// <inheritdoc />
         protected override void OnItemRemoved(DirectedGraphNode<T> item)
         {
             GetRelatedCollection(item).RemoveInternal(_owner);

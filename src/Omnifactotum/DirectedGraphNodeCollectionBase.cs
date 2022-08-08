@@ -1,10 +1,16 @@
-﻿using System;
+﻿#nullable enable
+
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
+using System.Runtime.CompilerServices;
 using Omnifactotum.Annotations;
 using static Omnifactotum.FormattableStringFactotum;
+
+//// ReSharper disable RedundantNullnessAttributeWithNullableReferenceTypes
+//// ReSharper disable AnnotationRedundancyInHierarchy
 
 namespace Omnifactotum
 {
@@ -15,7 +21,7 @@ namespace Omnifactotum
     ///     The type of the node value.
     /// </typeparam>
     [Serializable]
-    [DebuggerDisplay("{GetType().Name,nq}. Count = {Count}")]
+    [DebuggerDisplay("{ToDebuggerString(),nq}")]
     public abstract class DirectedGraphNodeCollectionBase<T> : ICollection<DirectedGraphNode<T>>
     {
         private readonly HashSet<DirectedGraphNode<T>> _items;
@@ -23,15 +29,13 @@ namespace Omnifactotum
         /// <summary>
         ///     Initializes a new instance of the <see cref="DirectedGraphNodeCollectionBase{T}"/> class.
         /// </summary>
-        internal DirectedGraphNodeCollectionBase()
-        {
-            _items = new HashSet<DirectedGraphNode<T>>();
-        }
+        internal DirectedGraphNodeCollectionBase() => _items = new HashSet<DirectedGraphNode<T>>();
 
         /// <inheritdoc />
         public int Count
         {
             [DebuggerStepThrough]
+            [MethodImpl(OmnifactotumConstants.MethodOptimizationOptions.Maximum)]
             get => _items.Count;
         }
 
@@ -39,6 +43,7 @@ namespace Omnifactotum
         public bool IsReadOnly
         {
             [DebuggerStepThrough]
+            [MethodImpl(OmnifactotumConstants.MethodOptimizationOptions.Maximum)]
             get => false;
         }
 
@@ -68,22 +73,19 @@ namespace Omnifactotum
         }
 
         /// <inheritdoc />
-        public bool Contains(DirectedGraphNode<T> item)
-        {
-            return item != null && _items.Contains(item);
-        }
+        //// ReSharper disable once ConditionIsAlwaysTrueOrFalseAccordingToNullableAPIContract :: Contract validation
+        public bool Contains(DirectedGraphNode<T> item) => item is not null && _items.Contains(item);
 
         /// <inheritdoc />
-        public void CopyTo(DirectedGraphNode<T>[] array, int arrayIndex)
-        {
-            _items.CopyTo(array, arrayIndex);
-        }
+        public void CopyTo(DirectedGraphNode<T>[] array, int arrayIndex) => _items.CopyTo(array, arrayIndex);
 
         /// <inheritdoc />
         public bool Remove(DirectedGraphNode<T> item)
         {
             var result = RemoveInternal(item);
-            if (result && item != null)
+
+            //// ReSharper disable once ConditionIsAlwaysTrueOrFalseAccordingToNullableAPIContract :: Contract validation
+            if (result && item is not null)
             {
                 OnItemRemoved(item);
             }
@@ -92,28 +94,15 @@ namespace Omnifactotum
         }
 
         /// <inheritdoc />
-        public IEnumerator<DirectedGraphNode<T>> GetEnumerator()
-        {
-            return _items.GetEnumerator();
-        }
+        public IEnumerator<DirectedGraphNode<T>> GetEnumerator() => _items.GetEnumerator();
 
         /// <inheritdoc />
-        IEnumerator IEnumerable.GetEnumerator()
-        {
-            return GetEnumerator();
-        }
+        IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();
 
         [CanBeNull]
-        internal abstract DirectedGraph<T> Graph
-        {
-            get;
-            set;
-        }
+        internal abstract DirectedGraph<T>? Graph { get; set; }
 
-        internal void ClearInternal()
-        {
-            _items.Clear();
-        }
+        internal void ClearInternal() => _items.Clear();
 
         internal void AddInternal([NotNull] DirectedGraphNode<T> item)
         {
@@ -122,7 +111,7 @@ namespace Omnifactotum
                 throw new ArgumentNullException(nameof(item));
             }
 
-            if (Graph != null && item.Graph != null && item.Graph != Graph)
+            if (Graph is not null && item.Graph is not null && item.Graph != Graph)
             {
                 throw new ArgumentException("The item is already associated with another graph.", nameof(item));
             }
@@ -131,8 +120,7 @@ namespace Omnifactotum
             {
                 if (item.Graph is null)
                 {
-                    throw new InvalidOperationException(
-                        AsInvariant($@"The node {{{item}}} belongs to the graph but is not associated with this graph."));
+                    throw new InvalidOperationException(AsInvariant($@"The node {{ {item} }} belongs to the graph but is not associated with this graph."));
                 }
 
                 return;
@@ -145,6 +133,7 @@ namespace Omnifactotum
             {
                 return;
             }
+
             if (item.Graph is null)
             {
                 item.AssignGraph(graph);
@@ -153,10 +142,7 @@ namespace Omnifactotum
             Graph ??= graph;
         }
 
-        internal bool RemoveInternal([CanBeNull] DirectedGraphNode<T> item)
-        {
-            return item != null && _items.Remove(item);
-        }
+        internal bool RemoveInternal([CanBeNull] DirectedGraphNode<T>? item) => item is not null && _items.Remove(item);
 
         /// <summary>
         ///     Called right after an item has been added to this collection.
@@ -179,5 +165,7 @@ namespace Omnifactotum
         {
             // Nothing to do; for overriding only
         }
+
+        private string ToDebuggerString() => $@"{GetType().GetQualifiedName()}: {nameof(Count)} = {Count}";
     }
 }

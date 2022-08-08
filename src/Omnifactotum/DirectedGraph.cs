@@ -1,8 +1,13 @@
-﻿using System;
+﻿#nullable enable
+
+using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using Omnifactotum.Annotations;
+
+//// ReSharper disable RedundantNullnessAttributeWithNullableReferenceTypes
+//// ReSharper disable AnnotationRedundancyInHierarchy
 
 namespace Omnifactotum
 {
@@ -49,7 +54,7 @@ namespace Omnifactotum
         /// <returns>
         ///     A created node.
         /// </returns>
-        public DirectedGraphNode<T> AddNode([CanBeNull] T nodeValue)
+        public DirectedGraphNode<T> AddNode(T nodeValue)
         {
             var node = new DirectedGraphNode<T>(nodeValue);
             Add(node);
@@ -66,26 +71,26 @@ namespace Omnifactotum
         /// <returns>
         ///     An array of the nodes sorted topologically.
         /// </returns>
-        public DirectedGraphNode<T>[] SortTopologically(
-            [CanBeNull] Comparison<DirectedGraphNode<T>> compareEquipollentNodes)
+        public DirectedGraphNode<T>[] SortTopologically([CanBeNull] Comparison<DirectedGraphNode<T>?>? compareEquipollentNodes = null)
         {
             var internalNodeMap = new Dictionary<DirectedGraphNode<T>, InternalNode<T>>(Count);
 
+            IEnumerable<DirectedGraphNode<T>> GetItems(DirectedGraphNode<T> item) => item.Heads.Concat(item.Tails);
+
+            RecursiveProcessingDirective ProcessItem(DirectedGraphNode<T> item)
+            {
+                if (internalNodeMap.ContainsKey(item))
+                {
+                    return RecursiveProcessingDirective.NoRecursionForItem;
+                }
+
+                internalNodeMap.Add(item, new InternalNode<T>(item));
+                return RecursiveProcessingDirective.Continue;
+            }
+
             foreach (var node in this)
             {
-                Factotum.ProcessRecursively(
-                    node,
-                    item => item.Heads.Concat(item.Tails),
-                    item =>
-                    {
-                        if (internalNodeMap.ContainsKey(item))
-                        {
-                            return RecursiveProcessingDirective.NoRecursionForItem;
-                        }
-
-                        internalNodeMap.Add(item, new InternalNode<T>(item));
-                        return RecursiveProcessingDirective.Continue;
-                    });
+                Factotum.ProcessRecursively(node, GetItems, ProcessItem);
             }
 
             foreach (var internalNode in internalNodeMap.Values)
@@ -98,16 +103,16 @@ namespace Omnifactotum
             var comparer = new NodeComparer<T>(compareEquipollentNodes);
 
             var remainingNodes = internalNodeMap.Values.ToList();
-            while (remainingNodes.Any())
+            while (remainingNodes.Count != 0)
             {
                 var candidate = remainingNodes
                     .Where(item => item.Tails.Count == 0)
                     .OrderBy(item => item.Node, comparer)
                     .FirstOrDefault();
+
                 if (candidate is null)
                 {
-                    throw new InvalidOperationException(
-                        "Topological sorting cannot be performed since the graph has a cycle.");
+                    throw new InvalidOperationException("Topological sorting cannot be performed since the graph has a cycle.");
                 }
 
                 resultList.Add(candidate.Node);
@@ -119,20 +124,7 @@ namespace Omnifactotum
             return resultList.ToArray();
         }
 
-        /// <summary>
-        ///     Gets the nodes of this graph sorted topologically, remaining the source graph and its nodes unaffected.
-        ///     Equipollent nodes are sorted by their values, using the default comparer for
-        ///     the type <typeparamref name="T"/>.
-        /// </summary>
-        /// <returns>
-        ///     An array of the nodes sorted topologically.
-        /// </returns>
-        public DirectedGraphNode<T>[] SortTopologically()
-        {
-            return SortTopologically(null);
-        }
-
-        internal override DirectedGraph<T> Graph
+        internal override DirectedGraph<T>? Graph
         {
             [DebuggerStepThrough]
             get => this;
@@ -141,22 +133,17 @@ namespace Omnifactotum
             {
                 if (value != this)
                 {
-                    throw new InvalidOperationException("Internal error: the graph cannot be changed.");
+                    throw new InvalidOperationException($@"Internal error: the graph cannot be changed for {GetType().GetQualifiedName().ToUIString()}.");
                 }
             }
         }
 
-        /// <summary>
-        ///     Called right after an item has been removed from this collection.
-        /// </summary>
-        /// <param name="item">
-        ///     The item that has been removed.
-        /// </param>
+        /// <inheritdoc />
         protected override void OnItemRemoved(DirectedGraphNode<T> item)
         {
             base.OnItemRemoved(item);
 
-            item.Graph = null;
+            item.ResetGraph();
             this.DoForEach(obj => obj.Tails.Remove(item));
             this.DoForEach(obj => obj.Heads.Remove(item));
         }
@@ -169,33 +156,29 @@ namespace Omnifactotum
                 Tails = new List<InternalNode<TValue>>(node.Tails.Count);
             }
 
-            public DirectedGraphNode<TValue> Node
-            {
-                get;
-            }
+            public DirectedGraphNode<TValue> Node { get; }
 
-            public List<InternalNode<TValue>> Tails
-            {
-                get;
-            }
+            public List<InternalNode<TValue>> Tails { get; }
         }
 
         private sealed class NodeComparer<TValue> : IComparer<DirectedGraphNode<TValue>>
         {
-            private readonly Comparison<DirectedGraphNode<TValue>> _comparison;
+            private static readonly Comparison<DirectedGraphNode<TValue>?> DefaultCompareNodesMethod = DefaultCompareNodes;
 
-            /// <summary>
-            ///     Initializes a new instance of the <see cref="NodeComparer{TValue}"/> class.
-            /// </summary>
-            public NodeComparer([CanBeNull] Comparison<DirectedGraphNode<TValue>> comparison)
-            {
-                _comparison = comparison ?? ((x, y) => Comparer<TValue>.Default.Compare(x.Value, y.Value));
-            }
+            private readonly Comparison<DirectedGraphNode<TValue>?> _comparison;
 
-            public int Compare(DirectedGraphNode<TValue> x, DirectedGraphNode<TValue> y)
-            {
-                return _comparison(x, y);
-            }
+            public NodeComparer([CanBeNull] Comparison<DirectedGraphNode<TValue>?>? comparison) => _comparison = comparison ?? DefaultCompareNodesMethod;
+
+            public int Compare(DirectedGraphNode<TValue>? left, DirectedGraphNode<TValue>? right) => _comparison(left, right);
+
+            private static int DefaultCompareNodes(DirectedGraphNode<TValue>? left, DirectedGraphNode<TValue>? right)
+                => ReferenceEquals(left, right)
+                    ? OmnifactotumConstants.ComparisonResult.Equal
+                    : left is null
+                        ? OmnifactotumConstants.ComparisonResult.LessThan
+                        : right is null
+                            ? OmnifactotumConstants.ComparisonResult.GreaterThan
+                            : Comparer<TValue>.Default.Compare(left.Value, right.Value);
         }
     }
 }
