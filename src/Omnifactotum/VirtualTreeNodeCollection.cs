@@ -1,9 +1,14 @@
-﻿using System;
+﻿#nullable enable
+
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Diagnostics;
 using Omnifactotum.Annotations;
 using static Omnifactotum.FormattableStringFactotum;
+
+//// ReSharper disable RedundantNullnessAttributeWithNullableReferenceTypes
+//// ReSharper disable AnnotationRedundancyInHierarchy
 
 namespace Omnifactotum
 {
@@ -25,28 +30,72 @@ namespace Omnifactotum
         /// <param name="owner">
         ///     The owner of the <see cref="VirtualTreeNodeCollection{T}"/>.
         /// </param>
-        internal VirtualTreeNodeCollection([NotNull] VirtualTreeNodeBase<T> owner)
-        {
-            _owner = owner ?? throw new ArgumentNullException(nameof(owner));
-            _list = new List<VirtualTreeNode<T>>();
-        }
-
-        /// <summary>
-        ///     Initializes a new instance of the <see cref="VirtualTreeNodeCollection{T}"/> class
-        ///     using the specified collection of the nodes.
-        /// </summary>
-        /// <param name="owner">
-        ///     The node which is the owner of the collection.
-        /// </param>
         /// <param name="collection">
         ///     The collection of the nodes to initialize the current collection with.
         /// </param>
-        internal VirtualTreeNodeCollection(
-            [NotNull] VirtualTreeNodeBase<T> owner,
-            [NotNull] IEnumerable<VirtualTreeNode<T>> collection)
-            : this(owner)
+        internal VirtualTreeNodeCollection([NotNull] VirtualTreeNodeBase<T> owner, [CanBeNull] IReadOnlyCollection<VirtualTreeNode<T>>? collection = null)
         {
-            AddRange(collection);
+            _owner = owner ?? throw new ArgumentNullException(nameof(owner));
+            _list = new List<VirtualTreeNode<T>>(collection?.Count ?? 0);
+
+            collection?.DoForEach(Add);
+        }
+
+        /// <summary>
+        ///     Gets the number of elements contained in the <see cref="VirtualTreeNodeCollection{T}"/>.
+        /// </summary>
+        public int Count
+        {
+            [DebuggerStepThrough]
+            get => _list.Count;
+        }
+
+        /// <summary>
+        ///     Gets a value indicating whether the <see cref="VirtualTreeNodeCollection{T}"/> is read-only.
+        /// </summary>
+        /// <returns>
+        ///     The implementation of <see cref="VirtualTreeNodeCollection{T}"/> returns <see langword="false"/>.
+        /// </returns>
+        public bool IsReadOnly
+        {
+            [DebuggerStepThrough]
+            get => false;
+        }
+
+        /// <summary>
+        ///     Gets or sets the element at the specified index.
+        /// </summary>
+        /// <param name="index">
+        ///     The zero-based index of the element to get or set.
+        /// </param>
+        /// <returns>
+        ///     The element at the specified index.
+        /// </returns>
+        /// <exception cref="System.ArgumentOutOfRangeException">
+        ///     <paramref name="index"/> is not a valid index.
+        /// </exception>
+        [NotNull]
+        public VirtualTreeNode<T> this[int index]
+        {
+            get => _list[index];
+
+            set
+            {
+                if (index < 0 || index >= _list.Count)
+                {
+                    throw new ArgumentOutOfRangeException(nameof(index), index, $@"The specified index ({index}) is out of range.");
+                }
+
+                if (ReferenceEquals(_list[index], value))
+                {
+                    return;
+                }
+
+                CheckItemBeingAdded(value);
+                _list[index].Parent = null;
+                _list[index] = value;
+                value.Parent = _owner;
+            }
         }
 
         /// <summary>
@@ -81,48 +130,7 @@ namespace Omnifactotum
                 throw new ArgumentNullException(nameof(collection));
             }
 
-            foreach (var item in collection)
-            {
-                Add(item);
-            }
-        }
-
-        /// <summary>
-        ///     Gets or sets the element at the specified index.
-        /// </summary>
-        /// <param name="index">
-        ///     The zero-based index of the element to get or set.
-        /// </param>
-        /// <returns>
-        ///     The element at the specified index.
-        /// </returns>
-        /// <exception cref="System.ArgumentOutOfRangeException">
-        ///     <paramref name="index"/> is not a valid index.
-        /// </exception>
-        [NotNull]
-        public VirtualTreeNode<T> this[int index]
-        {
-            get => _list[index];
-
-            set
-            {
-                if (value is null)
-                {
-                    throw new ArgumentNullException(nameof(value));
-                }
-
-                if (index < 0 || index >= _list.Count)
-                {
-                    throw new ArgumentOutOfRangeException(nameof(index), index, "The specified index is out of range.");
-                }
-
-                if (value != _list[index])
-                {
-                    CheckItemBeingAdded(value);
-                }
-
-                _list[index] = value;
-            }
+            collection.DoForEach(Add);
         }
 
         /// <summary>
@@ -134,9 +142,15 @@ namespace Omnifactotum
         /// <returns>
         ///     The index of <paramref name="item"/> if found; otherwise, <c>-1</c>.
         /// </returns>
-        public int IndexOf(VirtualTreeNode<T> item)
+        //// ReSharper disable once AnnotationConflictInHierarchy
+        public int IndexOf([NotNull] VirtualTreeNode<T> item)
         {
-            return item is null ? -1 : _list.IndexOf(item);
+            if (item is null)
+            {
+                throw new ArgumentNullException(nameof(item));
+            }
+
+            return _list.IndexOf(item);
         }
 
         /// <summary>
@@ -160,11 +174,6 @@ namespace Omnifactotum
         //// ReSharper disable once AnnotationConflictInHierarchy
         public void Insert(int index, [NotNull] VirtualTreeNode<T> item)
         {
-            if (item is null)
-            {
-                throw new ArgumentNullException(nameof(item));
-            }
-
             CheckItemBeingAdded(item);
 
             _list.Insert(index, item);
@@ -188,27 +197,6 @@ namespace Omnifactotum
         }
 
         /// <summary>
-        ///     Gets the number of elements contained in the <see cref="VirtualTreeNodeCollection{T}"/>.
-        /// </summary>
-        public int Count
-        {
-            [DebuggerStepThrough]
-            get => _list.Count;
-        }
-
-        /// <summary>
-        ///     Gets a value indicating whether the <see cref="VirtualTreeNodeCollection{T}"/> is read-only.
-        /// </summary>
-        /// <returns>
-        ///     The implementation of <see cref="VirtualTreeNodeCollection{T}"/> returns <see langword="false"/>.
-        /// </returns>
-        public bool IsReadOnly
-        {
-            [DebuggerStepThrough]
-            get => false;
-        }
-
-        /// <summary>
         ///     Adds an item to the end of the <see cref="VirtualTreeNodeCollection{T}"/>.
         /// </summary>
         /// <param name="item">
@@ -223,11 +211,6 @@ namespace Omnifactotum
         //// ReSharper disable once AnnotationConflictInHierarchy
         public void Add([NotNull] VirtualTreeNode<T> item)
         {
-            if (item is null)
-            {
-                throw new ArgumentNullException(nameof(item));
-            }
-
             CheckItemBeingAdded(item);
 
             _list.Add(item);
@@ -257,9 +240,15 @@ namespace Omnifactotum
         ///     <see langword="true"/> if <paramref name="item"/> is found in the <see cref="VirtualTreeNodeCollection{T}"/>;
         ///     otherwise, <see langword="false"/>.
         /// </returns>
-        public bool Contains(VirtualTreeNode<T> item)
+        //// ReSharper disable once AnnotationConflictInHierarchy
+        public bool Contains([NotNull] VirtualTreeNode<T> item)
         {
-            return item != null && _list.Contains(item);
+            if (item is null)
+            {
+                throw new ArgumentNullException(nameof(item));
+            }
+
+            return _list.Contains(item);
         }
 
         /// <summary>
@@ -277,7 +266,7 @@ namespace Omnifactotum
         /// <exception cref="System.ArgumentNullException">
         ///     <paramref name="array"/> is <see langword="null"/>.
         /// </exception>
-        public void CopyTo(VirtualTreeNode<T>[] array, int arrayIndex)
+        public void CopyTo([NotNull] VirtualTreeNode<T>[] array, int arrayIndex)
         {
             if (array is null)
             {
@@ -298,11 +287,12 @@ namespace Omnifactotum
         ///     <see langword="true"/> if <paramref name="item"/> was successfully removed from
         ///     the <see cref="VirtualTreeNodeCollection{T}"/>; otherwise, <see langword="false"/>.
         /// </returns>
-        public bool Remove(VirtualTreeNode<T> item)
+        //// ReSharper disable once AnnotationConflictInHierarchy
+        public bool Remove([NotNull] VirtualTreeNode<T> item)
         {
             if (item is null)
             {
-                return false;
+                throw new ArgumentNullException(nameof(item));
             }
 
             var result = _list.Remove(item);
@@ -320,10 +310,7 @@ namespace Omnifactotum
         /// <returns>
         ///     A <see cref="IEnumerator{T}"/> that can be used to iterate through the collection.
         /// </returns>
-        public IEnumerator<VirtualTreeNode<T>> GetEnumerator()
-        {
-            return _list.GetEnumerator();
-        }
+        public IEnumerator<VirtualTreeNode<T>> GetEnumerator() => _list.GetEnumerator();
 
         /// <summary>
         ///     Returns an enumerator that iterates through a collection.
@@ -331,10 +318,7 @@ namespace Omnifactotum
         /// <returns>
         ///     An <see cref="IEnumerator"/> object that can be used to iterate through the collection.
         /// </returns>
-        IEnumerator IEnumerable.GetEnumerator()
-        {
-            return GetEnumerator();
-        }
+        IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();
 
         private void CheckItemBeingAdded([NotNull] VirtualTreeNode<T> item)
         {
@@ -350,10 +334,10 @@ namespace Omnifactotum
 
             if (item.Parent == _owner)
             {
-                throw new ArgumentException("The item already belongs to this collection.", nameof(item));
+                throw new ArgumentException($@"The item {{ {item} }} already belongs to this collection.", nameof(item));
             }
 
-            throw new ArgumentException("The item already belongs to another collection.", nameof(item));
+            throw new ArgumentException($@"The item {{ {item} }} already belongs to another collection.", nameof(item));
         }
     }
 }

@@ -1,8 +1,13 @@
-﻿using System;
+﻿#nullable enable
+
+using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using Omnifactotum.Annotations;
 using static Omnifactotum.FormattableStringFactotum;
+
+//// ReSharper disable RedundantNullnessAttributeWithNullableReferenceTypes
+//// ReSharper disable AnnotationRedundancyInHierarchy
 
 namespace Omnifactotum
 {
@@ -16,41 +21,7 @@ namespace Omnifactotum
     [Serializable]
     public sealed class VirtualTreeNode<T> : VirtualTreeNodeBase<T>
     {
-        private VirtualTreeNodeBase<T> _owner;
-
-        /// <summary>
-        ///     Initializes a new instance of the <see cref="VirtualTreeNode{T}"/> class.
-        /// </summary>
-        public VirtualTreeNode()
-        {
-            // Nothing to do
-        }
-
-        /// <summary>
-        ///     Initializes a new instance of the <see cref="VirtualTreeNode{T}"/> class
-        ///     using the specified value.
-        /// </summary>
-        /// <param name="value">
-        ///     A value to initialize the <see cref="VirtualTreeNode{T}"/> instance with.
-        /// </param>
-        public VirtualTreeNode([CanBeNull] T value)
-            : this()
-        {
-            Value = value;
-        }
-
-        /// <summary>
-        ///     Initializes a new instance of the <see cref="VirtualTreeNode{T}"/> class
-        ///     using the specified collection of the child nodes.
-        /// </summary>
-        /// <param name="children">
-        ///     The children to initialize the <see cref="VirtualTreeNode{T}"/> instance with.
-        /// </param>
-        public VirtualTreeNode([NotNull] ICollection<VirtualTreeNode<T>> children)
-            : base(children)
-        {
-            // Nothing to do
-        }
+        private VirtualTreeNodeBase<T>? _owner;
 
         /// <summary>
         ///     Initializes a new instance of the <see cref="VirtualTreeNode{T}"/> class
@@ -60,19 +31,17 @@ namespace Omnifactotum
         ///     A value to initialize the <see cref="VirtualTreeNode{T}"/> instance with.
         /// </param>
         /// <param name="children">
-        ///     The children to initialize the <see cref="VirtualTreeNode{T}"/> instance with.
+        ///     The children to initialize the <see cref="VirtualTreeNode{T}"/> instance with. Can be <see langword="null"/>.
         /// </param>
-        public VirtualTreeNode([CanBeNull] T value, [NotNull] ICollection<VirtualTreeNode<T>> children)
-            : this(children)
-        {
-            Value = value;
-        }
+        public VirtualTreeNode(T value, [CanBeNull] IReadOnlyCollection<VirtualTreeNode<T>>? children = null)
+            : base(children ?? Array.Empty<VirtualTreeNode<T>>())
+            => Value = value;
 
         /// <summary>
         ///     Gets the parent node of the current node, or <see langword="null"/> if the node does not have a parent.
         /// </summary>
         [CanBeNull]
-        public VirtualTreeNodeBase<T> Parent
+        public VirtualTreeNodeBase<T>? Parent
         {
             [DebuggerStepThrough]
             get => _owner;
@@ -84,7 +53,6 @@ namespace Omnifactotum
         /// <summary>
         ///     Gets or sets the value associated with the current node.
         /// </summary>
-        [CanBeNull]
         public T Value { get; set; }
 
         /// <summary>
@@ -94,7 +62,6 @@ namespace Omnifactotum
         ///     A <see cref="System.String"/> that represents this <see cref="VirtualTreeNode{T}"/>.
         /// </returns>
         public override string ToString()
-            => AsInvariant($@"{GetType().GetQualifiedName()}: {nameof(Children)}.{nameof(Children.Count)} = {Children.Count}, {
-                nameof(Value)} = {Value}");
+            => AsInvariant($@"{GetType().GetQualifiedName()}: {nameof(Children)}.{nameof(Children.Count)} = {Children.Count}, {nameof(Value)} = {Value}");
     }
 }

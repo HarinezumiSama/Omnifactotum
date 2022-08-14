@@ -1,9 +1,14 @@
-﻿using System;
+﻿#nullable enable
+
+using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using Omnifactotum.Annotations;
 using static Omnifactotum.FormattableStringFactotum;
+
+//// ReSharper disable RedundantNullnessAttributeWithNullableReferenceTypes
+//// ReSharper disable AnnotationRedundancyInHierarchy
 
 namespace Omnifactotum
 {
@@ -17,15 +22,7 @@ namespace Omnifactotum
     [Serializable]
     public abstract class VirtualTreeNodeBase<T>
     {
-        private VirtualTreeNodeCollection<T> _children;
-
-        /// <summary>
-        ///     Initializes a new instance of the <see cref="VirtualTreeNodeBase{T}"/> class.
-        /// </summary>
-        protected VirtualTreeNodeBase()
-        {
-            // Nothing to do
-        }
+        private VirtualTreeNodeCollection<T>? _children;
 
         /// <summary>
         ///     Initializes a new instance of the <see cref="VirtualTreeNodeBase{T}"/> class
@@ -34,20 +31,20 @@ namespace Omnifactotum
         /// <param name="children">
         ///     The children to initialize the <see cref="VirtualTreeNodeBase{T}"/> instance with.
         /// </param>
-        protected VirtualTreeNodeBase([NotNull] ICollection<VirtualTreeNode<T>> children)
-            : this()
+        private protected VirtualTreeNodeBase([NotNull] IReadOnlyCollection<VirtualTreeNode<T>> children)
         {
             if (children is null)
             {
                 throw new ArgumentNullException(nameof(children));
             }
 
+            //// ReSharper disable once ConditionIsAlwaysTrueOrFalseAccordingToNullableAPIContract :: Argument validation
             if (children.Any(item => item is null))
             {
                 throw new ArgumentException(@"The collection contains a null element.", nameof(children));
             }
 
-            _children = new VirtualTreeNodeCollection<T>(this, children);
+            _children = children.Count == 0 ? null : new VirtualTreeNodeCollection<T>(this, children);
         }
 
         /// <summary>
@@ -57,16 +54,7 @@ namespace Omnifactotum
         public VirtualTreeNodeCollection<T> Children
         {
             [DebuggerNonUserCode]
-            get
-            {
-                // ReSharper disable once ConvertIfStatementToNullCoalescingExpression
-                if (_children is null)
-                {
-                    _children = new VirtualTreeNodeCollection<T>(this);
-                }
-
-                return _children;
-            }
+            get => _children ??= new VirtualTreeNodeCollection<T>(this);
         }
 
         /// <summary>
@@ -75,7 +63,6 @@ namespace Omnifactotum
         /// <returns>
         ///     A <see cref="System.String"/> that represents this <see cref="VirtualTreeNodeBase{T}"/>.
         /// </returns>
-        public override string ToString()
-            => AsInvariant($@"{GetType().GetQualifiedName()}: {nameof(Children)}.{nameof(Children.Count)} = {Children.Count}");
+        public override string ToString() => AsInvariant($@"{GetType().GetQualifiedName()}: {nameof(Children)}.{nameof(Children.Count)} = {Children.Count}");
     }
 }
