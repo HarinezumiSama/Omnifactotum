@@ -1,4 +1,6 @@
-﻿using System;
+﻿#nullable enable
+
+using System;
 using System.Diagnostics.CodeAnalysis;
 using System.Globalization;
 using NUnit.Framework;
@@ -12,8 +14,8 @@ namespace Omnifactotum.Tests
         [SuppressMessage("ReSharper", "ExpressionIsAlwaysNull")]
         public void TestAsInvariantWhenInvalidArgumentThenThrows()
         {
-            FormattableString sourceInterpolationValue = null;
-            Assert.That(() => FormattableStringFactotum.AsInvariant(sourceInterpolationValue!), Throws.ArgumentNullException);
+            const FormattableString? SourceInterpolationValue = null;
+            Assert.That(() => FormattableStringFactotum.AsInvariant(SourceInterpolationValue!), Throws.ArgumentNullException);
         }
 
         [Test]

@@ -1,8 +1,11 @@
-﻿using System;
+﻿#nullable enable
+
+using System;
 using System.Collections.Generic;
 using System.Reflection;
 using System.Runtime.CompilerServices;
 using NUnit.Framework;
+using Omnifactotum.NUnit;
 
 namespace Omnifactotum.Tests.ExtensionMethods
 {
@@ -10,17 +13,18 @@ namespace Omnifactotum.Tests.ExtensionMethods
     {
         public static readonly MethodBaseTestHelper Instance = new();
 
+        [MethodImpl(MethodImplOptions.NoInlining | MethodImplOptions.NoOptimization)]
         private MethodBaseTestHelper()
         {
-            InstanceConstructorMethod = MethodBase.GetCurrentMethod();
+            InstanceConstructorMethod = MethodBase.GetCurrentMethod().AssertNotNull();
             InstanceConstructorName = ".ctor";
 
-            var genericMethodDefinition = GetType().GetMethod(
-                MethodName,
-                BindingFlags.Instance | BindingFlags.Static | BindingFlags.Public | BindingFlags.NonPublic);
+            var genericMethodDefinition = GetType()
+                .GetMethod(MethodName, BindingFlags.Instance | BindingFlags.Static | BindingFlags.Public | BindingFlags.NonPublic)
+                .AssertNotNull();
 
-            Assert.That(genericMethodDefinition, Is.Not.Null);
-            Assert.That(genericMethodDefinition.IsGenericMethodDefinition, Is.True);
+            Assert.That(() => genericMethodDefinition, Is.Not.Null);
+            Assert.That(() => genericMethodDefinition.IsGenericMethodDefinition, Is.True);
             GenericMethodDefinition = genericMethodDefinition;
 
             var genericMethod = genericMethodDefinition.MakeGenericMethod(
@@ -95,33 +99,22 @@ namespace Omnifactotum.Tests.ExtensionMethods
             ////Assert.That(testMethod, Is.Not.Null);
         }
 
-        public MethodBase InstanceConstructorMethod
-        {
-            get;
-        }
+        public MethodBase InstanceConstructorMethod { get; }
 
-        public string InstanceConstructorName
-        {
-            get;
-        }
+        public string InstanceConstructorName { get; }
 
+        //// ReSharper disable once MemberCanBeMadeStatic.Global
         public string MethodName => nameof(GetTestMethod);
 
-        public MethodBase GenericMethodDefinition
-        {
-            get;
-        }
+        public MethodBase GenericMethodDefinition { get; }
 
-        public MethodBase GenericMethod
-        {
-            get;
-        }
+        public MethodBase GenericMethod { get; }
 
         [MethodImpl(MethodImplOptions.NoInlining | MethodImplOptions.NoOptimization)]
         private static unsafe MethodBase GetTestMethod<TReference, TValue>(
             TReference byValueReferenceTypeGenericValue,
             ref TReference byRefReferenceTypeGenericValue,
-            out TReference byOutReferenceTypeGenericValue,
+            out TReference? byOutReferenceTypeGenericValue,
             TValue byValueValueTypeGenericValue,
             ref TValue byRefValueTypeGenericValue,
             out TValue byOutValueTypeGenericValue,
@@ -130,16 +123,16 @@ namespace Omnifactotum.Tests.ExtensionMethods
             out TValue? byOutNullableValueTypeGenericValue,
             TReference[] byValueArrayOfReferenceTypeGenericValues,
             ref TReference[] byRefArrayOfReferenceTypeGenericValues,
-            out TReference[] byOutArrayOfReferenceTypeGenericValues,
+            out TReference[]? byOutArrayOfReferenceTypeGenericValues,
             TValue[] byValueArrayOfValueTypeGenericValues,
             ref TValue[] byRefArrayOfValueTypeGenericValues,
-            out TValue[] byOutArrayOfValueTypeGenericValues,
+            out TValue[]? byOutArrayOfValueTypeGenericValues,
             TValue?[] byValueArrayOfNullableValueTypeGenericValues,
             ref TValue?[] byRefArrayOfNullableValueTypeGenericValues,
-            out TValue?[] byOutArrayOfNullableValueTypeGenericValues,
+            out TValue?[]? byOutArrayOfNullableValueTypeGenericValues,
             string byValueReferenceTypeSpecificValue,
             ref string byRefReferenceTypeSpecificValue,
-            out string byOutReferenceTypeSpecificValue,
+            out string? byOutReferenceTypeSpecificValue,
             long byValueValueTypeSpecificValue,
             ref long byRefValueTypeSpecificValue,
             out long byOutValueTypeSpecificValue,
@@ -151,16 +144,16 @@ namespace Omnifactotum.Tests.ExtensionMethods
             out long* byOutPointerToValueTypeSpecificValue,
             string[] byValueArrayOfReferenceTypeSpecificValue,
             ref string[] byRefArrayOfReferenceTypeSpecificValue,
-            out string[] byOutArrayOfReferenceTypeSpecificValue,
+            out string[]? byOutArrayOfReferenceTypeSpecificValue,
             long[] byValueArrayOfValueTypeSpecificValue,
             ref long[] byRefArrayOfValueTypeSpecificValue,
-            out long[] byOutArrayOfValueTypeSpecificValue,
+            out long[]? byOutArrayOfValueTypeSpecificValue,
             long?[] byValueArrayOfNullableValueTypeSpecificValue,
             ref long?[] byRefArrayOfNullableValueTypeSpecificValue,
-            out long?[] byOutArrayOfNullableValueTypeSpecificValue,
+            out long?[]? byOutArrayOfNullableValueTypeSpecificValue,
             long*[] byValueArrayOfPointerToValueTypeSpecificValue,
             ref long*[] byRefArrayOfPointerToValueTypeSpecificValue,
-            out long*[] byOutArrayOfPointerToValueTypeSpecificValue)
+            out long*[]? byOutArrayOfPointerToValueTypeSpecificValue)
             where TReference : class
             where TValue : struct
         {
@@ -207,7 +200,7 @@ namespace Omnifactotum.Tests.ExtensionMethods
             byRefArrayOfPointerToValueTypeSpecificValue.UseValue();
             byOutArrayOfPointerToValueTypeSpecificValue = default;
 
-            return MethodBase.GetCurrentMethod();
+            return MethodBase.GetCurrentMethod().AssertNotNull();
         }
     }
 }

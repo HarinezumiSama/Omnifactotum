@@ -15,7 +15,6 @@ using NotNullIfNotNull = System.Diagnostics.CodeAnalysis.NotNullIfNotNullAttribu
 //// ReSharper disable RedundantNullnessAttributeWithNullableReferenceTypes
 
 //// ReSharper disable once CheckNamespace :: Compatibility (Omnifactotum.NUnit)
-
 namespace Omnifactotum.NUnit
 {
     /// <summary>
