@@ -1,4 +1,6 @@
-﻿using System;
+﻿#nullable enable
+
+using System;
 using System.Globalization;
 using System.Linq;
 using NUnit.Framework;
@@ -7,13 +9,11 @@ using Omnifactotum.NUnit;
 
 namespace Omnifactotum.Tests.ExtensionMethods
 {
-    //// ReSharper disable AssignNullToNotNullAttribute - Intentionally for tests
-
     [TestFixture(TestOf = typeof(OmnifactotumArrayExtensions))]
     internal sealed class OmnifactotumArrayExtensionsTests
     {
-        private static readonly string[] NullArray = null;
-        private static readonly byte[] NullByteArray = null;
+        private static readonly string[]? NullArray = null;
+        private static readonly byte[]? NullByteArray = null;
 
         [Test]
         public void TestCopyNull()
@@ -40,12 +40,12 @@ namespace Omnifactotum.Tests.ExtensionMethods
         [Test]
         public void TestInitializeWithOldValueNegative()
         {
-            Assert.That(() => NullArray.Initialize((s, _) => s), Throws.TypeOf<ArgumentNullException>());
+            Assert.That(() => NullArray!.Initialize((s, _) => s), Throws.TypeOf<ArgumentNullException>());
 
             var nonNullArray = new[] { "foo", "bar" }.AssertNotNull();
 
             Assert.That(
-                () => nonNullArray.Initialize((Func<string, int, string>)null),
+                () => nonNullArray.Initialize((Func<string, int, string>)null!),
                 Throws.TypeOf<ArgumentNullException>());
         }
 
@@ -62,13 +62,13 @@ namespace Omnifactotum.Tests.ExtensionMethods
         public void TestInitializeNegative()
         {
             Assert.That(
-                () => NullArray.Initialize(i => i.ToString(CultureInfo.InvariantCulture)),
+                () => NullArray!.Initialize(i => i.ToString(CultureInfo.InvariantCulture)),
                 Throws.TypeOf<ArgumentNullException>());
 
             var nonNullArray = new[] { "foo", "bar" }.AssertNotNull();
 
             Assert.That(
-                () => nonNullArray.Initialize((Func<int, string>)null),
+                () => nonNullArray.Initialize((Func<int, string>)null!),
                 Throws.TypeOf<ArgumentNullException>());
         }
 
@@ -97,7 +97,7 @@ namespace Omnifactotum.Tests.ExtensionMethods
         [TestCase(false)]
         [TestCase(true)]
         public void TestToHexStringWithCaseNegative(bool useUpperCase)
-            => Assert.That(() => NullByteArray.ToHexString(useUpperCase), Throws.TypeOf<ArgumentNullException>());
+            => Assert.That(() => NullByteArray!.ToHexString(useUpperCase), Throws.TypeOf<ArgumentNullException>());
 
         [Test]
         [TestCase(false, "01c8")]
@@ -112,7 +112,7 @@ namespace Omnifactotum.Tests.ExtensionMethods
         }
 
         [Test]
-        public void TestToHexStringNegative() => Assert.That(() => NullByteArray.ToHexString(), Throws.TypeOf<ArgumentNullException>());
+        public void TestToHexStringNegative() => Assert.That(() => NullByteArray!.ToHexString(), Throws.TypeOf<ArgumentNullException>());
 
         [Test]
         public void TestToHexString()
@@ -127,6 +127,7 @@ namespace Omnifactotum.Tests.ExtensionMethods
 
         private sealed class CopyableObject : ICloneable
         {
+            // ReSharper disable once PropertyCanBeMadeInitOnly.Local
             public int Value { private get; set; }
 
             [UsedImplicitly]
