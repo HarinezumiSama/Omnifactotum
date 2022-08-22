@@ -18,7 +18,9 @@ namespace System.Diagnostics.CodeAnalysis
     [AttributeUsage(AttributeTargets.Parameter, Inherited = false)]
     internal sealed class MaybeNullWhenAttribute : Attribute
     {
-        /// <summary>Initializes the attribute with the specified return value condition.</summary>
+        /// <summary>
+        ///     Initializes the attribute with the specified return value condition.
+        /// </summary>
         /// <param name="returnValue">
         ///     The return value condition. If the method returns this value, the associated parameter may be null.
         /// </param>
