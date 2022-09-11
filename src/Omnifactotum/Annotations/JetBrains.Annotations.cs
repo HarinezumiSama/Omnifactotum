@@ -40,6 +40,7 @@ using System.Diagnostics.CodeAnalysis;
 //// ReSharper disable InconsistentNaming
 //// ReSharper disable BadIndent
 //// ReSharper disable UnusedType.Global
+//// ReSharper disable ArrangeConstructorOrDestructorBody
 
 namespace Omnifactotum.Annotations
 {

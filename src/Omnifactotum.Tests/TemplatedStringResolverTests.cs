@@ -22,7 +22,7 @@ namespace Omnifactotum.Tests
                         { "ValidKey2", "ValidValue2" },
                         { "{K", "Value2" },
                         { "ValidKey3", "ValidValue3" },
-                        { "K}", "Value3" },
+                        { "K}", "Value3" }
                     }),
                 Throws.ArgumentException
                     .With

@@ -47,10 +47,10 @@ namespace Omnifactotum.Tests.ExtensionMethods
                 AsInvariant(
                     $@"{nameof(Omnifactotum)}.{nameof(Tests)}.{nameof(ExtensionMethods)}.{nameof(MethodBaseTestHelper)}.{
                         _testHelper.MethodName}")
-                    + @"<"
-                    + @"System.Collections.Generic.List<System.Collections.Generic.Dictionary<System.Attribute, System.Exception>>"
-                    + @", System.ConsoleKeyInfo"
-                    + @">";
+                + @"<"
+                + @"System.Collections.Generic.List<System.Collections.Generic.Dictionary<System.Attribute, System.Exception>>"
+                + @", System.ConsoleKeyInfo"
+                + @">";
 
             var actual = _testHelper.GenericMethod.GetFullName();
             Assert.That(actual, Is.EqualTo(expected));
@@ -83,7 +83,7 @@ namespace Omnifactotum.Tests.ExtensionMethods
         {
             var expected =
                 AsInvariant($@"{nameof(MethodBaseTestHelper)}.{_testHelper.MethodName}")
-                    + @"<List<Dictionary<Attribute, Exception>>, ConsoleKeyInfo>";
+                + @"<List<Dictionary<Attribute, Exception>>, ConsoleKeyInfo>";
 
             var actual = _testHelper.GenericMethod.GetQualifiedName();
             Assert.That(actual, Is.EqualTo(expected));
@@ -109,12 +109,12 @@ namespace Omnifactotum.Tests.ExtensionMethods
                 AsInvariant(
                     $@"{nameof(MethodBase)} {nameof(MethodBaseTestHelper)}.{
                         _testHelper.MethodName}<TReference, TValue>(TReference, ref TReference, out TReference")
-                    + @", TValue, ref TValue, out TValue, TValue?, ref TValue?, out TValue?"
-                    + @", TReference[], ref TReference[], out TReference[], TValue[], ref TValue[], out TValue[]"
-                    + @", TValue?[], ref TValue?[], out TValue?[], string, ref string, out string"
-                    + @", long, ref long, out long, long?, ref long?, out long?, long*, ref long*, out long*"
-                    + @", string[], ref string[], out string[], long[], ref long[], out long[]"
-                    + @", long?[], ref long?[], out long?[], long*[], ref long*[], out long*[])";
+                + @", TValue, ref TValue, out TValue, TValue?, ref TValue?, out TValue?"
+                + @", TReference[], ref TReference[], out TReference[], TValue[], ref TValue[], out TValue[]"
+                + @", TValue?[], ref TValue?[], out TValue?[], string, ref string, out string"
+                + @", long, ref long, out long, long?, ref long?, out long?, long*, ref long*, out long*"
+                + @", string[], ref string[], out string[], long[], ref long[], out long[]"
+                + @", long?[], ref long?[], out long?[], long*[], ref long*[], out long*[])";
 
             var actual = _testHelper.GenericMethodDefinition.GetSignature();
             Assert.That(actual, Is.EqualTo(expected));
@@ -125,7 +125,7 @@ namespace Omnifactotum.Tests.ExtensionMethods
         {
             const string ReferenceType =
                 nameof(List<object>) + "<" + nameof(Dictionary<object, object>)
-                    + "<" + nameof(Attribute) + ", " + nameof(Exception) + ">>";
+                + "<" + nameof(Attribute) + ", " + nameof(Exception) + ">>";
 
             const string ValueType = nameof(ConsoleKeyInfo);
 
@@ -133,16 +133,16 @@ namespace Omnifactotum.Tests.ExtensionMethods
                 AsInvariant(
                     $@"{nameof(MethodBase)} {nameof(MethodBaseTestHelper)}.{
                         _testHelper.MethodName}<{ReferenceType}, {ValueType}>(")
-                    + AsInvariant($@"{ReferenceType}, ref {ReferenceType}, out {ReferenceType}")
-                    + AsInvariant($@", {ValueType}, ref {ValueType}, out {ValueType}")
-                    + AsInvariant($@", {ValueType}?, ref {ValueType}?, out {ValueType}?")
-                    + AsInvariant($@", {ReferenceType}[], ref {ReferenceType}[], out {ReferenceType}[]")
-                    + AsInvariant($@", {ValueType}[], ref {ValueType}[], out {ValueType}[]")
-                    + AsInvariant($@", {ValueType}?[], ref {ValueType}?[], out {ValueType}?[]")
-                    + @", string, ref string, out string, long, ref long, out long, long?, ref long?, out long?"
-                    + @", long*, ref long*, out long*, string[], ref string[], out string[]"
-                    + @", long[], ref long[], out long[], long?[], ref long?[], out long?[]"
-                    + @", long*[], ref long*[], out long*[])";
+                + AsInvariant($@"{ReferenceType}, ref {ReferenceType}, out {ReferenceType}")
+                + AsInvariant($@", {ValueType}, ref {ValueType}, out {ValueType}")
+                + AsInvariant($@", {ValueType}?, ref {ValueType}?, out {ValueType}?")
+                + AsInvariant($@", {ReferenceType}[], ref {ReferenceType}[], out {ReferenceType}[]")
+                + AsInvariant($@", {ValueType}[], ref {ValueType}[], out {ValueType}[]")
+                + AsInvariant($@", {ValueType}?[], ref {ValueType}?[], out {ValueType}?[]")
+                + @", string, ref string, out string, long, ref long, out long, long?, ref long?, out long?"
+                + @", long*, ref long*, out long*, string[], ref string[], out string[]"
+                + @", long[], ref long[], out long[], long?[], ref long?[], out long?[]"
+                + @", long*[], ref long*[], out long*[])";
 
             var actual = _testHelper.GenericMethod.GetSignature();
             Assert.That(actual, Is.EqualTo(expected));
@@ -167,10 +167,10 @@ namespace Omnifactotum.Tests.ExtensionMethods
         public void TestGetFullSignatureWhenGenericMethodDefinitionIsPassedThenSucceeds()
         {
             var expected = AsInvariant(
-                $@"{nameof(System)}.{nameof(System.Reflection)}.{nameof(MethodBase)} {
-                    nameof(Omnifactotum)}.{nameof(Tests)}.{nameof(ExtensionMethods)}.{
-                    nameof(MethodBaseTestHelper)}.{
-                    _testHelper.MethodName}<TReference, TValue>(TReference, ref TReference, out TReference")
+                    $@"{nameof(System)}.{nameof(System.Reflection)}.{nameof(MethodBase)} {
+                        nameof(Omnifactotum)}.{nameof(Tests)}.{nameof(ExtensionMethods)}.{
+                            nameof(MethodBaseTestHelper)}.{
+                                _testHelper.MethodName}<TReference, TValue>(TReference, ref TReference, out TReference")
                 + @", TValue, ref TValue, out TValue"
                 + @", System.Nullable<TValue>, ref System.Nullable<TValue>, out System.Nullable<TValue>"
                 + @", TReference[], ref TReference[], out TReference[], TValue[], ref TValue[], out TValue[]"
@@ -193,11 +193,11 @@ namespace Omnifactotum.Tests.ExtensionMethods
         {
             const string ReferenceType =
                 nameof(System) + "." + nameof(System.Collections) + "." + nameof(System.Collections.Generic)
-                    + "." + nameof(List<object>) + "<"
-                    + nameof(System) + "." + nameof(System.Collections) + "." + nameof(System.Collections.Generic)
-                    + "." + nameof(Dictionary<object, object>)
-                    + "<" + nameof(System) + "." + nameof(Attribute) + ", "
-                    + nameof(System) + "." + nameof(Exception) + ">>";
+                + "." + nameof(List<object>) + "<"
+                + nameof(System) + "." + nameof(System.Collections) + "." + nameof(System.Collections.Generic)
+                + "." + nameof(Dictionary<object, object>)
+                + "<" + nameof(System) + "." + nameof(Attribute) + ", "
+                + nameof(System) + "." + nameof(Exception) + ">>";
 
             const string ValueType = nameof(System) + "." + nameof(ConsoleKeyInfo);
 
@@ -205,22 +205,22 @@ namespace Omnifactotum.Tests.ExtensionMethods
                 AsInvariant(
                     $@"{nameof(System)}.{nameof(System.Reflection)}.{nameof(MethodBase)} {nameof(Omnifactotum)}.{
                         nameof(Tests)}.{nameof(ExtensionMethods)}.{nameof(MethodBaseTestHelper)}.{
-                        _testHelper.MethodName}<{ReferenceType}, {ValueType}>(")
-                    + AsInvariant($@"{ReferenceType}, ref {ReferenceType}, out {ReferenceType}")
-                    + AsInvariant($@", {ValueType}, ref {ValueType}, out {ValueType}")
-                    + AsInvariant($@", System.Nullable<{ValueType}>, ref System.Nullable<{ValueType}>, out System.Nullable<{ValueType}>")
-                    + AsInvariant($@", {ReferenceType}[], ref {ReferenceType}[], out {ReferenceType}[]")
-                    + AsInvariant($@", {ValueType}[], ref {ValueType}[], out {ValueType}[]")
-                    + AsInvariant(
-                        $@", System.Nullable<{ValueType}>[], ref System.Nullable<{ValueType}>[], out System.Nullable<{ValueType}>[]")
-                    + @", System.String, ref System.String, out System.String"
-                    + @", System.Int64, ref System.Int64, out System.Int64"
-                    + @", System.Nullable<System.Int64>, ref System.Nullable<System.Int64>, out System.Nullable<System.Int64>"
-                    + @", System.Int64*, ref System.Int64*, out System.Int64*"
-                    + @", System.String[], ref System.String[], out System.String[]"
-                    + @", System.Int64[], ref System.Int64[], out System.Int64[]"
-                    + @", System.Nullable<System.Int64>[], ref System.Nullable<System.Int64>[], out System.Nullable<System.Int64>[]"
-                    + @", System.Int64*[], ref System.Int64*[], out System.Int64*[])";
+                            _testHelper.MethodName}<{ReferenceType}, {ValueType}>(")
+                + AsInvariant($@"{ReferenceType}, ref {ReferenceType}, out {ReferenceType}")
+                + AsInvariant($@", {ValueType}, ref {ValueType}, out {ValueType}")
+                + AsInvariant($@", System.Nullable<{ValueType}>, ref System.Nullable<{ValueType}>, out System.Nullable<{ValueType}>")
+                + AsInvariant($@", {ReferenceType}[], ref {ReferenceType}[], out {ReferenceType}[]")
+                + AsInvariant($@", {ValueType}[], ref {ValueType}[], out {ValueType}[]")
+                + AsInvariant(
+                    $@", System.Nullable<{ValueType}>[], ref System.Nullable<{ValueType}>[], out System.Nullable<{ValueType}>[]")
+                + @", System.String, ref System.String, out System.String"
+                + @", System.Int64, ref System.Int64, out System.Int64"
+                + @", System.Nullable<System.Int64>, ref System.Nullable<System.Int64>, out System.Nullable<System.Int64>"
+                + @", System.Int64*, ref System.Int64*, out System.Int64*"
+                + @", System.String[], ref System.String[], out System.String[]"
+                + @", System.Int64[], ref System.Int64[], out System.Int64[]"
+                + @", System.Nullable<System.Int64>[], ref System.Nullable<System.Int64>[], out System.Nullable<System.Int64>[]"
+                + @", System.Int64*[], ref System.Int64*[], out System.Int64*[])";
 
             var actual = _testHelper.GenericMethod.GetFullSignature();
             Assert.That(actual, Is.EqualTo(expected));
