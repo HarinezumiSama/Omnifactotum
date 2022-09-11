@@ -16,7 +16,7 @@
 
     <Target Name="CheckBuildPropertiesBeforeBuild" BeforeTargets="Clean;Build;Restore">
         <Message
-                Text="[$(MSBuildProjectName):$(TargetFramework):$(Configuration):$(Platform)] SolutionDir = &quot;$(SolutionDir)&quot;, SolutionName = &quot;$(SolutionName)&quot;"
+                Text="[$(MSBuildProjectName):$(TargetFramework):$(Configuration):$(Platform)] NETCoreSdkVersion = &quot;$(NETCoreSdkVersion)&quot;, SolutionDir = &quot;$(SolutionDir)&quot;, SolutionName = &quot;$(SolutionName)&quot;"
                 Importance="high" />
 
         <Error Condition="'$(SolutionDir)' == '' Or '$(SolutionName)' == '' Or '$(SolutionDir)' == '*Undefined*' Or '$(SolutionName)' == '*Undefined*'"
