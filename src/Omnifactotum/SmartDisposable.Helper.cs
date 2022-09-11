@@ -1,6 +1,4 @@
-﻿#nullable enable
-
-namespace Omnifactotum
+﻿namespace Omnifactotum
 {
     /// <summary>
     ///     Provides helper functionality for creating instances of the <see cref="SmartDisposable{T}"/> type using type inference in a friendly way.

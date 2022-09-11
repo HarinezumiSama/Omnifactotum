@@ -1,6 +1,4 @@
-﻿#nullable enable
-
-using System.IO;
+﻿using System.IO;
 using Omnifactotum.Annotations;
 using static Omnifactotum.FormattableStringFactotum;
 

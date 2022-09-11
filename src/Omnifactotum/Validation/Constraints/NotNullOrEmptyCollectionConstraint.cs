@@ -1,6 +1,4 @@
-﻿#nullable enable
-
-using System.Collections;
+﻿using System.Collections;
 
 namespace Omnifactotum.Validation.Constraints
 {

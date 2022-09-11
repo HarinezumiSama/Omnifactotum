@@ -1,6 +1,4 @@
-﻿#nullable enable
-
-using System.Runtime.CompilerServices;
+﻿using System.Runtime.CompilerServices;
 using Omnifactotum.Annotations;
 
 //// ReSharper disable RedundantNullnessAttributeWithNullableReferenceTypes

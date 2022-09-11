@@ -1,6 +1,4 @@
-﻿#nullable enable
-
-using System.Reflection;
+﻿using System.Reflection;
 using Omnifactotum.Annotations;
 using NotNullIfNotNullAttribute = System.Diagnostics.CodeAnalysis.NotNullIfNotNullAttribute;
 

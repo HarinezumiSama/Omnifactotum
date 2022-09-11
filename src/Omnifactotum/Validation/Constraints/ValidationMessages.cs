@@ -1,6 +1,4 @@
-﻿#nullable enable
-
-namespace Omnifactotum.Validation.Constraints
+﻿namespace Omnifactotum.Validation.Constraints
 {
     internal static class ValidationMessages
     {

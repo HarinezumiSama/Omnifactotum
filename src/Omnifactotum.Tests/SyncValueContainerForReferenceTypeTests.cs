@@ -1,6 +1,4 @@
-﻿#nullable enable
-
-using NUnit.Framework;
+﻿using NUnit.Framework;
 
 namespace Omnifactotum.Tests
 {

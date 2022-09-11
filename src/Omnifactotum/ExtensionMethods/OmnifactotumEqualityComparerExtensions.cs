@@ -1,6 +1,4 @@
-﻿#nullable enable
-
-using System.Diagnostics.CodeAnalysis;
+﻿using System.Diagnostics.CodeAnalysis;
 using System.Runtime.CompilerServices;
 using NotNullAttribute = Omnifactotum.Annotations.NotNullAttribute;
 

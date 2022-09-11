@@ -1,6 +1,4 @@
-﻿#nullable enable
-
-using Omnifactotum.Annotations;
+﻿using Omnifactotum.Annotations;
 
 //// ReSharper disable RedundantNullnessAttributeWithNullableReferenceTypes
 //// ReSharper disable AnnotationRedundancyInHierarchy

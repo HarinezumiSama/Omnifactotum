@@ -1,6 +1,4 @@
-﻿#nullable enable
-
-namespace Omnifactotum
+﻿namespace Omnifactotum
 {
     /// <summary>
     ///     Represents the abstract immutable container that encapsulates a strongly-typed value.

@@ -1,6 +1,4 @@
-﻿#nullable enable
-
-using System.Runtime.CompilerServices;
+﻿using System.Runtime.CompilerServices;
 using System.Threading.Tasks;
 using NUnit.Framework;
 

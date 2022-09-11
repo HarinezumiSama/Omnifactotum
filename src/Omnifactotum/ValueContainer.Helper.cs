@@ -1,6 +1,4 @@
-﻿#nullable enable
-
-namespace Omnifactotum
+﻿namespace Omnifactotum
 {
     /// <summary>
     ///     Provides helper functionality for creating instances of the <see cref="ValueContainer{T}"/> type

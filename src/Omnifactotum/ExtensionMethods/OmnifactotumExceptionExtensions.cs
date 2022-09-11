@@ -1,6 +1,4 @@
-﻿#nullable enable
-
-using System.Diagnostics;
+﻿using System.Diagnostics;
 using System.Threading;
 
 //// Namespace is intentionally named so in order to simplify usage of extension methods

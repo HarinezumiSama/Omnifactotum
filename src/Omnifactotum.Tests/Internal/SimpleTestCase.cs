@@ -1,6 +1,4 @@
-﻿#nullable enable
-
-using System;
+﻿using System;
 using NUnit.Framework.Constraints;
 using Omnifactotum.Annotations;
 using static Omnifactotum.FormattableStringFactotum;

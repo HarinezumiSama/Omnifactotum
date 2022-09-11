@@ -1,6 +1,4 @@
-﻿#nullable enable
-
-using NUnit.Framework;
+﻿using NUnit.Framework;
 
 //// ReSharper disable once CheckNamespace :: Compatibility (Omnifactotum.NUnit)
 namespace Omnifactotum.NUnit

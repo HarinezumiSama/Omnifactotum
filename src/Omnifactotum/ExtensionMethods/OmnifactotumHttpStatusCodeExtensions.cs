@@ -1,6 +1,4 @@
-﻿#nullable enable
-
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Globalization;
 using static Omnifactotum.FormattableStringFactotum;
 

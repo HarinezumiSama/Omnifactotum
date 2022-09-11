@@ -1,6 +1,4 @@
-﻿#nullable enable
-
-//// ReSharper disable RedundantNullnessAttributeWithNullableReferenceTypes
+﻿//// ReSharper disable RedundantNullnessAttributeWithNullableReferenceTypes
 
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;

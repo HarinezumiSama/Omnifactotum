@@ -1,6 +1,4 @@
-﻿#nullable enable
-
-using System.Linq.Expressions;
+﻿using System.Linq.Expressions;
 using Omnifactotum.Annotations;
 using Omnifactotum.Validation;
 using Omnifactotum.Validation.Constraints;

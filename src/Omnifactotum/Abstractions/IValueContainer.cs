@@ -1,6 +1,4 @@
-﻿#nullable enable
-
-namespace Omnifactotum.Abstractions
+﻿namespace Omnifactotum.Abstractions
 {
     /// <summary>
     ///     Represents the interface of a mutable container that encapsulates a strongly-typed value.

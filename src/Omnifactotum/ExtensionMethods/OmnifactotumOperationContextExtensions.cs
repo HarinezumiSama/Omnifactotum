@@ -1,6 +1,4 @@
-﻿#nullable enable
-
-#if NETFRAMEWORK
+﻿#if NETFRAMEWORK
 
 using System.Diagnostics.CodeAnalysis;
 using System.IdentityModel.Claims;

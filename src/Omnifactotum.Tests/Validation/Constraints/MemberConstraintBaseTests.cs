@@ -1,6 +1,4 @@
-﻿#nullable enable
-
-using System;
+﻿using System;
 using NUnit.Framework;
 using Omnifactotum.Annotations;
 using Omnifactotum.Validation;

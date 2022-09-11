@@ -1,6 +1,4 @@
-﻿#nullable enable
-
-using NUnit.Framework.Constraints;
+﻿using NUnit.Framework.Constraints;
 using Omnifactotum.Annotations;
 
 //// ReSharper disable RedundantNullnessAttributeWithNullableReferenceTypes
