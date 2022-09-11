@@ -1,4 +1,6 @@
-﻿using System;
+﻿#nullable enable
+
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using NUnit.Framework;
@@ -74,9 +76,9 @@ namespace Omnifactotum.Tests.Validation.Constraints
 
         protected static TConstraint CreateTestee() => new();
 
-        protected abstract IEnumerable<object> GetValidValues();
+        protected abstract IEnumerable<object?> GetValidValues();
 
-        protected abstract IEnumerable<object> GetInvalidValues();
+        protected abstract IEnumerable<object?> GetInvalidValues();
 
         private sealed class UnknownClass
         {

@@ -1,10 +1,15 @@
-﻿using System;
+﻿#nullable enable
+
+using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Diagnostics;
 using System.Linq;
 using Omnifactotum.Annotations;
 using Omnifactotum.Validation.Constraints;
+
+//// ReSharper disable RedundantNullnessAttributeWithNullableReferenceTypes
+//// ReSharper disable AnnotationRedundancyInHierarchy
 
 namespace Omnifactotum.Validation
 {
@@ -13,7 +18,7 @@ namespace Omnifactotum.Validation
     /// </summary>
     public sealed class ObjectValidationResult
     {
-        internal static readonly ObjectValidationResult SuccessfulResult = new(new MemberConstraintValidationError[0]);
+        internal static readonly ObjectValidationResult SuccessfulResult = new(Array.Empty<MemberConstraintValidationError>());
 
         /// <summary>
         ///     Initializes a new instance of the <see cref="ObjectValidationResult"/> class.
@@ -28,6 +33,7 @@ namespace Omnifactotum.Validation
                 throw new ArgumentNullException(nameof(errors));
             }
 
+            //// ReSharper disable once ConditionIsAlwaysTrueOrFalseAccordingToNullableAPIContract :: Validation
             if (errors.Any(item => item is null))
             {
                 throw new ArgumentException(@"The collection contains a null element.", nameof(errors));
@@ -39,15 +45,13 @@ namespace Omnifactotum.Validation
         /// <summary>
         ///     Gets a value indicating whether the object checked is valid.
         /// </summary>
-        public bool IsObjectValid
-        {
-            [DebuggerNonUserCode]
-            get => Errors.Count == 0;
-        }
+        [DebuggerNonUserCode]
+        public bool IsObjectValid => Errors.Count == 0;
 
         /// <summary>
         ///     Gets the collection of the validation errors found. Can be empty.
         /// </summary>
+        [NotNull]
         public ReadOnlyCollection<MemberConstraintValidationError> Errors { get; }
 
         /// <summary>
@@ -66,9 +70,9 @@ namespace Omnifactotum.Validation
         ///     or <see langword="null"/> if validation succeeded.
         /// </returns>
         [CanBeNull]
-        public ObjectValidationException GetException(
-            [InstantHandle] Func<MemberConstraintValidationError, string> getErrorDescription,
-            string errorDescriptionSeparator)
+        public ObjectValidationException? GetException(
+            [NotNull] [InstantHandle] Func<MemberConstraintValidationError, string> getErrorDescription,
+            [CanBeNull] string? errorDescriptionSeparator)
         {
             if (getErrorDescription is null)
             {
@@ -87,8 +91,8 @@ namespace Omnifactotum.Validation
         /// <summary>
         ///     <para>
         ///         Gets the validation exception based on the validation result, using the default description
-        ///         (<see cref="MemberConstraintValidationError.GetDefaultDescription()"/>) and
-        ///         <see cref="Environment.NewLine"/> separator.
+        ///         (<see cref="MemberConstraintValidationError.GetDefaultDescription(Omnifactotum.Validation.Constraints.MemberConstraintValidationError)"/>)
+        ///         and <see cref="Environment.NewLine"/> separator.
         ///     </para>
         ///     <para>
         ///         If validation succeeded, this method returns <see langword="null"/>.
@@ -99,10 +103,7 @@ namespace Omnifactotum.Validation
         ///     or <see langword="null"/> if validation succeeded.
         /// </returns>
         [CanBeNull]
-        public ObjectValidationException GetException()
-        {
-            return GetException(MemberConstraintValidationError.GetDefaultDescription, Environment.NewLine);
-        }
+        public ObjectValidationException? GetException() => GetException(MemberConstraintValidationError.GetDefaultDescription, Environment.NewLine);
 
         /// <summary>
         ///     Checks if validation succeeded and if it is not, throws an <see cref="ObjectValidationException"/>.
@@ -110,13 +111,10 @@ namespace Omnifactotum.Validation
         public void EnsureSucceeded()
         {
             var exception = GetException();
-
-            if (exception is null)
+            if (exception is not null)
             {
-                return;
+                throw exception;
             }
-
-            throw exception;
         }
     }
 }

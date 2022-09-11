@@ -1,7 +1,12 @@
-﻿using System;
+﻿#nullable enable
+
+using System;
 using System.Collections.Generic;
 using Omnifactotum.Annotations;
 using Omnifactotum.Validation.Constraints;
+
+//// ReSharper disable RedundantNullnessAttributeWithNullableReferenceTypes
+//// ReSharper disable AnnotationRedundancyInHierarchy
 
 namespace Omnifactotum.Validation
 {
@@ -18,7 +23,7 @@ namespace Omnifactotum.Validation
         /// <param name="recursiveProcessingContext">
         ///     The context of the recursive processing, or <see langword="null"/> to use a new context.
         /// </param>
-        internal ObjectValidatorContext([CanBeNull] RecursiveProcessingContext<MemberData> recursiveProcessingContext)
+        internal ObjectValidatorContext([CanBeNull] RecursiveProcessingContext<MemberData>? recursiveProcessingContext)
         {
             var actualRecursiveProcessingContext = recursiveProcessingContext
                 ?? Omnifactotum.RecursiveProcessingContext.Create(InternalMemberDataEqualityComparer.Instance);
@@ -31,8 +36,10 @@ namespace Omnifactotum.Validation
         /// <summary>
         ///     Gets the collection of errors.
         /// </summary>
+        [NotNull]
         public ValidationErrorCollection Errors { get; }
 
+        [NotNull]
         internal RecursiveProcessingContext<MemberData> RecursiveProcessingContext { get; }
 
         /// <summary>
@@ -51,11 +58,7 @@ namespace Omnifactotum.Validation
 
             lock (_constraintCache)
             {
-                var result = _constraintCache.GetOrCreateValue(
-                    constraintType,
-                    obj => (IMemberConstraint)Activator.CreateInstance(obj));
-
-                return result;
+                return _constraintCache.GetOrCreateValue(constraintType, obj => (IMemberConstraint)Activator.CreateInstance(obj).EnsureNotNull());
             }
         }
 
@@ -71,8 +74,6 @@ namespace Omnifactotum.Validation
         [NotNull]
         public TMemberConstraint ResolveConstraint<TMemberConstraint>()
             where TMemberConstraint : IMemberConstraint
-        {
-            return (TMemberConstraint)ResolveConstraint(typeof(TMemberConstraint));
-        }
+            => (TMemberConstraint)ResolveConstraint(typeof(TMemberConstraint));
     }
 }

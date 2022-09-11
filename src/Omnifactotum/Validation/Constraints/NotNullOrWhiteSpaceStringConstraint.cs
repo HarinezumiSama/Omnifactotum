@@ -1,4 +1,6 @@
-﻿using System;
+﻿#nullable enable
+
+using System;
 
 namespace Omnifactotum.Validation.Constraints
 {
@@ -10,13 +12,13 @@ namespace Omnifactotum.Validation.Constraints
     [Obsolete(
         nameof(NotNullOrWhiteSpaceStringConstraint) + " is deprecated. Use " + nameof(NotBlankStringConstraint) + " instead.",
         false)]
-    public sealed class NotNullOrWhiteSpaceStringConstraint : TypedMemberConstraintBase<string>
+    public sealed class NotNullOrWhiteSpaceStringConstraint : TypedMemberConstraintBase<string?>
     {
         /// <inheritdoc />
         protected override void ValidateTypedValue(
             ObjectValidatorContext validatorContext,
             MemberConstraintValidationContext memberContext,
-            string value)
+            string? value)
         {
             if (string.IsNullOrWhiteSpace(value))
             {

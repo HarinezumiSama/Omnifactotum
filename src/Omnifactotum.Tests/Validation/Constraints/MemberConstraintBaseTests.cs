@@ -1,7 +1,13 @@
-﻿using System;
+﻿#nullable enable
+
+using System;
 using NUnit.Framework;
+using Omnifactotum.Annotations;
 using Omnifactotum.Validation;
 using Omnifactotum.Validation.Constraints;
+
+//// ReSharper disable RedundantNullnessAttributeWithNullableReferenceTypes
+//// ReSharper disable AnnotationRedundancyInHierarchy
 
 namespace Omnifactotum.Tests.Validation.Constraints
 {
@@ -29,7 +35,7 @@ namespace Omnifactotum.Tests.Validation.Constraints
         [TestCase(int.MinValue)]
         [TestCase(0)]
         [TestCase(int.MaxValue)]
-        public void TestCastToWhenValidInputThenSucceeds(object value)
+        public void TestCastToWhenValidInputThenSucceeds(object? value)
         {
             var testee = CreateTestee();
             var castValue = testee.CallCastTo<int?>(value);
@@ -55,16 +61,17 @@ namespace Omnifactotum.Tests.Validation.Constraints
             Assert.That(() => testee.CallCastTo<int>(null), Throws.InvalidOperationException);
         }
 
+        [NotNull]
         private static ExposedMemberConstraintBase CreateTestee() => new();
 
         private sealed class ExposedMemberConstraintBase : MemberConstraintBase
         {
-            public TTarget CallCastTo<TTarget>(object value) => CastTo<TTarget>(value);
+            public TTarget CallCastTo<TTarget>([CanBeNull] object? value) => CastTo<TTarget>(value);
 
             protected override void ValidateValue(
                 ObjectValidatorContext validatorContext,
                 MemberConstraintValidationContext memberContext,
-                object value)
+                object? value)
                 => throw new NotImplementedException();
         }
     }

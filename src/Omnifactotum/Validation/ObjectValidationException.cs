@@ -1,5 +1,11 @@
-﻿using System;
+﻿#nullable enable
+
+using System;
 using System.Runtime.Serialization;
+using Omnifactotum.Annotations;
+
+//// ReSharper disable RedundantNullnessAttributeWithNullableReferenceTypes
+//// ReSharper disable AnnotationRedundancyInHierarchy
 
 namespace Omnifactotum.Validation
 {
@@ -9,6 +15,8 @@ namespace Omnifactotum.Validation
     [Serializable]
     public sealed class ObjectValidationException : Exception
     {
+        private readonly ObjectValidationResult? _validationResult;
+
         /// <summary>
         ///     Initializes a new instance of the <see cref="ObjectValidationException"/> class.
         /// </summary>
@@ -18,11 +26,9 @@ namespace Omnifactotum.Validation
         /// <param name="message">
         ///     The message that describes the error.
         /// </param>
-        internal ObjectValidationException(ObjectValidationResult validationResult, string message)
+        internal ObjectValidationException([NotNull] ObjectValidationResult validationResult, [NotNull] string message)
             : base(message)
-        {
-            ValidationResult = validationResult;
-        }
+            => _validationResult = validationResult ?? throw new ArgumentNullException(nameof(validationResult));
 
         private ObjectValidationException(SerializationInfo info, StreamingContext context)
             : base(info, context)
@@ -33,9 +39,7 @@ namespace Omnifactotum.Validation
         /// <summary>
         ///     Gets the validation result caused this exception.
         /// </summary>
-        public ObjectValidationResult ValidationResult
-        {
-            get;
-        }
+        [NotNull]
+        public ObjectValidationResult ValidationResult => _validationResult.EnsureNotNull();
     }
 }

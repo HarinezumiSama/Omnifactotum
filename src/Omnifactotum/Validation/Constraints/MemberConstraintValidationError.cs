@@ -1,6 +1,11 @@
-﻿using System;
+﻿#nullable enable
+
+using System;
 using Omnifactotum.Annotations;
 using static Omnifactotum.FormattableStringFactotum;
+
+//// ReSharper disable RedundantNullnessAttributeWithNullableReferenceTypes
+//// ReSharper disable AnnotationRedundancyInHierarchy
 
 namespace Omnifactotum.Validation.Constraints
 {
@@ -22,9 +27,9 @@ namespace Omnifactotum.Validation.Constraints
         ///     The error message.
         /// </param>
         internal MemberConstraintValidationError(
-            MemberConstraintValidationContext context,
-            Type failedConstraintType,
-            string errorMessage)
+            [NotNull] MemberConstraintValidationContext context,
+            [NotNull] Type failedConstraintType,
+            [NotNull] string errorMessage)
         {
             if (string.IsNullOrWhiteSpace(errorMessage))
             {
@@ -41,16 +46,19 @@ namespace Omnifactotum.Validation.Constraints
         /// <summary>
         ///     Gets the context of validation.
         /// </summary>
+        [NotNull]
         public MemberConstraintValidationContext Context { get; }
 
         /// <summary>
         ///     Gets the type of the constraint that the value failed against.
         /// </summary>
+        [NotNull]
         public Type FailedConstraintType { get; }
 
         /// <summary>
         ///     Gets the error message.
         /// </summary>
+        [NotNull]
         public string ErrorMessage { get; }
 
         /// <summary>
@@ -62,6 +70,7 @@ namespace Omnifactotum.Validation.Constraints
         /// <returns>
         ///     The default description of the specified validation error.
         /// </returns>
+        [NotNull]
         public static string GetDefaultDescription([NotNull] MemberConstraintValidationError error)
         {
             if (error is null)
@@ -80,9 +89,7 @@ namespace Omnifactotum.Validation.Constraints
         ///     A <see cref="System.String" /> that represents this <see cref="MemberConstraintValidationError"/>.
         /// </returns>
         public override string ToString()
-            => AsInvariant(
-                $@"{{{GetType().GetQualifiedName()}: Failed {FailedConstraintType.GetQualifiedName().ToUIString()} for [{
-                    Context.Expression}]}}");
+            => AsInvariant($@"{{ {GetType().GetQualifiedName()}: Failed {FailedConstraintType.GetQualifiedName().ToUIString()} for [{Context.Expression}] }}");
 
         /// <summary>
         ///     Gets the default description of the current validation error.
@@ -90,9 +97,7 @@ namespace Omnifactotum.Validation.Constraints
         /// <returns>
         ///     The default description of the current validation error.
         /// </returns>
-        public string GetDefaultDescription()
-        {
-            return GetDefaultDescription(this);
-        }
+        [NotNull]
+        public string GetDefaultDescription() => GetDefaultDescription(this);
     }
 }

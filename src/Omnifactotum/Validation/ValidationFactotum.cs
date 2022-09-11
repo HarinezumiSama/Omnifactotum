@@ -1,8 +1,13 @@
-﻿using System;
+﻿#nullable enable
+
+using System;
 using System.Linq.Expressions;
 using Omnifactotum.Annotations;
 using Omnifactotum.Validation.Constraints;
 using static Omnifactotum.FormattableStringFactotum;
+
+//// ReSharper disable RedundantNullnessAttributeWithNullableReferenceTypes
+//// ReSharper disable AnnotationRedundancyInHierarchy
 
 namespace Omnifactotum.Validation
 {
@@ -39,8 +44,7 @@ namespace Omnifactotum.Validation
 
             var expressionType = expression.Type.GetCollectionElementType() ?? expression.Type;
 
-            var result = expressionType == valueType ? expression : Expression.Convert(expression, valueType);
-            return result;
+            return expressionType == valueType ? expression : Expression.Convert(expression, valueType);
         }
 
         /// <summary>
@@ -55,10 +59,8 @@ namespace Omnifactotum.Validation
         /// <returns>
         ///     An original expression, if conversion was not needed; otherwise, a converted expression.
         /// </returns>
-        public static Expression ConvertTypeAuto([NotNull] Expression expression, object value)
-        {
-            return value is null ? expression : ConvertTypeAuto(expression, value.GetType());
-        }
+        public static Expression ConvertTypeAuto([NotNull] Expression expression, [CanBeNull] object? value)
+            => value is null ? expression.EnsureNotNull() : ConvertTypeAuto(expression, value.GetType());
 
         /// <summary>
         ///     Determines whether the specified constraint type is a valid member constraint type.
@@ -102,7 +104,7 @@ namespace Omnifactotum.Validation
         {
             if (IsValidMemberConstraintType(constraintType))
             {
-                return constraintType;
+                return constraintType.EnsureNotNull();
             }
 
             var message = AsInvariant(

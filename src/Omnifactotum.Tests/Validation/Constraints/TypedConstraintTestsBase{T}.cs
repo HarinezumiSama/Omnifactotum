@@ -1,4 +1,6 @@
-﻿using System.Collections.Generic;
+﻿#nullable enable
+
+using System.Collections.Generic;
 using System.Linq;
 using Omnifactotum.Validation.Constraints;
 
@@ -11,8 +13,8 @@ namespace Omnifactotum.Tests.Validation.Constraints
 
         protected abstract IEnumerable<T> GetTypedInvalidValues();
 
-        protected sealed override IEnumerable<object> GetValidValues() => GetTypedValidValues().Cast<object>();
+        protected sealed override IEnumerable<object?> GetValidValues() => GetTypedValidValues().Cast<object?>();
 
-        protected sealed override IEnumerable<object> GetInvalidValues() => GetTypedInvalidValues().Cast<object>();
+        protected sealed override IEnumerable<object?> GetInvalidValues() => GetTypedInvalidValues().Cast<object?>();
     }
 }

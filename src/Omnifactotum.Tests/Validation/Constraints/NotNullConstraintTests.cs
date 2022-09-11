@@ -1,4 +1,6 @@
-﻿using System;
+﻿#nullable enable
+
+using System;
 using System.Collections.Generic;
 using NUnit.Framework;
 using Omnifactotum.Validation.Constraints;
@@ -11,12 +13,12 @@ namespace Omnifactotum.Tests.Validation.Constraints
         [Ignore("Not applicable.")]
         public override void TestValidateWhenIncorrectValueTypeThenThrows() => throw new NotSupportedException();
 
-        protected override IEnumerable<object> GetValidValues()
+        protected override IEnumerable<object?> GetValidValues()
         {
             yield return new object();
         }
 
-        protected override IEnumerable<object> GetInvalidValues()
+        protected override IEnumerable<object?> GetInvalidValues()
         {
             yield return null;
         }

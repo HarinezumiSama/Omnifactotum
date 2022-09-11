@@ -1,3 +1,5 @@
+#nullable enable
+
 namespace Omnifactotum.Validation.Constraints
 {
     /// <summary>

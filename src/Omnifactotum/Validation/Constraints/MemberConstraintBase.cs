@@ -1,6 +1,11 @@
-﻿using System;
+﻿#nullable enable
+
+using System;
 using Omnifactotum.Annotations;
 using static Omnifactotum.FormattableStringFactotum;
+
+//// ReSharper disable RedundantNullnessAttributeWithNullableReferenceTypes
+//// ReSharper disable AnnotationRedundancyInHierarchy
 
 namespace Omnifactotum.Validation.Constraints
 {
@@ -11,10 +16,7 @@ namespace Omnifactotum.Validation.Constraints
     public abstract class MemberConstraintBase : IMemberConstraint
     {
         /// <inheritdoc />
-        public void Validate(
-            ObjectValidatorContext validatorContext,
-            MemberConstraintValidationContext memberContext,
-            object value)
+        public void Validate(ObjectValidatorContext validatorContext, MemberConstraintValidationContext memberContext, object? value)
         {
             if (validatorContext is null)
             {
@@ -44,7 +46,7 @@ namespace Omnifactotum.Validation.Constraints
         protected abstract void ValidateValue(
             [NotNull] ObjectValidatorContext validatorContext,
             [NotNull] MemberConstraintValidationContext memberContext,
-            [CanBeNull] object value);
+            [CanBeNull] object? value);
 
         /// <summary>
         ///     Tries to cast the specified value to the specified target type and
@@ -59,19 +61,26 @@ namespace Omnifactotum.Validation.Constraints
         /// <returns>
         ///     The value cast to the specified target type.
         /// </returns>
-        protected TTarget CastTo<TTarget>([CanBeNull] object value)
+        protected TTarget CastTo<TTarget>([CanBeNull] object? value)
         {
             var targetType = typeof(TTarget);
-            if (value is TTarget || (!targetType.IsValueType || targetType.IsNullable()) && value is null)
+
+            return value switch
             {
-                return (TTarget)value;
-            }
+                TTarget target => target,
 
-            var message = AsInvariant(
-                $@"The type of the value {value.GetTypeSafely().GetFullName().ToUIString()} is not compatible with the type {
-                    targetType.GetFullName().ToUIString()} expected by the constraint {GetType().GetQualifiedName().ToUIString()}.");
+                null => !targetType.IsValueType || targetType.IsNullable()
+                    ? (TTarget)value!
+                    : throw new InvalidOperationException(
+                        AsInvariant(
+                            $@"The null value is not compatible with the type {targetType.GetFullName().ToUIString()} expected by the constraint {
+                                GetType().GetQualifiedName().ToUIString()}.")),
 
-            throw new InvalidOperationException(message);
+                _ => throw new InvalidOperationException(
+                    AsInvariant(
+                        $@"The type of the value {value.GetTypeSafely().GetFullName().ToUIString()} is not compatible with the type {
+                            targetType.GetFullName().ToUIString()} expected by the constraint {GetType().GetQualifiedName().ToUIString()}."))
+            };
         }
 
         /// <summary>

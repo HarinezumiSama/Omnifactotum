@@ -1,7 +1,12 @@
-﻿using System;
+﻿#nullable enable
+
+using System;
 using System.Linq.Expressions;
 using Omnifactotum.Annotations;
 using Omnifactotum.Validation.Constraints;
+
+//// ReSharper disable RedundantNullnessAttributeWithNullableReferenceTypes
+//// ReSharper disable AnnotationRedundancyInHierarchy
 
 namespace Omnifactotum.Validation
 {
@@ -30,10 +35,10 @@ namespace Omnifactotum.Validation
         /// </param>
         internal MemberData(
             [NotNull] Expression expression,
-            [CanBeNull] object container,
-            [CanBeNull] object value,
-            [CanBeNull] BaseValidatableMemberAttribute[] attributes,
-            [CanBeNull] BaseMemberConstraintAttribute[] effectiveAttributes)
+            [CanBeNull] object? container,
+            [CanBeNull] object? value,
+            [CanBeNull] BaseValidatableMemberAttribute[]? attributes,
+            [CanBeNull] BaseMemberConstraintAttribute[]? effectiveAttributes)
         {
             Expression = expression ?? throw new ArgumentNullException(nameof(expression));
 
@@ -46,41 +51,31 @@ namespace Omnifactotum.Validation
         /// <summary>
         ///     Gets the expression.
         /// </summary>
-        public Expression Expression
-        {
-            get;
-        }
+        [NotNull]
+        public Expression Expression { get; }
 
         /// <summary>
         ///     Gets the object containing the value that is being, or was, validated.
         /// </summary>
-        public object Container
-        {
-            get;
-        }
+        [CanBeNull]
+        public object? Container { get; }
 
         /// <summary>
         ///     Gets the value.
         /// </summary>
-        public object Value
-        {
-            get;
-        }
+        [CanBeNull]
+        public object? Value { get; }
 
         /// <summary>
         ///     Gets the constraint attributes.
         /// </summary>
-        public BaseValidatableMemberAttribute[] Attributes
-        {
-            get;
-        }
+        [CanBeNull]
+        public BaseValidatableMemberAttribute[]? Attributes { get; }
 
         /// <summary>
         ///     Gets the effective constraint attributes.
         /// </summary>
-        public BaseMemberConstraintAttribute[] EffectiveAttributes
-        {
-            get;
-        }
+        [CanBeNull]
+        public BaseMemberConstraintAttribute[]? EffectiveAttributes { get; }
     }
 }

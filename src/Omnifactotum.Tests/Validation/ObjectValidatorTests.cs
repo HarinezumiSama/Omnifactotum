@@ -1,4 +1,6 @@
-﻿using System;
+﻿#nullable enable
+
+using System;
 #if !NETFRAMEWORK
 using System.Collections;
 #endif
@@ -18,8 +20,7 @@ namespace Omnifactotum.Tests.Validation
     [TestFixture(TestOf = typeof(ObjectValidator))]
     internal sealed class ObjectValidatorTests
     {
-        private static readonly string ValidationResultPropertyName =
-            Factotum.For<ObjectValidationException>.GetPropertyName(obj => obj.ValidationResult);
+        private const string ValidationResultPropertyName = nameof(ObjectValidationException.ValidationResult);
 
         [Test]
         public void TestValidateWhenValidationSucceeded()
@@ -53,8 +54,7 @@ namespace Omnifactotum.Tests.Validation
             {
                 Data = new SimpleData { StartDate = DateTime.Now },
                 NonEmptyValue = string.Empty,
-                MultipleDataItems =
-                    new BaseAnotherSimpleData[] { new AnotherSimpleData { Value = "C" }, new AnotherSimpleData() },
+                MultipleDataItems = new BaseAnotherSimpleData[] { new AnotherSimpleData { Value = "C" }, new AnotherSimpleData() },
                 SingleBaseData = new AnotherSimpleData()
             };
 
@@ -190,7 +190,7 @@ namespace Omnifactotum.Tests.Validation
 
         private static void EnsureTestValidationSucceeded<T>(T data)
         {
-            var validationResult = ObjectValidator.Validate(data);
+            var validationResult = ObjectValidator.Validate(data!);
 
             Assert.That(validationResult, Is.Not.Null);
             Assert.That(validationResult.Errors.Count, Is.EqualTo(0));
@@ -201,7 +201,9 @@ namespace Omnifactotum.Tests.Validation
 
         public sealed class SimpleData
         {
-            [SuppressMessage("StyleCop.CSharp.MaintainabilityRules", "SA1401:FieldsMustBePrivate",
+            [SuppressMessage(
+                "StyleCop.CSharp.MaintainabilityRules",
+                "SA1401:FieldsMustBePrivate",
                 Justification = "OK in the unit test.")]
             [MemberConstraint(typeof(UtcDateConstraint))]
             public DateTime StartDate;
@@ -218,11 +220,10 @@ namespace Omnifactotum.Tests.Validation
             }
 
             [MemberConstraint(typeof(NotNullConstraint))]
-            public string Value
+            public string? Value
             {
                 [UsedImplicitly]
                 private get;
-
                 set;
             }
 
@@ -231,13 +232,12 @@ namespace Omnifactotum.Tests.Validation
             {
                 [UsedImplicitly]
                 private get;
-
                 set;
             }
 
             [MemberConstraint(typeof(NeverCalledConstraint))]
             [UsedImplicitly]
-            public string this[int index] => null;
+            public string? this[int index] => null;
         }
 
         public abstract class BaseAnotherSimpleData
@@ -248,49 +248,50 @@ namespace Omnifactotum.Tests.Validation
         public sealed class AnotherSimpleData : BaseAnotherSimpleData
         {
             [MemberConstraint(typeof(NotNullConstraint))]
-            public string Value { get; set; }
+            public string? Value
+            {
+                [UsedImplicitly]
+                get;
+                set;
+            }
         }
 
         public sealed class ComplexData
         {
             [UsedImplicitly]
-            public string Value { get; set; }
+            public string? Value { get; set; }
 
             [MemberConstraint(typeof(NotNullConstraint))]
-            public SimpleData Data
+            public SimpleData? Data
             {
                 [UsedImplicitly]
                 internal get;
-
                 set;
             }
 
             [MemberConstraint(typeof(NotNullConstraint))]
             [MemberItemConstraint(typeof(NotNullConstraint))]
-            public BaseAnotherSimpleData[] MultipleDataItems
+            public BaseAnotherSimpleData[]? MultipleDataItems
             {
                 [UsedImplicitly]
                 get;
-
                 set;
             }
 
             [ValidatableMember]
-            public BaseAnotherSimpleData SingleBaseData
+            public BaseAnotherSimpleData? SingleBaseData
             {
                 [UsedImplicitly]
                 get;
-
                 set;
             }
 
             [MemberConstraint(typeof(NotNullConstraint))]
             [MemberConstraint(typeof(NotNullOrEmptyStringConstraint))]
-            public string NonEmptyValue
+            public string? NonEmptyValue
             {
                 [UsedImplicitly]
                 private get;
-
                 set;
             }
         }
@@ -298,11 +299,15 @@ namespace Omnifactotum.Tests.Validation
         public sealed class SimpleContainer<T>
         {
             [MemberConstraint(typeof(NotNullConstraint))]
-            public T ContainedValue { get; set; }
+            public T? ContainedValue
+            {
+                [UsedImplicitly]
+                get;
+                set;
+            }
         }
 
-        public sealed class MapContainerPropertiesPairConstraint
-            : KeyValuePairConstraintBase<string, SimpleContainer<int?>>
+        private sealed class MapContainerPropertiesPairConstraint : KeyValuePairConstraintBase<string, SimpleContainer<int?>>
         {
             public MapContainerPropertiesPairConstraint()
                 : base(typeof(NotNullOrEmptyStringConstraint), typeof(NotNullConstraint<SimpleContainer<int?>>))
@@ -316,7 +321,7 @@ namespace Omnifactotum.Tests.Validation
             protected override void ValidateValue(
                 ObjectValidatorContext validatorContext,
                 MemberConstraintValidationContext context,
-                object value)
+                object? value)
             {
                 var dateTime = (DateTime)value.AssertNotNull();
                 if (dateTime.Kind == DateTimeKind.Utc)
@@ -333,7 +338,7 @@ namespace Omnifactotum.Tests.Validation
             protected override void ValidateValue(
                 ObjectValidatorContext validatorContext,
                 MemberConstraintValidationContext context,
-                object value)
+                object? value)
             {
                 const string Message = "This constraint is not supposed to be called ever.";
 
@@ -346,11 +351,10 @@ namespace Omnifactotum.Tests.Validation
         {
             [MemberConstraint(typeof(NotNullConstraint))]
             [MemberItemConstraint(typeof(MapContainerPropertiesPairConstraint))]
-            public IEnumerable<KeyValuePair<string, SimpleContainer<int?>>> Properties
+            public IEnumerable<KeyValuePair<string, SimpleContainer<int?>>>? Properties
             {
                 [UsedImplicitly]
                 get;
-
                 set;
             }
         }

@@ -1,4 +1,6 @@
-﻿using System.Collections.Generic;
+﻿#nullable enable
+
+using System.Collections.Generic;
 
 namespace Omnifactotum.Validation.Constraints
 {
@@ -23,8 +25,7 @@ namespace Omnifactotum.Validation.Constraints
         where TValueConstraint : TypedMemberConstraintBase<TValue>
     {
         /// <summary>
-        ///     Initializes a new instance of
-        ///     the <see cref="KeyValuePairConstraint{TKey,TValue,TKeyConstraint,TValueConstraint}"/> class.
+        ///     Initializes a new instance of the <see cref="KeyValuePairConstraint{TKey,TValue,TKeyConstraint,TValueConstraint}"/> class.
         /// </summary>
         public KeyValuePairConstraint()
             : base(typeof(TKeyConstraint), typeof(TValueConstraint))

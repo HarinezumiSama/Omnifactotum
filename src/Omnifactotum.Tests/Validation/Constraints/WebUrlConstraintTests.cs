@@ -1,13 +1,15 @@
-﻿using System.Collections.Generic;
+﻿#nullable enable
+
+using System.Collections.Generic;
 using NUnit.Framework;
 using Omnifactotum.Validation.Constraints;
 
 namespace Omnifactotum.Tests.Validation.Constraints
 {
     [TestFixture(TestOf = typeof(WebUrlConstraint))]
-    internal sealed class WebUrlConstraintTests : TypedConstraintTestsBase<WebUrlConstraint, string>
+    internal sealed class WebUrlConstraintTests : TypedConstraintTestsBase<WebUrlConstraint, string?>
     {
-        protected override IEnumerable<string> GetTypedValidValues()
+        protected override IEnumerable<string?> GetTypedValidValues()
         {
             yield return "http://example.com";
             yield return "https://example.com";
@@ -15,7 +17,7 @@ namespace Omnifactotum.Tests.Validation.Constraints
             yield return "https://127.0.0.1";
         }
 
-        protected override IEnumerable<string> GetTypedInvalidValues()
+        protected override IEnumerable<string?> GetTypedInvalidValues()
         {
             yield return null;
             yield return string.Empty;

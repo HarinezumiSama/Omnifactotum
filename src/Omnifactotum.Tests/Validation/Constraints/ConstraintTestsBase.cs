@@ -1,19 +1,26 @@
-﻿using System.Linq.Expressions;
+﻿#nullable enable
+
+using System.Linq.Expressions;
 using Omnifactotum.Annotations;
 using Omnifactotum.Validation;
 using Omnifactotum.Validation.Constraints;
+
+//// ReSharper disable RedundantNullnessAttributeWithNullableReferenceTypes
+//// ReSharper disable AnnotationRedundancyInHierarchy
 
 namespace Omnifactotum.Tests.Validation.Constraints
 {
     internal abstract class ConstraintTestsBase
     {
         [UsedImplicitly]
-        protected object DummyProperty { get; set; }
+        protected object? DummyProperty { get; set; }
 
+        [NotNull]
         protected static ObjectValidatorContext CreateObjectValidatorContext(
-            [CanBeNull] RecursiveProcessingContext<MemberData> recursiveProcessingContext = null)
+            [CanBeNull] RecursiveProcessingContext<MemberData>? recursiveProcessingContext = null)
             => new(recursiveProcessingContext);
 
+        [NotNull]
         protected MemberConstraintValidationContext CreateMemberConstraintValidationContext()
         {
             var parameterExpression = Expression.Parameter(GetType(), ObjectValidator.RootObjectParameterName);

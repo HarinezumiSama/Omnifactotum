@@ -1,5 +1,11 @@
-﻿using System;
+﻿#nullable enable
+
+using System;
 using System.Collections.Generic;
+using Omnifactotum.Annotations;
+
+//// ReSharper disable RedundantNullnessAttributeWithNullableReferenceTypes
+//// ReSharper disable AnnotationRedundancyInHierarchy
 
 namespace Omnifactotum.Validation.Constraints
 {
@@ -12,8 +18,7 @@ namespace Omnifactotum.Validation.Constraints
     /// <typeparam name="TValue">
     ///     The type of the value.
     /// </typeparam>
-    public abstract class KeyValuePairConstraintBase<TKey, TValue>
-        : TypedMemberConstraintBase<KeyValuePair<TKey, TValue>>
+    public abstract class KeyValuePairConstraintBase<TKey, TValue> : TypedMemberConstraintBase<KeyValuePair<TKey, TValue>>
     {
         /// <summary>
         ///     Initializes a new instance of the <see cref="KeyValuePairConstraintBase{TKey,TValue}" /> class.
@@ -24,7 +29,7 @@ namespace Omnifactotum.Validation.Constraints
         /// <param name="valueConstraintType">
         ///     The type specifying the value constraint.
         /// </param>
-        protected KeyValuePairConstraintBase(Type keyConstraintType, Type valueConstraintType)
+        protected KeyValuePairConstraintBase([NotNull] Type keyConstraintType, [NotNull] Type valueConstraintType)
         {
             KeyConstraintType = keyConstraintType.EnsureValidMemberConstraintType();
             ValueConstraintType = valueConstraintType.EnsureValidMemberConstraintType();
@@ -33,18 +38,14 @@ namespace Omnifactotum.Validation.Constraints
         /// <summary>
         ///     Gets the type specifying the key constraint.
         /// </summary>
-        protected Type KeyConstraintType
-        {
-            get;
-        }
+        [NotNull]
+        protected Type KeyConstraintType { get; }
 
         /// <summary>
         ///     Gets the type specifying the value constraint.
         /// </summary>
-        protected Type ValueConstraintType
-        {
-            get;
-        }
+        [NotNull]
+        protected Type ValueConstraintType { get; }
 
         /// <summary>
         ///     Validates the specified strongly-typed value is scope of the specified context.
@@ -63,19 +64,8 @@ namespace Omnifactotum.Validation.Constraints
             MemberConstraintValidationContext memberContext,
             KeyValuePair<TKey, TValue> value)
         {
-            ValidateMember(
-                validatorContext,
-                memberContext,
-                value,
-                pair => pair.Key,
-                KeyConstraintType);
-
-            ValidateMember(
-                validatorContext,
-                memberContext,
-                value,
-                pair => pair.Value,
-                ValueConstraintType);
+            ValidateMember(validatorContext, memberContext, value, pair => pair.Key, KeyConstraintType);
+            ValidateMember(validatorContext, memberContext, value, pair => pair.Value, ValueConstraintType);
         }
     }
 }

@@ -1,18 +1,19 @@
-﻿using System;
+﻿#nullable enable
+
+using System;
 using Omnifactotum.Annotations;
 using static Omnifactotum.FormattableStringFactotum;
 
+//// ReSharper disable RedundantNullnessAttributeWithNullableReferenceTypes
+//// ReSharper disable AnnotationRedundancyInHierarchy
+
 namespace Omnifactotum.Validation.Constraints
 {
-    // As per my understanding, this warning does not make sense for an abstract attribute class ->
-    // -> and therefore it can be turned off here
-#pragma warning disable 3015
-
     /// <summary>
     ///     The base class for member constraint attributes.
     /// </summary>
+    [CLSCompliant(false)]
     public abstract class BaseMemberConstraintAttribute : BaseValidatableMemberAttribute
-#pragma warning restore 3015
     {
         /// <summary>
         ///     Initializes a new instance of the <see cref="BaseMemberConstraintAttribute"/> class.
@@ -29,6 +30,7 @@ namespace Omnifactotum.Validation.Constraints
         ///     Gets the type, implementing the <see cref="IMemberConstraint"/> interface, used to validate
         ///     the member annotated with this <see cref="BaseMemberConstraintAttribute"/> attribute.
         /// </summary>
+        [NotNull]
         public Type ConstraintType { get; }
 
         /// <summary>
@@ -38,9 +40,6 @@ namespace Omnifactotum.Validation.Constraints
         ///     A <see cref="System.String" /> that represents this <see cref="BaseMemberConstraintAttribute"/>.
         /// </returns>
         public override string ToString()
-            => AsInvariant(
-                $@"{{{GetType().GetQualifiedName()}: {
-                    Factotum.For<BaseMemberConstraintAttribute>.GetPropertyName(obj => obj.ConstraintType)} = {
-                        ConstraintType.GetQualifiedName().ToUIString()}}}");
+            => AsInvariant($@"{{ {GetType().GetQualifiedName()}: {nameof(ConstraintType)} = {ConstraintType.GetQualifiedName().ToUIString()} }}");
     }
 }

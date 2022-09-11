@@ -1,4 +1,6 @@
-﻿namespace Omnifactotum.Validation.Constraints
+﻿#nullable enable
+
+namespace Omnifactotum.Validation.Constraints
 {
     /// <summary>
     ///     Specifies that the annotated member should not be <see langword="null"/>.

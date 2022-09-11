@@ -1,7 +1,12 @@
-﻿using System;
+﻿#nullable enable
+
+using System;
 using System.Linq;
 using System.Linq.Expressions;
 using Omnifactotum.Annotations;
+
+//// ReSharper disable RedundantNullnessAttributeWithNullableReferenceTypes
+//// ReSharper disable AnnotationRedundancyInHierarchy
 
 namespace Omnifactotum.Validation.Constraints
 {
@@ -20,7 +25,7 @@ namespace Omnifactotum.Validation.Constraints
         protected sealed override void ValidateValue(
             ObjectValidatorContext validatorContext,
             MemberConstraintValidationContext memberContext,
-            object value)
+            object? value)
         {
             var typedValue = CastTo<T>(value);
             ValidateTypedValue(validatorContext, memberContext, typedValue);
@@ -39,7 +44,7 @@ namespace Omnifactotum.Validation.Constraints
         ///     The value to validate.
         /// </param>
         protected abstract void ValidateTypedValue(
-            ObjectValidatorContext validatorContext,
+            [NotNull] ObjectValidatorContext validatorContext,
             [NotNull] MemberConstraintValidationContext memberContext,
             T value);
 
@@ -120,7 +125,7 @@ namespace Omnifactotum.Validation.Constraints
         ///     The type of the constraint.
         /// </param>
         protected void ValidateMember<TMember>(
-            ObjectValidatorContext validatorContext,
+            [NotNull] ObjectValidatorContext validatorContext,
             [NotNull] MemberConstraintValidationContext valueContext,
             T value,
             [NotNull] Expression<Func<T, TMember>> memberGetterExpression,
@@ -157,10 +162,7 @@ namespace Omnifactotum.Validation.Constraints
                 return;
             }
 
-            var memberValidationResult = ObjectValidator.Validate(
-                memberValue,
-                validatorContext.RecursiveProcessingContext);
-
+            var memberValidationResult = ObjectValidator.Validate(memberValue, validatorContext.RecursiveProcessingContext);
             if (memberValidationResult.IsObjectValid)
             {
                 return;

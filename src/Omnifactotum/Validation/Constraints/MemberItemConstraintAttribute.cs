@@ -1,12 +1,19 @@
-﻿using System;
+﻿#nullable enable
+
+using System;
+using Omnifactotum.Annotations;
+
+//// ReSharper disable RedundantNullnessAttributeWithNullableReferenceTypes
+//// ReSharper disable AnnotationRedundancyInHierarchy
+//// ReSharper disable RedundantAttributeUsageProperty
 
 namespace Omnifactotum.Validation.Constraints
 {
     /// <summary>
     ///     Specifies how the annotated member item is validated.
     /// </summary>
-    //// ReSharper disable once RedundantAttributeUsageProperty - Just making sure
     [AttributeUsage(AttributeTargets.Field | AttributeTargets.Property, AllowMultiple = true, Inherited = true)]
+    [CLSCompliant(false)]
     public sealed class MemberItemConstraintAttribute : BaseMemberConstraintAttribute
     {
         /// <summary>
@@ -17,7 +24,7 @@ namespace Omnifactotum.Validation.Constraints
         ///     the member annotated with this <see cref="MemberItemConstraintAttribute"/> attribute. The type must
         ///     have parameterless constructor.
         /// </param>
-        public MemberItemConstraintAttribute(Type constraintType)
+        public MemberItemConstraintAttribute([NotNull] Type constraintType)
             : base(constraintType)
         {
             // Nothing to do

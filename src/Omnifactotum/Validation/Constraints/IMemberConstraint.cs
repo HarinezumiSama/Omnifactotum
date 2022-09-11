@@ -1,4 +1,9 @@
-﻿using Omnifactotum.Annotations;
+﻿#nullable enable
+
+using Omnifactotum.Annotations;
+
+//// ReSharper disable RedundantNullnessAttributeWithNullableReferenceTypes
+//// ReSharper disable AnnotationRedundancyInHierarchy
 
 namespace Omnifactotum.Validation.Constraints
 {
@@ -35,6 +40,6 @@ namespace Omnifactotum.Validation.Constraints
         void Validate(
             [NotNull] ObjectValidatorContext validatorContext,
             [NotNull] MemberConstraintValidationContext memberContext,
-            [CanBeNull] object value);
+            [CanBeNull] object? value);
     }
 }

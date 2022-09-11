@@ -1,4 +1,6 @@
-﻿using System;
+﻿#nullable enable
+
+using System;
 
 namespace Omnifactotum.Validation.Constraints
 {
@@ -7,13 +9,13 @@ namespace Omnifactotum.Validation.Constraints
     ///     blank if it is <see langword="null"/>, <see cref="string.Empty"/>, or consists only of white-space characters.
     /// </summary>
     /// <seealso cref="string.IsNullOrWhiteSpace"/>
-    public sealed class NotBlankStringConstraint : TypedMemberConstraintBase<string>
+    public sealed class NotBlankStringConstraint : TypedMemberConstraintBase<string?>
     {
         /// <inheritdoc />
         protected override void ValidateTypedValue(
             ObjectValidatorContext validatorContext,
             MemberConstraintValidationContext memberContext,
-            string value)
+            string? value)
         {
             if (string.IsNullOrWhiteSpace(value))
             {

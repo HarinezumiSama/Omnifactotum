@@ -1,4 +1,10 @@
-﻿using System.Collections.Generic;
+﻿#nullable enable
+
+using System.Collections.Generic;
+using Omnifactotum.Annotations;
+
+//// ReSharper disable RedundantNullnessAttributeWithNullableReferenceTypes
+//// ReSharper disable AnnotationRedundancyInHierarchy
 
 namespace Omnifactotum.Validation
 {
@@ -9,6 +15,8 @@ namespace Omnifactotum.Validation
         /// </summary>
         public static readonly InternalMemberDataEqualityComparer Instance = new();
 
+        private static readonly ByReferenceEqualityComparer<object> EqualityComparer = ByReferenceEqualityComparer<object>.Instance;
+
         private InternalMemberDataEqualityComparer()
         {
             // Nothing to do
@@ -17,28 +25,28 @@ namespace Omnifactotum.Validation
         /// <summary>
         ///     Determines whether the specified objects are equal.
         /// </summary>
-        /// <param name="x">
+        /// <param name="left">
         ///     The first object of type <see cref="MemberData"/> to compare.
         /// </param>
-        /// <param name="y">
+        /// <param name="right">
         ///     The second object of type <see cref="MemberData"/> to compare.
         /// </param>
         /// <returns>
         ///     <see langword="true"/> if the specified objects are equal; otherwise, <see langword="false"/>.
         /// </returns>
-        public bool Equals(MemberData x, MemberData y)
+        public bool Equals([CanBeNull] MemberData? left, [CanBeNull] MemberData? right)
         {
-            if (ReferenceEquals(x, y))
+            if (ReferenceEquals(left, right))
             {
                 return true;
             }
 
-            if (x is null || y is null)
+            if (left is null || right is null)
             {
                 return false;
             }
 
-            return ByReferenceEqualityComparer<object>.Instance.Equals(x.Value, y.Value);
+            return EqualityComparer.Equals(left.Value, right.Value);
         }
 
         /// <summary>
@@ -50,10 +58,7 @@ namespace Omnifactotum.Validation
         /// <returns>
         ///     A hash code for the specified instance.
         /// </returns>
-        public int GetHashCode(MemberData obj)
-        {
-            //// ReSharper disable once ConditionIsAlwaysTrueOrFalse - Potentially false detection
-            return obj is null ? 0 : ByReferenceEqualityComparer<object>.Instance.GetHashCode(obj.Value);
-        }
+        //// ReSharper disable once ConditionIsAlwaysTrueOrFalse :: Potentially false detection
+        public int GetHashCode([CanBeNull] MemberData? obj) => obj is null ? 0 : EqualityComparer.GetHashCode(obj.Value);
     }
 }

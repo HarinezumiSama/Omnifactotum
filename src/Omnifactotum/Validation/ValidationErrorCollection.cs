@@ -1,7 +1,12 @@
-﻿using System.Collections.Generic;
+﻿#nullable enable
+
+using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using Omnifactotum.Annotations;
 using Omnifactotum.Validation.Constraints;
+
+//// ReSharper disable RedundantNullnessAttributeWithNullableReferenceTypes
+//// ReSharper disable AnnotationRedundancyInHierarchy
 
 namespace Omnifactotum.Validation
 {
@@ -21,10 +26,7 @@ namespace Omnifactotum.Validation
             Items = new ReadOnlyCollection<MemberConstraintValidationError>(_innerItems);
         }
 
-        internal ReadOnlyCollection<MemberConstraintValidationError> Items
-        {
-            get;
-        }
+        internal ReadOnlyCollection<MemberConstraintValidationError> Items { get; }
 
         /// <summary>
         ///     Adds the specified error to the collection.
@@ -37,7 +39,7 @@ namespace Omnifactotum.Validation
         ///         Can be <see langword="null"/>, in which case it is simply not added to the collection.
         ///     </para>
         /// </param>
-        public void Add([CanBeNull] MemberConstraintValidationError error)
+        public void Add([CanBeNull] MemberConstraintValidationError? error)
         {
             if (error is null)
             {
@@ -62,7 +64,7 @@ namespace Omnifactotum.Validation
         ///         are not added to this <see cref="ValidationErrorCollection"/>.
         ///     </para>
         /// </param>
-        public void AddRange([CanBeNull] IEnumerable<MemberConstraintValidationError> errors)
+        public void AddRange([CanBeNull] IEnumerable<MemberConstraintValidationError?>? errors)
         {
             if (errors is null)
             {

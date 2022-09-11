@@ -1,4 +1,6 @@
-﻿using System;
+﻿#nullable enable
+
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
@@ -6,6 +8,10 @@ using System.Linq.Expressions;
 using System.Reflection;
 using Omnifactotum.Annotations;
 using Omnifactotum.Validation.Constraints;
+using DisallowNullAttribute = System.Diagnostics.CodeAnalysis.DisallowNullAttribute;
+
+//// ReSharper disable RedundantNullnessAttributeWithNullableReferenceTypes
+//// ReSharper disable AnnotationRedundancyInHierarchy
 
 namespace Omnifactotum.Validation
 {
@@ -53,10 +59,7 @@ namespace Omnifactotum.Validation
         ///     An <see cref="ObjectValidationResult"/> representing the validation result.
         /// </returns>
         [NotNull]
-        public static ObjectValidationResult Validate<T>([NotNull] T instance)
-        {
-            return Validate(instance, null);
-        }
+        public static ObjectValidationResult Validate<T>([DisallowNull] T instance) => Validate(instance, null);
 
         /// <summary>
         ///     Validates the specified instance.
@@ -75,8 +78,8 @@ namespace Omnifactotum.Validation
         /// </returns>
         [NotNull]
         internal static ObjectValidationResult Validate<T>(
-            [NotNull] T instance,
-            [CanBeNull] RecursiveProcessingContext<MemberData> recursiveProcessingContext)
+            [DisallowNull] T instance,
+            [CanBeNull] RecursiveProcessingContext<MemberData>? recursiveProcessingContext)
         {
             if (instance is null)
             {
@@ -88,23 +91,18 @@ namespace Omnifactotum.Validation
 
             var objectValidatorContext = new ObjectValidatorContext(recursiveProcessingContext);
 
-            Factotum.ProcessRecursively(
-                rootMemberData,
-                GetMembers,
-                obj => ValidateInternal(instance, parameterExpression, obj, objectValidatorContext));
+            Factotum.ProcessRecursively(rootMemberData, GetMembers, ProcessItem);
 
             return new ObjectValidationResult(objectValidatorContext.Errors.Items);
+
+            void ProcessItem(MemberData data) => ValidateInternal(instance, parameterExpression, data, objectValidatorContext);
         }
 
         private static bool IsReadableProperty([NotNull] MemberInfo info)
-        {
-            var propertyInfo = info as PropertyInfo;
-            return propertyInfo != null && propertyInfo.GetIndexParameters().Length == 0 && propertyInfo.CanRead;
-        }
+            => info is PropertyInfo { CanRead: true } propertyInfo && propertyInfo.GetIndexParameters().Length == 0;
 
         private static bool IsSimpleTypeInternal([NotNull] Type type)
-        {
-            return type.IsPrimitive
+            => type.IsPrimitive
                 || type.IsEnum
                 || type.IsPointer
                 || type == typeof(string)
@@ -113,26 +111,25 @@ namespace Omnifactotum.Validation
                 || type == typeof(DateTime)
                 || type == typeof(DateTimeOffset)
                 || type.IsNullable();
-        }
 
-        private static BaseMemberConstraintAttribute[] FilterBy<TAttribute>(
-            this IEnumerable<BaseValidatableMemberAttribute> attributes)
+        [CanBeNull]
+        private static BaseMemberConstraintAttribute[]? FilterBy<TAttribute>(
+            [CanBeNull] this IEnumerable<BaseValidatableMemberAttribute>? attributes)
             where TAttribute : BaseMemberConstraintAttribute
             => attributes?.Where(obj => obj is TAttribute).Cast<BaseMemberConstraintAttribute>().ToArray();
 
-        private static object GetMemberValue(object instance, MemberInfo memberInfo)
-        {
-            var field = memberInfo as FieldInfo;
-            if (field != null)
+        [CanBeNull]
+        private static object? GetMemberValue([NotNull] object instance, [NotNull] MemberInfo memberInfo)
+            => memberInfo switch
             {
-                return field.GetValue(instance);
-            }
+                FieldInfo field => field.GetValue(instance),
+                PropertyInfo property => property.GetValue(instance, null),
+                _ => throw new InvalidOperationException(
+                    $@"Invalid type of {nameof(memberInfo).ToUIString()}: {memberInfo.GetType().GetFullName().ToUIString()}")
+            };
 
-            var property = (PropertyInfo)memberInfo;
-            return property.GetValue(instance, null);
-        }
-
-        private static IEnumerable<MemberData> GetMembers(MemberData parentMemberData)
+        [NotNull]
+        private static IEnumerable<MemberData> GetMembers([NotNull] MemberData parentMemberData)
         {
             if (parentMemberData is null)
             {
@@ -169,9 +166,7 @@ namespace Omnifactotum.Validation
             var members = internalMembers
                 .Select(
                     obj => new MemberData(
-                        Expression.MakeMemberAccess(
-                            ValidationFactotum.ConvertTypeAuto(parentExpression, instance),
-                            obj.Member),
+                        Expression.MakeMemberAccess(ValidationFactotum.ConvertTypeAuto(parentExpression, instance), obj.Member),
                         instance,
                         GetMemberValue(instance, obj.Member),
                         obj.Attributes,
@@ -242,10 +237,10 @@ namespace Omnifactotum.Validation
         }
 
         private static void ValidateInternal(
-            object root,
-            ParameterExpression parameterExpression,
-            MemberData memberData,
-            ObjectValidatorContext objectValidatorContext)
+            [NotNull] object root,
+            [NotNull] ParameterExpression parameterExpression,
+            [NotNull] MemberData memberData,
+            [NotNull] ObjectValidatorContext objectValidatorContext)
         {
             root.EnsureNotNull();
             parameterExpression.EnsureNotNull();
@@ -258,16 +253,14 @@ namespace Omnifactotum.Validation
                 return;
             }
 
+            var memberDataContainer = memberData.Container.EnsureNotNull();
+            var memberDataExpression = memberData.Expression;
+
             foreach (var constraintAttribute in effectiveAttributes)
             {
                 var constraint = objectValidatorContext.ResolveConstraint(constraintAttribute.ConstraintType);
 
-                var context = new MemberConstraintValidationContext(
-                    root,
-                    memberData.Container,
-                    memberData.Expression,
-                    parameterExpression);
-
+                var context = new MemberConstraintValidationContext(root, memberDataContainer, memberDataExpression, parameterExpression);
                 constraint.Validate(objectValidatorContext, context, memberData.Value);
             }
         }
