@@ -1,1 +1,0 @@
-﻿VirtualTreeNode<DateTime> :: Children:VirtualTreeNodeCollection<DateTime> = {VirtualTreeNodeCollection<DateTime> :: [Elements:VirtualTreeNode<DateTime>] = {}, Count:int = {int :: 0}, IsReadOnly:bool = {bool :: False}}, Parent:VirtualTreeNodeBase<DateTime> = {VirtualTreeNodeBase<DateTime> :: <null>}, Value:DateTime = {DateTime :: 2011-12-31 13:59:58.3210000}

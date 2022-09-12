@@ -1,16 +1,12 @@
 ﻿using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using System.Globalization;
 using System.IO;
-using System.Reflection;
 using System.Runtime.CompilerServices;
 using NUnit.Framework;
 using NUnit.Framework.Constraints;
 using Omnifactotum.Annotations;
-using Omnifactotum.NUnit;
-using Omnifactotum.Tests.Properties;
 
 #pragma warning disable CA1822 //// Mark members as static
 
@@ -22,11 +18,6 @@ internal sealed class OmnifactotumGenericObjectExtensionsTests
 {
     private const string? NullString = null;
     private const object? NullObject = null;
-
-    private static readonly MethodInfo ToPropertyStringWithSpecificOptionsMethodDefinition =
-        new Func<object, ToPropertyStringOptions, string>(OmnifactotumGenericObjectExtensions.ToPropertyString)
-            .Method
-            .GetGenericMethodDefinition();
 
     [Test]
     public void TestEnsureNotNullForReferenceTypeSucceeds()
@@ -357,23 +348,6 @@ internal sealed class OmnifactotumGenericObjectExtensionsTests
     }
 
     [Test]
-    [TestCaseSource(typeof(ToPropertyStringCases))]
-    public void TestToPropertyStringSucceeds(
-        Type objectType,
-        object obj,
-        ToPropertyStringOptions? options,
-        string? expectedString)
-    {
-        var methodWithSpecificOptions =
-            ToPropertyStringWithSpecificOptionsMethodDefinition.MakeGenericMethod(objectType);
-
-        var actualResultWithSpecificOptions =
-            (string?)methodWithSpecificOptions.Invoke(null, new[] { obj, options });
-
-        Assert.That(actualResultWithSpecificOptions, Is.EqualTo(expectedString));
-    }
-
-    [Test]
     [SetCulture("ru-RU")]
     public void TestToStringSafelyWithDefaultNullValueStringSucceeds()
     {
@@ -487,219 +461,6 @@ internal sealed class OmnifactotumGenericObjectExtensionsTests
         Assert.That(valueB.IsEqualByContentsTo(valueA), constraint);
     }
 
-    private sealed class ToPropertyStringCases : TestCasesBase
-    {
-        private const int PointerAddress0 = 0x10EF3478;
-        private const int PointerAddress1 = 0x20EF3478;
-        private const int PointerAddress2 = 0x30EF3478;
-
-        private static readonly unsafe PointerContainer PointerContainer = new()
-        {
-            Value = "SomePointer",
-            IntPointer = (int*)PointerAddress0,
-            IntPtr = new IntPtr(PointerAddress1),
-            UIntPtr = new UIntPtr(PointerAddress2)
-        };
-
-        protected override IEnumerable<TestCaseData> GetCases()
-        {
-            yield return new TestCaseData(
-                    typeof(string),
-                    null,
-                    new ToPropertyStringOptions().SetAllFlags(true),
-                    "string :: <null>")
-                .SetDescription("Null string, all flags");
-
-            yield return new TestCaseData(
-                    typeof(RecursiveNode),
-                    null,
-                    new ToPropertyStringOptions().SetAllFlags(true),
-                    "OmnifactotumGenericObjectExtensionsTests.RecursiveNode :: <null>")
-                .SetDescription("Null RecursiveNode, all flags");
-
-            yield return new TestCaseData(
-                    typeof(int),
-                    15789632,
-                    new ToPropertyStringOptions().SetAllFlags(true),
-                    "int :: 15789632")
-                .SetDescription("Int32, all flags");
-
-            {
-                const int IntValue = 35781632;
-
-                yield return
-                    new TestCaseData(
-                            typeof(int),
-                            IntValue,
-                            new ToPropertyStringOptions(),
-                            IntValue.ToString(CultureInfo.InvariantCulture))
-                        .SetDescription("Int32, default options");
-            }
-
-            {
-                const int IntValue = -45781632;
-
-                yield return
-                    new TestCaseData(typeof(int), IntValue, null, IntValue.ToString(CultureInfo.InvariantCulture))
-                        .SetDescription("Int32, null options");
-            }
-
-            {
-                var pointerString0 = string.Format(
-                    OmnifactotumGenericObjectExtensions.PointerStringFormat,
-                    PointerAddress0);
-
-                var pointerString1 = string.Format(
-                    OmnifactotumGenericObjectExtensions.PointerStringFormat,
-                    PointerAddress1);
-
-                var pointerString2 = string.Format(
-                    OmnifactotumGenericObjectExtensions.PointerStringFormat,
-                    PointerAddress2);
-
-                var expectedPointerContainerToPropertyString = string.Format(
-                    Resources.ExpectedPointerContainerToPropertyStringTemplate,
-                    pointerString0,
-                    pointerString1,
-                    pointerString2);
-
-                yield return
-                    new TestCaseData(
-                            typeof(PointerContainer),
-                            PointerContainer,
-                            new ToPropertyStringOptions().SetAllFlags(true),
-                            expectedPointerContainerToPropertyString)
-                        .SetDescription("PointerContainer, all flags");
-            }
-
-            yield return
-                new TestCaseData(
-                        typeof(object),
-                        VirtualTreeNode.Create(new DateTime(2011, 12, 31, 13, 59, 58, 321)),
-                        new ToPropertyStringOptions().SetAllFlags(true),
-                        Resources.ExpectedVirtualTreeNodeWithDateTimeToPropertyString)
-                    .SetDescription("VirtualTreeNode with DateTime, all flags");
-
-            yield return
-                new TestCaseData(
-                        typeof(object),
-                        VirtualTreeNode.Create(
-                            new DateTimeOffset(2011, 12, 31, 13, 59, 58, 321, TimeSpan.FromHours(-2d))),
-                        new ToPropertyStringOptions().SetAllFlags(true),
-                        Resources.ExpectedVirtualTreeNodeWithDateTimeOffsetToPropertyString)
-                    .SetDescription("VirtualTreeNode with DateTimeOffset, all flags");
-
-            var keyTuple = new Tuple<string, Array>(GetType().ToString(), new[] { 1, 2, 5 });
-            var valueTuple = new Tuple<object, string?>(keyTuple, ToString());
-            var kvp = new KeyValuePair<Tuple<string, Array>, Tuple<object, string?>>(keyTuple, valueTuple);
-
-            yield return
-                new TestCaseData(
-                        typeof(KeyValuePair<Tuple<string, Array>, Tuple<object, string?>>),
-                        kvp,
-                        new ToPropertyStringOptions().SetAllFlags(true),
-                        Resources.ExpectedComplexObjectAllFlagsToPropertyString)
-                    .SetDescription("Complex object (KeyValuePair), all flags");
-
-            yield return
-                new TestCaseData(
-                        typeof(KeyValuePair<Tuple<string, Array>, Tuple<object, string?>>),
-                        kvp,
-                        new ToPropertyStringOptions(),
-                        Resources.ExpectedComplexObjectDefaultOptionsToPropertyString)
-                    .SetDescription("Complex object (KeyValuePair), default options");
-
-            yield return
-                new TestCaseData(
-                        typeof(KeyValuePair<Tuple<string, Array>, Tuple<object, string?>>),
-                        kvp,
-                        new ToPropertyStringOptions { RenderComplexProperties = true, MaxCollectionItemCount = 1 },
-                        Resources.ExpectedComplexObjectMaxOneItemToPropertyString)
-                    .SetDescription("Complex object (KeyValuePair), complex properties and max 1 item from collection");
-
-            yield return
-                new TestCaseData(
-                        typeof(KeyValuePair<Tuple<string, Array>, Tuple<object, string?>>),
-                        kvp,
-                        new ToPropertyStringOptions { RenderComplexProperties = true, RenderMemberType = true },
-                        Resources.ExpectedComplexObjectWithMemberTypeToPropertyString)
-                    .SetDescription("Complex object (KeyValuePair), complex properties and member types");
-
-            yield return
-                new TestCaseData(
-                        typeof(KeyValuePair<Tuple<string, Array>, Tuple<object, string?>>),
-                        kvp,
-                        new ToPropertyStringOptions { RenderComplexProperties = true, RenderActualType = true },
-                        Resources.ExpectedComplexObjectWithActualTypeToPropertyString)
-                    .SetDescription("Complex object (KeyValuePair), complex properties and actual types");
-
-            var rootNode = new RecursiveNode { Value = "Root" };
-            var childNode = new RecursiveNode { Value = "Child", Parent = rootNode };
-            rootNode.Parent = childNode;
-            var grandChildNode = new RecursiveNode { Value = "Grandchild", Parent = childNode };
-            var nodes = new[] { rootNode, childNode, grandChildNode };
-
-            yield return
-                new TestCaseData(
-                        typeof(RecursiveNode[]),
-                        nodes,
-                        new ToPropertyStringOptions().SetAllFlags(true),
-                        Resources.ExpectedComplexObjectWithCyclesAllFlagsToPropertyString)
-                    .SetDescription("Complex object (RecursiveNode[]) with cyclic dependency, all flags");
-
-            yield return
-                new TestCaseData(
-                        typeof(RecursiveNode[]),
-                        nodes,
-                        new ToPropertyStringOptions { RenderRootActualType = true, RenderComplexProperties = true },
-                        Resources.ExpectedComplexObjectWithCyclesWithComplexPropertiesToPropertyString)
-                    .SetDescription("Complex object (RecursiveNode[]) with cyclic dependency, complex properties");
-
-            yield return
-                new TestCaseData(
-                        typeof(RecursiveNode[]),
-                        nodes,
-                        new ToPropertyStringOptions { RenderComplexProperties = true, MaxRecursionLevel = 2 },
-                        Resources.ExpectedMaxRecursionToPropertyString)
-                    .SetDescription(
-                        "Complex object (RecursiveNode[]) with cyclic dependency, all flags, with max recursion");
-
-            yield return
-                new TestCaseData(
-                        typeof(Delegate),
-                        new Func<string>(typeof(object).ToString),
-                        new ToPropertyStringOptions().SetAllFlags(true),
-                        "Func<string> :: System.Func`1[System.String]")
-                    .SetDescription("Delegate");
-
-            yield return
-                new TestCaseData(
-                        typeof(ClassWithPropertyGetterThrowingException),
-                        new ClassWithPropertyGetterThrowingException(),
-                        new ToPropertyStringOptions().SetAllFlags(true),
-                        Resources.ExpectedClassWithPropertyGetterThrowingExceptionToPropertyString)
-                    .SetDescription(nameof(ClassWithPropertyGetterThrowingException));
-
-            {
-                var input = new ClassWithFlagsEnumAndTypeAndAssemblyProperties();
-
-                var expectedClassWithFlagsEnumAndTypeAndAssemblyPropertiesToPropertyString = string.Format(
-                    Resources.ExpectedClassWithFlagsEnumAndTypeAndAssemblyPropertiesToPropertyStringTemplate,
-                    input.SomeAssembly.Location,
-                    input.SomeAttributes.ToString(),
-                    input.SomeType.AssemblyQualifiedName);
-
-                yield return
-                    new TestCaseData(
-                            typeof(ClassWithFlagsEnumAndTypeAndAssemblyProperties),
-                            input,
-                            new ToPropertyStringOptions().SetAllFlags(true),
-                            expectedClassWithFlagsEnumAndTypeAndAssemblyPropertiesToPropertyString)
-                        .SetDescription(nameof(ClassWithFlagsEnumAndTypeAndAssemblyProperties));
-            }
-        }
-    }
-
     private sealed class TestClass
     {
         // No own members
@@ -750,104 +511,5 @@ internal sealed class OmnifactotumGenericObjectExtensionsTests
             get;
             set;
         }
-    }
-
-    private sealed class PointerContainer
-    {
-        public string? Value
-        {
-            [UsedImplicitly]
-            get;
-            set;
-        }
-
-        public unsafe int* IntPointer
-        {
-            [UsedImplicitly]
-            get;
-            set;
-        }
-
-        public IntPtr IntPtr
-        {
-            [UsedImplicitly]
-            get;
-            set;
-        }
-
-        public UIntPtr UIntPtr
-        {
-            [UsedImplicitly]
-            get;
-            set;
-        }
-    }
-
-    private sealed class ClassWithPropertyGetterThrowingException
-    {
-        [UsedImplicitly]
-        public int Property1Good => 42;
-
-        [UsedImplicitly]
-        public DateTime Property2Bad => throw new NotImplementedException(@"Never going to be implemented.");
-
-        [UsedImplicitly]
-        public IEnumerable<string> Property3Bad => new ThrowingEnumerable();
-
-        [UsedImplicitly]
-        public string Property4Good => "Some value";
-
-        private sealed class ThrowingEnumerable : IEnumerable<string>
-        {
-            public IEnumerator<string> GetEnumerator() => new ThrowingEnumerator();
-
-            IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();
-        }
-
-        private sealed class ThrowingEnumerator : IEnumerator<string>
-        {
-            private int _index = -1;
-
-            public void Dispose()
-            {
-                // Nothing to do
-            }
-
-            public bool MoveNext()
-            {
-                if (_index is < -1 or >= 2)
-                {
-                    return false;
-                }
-
-                _index++;
-                return true;
-            }
-
-            public void Reset() => throw new NotSupportedException();
-
-            public string Current
-                => _index switch
-                {
-                    0 => @"Item0",
-                    1 => throw new NotImplementedException(@"No item at index 1."),
-                    2 => @"Item2",
-                    _ => throw new InvalidOperationException(@"Cannot access items outside range.")
-                };
-
-            object IEnumerator.Current => Current;
-        }
-    }
-
-    private sealed class ClassWithFlagsEnumAndTypeAndAssemblyProperties
-    {
-        [UsedImplicitly]
-        public FileAttributes SomeAttributes => FileAttributes.Archive | FileAttributes.Offline;
-
-        [UsedImplicitly]
-        public Type SomeType => typeof(TestClass);
-
-        [UsedImplicitly]
-        public Assembly SomeAssembly => typeof(ClassWithFlagsEnumAndTypeAndAssemblyProperties).Assembly;
     }
 }
