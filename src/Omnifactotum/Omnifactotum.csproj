@@ -2,7 +2,7 @@
 
 <Project Sdk="Microsoft.NET.Sdk">
     <PropertyGroup>
-        <TargetFrameworks>net461;net472;netstandard2.0;netstandard2.1;net5.0</TargetFrameworks>
+        <TargetFrameworks>net461;net472;netstandard2.0;netstandard2.1;net5.0;net6.0</TargetFrameworks>
     </PropertyGroup>
 
     <PropertyGroup>
@@ -44,5 +44,7 @@
         <None Include="..\Common\Omnifactotum.snk">
             <Link>Properties\Omnifactotum.snk</Link>
         </None>
+
+        <None Include="CompatibilitySuppressions.xml" />
     </ItemGroup>
 </Project>

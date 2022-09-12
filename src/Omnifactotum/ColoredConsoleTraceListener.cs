@@ -4,7 +4,7 @@ using System.IO;
 using Omnifactotum.Annotations;
 using static Omnifactotum.FormattableStringFactotum;
 
-#if !NET5_0
+#if !NET5_0_OR_GREATER
 using System.Runtime.CompilerServices;
 #endif
 
@@ -429,7 +429,7 @@ public sealed class ColoredConsoleTraceListener : TextWriterTraceListener
         string source,
         TraceEventType eventType,
         int id,
-        string format,
+        string? format,
         [CanBeNull] params object?[]? args)
     {
         lock (_syncLock)
@@ -440,7 +440,7 @@ public sealed class ColoredConsoleTraceListener : TextWriterTraceListener
 #if !NET5_0_OR_GREATER
                 //// ReSharper disable AssignNullToNotNullAttribute
 #endif
-                base.TraceEvent(eventCache, source, eventType, id, format, args);
+                base.TraceEvent(eventCache, source, eventType, id, format!, args);
 #if !NET5_0_OR_GREATER
                 //// ReSharper restore AssignNullToNotNullAttribute
 #endif
@@ -754,7 +754,7 @@ public sealed class ColoredConsoleTraceListener : TextWriterTraceListener
 
     private void ChangeColor(TraceEventType eventType)
     {
-#if !NET5_0
+#if !NET5_0_OR_GREATER
         RuntimeHelpers.PrepareConstrainedRegions();
 #endif
         try
@@ -777,7 +777,7 @@ public sealed class ColoredConsoleTraceListener : TextWriterTraceListener
 
     private void ResetColor()
     {
-#if !NET5_0
+#if !NET5_0_OR_GREATER
         RuntimeHelpers.PrepareConstrainedRegions();
 #endif
         try

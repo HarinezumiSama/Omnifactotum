@@ -37,7 +37,7 @@ public static partial class Factotum
         "Invalid expression (must be a getter of a property of some type): {{ {0} }}.";
 
     private static readonly int GuidSize = Marshal.SizeOf(typeof(Guid));
-    private static readonly RNGCryptoServiceProvider IdGenerator = new();
+    private static readonly RandomNumberGenerator IdGenerator = RandomNumberGenerator.Create();
 
     /// <summary>
     ///     <para>

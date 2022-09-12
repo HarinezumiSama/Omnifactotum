@@ -677,7 +677,7 @@ process
         }
 
         # TODO: Autodiscover from the *.Tests project(s)
-        [string[]] $testFrameworks = @('net461', 'net472', 'netcoreapp2.1', 'netcoreapp3.1', 'net5.0')
+        [string[]] $testFrameworks = @('net461', 'net472', 'netcoreapp2.1', 'netcoreapp3.1', 'net5.0', 'net6.0')
 
         foreach ($testFramework in $testFrameworks)
         {
