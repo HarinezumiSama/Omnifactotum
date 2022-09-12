@@ -1,19 +1,18 @@
 ﻿using System;
 
-namespace Omnifactotum.Validation.Constraints
+namespace Omnifactotum.Validation.Constraints;
+
+/// <summary>
+///     The base class for attributes annotating validatable members.
+/// </summary>
+[CLSCompliant(false)]
+public abstract class BaseValidatableMemberAttribute : Attribute
 {
     /// <summary>
-    ///     The base class for attributes annotating validatable members.
+    ///     Initializes a new instance of the <see cref="BaseValidatableMemberAttribute"/> class.
     /// </summary>
-    [CLSCompliant(false)]
-    public abstract class BaseValidatableMemberAttribute : Attribute
+    internal BaseValidatableMemberAttribute()
     {
-        /// <summary>
-        ///     Initializes a new instance of the <see cref="BaseValidatableMemberAttribute"/> class.
-        /// </summary>
-        internal BaseValidatableMemberAttribute()
-        {
-            // Nothing to do
-        }
+        // Nothing to do
     }
 }

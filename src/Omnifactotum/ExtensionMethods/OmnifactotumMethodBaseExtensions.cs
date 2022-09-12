@@ -7,244 +7,243 @@ using PureAttribute = System.Diagnostics.Contracts.PureAttribute;
 //// ReSharper disable UseNullableReferenceTypesAnnotationSyntax
 
 //// ReSharper disable once CheckNamespace :: Namespace is intentionally named so in order to simplify usage of extension methods
-namespace System.Reflection
+namespace System.Reflection;
+
+/// <summary>
+///     Contains extension methods for the <see cref="System.Reflection.MethodBase"/> class.
+/// </summary>
+public static class OmnifactotumMethodBaseExtensions
 {
+    private static readonly Type VoidType = typeof(void);
+    private static readonly string VoidTypeName = OmnifactotumTypeExtensions.GetShortTypeNameInternal(VoidType);
+
+    private const char ReturnTypeSeparator = '\x0020';
+    private const char ParametersOpening = '(';
+    private const char ParametersClosing = ')';
+
     /// <summary>
-    ///     Contains extension methods for the <see cref="System.Reflection.MethodBase"/> class.
+    ///     Gets the full name of the specified method in the form &quot;Namespace.DeclaringType.MethodName&quot;
     /// </summary>
-    public static class OmnifactotumMethodBaseExtensions
+    /// <param name="method">
+    ///     The method to get the full name of.
+    /// </param>
+    /// <returns>
+    ///     The full name of the <paramref name="method"/>.
+    /// </returns>
+    [Pure]
+    [Omnifactotum.Annotations.Pure]
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    [NotNull]
+    public static string GetFullName([NotNull] this MethodBase method)
     {
-        private static readonly Type VoidType = typeof(void);
-        private static readonly string VoidTypeName = OmnifactotumTypeExtensions.GetShortTypeNameInternal(VoidType);
-
-        private const char ReturnTypeSeparator = '\x0020';
-        private const char ParametersOpening = '(';
-        private const char ParametersClosing = ')';
-
-        /// <summary>
-        ///     Gets the full name of the specified method in the form &quot;Namespace.DeclaringType.MethodName&quot;
-        /// </summary>
-        /// <param name="method">
-        ///     The method to get the full name of.
-        /// </param>
-        /// <returns>
-        ///     The full name of the <paramref name="method"/>.
-        /// </returns>
-        [Pure]
-        [Omnifactotum.Annotations.Pure]
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        [NotNull]
-        public static string GetFullName([NotNull] this MethodBase method)
+        if (method is null)
         {
-            if (method is null)
-            {
-                throw new ArgumentNullException(nameof(method));
-            }
-
-            return GetNameInternal(method, true);
+            throw new ArgumentNullException(nameof(method));
         }
 
-        /// <summary>
-        ///     Gets the qualified name of the specified method in the form &quot;DeclaringType.MethodName&quot;
-        /// </summary>
-        /// <param name="method">
-        ///     The method to get the qualified name of.
-        /// </param>
-        /// <returns>
-        ///     The qualified name of the <paramref name="method"/>.
-        /// </returns>
-        [Pure]
-        [Omnifactotum.Annotations.Pure]
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        [NotNull]
-        public static string GetQualifiedName([NotNull] this MethodBase method)
-        {
-            if (method is null)
-            {
-                throw new ArgumentNullException(nameof(method));
-            }
+        return GetNameInternal(method, true);
+    }
 
-            return GetNameInternal(method, false);
+    /// <summary>
+    ///     Gets the qualified name of the specified method in the form &quot;DeclaringType.MethodName&quot;
+    /// </summary>
+    /// <param name="method">
+    ///     The method to get the qualified name of.
+    /// </param>
+    /// <returns>
+    ///     The qualified name of the <paramref name="method"/>.
+    /// </returns>
+    [Pure]
+    [Omnifactotum.Annotations.Pure]
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    [NotNull]
+    public static string GetQualifiedName([NotNull] this MethodBase method)
+    {
+        if (method is null)
+        {
+            throw new ArgumentNullException(nameof(method));
         }
 
-        /// <summary>
-        ///     Gets the method signature, including return type, generic type arguments, and parameter types;
-        ///     types names are short at that.
-        /// </summary>
-        /// <param name="method">
-        ///     The method to get the signature of.
-        /// </param>
-        /// <returns>
-        ///     The string representation of the method signature.
-        /// </returns>
-        [Pure]
-        [Omnifactotum.Annotations.Pure]
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        [NotNull]
-        public static string GetSignature([NotNull] this MethodBase method)
-        {
-            if (method is null)
-            {
-                throw new ArgumentNullException(nameof(method));
-            }
+        return GetNameInternal(method, false);
+    }
 
-            return GetSignatureInternal(method, false);
+    /// <summary>
+    ///     Gets the method signature, including return type, generic type arguments, and parameter types;
+    ///     types names are short at that.
+    /// </summary>
+    /// <param name="method">
+    ///     The method to get the signature of.
+    /// </param>
+    /// <returns>
+    ///     The string representation of the method signature.
+    /// </returns>
+    [Pure]
+    [Omnifactotum.Annotations.Pure]
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    [NotNull]
+    public static string GetSignature([NotNull] this MethodBase method)
+    {
+        if (method is null)
+        {
+            throw new ArgumentNullException(nameof(method));
         }
 
-        /// <summary>
-        ///     Gets the method signature, including return type, generic type arguments, and parameter types;
-        ///     types names are full at that.
-        /// </summary>
-        /// <param name="method">
-        ///     The method to get the signature of.
-        /// </param>
-        /// <returns>
-        ///     The string representation of the method signature.
-        /// </returns>
-        [Pure]
-        [Omnifactotum.Annotations.Pure]
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        [NotNull]
-        public static string GetFullSignature([NotNull] this MethodBase method)
-        {
-            if (method is null)
-            {
-                throw new ArgumentNullException(nameof(method));
-            }
+        return GetSignatureInternal(method, false);
+    }
 
-            return GetSignatureInternal(method, true);
+    /// <summary>
+    ///     Gets the method signature, including return type, generic type arguments, and parameter types;
+    ///     types names are full at that.
+    /// </summary>
+    /// <param name="method">
+    ///     The method to get the signature of.
+    /// </param>
+    /// <returns>
+    ///     The string representation of the method signature.
+    /// </returns>
+    [Pure]
+    [Omnifactotum.Annotations.Pure]
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    [NotNull]
+    public static string GetFullSignature([NotNull] this MethodBase method)
+    {
+        if (method is null)
+        {
+            throw new ArgumentNullException(nameof(method));
         }
 
-        [CanBeNull]
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        //// ReSharper disable once SuggestBaseTypeForParameter
-        private static Type? GetMethodContainingType([NotNull] MethodBase method)
-            => method.DeclaringType ?? method.ReflectedType;
+        return GetSignatureInternal(method, true);
+    }
 
-        [NotNull]
-        private static string GetSignatureInternal([NotNull] MethodBase method, bool fullNames)
+    [CanBeNull]
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    //// ReSharper disable once SuggestBaseTypeForParameter
+    private static Type? GetMethodContainingType([NotNull] MethodBase method)
+        => method.DeclaringType ?? method.ReflectedType;
+
+    [NotNull]
+    private static string GetSignatureInternal([NotNull] MethodBase method, bool fullNames)
+    {
+        var resultBuilder = new StringBuilder();
+
+        string GetTypeName(Type type) => GetTypeNameInternal(type, fullNames);
+
+        if (method is MethodInfo methodInfo)
         {
-            var resultBuilder = new StringBuilder();
+            resultBuilder.Append(GetTypeName(methodInfo.ReturnType));
+            resultBuilder.Append(ReturnTypeSeparator);
+        }
 
-            string GetTypeName(Type type) => GetTypeNameInternal(type, fullNames);
+        var methodContainingType = GetMethodContainingType(method);
+        if (methodContainingType is not null)
+        {
+            resultBuilder.Append(GetTypeName(methodContainingType));
+            resultBuilder.Append(Type.Delimiter);
+        }
 
-            if (method is MethodInfo methodInfo)
+        resultBuilder.Append(method.Name);
+
+        if (method.IsGenericMethod || method.IsGenericMethodDefinition)
+        {
+            var genericArguments = method.GetGenericArguments();
+            if (genericArguments.Length > 0)
             {
-                resultBuilder.Append(GetTypeName(methodInfo.ReturnType));
-                resultBuilder.Append(ReturnTypeSeparator);
-            }
+                resultBuilder.Append(OmnifactotumTypeExtensions.GenericArgumentsOpening);
 
-            var methodContainingType = GetMethodContainingType(method);
-            if (methodContainingType is not null)
-            {
-                resultBuilder.Append(GetTypeName(methodContainingType));
-                resultBuilder.Append(Type.Delimiter);
-            }
-
-            resultBuilder.Append(method.Name);
-
-            if (method.IsGenericMethod || method.IsGenericMethodDefinition)
-            {
-                var genericArguments = method.GetGenericArguments();
-                if (genericArguments.Length > 0)
+                for (var index = 0; index < genericArguments.Length; index++)
                 {
-                    resultBuilder.Append(OmnifactotumTypeExtensions.GenericArgumentsOpening);
-
-                    for (var index = 0; index < genericArguments.Length; index++)
+                    if (index > 0)
                     {
-                        if (index > 0)
-                        {
-                            resultBuilder.Append(",\x0020");
-                        }
-
-                        resultBuilder.Append(GetTypeName(genericArguments[index]));
+                        resultBuilder.Append(",\x0020");
                     }
 
-                    resultBuilder.Append(OmnifactotumTypeExtensions.GenericArgumentsClosing);
+                    resultBuilder.Append(GetTypeName(genericArguments[index]));
                 }
+
+                resultBuilder.Append(OmnifactotumTypeExtensions.GenericArgumentsClosing);
             }
-
-            var parameters = method.GetParameters();
-            resultBuilder.Append(ParametersOpening);
-
-            for (var index = 0; index < parameters.Length; index++)
-            {
-                if (index > 0)
-                {
-                    resultBuilder.Append(",\x0020");
-                }
-
-                var parameter = parameters[index];
-                var parameterType = parameter.ParameterType;
-
-                if (parameter.IsOut)
-                {
-                    resultBuilder.Append("out\x0020");
-                }
-                else if (parameterType.IsByRef)
-                {
-                    resultBuilder.Append("ref\x0020");
-                }
-
-                var actualParameterType = parameterType.IsByRef && parameterType.HasElementType
-                    ? parameterType.GetElementType().EnsureNotNull()
-                    : parameterType;
-
-                resultBuilder.Append(GetTypeName(actualParameterType));
-            }
-
-            resultBuilder.Append(ParametersClosing);
-
-            return resultBuilder.ToString();
         }
 
-        [NotNull]
-        private static string GetTypeNameInternal([NotNull] Type type, bool fullName)
-            //// ReSharper disable once ArrangeRedundantParentheses :: For clarity
-            => type == VoidType
-                ? VoidTypeName
-                : (fullName ? type.GetFullName() : OmnifactotumTypeExtensions.GetShortTypeNameInternal(type));
+        var parameters = method.GetParameters();
+        resultBuilder.Append(ParametersOpening);
 
-        [NotNull]
-        private static string GetNameInternal([NotNull] MethodBase method, bool fullName)
+        for (var index = 0; index < parameters.Length; index++)
         {
-            var resultBuilder = new StringBuilder();
-
-            var type = GetMethodContainingType(method);
-            if (type != null)
+            if (index > 0)
             {
-                var typeName = fullName ? type.GetFullName() : type.GetQualifiedName();
-                resultBuilder.Append(typeName);
-                resultBuilder.Append(Type.Delimiter);
+                resultBuilder.Append(",\x0020");
             }
 
-            resultBuilder.Append(method.Name);
+            var parameter = parameters[index];
+            var parameterType = parameter.ParameterType;
+
+            if (parameter.IsOut)
+            {
+                resultBuilder.Append("out\x0020");
+            }
+            else if (parameterType.IsByRef)
+            {
+                resultBuilder.Append("ref\x0020");
+            }
+
+            var actualParameterType = parameterType.IsByRef && parameterType.HasElementType
+                ? parameterType.GetElementType().EnsureNotNull()
+                : parameterType;
+
+            resultBuilder.Append(GetTypeName(actualParameterType));
+        }
+
+        resultBuilder.Append(ParametersClosing);
+
+        return resultBuilder.ToString();
+    }
+
+    [NotNull]
+    private static string GetTypeNameInternal([NotNull] Type type, bool fullName)
+        //// ReSharper disable once ArrangeRedundantParentheses :: For clarity
+        => type == VoidType
+            ? VoidTypeName
+            : (fullName ? type.GetFullName() : OmnifactotumTypeExtensions.GetShortTypeNameInternal(type));
+
+    [NotNull]
+    private static string GetNameInternal([NotNull] MethodBase method, bool fullName)
+    {
+        var resultBuilder = new StringBuilder();
+
+        var type = GetMethodContainingType(method);
+        if (type != null)
+        {
+            var typeName = fullName ? type.GetFullName() : type.GetQualifiedName();
+            resultBuilder.Append(typeName);
+            resultBuilder.Append(Type.Delimiter);
+        }
+
+        resultBuilder.Append(method.Name);
+
+        //// ReSharper disable once InvertIf
+        if (method.IsGenericMethod || method.IsGenericMethodDefinition)
+        {
+            var genericArguments = method.GetGenericArguments();
 
             //// ReSharper disable once InvertIf
-            if (method.IsGenericMethod || method.IsGenericMethodDefinition)
+            if (genericArguments.Length > 0)
             {
-                var genericArguments = method.GetGenericArguments();
+                resultBuilder.Append(OmnifactotumTypeExtensions.GenericArgumentsOpening);
 
-                //// ReSharper disable once InvertIf
-                if (genericArguments.Length > 0)
+                for (var index = 0; index < genericArguments.Length; index++)
                 {
-                    resultBuilder.Append(OmnifactotumTypeExtensions.GenericArgumentsOpening);
-
-                    for (var index = 0; index < genericArguments.Length; index++)
+                    if (index > 0)
                     {
-                        if (index > 0)
-                        {
-                            resultBuilder.Append(",\x0020");
-                        }
-
-                        resultBuilder.Append(GetTypeNameInternal(genericArguments[index], fullName));
+                        resultBuilder.Append(",\x0020");
                     }
 
-                    resultBuilder.Append(OmnifactotumTypeExtensions.GenericArgumentsClosing);
+                    resultBuilder.Append(GetTypeNameInternal(genericArguments[index], fullName));
                 }
-            }
 
-            return resultBuilder.ToString();
+                resultBuilder.Append(OmnifactotumTypeExtensions.GenericArgumentsClosing);
+            }
         }
+
+        return resultBuilder.ToString();
     }
 }

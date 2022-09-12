@@ -1,20 +1,19 @@
-namespace Omnifactotum.Validation.Constraints
+namespace Omnifactotum.Validation.Constraints;
+
+/// <summary>
+///     Represents the strongly-typed constraint that ignores validation.
+/// </summary>
+/// <typeparam name="T">
+///     The type of the value to validate.
+/// </typeparam>
+public sealed class IgnoredConstraint<T> : TypedMemberConstraintBase<T>
 {
-    /// <summary>
-    ///     Represents the strongly-typed constraint that ignores validation.
-    /// </summary>
-    /// <typeparam name="T">
-    ///     The type of the value to validate.
-    /// </typeparam>
-    public sealed class IgnoredConstraint<T> : TypedMemberConstraintBase<T>
+    /// <inheritdoc />
+    protected override void ValidateTypedValue(
+        ObjectValidatorContext validatorContext,
+        MemberConstraintValidationContext memberContext,
+        T value)
     {
-        /// <inheritdoc />
-        protected override void ValidateTypedValue(
-            ObjectValidatorContext validatorContext,
-            MemberConstraintValidationContext memberContext,
-            T value)
-        {
-            // Nothing to do
-        }
+        // Nothing to do
     }
 }

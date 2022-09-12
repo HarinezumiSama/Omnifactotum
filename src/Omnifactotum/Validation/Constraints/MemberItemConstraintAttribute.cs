@@ -5,27 +5,26 @@ using Omnifactotum.Annotations;
 //// ReSharper disable AnnotationRedundancyInHierarchy
 //// ReSharper disable RedundantAttributeUsageProperty
 
-namespace Omnifactotum.Validation.Constraints
+namespace Omnifactotum.Validation.Constraints;
+
+/// <summary>
+///     Specifies how the annotated member item is validated.
+/// </summary>
+[AttributeUsage(AttributeTargets.Field | AttributeTargets.Property, AllowMultiple = true, Inherited = true)]
+[CLSCompliant(false)]
+public sealed class MemberItemConstraintAttribute : BaseMemberConstraintAttribute
 {
     /// <summary>
-    ///     Specifies how the annotated member item is validated.
+    ///     Initializes a new instance of the <see cref="MemberItemConstraintAttribute"/> class.
     /// </summary>
-    [AttributeUsage(AttributeTargets.Field | AttributeTargets.Property, AllowMultiple = true, Inherited = true)]
-    [CLSCompliant(false)]
-    public sealed class MemberItemConstraintAttribute : BaseMemberConstraintAttribute
+    /// <param name="constraintType">
+    ///     The type, implementing the <see cref="IMemberConstraint"/> interface, used to validate
+    ///     the member annotated with this <see cref="MemberItemConstraintAttribute"/> attribute. The type must
+    ///     have parameterless constructor.
+    /// </param>
+    public MemberItemConstraintAttribute([NotNull] Type constraintType)
+        : base(constraintType)
     {
-        /// <summary>
-        ///     Initializes a new instance of the <see cref="MemberItemConstraintAttribute"/> class.
-        /// </summary>
-        /// <param name="constraintType">
-        ///     The type, implementing the <see cref="IMemberConstraint"/> interface, used to validate
-        ///     the member annotated with this <see cref="MemberItemConstraintAttribute"/> attribute. The type must
-        ///     have parameterless constructor.
-        /// </param>
-        public MemberItemConstraintAttribute([NotNull] Type constraintType)
-            : base(constraintType)
-        {
-            // Nothing to do
-        }
+        // Nothing to do
     }
 }

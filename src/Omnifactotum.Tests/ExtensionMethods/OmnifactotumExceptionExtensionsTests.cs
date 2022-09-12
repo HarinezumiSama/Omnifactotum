@@ -7,21 +7,20 @@ using NUnit.Framework;
 using System.Threading;
 #endif
 
-namespace Omnifactotum.Tests.ExtensionMethods
-{
-    [TestFixture(TestOf = typeof(OmnifactotumExceptionExtensions))]
-    internal sealed class OmnifactotumExceptionExtensionsTests
-    {
-        [Test]
-        public void TestIsFatalWhenNullArgumentIsPassedThenReturnsFalse()
-        {
-            const Exception? NullException = null;
+namespace Omnifactotum.Tests.ExtensionMethods;
 
-            Assert.That(() => NullException.IsFatal(), Is.False);
-        }
+[TestFixture(TestOf = typeof(OmnifactotumExceptionExtensions))]
+internal sealed class OmnifactotumExceptionExtensionsTests
+{
+    [Test]
+    public void TestIsFatalWhenNullArgumentIsPassedThenReturnsFalse()
+    {
+        const Exception? NullException = null;
+
+        Assert.That(() => NullException.IsFatal(), Is.False);
+    }
 
 #if NETFRAMEWORK
-
         [Test]
         public void TestIsFatalWhenThreadAbortExceptionIsPassedThenReturnsTrue()
         {
@@ -43,22 +42,21 @@ namespace Omnifactotum.Tests.ExtensionMethods
 
 #endif
 
-        [Test]
-        [TestCase(typeof(OperationCanceledException), true)]
-        [TestCase(typeof(TaskCanceledException), true)]
-        [TestCase(typeof(OutOfMemoryException), true)]
-        [TestCase(typeof(StackOverflowException), true)]
-        [TestCase(typeof(IOException), false)]
-        [TestCase(typeof(InvalidOperationException), false)]
-        [TestCase(typeof(Exception), false)]
-        [TestCase(typeof(ArgumentException), false)]
-        [TestCase(typeof(SystemException), false)]
-        public void TestIsFatalWhenExceptionIsPassedThenSucceeds(Type exceptionType, bool expectedResult)
-        {
-            var exception = (Exception)Activator.CreateInstance(exceptionType)!;
-            Assert.That(exception, Is.Not.Null);
+    [Test]
+    [TestCase(typeof(OperationCanceledException), true)]
+    [TestCase(typeof(TaskCanceledException), true)]
+    [TestCase(typeof(OutOfMemoryException), true)]
+    [TestCase(typeof(StackOverflowException), true)]
+    [TestCase(typeof(IOException), false)]
+    [TestCase(typeof(InvalidOperationException), false)]
+    [TestCase(typeof(Exception), false)]
+    [TestCase(typeof(ArgumentException), false)]
+    [TestCase(typeof(SystemException), false)]
+    public void TestIsFatalWhenExceptionIsPassedThenSucceeds(Type exceptionType, bool expectedResult)
+    {
+        var exception = (Exception)Activator.CreateInstance(exceptionType)!;
+        Assert.That(exception, Is.Not.Null);
 
-            Assert.That(() => exception.IsFatal(), Is.EqualTo(expectedResult));
-        }
+        Assert.That(() => exception.IsFatal(), Is.EqualTo(expectedResult));
     }
 }

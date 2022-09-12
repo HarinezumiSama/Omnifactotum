@@ -6,28 +6,27 @@ using Omnifactotum.Validation.Constraints;
 //// ReSharper disable RedundantNullnessAttributeWithNullableReferenceTypes
 //// ReSharper disable AnnotationRedundancyInHierarchy
 
-namespace Omnifactotum.Tests.Validation.Constraints
+namespace Omnifactotum.Tests.Validation.Constraints;
+
+internal abstract class ConstraintTestsBase
 {
-    internal abstract class ConstraintTestsBase
+    [UsedImplicitly]
+    protected object? DummyProperty { get; set; }
+
+    [NotNull]
+    protected static ObjectValidatorContext CreateObjectValidatorContext(
+        [CanBeNull] RecursiveProcessingContext<MemberData>? recursiveProcessingContext = null)
+        => new(recursiveProcessingContext);
+
+    [NotNull]
+    protected MemberConstraintValidationContext CreateMemberConstraintValidationContext()
     {
-        [UsedImplicitly]
-        protected object? DummyProperty { get; set; }
+        var parameterExpression = Expression.Parameter(GetType(), ObjectValidator.RootObjectParameterName);
 
-        [NotNull]
-        protected static ObjectValidatorContext CreateObjectValidatorContext(
-            [CanBeNull] RecursiveProcessingContext<MemberData>? recursiveProcessingContext = null)
-            => new(recursiveProcessingContext);
+        var expression = Expression.MakeMemberAccess(
+            parameterExpression,
+            Factotum.For<ConstraintTestsBase>.GetPropertyInfo(obj => obj.DummyProperty));
 
-        [NotNull]
-        protected MemberConstraintValidationContext CreateMemberConstraintValidationContext()
-        {
-            var parameterExpression = Expression.Parameter(GetType(), ObjectValidator.RootObjectParameterName);
-
-            var expression = Expression.MakeMemberAccess(
-                parameterExpression,
-                Factotum.For<ConstraintTestsBase>.GetPropertyInfo(obj => obj.DummyProperty));
-
-            return new MemberConstraintValidationContext(this, this, expression, parameterExpression);
-        }
+        return new MemberConstraintValidationContext(this, this, expression, parameterExpression);
     }
 }

@@ -2,33 +2,32 @@
 using System.Diagnostics.Contracts;
 using System.Runtime.CompilerServices;
 
-namespace Omnifactotum
+namespace Omnifactotum;
+
+/// <summary>
+///     Provides helper functionality for creating instances of the <see cref="ValueRange{T}"/> type using type inference in a friendly way.
+/// </summary>
+public static class ValueRange
 {
     /// <summary>
-    ///     Provides helper functionality for creating instances of the <see cref="ValueRange{T}"/> type using type inference in a friendly way.
+    ///     Creates a new instance of the <see cref="ValueRange{T}"/> structure using the specified values.
     /// </summary>
-    public static class ValueRange
-    {
-        /// <summary>
-        ///     Creates a new instance of the <see cref="ValueRange{T}"/> structure using the specified values.
-        /// </summary>
-        /// <typeparam name="T">
-        ///     The type of the value.
-        /// </typeparam>
-        /// <param name="lower">
-        ///     The lower boundary of the range.
-        /// </param>
-        /// <param name="upper">
-        ///     The upper boundary of the range.
-        /// </param>
-        /// <returns>
-        ///     A new instance of the <see cref="ValueRange{T}"/> class.
-        /// </returns>
-        [Pure]
-        [Omnifactotum.Annotations.Pure]
-        [MethodImpl(OmnifactotumConstants.MethodOptimizationOptions.Maximum)]
-        public static ValueRange<T> Create<T>(T lower, T upper)
-            where T : IComparable
-            => new(lower, upper);
-    }
+    /// <typeparam name="T">
+    ///     The type of the value.
+    /// </typeparam>
+    /// <param name="lower">
+    ///     The lower boundary of the range.
+    /// </param>
+    /// <param name="upper">
+    ///     The upper boundary of the range.
+    /// </param>
+    /// <returns>
+    ///     A new instance of the <see cref="ValueRange{T}"/> class.
+    /// </returns>
+    [Pure]
+    [Omnifactotum.Annotations.Pure]
+    [MethodImpl(OmnifactotumConstants.MethodOptimizationOptions.Maximum)]
+    public static ValueRange<T> Create<T>(T lower, T upper)
+        where T : IComparable
+        => new(lower, upper);
 }

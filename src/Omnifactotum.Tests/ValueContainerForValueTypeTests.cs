@@ -1,14 +1,13 @@
 ﻿using NUnit.Framework;
 
-namespace Omnifactotum.Tests
+namespace Omnifactotum.Tests;
+
+[TestFixture(TestOf = typeof(ValueContainer<>))]
+internal sealed class ValueContainerForValueTypeTests : ValueContainerForValueTypeTestsBase<int>
 {
-    [TestFixture(TestOf = typeof(ValueContainer<>))]
-    internal sealed class ValueContainerForValueTypeTests : ValueContainerForValueTypeTestsBase<int>
+    public ValueContainerForValueTypeTests()
+        : base(1, int.MaxValue)
     {
-        public ValueContainerForValueTypeTests()
-            : base(1, int.MaxValue)
-        {
-            // Nothing to do
-        }
+        // Nothing to do
     }
 }

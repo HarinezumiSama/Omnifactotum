@@ -3,38 +3,37 @@ using Moq;
 using NUnit.Framework;
 using Omnifactotum.Abstractions;
 
-namespace Omnifactotum.Tests
+namespace Omnifactotum.Tests;
+
+[TestFixture(TestOf = typeof(CurrentDateTimeProviderExtensions))]
+internal sealed class CurrentDateTimeProviderExtensionsTests
 {
-    [TestFixture(TestOf = typeof(CurrentDateTimeProviderExtensions))]
-    internal sealed class CurrentDateTimeProviderExtensionsTests
+    [Test]
+    public void TestGetLocalTimeWhenValidArgumentsThenSucceeds()
     {
-        [Test]
-        public void TestGetLocalTimeWhenValidArgumentsThenSucceeds()
-        {
-            var currentTime = new DateTime(2021, 9, 20, 19, 10, 36, DateTimeKind.Utc);
+        var currentTime = new DateTime(2021, 9, 20, 19, 10, 36, DateTimeKind.Utc);
 
-            var currentDateTimeProviderMock = new Mock<ICurrentDateTimeProvider>(MockBehavior.Strict);
-            currentDateTimeProviderMock.Setup(provider => provider.GetUtcTime()).Returns(currentTime);
+        var currentDateTimeProviderMock = new Mock<ICurrentDateTimeProvider>(MockBehavior.Strict);
+        currentDateTimeProviderMock.Setup(provider => provider.GetUtcTime()).Returns(currentTime);
 
-            var actualValue = currentDateTimeProviderMock.Object.GetLocalTime();
-            Assert.That(actualValue.Kind, Is.EqualTo(DateTimeKind.Local));
-            Assert.That(actualValue, Is.EqualTo(currentTime.ToLocalTime()));
-        }
+        var actualValue = currentDateTimeProviderMock.Object.GetLocalTime();
+        Assert.That(actualValue.Kind, Is.EqualTo(DateTimeKind.Local));
+        Assert.That(actualValue, Is.EqualTo(currentTime.ToLocalTime()));
+    }
 
-        [Test]
-        public void TestGetLocalTimeWhenInvalidArgumentThenThrows()
-            => Assert.That(() => default(ICurrentDateTimeProvider)!.GetLocalTime(), Throws.ArgumentNullException);
+    [Test]
+    public void TestGetLocalTimeWhenInvalidArgumentThenThrows()
+        => Assert.That(() => default(ICurrentDateTimeProvider)!.GetLocalTime(), Throws.ArgumentNullException);
 
-        [Test]
-        public void TestGetLocalTimeWhenProviderReturnsNonUtcThenThrows(
-            [Values(DateTimeKind.Unspecified, DateTimeKind.Local)] DateTimeKind dateTimeKind)
-        {
-            var currentTime = new DateTime(2021, 9, 20, 19, 27, 13, dateTimeKind);
+    [Test]
+    public void TestGetLocalTimeWhenProviderReturnsNonUtcThenThrows(
+        [Values(DateTimeKind.Unspecified, DateTimeKind.Local)] DateTimeKind dateTimeKind)
+    {
+        var currentTime = new DateTime(2021, 9, 20, 19, 27, 13, dateTimeKind);
 
-            var currentDateTimeProviderMock = new Mock<ICurrentDateTimeProvider>(MockBehavior.Strict);
-            currentDateTimeProviderMock.Setup(provider => provider.GetUtcTime()).Returns(currentTime);
+        var currentDateTimeProviderMock = new Mock<ICurrentDateTimeProvider>(MockBehavior.Strict);
+        currentDateTimeProviderMock.Setup(provider => provider.GetUtcTime()).Returns(currentTime);
 
-            Assert.That(() => currentDateTimeProviderMock.Object.GetLocalTime(), Throws.InvalidOperationException);
-        }
+        Assert.That(() => currentDateTimeProviderMock.Object.GetLocalTime(), Throws.InvalidOperationException);
     }
 }

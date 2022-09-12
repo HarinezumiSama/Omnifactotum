@@ -1,33 +1,32 @@
 ﻿using System;
 
-namespace Omnifactotum.Abstractions
+namespace Omnifactotum.Abstractions;
+
+/// <summary>
+///     Contains extension methods for the <see cref="ICurrentDateTimeProvider"/> interface.
+/// </summary>
+public static class CurrentDateTimeProviderExtensions
 {
     /// <summary>
-    ///     Contains extension methods for the <see cref="ICurrentDateTimeProvider"/> interface.
+    ///     Gets a <see cref="DateTime"/> object that is set to the current <b>local</b> date and time.
     /// </summary>
-    public static class CurrentDateTimeProviderExtensions
+    /// <returns>
+    ///     A <see cref="DateTime"/> object that is set to the current <b>local</b> date and time.
+    /// </returns>
+    public static DateTime GetLocalTime(this ICurrentDateTimeProvider currentDateTimeProvider)
     {
-        /// <summary>
-        ///     Gets a <see cref="DateTime"/> object that is set to the current <b>local</b> date and time.
-        /// </summary>
-        /// <returns>
-        ///     A <see cref="DateTime"/> object that is set to the current <b>local</b> date and time.
-        /// </returns>
-        public static DateTime GetLocalTime(this ICurrentDateTimeProvider currentDateTimeProvider)
+        if (currentDateTimeProvider is null)
         {
-            if (currentDateTimeProvider is null)
-            {
-                throw new ArgumentNullException(nameof(currentDateTimeProvider));
-            }
-
-            var utcTime = currentDateTimeProvider.GetUtcTime();
-            if (utcTime.Kind != DateTimeKind.Utc)
-            {
-                throw new InvalidOperationException(
-                    $@"{currentDateTimeProvider.GetType().GetFullName()} returned the non-UTC {nameof(DateTime)} value.");
-            }
-
-            return utcTime.ToLocalTime();
+            throw new ArgumentNullException(nameof(currentDateTimeProvider));
         }
+
+        var utcTime = currentDateTimeProvider.GetUtcTime();
+        if (utcTime.Kind != DateTimeKind.Utc)
+        {
+            throw new InvalidOperationException(
+                $@"{currentDateTimeProvider.GetType().GetFullName()} returned the non-UTC {nameof(DateTime)} value.");
+        }
+
+        return utcTime.ToLocalTime();
     }
 }

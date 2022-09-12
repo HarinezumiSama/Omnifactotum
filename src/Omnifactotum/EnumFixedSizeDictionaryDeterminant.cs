@@ -4,97 +4,96 @@ using System.Linq;
 using System.Linq.Expressions;
 using static Omnifactotum.FormattableStringFactotum;
 
-namespace Omnifactotum
+namespace Omnifactotum;
+
+/// <summary>
+///     Represents the determinant for the <see cref="EnumFixedSizeDictionary{TKey,TValue}"/> class.
+/// </summary>
+public sealed class EnumFixedSizeDictionaryDeterminant<TKey> : FixedSizeDictionaryDeterminant<TKey>
+    where TKey : struct, Enum
 {
+    private static readonly Func<TKey, int> InternalGetIndex = CreateConversionMethod<TKey, int>();
+    private static readonly Func<int, TKey> InternalGetKey = CreateConversionMethod<int, TKey>();
+
     /// <summary>
-    ///     Represents the determinant for the <see cref="EnumFixedSizeDictionary{TKey,TValue}"/> class.
+    ///     Initializes a new instance of the <see cref="EnumFixedSizeDictionaryDeterminant{TKey}"/> class.
     /// </summary>
-    public sealed class EnumFixedSizeDictionaryDeterminant<TKey> : FixedSizeDictionaryDeterminant<TKey>
-        where TKey : struct, Enum
+    public EnumFixedSizeDictionaryDeterminant()
     {
-        private static readonly Func<TKey, int> InternalGetIndex = CreateConversionMethod<TKey, int>();
-        private static readonly Func<int, TKey> InternalGetKey = CreateConversionMethod<int, TKey>();
+        const int MinValue = 0;
+        const int MaxValue = int.MaxValue;
 
-        /// <summary>
-        ///     Initializes a new instance of the <see cref="EnumFixedSizeDictionaryDeterminant{TKey}"/> class.
-        /// </summary>
-        public EnumFixedSizeDictionaryDeterminant()
+        var type = typeof(TKey);
+        if (!type.IsEnum)
         {
-            const int MinValue = 0;
-            const int MaxValue = int.MaxValue;
-
-            var type = typeof(TKey);
-            if (!type.IsEnum)
-            {
-                throw new InvalidOperationException(
-                    AsInvariant($@"The type {type.GetFullName().ToUIString()} is not an enumeration."));
-            }
-
-            var values = Enum.GetValues(type).Cast<object>().ToArray();
-            var minObject = values.Min();
-            var maxObject = values.Max();
-
-            int? upperBound;
-            if (Enum.GetUnderlyingType(type) == typeof(ulong))
-            {
-                var max = Convert.ToUInt64(maxObject);
-                upperBound = max <= MaxValue ? Convert.ToInt32(max) : null;
-            }
-            else
-            {
-                var min = Convert.ToInt64(minObject);
-                var max = Convert.ToInt64(maxObject);
-                upperBound = min >= MinValue && max <= MaxValue ? Convert.ToInt32(max) : null;
-            }
-
-            if (!upperBound.HasValue)
-            {
-                throw new InvalidOperationException(
-                    AsInvariant(
-                        $@"The values of the enumeration {type.GetFullName().ToUIString()} must be in the valid range ({
-                            MinValue} to {MaxValue})."));
-            }
-
-            Size = upperBound.Value + 1;
+            throw new InvalidOperationException(
+                AsInvariant($@"The type {type.GetFullName().ToUIString()} is not an enumeration."));
         }
 
-        /// <summary>
-        ///     Gets the constant size of an internal array used in
-        ///     the <see cref="FixedSizeDictionary{TKey,TValue,TDeterminant}"/>.
-        /// </summary>
-        protected override int Size
+        var values = Enum.GetValues(type).Cast<object>().ToArray();
+        var minObject = values.Min();
+        var maxObject = values.Max();
+
+        int? upperBound;
+        if (Enum.GetUnderlyingType(type) == typeof(ulong))
         {
-            [DebuggerStepThrough]
-            get;
+            var max = Convert.ToUInt64(maxObject);
+            upperBound = max <= MaxValue ? Convert.ToInt32(max) : null;
+        }
+        else
+        {
+            var min = Convert.ToInt64(minObject);
+            var max = Convert.ToInt64(maxObject);
+            upperBound = min >= MinValue && max <= MaxValue ? Convert.ToInt32(max) : null;
         }
 
-        /// <summary>
-        ///     Gets the internal index corresponding to the specified key.
-        /// </summary>
-        /// <param name="key">
-        ///     The key to get the index of.
-        /// </param>
-        /// <returns>
-        ///     The internal index corresponding to the specified key.
-        /// </returns>
-        public override int GetIndex(TKey key) => InternalGetIndex(key);
-
-        /// <summary>
-        ///     Gets the key corresponding to the specified internal index.
-        /// </summary>
-        /// <param name="index">
-        ///     The index to get the key for.
-        /// </param>
-        /// <returns>
-        ///     The key corresponding to the specified internal index.
-        /// </returns>
-        public override TKey GetKey(int index) => InternalGetKey(index);
-
-        private static Func<TSource, TTarget> CreateConversionMethod<TSource, TTarget>()
+        if (!upperBound.HasValue)
         {
-            var parameter = Expression.Parameter(typeof(TSource));
-            var convert = Expression.Convert(parameter, typeof(TTarget));
-            return Expression.Lambda<Func<TSource, TTarget>>(convert, parameter).Compile();
+            throw new InvalidOperationException(
+                AsInvariant(
+                    $@"The values of the enumeration {type.GetFullName().ToUIString()} must be in the valid range ({
+                        MinValue} to {MaxValue})."));
         }
+
+        Size = upperBound.Value + 1;
+    }
+
+    /// <summary>
+    ///     Gets the constant size of an internal array used in
+    ///     the <see cref="FixedSizeDictionary{TKey,TValue,TDeterminant}"/>.
+    /// </summary>
+    protected override int Size
+    {
+        [DebuggerStepThrough]
+        get;
+    }
+
+    /// <summary>
+    ///     Gets the internal index corresponding to the specified key.
+    /// </summary>
+    /// <param name="key">
+    ///     The key to get the index of.
+    /// </param>
+    /// <returns>
+    ///     The internal index corresponding to the specified key.
+    /// </returns>
+    public override int GetIndex(TKey key) => InternalGetIndex(key);
+
+    /// <summary>
+    ///     Gets the key corresponding to the specified internal index.
+    /// </summary>
+    /// <param name="index">
+    ///     The index to get the key for.
+    /// </param>
+    /// <returns>
+    ///     The key corresponding to the specified internal index.
+    /// </returns>
+    public override TKey GetKey(int index) => InternalGetKey(index);
+
+    private static Func<TSource, TTarget> CreateConversionMethod<TSource, TTarget>()
+    {
+        var parameter = Expression.Parameter(typeof(TSource));
+        var convert = Expression.Convert(parameter, typeof(TTarget));
+        return Expression.Lambda<Func<TSource, TTarget>>(convert, parameter).Compile();
     }
 }

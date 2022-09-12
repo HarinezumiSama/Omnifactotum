@@ -10,206 +10,205 @@ using Omnifactotum.Annotations;
 //// ReSharper disable RedundantNullnessAttributeWithNullableReferenceTypes
 //// ReSharper disable once UseNullableReferenceTypesAnnotationSyntax
 
-namespace Omnifactotum
+namespace Omnifactotum;
+
+/// <summary>
+///     Represents a resolver of templated strings.
+///     A templated string is defined in a way similar to C# interpolated string (see <see cref="TemplateVariables"/> and <see cref="Resolve"/>).
+/// </summary>
+public sealed class TemplatedStringResolver
 {
     /// <summary>
-    ///     Represents a resolver of templated strings.
-    ///     A templated string is defined in a way similar to C# interpolated string (see <see cref="TemplateVariables"/> and <see cref="Resolve"/>).
+    ///     Initializes a new instance of the <see cref="TemplatedStringResolver"/> class using the specified template variables.
     /// </summary>
-    public sealed class TemplatedStringResolver
+    /// <param name="templateVariables">
+    ///     The template variables. See <see cref="TemplateVariables"/> for more details.
+    /// </param>
+    /// <exception cref="ArgumentNullException">
+    ///     <paramref name="templateVariables"/> is <see langword="null"/>.
+    /// </exception>
+    public TemplatedStringResolver([NotNull] IReadOnlyDictionary<string, string> templateVariables)
     {
-        /// <summary>
-        ///     Initializes a new instance of the <see cref="TemplatedStringResolver"/> class using the specified template variables.
-        /// </summary>
-        /// <param name="templateVariables">
-        ///     The template variables. See <see cref="TemplateVariables"/> for more details.
-        /// </param>
-        /// <exception cref="ArgumentNullException">
-        ///     <paramref name="templateVariables"/> is <see langword="null"/>.
-        /// </exception>
-        public TemplatedStringResolver([NotNull] IReadOnlyDictionary<string, string> templateVariables)
+        if (templateVariables is null)
         {
-            if (templateVariables is null)
-            {
-                throw new ArgumentNullException(nameof(templateVariables));
-            }
-
-            TemplateVariables = templateVariables.ToImmutableDictionary(StringComparer.Ordinal);
-
-            var invalidVariableNames = TemplateVariables
-                .Keys
-                .Where(key => !Constants.ValidVariableNameRegex.IsMatch(key))
-                .OrderBy(Factotum.For<string>.IdentityMethod)
-                .ToArray();
-
-            if (invalidVariableNames.Length != 0)
-            {
-                throw new ArgumentException($@"The following variable names are invalid: {invalidVariableNames.ToUIString()}.", nameof(templateVariables));
-            }
+            throw new ArgumentNullException(nameof(templateVariables));
         }
 
-        /// <summary>
-        ///     Gets the dictionary having variable names as its keys and corresponding variable values as its values. The variable names are case-sensitive.
-        /// </summary>
-        [NotNull]
-        public ImmutableDictionary<string, string> TemplateVariables { get; }
+        TemplateVariables = templateVariables.ToImmutableDictionary(StringComparer.Ordinal);
 
-        /// <summary>
-        ///     Resolves the specified templated string.
-        /// </summary>
-        /// <param name="templatedString">
-        ///     The templated string to resolve.
-        /// </param>
-        /// <param name="options">
-        ///     The options specifying how the resolver should behave.
-        /// </param>
-        /// <returns>
-        ///     The resolved templated string in which the variable placeholders are replaced with the corresponding variable names.
-        /// </returns>
-        /// <exception cref="ArgumentNullException">
-        ///     <paramref name="templatedString"/> is <see langword="null"/>.
-        /// </exception>
-        /// <exception cref="TemplatedStringResolverException">
-        ///     An error in the templated string has occurred.
-        /// </exception>
-        [NotNull]
-        public string Resolve(
-            [NotNull] string templatedString,
-            TemplatedStringResolverOptions options = TemplatedStringResolverOptions.None)
+        var invalidVariableNames = TemplateVariables
+            .Keys
+            .Where(key => !Constants.ValidVariableNameRegex.IsMatch(key))
+            .OrderBy(Factotum.For<string>.IdentityMethod)
+            .ToArray();
+
+        if (invalidVariableNames.Length != 0)
         {
-            if (templatedString is null)
-            {
-                throw new ArgumentNullException(nameof(templatedString));
-            }
+            throw new ArgumentException($@"The following variable names are invalid: {invalidVariableNames.ToUIString()}.", nameof(templateVariables));
+        }
+    }
 
-            var resultBuilder = new StringBuilder(templatedString.Length);
+    /// <summary>
+    ///     Gets the dictionary having variable names as its keys and corresponding variable values as its values. The variable names are case-sensitive.
+    /// </summary>
+    [NotNull]
+    public ImmutableDictionary<string, string> TemplateVariables { get; }
 
-            var index = 0;
-            while (index < templatedString.Length)
+    /// <summary>
+    ///     Resolves the specified templated string.
+    /// </summary>
+    /// <param name="templatedString">
+    ///     The templated string to resolve.
+    /// </param>
+    /// <param name="options">
+    ///     The options specifying how the resolver should behave.
+    /// </param>
+    /// <returns>
+    ///     The resolved templated string in which the variable placeholders are replaced with the corresponding variable names.
+    /// </returns>
+    /// <exception cref="ArgumentNullException">
+    ///     <paramref name="templatedString"/> is <see langword="null"/>.
+    /// </exception>
+    /// <exception cref="TemplatedStringResolverException">
+    ///     An error in the templated string has occurred.
+    /// </exception>
+    [NotNull]
+    public string Resolve(
+        [NotNull] string templatedString,
+        TemplatedStringResolverOptions options = TemplatedStringResolverOptions.None)
+    {
+        if (templatedString is null)
+        {
+            throw new ArgumentNullException(nameof(templatedString));
+        }
+
+        var resultBuilder = new StringBuilder(templatedString.Length);
+
+        var index = 0;
+        while (index < templatedString.Length)
+        {
+            var match = Constants.TemplateRegex.Match(templatedString, index);
+            if (!match.Success)
             {
-                var match = Constants.TemplateRegex.Match(templatedString, index);
-                if (!match.Success)
-                {
 #if NETSTANDARD2_1_OR_GREATER || NET5_0_OR_GREATER
                     resultBuilder.Append(templatedString.AsSpan(index));
 #else
-                    resultBuilder.Append(templatedString.Substring(index));
+                resultBuilder.Append(templatedString.Substring(index));
 #endif
-                    break;
-                }
+                break;
+            }
 
 #if NETSTANDARD2_1_OR_GREATER || NET5_0_OR_GREATER
                 resultBuilder.Append(templatedString.AsSpan(index, match.Index - index));
 #else
-                resultBuilder.Append(templatedString.Substring(index, match.Index - index));
+            resultBuilder.Append(templatedString.Substring(index, match.Index - index));
 #endif
-                index = match.Index + match.Length;
+            index = match.Index + match.Length;
 
-                var openingBraceGroup = match.Groups[Constants.OpeningBraceGroupName];
-                if (openingBraceGroup.Success)
-                {
-                    resultBuilder.Append(Constants.OpeningBrace);
-                    continue;
-                }
-
-                var closingBraceGroup = match.Groups[Constants.ClosingBraceGroupName];
-                if (closingBraceGroup.Success)
-                {
-                    resultBuilder.Append(Constants.ClosingBrace);
-                    continue;
-                }
-
-                var variableNameGroup = match.Groups[Constants.VariableNameGroupName];
-                if (variableNameGroup.Success)
-                {
-                    var variableName = variableNameGroup.Value;
-                    if (!TemplateVariables.TryGetValue(variableName, out var variableValue))
-                    {
-                        if (options.IsAnySet(TemplatedStringResolverOptions.TolerateUndefinedVariables))
-                        {
-                            continue;
-                        }
-
-                        throw new TemplatedStringResolverException(
-                            $@"Error at index {match.Index}: the injected variable {variableName.ToUIString()} is not defined.");
-                    }
-
-                    resultBuilder.Append(variableValue);
-                    continue;
-                }
-
-                var unexpectedTokenGroup = match.Groups[Constants.UnexpectedTokenGroupName];
-                if (unexpectedTokenGroup.Success)
-                {
-                    if (!options.IsAnySet(TemplatedStringResolverOptions.TolerateUnexpectedTokens))
-                    {
-                        throw new TemplatedStringResolverException(
-                            $@"Error at index {match.Index}: unexpected token {unexpectedTokenGroup.Value.ToUIString()}.");
-                    }
-
-                    resultBuilder.Append(unexpectedTokenGroup.Value);
-                    continue;
-                }
-
-                var successfulGroups = match
-                    .Groups
-#if !NETSTANDARD2_1_OR_GREATER
-                    .Cast<Group>()
-#endif
-                    .Where(group => group.Success)
-                    .ToArray();
-
-                var successfulGroupsDescription = successfulGroups
-                    .Select(group => $@"{GetGroupName(group)} @ {group.Index}: {group.Value.ToUIString()}")
-                    .Distinct(StringComparer.Ordinal)
-                    .Join(",\x0020");
-
-                throw new InvalidOperationException(
-                    $@"[Internal error] Error at index {match.Index}: unexpected regular expression match has occurred: {successfulGroupsDescription}.");
+            var openingBraceGroup = match.Groups[Constants.OpeningBraceGroupName];
+            if (openingBraceGroup.Success)
+            {
+                resultBuilder.Append(Constants.OpeningBrace);
+                continue;
             }
 
-            return resultBuilder.ToString();
+            var closingBraceGroup = match.Groups[Constants.ClosingBraceGroupName];
+            if (closingBraceGroup.Success)
+            {
+                resultBuilder.Append(Constants.ClosingBrace);
+                continue;
+            }
 
-            //// ReSharper disable once UnusedParameter.Local :: Local contract
-            [NotNull]
-            static string GetGroupName([NotNull] Group group)
-#if NET461 || NETSTANDARD2_0
-                => nameof(Group);
-#else
-                => $@"{nameof(Group)} {group.Name.ToUIString()}";
+            var variableNameGroup = match.Groups[Constants.VariableNameGroupName];
+            if (variableNameGroup.Success)
+            {
+                var variableName = variableNameGroup.Value;
+                if (!TemplateVariables.TryGetValue(variableName, out var variableValue))
+                {
+                    if (options.IsAnySet(TemplatedStringResolverOptions.TolerateUndefinedVariables))
+                    {
+                        continue;
+                    }
+
+                    throw new TemplatedStringResolverException(
+                        $@"Error at index {match.Index}: the injected variable {variableName.ToUIString()} is not defined.");
+                }
+
+                resultBuilder.Append(variableValue);
+                continue;
+            }
+
+            var unexpectedTokenGroup = match.Groups[Constants.UnexpectedTokenGroupName];
+            if (unexpectedTokenGroup.Success)
+            {
+                if (!options.IsAnySet(TemplatedStringResolverOptions.TolerateUnexpectedTokens))
+                {
+                    throw new TemplatedStringResolverException(
+                        $@"Error at index {match.Index}: unexpected token {unexpectedTokenGroup.Value.ToUIString()}.");
+                }
+
+                resultBuilder.Append(unexpectedTokenGroup.Value);
+                continue;
+            }
+
+            var successfulGroups = match
+                .Groups
+#if !NETSTANDARD2_1_OR_GREATER
+                .Cast<Group>()
 #endif
+                .Where(group => group.Success)
+                .ToArray();
+
+            var successfulGroupsDescription = successfulGroups
+                .Select(group => $@"{GetGroupName(group)} @ {group.Index}: {group.Value.ToUIString()}")
+                .Distinct(StringComparer.Ordinal)
+                .Join(",\x0020");
+
+            throw new InvalidOperationException(
+                $@"[Internal error] Error at index {match.Index}: unexpected regular expression match has occurred: {successfulGroupsDescription}.");
         }
 
-        private static class Constants
-        {
-            public const string OpeningBraceGroupName = "openingBrace";
-            public const string ClosingBraceGroupName = "closingBrace";
-            public const string VariableNameGroupName = "varName";
-            public const string UnexpectedTokenGroupName = "unexpectedToken";
+        return resultBuilder.ToString();
 
-            public const char OpeningBrace = '{';
-            public const char ClosingBrace = '}';
+        //// ReSharper disable once UnusedParameter.Local :: Local contract
+        [NotNull]
+        static string GetGroupName([NotNull] Group group)
+#if NET461 || NETSTANDARD2_0
+            => nameof(Group);
+#else
+            => $@"{nameof(Group)} {group.Name.ToUIString()}";
+#endif
+    }
 
-            private const RegexOptions CommonRegexOptions = RegexOptions.Compiled | RegexOptions.ExplicitCapture | RegexOptions.Singleline
-                | RegexOptions.IgnorePatternWhitespace;
+    private static class Constants
+    {
+        public const string OpeningBraceGroupName = "openingBrace";
+        public const string ClosingBraceGroupName = "closingBrace";
+        public const string VariableNameGroupName = "varName";
+        public const string UnexpectedTokenGroupName = "unexpectedToken";
 
-            private static readonly TimeSpan RegexTimeout = TimeSpan.FromMilliseconds(50);
+        public const char OpeningBrace = '{';
+        public const char ClosingBrace = '}';
 
-            private static readonly string EscapedOpeningBrace = Regex.Escape(OpeningBrace.ToString(CultureInfo.InvariantCulture));
-            private static readonly string EscapedClosingBrace = Regex.Escape(ClosingBrace.ToString(CultureInfo.InvariantCulture));
+        private const RegexOptions CommonRegexOptions = RegexOptions.Compiled | RegexOptions.ExplicitCapture | RegexOptions.Singleline
+            | RegexOptions.IgnorePatternWhitespace;
 
-            private static readonly string VariableNameRegexPattern = $@"[^{EscapedOpeningBrace}{EscapedClosingBrace}]*";
-            private static readonly string ValidVariableNameRegexPattern = $@"^{VariableNameRegexPattern}$";
+        private static readonly TimeSpan RegexTimeout = TimeSpan.FromMilliseconds(50);
 
-            private static readonly string TemplateRegexPattern =
-                $@"(?<{OpeningBraceGroupName}>{EscapedOpeningBrace}{EscapedOpeningBrace}) | (?:{
-                    EscapedOpeningBrace}(?<{VariableNameGroupName}>{VariableNameRegexPattern}){EscapedClosingBrace}) | (?<{
-                        ClosingBraceGroupName}>{EscapedClosingBrace}{EscapedClosingBrace}) | (?<{
-                            UnexpectedTokenGroupName}>(?:{EscapedOpeningBrace}|{EscapedClosingBrace}))";
+        private static readonly string EscapedOpeningBrace = Regex.Escape(OpeningBrace.ToString(CultureInfo.InvariantCulture));
+        private static readonly string EscapedClosingBrace = Regex.Escape(ClosingBrace.ToString(CultureInfo.InvariantCulture));
 
-            public static Regex TemplateRegex { get; } = new(TemplateRegexPattern, CommonRegexOptions, RegexTimeout);
+        private static readonly string VariableNameRegexPattern = $@"[^{EscapedOpeningBrace}{EscapedClosingBrace}]*";
+        private static readonly string ValidVariableNameRegexPattern = $@"^{VariableNameRegexPattern}$";
 
-            public static Regex ValidVariableNameRegex { get; } = new(ValidVariableNameRegexPattern, CommonRegexOptions, RegexTimeout);
-        }
+        private static readonly string TemplateRegexPattern =
+            $@"(?<{OpeningBraceGroupName}>{EscapedOpeningBrace}{EscapedOpeningBrace}) | (?:{
+                EscapedOpeningBrace}(?<{VariableNameGroupName}>{VariableNameRegexPattern}){EscapedClosingBrace}) | (?<{
+                    ClosingBraceGroupName}>{EscapedClosingBrace}{EscapedClosingBrace}) | (?<{
+                        UnexpectedTokenGroupName}>(?:{EscapedOpeningBrace}|{EscapedClosingBrace}))";
+
+        public static Regex TemplateRegex { get; } = new(TemplateRegexPattern, CommonRegexOptions, RegexTimeout);
+
+        public static Regex ValidVariableNameRegex { get; } = new(ValidVariableNameRegexPattern, CommonRegexOptions, RegexTimeout);
     }
 }
