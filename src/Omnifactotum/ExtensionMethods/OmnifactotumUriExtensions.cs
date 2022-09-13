@@ -2,6 +2,7 @@
 
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Runtime.CompilerServices;
 using Omnifactotum;
 using Omnifactotum.Annotations;
 using NotNullWhen = System.Diagnostics.CodeAnalysis.NotNullWhenAttribute;
@@ -46,6 +47,10 @@ public static class OmnifactotumUriExtensions
     /// <param name="value">
     ///     The <see cref="Uri"/> value to check.
     /// </param>
+    /// <param name="valueExpression">
+    ///     <para>A string value representing the expression passed as the value of the <paramref name="value"/> parameter.</para>
+    ///     <para><b>NOTE</b>: Do not pass a value for this parameter as it is automatically injected by the compiler (.NET 5+ and C# 10+).</para>
+    /// </param>
     /// <returns>
     ///     The specified value if it is an absolute URI using a Web scheme, such as HTTP or HTTPS.
     /// </returns>
@@ -56,18 +61,33 @@ public static class OmnifactotumUriExtensions
     [return: NotNullIfNotNull(@"value")]
     [NotNull]
     [DebuggerStepThrough]
-    [ContractAnnotation("null => stop", true)]
+    [ContractAnnotation("value:null => stop", true)]
     public static Uri EnsureWebUri(
-        [CanBeNull] this Uri? value)
-        => value.IsWebUri()
-            ? value
-            : throw new ArgumentException($@"{value.ToUIString()} is not an absolute URI using a Web scheme.", nameof(value));
+        [CanBeNull] this Uri? value,
+#if NET5_0_OR_GREATER
+        [CallerArgumentExpression("value")]
+#endif
+        string? valueExpression = null)
+    {
+        if (value.IsWebUri())
+        {
+            return value;
+        }
+
+        var details = valueExpression is null ? null : $"\x0020Expression: {{ {valueExpression} }}.";
+
+        throw new ArgumentException($@"{value.ToUIString()} is not an absolute URI using a Web scheme.{details}", nameof(value));
+    }
 
     /// <summary>
     ///     Returns the specified value if it is an absolute URI; otherwise, throws an <see cref="ArgumentException"/>.
     /// </summary>
     /// <param name="value">
     ///     The <see cref="Uri"/> value to check.
+    /// </param>
+    /// <param name="valueExpression">
+    ///     <para>A string value representing the expression passed as the value of the <paramref name="value"/> parameter.</para>
+    ///     <para><b>NOTE</b>: Do not pass a value for this parameter as it is automatically injected by the compiler (.NET 5+ and C# 10+).</para>
     /// </param>
     /// <returns>
     ///     The specified value if it is an absolute URI.
@@ -79,12 +99,23 @@ public static class OmnifactotumUriExtensions
     [return: NotNullIfNotNull(@"value")]
     [NotNull]
     [DebuggerStepThrough]
-    [ContractAnnotation("null => stop", true)]
+    [ContractAnnotation("value:null => stop", true)]
     public static Uri EnsureAbsoluteUri(
-        [CanBeNull] this Uri? value)
-        => value is { IsAbsoluteUri: true }
-            ? value
-            : throw new ArgumentException($@"{value.ToUIString()} is not an absolute URI.", nameof(value));
+        [CanBeNull] this Uri? value,
+#if NET5_0_OR_GREATER
+        [CallerArgumentExpression("value")]
+#endif
+        string? valueExpression = null)
+    {
+        if (value is { IsAbsoluteUri: true })
+        {
+            return value;
+        }
+
+        var details = valueExpression is null ? null : $"\x0020Expression: {{ {valueExpression} }}.";
+
+        throw new ArgumentException($@"{value.ToUIString()} is not an absolute URI.{details}", nameof(value));
+    }
 
     /// <summary>
     ///     <para>Converts the specified <see cref="Uri"/> to its UI representation.</para>
@@ -115,6 +146,7 @@ public static class OmnifactotumUriExtensions
     /// <seealso cref="OmnifactotumStringExtensions.ToUIString(string?)"/>
     [NotNull]
     [Pure]
+    [MethodImpl(OmnifactotumConstants.MethodOptimizationOptions.Maximum)]
     public static string ToUIString([CanBeNull] this Uri? value)
         => value is null ? OmnifactotumRepresentationConstants.NullValueRepresentation : value.ToString().ToUIString();
 

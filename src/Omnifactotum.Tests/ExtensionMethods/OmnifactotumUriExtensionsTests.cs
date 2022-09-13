@@ -55,7 +55,19 @@ internal sealed class OmnifactotumUriExtensionsTests
     public void TestEnsureWebUriWhenNotWebUriThenThrows(string? uriString)
     {
         var uri = uriString is null ? null : new Uri(uriString, UriKind.RelativeOrAbsolute);
-        Assert.That(() => uri.EnsureWebUri(), Throws.ArgumentException);
+
+#if NET5_0_OR_GREATER
+        const string ErrorDetails =
+            $"\x0020Expression: {{ {nameof(ValueContainer)}.{nameof(ValueContainer.Create)}({nameof(uri)}).{nameof(ValueContainer<DateTime>.Value)} }}.";
+#else
+        const string? ErrorDetails = default(string);
+#endif
+
+        Assert.That(
+            () => ValueContainer.Create(uri).Value.EnsureWebUri(),
+            Throws.ArgumentException.With.Message.EqualTo(
+                $@"{uriString.ToUIString()} is not an absolute URI using a Web scheme.{ErrorDetails}{
+                    LocalFactotum.GetArgumentExceptionParameterDetails("value")}"));
     }
 
     [Test]
@@ -84,7 +96,18 @@ internal sealed class OmnifactotumUriExtensionsTests
     public void TestEnsureAbsoluteUriWhenNotWebUriThenThrows(string? uriString)
     {
         var uri = uriString is null ? null : new Uri(uriString, UriKind.RelativeOrAbsolute);
-        Assert.That(() => uri.EnsureAbsoluteUri(), Throws.ArgumentException);
+
+#if NET5_0_OR_GREATER
+        const string ErrorDetails =
+            $"\x0020Expression: {{ {nameof(ValueContainer)}.{nameof(ValueContainer.Create)}({nameof(uri)}).{nameof(ValueContainer<DateTime>.Value)} }}.";
+#else
+        const string? ErrorDetails = default(string);
+#endif
+
+        Assert.That(
+            () => ValueContainer.Create(uri).Value.EnsureAbsoluteUri(),
+            Throws.ArgumentException.With.Message.EqualTo(
+                $@"{uriString.ToUIString()} is not an absolute URI.{ErrorDetails}{LocalFactotum.GetArgumentExceptionParameterDetails("value")}"));
     }
 
     [Test]
