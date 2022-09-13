@@ -1,5 +1,6 @@
 ﻿using System.Linq;
 using System.Runtime.CompilerServices;
+using Omnifactotum;
 using Omnifactotum.Annotations;
 
 //// ReSharper disable RedundantNullnessAttributeWithNullableReferenceTypes
@@ -49,12 +50,7 @@ public static class OmnifactotumDelegateExtensions
     /// ]]>
     ///     </code>
     /// </example>
-    [MethodImpl(
-        MethodImplOptions.AggressiveInlining
-#if NET5_0_OR_GREATER
-            | MethodImplOptions.AggressiveOptimization
-#endif
-    )]
+    [MethodImpl(OmnifactotumConstants.MethodOptimizationOptions.Maximum)]
     [NotNull]
     public static TDelegate[] GetTypedInvocations<TDelegate>([CanBeNull] this TDelegate? @delegate)
         where TDelegate : Delegate

@@ -38,12 +38,7 @@ public static class OmnifactotumGenericObjectExtensions
     /// <exception cref="ArgumentNullException">
     ///     <paramref name="value"/> is <see langword="null"/>.
     /// </exception>
-    [MethodImpl(
-        MethodImplOptions.AggressiveInlining
-#if NET5_0_OR_GREATER
-            | MethodImplOptions.AggressiveOptimization
-#endif
-    )]
+    [MethodImpl(OmnifactotumConstants.MethodOptimizationOptions.Maximum)]
     [return: NotNullIfNotNull(@"value")]
     [NotNull]
     [DebuggerStepThrough]
@@ -71,12 +66,7 @@ public static class OmnifactotumGenericObjectExtensions
     ///     <paramref name="value"/> is <see langword="null"/>, that is, its <see cref="Nullable{T}.HasValue"/> property is
     ///     <see langword="false"/>.
     /// </exception>
-    [MethodImpl(
-        MethodImplOptions.AggressiveInlining
-#if NET5_0_OR_GREATER
-            | MethodImplOptions.AggressiveOptimization
-#endif
-    )]
+    [MethodImpl(OmnifactotumConstants.MethodOptimizationOptions.Maximum)]
     [DebuggerStepThrough]
     public static T EnsureNotNull<T>([CanBeNull] this T? value)
         where T : struct
@@ -106,12 +96,7 @@ public static class OmnifactotumGenericObjectExtensions
     /// <returns>
     ///     A <see cref="System.String"/> that represents the specified value.
     /// </returns>
-    [MethodImpl(
-        MethodImplOptions.AggressiveInlining
-#if NET5_0_OR_GREATER
-            | MethodImplOptions.AggressiveOptimization
-#endif
-    )]
+    [MethodImpl(OmnifactotumConstants.MethodOptimizationOptions.Maximum)]
     [NotNull]
     [DebuggerStepThrough]
     public static string ToStringSafely<T>(this T value, [CanBeNull] string? fallbackResult)
@@ -137,12 +122,7 @@ public static class OmnifactotumGenericObjectExtensions
     /// <returns>
     ///     A <see cref="System.String"/> that represents the specified value.
     /// </returns>
-    [MethodImpl(
-        MethodImplOptions.AggressiveInlining
-#if NET5_0_OR_GREATER
-            | MethodImplOptions.AggressiveOptimization
-#endif
-    )]
+    [MethodImpl(OmnifactotumConstants.MethodOptimizationOptions.Maximum)]
     [NotNull]
     [DebuggerStepThrough]
     public static string ToStringSafely<T>(this T value) => ToStringSafely(value, null);
@@ -173,12 +153,7 @@ public static class OmnifactotumGenericObjectExtensions
     ///     A <see cref="System.String"/> that represents the specified value, or the value of
     ///     the <paramref name="fallbackResult"/> parameter if <paramref name="value"/> is <see langword="null"/>.
     /// </returns>
-    [MethodImpl(
-        MethodImplOptions.AggressiveInlining
-#if NET5_0_OR_GREATER
-            | MethodImplOptions.AggressiveOptimization
-#endif
-    )]
+    [MethodImpl(OmnifactotumConstants.MethodOptimizationOptions.Maximum)]
     [NotNull]
     [DebuggerStepThrough]
     public static string ToStringSafelyInvariant<T>(this T value, [CanBeNull] string? fallbackResult)
@@ -208,12 +183,7 @@ public static class OmnifactotumGenericObjectExtensions
     ///     A <see cref="System.String"/> that represents the specified value it is not <see langword="null"/>;
     ///     otherwise, the empty string.
     /// </returns>
-    [MethodImpl(
-        MethodImplOptions.AggressiveInlining
-#if NET5_0_OR_GREATER
-            | MethodImplOptions.AggressiveOptimization
-#endif
-    )]
+    [MethodImpl(OmnifactotumConstants.MethodOptimizationOptions.Maximum)]
     public static string ToStringSafelyInvariant<T>(this T value) => ToStringSafelyInvariant(value, string.Empty);
 
     /// <summary>
@@ -233,12 +203,7 @@ public static class OmnifactotumGenericObjectExtensions
     ///     if it is not <see langword="null"/>; otherwise, the value specified by the <paramref name="nullValueHashCode"/>
     ///     parameter.
     /// </returns>
-    [MethodImpl(
-        MethodImplOptions.AggressiveInlining
-#if NET5_0_OR_GREATER
-            | MethodImplOptions.AggressiveOptimization
-#endif
-    )]
+    [MethodImpl(OmnifactotumConstants.MethodOptimizationOptions.Maximum)]
     public static int GetHashCodeSafely<T>(this T value, int nullValueHashCode)
         => value is null ? nullValueHashCode : value.GetHashCode();
 
@@ -255,12 +220,7 @@ public static class OmnifactotumGenericObjectExtensions
     ///     A hash code of the specified value obtained by calling <see cref="object.GetHashCode"/> for this value
     ///     if it is not <see langword="null"/>; otherwise, <c>0</c>.
     /// </returns>
-    [MethodImpl(
-        MethodImplOptions.AggressiveInlining
-#if NET5_0_OR_GREATER
-            | MethodImplOptions.AggressiveOptimization
-#endif
-    )]
+    [MethodImpl(OmnifactotumConstants.MethodOptimizationOptions.Maximum)]
     public static int GetHashCodeSafely<T>(this T value) => GetHashCodeSafely(value, 0);
 
     /// <summary>
@@ -276,12 +236,7 @@ public static class OmnifactotumGenericObjectExtensions
     /// <returns>
     ///     The actual type of the value if it is not <see langword="null"/>; otherwise, <typeparamref name="T"/>.
     /// </returns>
-    [MethodImpl(
-        MethodImplOptions.AggressiveInlining
-#if NET5_0_OR_GREATER
-            | MethodImplOptions.AggressiveOptimization
-#endif
-    )]
+    [MethodImpl(OmnifactotumConstants.MethodOptimizationOptions.Maximum)]
     [NotNull]
     public static Type GetTypeSafely<T>(this T value) => value is null ? typeof(T) : value.GetType();
 
@@ -297,12 +252,7 @@ public static class OmnifactotumGenericObjectExtensions
     /// <returns>
     ///     An array containing the specified value as its sole element.
     /// </returns>
-    [MethodImpl(
-        MethodImplOptions.AggressiveInlining
-#if NET5_0_OR_GREATER
-            | MethodImplOptions.AggressiveOptimization
-#endif
-    )]
+    [MethodImpl(OmnifactotumConstants.MethodOptimizationOptions.Maximum)]
     [NotNull]
     public static T[] AsArray<T>(this T value) => new[] { value };
 
@@ -318,12 +268,7 @@ public static class OmnifactotumGenericObjectExtensions
     /// <returns>
     ///     A strongly-typed list containing the specified value as its sole element.
     /// </returns>
-    [MethodImpl(
-        MethodImplOptions.AggressiveInlining
-#if NET5_0_OR_GREATER
-            | MethodImplOptions.AggressiveOptimization
-#endif
-    )]
+    [MethodImpl(OmnifactotumConstants.MethodOptimizationOptions.Maximum)]
     [NotNull]
     public static List<T> AsList<T>(this T value) => new() { value };
 
@@ -339,12 +284,7 @@ public static class OmnifactotumGenericObjectExtensions
     /// <returns>
     ///     A strongly-typed collection containing the specified value as its sole element.
     /// </returns>
-    [MethodImpl(
-        MethodImplOptions.AggressiveInlining
-#if NET5_0_OR_GREATER
-            | MethodImplOptions.AggressiveOptimization
-#endif
-    )]
+    [MethodImpl(OmnifactotumConstants.MethodOptimizationOptions.Maximum)]
     [NotNull]
     public static IEnumerable<T> AsCollection<T>(this T value)
     {
@@ -363,12 +303,7 @@ public static class OmnifactotumGenericObjectExtensions
     /// <returns>
     ///     A <see cref="Nullable{T}"/> value that contains <paramref name="value"/>.
     /// </returns>
-    [MethodImpl(
-        MethodImplOptions.AggressiveInlining
-#if NET5_0_OR_GREATER
-            | MethodImplOptions.AggressiveOptimization
-#endif
-    )]
+    [MethodImpl(OmnifactotumConstants.MethodOptimizationOptions.Maximum)]
     public static T? AsNullable<T>(this T value)
         where T : struct
         => value;
@@ -452,12 +387,7 @@ public static class OmnifactotumGenericObjectExtensions
     /// ]]>
     ///     </code>
     /// </example>
-    [MethodImpl(
-        MethodImplOptions.AggressiveInlining
-#if NET5_0_OR_GREATER
-            | MethodImplOptions.AggressiveOptimization
-#endif
-    )]
+    [MethodImpl(OmnifactotumConstants.MethodOptimizationOptions.Maximum)]
     [NotNull]
     public static string ToUIString<T>([CanBeNull] this T? value)
         where T : struct
@@ -504,12 +434,7 @@ public static class OmnifactotumGenericObjectExtensions
     /// <returns>
     ///     The UI representation of the specified nullable value.
     /// </returns>
-    [MethodImpl(
-        MethodImplOptions.AggressiveInlining
-#if NET5_0_OR_GREATER
-            | MethodImplOptions.AggressiveOptimization
-#endif
-    )]
+    [MethodImpl(OmnifactotumConstants.MethodOptimizationOptions.Maximum)]
     [NotNull]
     public static string ToUIString<T>(
         [CanBeNull] this T? value,
@@ -555,12 +480,7 @@ public static class OmnifactotumGenericObjectExtensions
     /// <returns>
     ///     The UI representation of the specified nullable value.
     /// </returns>
-    [MethodImpl(
-        MethodImplOptions.AggressiveInlining
-#if NET5_0_OR_GREATER
-            | MethodImplOptions.AggressiveOptimization
-#endif
-    )]
+    [MethodImpl(OmnifactotumConstants.MethodOptimizationOptions.Maximum)]
     [NotNull]
     public static string ToUIString<T>([CanBeNull] this T? value, [CanBeNull] IFormatProvider? formatProvider)
         where T : struct, IFormattable
@@ -580,12 +500,7 @@ public static class OmnifactotumGenericObjectExtensions
     ///     The description of the specified object reference.
     /// </returns>
     /// <seealso cref="OmnifactotumTypeExtensions.GetFullName"/>
-    [MethodImpl(
-        MethodImplOptions.AggressiveInlining
-#if NET5_0_OR_GREATER
-            | MethodImplOptions.AggressiveOptimization
-#endif
-    )]
+    [MethodImpl(OmnifactotumConstants.MethodOptimizationOptions.Maximum)]
     [NotNull]
     public static string GetObjectReferenceDescription<T>(this T? obj)
         where T : class
@@ -605,12 +520,7 @@ public static class OmnifactotumGenericObjectExtensions
     ///     The short description of the specified object reference.
     /// </returns>
     /// <seealso cref="OmnifactotumTypeExtensions.GetQualifiedName"/>
-    [MethodImpl(
-        MethodImplOptions.AggressiveInlining
-#if NET5_0_OR_GREATER
-            | MethodImplOptions.AggressiveOptimization
-#endif
-    )]
+    [MethodImpl(OmnifactotumConstants.MethodOptimizationOptions.Maximum)]
     [NotNull]
     public static string GetShortObjectReferenceDescription<T>(this T? obj)
         where T : class
@@ -637,12 +547,7 @@ public static class OmnifactotumGenericObjectExtensions
     /// <returns>
     ///     <see langword="true"/> if the contents of the two specified objects are equal; otherwise, <see langword="false"/>.
     /// </returns>
-    [MethodImpl(
-        MethodImplOptions.AggressiveInlining
-#if NET5_0_OR_GREATER
-            | MethodImplOptions.AggressiveOptimization
-#endif
-    )]
+    [MethodImpl(OmnifactotumConstants.MethodOptimizationOptions.Maximum)]
     public static bool IsEqualByContentsTo<T>(this T obj, T other) => AreEqualByContentsInternal(obj, other);
 
     private static bool IsSimpleTypeInternal(this Type type)
@@ -734,12 +639,7 @@ public static class OmnifactotumGenericObjectExtensions
         return true;
     }
 
-    [MethodImpl(
-        MethodImplOptions.AggressiveInlining
-#if NET5_0_OR_GREATER
-            | MethodImplOptions.AggressiveOptimization
-#endif
-    )]
+    [MethodImpl(OmnifactotumConstants.MethodOptimizationOptions.Maximum)]
     private static string GetObjectReferenceDescriptionInternal<T>(T? obj, [InstantHandle] Func<Type, string> formatType)
         where T : class
         => obj is null

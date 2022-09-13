@@ -1,4 +1,5 @@
 ﻿using System.Runtime.CompilerServices;
+using Omnifactotum;
 
 //// ReSharper disable RedundantNullnessAttributeWithNullableReferenceTypes
 
@@ -24,12 +25,7 @@ public static class OmnifactotumValueTaskExtensions
     /// <exception cref="ArgumentNullException">
     ///     <paramref name="task"/> is <see langword="null"/>.
     /// </exception>
-    [MethodImpl(
-        MethodImplOptions.AggressiveInlining
-#if NET5_0_OR_GREATER
-            | MethodImplOptions.AggressiveOptimization
-#endif
-    )]
+    [MethodImpl(OmnifactotumConstants.MethodOptimizationOptions.Maximum)]
     public static ConfiguredValueTaskAwaitable ConfigureAwaitNoCapturedContext(this in ValueTask task)
         => task.ConfigureAwait(false);
 
@@ -47,12 +43,7 @@ public static class OmnifactotumValueTaskExtensions
     /// <exception cref="ArgumentNullException">
     ///     <paramref name="task"/> is <see langword="null"/>.
     /// </exception>
-    [MethodImpl(
-        MethodImplOptions.AggressiveInlining
-#if NET5_0_OR_GREATER
-            | MethodImplOptions.AggressiveOptimization
-#endif
-    )]
+    [MethodImpl(OmnifactotumConstants.MethodOptimizationOptions.Maximum)]
     public static ConfiguredValueTaskAwaitable<TResult> ConfigureAwaitNoCapturedContext<TResult>(this in ValueTask<TResult> task)
         => task.ConfigureAwait(false);
 }

@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using System.Runtime.CompilerServices;
+using Omnifactotum;
 using NotNullAttribute = Omnifactotum.Annotations.NotNullAttribute;
 
 //// ReSharper disable RedundantNullnessAttributeWithNullableReferenceTypes
@@ -29,12 +30,7 @@ public static class OmnifactotumTaskExtensions
     /// <exception cref="ArgumentNullException">
     ///     <paramref name="task"/> is <see langword="null"/>.
     /// </exception>
-    [MethodImpl(
-        MethodImplOptions.AggressiveInlining
-#if NET5_0_OR_GREATER
-            | MethodImplOptions.AggressiveOptimization
-#endif
-    )]
+    [MethodImpl(OmnifactotumConstants.MethodOptimizationOptions.Maximum)]
     public static ConfiguredTaskAwaitable ConfigureAwaitNoCapturedContext([NotNull] this Task task)
         => (task ?? throw new ArgumentNullException(nameof(task))).ConfigureAwait(false);
 
@@ -52,12 +48,7 @@ public static class OmnifactotumTaskExtensions
     /// <exception cref="ArgumentNullException">
     ///     <paramref name="task"/> is <see langword="null"/>.
     /// </exception>
-    [MethodImpl(
-        MethodImplOptions.AggressiveInlining
-#if NET5_0_OR_GREATER
-            | MethodImplOptions.AggressiveOptimization
-#endif
-    )]
+    [MethodImpl(OmnifactotumConstants.MethodOptimizationOptions.Maximum)]
     public static ConfiguredTaskAwaitable<TResult> ConfigureAwaitNoCapturedContext<TResult>(
         [NotNull] this Task<TResult> task)
         => (task ?? throw new ArgumentNullException(nameof(task))).ConfigureAwait(false);
@@ -72,12 +63,7 @@ public static class OmnifactotumTaskExtensions
     /// <returns>
     ///     A task that represents the completion of all of the supplied tasks.
     /// </returns>
-    [MethodImpl(
-        MethodImplOptions.AggressiveInlining
-#if NET5_0_OR_GREATER
-            | MethodImplOptions.AggressiveOptimization
-#endif
-    )]
+    [MethodImpl(OmnifactotumConstants.MethodOptimizationOptions.Maximum)]
     public static Task AwaitAllAsync([NotNull] this IEnumerable<Task> tasks) => Task.WhenAll(tasks);
 
     /// <summary>
@@ -93,11 +79,6 @@ public static class OmnifactotumTaskExtensions
     /// <returns>
     ///     A task that represents the completion of all of the supplied tasks.
     /// </returns>
-    [MethodImpl(
-        MethodImplOptions.AggressiveInlining
-#if NET5_0_OR_GREATER
-            | MethodImplOptions.AggressiveOptimization
-#endif
-    )]
+    [MethodImpl(OmnifactotumConstants.MethodOptimizationOptions.Maximum)]
     public static Task<TResult[]> AwaitAllAsync<TResult>([NotNull] this IEnumerable<Task<TResult>> tasks) => Task.WhenAll(tasks);
 }

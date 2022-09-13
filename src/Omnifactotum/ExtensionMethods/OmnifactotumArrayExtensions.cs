@@ -1,5 +1,6 @@
 ﻿using System.Runtime.CompilerServices;
 using System.Text;
+using Omnifactotum;
 using Omnifactotum.Annotations;
 using NotNullIfNotNull = System.Diagnostics.CodeAnalysis.NotNullIfNotNullAttribute;
 
@@ -26,12 +27,7 @@ public static class OmnifactotumArrayExtensions
     /// <returns>
     ///     A shallow copy of the specified array, or <see langword="null"/> if this array is <see langword="null"/>.
     /// </returns>
-    [MethodImpl(
-        MethodImplOptions.AggressiveInlining
-#if NET5_0_OR_GREATER
-            | MethodImplOptions.AggressiveOptimization
-#endif
-    )]
+    [MethodImpl(OmnifactotumConstants.MethodOptimizationOptions.Maximum)]
     [CanBeNull]
     [return: NotNullIfNotNull("array")]
     public static T[]? Copy<T>([CanBeNull] this T[]? array) => (T[]?)array?.Clone();
@@ -148,12 +144,7 @@ public static class OmnifactotumArrayExtensions
     /// <returns>
     ///     The source array if it is not <see langword="null"/>; otherwise, empty array.
     /// </returns>
-    [MethodImpl(
-        MethodImplOptions.AggressiveInlining
-#if NET5_0_OR_GREATER
-            | MethodImplOptions.AggressiveOptimization
-#endif
-    )]
+    [MethodImpl(OmnifactotumConstants.MethodOptimizationOptions.Maximum)]
     [NotNull]
     public static T[] AvoidNull<T>([CanBeNull] this T[]? source) => source ?? Array.Empty<T>();
 
@@ -203,12 +194,7 @@ public static class OmnifactotumArrayExtensions
     /// <returns>
     ///     A hexadecimal string (in lower case).
     /// </returns>
-    [MethodImpl(
-        MethodImplOptions.AggressiveInlining
-#if NET5_0_OR_GREATER
-            | MethodImplOptions.AggressiveOptimization
-#endif
-    )]
+    [MethodImpl(OmnifactotumConstants.MethodOptimizationOptions.Maximum)]
     [NotNull]
     public static string ToHexString([NotNull] this byte[] byteArray) => ToHexString(byteArray, false);
 }

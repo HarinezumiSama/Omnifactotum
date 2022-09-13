@@ -1,5 +1,6 @@
 ﻿using System.Diagnostics.CodeAnalysis;
 using System.Runtime.CompilerServices;
+using Omnifactotum;
 using NotNullAttribute = Omnifactotum.Annotations.NotNullAttribute;
 
 //// ReSharper disable once CheckNamespace :: Namespace is intentionally named so in order to simplify usage of extension methods
@@ -31,12 +32,7 @@ public static class OmnifactotumEqualityComparerExtensions
     ///     if it is not <see langword="null"/>; otherwise, the value specified by the <paramref name="nullValueHashCode"/>
     ///     parameter.
     /// </returns>
-    [MethodImpl(
-        MethodImplOptions.AggressiveInlining
-#if NET5_0_OR_GREATER
-            | MethodImplOptions.AggressiveOptimization
-#endif
-    )]
+    [MethodImpl(OmnifactotumConstants.MethodOptimizationOptions.Maximum)]
     public static int GetHashCodeSafely<T>([NotNull] this IEqualityComparer<T> equalityComparer, T value, int nullValueHashCode = 0)
         => equalityComparer is null
             ? throw new ArgumentNullException(nameof(equalityComparer))
