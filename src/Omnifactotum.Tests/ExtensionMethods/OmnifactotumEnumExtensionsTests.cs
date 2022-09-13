@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.Diagnostics.CodeAnalysis;
 using System.IO;
 using NUnit.Framework;
 using static Omnifactotum.FormattableStringFactotum;
@@ -21,13 +22,45 @@ internal sealed class OmnifactotumEnumExtensionsTests
         => Assert.That(() => enumValue.EnsureDefined(), Throws.Nothing);
 
     [Test]
-    [TestCase((ConsoleColor)(-1))]
-    [TestCase((TestEnumeration)0)]
-    [TestCase(UIntTestFlags.Flag1 | UIntTestFlags.Flag2)]
-    [TestCase((UIntTestFlags)1024)]
-    public void TestEnsureDefinedWhenUndefinedEnumerationValueArgumentIsPassedThenThrows<TEnum>(TEnum enumValue)
+    [TestCase(
+        (ConsoleColor)(-1),
+        @"The value -1 is not defined in the enumeration ""System.ConsoleColor"".")]
+    [TestCase(
+        (TestEnumeration)0,
+        @"The value 0 is not defined in the enumeration ""Omnifactotum.Tests.ExtensionMethods.OmnifactotumEnumExtensionsTests.TestEnumeration"".")]
+    [TestCase(
+        UIntTestFlags.Flag1 | UIntTestFlags.Flag2,
+        @"The value 3 is not defined in the enumeration ""Omnifactotum.Tests.ExtensionMethods.OmnifactotumEnumExtensionsTests.UIntTestFlags"".")]
+    [TestCase(
+        (UIntTestFlags)1024,
+        @"The value 1024 is not defined in the enumeration ""Omnifactotum.Tests.ExtensionMethods.OmnifactotumEnumExtensionsTests.UIntTestFlags"".")]
+    [SuppressMessage("ReSharper", "InconsistentNaming", Justification = "Multiple target frameworks.")]
+    public void TestEnsureDefinedWhenUndefinedEnumerationValueArgumentIsPassedThenThrows<TEnum>(
+        TEnum enumValue,
+        string baseExpectedErrorMessage)
         where TEnum : struct, Enum
-        => Assert.That(() => enumValue.EnsureDefined(), Throws.TypeOf<InvalidEnumArgumentException>());
+    {
+#if NET5_0_OR_GREATER
+        const string enumValueDetails = $"\x0020Expression: {{ {nameof(enumValue)} }}.";
+#else
+        var enumValueDetails = string.Empty;
+#endif
+        var expectedEnumValueErrorMessage = baseExpectedErrorMessage + enumValueDetails;
+        Assert.That(() => enumValue.EnsureDefined(), Throws.TypeOf<InvalidEnumArgumentException>().With.Message.EqualTo(expectedEnumValueErrorMessage));
+
+        var enumValueContainer = ValueContainer.Create(enumValue);
+
+#if NET5_0_OR_GREATER
+        const string enumValueContainerDetails = $"\x0020Expression: {{ {nameof(enumValueContainer)}.{nameof(enumValueContainer.Value)} }}.";
+#else
+        var enumValueContainerDetails = string.Empty;
+#endif
+        var expectedEnumValueContainerErrorMessage = baseExpectedErrorMessage + enumValueContainerDetails;
+
+        Assert.That(
+            () => enumValueContainer.Value.EnsureDefined(),
+            Throws.TypeOf<InvalidEnumArgumentException>().With.Message.EqualTo(expectedEnumValueContainerErrorMessage));
+    }
 
     [Test]
     [TestCase(FileAccess.Read, true)]

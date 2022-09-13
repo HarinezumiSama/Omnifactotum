@@ -233,6 +233,10 @@ public static class OmnifactotumEnumExtensions
     /// <param name="enumerationValue">
     ///     The enumeration value to check.
     /// </param>
+    /// <param name="enumerationValueExpression">
+    ///     <para>A string value representing the expression passed as the value of the <paramref name="enumerationValue"/> parameter.</para>
+    ///     <para><b>NOTE</b>: Do not pass a value for this parameter as it is automatically injected by the compiler (.NET 5+ and C# 10+).</para>
+    /// </param>
     /// <exception cref="System.ArgumentNullException">
     ///     <paramref name="enumerationValue"/> is <see langword="null"/>.
     /// </exception>
@@ -240,16 +244,24 @@ public static class OmnifactotumEnumExtensions
     ///     <paramref name="enumerationValue"/> is not defined in the corresponding enumeration.
     /// </exception>
     [MethodImpl(OmnifactotumConstants.MethodOptimizationOptions.Standard)]
-    public static void EnsureDefined<TEnum>(this TEnum enumerationValue)
+    public static void EnsureDefined<TEnum>(
+        this TEnum enumerationValue,
+#if NET5_0_OR_GREATER
+        [CallerArgumentExpression("enumerationValue")]
+#endif
+        string? enumerationValueExpression = null)
         where TEnum : struct, Enum
     {
-        if (!IsDefinedInternal(enumerationValue))
+        if (IsDefinedInternal(enumerationValue))
         {
-            throw new InvalidEnumArgumentException(
-                AsInvariant(
-                    $@"The value {enumerationValue:D} is not defined in the enumeration {
-                        enumerationValue.GetType().GetFullName().ToUIString()}."));
+            return;
         }
+
+        var details = enumerationValueExpression is null ? null : $"\x0020Expression: {{ {enumerationValueExpression} }}.";
+
+        throw new InvalidEnumArgumentException(
+            AsInvariant(
+                $@"The value {enumerationValue:D} is not defined in the enumeration {enumerationValue.GetType().GetFullName().ToUIString()}.{details}"));
     }
 
     /// <summary>
