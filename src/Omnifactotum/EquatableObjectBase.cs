@@ -25,7 +25,7 @@ public abstract class EquatableObjectBase : IEquatable<EquatableObjectBase>
     ///     <see langword="true"/> if the two specified <see cref="EquatableObjectBase"/> instances are equal;
     ///     otherwise, <see langword="false"/>.
     /// </returns>
-    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    [MethodImpl(OmnifactotumConstants.MethodOptimizationOptions.Standard)]
     public static bool operator ==([CanBeNull] EquatableObjectBase? left, [CanBeNull] EquatableObjectBase? right) => Equals(left, right);
 
     /// <summary>
@@ -41,7 +41,7 @@ public abstract class EquatableObjectBase : IEquatable<EquatableObjectBase>
     ///     <see langword="true"/> if the two specified <see cref="EquatableObjectBase"/> instances are not equal;
     ///     otherwise, <see langword="false"/>.
     /// </returns>
-    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    [MethodImpl(OmnifactotumConstants.MethodOptimizationOptions.Standard)]
     public static bool operator !=([CanBeNull] EquatableObjectBase? left, [CanBeNull] EquatableObjectBase? right) => !Equals(left, right);
 
     /// <summary>
@@ -55,7 +55,7 @@ public abstract class EquatableObjectBase : IEquatable<EquatableObjectBase>
     ///     <see langword="true"/> if the specified <see cref="System.Object"/> is equal to
     ///     this <see cref="EquatableObjectBase"/>; otherwise, <see langword="false"/>.
     /// </returns>
-    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    [MethodImpl(OmnifactotumConstants.MethodOptimizationOptions.Standard)]
     public sealed override bool Equals(object? obj) => Equals(obj as EquatableObjectBase);
 
     /// <summary>
@@ -65,7 +65,7 @@ public abstract class EquatableObjectBase : IEquatable<EquatableObjectBase>
     ///     A hash code for this instance, suitable for use in hashing algorithms and data structures like
     ///     a hash table.
     /// </returns>
-    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    [MethodImpl(OmnifactotumConstants.MethodOptimizationOptions.Standard)]
     public sealed override int GetHashCode() => GetHashCodeInternal();
 
     /// <summary>
@@ -78,7 +78,7 @@ public abstract class EquatableObjectBase : IEquatable<EquatableObjectBase>
     ///     <see langword="true"/> if the current object is equal to the <paramref name="other"/> parameter;
     ///     otherwise, <see langword="false"/>.
     /// </returns>
-    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    [MethodImpl(OmnifactotumConstants.MethodOptimizationOptions.Standard)]
     public bool Equals([CanBeNull] EquatableObjectBase? other) => Equals(this, other);
 
     /// <summary>

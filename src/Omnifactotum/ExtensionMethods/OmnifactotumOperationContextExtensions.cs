@@ -5,6 +5,7 @@ using System.IdentityModel.Claims;
 using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Security.Cryptography.X509Certificates;
+using Omnifactotum;
 using Omnifactotum.Annotations;
 
 //// ReSharper disable RedundantNullnessAttributeWithNullableReferenceTypes
@@ -29,7 +30,7 @@ public static class OmnifactotumOperationContextExtensions
     /// <returns>
     ///     An <see cref="X509Certificate2"/> if the client has provided its certificate, or <see langword="null"/> otherwise.
     /// </returns>
-    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    [MethodImpl(OmnifactotumConstants.MethodOptimizationOptions.Standard)]
     [CanBeNull]
     public static X509Certificate2? GetClientCertificate([CanBeNull] this OperationContext? operationContext)
         => operationContext.GetAllClientCertificates().FirstOrDefault();

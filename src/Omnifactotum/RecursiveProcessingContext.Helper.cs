@@ -29,7 +29,7 @@ public static class RecursiveProcessingContext
     ///     or <see langword="null"/> to use <see cref="ByReferenceEqualityComparer{T}"/>.
     /// </param>
     /// <seealso cref="ByReferenceEqualityComparer{T}"/>
-    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    [MethodImpl(OmnifactotumConstants.MethodOptimizationOptions.Standard)]
     public static RecursiveProcessingContext<T> Create<T>([CanBeNull] IEqualityComparer<T>? equalityComparer = null) => new(equalityComparer);
 
     internal static Func<IEqualityComparer<T>?, HashSet<T>?> GenerateCreateHashSetMethod<T>()

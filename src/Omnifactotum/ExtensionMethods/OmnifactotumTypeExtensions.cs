@@ -4,6 +4,7 @@ using System.IO;
 using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Text;
+using Omnifactotum;
 using Omnifactotum.Annotations;
 
 //// ReSharper disable RedundantNullnessAttributeWithNullableReferenceTypes
@@ -130,7 +131,7 @@ public static class OmnifactotumTypeExtensions
     ///         </item>
     ///     </list>
     /// </example>
-    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    [MethodImpl(OmnifactotumConstants.MethodOptimizationOptions.Standard)]
     public static string GetQualifiedName([NotNull] this Type type) => GetNameInternal(type, false);
 
     /// <summary>
@@ -181,7 +182,7 @@ public static class OmnifactotumTypeExtensions
     ///         </item>
     ///     </list>
     /// </example>
-    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    [MethodImpl(OmnifactotumConstants.MethodOptimizationOptions.Standard)]
     public static string GetFullName([NotNull] this Type type) => GetNameInternal(type, true);
 
     /// <summary>

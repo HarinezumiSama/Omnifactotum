@@ -34,7 +34,7 @@ public static class OmnifactotumEnumExtensions
     /// </returns>
     [Pure]
     [Omnifactotum.Annotations.Pure]
-    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    [MethodImpl(OmnifactotumConstants.MethodOptimizationOptions.Standard)]
     public static string GetName<TEnum>(this TEnum value)
         where TEnum : struct, Enum
         => value.GetName(EnumNameMode.Short);
@@ -51,7 +51,7 @@ public static class OmnifactotumEnumExtensions
     /// </returns>
     [Pure]
     [Omnifactotum.Annotations.Pure]
-    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    [MethodImpl(OmnifactotumConstants.MethodOptimizationOptions.Standard)]
     public static string GetQualifiedName<TEnum>(this TEnum value)
         where TEnum : struct, Enum
         => value.GetName(EnumNameMode.Qualified);
@@ -68,7 +68,7 @@ public static class OmnifactotumEnumExtensions
     /// </returns>
     [Pure]
     [Omnifactotum.Annotations.Pure]
-    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    [MethodImpl(OmnifactotumConstants.MethodOptimizationOptions.Standard)]
     public static string GetFullName<TEnum>(this TEnum value)
         where TEnum : struct, Enum
         => value.GetName(EnumNameMode.Full);
@@ -103,7 +103,7 @@ public static class OmnifactotumEnumExtensions
     /// </exception>
     [Pure]
     [Omnifactotum.Annotations.Pure]
-    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    [MethodImpl(OmnifactotumConstants.MethodOptimizationOptions.Standard)]
     public static bool IsAllSet<TEnum>(this TEnum enumerationValue, TEnum flags)
         where TEnum : struct, Enum
         => IsSetInternal(enumerationValue, flags, true);
@@ -138,7 +138,7 @@ public static class OmnifactotumEnumExtensions
     /// </exception>
     [Pure]
     [Omnifactotum.Annotations.Pure]
-    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    [MethodImpl(OmnifactotumConstants.MethodOptimizationOptions.Standard)]
     public static bool IsAnySet<TEnum>(this TEnum enumerationValue, TEnum flags)
         where TEnum : struct, Enum
         => IsSetInternal(enumerationValue, flags, false);
@@ -204,7 +204,7 @@ public static class OmnifactotumEnumExtensions
     /// </exception>
     [Pure]
     [Omnifactotum.Annotations.Pure]
-    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    [MethodImpl(OmnifactotumConstants.MethodOptimizationOptions.Standard)]
     public static bool IsOneOf<TEnum>(this TEnum enumerationValue, [NotNull] params TEnum[] otherValues)
         where TEnum : struct, Enum
         => IsOneOf(enumerationValue, (IEnumerable<TEnum>)otherValues);
@@ -221,7 +221,7 @@ public static class OmnifactotumEnumExtensions
     /// </returns>
     [Pure]
     [Omnifactotum.Annotations.Pure]
-    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    [MethodImpl(OmnifactotumConstants.MethodOptimizationOptions.Standard)]
     public static bool IsDefined<TEnum>(this TEnum enumerationValue)
         where TEnum : struct, Enum
         => IsDefinedInternal(enumerationValue);
@@ -239,7 +239,7 @@ public static class OmnifactotumEnumExtensions
     /// <exception cref="System.ComponentModel.InvalidEnumArgumentException">
     ///     <paramref name="enumerationValue"/> is not defined in the corresponding enumeration.
     /// </exception>
-    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    [MethodImpl(OmnifactotumConstants.MethodOptimizationOptions.Standard)]
     public static void EnsureDefined<TEnum>(this TEnum enumerationValue)
         where TEnum : struct, Enum
     {
@@ -265,7 +265,7 @@ public static class OmnifactotumEnumExtensions
     /// </returns>
     [Pure]
     [Omnifactotum.Annotations.Pure]
-    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    [MethodImpl(OmnifactotumConstants.MethodOptimizationOptions.Standard)]
     public static NotImplementedException CreateEnumValueNotImplementedException<TEnum>(this TEnum enumerationValue)
         where TEnum : struct, Enum
         => new(AsInvariant($@"The operation for the enumeration value {enumerationValue.GetQualifiedName().ToUIString()} is not implemented."));
@@ -283,7 +283,7 @@ public static class OmnifactotumEnumExtensions
     /// </returns>
     [Pure]
     [Omnifactotum.Annotations.Pure]
-    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    [MethodImpl(OmnifactotumConstants.MethodOptimizationOptions.Standard)]
     public static NotSupportedException CreateEnumValueNotSupportedException<TEnum>(this TEnum enumerationValue)
         where TEnum : struct, Enum
         => new(AsInvariant($@"The operation for the enumeration value {enumerationValue.GetQualifiedName().ToUIString()} is not supported."));
@@ -381,11 +381,11 @@ public static class OmnifactotumEnumExtensions
 
     [Pure]
     [Omnifactotum.Annotations.Pure]
-    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    [MethodImpl(OmnifactotumConstants.MethodOptimizationOptions.Standard)]
     private static bool IsDefinedInternal<TEnum>(TEnum enumerationValue)
         where TEnum : struct, Enum
 #if NET5_0_OR_GREATER
-            => Enum.IsDefined(enumerationValue);
+        => Enum.IsDefined(enumerationValue);
 #else
         => Enum.IsDefined(enumerationValue.GetType(), enumerationValue);
 #endif

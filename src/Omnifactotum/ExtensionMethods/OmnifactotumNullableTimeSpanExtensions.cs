@@ -28,7 +28,7 @@ public static class OmnifactotumNullableTimeSpanExtensions
     [Pure]
     [Omnifactotum.Annotations.Pure]
     [DebuggerStepThrough]
-    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    [MethodImpl(OmnifactotumConstants.MethodOptimizationOptions.Standard)]
     public static string ToFixedString(this TimeSpan? value)
         => value is null ? OmnifactotumRepresentationConstants.NullValueRepresentation : value.Value.ToFixedString();
 
@@ -47,7 +47,7 @@ public static class OmnifactotumNullableTimeSpanExtensions
     [Pure]
     [Omnifactotum.Annotations.Pure]
     [DebuggerStepThrough]
-    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    [MethodImpl(OmnifactotumConstants.MethodOptimizationOptions.Standard)]
     public static string ToFixedStringWithMilliseconds(this TimeSpan? value)
         => value is null ? OmnifactotumRepresentationConstants.NullValueRepresentation : value.Value.ToFixedStringWithMilliseconds();
 
@@ -66,7 +66,7 @@ public static class OmnifactotumNullableTimeSpanExtensions
     [Pure]
     [Omnifactotum.Annotations.Pure]
     [DebuggerStepThrough]
-    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    [MethodImpl(OmnifactotumConstants.MethodOptimizationOptions.Standard)]
     public static string ToPreciseFixedString(this TimeSpan? value)
         => value is null ? OmnifactotumRepresentationConstants.NullValueRepresentation : value.Value.ToPreciseFixedString();
 }

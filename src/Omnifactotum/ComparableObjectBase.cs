@@ -25,7 +25,7 @@ public abstract class ComparableObjectBase : EquatableObjectBase, IComparable<Co
     ///     <see langword="true"/> if the left <see cref="ComparableObjectBase"/> instance is less than
     ///     the right <see cref="ComparableObjectBase"/> instance; otherwise, <see langword="false"/>.
     /// </returns>
-    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    [MethodImpl(OmnifactotumConstants.MethodOptimizationOptions.Standard)]
     public static bool operator <([CanBeNull] ComparableObjectBase? left, [CanBeNull] ComparableObjectBase? right) => CompareObjects(left, right) < 0;
 
     /// <summary>
@@ -42,7 +42,7 @@ public abstract class ComparableObjectBase : EquatableObjectBase, IComparable<Co
     ///     <see langword="true"/> if the left <see cref="ComparableObjectBase"/> instance is less than or equal to
     ///     the right <see cref="ComparableObjectBase"/> instance; otherwise, <see langword="false"/>.
     /// </returns>
-    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    [MethodImpl(OmnifactotumConstants.MethodOptimizationOptions.Standard)]
     public static bool operator <=([CanBeNull] ComparableObjectBase? left, [CanBeNull] ComparableObjectBase? right) => CompareObjects(left, right) <= 0;
 
     /// <summary>
@@ -59,7 +59,7 @@ public abstract class ComparableObjectBase : EquatableObjectBase, IComparable<Co
     ///     <see langword="true"/> if the left <see cref="ComparableObjectBase"/> instance is greater than
     ///     the right <see cref="ComparableObjectBase"/> instance; otherwise, <see langword="false"/>.
     /// </returns>
-    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    [MethodImpl(OmnifactotumConstants.MethodOptimizationOptions.Standard)]
     public static bool operator >([CanBeNull] ComparableObjectBase? left, [CanBeNull] ComparableObjectBase? right) => CompareObjects(left, right) > 0;
 
     /// <summary>
@@ -76,11 +76,11 @@ public abstract class ComparableObjectBase : EquatableObjectBase, IComparable<Co
     ///     <see langword="true"/> if the left <see cref="ComparableObjectBase"/> instance is greater than or equal to
     ///     the right <see cref="ComparableObjectBase"/> instance; otherwise, <see langword="false"/>.
     /// </returns>
-    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    [MethodImpl(OmnifactotumConstants.MethodOptimizationOptions.Standard)]
     public static bool operator >=([CanBeNull] ComparableObjectBase? left, [CanBeNull] ComparableObjectBase? right) => CompareObjects(left, right) >= 0;
 
     /// <inheritdoc />
-    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    [MethodImpl(OmnifactotumConstants.MethodOptimizationOptions.Standard)]
     public int CompareTo([CanBeNull] ComparableObjectBase? other) => CompareObjects(this, other);
 
     /// <inheritdoc />
@@ -100,7 +100,7 @@ public abstract class ComparableObjectBase : EquatableObjectBase, IComparable<Co
     }
 
     /// <inheritdoc />
-    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    [MethodImpl(OmnifactotumConstants.MethodOptimizationOptions.Standard)]
     protected sealed override bool EqualsInternal(EquatableObjectBase other) => CompareToInternal((ComparableObjectBase)other) == 0;
 
     /// <summary>

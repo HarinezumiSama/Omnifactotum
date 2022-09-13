@@ -1,4 +1,5 @@
 ﻿using System.Runtime.CompilerServices;
+using Omnifactotum;
 using Omnifactotum.Annotations;
 using PureAttribute = System.Diagnostics.Contracts.PureAttribute;
 using SuppressMessageAttribute = System.Diagnostics.CodeAnalysis.SuppressMessageAttribute;
@@ -35,7 +36,7 @@ public static class OmnifactotumNullableBooleanExtensions
     /// </returns>
     [Pure]
     [SuppressMessage("ReSharper", "ArrangeRedundantParentheses", Justification = "For clarity.")]
-    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    [MethodImpl(OmnifactotumConstants.MethodOptimizationOptions.Standard)]
     [CanBeNull]
     public static string? ToString(
         [CanBeNull] this bool? value,

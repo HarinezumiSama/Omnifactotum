@@ -27,6 +27,6 @@ public static class OmnifactotumKeyValuePair
     /// <returns>
     ///     A new <see cref="KeyValuePair{TKey,TValue}"/> having the specified key and value set.
     /// </returns>
-    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    [MethodImpl(OmnifactotumConstants.MethodOptimizationOptions.Standard)]
     public static KeyValuePair<TKey, TValue> Create<TKey, TValue>(TKey key, TValue value) => new(key, value);
 }

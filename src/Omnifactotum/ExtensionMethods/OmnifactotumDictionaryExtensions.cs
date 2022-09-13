@@ -1,5 +1,6 @@
 ﻿using System.Collections.ObjectModel;
 using System.Runtime.CompilerServices;
+using Omnifactotum;
 using Omnifactotum.Annotations;
 
 #if NET5_0_OR_GREATER || NETSTANDARD2_1_OR_GREATER
@@ -88,7 +89,7 @@ public static class OmnifactotumDictionaryExtensions
     ///     The value associated with the specified key if the key is found; otherwise, the default value for
     ///     the type of the value parameter.
     /// </returns>
-    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    [MethodImpl(OmnifactotumConstants.MethodOptimizationOptions.Standard)]
     //// ReSharper disable once ReturnTypeCanBeNotNullable
     public static TValue? GetValueOrDefault<TKey, TValue>(
         [NotNull]
@@ -183,7 +184,7 @@ public static class OmnifactotumDictionaryExtensions
     /// <returns>
     ///     A value that was associated with the specified key, or has been associated if it was not.
     /// </returns>
-    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    [MethodImpl(OmnifactotumConstants.MethodOptimizationOptions.Standard)]
     public static TValue GetOrCreateValue<TKey, TValue>(
         [NotNull] this IDictionary<TKey, TValue> dictionary,
 #if NET5_0_OR_GREATER || NETSTANDARD2_1_OR_GREATER
@@ -210,7 +211,7 @@ public static class OmnifactotumDictionaryExtensions
     /// <returns>
     ///     A read-only wrapper for the specified dictionary.
     /// </returns>
-    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    [MethodImpl(OmnifactotumConstants.MethodOptimizationOptions.Standard)]
     [NotNull]
     public static ReadOnlyDictionary<TKey, TValue> AsReadOnly<TKey, TValue>(
         [NotNull] this IDictionary<TKey, TValue> dictionary)

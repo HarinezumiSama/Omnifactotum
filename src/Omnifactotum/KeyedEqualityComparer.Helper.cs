@@ -37,7 +37,7 @@ public static class KeyedEqualityComparer
         /// <returns>
         ///     A created and initialized instance of the <see cref="KeyedEqualityComparer{T,TKey}"/>.
         /// </returns>
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        [MethodImpl(OmnifactotumConstants.MethodOptimizationOptions.Standard)]
         public static KeyedEqualityComparer<T, TKey> Create<TKey>(
             [NotNull] Func<T, TKey> keySelector,
             [CanBeNull] IEqualityComparer<TKey>? keyComparer = null)

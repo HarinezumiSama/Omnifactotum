@@ -1,4 +1,5 @@
 ﻿using System.Runtime.CompilerServices;
+using Omnifactotum;
 using Omnifactotum.Annotations;
 using PureAttribute = System.Diagnostics.Contracts.PureAttribute;
 
@@ -29,7 +30,7 @@ public static class OmnifactotumHashCodeHelper
     /// </returns>
     [Pure]
     [Omnifactotum.Annotations.Pure]
-    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    [MethodImpl(OmnifactotumConstants.MethodOptimizationOptions.Standard)]
     public static int CombineHashCodeValues(this int previousHashCode, int nextHashCode)
         => unchecked(previousHashCode * HashCodeMagicMultiplier) ^ nextHashCode;
 
@@ -53,7 +54,7 @@ public static class OmnifactotumHashCodeHelper
     /// </returns>
     [Pure]
     [Omnifactotum.Annotations.Pure]
-    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    [MethodImpl(OmnifactotumConstants.MethodOptimizationOptions.Standard)]
     public static int CombineHashCodes<TPrevious, TNext>(
         [CanBeNull] this TPrevious previous,
         [CanBeNull] TNext next)
@@ -78,7 +79,7 @@ public static class OmnifactotumHashCodeHelper
     /// </returns>
     [Pure]
     [Omnifactotum.Annotations.Pure]
-    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    [MethodImpl(OmnifactotumConstants.MethodOptimizationOptions.Standard)]
     public static int CombineHashCodes<TNext>(this int previousHashCode, [CanBeNull] TNext next)
         => CombineHashCodeValues(previousHashCode, next.GetHashCodeSafely());
 }

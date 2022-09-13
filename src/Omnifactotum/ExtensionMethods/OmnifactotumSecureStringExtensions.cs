@@ -3,6 +3,7 @@
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 using System.Security;
+using Omnifactotum;
 using Omnifactotum.Annotations;
 using NotNullWhen = System.Diagnostics.CodeAnalysis.NotNullWhenAttribute;
 using NotNullIfNotNull = System.Diagnostics.CodeAnalysis.NotNullIfNotNullAttribute;
@@ -30,7 +31,7 @@ public static class OmnifactotumSecureStringExtensions
     /// </returns>
     [Pure]
     [ContractAnnotation("null => true", true)]
-    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    [MethodImpl(OmnifactotumConstants.MethodOptimizationOptions.Standard)]
     public static bool IsNullOrEmpty([NotNullWhen(false)] [CanBeNull] this SecureString? value)
         => value is null || value.Length == 0;
 

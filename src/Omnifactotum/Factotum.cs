@@ -59,7 +59,7 @@ public static partial class Factotum
     /// <param name="disposable">
     ///     A reference to an object to dispose and set to <see langword="null"/>.
     /// </param>
-    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    [MethodImpl(OmnifactotumConstants.MethodOptimizationOptions.Standard)]
     public static void DisposeAndNull<T>([CanBeNull] ref T? disposable)
         where T : class, IDisposable
     {
@@ -93,7 +93,7 @@ public static partial class Factotum
     /// <param name="disposable">
     ///     A reference to an object to dispose and set to <see langword="null"/>.
     /// </param>
-    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    [MethodImpl(OmnifactotumConstants.MethodOptimizationOptions.Standard)]
     public static void DisposeAndNull<T>([CanBeNull] ref T? disposable)
         where T : struct, IDisposable
     {
@@ -118,16 +118,16 @@ public static partial class Factotum
     /// <param name="value2">
     ///     The second value to exchange with the first value.
     /// </param>
-    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    [MethodImpl(OmnifactotumConstants.MethodOptimizationOptions.Standard)]
     public static void Exchange<T>(ref T value1, ref T value2)
     {
 #if NETSTANDARD2_0_OR_GREATER || NETCOREAPP3_1_OR_GREATER
         (value1, value2) = (value2, value1);
 #else
-            //// ReSharper disable once SwapViaDeconstruction :: Avoiding multi-target issues
-            var temporary = value1;
-            value1 = value2;
-            value2 = temporary;
+        //// ReSharper disable once SwapViaDeconstruction :: Avoiding multi-target issues
+        var temporary = value1;
+        value1 = value2;
+        value2 = temporary;
 #endif
     }
 
@@ -202,7 +202,7 @@ public static partial class Factotum
     /// <returns>
     ///     The larger of the two specified values.
     /// </returns>
-    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    [MethodImpl(OmnifactotumConstants.MethodOptimizationOptions.Standard)]
     public static T Max<T>(T x, T y)
         where T : IComparable
         => Comparer<T>.Default.Compare(x, y) > 0 ? x : y;
@@ -222,7 +222,7 @@ public static partial class Factotum
     /// <returns>
     ///     The smaller of the two specified values.
     /// </returns>
-    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    [MethodImpl(OmnifactotumConstants.MethodOptimizationOptions.Standard)]
     public static T Min<T>(T x, T y)
         where T : IComparable
         => Comparer<T>.Default.Compare(x, y) < 0 ? x : y;
@@ -400,7 +400,7 @@ public static partial class Factotum
     /// </returns>
     [Obsolete("This method has been deprecated. Use `" + nameof(Task) + "." + nameof(Task.CompletedTask) + "` instead.")]
     [NotNull]
-    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    [MethodImpl(OmnifactotumConstants.MethodOptimizationOptions.Standard)]
     public static Task CreateEmptyCompletedTask() => Task.CompletedTask;
 
     /// <summary>
@@ -411,7 +411,7 @@ public static partial class Factotum
     /// </returns>
     [Obsolete("This method has been deprecated. Use `" + nameof(Task) + "." + nameof(Task.FromException) + "(Exception)` instead.")]
     [NotNull]
-    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    [MethodImpl(OmnifactotumConstants.MethodOptimizationOptions.Standard)]
     public static Task CreateEmptyFaultedTask([NotNull] Exception exception) => Task.FromException(exception);
 
     /// <summary>
@@ -430,7 +430,7 @@ public static partial class Factotum
     ///     The <see cref="MemberInfo"/> containing information about the required field or property.
     /// </returns>
     [NotNull]
-    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    [MethodImpl(OmnifactotumConstants.MethodOptimizationOptions.Standard)]
     public static MemberInfo GetFieldOrPropertyInfo<TObject, TMember>([NotNull] Expression<Func<TObject, TMember>> memberGetterExpression)
         => For<TObject>.GetFieldOrPropertyInfo(memberGetterExpression);
 
@@ -450,7 +450,7 @@ public static partial class Factotum
     ///     The <see cref="FieldInfo"/> containing information about the required field.
     /// </returns>
     [NotNull]
-    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    [MethodImpl(OmnifactotumConstants.MethodOptimizationOptions.Standard)]
     public static FieldInfo GetFieldInfo<TObject, TField>([NotNull] Expression<Func<TObject, TField>> fieldGetterExpression)
         => For<TObject>.GetFieldInfo(fieldGetterExpression);
 
@@ -470,7 +470,7 @@ public static partial class Factotum
     ///     The name of the field specified by the lambda expression.
     /// </returns>
     [NotNull]
-    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    [MethodImpl(OmnifactotumConstants.MethodOptimizationOptions.Standard)]
     public static string GetFieldName<TObject, TField>([NotNull] Expression<Func<TObject, TField>> fieldGetterExpression)
         => For<TObject>.GetFieldName(fieldGetterExpression);
 
@@ -490,7 +490,7 @@ public static partial class Factotum
     ///     The name of the field in the following form: <c>SomeType.Field</c>.
     /// </returns>
     [NotNull]
-    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    [MethodImpl(OmnifactotumConstants.MethodOptimizationOptions.Standard)]
     public static string GetQualifiedFieldName<TObject, TField>([NotNull] Expression<Func<TObject, TField>> fieldGetterExpression)
         => For<TObject>.GetQualifiedFieldName(fieldGetterExpression);
 
@@ -510,7 +510,7 @@ public static partial class Factotum
     ///     The <see cref="PropertyInfo"/> containing information about the required property.
     /// </returns>
     [NotNull]
-    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    [MethodImpl(OmnifactotumConstants.MethodOptimizationOptions.Standard)]
     public static PropertyInfo GetPropertyInfo<TObject, TProperty>([NotNull] Expression<Func<TObject, TProperty>> propertyGetterExpression)
         => For<TObject>.GetPropertyInfo(propertyGetterExpression);
 
@@ -530,7 +530,7 @@ public static partial class Factotum
     ///     The name of the property.
     /// </returns>
     [NotNull]
-    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    [MethodImpl(OmnifactotumConstants.MethodOptimizationOptions.Standard)]
     public static string GetPropertyName<TObject, TProperty>([NotNull] Expression<Func<TObject, TProperty>> propertyGetterExpression)
         => For<TObject>.GetPropertyName(propertyGetterExpression);
 
@@ -550,7 +550,7 @@ public static partial class Factotum
     ///     The name of the property in the following form: <c>SomeType.Property</c>.
     /// </returns>
     [NotNull]
-    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    [MethodImpl(OmnifactotumConstants.MethodOptimizationOptions.Standard)]
     public static string GetQualifiedPropertyName<TObject, TProperty>([NotNull] Expression<Func<TObject, TProperty>> propertyGetterExpression)
         => For<TObject>.GetQualifiedPropertyName(propertyGetterExpression);
 
@@ -623,7 +623,7 @@ public static partial class Factotum
     ///     The name of the static property.
     /// </returns>
     [NotNull]
-    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    [MethodImpl(OmnifactotumConstants.MethodOptimizationOptions.Standard)]
     public static string GetPropertyName<TProperty>([NotNull] Expression<Func<TProperty>> propertyGetterExpression)
     {
         var propertyInfo = GetPropertyInfo(propertyGetterExpression);

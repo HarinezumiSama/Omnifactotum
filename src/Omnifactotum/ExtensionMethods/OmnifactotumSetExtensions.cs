@@ -25,7 +25,7 @@ public static class OmnifactotumSetExtensions
     /// <returns>
     ///     A read-only wrapper for the specified set.
     /// </returns>
-    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    [MethodImpl(OmnifactotumConstants.MethodOptimizationOptions.Standard)]
     [NotNull]
     public static ReadOnlySet<T> AsReadOnly<T>([NotNull] this ISet<T> set)
         => set is null ? throw new ArgumentNullException(nameof(set)) : new ReadOnlySet<T>(set);

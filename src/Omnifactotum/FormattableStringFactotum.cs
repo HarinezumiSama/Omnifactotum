@@ -25,6 +25,6 @@ internal static class FormattableStringFactotum
     ///     <paramref name="value"/> is <see langword="null"/>.
     /// </exception>
     /// <seealso cref="CultureInfo.InvariantCulture"/>
-    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    [MethodImpl(OmnifactotumConstants.MethodOptimizationOptions.Standard)]
     internal static string AsInvariant([NotNull] FormattableString value) => FormattableString.Invariant(value);
 }

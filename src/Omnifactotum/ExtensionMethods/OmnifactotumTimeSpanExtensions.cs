@@ -1,6 +1,7 @@
 ﻿using System.Diagnostics;
 using System.Globalization;
 using System.Runtime.CompilerServices;
+using Omnifactotum;
 using PureAttribute = System.Diagnostics.Contracts.PureAttribute;
 
 //// ReSharper disable RedundantNullnessAttributeWithNullableReferenceTypes
@@ -131,7 +132,7 @@ public static class OmnifactotumTimeSpanExtensions
     [Pure]
     [Omnifactotum.Annotations.Pure]
     [DebuggerStepThrough]
-    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    [MethodImpl(OmnifactotumConstants.MethodOptimizationOptions.Standard)]
     public static string ToFixedString(this TimeSpan value) => InternalToFixedString(value, FixedStringFormats);
 
     /// <summary>
@@ -179,7 +180,7 @@ public static class OmnifactotumTimeSpanExtensions
     [Pure]
     [Omnifactotum.Annotations.Pure]
     [DebuggerStepThrough]
-    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    [MethodImpl(OmnifactotumConstants.MethodOptimizationOptions.Standard)]
     public static string ToFixedStringWithMilliseconds(this TimeSpan value) => InternalToFixedString(value, FixedStringWithMillisecondsFormats);
 
     /// <summary>
@@ -227,7 +228,7 @@ public static class OmnifactotumTimeSpanExtensions
     [Pure]
     [Omnifactotum.Annotations.Pure]
     [DebuggerStepThrough]
-    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    [MethodImpl(OmnifactotumConstants.MethodOptimizationOptions.Standard)]
     public static string ToPreciseFixedString(this TimeSpan value) => InternalToFixedString(value, PreciseFixedStringFormats);
 
     //// ReSharper disable once SuggestBaseTypeForParameter :: Optimization

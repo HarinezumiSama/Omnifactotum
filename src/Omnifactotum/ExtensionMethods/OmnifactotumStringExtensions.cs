@@ -33,7 +33,7 @@ public static class OmnifactotumStringExtensions
     /// </returns>
     [Pure]
     [ContractAnnotation("null => true", true)]
-    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    [MethodImpl(OmnifactotumConstants.MethodOptimizationOptions.Standard)]
     public static bool IsNullOrEmpty([NotNullWhen(false)] [CanBeNull] this string? value)
         => string.IsNullOrEmpty(value);
 
@@ -50,7 +50,7 @@ public static class OmnifactotumStringExtensions
     /// </returns>
     [Pure]
     [ContractAnnotation("null => true", true)]
-    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    [MethodImpl(OmnifactotumConstants.MethodOptimizationOptions.Standard)]
     public static bool IsNullOrWhiteSpace([NotNullWhen(false)] [CanBeNull] this string? value)
         => string.IsNullOrWhiteSpace(value);
 
@@ -126,7 +126,7 @@ public static class OmnifactotumStringExtensions
     ///     by the <paramref name="separator"/> string.
     /// </returns>
     [NotNull]
-    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    [MethodImpl(OmnifactotumConstants.MethodOptimizationOptions.Standard)]
     public static string Join(
         [NotNull] [ItemCanBeNull] [InstantHandle] this IEnumerable<string?> values,
         [CanBeNull] string? separator)
@@ -144,7 +144,7 @@ public static class OmnifactotumStringExtensions
     /// </returns>
     [NotNull]
     [Pure]
-    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    [MethodImpl(OmnifactotumConstants.MethodOptimizationOptions.Standard)]
     public static string AvoidNull([CanBeNull] this string? source) => source ?? string.Empty;
 
     /// <summary>
@@ -230,7 +230,7 @@ public static class OmnifactotumStringExtensions
     /// </returns>
     [NotNull]
     [Pure]
-    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    [MethodImpl(OmnifactotumConstants.MethodOptimizationOptions.Standard)]
     public static string TrimSafely([CanBeNull] this string? value, [CanBeNull] params char[]? trimChars)
         => value?.Trim(trimChars) ?? string.Empty;
 
@@ -252,7 +252,7 @@ public static class OmnifactotumStringExtensions
     /// </returns>
     [NotNull]
     [Pure]
-    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    [MethodImpl(OmnifactotumConstants.MethodOptimizationOptions.Standard)]
     public static string TrimStartSafely([CanBeNull] this string? value, [CanBeNull] params char[]? trimChars)
         => value?.TrimStart(trimChars) ?? string.Empty;
 
@@ -274,7 +274,7 @@ public static class OmnifactotumStringExtensions
     /// </returns>
     [NotNull]
     [Pure]
-    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    [MethodImpl(OmnifactotumConstants.MethodOptimizationOptions.Standard)]
     public static string TrimEndSafely([CanBeNull] this string? value, [CanBeNull] params char[]? trimChars)
         => value?.TrimEnd(trimChars) ?? string.Empty;
 

@@ -1,4 +1,5 @@
 ﻿using System.Runtime.CompilerServices;
+using Omnifactotum;
 using Omnifactotum.Annotations;
 
 //// ReSharper disable RedundantNullnessAttributeWithNullableReferenceTypes
@@ -23,7 +24,7 @@ public static class OmnifactotumDisposableExtensions
     /// <param name="disposable">
     ///     A reference to an object to dispose.
     /// </param>
-    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    [MethodImpl(OmnifactotumConstants.MethodOptimizationOptions.Standard)]
     public static void DisposeSafely<T>([CanBeNull] this T? disposable)
         where T : class, IDisposable
         => disposable?.Dispose();
@@ -39,7 +40,7 @@ public static class OmnifactotumDisposableExtensions
     /// <param name="disposable">
     ///     A reference to an object to dispose.
     /// </param>
-    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    [MethodImpl(OmnifactotumConstants.MethodOptimizationOptions.Standard)]
     public static void DisposeSafely<T>([CanBeNull] this T? disposable)
         where T : struct, IDisposable
         => disposable?.Dispose();

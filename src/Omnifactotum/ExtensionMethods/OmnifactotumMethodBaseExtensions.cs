@@ -1,5 +1,6 @@
 ﻿using System.Runtime.CompilerServices;
 using System.Text;
+using Omnifactotum;
 using Omnifactotum.Annotations;
 using PureAttribute = System.Diagnostics.Contracts.PureAttribute;
 
@@ -32,7 +33,7 @@ public static class OmnifactotumMethodBaseExtensions
     /// </returns>
     [Pure]
     [Omnifactotum.Annotations.Pure]
-    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    [MethodImpl(OmnifactotumConstants.MethodOptimizationOptions.Standard)]
     [NotNull]
     public static string GetFullName([NotNull] this MethodBase method)
     {
@@ -55,7 +56,7 @@ public static class OmnifactotumMethodBaseExtensions
     /// </returns>
     [Pure]
     [Omnifactotum.Annotations.Pure]
-    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    [MethodImpl(OmnifactotumConstants.MethodOptimizationOptions.Standard)]
     [NotNull]
     public static string GetQualifiedName([NotNull] this MethodBase method)
     {
@@ -79,7 +80,7 @@ public static class OmnifactotumMethodBaseExtensions
     /// </returns>
     [Pure]
     [Omnifactotum.Annotations.Pure]
-    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    [MethodImpl(OmnifactotumConstants.MethodOptimizationOptions.Standard)]
     [NotNull]
     public static string GetSignature([NotNull] this MethodBase method)
     {
@@ -103,7 +104,7 @@ public static class OmnifactotumMethodBaseExtensions
     /// </returns>
     [Pure]
     [Omnifactotum.Annotations.Pure]
-    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    [MethodImpl(OmnifactotumConstants.MethodOptimizationOptions.Standard)]
     [NotNull]
     public static string GetFullSignature([NotNull] this MethodBase method)
     {
@@ -116,7 +117,7 @@ public static class OmnifactotumMethodBaseExtensions
     }
 
     [CanBeNull]
-    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    [MethodImpl(OmnifactotumConstants.MethodOptimizationOptions.Standard)]
     //// ReSharper disable once SuggestBaseTypeForParameter
     private static Type? GetMethodContainingType([NotNull] MethodBase method)
         => method.DeclaringType ?? method.ReflectedType;
