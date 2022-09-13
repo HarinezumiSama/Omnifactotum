@@ -47,12 +47,19 @@ internal sealed class OmnifactotumDateTimeExtensionsTests
     {
         var value = new DateTime(2001, 2, 3, 7, 8, 11, 321, kind);
 
+#if NET5_0_OR_GREATER
+        const string ErrorDetails =
+            $"\x0020Expression: {{ {nameof(ValueContainer)}.{nameof(ValueContainer.Create)}({nameof(value)}).{nameof(ValueContainer<DateTime>.Value)} }}.";
+#else
+        const string? ErrorDetails = default(string);
+#endif
+
         Assert.That(
-            () => value.EnsureKind(requiredKind),
+            () => ValueContainer.Create(value).Value.EnsureKind(requiredKind),
             kind == requiredKind
                 ? Is.EqualTo(value).With.Property(nameof(DateTime.Kind)).EqualTo(kind)
                 : Throws.ArgumentException.With.Message.EqualTo(
-                    $@"The specified DateTime value must be of the {requiredKind} kind, but is {value.Kind}.{
+                    $@"The specified DateTime value must be of the {requiredKind} kind, but is {value.Kind}.{ErrorDetails}{
                         LocalFactotum.GetArgumentExceptionParameterDetails("value")}"));
     }
 
@@ -63,12 +70,19 @@ internal sealed class OmnifactotumDateTimeExtensionsTests
 
         var value = new DateTime(2001, 2, 3, 7, 8, 13, 432, kind);
 
+#if NET5_0_OR_GREATER
+        const string ErrorDetails =
+            $"\x0020Expression: {{ {nameof(ValueContainer)}.{nameof(ValueContainer.Create)}({nameof(value)}).{nameof(ValueContainer<DateTime>.Value)} }}.";
+#else
+        const string? ErrorDetails = default(string);
+#endif
+
         Assert.That(
-            () => value.EnsureUtc(),
+            () => ValueContainer.Create(value).Value.EnsureUtc(),
             kind == RequiredKind
                 ? Is.EqualTo(value).With.Property(nameof(DateTime.Kind)).EqualTo(kind)
                 : Throws.ArgumentException.With.Message.EqualTo(
-                    $@"The specified DateTime value must be of the {RequiredKind} kind, but is {value.Kind}.{
+                    $@"The specified DateTime value must be of the {RequiredKind} kind, but is {value.Kind}.{ErrorDetails}{
                         LocalFactotum.GetArgumentExceptionParameterDetails("value")}"));
     }
 
@@ -79,12 +93,19 @@ internal sealed class OmnifactotumDateTimeExtensionsTests
 
         var value = new DateTime(2001, 2, 3, 7, 8, 13, 432, kind);
 
+#if NET5_0_OR_GREATER
+        const string ErrorDetails =
+            $"\x0020Expression: {{ {nameof(ValueContainer)}.{nameof(ValueContainer.Create)}({nameof(value)}).{nameof(ValueContainer<DateTime>.Value)} }}.";
+#else
+        const string? ErrorDetails = default(string);
+#endif
+
         Assert.That(
-            () => value.EnsureLocal(),
+            () => ValueContainer.Create(value).Value.EnsureLocal(),
             kind == RequiredKind
                 ? Is.EqualTo(value).With.Property(nameof(DateTime.Kind)).EqualTo(kind)
                 : Throws.ArgumentException.With.Message.EqualTo(
-                    $@"The specified DateTime value must be of the {RequiredKind} kind, but is {value.Kind}.{
+                    $@"The specified DateTime value must be of the {RequiredKind} kind, but is {value.Kind}.{ErrorDetails}{
                         LocalFactotum.GetArgumentExceptionParameterDetails("value")}"));
     }
 }

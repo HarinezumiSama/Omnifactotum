@@ -1,6 +1,9 @@
 ﻿using System.Diagnostics;
 using System.Globalization;
+using System.Runtime.CompilerServices;
+using Omnifactotum;
 using Omnifactotum.Annotations;
+using static Omnifactotum.FormattableStringFactotum;
 using PureAttribute = System.Diagnostics.Contracts.PureAttribute;
 
 //// ReSharper disable RedundantNullnessAttributeWithNullableReferenceTypes
@@ -65,6 +68,7 @@ public static class OmnifactotumDateTimeExtensions
     [Pure]
     [Omnifactotum.Annotations.Pure]
     [DebuggerStepThrough]
+    [MethodImpl(OmnifactotumConstants.MethodOptimizationOptions.Maximum)]
     public static string ToFixedString(this DateTime value)
         => value.ToString(FixedStringFormat, CultureInfo.InvariantCulture);
 
@@ -104,6 +108,7 @@ public static class OmnifactotumDateTimeExtensions
     [Pure]
     [Omnifactotum.Annotations.Pure]
     [DebuggerStepThrough]
+    [MethodImpl(OmnifactotumConstants.MethodOptimizationOptions.Maximum)]
     public static string ToFixedStringWithMilliseconds(this DateTime value)
         => value.ToString(FixedStringWithMillisecondsFormat, CultureInfo.InvariantCulture);
 
@@ -143,6 +148,7 @@ public static class OmnifactotumDateTimeExtensions
     [Pure]
     [Omnifactotum.Annotations.Pure]
     [DebuggerStepThrough]
+    [MethodImpl(OmnifactotumConstants.MethodOptimizationOptions.Maximum)]
     public static string ToPreciseFixedString(this DateTime value)
         => value.ToString(PreciseFixedStringFormat, CultureInfo.InvariantCulture);
 
@@ -156,6 +162,10 @@ public static class OmnifactotumDateTimeExtensions
     /// <param name="requiredKind">
     ///     The required <see cref="DateTimeKind"/> that <see cref="DateTime.Kind"/> of <paramref name="value"/> must be equal to.
     /// </param>
+    /// <param name="valueExpression">
+    ///     <para>A string value representing the expression passed as the value of the <paramref name="value"/> parameter.</para>
+    ///     <para><b>NOTE</b>: Do not pass a value for this parameter as it is automatically injected by the compiler (.NET 5+ and C# 10+).</para>
+    /// </param>
     /// <returns>
     ///     The specified value if its <see cref="DateTime.Kind"/> is equal to the specified <see cref="DateTimeKind"/>.
     /// </returns>
@@ -163,16 +173,25 @@ public static class OmnifactotumDateTimeExtensions
     ///     <see cref="DateTime.Kind"/> of <paramref name="value"/> is not equal to the specified <see cref="DateTimeKind"/>.
     /// </exception>
     [DebuggerStepThrough]
-    public static DateTime EnsureKind(this DateTime value, DateTimeKind requiredKind)
+    public static DateTime EnsureKind(
+        this DateTime value,
+        DateTimeKind requiredKind,
+#if NET5_0_OR_GREATER
+        [CallerArgumentExpression("value")]
+#endif
+        string? valueExpression = null)
     {
-        if (value.Kind != requiredKind)
+        if (value.Kind == requiredKind)
         {
-            throw new ArgumentException(
-                $@"The specified {nameof(DateTime)} value must be of the {requiredKind} kind, but is {value.Kind}.",
-                nameof(value));
+            return value;
         }
 
-        return value;
+        var details = valueExpression is null ? null : $"\x0020Expression: {{ {valueExpression} }}.";
+
+        throw new ArgumentException(
+            AsInvariant($@"The specified {nameof(DateTime)} value must be of the {requiredKind} kind, but is {value.Kind}.{details}"),
+            nameof(value));
+
     }
 
     /// <summary>
@@ -182,13 +201,24 @@ public static class OmnifactotumDateTimeExtensions
     /// <param name="value">
     ///     The value to check.
     /// </param>
+    /// <param name="valueExpression">
+    ///     <para>A string value representing the expression passed as the value of the <paramref name="value"/> parameter.</para>
+    ///     <para><b>NOTE</b>: Do not pass a value for this parameter as it is automatically injected by the compiler (.NET 5+ and C# 10+).</para>
+    /// </param>
     /// <returns>
     ///     The specified value if its <see cref="DateTime.Kind"/> is equal to <see cref="DateTimeKind.Utc"/>.
     /// </returns>
     /// <exception cref="ArgumentException">
     ///     <see cref="DateTime.Kind"/> of <paramref name="value"/> is not equal to <see cref="DateTimeKind.Utc"/>.
     /// </exception>
-    public static DateTime EnsureUtc(this DateTime value) => value.EnsureKind(DateTimeKind.Utc);
+    [MethodImpl(OmnifactotumConstants.MethodOptimizationOptions.Maximum)]
+    public static DateTime EnsureUtc(
+        this DateTime value,
+#if NET5_0_OR_GREATER
+        [CallerArgumentExpression("value")]
+#endif
+        string? valueExpression = null)
+        => value.EnsureKind(DateTimeKind.Utc, valueExpression);
 
     /// <summary>
     ///     Returns the specified <see cref="DateTime"/> value if its <see cref="DateTime.Kind"/> is equal
@@ -197,11 +227,22 @@ public static class OmnifactotumDateTimeExtensions
     /// <param name="value">
     ///     The value to check.
     /// </param>
+    /// <param name="valueExpression">
+    ///     <para>A string value representing the expression passed as the value of the <paramref name="value"/> parameter.</para>
+    ///     <para><b>NOTE</b>: Do not pass a value for this parameter as it is automatically injected by the compiler (.NET 5+ and C# 10+).</para>
+    /// </param>
     /// <returns>
     ///     The specified value if its <see cref="DateTime.Kind"/> is equal to <see cref="DateTimeKind.Local"/>.
     /// </returns>
     /// <exception cref="ArgumentException">
     ///     <see cref="DateTime.Kind"/> of <paramref name="value"/> is not equal to <see cref="DateTimeKind.Local"/>.
     /// </exception>
-    public static DateTime EnsureLocal(this DateTime value) => value.EnsureKind(DateTimeKind.Local);
+    [MethodImpl(OmnifactotumConstants.MethodOptimizationOptions.Maximum)]
+    public static DateTime EnsureLocal(
+        this DateTime value,
+#if NET5_0_OR_GREATER
+        [CallerArgumentExpression("value")]
+#endif
+        string? valueExpression = null)
+        => value.EnsureKind(DateTimeKind.Local, valueExpression);
 }
