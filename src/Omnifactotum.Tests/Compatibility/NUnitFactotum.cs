@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
 using System.Reflection;
+using System.Runtime.CompilerServices;
 using NUnit.Framework;
 using NUnit.Framework.Constraints;
 using Omnifactotum.Annotations;
@@ -315,8 +316,9 @@ internal static class NUnitFactotum
     /// <param name="value">
     ///     The value to check.
     /// </param>
-    /// <param name="failureMessage">
-    ///     Optional. The message that will be displayed on failure.
+    /// <param name="valueExpression">
+    ///     <para>A string value representing the expression passed as the value of the <paramref name="value"/> parameter.</para>
+    ///     <para><b>NOTE</b>: Do not pass a value for this parameter as it is automatically injected by the compiler (.NET Core 3.0+ and C# 10+).</para>
     /// </param>
     /// <returns>
     ///     The specified value if is not <see langword="null"/>.
@@ -327,10 +329,15 @@ internal static class NUnitFactotum
     [return: NotNullIfNotNull(@"value")]
     [NotNull]
     [ContractAnnotation("value:null => stop; value:notnull => notnull", true)]
-    public static T AssertNotNull<T>([CanBeNull] this T? value, string? failureMessage = null)
+    public static T AssertNotNull<T>(
+        [CanBeNull] this T? value,
+#if NETCOREAPP3_0_OR_GREATER
+        [CallerArgumentExpression("value")]
+#endif
+        string? valueExpression = null)
         where T : class
     {
-        Assert.That(value, Is.Not.Null, failureMessage);
+        Assert.That(value, Is.Not.Null, GetAssertNotNullFailureMessage(valueExpression));
         return value.EnsureNotNull();
     }
 
@@ -345,8 +352,9 @@ internal static class NUnitFactotum
     /// <param name="value">
     ///     The value to check.
     /// </param>
-    /// <param name="failureMessage">
-    ///     Optional. The message that will be displayed on failure.
+    /// <param name="valueExpression">
+    ///     <para>A string value representing the expression passed as the value of the <paramref name="value"/> parameter.</para>
+    ///     <para><b>NOTE</b>: Do not pass a value for this parameter as it is automatically injected by the compiler (.NET Core 3.0+ and C# 10+).</para>
     /// </param>
     /// <returns>
     ///     The value which underlies the specified nullable value, if it is not <see langword="null"/>
@@ -356,11 +364,16 @@ internal static class NUnitFactotum
     ///     <paramref name="value"/> is <see langword="null"/>, that is, its <see cref="Nullable{T}.HasValue"/> property is
     ///     <see langword="false"/>.
     /// </exception>
-    public static T AssertNotNull<T>([CanBeNull] this T? value, string? failureMessage = null)
+    public static T AssertNotNull<T>(
+        [CanBeNull] this T? value,
+#if NETCOREAPP3_0_OR_GREATER
+        [CallerArgumentExpression("value")]
+#endif
+        string? valueExpression = null)
         where T : struct
     {
-        Assert.That(value.HasValue, Is.True, failureMessage);
-        return value!.Value;
+        Assert.That(value.HasValue, Is.True, GetAssertNotNullFailureMessage(valueExpression));
+        return value.EnsureNotNull();
     }
 
     /// <summary>
@@ -406,6 +419,10 @@ internal static class NUnitFactotum
         var result = (method.Attributes & Mask) == (expectedAttribute & Mask);
         return result;
     }
+
+    [MethodImpl(OmnifactotumConstants.MethodOptimizationOptions.Maximum)]
+    private static string? GetAssertNotNullFailureMessage(string? valueExpression = null)
+        => valueExpression is null ? null : AsInvariant($@"The following expression is null: {{ {valueExpression} }}.");
 
     /// <summary>
     ///     Provides a convenient access to helper methods for the specified type.
