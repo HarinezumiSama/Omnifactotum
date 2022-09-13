@@ -5,6 +5,7 @@ using System.Reflection;
 using System.Runtime.CompilerServices;
 using Omnifactotum;
 using Omnifactotum.Annotations;
+using static Omnifactotum.FormattableStringFactotum;
 using NotNullIfNotNull = System.Diagnostics.CodeAnalysis.NotNullIfNotNullAttribute;
 
 //// ReSharper disable RedundantNullnessAttributeWithNullableReferenceTypes
@@ -32,6 +33,10 @@ public static class OmnifactotumGenericObjectExtensions
     /// <param name="value">
     ///     The value to check.
     /// </param>
+    /// <param name="valueExpression">
+    ///     <para>A string value representing the expression passed as the value of the <paramref name="value"/> parameter.</para>
+    ///     <para><b>NOTE</b>: Do not pass a value for this parameter as it is automatically injected by the compiler (.NET 5+ and C# 10+).</para>
+    /// </param>
     /// <returns>
     ///     The specified value if it is not <see langword="null"/>.
     /// </returns>
@@ -42,10 +47,15 @@ public static class OmnifactotumGenericObjectExtensions
     [return: NotNullIfNotNull(@"value")]
     [NotNull]
     [DebuggerStepThrough]
-    [ContractAnnotation("null => stop; notnull => notnull", true)]
-    public static T EnsureNotNull<T>([CanBeNull] this T? value)
+    [ContractAnnotation("value:null => stop; value:notnull => notnull", true)]
+    public static T EnsureNotNull<T>(
+        [CanBeNull] this T? value,
+#if NET5_0_OR_GREATER
+        [CallerArgumentExpression("value")]
+#endif
+        string? valueExpression = null)
         where T : class
-        => value ?? throw new ArgumentNullException(nameof(value));
+        => value ?? throw new ArgumentNullException(nameof(value), GetEnsureNotNullFailureMessage(valueExpression));
 
     /// <summary>
     ///     Returns the value which underlies the specified nullable value, if it is not <see langword="null"/>
@@ -58,6 +68,10 @@ public static class OmnifactotumGenericObjectExtensions
     /// <param name="value">
     ///     The value to check.
     /// </param>
+    /// <param name="valueExpression">
+    ///     <para>A string value representing the expression passed as the value of the <paramref name="value"/> parameter.</para>
+    ///     <para><b>NOTE</b>: Do not pass a value for this parameter as it is automatically injected by the compiler (.NET 5+ and C# 10+).</para>
+    /// </param>
     /// <returns>
     ///     The value which underlies the specified nullable value, if it is not <see langword="null"/>
     ///     (that is, if its <see cref="Nullable{T}.HasValue"/> property is <see langword="true"/>).
@@ -68,9 +82,14 @@ public static class OmnifactotumGenericObjectExtensions
     /// </exception>
     [MethodImpl(OmnifactotumConstants.MethodOptimizationOptions.Maximum)]
     [DebuggerStepThrough]
-    public static T EnsureNotNull<T>([CanBeNull] this T? value)
+    public static T EnsureNotNull<T>(
+        [CanBeNull] this T? value,
+#if NET5_0_OR_GREATER
+        [CallerArgumentExpression("value")]
+#endif
+        string? valueExpression = null)
         where T : struct
-        => value ?? throw new ArgumentNullException(nameof(value));
+        => value ?? throw new ArgumentNullException(nameof(value), GetEnsureNotNullFailureMessage(valueExpression));
 
     /// <summary>
     ///     <para>
@@ -638,6 +657,10 @@ public static class OmnifactotumGenericObjectExtensions
 
         return true;
     }
+
+    [MethodImpl(OmnifactotumConstants.MethodOptimizationOptions.Maximum)]
+    private static string? GetEnsureNotNullFailureMessage(string? valueExpression = null)
+        => valueExpression is null ? null : AsInvariant($@"The following expression is null: {{ {valueExpression} }}.");
 
     [MethodImpl(OmnifactotumConstants.MethodOptimizationOptions.Maximum)]
     private static string GetObjectReferenceDescriptionInternal<T>(T? obj, [InstantHandle] Func<Type, string> formatType)
