@@ -311,16 +311,18 @@ internal sealed class OmnifactotumEnumExtensionsTests
             Is.TypeOf<NotImplementedException>()
                 .With
                 .Message
-                .Contains(AsInvariant($@"""{nameof(ConsoleColor)}.{nameof(ConsoleColor.DarkRed)}""")));
+                .EqualTo(
+                    AsInvariant($@"The operation for the enumeration value ""{nameof(ConsoleColor)}.{nameof(ConsoleColor.DarkRed)}"" is not implemented.")));
 
     [Test]
     public void TestCreateEnumValueNotSupportedExceptionWhenValidArgumentIsPassedThenSucceeds()
         => Assert.That(
-            () => ConsoleColor.DarkRed.CreateEnumValueNotSupportedException(),
+            () => ConsoleColor.DarkCyan.CreateEnumValueNotSupportedException(),
             Is.TypeOf<NotSupportedException>()
                 .With
                 .Message
-                .Contains(AsInvariant($@"""{nameof(ConsoleColor)}.{nameof(ConsoleColor.DarkRed)}""")));
+                .EqualTo(
+                    AsInvariant($@"The operation for the enumeration value ""{nameof(ConsoleColor)}.{nameof(ConsoleColor.DarkCyan)}"" is not supported.")));
 
     [Flags]
     public enum ULongTestFlags : ulong
