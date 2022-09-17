@@ -144,6 +144,44 @@ internal sealed class OmnifactotumStringExtensionsTests
         => Assert.That(() => value.TrimEndSafely(trimChars), Is.EqualTo(expectedResult));
 
     [Test]
+    [TestCase("", "", StringComparison.Ordinal, "")]
+    [TestCase("", "Hello", StringComparison.Ordinal, "")]
+    [TestCase("Hello", "", StringComparison.Ordinal, "Hello")]
+    [TestCase("Hello", "Hell", StringComparison.Ordinal, "o")]
+    [TestCase("Hello", "hell", StringComparison.Ordinal, "Hello")]
+    [TestCase("Hello", "HeLL", StringComparison.OrdinalIgnoreCase, "o")]
+    [TestCase("HelloWorld", "hELLOwORLD", StringComparison.OrdinalIgnoreCase, "")]
+    public void TestTrimPrefixWhenValidArgumentsThenSucceeds(string value, string prefix, StringComparison comparison, string expectedResult)
+        => Assert.That(() => value.TrimPrefix(prefix, comparison), Is.EqualTo(expectedResult));
+
+    [Test]
+    [TestCase(null, "validPostfix", StringComparison.Ordinal, "value")]
+    [TestCase("validValue", null, StringComparison.InvariantCulture, "prefix")]
+    public void TestTrimPrefixWhenInvalidArgumentsThenThrows(string? value, string? prefix, StringComparison comparison, string parameterName)
+        => Assert.That(
+            () => value!.TrimPrefix(prefix!, comparison),
+            Throws.ArgumentNullException.With.Property(nameof(ArgumentNullException.ParamName)).EqualTo(parameterName));
+
+    [Test]
+    [TestCase("", "", StringComparison.Ordinal, "")]
+    [TestCase("", "Hello", StringComparison.Ordinal, "")]
+    [TestCase("Hello", "", StringComparison.Ordinal, "Hello")]
+    [TestCase("Hello", "lo", StringComparison.Ordinal, "Hel")]
+    [TestCase("Hello", "Lo", StringComparison.Ordinal, "Hello")]
+    [TestCase("Hello", "Lo", StringComparison.OrdinalIgnoreCase, "Hel")]
+    [TestCase("HelloWorld", "hELLOwORLD", StringComparison.OrdinalIgnoreCase, "")]
+    public void TestTrimPostfixWhenValidArgumentsThenSucceeds(string value, string postfix, StringComparison comparison, string expectedResult)
+        => Assert.That(() => value.TrimPostfix(postfix, comparison), Is.EqualTo(expectedResult));
+
+    [Test]
+    [TestCase(null, "somePostfix", StringComparison.Ordinal, "value")]
+    [TestCase("value", null, StringComparison.InvariantCulture, "postfix")]
+    public void TestTrimPostfixWhenInvalidArgumentsThenThrows(string? value, string? postfix, StringComparison comparison, string parameterName)
+        => Assert.That(
+            () => value!.TrimPostfix(postfix!, comparison),
+            Throws.ArgumentNullException.With.Property(nameof(ArgumentNullException.ParamName)).EqualTo(parameterName));
+
+    [Test]
     [TestCase(-1)]
     [TestCase(int.MinValue)]
     public void TestShortenWhenInvalidArgumentsThenThrows(int maximumLength)

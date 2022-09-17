@@ -279,6 +279,80 @@ public static class OmnifactotumStringExtensions
         => value?.TrimEnd(trimChars) ?? string.Empty;
 
     /// <summary>
+    ///     Removes the postfix from the specified string value.
+    /// </summary>
+    /// <param name="value">
+    ///     The string value to remove the postfix from.
+    /// </param>
+    /// <param name="prefix">
+    ///     The postfix to remove from <paramref name="value"/>.
+    /// </param>
+    /// <param name="comparison">
+    ///     One of the enumeration values that determines how the postfix is searched.
+    /// </param>
+    /// <returns>
+    ///     The specified string value without the specified postfix if it ends with this postfix; otherwise, the original string value.
+    /// </returns>
+    /// <exception cref="ArgumentNullException">
+    ///     <para><paramref name="value"/> is <see langword="null"/>.</para>
+    ///     -or-
+    ///     <para><paramref name="prefix"/> is <see langword="null"/>.</para>
+    /// </exception>
+    [NotNull]
+    [Pure]
+    public static string TrimPrefix([NotNull] this string value, [NotNull] string prefix, StringComparison comparison)
+    {
+        if (value is null)
+        {
+            throw new ArgumentNullException(nameof(value));
+        }
+
+        if (prefix is null)
+        {
+            throw new ArgumentNullException(nameof(prefix));
+        }
+
+        return !prefix.IsNullOrEmpty() && value.StartsWith(prefix, comparison) ? value.Substring(prefix.Length) : value;
+    }
+
+    /// <summary>
+    ///     Removes the postfix from the specified string value.
+    /// </summary>
+    /// <param name="value">
+    ///     The string value to remove the postfix from.
+    /// </param>
+    /// <param name="postfix">
+    ///     The postfix to remove from <paramref name="value"/>.
+    /// </param>
+    /// <param name="comparison">
+    ///     One of the enumeration values that determines how the postfix is searched.
+    /// </param>
+    /// <returns>
+    ///     The specified string value without the specified postfix if it ends with this postfix; otherwise, the original string value.
+    /// </returns>
+    /// <exception cref="ArgumentNullException">
+    ///     <para><paramref name="value"/> is <see langword="null"/>.</para>
+    ///     -or-
+    ///     <para><paramref name="postfix"/> is <see langword="null"/>.</para>
+    /// </exception>
+    [NotNull]
+    [Pure]
+    public static string TrimPostfix([NotNull] this string value, [NotNull] string postfix, StringComparison comparison)
+    {
+        if (value is null)
+        {
+            throw new ArgumentNullException(nameof(value));
+        }
+
+        if (postfix is null)
+        {
+            throw new ArgumentNullException(nameof(postfix));
+        }
+
+        return !postfix.IsNullOrEmpty() && value.EndsWith(postfix, comparison) ? value.Substring(0, value.Length - postfix.Length) : value;
+    }
+
+    /// <summary>
     ///     Shortens the specified <see cref="System.String"/> value if its length exceeds the specified length.
     /// </summary>
     /// <param name="value">
