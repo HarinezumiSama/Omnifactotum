@@ -1,8 +1,122 @@
-﻿### Changes in 0.8.0 (since 0.7.0)
+﻿### Changes in 0.9.0 (since 0.8.0)
+
+#### Breaking Changes
+
+- `ByReferenceEqualityComparer<T>` class: Enforced the `class` constraint on `T`
+- `DirectedGraphNode<T>`: Removed the parameterless constructor overload and applied the corresponding default value in the remaining constructor
+- `EnumFixedSizeDictionaryDeterminant<TKey>`: The `Size` property became `protected` as per inheritance (used to be `public`)
+- `EnumFixedSizeDictionary<TKey, TValue, TDeterminant>`: The constructor previously accepting `IDictionary<TKey, TValue>` now accepts `IEnumerable<KeyValuePair<TKey, TValue>>` (as per inheritance)
+- `FixedSizeDictionary<TKey, TValue, TDeterminant>` and `EnumFixedSizeDictionary<TKey, TValue>` now implement `IReadOnlyDictionary<TKey, TValue>`
+- `Factotum.ProcessRecursively<T>()` method: Removed overloads not having the `RecursiveProcessingContext<T>` parameter and applied the default value for this parameter in the other overloads
+- `FixedSizeDictionaryDeterminant<TKey>`: The `Size` property became `protected` (used to be `public`)
+- `FixedSizeDictionary<TKey, TValue, TDeterminant>`: The constructor previously accepting `IDictionary<TKey, TValue>` now accepts `IEnumerable<KeyValuePair<TKey, TValue>>`
+- `KeyedEqualityComparer<T, TKey>`: Removed the constructor without the key comparer parameter and applied the default value to the key comparer parameter in the remaining constructor
+- `OmnifactotumDateTimeExtensions`: Added the `valueExpression` parameter to the `EnsureKind()`, `EnsureUtc()`, and `EnsureLocal()` methods
+  - For .NET 5+ and higher, the `valueExpression` parameter is marked with `CallerArgumentExpression`
+  - For older .NET versions, the `valueExpression` parameter is supplied only for binary compatibility between the different target frameworks
+- `OmnifactotumEnumExtensions`: Made methods generic and enforced the `Enum` constraint on:
+  - `GetName()`
+  - `GetQualifiedName()`
+  - `GetFullName()`
+  - `IsDefined()`
+  - `EnsureDefined()`
+  - `CreateEnumValueNotImplementedException()`
+  - `CreateEnumValueNotSupportedException()`
+- `OmnifactotumEnumExtensions`: Added the `enumerationValueExpression` parameter to the `EnsureDefined<TEnum>()` method
+  - For .NET 5+ and higher, the `enumerationValueExpression` parameter is marked with `CallerArgumentExpression`
+  - For older .NET versions, the `enumerationValueExpression` parameter is supplied only for binary compatibility between the different target frameworks
+- `OmnifactotumGenericObjectExtensions`: Removed the `ToPropertyString<T>()` methods
+- `OmnifactotumGenericObjectExtensions`: Added the `valueExpression` parameter to the `EnsureNotNull<T>()` methods
+  - For .NET 5+ and higher, the `valueExpression` parameter is marked with `CallerArgumentExpression`
+  - For older .NET versions, the `valueExpression` parameter is supplied only for binary compatibility between the different target frameworks
+- `OmnifactotumUriExtensions`: Added the `valueExpression` parameter to the `EnsureAbsoluteUri()` and `EnsureWebUri()` methods
+  - For .NET 5+ and higher, the `valueExpression` parameter is marked with `CallerArgumentExpression`
+    - For older .NET versions, the `valueExpression` parameter is supplied only for binary compatibility between the different target frameworks
+- `RecursiveProcessingContext<T>` class: Removed the parameterless constructor and applied the default value for the parameter in the parameterized constructor
+- `SyncValueContainer<T>`: Removed parameterless constructor
+- **Validation** types: Marked Validation attributes non-CLS compliant (as per compiler warnings)
+  - `BaseValidatableMemberAttribute`
+  - `ValidatableMemberAttribute`
+  - `BaseMemberConstraintAttribute`
+  - `MemberConstraintAttribute`
+  - `MemberItemConstraintAttribute`
+- `ValueContainer<T>`: Removed parameterless constructor
+-`VirtualTreeNode.Create<T>` method: Added optional parameter `IReadOnlyCollection<VirtualTreeNode<T>>? children`
+- `VirtualTreeNode<T>`: Replaced all constructors with single `VirtualTreeNode(T value, IReadOnlyCollection<VirtualTreeNode<T>>? children = null)`
+- `VirtualTreeNodeBase<T>`: Redesigned constructors and made the remaining constructor non visible outside assembly (`private protected`)
+- `VirtualTreeNodeRoot<T>`: Replaced all constructors with single `VirtualTreeNodeRoot(IReadOnlyCollection<VirtualTreeNode<T>>? children = null)`
+- `WeakReferenceBasedCache<TKey, TValue>`
+  - Applied the `notnull` constraint on the `TKey` type parameter
+  - Removed the constructor overload without the `IEqualityComparer<TKey>? keyEqualityComparer` parameter and applied the corresponding default value in the remaining constructor
+
+#### New features
+
+- Added support of **.NET 6**
+- Enabled **Nullable Reference Types** for all the types across the entire project (except `Omnifactotum.Annotations.*`)
+- `ComparableObjectBase`: Implemented `IComparable`
+- `OmnifactotumCollectionExtensions`: Added the `Chunk<TSource>(this IEnumerable<TSource> source, int size)` extension method to use with .NET versions prior to 6.0
+- Added `OmnifactotumNullableEnumExtensions`:
+  - `CreateEnumValueNotImplementedException<TEnum>()`
+  - `CreateEnumValueNotSupportedException<TEnum>()`
+- `OmnifactotumStringExtensions`:
+  - Added the `TrimPostfix()` method
+  - Added the `TrimPrefix()` method
+- Added `VirtualTreeNodeRoot` static helper class
+- **Validation**:
+  - Added `EnumValueDefinedConstraint<TEnum>` constraint
+  - Added `NullableEnumValueDefinedConstraint<TEnum>` constraint
+
+#### Minor updates and fixes
+
+- Applied `AggressiveInlining` (or `AggressiveInlining` and `AggressiveOptimization`), where appropriate, in:
+  - `ComparableObjectBase`
+  - `DirectedGraphNode`
+  - `EquatableObjectBase`
+  - `KeyedEqualityComparer`
+  - `OmnifactotumDateTimeExtensions`
+  - `OmnifactotumDisposableExtensions`
+  - `OmnifactotumEnumExtensions`
+  - `OmnifactotumHashCodeHelper`
+  - `OmnifactotumMathExtensions`
+  - `OmnifactotumMethodBaseExtensions`
+  - `OmnifactotumNullableBooleanExtensions`
+  - `OmnifactotumOperationContextExtensions`
+  - `OmnifactotumSetExtensions`
+  - `OmnifactotumTypeExtensions`
+  - `OmnifactotumUriExtensions`
+  - `ValueRange`
+  - `ValueRange<T>`
+- Improved annotations in:
+  - `ComparableValueCapsule<T>`
+  - `EnumFactotum`
+  - `EquatableValueCapsule<T>`
+  - `Factotum`
+  - `OmnifactotumArrayExtensions`
+  - `OmnifactotumDictionaryExtensions`
+  - `OmnifactotumEnumExtensions`
+  - `OmnifactotumExpressionExtensions`
+  - `OmnifactotumHashCodeHelper`
+  - `OmnifactotumMathExtensions`
+  - `OmnifactotumMethodBaseExtensions`
+  - `OmnifactotumNullableBooleanExtensions`
+  - `OmnifactotumOperationContextExtensions`
+  - `OmnifactotumTypeExtensions`
+  - `ReadOnlySet<T>`
+  - `ValueRange`
+  - `ValueRange<T>`
+- Minor optimizations in
+  - `Factotum.SetDefaultValues<T>()`
+  - `OmnifactotumAssemblyExtensions.GetLocalPath()`
+
+---
+
+### Changes in 0.8.0 (since 0.7.0)
 
 #### New features
 
 - Added `TemplatedStringResolver` (a templated string is defined in a way similar to C# interpolated string)
+
+---
 
 ### Changes in 0.7.0 (since 0.6.0)
 
@@ -59,6 +173,8 @@
 - Improvements in `OmnifactotumDictionaryExtensions`:
   - Using Nullable Reference Types (where applicable)
   - Applied `AggressiveInlining` (where applicable)
+
+---
 
 ### Changes in 0.6.0 (since 0.5.0)
 
@@ -170,6 +286,8 @@
   - `OmnifactotumGenericObjectExtensions`
   - `OmnifactotumCollectionExtensions`
 
+---
+
 ### Changes in 0.5.0 (since 0.4.1)
 
 #### Breaking Changes
@@ -212,6 +330,8 @@
   - Forwarding `CreateEmptyCompletedTask()` to `Task.CompletedTask` (except for NET 4.0)
   - Forwarding `CreateEmptyFaultedTask(Exception)` to `Task.FromException(Exception)` (except for NET 4.0)
 
+---
+
 ### Changes in 0.4.1 (since 0.4.0)
 
 - Added the `Factotum.For<TObject>.Identity` method (same as `Factotum.Identity<T>`)
@@ -219,6 +339,8 @@
 - Using the `Deterministic` build option
 - Using Portable PDBs
 - Using `snupkg` format of the symbol package
+
+---
 
 ### Changes in 0.4.0 (since 0.3.0.119)
 
@@ -274,11 +396,17 @@
 - `OmnifactotumTypeExtensions`
 - Updated JetBrains Annotations in `Omnifactotum.Annotations`
 
+---
+
 ### Changes in 0.3.0.119 (since 0.3.0.117)
 - Omnifactotum: Removed NuGet dependency to the `MSBuildTasks` package since it is only used for development
 
+---
+
 ### Changes in 0.3.0.117 (since 0.3.0.114)
 - Omnifactotum: `Factotum` and `Factotum.For<TObject>`: Improved annotations
+
+---
 
 ### Changes in 0.3.0.114 (since 0.3.0.101)
 - `OmnifactotumAssemblyExtensions`: Improvements
@@ -290,6 +418,8 @@
 - Improved annotations in Object Validator and related classes
 - Minor improvements
 
+---
+
 ### Changes in 0.3.0.101 (since 0.3.0.90)
 - `KeyedEqualityComparer<T, TKey>`: Fixes and improvements
 - `KeyedEqualityComparer` static helper class has been introduced
@@ -300,8 +430,12 @@
 - Improvements and fixes in `OmnifactotumMethodBaseExtensions` and `OmnifactotumTypeExtensions`
 - `OmnifactotumStringExtensions`: `TrimSafely`, `TrimStartSafely`, `TrimEndSafely` and `Shorten` methods now never return null
 
+---
+
 ### Changes in 0.3.0.90 (since 0.3.0.86)
 - **BREAKING CHANGE** `OmnifactotumCustomAttributeProviderExtensions`: `GetCustomAttributes` has been renamed to `GetCustomAttributeArray` (for compatibility with FW 4.5+)
+
+---
 
 ### Changes in 0.3.0.86 (since 0.3.0.83)
 - **BREAKING CHANGE** `OmnifactotumDictionaryExtensions`: The method `GetValueOrCreate` has been renamed to `GetOrCreateValue` for readability and in order to avoid confusion with `GetValueOrDefault`
@@ -314,19 +448,29 @@
     - `Sqrt` (square root)
     - `Abs` (absolute value)
 
+---
+
 ### Changes in 0.3.0.83 (since 0.3.0.82)
 - `FixedSizeDictionary`: Improved annotations
 - `FixedSizeDictionary`: Implemented version verification in the enumerator
 
+---
+
 ### Changes in 0.3.0.82 (since 0.3.0.80)
 - `FixedSizeDictionary`: Removed index verification in the internal determinant since this verification highly affected performance
+
+---
 
 ### Changes in 0.3.0.80 (since 0.3.0.79)
 - `EnumFixedSizeDictionary`: Fix in determining the size
 
+---
+
 ### Changes in 0.3.0.79 (since 0.3.0.74)
 - `FixedSizeDictionary` and `EnumFixedSizeDictionary` have been introduced.
 - Applied Omnifactotum Annotations to the `Factotum` and `OmnifactotumGenericObjectExtensions` classes.
+
+---
 
 ### Changes in 0.3.0.74 (since 0.2.0.59)
 - **BREAKING CHANGE** Object Validation: Redesign and support of `IEnumerable`.
