@@ -75,6 +75,54 @@ begin
     [ValidateNotNullOrEmpty()] [string] $workspaceRootDirectoryPath = $PSScriptRoot
     [string] $solutionFilePattern = '*.sln'
     [string] $buildPropsFilePattern = 'Directory.Build.props'
+    [string] $projectPlatform = 'AnyCPU'
+
+    class FileXmlData
+    {
+        [string] $FilePath
+        [xml] $Document
+
+        FileXmlData([string] $filePath)
+        {
+            if ([string]::IsNullOrWhiteSpace($filePath))
+            {
+                throw [ArgumentException]::new('The file path cannot be blank.', 'filePath')
+            }
+
+            [xml] $xmlDocument = [xml]::new()
+            $xmlDocument.Load($filePath) | Out-Null
+
+            $this.FilePath = $filePath
+            $this.Document = $xmlDocument
+        }
+
+        [string] GetSingleNodeText([string] $xPath)
+        {
+            if ([string]::IsNullOrWhiteSpace($xPath))
+            {
+                throw [ArgumentException]::new('The XPath cannot be blank.', 'xPath')
+            }
+
+            [XmlElement[]] $elements = @($this.Document.SelectNodes($xPath))
+            if ($elements.Count -ne 1)
+            {
+                throw "There must be exactly one element matching XPath ""$xPath"" in ""$($this.FilePath)"", but found: $($elements.Count)."
+            }
+
+            [XmlElement] $element = $elements[0]
+            return $element.InnerText
+        }
+
+        [string] GetProjectPropertyText([string] $propertyName)
+        {
+            if ([string]::IsNullOrWhiteSpace($propertyName))
+            {
+                throw [ArgumentException]::new('The property name cannot be blank.', 'propertyName')
+            }
+
+            return $this.GetSingleNodeText("/Project/PropertyGroup/$propertyName")
+        }
+    }
 
     function Get-ErrorDetails([ValidateNotNull()] [System.Management.Automation.ErrorRecord] $errorRecord = $_)
     {
@@ -293,8 +341,7 @@ begin
 
             if ($allFoundFilePaths.Count -ne 1)
             {
-                throw ("There must be exactly one file matching ""$Pattern"" within ""$workspaceRootDirectoryPath""" `
-                    + ", but found: $($allFoundFilePaths.Count).")
+                throw "There must be exactly one file matching ""$Pattern"" within ""$workspaceRootDirectoryPath"", but found: $($allFoundFilePaths.Count)."
             }
 
             return $allFoundFilePaths[0]
@@ -423,24 +470,60 @@ process
             $sevenZipExecutablePath = Get-ApplicationPath -Verbose -Name '7z.exe'
         }
 
+        function Execute-SevenZip
+        {
+            [CmdletBinding(PositionalBinding = $false)]
+            param
+            (
+                [Parameter()]
+                [ValidateNotNullOrEmpty()]
+                [string] $Description = $([ArgumentNullException]::new('Description')),
+
+                [Parameter()]
+                [ValidateNotNullOrEmpty()]
+                [string] $ArchiveFilePath = $([ArgumentNullException]::new('ArchiveFilePath')),
+
+                [Parameter(ValueFromRemainingArguments = $true)]
+                [ValidateNotNullOrEmpty()]
+                [string[]] $Items = $([ArgumentNullException]::new('Items'))
+            )
+            process
+            {
+                if ([string]::IsNullOrWhiteSpace($sevenZipExecutablePath))
+                {
+                    throw '7-Zip executable path is not assigned.'
+                }
+
+                [string[]] $processedItems = @($Items | % { """$_""" })
+
+                Execute-Command `
+                    -Verbose `
+                    -Title "* 7-Zip: Archive $Description" `
+                    -Command $sevenZipExecutablePath `
+                    -CommandArguments `
+                        (
+                            @(
+                                'a'
+                                '-y'
+                                '-tzip'
+                                '-r'
+                                '-mx1'
+                                '-bd'
+                                """$ArchiveFilePath"""
+                                '--'
+                            ) `
+                            + $processedItems
+                        )
+            }
+        }
+
         [ValidateNotNullOrEmpty()] [string] $solutionFilePath = $solutionFilePattern | Find-SingleFileInWorkspace
         [ValidateNotNullOrEmpty()] [string] $solutionDirectoryPath = [Path]::GetDirectoryName($solutionFilePath)
         [ValidateNotNullOrEmpty()] [string] $solutionNameOnly = [Path]::GetFileNameWithoutExtension($solutionFilePath)
 
         [ValidateNotNullOrEmpty()] [string] $buildPropsFilePath = $buildPropsFilePattern | Find-SingleFileInWorkspace
-        [xml] $buildPropsFileXml = [xml](Get-Content -Raw -LiteralPath $buildPropsFilePath)
-
-        [string] $versionElementPath = '/Project/PropertyGroup/Version'
-
-        [XmlElement[]] $versionElements = @($buildPropsFileXml.SelectNodes($versionElementPath))
-        if ($versionElements.Count -ne 1)
-        {
-            throw ("There must be exactly one element matching XPath ""$versionElementPath"" in ""$buildPropsFilePath""" `
-                + ", but found: $($versionElements.Count).")
-        }
-
-        [XmlElement] $versionElement = $versionElements[0]
-        [string] $versionString = $versionElement.InnerText
+        [FileXmlData] $buildPropsFileXmlData = [FileXmlData]::new($buildPropsFilePath)
+        [string] $versionString = $buildPropsFileXmlData.GetProjectPropertyText('Version')
 
         [version] $version = $null
         if (![version]::TryParse($versionString, [ref] $version) -or $version.Revision -ge 0)
@@ -490,6 +573,18 @@ process
             Set-AppveyorBuildVariable `
                 -Name $AppveyorDeploymentVersionVariableName `
                 -Value "v$version [build $resolvedBuildNumber] [$dateStamp]"
+        }
+
+        [ValidateNotNullOrEmpty()] [string] $testProjectFileNameOnly = "$solutionNameOnly.Tests"
+        [ValidateNotNullOrEmpty()] [string] $testProjectFilePath = [Path]::Combine($solutionDirectoryPath, $testProjectFileNameOnly, "$testProjectFileNameOnly.csproj")
+
+        [FileXmlData] $testProjectFileXmlData = [FileXmlData]::new($testProjectFilePath)
+        [string] $targetFrameworksString = $testProjectFileXmlData.GetProjectPropertyText('TargetFrameworks')
+
+        [string[]] $testFrameworks = $targetFrameworksString -csplit ';'
+        if ($testFrameworks.Count -eq 0)
+        {
+            throw "No target frameworks defined in ""$testProjectFilePath"" at ""$targetFrameworksElementPath""."
         }
 
         [string] $temporaryDirectoryPath = [Path]::GetFullPath([Path]::Combine($PSScriptRoot, '.temp'))
@@ -606,30 +701,21 @@ process
 
         Execute-DotNetCli build @dotNetBuildCommandArguments
 
+        [string] $archiveVersionSuffix = $null
         if ($AppveyorBuild)
         {
-            [string] $archiveVersionSuffix = "-v$($version).$($resolvedBuildNumber)$($PrereleaseSuffix).rev-$($shortRevisionId)"
-            [string] $binariesDirectoryPath = $AppveyorBinariesSubdirectory | Resolve-WorkspacePath
-            [string] $binariesArchiveFilePath = "$resolvedArtifactsDirectoryPath\$($solutionNameOnly).bin$($archiveVersionSuffix).zip"
+            $archiveVersionSuffix = "-v$($version).$($resolvedBuildNumber)$($PrereleaseSuffix).rev-$($shortRevisionId)"
+
+            [string] $binariesBaseDirectoryPath = $AppveyorBinariesSubdirectory | Resolve-WorkspacePath
+            [string] $binariesDirectoryPath = [Path]::Combine($binariesBaseDirectoryPath, $projectPlatform, $BuildConfiguration)
+            [string] $binariesArchiveFilePath = "$resolvedArtifactsDirectoryPath\$($solutionNameOnly).Binaries$($archiveVersionSuffix).zip"
 
             Write-MajorSeparator
 
-            Execute-Command `
-                -Verbose `
-                -Title '* Archive binaries' `
-                -Command $sevenZipExecutablePath `
-                -CommandArguments `
-                    @(
-                        'a'
-                        '-y'
-                        '-tzip'
-                        '-r'
-                        '-mx1'
-                        '-bd'
-                        """$binariesArchiveFilePath"""
-                        '--'
-                        """$binariesDirectoryPath\*.*"""
-                    )
+            Execute-SevenZip `
+                -Description 'Binaries' `
+                -ArchiveFilePath $binariesArchiveFilePath `
+                -Items "$binariesDirectoryPath\*.*"
 
             [string] $packageId = $solutionNameOnly.ToLowerInvariant()
 
@@ -676,8 +762,7 @@ process
             }
         }
 
-        # TODO: Autodiscover from the *.Tests project(s)
-        [string[]] $testFrameworks = @('net461', 'net472', 'netcoreapp2.1', 'netcoreapp3.1', 'net5.0', 'net6.0')
+        [string] $snapshotFileBaseName = "$([Path]::GetFileNameWithoutExtension($solutionFilePath)).CoverageResult"
 
         foreach ($testFramework in $testFrameworks)
         {
@@ -718,8 +803,6 @@ process
                     Execute-Command -Title 'Install dotCover CLI' $chocolateyExecutablePath install --yes --no-progress dotcover-cli
                     $dotCoverExecutablePath = Get-ApplicationPath -Verbose -Name $dotCoverExecutableName
                 }
-
-                [string] $snapshotFileBaseName = "$([Path]::GetFileNameWithoutExtension($solutionFilePath)).CoverageResult"
 
                 $coverageSnapshotFilePath = [Path]::Combine(
                     $coverageOutputDirectoryPath,
@@ -826,6 +909,35 @@ process
         }
 
         Write-MajorSeparator
+
+        if ($AppveyorBuild)
+        {
+            [string] $testResultsSubdirectory = $buildPropsFileXmlData.GetProjectPropertyText('__TestResultsSubdirectory')
+
+            [string] $binariesDirectoryPath = $AppveyorBinariesSubdirectory | Resolve-WorkspacePath
+            [string] $testResultsDirectoryPath = [Path]::Combine($binariesDirectoryPath, $projectPlatform, $BuildConfiguration, $testProjectFileNameOnly, $testResultsSubdirectory)
+            [string] $testResultsArchiveFilePath = "$resolvedArtifactsDirectoryPath\$($solutionNameOnly).$($testResultsSubdirectory)$($archiveVersionSuffix).zip"
+
+            Execute-SevenZip `
+                -Description 'Test Results' `
+                -ArchiveFilePath $testResultsArchiveFilePath `
+                -Items "$testResultsDirectoryPath\*.*"
+
+            Write-MajorSeparator
+
+            if ($EnableDotCover)
+            {
+                [string] $coverageResultDirectoryPath = [Path]::Combine($coverageOutputDirectoryPath, $snapshotFileBaseName)
+                [string] $coverageResultArchiveFilePath = "$resolvedArtifactsDirectoryPath\$($snapshotFileBaseName)$($archiveVersionSuffix).zip"
+
+                Execute-SevenZip `
+                    -Description 'Coverage Results' `
+                    -ArchiveFilePath $coverageResultArchiveFilePath `
+                    -Items "$coverageResultDirectoryPath\*.*"
+
+                Write-MajorSeparator
+            }
+        }
     }
     catch
     {

@@ -66,12 +66,13 @@
     </PropertyGroup>
 
     <PropertyGroup>
+        <__TestResultsSubdirectory>TestResults</__TestResultsSubdirectory>
         <__RootSolutionOutputPathBase>$(SolutionDir)\.out</__RootSolutionOutputPathBase>
         <__RootSolutionOutputPath>$([System.IO.Path]::GetFullPath($(__RootSolutionOutputPathBase)))</__RootSolutionOutputPath>
         <OutputPath>$(__RootSolutionOutputPath)\bin\$(Platform)\$(Configuration)\$(MSBuildProjectName)\</OutputPath>
         <BaseIntermediateOutputPath>$(__RootSolutionOutputPath)\obj\$(MSBuildProjectName)\</BaseIntermediateOutputPath>
         <PackageOutputPath>$(__RootSolutionOutputPath)\NuGet\</PackageOutputPath>
-        <VSTestResultsDirectory>$(OutputPath)TestResults</VSTestResultsDirectory>
+        <VSTestResultsDirectory>$(OutputPath)$(__TestResultsSubdirectory)</VSTestResultsDirectory>
     </PropertyGroup>
 
     <Target Name="CleanTestResults" AfterTargets="Clean">
