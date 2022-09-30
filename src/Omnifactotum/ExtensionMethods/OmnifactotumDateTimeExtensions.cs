@@ -191,7 +191,6 @@ public static class OmnifactotumDateTimeExtensions
         throw new ArgumentException(
             AsInvariant($@"The specified {nameof(DateTime)} value must be of the {requiredKind} kind, but is {value.Kind}.{details}"),
             nameof(value));
-
     }
 
     /// <summary>
@@ -245,4 +244,23 @@ public static class OmnifactotumDateTimeExtensions
 #endif
         string? valueExpression = null)
         => value.EnsureKind(DateTimeKind.Local, valueExpression);
+
+    /// <summary>
+    ///     Creates a new <see cref="DateTime"/> value that has the same number of ticks as the specified <see cref="DateTime"/> value, but is designated
+    ///     as either local time, Coordinated Universal Time (UTC), or neither, as indicated by the specified <see cref="DateTimeKind"/> value.
+    /// </summary>
+    /// <param name="value">
+    ///     A date and time value to create a new value with a specified kind from.
+    /// </param>
+    /// <param name="kind">
+    ///     One of the enumeration values that indicates whether the new value represents local time, UTC, or neither.
+    /// </param>
+    /// <returns>
+    ///     A new <see cref="DateTime"/> value that has the same number of ticks as the value represented by the <paramref name="value"/> parameter and
+    ///     the <see cref="DateTimeKind"/> value specified by the <paramref name="kind"/> parameter.
+    /// </returns>
+    [Pure]
+    [Omnifactotum.Annotations.Pure]
+    [MethodImpl(OmnifactotumConstants.MethodOptimizationOptions.Maximum)]
+    public static DateTime AsKind(this DateTime value, DateTimeKind kind) => DateTime.SpecifyKind(value, kind);
 }

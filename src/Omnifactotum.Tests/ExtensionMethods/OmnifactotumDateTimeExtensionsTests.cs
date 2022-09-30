@@ -108,4 +108,13 @@ internal sealed class OmnifactotumDateTimeExtensionsTests
                     $@"The specified DateTime value must be of the {RequiredKind} kind, but is {value.Kind}.{ErrorDetails}{
                         LocalFactotum.GetArgumentExceptionParameterDetails("value")}"));
     }
+
+    [Test]
+    public void TestAsKind([Values] DateTimeKind sourceKind, [Values] DateTimeKind targetKind)
+    {
+        var inputValue = new DateTime(2022, 3, 5, 11, 13, 17, 997, sourceKind);
+        var outputValue = inputValue.AsKind(targetKind);
+        Assert.That(outputValue.Ticks, Is.EqualTo(inputValue.Ticks));
+        Assert.That(outputValue.Kind, Is.EqualTo(targetKind));
+    }
 }
