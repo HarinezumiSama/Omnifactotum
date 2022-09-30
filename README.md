@@ -66,6 +66,7 @@ Provides own **helper** and **functional** classes and interfaces as well as **e
 ### The *non-exhaustive* list of own functional classes
 
 - `ByReferenceEqualityComparer<T>`
+- `CaseInsensitiveStringKey`
 - `ColoredConsoleTraceListener`
 - `DirectedGraph<T>` and `DirectedGraphNode<T>`
 - `EnumFixedSizeDictionary<TKey, TValue>`

@@ -1,4 +1,11 @@
-﻿### Changes in 0.9.0 (since 0.8.0)
+﻿### Changes in 0.10.0 (since 0.9.0)
+
+#### New features
+
+- Added the `CaseInsensitiveStringKey` structure
+- `OmnifactotumDateTimeExtensions`: Added the `AsKind(this DateTime, DateTimeKind)` extension method
+
+### Changes in 0.9.0 (since 0.8.0)
 
 #### Breaking Changes
 
