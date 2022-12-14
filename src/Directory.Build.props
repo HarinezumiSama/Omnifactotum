@@ -8,7 +8,7 @@
 
     <PropertyGroup>
         <VersionSuffix>-debug</VersionSuffix>
-        <BuildDateYear>$([System.String]::Format("{0:yyyy}", $([System.DateTime]::Now)))</BuildDateYear>
+        <BuildDateYear>$([System.String]::Format("{0:yyyy}", $([System.DateTime]::UtcNow)))</BuildDateYear>
         <ReleaseNotesFilePath>$(SolutionDir)$(SolutionName).ReleaseNotes.md</ReleaseNotesFilePath>
         <PackageReleaseNotes>N/A</PackageReleaseNotes>
         <IsAppveyorBuild>false</IsAppveyorBuild>
@@ -21,6 +21,12 @@
 
         <Error Condition="'$(SolutionDir)' == '' Or '$(SolutionName)' == '' Or '$(SolutionDir)' == '*Undefined*' Or '$(SolutionName)' == '*Undefined*'"
                 Text="[$(MSBuildProjectName):$(TargetFramework):$(Configuration):$(Platform)] Individual projects cannot be built. Please build the entire solution." />
+    </Target>
+
+    <Target Name="PrintBuildPropertiesBeforeBuild" BeforeTargets="Build">
+        <Message
+                Text="AssemblyVersion = &quot;$(AssemblyVersion)&quot;, PackageVersion = &quot;$(PackageVersion)&quot;, InformationalVersion = &quot;$(InformationalVersion)&quot;"
+                Importance="high" />
     </Target>
 
     <PropertyGroup>
