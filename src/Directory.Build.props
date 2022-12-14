@@ -61,6 +61,7 @@
         <IncludeSource>true</IncludeSource>
         <SymbolPackageFormat>snupkg</SymbolPackageFormat>
         <EnablePackageValidation>false</EnablePackageValidation>
+        <MinClientVersion>5.4.0</MinClientVersion>
         <EnableStrictModeForCompatibleTfms>true</EnableStrictModeForCompatibleTfms>
         <EnableStrictModeForCompatibleFrameworksInPackage>false</EnableStrictModeForCompatibleFrameworksInPackage>
     </PropertyGroup>
