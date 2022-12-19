@@ -236,7 +236,7 @@ internal sealed class OmnifactotumCollectionExtensionsTests
 
     [Test]
     [TestCaseSource(typeof(ToUIStringForStringCollectionTestCases))]
-    public void TestToUIStringForStringCollection(string[] values, string expectedResult)
+    public void TestToUIStringForStringCollection(string?[] values, string expectedResult)
     {
         var actualResult = values.ToUIString();
         Assert.That(actualResult, Is.EqualTo(expectedResult));

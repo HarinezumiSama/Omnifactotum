@@ -569,9 +569,10 @@ public static class OmnifactotumCollectionExtensions
     public static HashSet<T> ToHashSet<T>(
         [NotNull] [InstantHandle]
 #if NETFRAMEWORK && !NET472_OR_GREATER
-        this
+        this IEnumerable<T> collection,
+#else
+        IEnumerable<T> collection,
 #endif
-            IEnumerable<T> collection,
         [CanBeNull] IEqualityComparer<T>? comparer)
         => collection is null ? throw new ArgumentNullException(nameof(collection)) : new HashSet<T>(collection, comparer);
 
@@ -594,10 +595,11 @@ public static class OmnifactotumCollectionExtensions
     public static HashSet<T> ToHashSet<T>(
         [NotNull] [InstantHandle]
 #if NETFRAMEWORK && !NET472_OR_GREATER
-        this
+        this IEnumerable<T> collection
+#else
+        IEnumerable<T> collection
 #endif
-            IEnumerable<T> collection)
-        => collection is null ? throw new ArgumentNullException(nameof(collection)) : new HashSet<T>(collection);
+    ) => collection is null ? throw new ArgumentNullException(nameof(collection)) : new HashSet<T>(collection);
 
     /// <summary>
     ///     Gets an object that can be used to synchronize access to the specified collection.
@@ -653,7 +655,8 @@ public static class OmnifactotumCollectionExtensions
     /// ]]>
     ///     </code>
     /// </example>
-    public static string ToUIString([CanBeNull] [InstantHandle] this IEnumerable<string>? values)
+    [NotNull]
+    public static string ToUIString([CanBeNull] [InstantHandle] this IEnumerable<string?>? values)
         => values?.Select(value => value.ToUIString()).Join(OmnifactotumRepresentationConstants.CollectionItemSeparator)
             ?? OmnifactotumRepresentationConstants.NullCollectionRepresentation;
 
@@ -701,6 +704,7 @@ public static class OmnifactotumCollectionExtensions
     /// ]]>
     ///     </code>
     /// </example>
+    [NotNull]
     public static string ToUIString<T>([CanBeNull] [InstantHandle] this IEnumerable<T?>? values)
         where T : struct
         => values?.Select(value => value.ToUIString()).Join(OmnifactotumRepresentationConstants.CollectionItemSeparator)
@@ -745,6 +749,7 @@ public static class OmnifactotumCollectionExtensions
     /// <returns>
     ///     The UI representation of the specified collection of nullable values.
     /// </returns>
+    [NotNull]
     public static string ToUIString<T>(
         [CanBeNull] [InstantHandle] this IEnumerable<T?>? values,
         [CanBeNull] string? format,
@@ -789,6 +794,7 @@ public static class OmnifactotumCollectionExtensions
     /// <returns>
     ///     The UI representation of the specified collection of nullable values.
     /// </returns>
+    [NotNull]
     public static string ToUIString<T>(
         [CanBeNull] [InstantHandle] this IEnumerable<T?>? values,
         [CanBeNull] IFormatProvider? formatProvider)
