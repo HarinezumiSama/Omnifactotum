@@ -21,6 +21,10 @@ public static class OmnifactotumNullableEnumExtensions
     /// <param name="enumerationValue">
     ///     The enumeration value to create an exception for.
     /// </param>
+    /// <param name="enumerationValueExpression">
+    ///     <para>A string value representing the expression passed as the value of the <paramref name="enumerationValue"/> parameter.</para>
+    ///     <para><b>NOTE</b>: Do not pass a value for this parameter as it is automatically injected by the compiler (.NET 5+ and C# 10+).</para>
+    /// </param>
     /// <returns>
     ///     A <see cref="System.NotImplementedException"/> with the descriptive message regarding
     ///     the specified enumeration value.
@@ -28,9 +32,18 @@ public static class OmnifactotumNullableEnumExtensions
     [Pure]
     [Omnifactotum.Annotations.Pure]
     [MethodImpl(OmnifactotumConstants.MethodOptimizationOptions.Standard)]
-    public static NotImplementedException CreateEnumValueNotImplementedException<TEnum>(this TEnum? enumerationValue)
+    public static NotImplementedException CreateEnumValueNotImplementedException<TEnum>(
+        this TEnum? enumerationValue,
+#if NET5_0_OR_GREATER
+        [CallerArgumentExpression("enumerationValue")]
+#endif
+        string? enumerationValueExpression = null)
         where TEnum : struct, Enum
-        => new(AsInvariant($@"The operation for {enumerationValue.InternalGetDescription()} is not implemented."));
+    {
+        var details = Factotum.GetDefaultCallerArgumentExpressionDetails(enumerationValueExpression);
+
+        return new NotImplementedException(AsInvariant($@"The operation for {enumerationValue.InternalGetDescription()} is not implemented.{details}"));
+    }
 
     /// <summary>
     ///     Creates a <see cref="System.NotSupportedException"/> with the descriptive message regarding
@@ -39,6 +52,10 @@ public static class OmnifactotumNullableEnumExtensions
     /// <param name="enumerationValue">
     ///     The enumeration value to create an exception for.
     /// </param>
+    /// <param name="enumerationValueExpression">
+    ///     <para>A string value representing the expression passed as the value of the <paramref name="enumerationValue"/> parameter.</para>
+    ///     <para><b>NOTE</b>: Do not pass a value for this parameter as it is automatically injected by the compiler (.NET 5+ and C# 10+).</para>
+    /// </param>
     /// <returns>
     ///     A <see cref="System.NotSupportedException"/> with the descriptive message regarding
     ///     the specified enumeration value.
@@ -46,9 +63,18 @@ public static class OmnifactotumNullableEnumExtensions
     [Pure]
     [Omnifactotum.Annotations.Pure]
     [MethodImpl(OmnifactotumConstants.MethodOptimizationOptions.Standard)]
-    public static NotSupportedException CreateEnumValueNotSupportedException<TEnum>(this TEnum? enumerationValue)
+    public static NotSupportedException CreateEnumValueNotSupportedException<TEnum>(
+        this TEnum? enumerationValue,
+#if NET5_0_OR_GREATER
+        [CallerArgumentExpression("enumerationValue")]
+#endif
+        string? enumerationValueExpression = null)
         where TEnum : struct, Enum
-        => new(AsInvariant($@"The operation for {enumerationValue.InternalGetDescription()} is not supported."));
+    {
+        var details = Factotum.GetDefaultCallerArgumentExpressionDetails(enumerationValueExpression);
+
+        return new NotSupportedException(AsInvariant($@"The operation for {enumerationValue.InternalGetDescription()} is not supported.{details}"));
+    }
 
     [Pure]
     [Omnifactotum.Annotations.Pure]
