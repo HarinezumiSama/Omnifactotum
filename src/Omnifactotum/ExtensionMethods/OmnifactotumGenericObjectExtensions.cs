@@ -44,12 +44,12 @@ public static class OmnifactotumGenericObjectExtensions
     ///     <paramref name="value"/> is <see langword="null"/>.
     /// </exception>
     [MethodImpl(OmnifactotumConstants.MethodOptimizationOptions.Maximum)]
-    [return: NotNullIfNotNull(@"value")]
-    [NotNull]
     [DebuggerStepThrough]
     [ContractAnnotation("value:null => stop; value:notnull => notnull", true)]
+    [NotNull]
+    [return: System.Diagnostics.CodeAnalysis.NotNull]
     public static T EnsureNotNull<T>(
-        [CanBeNull] this T? value,
+        [CanBeNull] [System.Diagnostics.CodeAnalysis.NotNull] this T? value,
 #if NET5_0_OR_GREATER
         [CallerArgumentExpression("value")]
 #endif
@@ -83,7 +83,7 @@ public static class OmnifactotumGenericObjectExtensions
     [MethodImpl(OmnifactotumConstants.MethodOptimizationOptions.Maximum)]
     [DebuggerStepThrough]
     public static T EnsureNotNull<T>(
-        [CanBeNull] this T? value,
+        [CanBeNull] [System.Diagnostics.CodeAnalysis.NotNull] this T? value,
 #if NET5_0_OR_GREATER
         [CallerArgumentExpression("value")]
 #endif

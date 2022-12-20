@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Linq.Expressions;
 using System.Reflection;
@@ -326,11 +327,12 @@ internal static class NUnitFactotum
     /// <exception cref="AssertionException">
     ///     <paramref name="value"/> is <see langword="null"/>.
     /// </exception>
-    [return: NotNullIfNotNull(@"value")]
-    [NotNull]
+    [DebuggerStepThrough]
     [ContractAnnotation("value:null => stop; value:notnull => notnull", true)]
+    [NotNull]
+    [return: System.Diagnostics.CodeAnalysis.NotNull]
     public static T AssertNotNull<T>(
-        [CanBeNull] this T? value,
+        [CanBeNull] [System.Diagnostics.CodeAnalysis.NotNull] this T? value,
 #if NETCOREAPP3_0_OR_GREATER
         [CallerArgumentExpression("value")]
 #endif
@@ -364,8 +366,9 @@ internal static class NUnitFactotum
     ///     <paramref name="value"/> is <see langword="null"/>, that is, its <see cref="Nullable{T}.HasValue"/> property is
     ///     <see langword="false"/>.
     /// </exception>
+    [DebuggerStepThrough]
     public static T AssertNotNull<T>(
-        [CanBeNull] this T? value,
+        [CanBeNull] [System.Diagnostics.CodeAnalysis.NotNull] this T? value,
 #if NETCOREAPP3_0_OR_GREATER
         [CallerArgumentExpression("value")]
 #endif

@@ -58,12 +58,12 @@ public static class OmnifactotumUriExtensions
     ///     The specified value is <see langword="null"/> or is not an absolute URI or it is not using a Web scheme, such as HTTP or HTTPS.
     /// </exception>
     //// ReSharper disable once RedundantNullableFlowAttribute
-    [return: NotNullIfNotNull(@"value")]
-    [NotNull]
     [DebuggerStepThrough]
     [ContractAnnotation("value:null => stop", true)]
+    [NotNull]
+    [return: System.Diagnostics.CodeAnalysis.NotNull]
     public static Uri EnsureWebUri(
-        [CanBeNull] this Uri? value,
+        [CanBeNull] [System.Diagnostics.CodeAnalysis.NotNull] this Uri? value,
 #if NET5_0_OR_GREATER
         [CallerArgumentExpression("value")]
 #endif
@@ -96,12 +96,12 @@ public static class OmnifactotumUriExtensions
     ///     The specified value is <see langword="null"/> or is not an absolute URI.
     /// </exception>
     //// ReSharper disable once RedundantNullableFlowAttribute
-    [return: NotNullIfNotNull(@"value")]
-    [NotNull]
     [DebuggerStepThrough]
     [ContractAnnotation("value:null => stop", true)]
+    [NotNull]
+    [return: System.Diagnostics.CodeAnalysis.NotNull]
     public static Uri EnsureAbsoluteUri(
-        [CanBeNull] this Uri? value,
+        [CanBeNull] [System.Diagnostics.CodeAnalysis.NotNull] this Uri? value,
 #if NET5_0_OR_GREATER
         [CallerArgumentExpression("value")]
 #endif

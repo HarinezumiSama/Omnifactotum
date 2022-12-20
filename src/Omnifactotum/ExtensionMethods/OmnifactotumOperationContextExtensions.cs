@@ -1,6 +1,5 @@
 ﻿#if NETFRAMEWORK
 
-using System.Diagnostics.CodeAnalysis;
 using System.IdentityModel.Claims;
 using System.Linq;
 using System.Runtime.CompilerServices;
@@ -8,6 +7,7 @@ using System.Security.Cryptography.X509Certificates;
 using Omnifactotum;
 using Omnifactotum.Annotations;
 
+//// ReSharper disable RedundantNullableFlowAttribute
 //// ReSharper disable RedundantNullnessAttributeWithNullableReferenceTypes
 //// ReSharper disable UseNullableReferenceTypesAnnotationSyntax
 
@@ -17,7 +17,7 @@ namespace System.ServiceModel;
 /// <summary>
 ///     Contains extension methods for <see cref="OperationContext"/> class.
 /// </summary>
-[ExcludeFromCodeCoverage]
+[System.Diagnostics.CodeAnalysis.ExcludeFromCodeCoverage]
 [PublicAPI]
 public static class OmnifactotumOperationContextExtensions
 {
@@ -36,6 +36,7 @@ public static class OmnifactotumOperationContextExtensions
         => operationContext.GetAllClientCertificates().FirstOrDefault();
 
     [NotNull]
+    [return: System.Diagnostics.CodeAnalysis.NotNull]
     private static X509Certificate2[] GetAllClientCertificates([CanBeNull] this OperationContext? operationContext)
         => operationContext?.ServiceSecurityContext?.AuthorizationContext?.ClaimSets?
                 .OfType<X509CertificateClaimSet>()

@@ -2,7 +2,6 @@
 
 using System;
 using System.Diagnostics;
-using System.Diagnostics.CodeAnalysis;
 using System.Globalization;
 using System.Reflection;
 using Omnifactotum.Annotations;
@@ -17,7 +16,7 @@ namespace Omnifactotum;
 /// <summary>
 ///     Provides the simple interface to write to the Windows <b>Event Log</b>.
 /// </summary>
-[ExcludeFromCodeCoverage]
+[System.Diagnostics.CodeAnalysis.ExcludeFromCodeCoverage]
 [PublicAPI]
 public static class WinEventLog
 {
