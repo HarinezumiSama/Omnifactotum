@@ -750,6 +750,9 @@ public static partial class Factotum
         }
     }
 
+    internal static string GetDefaultCallerArgumentExpressionDetails(string? valueExpression = null)
+        => valueExpression is null ? string.Empty : $"\x0020Expression: {{ {valueExpression} }}.";
+
     private static bool ProcessRecursivelyInternal<T>(
         T instance,
         [NotNull] [InstantHandle] Func<T, IEnumerable<T>> getItems,

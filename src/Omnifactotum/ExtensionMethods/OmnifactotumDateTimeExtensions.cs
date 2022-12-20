@@ -186,7 +186,7 @@ public static class OmnifactotumDateTimeExtensions
             return value;
         }
 
-        var details = valueExpression is null ? null : $"\x0020Expression: {{ {valueExpression} }}.";
+        var details = Factotum.GetDefaultCallerArgumentExpressionDetails(valueExpression);
 
         throw new ArgumentException(
             AsInvariant($@"The specified {nameof(DateTime)} value must be of the {requiredKind} kind, but is {value.Kind}.{details}"),

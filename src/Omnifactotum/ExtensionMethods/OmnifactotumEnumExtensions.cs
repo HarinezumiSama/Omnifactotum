@@ -257,7 +257,7 @@ public static class OmnifactotumEnumExtensions
             return;
         }
 
-        var details = enumerationValueExpression is null ? null : $"\x0020Expression: {{ {enumerationValueExpression} }}.";
+        var details = Factotum.GetDefaultCallerArgumentExpressionDetails(enumerationValueExpression);
 
         throw new InvalidEnumArgumentException(
             AsInvariant(

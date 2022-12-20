@@ -74,7 +74,7 @@ public static class OmnifactotumUriExtensions
             return value;
         }
 
-        var details = valueExpression is null ? null : $"\x0020Expression: {{ {valueExpression} }}.";
+        var details = Factotum.GetDefaultCallerArgumentExpressionDetails(valueExpression);
 
         throw new ArgumentException($@"{value.ToUIString()} is not an absolute URI using a Web scheme.{details}", nameof(value));
     }
@@ -112,7 +112,7 @@ public static class OmnifactotumUriExtensions
             return value;
         }
 
-        var details = valueExpression is null ? null : $"\x0020Expression: {{ {valueExpression} }}.";
+        var details = Factotum.GetDefaultCallerArgumentExpressionDetails(valueExpression);
 
         throw new ArgumentException($@"{value.ToUIString()} is not an absolute URI.{details}", nameof(value));
     }
