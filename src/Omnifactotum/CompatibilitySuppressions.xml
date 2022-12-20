@@ -1,9 +1,94 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
+<!--suppress XmlUnusedNamespaceDeclaration -->
 <Suppressions xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
     <Suppression>
         <DiagnosticId>CP0002</DiagnosticId>
         <Target>M:System.Collections.Generic.OmnifactotumCollectionExtensions.Chunk``1(System.Collections.Generic.IEnumerable{``0},System.Int32)</Target>
         <Left>lib/net5.0/Omnifactotum.dll</Left>
         <Right>lib/net6.0/Omnifactotum.dll</Right>
+    </Suppression>
+    <Suppression>
+        <DiagnosticId>CP0002</DiagnosticId>
+        <Target>M:System.OmnifactotumEnumExtensions.CreateEnumValueNotImplementedException``1(``0)</Target>
+        <Left>lib/net461/Omnifactotum.dll</Left>
+        <Right>lib/net461/Omnifactotum.dll</Right>
+        <IsBaselineSuppression>true</IsBaselineSuppression>
+    </Suppression>
+    <Suppression>
+        <DiagnosticId>CP0002</DiagnosticId>
+        <Target>M:System.OmnifactotumEnumExtensions.CreateEnumValueNotSupportedException``1(``0)</Target>
+        <Left>lib/net461/Omnifactotum.dll</Left>
+        <Right>lib/net461/Omnifactotum.dll</Right>
+        <IsBaselineSuppression>true</IsBaselineSuppression>
+    </Suppression>
+    <Suppression>
+        <DiagnosticId>CP0002</DiagnosticId>
+        <Target>M:System.OmnifactotumEnumExtensions.CreateEnumValueNotImplementedException``1(``0)</Target>
+        <Left>lib/net472/Omnifactotum.dll</Left>
+        <Right>lib/net472/Omnifactotum.dll</Right>
+        <IsBaselineSuppression>true</IsBaselineSuppression>
+    </Suppression>
+    <Suppression>
+        <DiagnosticId>CP0002</DiagnosticId>
+        <Target>M:System.OmnifactotumEnumExtensions.CreateEnumValueNotSupportedException``1(``0)</Target>
+        <Left>lib/net472/Omnifactotum.dll</Left>
+        <Right>lib/net472/Omnifactotum.dll</Right>
+        <IsBaselineSuppression>true</IsBaselineSuppression>
+    </Suppression>
+    <Suppression>
+        <DiagnosticId>CP0002</DiagnosticId>
+        <Target>M:System.OmnifactotumEnumExtensions.CreateEnumValueNotImplementedException``1(``0)</Target>
+        <Left>lib/net5.0/Omnifactotum.dll</Left>
+        <Right>lib/net5.0/Omnifactotum.dll</Right>
+        <IsBaselineSuppression>true</IsBaselineSuppression>
+    </Suppression>
+    <Suppression>
+        <DiagnosticId>CP0002</DiagnosticId>
+        <Target>M:System.OmnifactotumEnumExtensions.CreateEnumValueNotSupportedException``1(``0)</Target>
+        <Left>lib/net5.0/Omnifactotum.dll</Left>
+        <Right>lib/net5.0/Omnifactotum.dll</Right>
+        <IsBaselineSuppression>true</IsBaselineSuppression>
+    </Suppression>
+    <Suppression>
+        <DiagnosticId>CP0002</DiagnosticId>
+        <Target>M:System.OmnifactotumEnumExtensions.CreateEnumValueNotImplementedException``1(``0)</Target>
+        <Left>lib/net6.0/Omnifactotum.dll</Left>
+        <Right>lib/net6.0/Omnifactotum.dll</Right>
+        <IsBaselineSuppression>true</IsBaselineSuppression>
+    </Suppression>
+    <Suppression>
+        <DiagnosticId>CP0002</DiagnosticId>
+        <Target>M:System.OmnifactotumEnumExtensions.CreateEnumValueNotSupportedException``1(``0)</Target>
+        <Left>lib/net6.0/Omnifactotum.dll</Left>
+        <Right>lib/net6.0/Omnifactotum.dll</Right>
+        <IsBaselineSuppression>true</IsBaselineSuppression>
+    </Suppression>
+    <Suppression>
+        <DiagnosticId>CP0002</DiagnosticId>
+        <Target>M:System.OmnifactotumEnumExtensions.CreateEnumValueNotImplementedException``1(``0)</Target>
+        <Left>lib/netstandard2.0/Omnifactotum.dll</Left>
+        <Right>lib/netstandard2.0/Omnifactotum.dll</Right>
+        <IsBaselineSuppression>true</IsBaselineSuppression>
+    </Suppression>
+    <Suppression>
+        <DiagnosticId>CP0002</DiagnosticId>
+        <Target>M:System.OmnifactotumEnumExtensions.CreateEnumValueNotSupportedException``1(``0)</Target>
+        <Left>lib/netstandard2.0/Omnifactotum.dll</Left>
+        <Right>lib/netstandard2.0/Omnifactotum.dll</Right>
+        <IsBaselineSuppression>true</IsBaselineSuppression>
+    </Suppression>
+    <Suppression>
+        <DiagnosticId>CP0002</DiagnosticId>
+        <Target>M:System.OmnifactotumEnumExtensions.CreateEnumValueNotImplementedException``1(``0)</Target>
+        <Left>lib/netstandard2.1/Omnifactotum.dll</Left>
+        <Right>lib/netstandard2.1/Omnifactotum.dll</Right>
+        <IsBaselineSuppression>true</IsBaselineSuppression>
+    </Suppression>
+    <Suppression>
+        <DiagnosticId>CP0002</DiagnosticId>
+        <Target>M:System.OmnifactotumEnumExtensions.CreateEnumValueNotSupportedException``1(``0)</Target>
+        <Left>lib/netstandard2.1/Omnifactotum.dll</Left>
+        <Right>lib/netstandard2.1/Omnifactotum.dll</Right>
+        <IsBaselineSuppression>true</IsBaselineSuppression>
     </Suppression>
 </Suppressions>

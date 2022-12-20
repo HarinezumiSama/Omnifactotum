@@ -305,24 +305,72 @@ internal sealed class OmnifactotumEnumExtensionsTests
     }
 
     [Test]
+    [SuppressMessage("ReSharper", "InconsistentNaming", Justification = "Multiple target frameworks.")]
     public void TestCreateEnumValueNotImplementedExceptionWhenValidArgumentIsPassedThenSucceeds()
-        => Assert.That(
-            () => ConsoleColor.DarkRed.CreateEnumValueNotImplementedException(),
-            Is.TypeOf<NotImplementedException>()
-                .With
-                .Message
-                .EqualTo(
-                    AsInvariant($@"The operation for the enumeration value ""{nameof(ConsoleColor)}.{nameof(ConsoleColor.DarkRed)}"" is not implemented.")));
+    {
+        const ConsoleColor EnumValue = ConsoleColor.DarkRed;
+
+        var baseExpectedErrorMessage = AsInvariant(
+            $@"The operation for the enumeration value ""{nameof(ConsoleColor)}.{nameof(ConsoleColor.DarkRed)}"" is not implemented.");
+
+#if NET5_0_OR_GREATER
+        const string enumValueDetails = $"\x0020Expression: {{ {nameof(EnumValue)} }}.";
+#else
+        var enumValueDetails = string.Empty;
+#endif
+        var expectedEnumValueErrorMessage = baseExpectedErrorMessage + enumValueDetails;
+
+        Assert.That(
+            () => EnumValue.CreateEnumValueNotImplementedException(),
+            Is.TypeOf<NotImplementedException>().With.Message.EqualTo(expectedEnumValueErrorMessage));
+
+        var enumValueContainer = ValueContainer.Create(EnumValue);
+
+#if NET5_0_OR_GREATER
+        const string enumValueContainerDetails = $"\x0020Expression: {{ {nameof(enumValueContainer)}.{nameof(enumValueContainer.Value)} }}.";
+#else
+        var enumValueContainerDetails = string.Empty;
+#endif
+        var expectedEnumValueContainerErrorMessage = baseExpectedErrorMessage + enumValueContainerDetails;
+
+        Assert.That(
+            () => enumValueContainer.Value.CreateEnumValueNotImplementedException(),
+            Is.TypeOf<NotImplementedException>().With.Message.EqualTo(expectedEnumValueContainerErrorMessage));
+    }
 
     [Test]
+    [SuppressMessage("ReSharper", "InconsistentNaming", Justification = "Multiple target frameworks.")]
     public void TestCreateEnumValueNotSupportedExceptionWhenValidArgumentIsPassedThenSucceeds()
-        => Assert.That(
-            () => ConsoleColor.DarkCyan.CreateEnumValueNotSupportedException(),
-            Is.TypeOf<NotSupportedException>()
-                .With
-                .Message
-                .EqualTo(
-                    AsInvariant($@"The operation for the enumeration value ""{nameof(ConsoleColor)}.{nameof(ConsoleColor.DarkCyan)}"" is not supported.")));
+    {
+        const ConsoleColor EnumValue = ConsoleColor.DarkCyan;
+
+        var baseExpectedErrorMessage = AsInvariant(
+            $@"The operation for the enumeration value ""{nameof(ConsoleColor)}.{nameof(ConsoleColor.DarkCyan)}"" is not supported.");
+
+#if NET5_0_OR_GREATER
+        const string enumValueDetails = $"\x0020Expression: {{ {nameof(EnumValue)} }}.";
+#else
+        var enumValueDetails = string.Empty;
+#endif
+        var expectedEnumValueErrorMessage = baseExpectedErrorMessage + enumValueDetails;
+
+        Assert.That(
+            () => EnumValue.CreateEnumValueNotSupportedException(),
+            Is.TypeOf<NotSupportedException>().With.Message.EqualTo(expectedEnumValueErrorMessage));
+
+        var enumValueContainer = ValueContainer.Create(EnumValue);
+
+#if NET5_0_OR_GREATER
+        const string enumValueContainerDetails = $"\x0020Expression: {{ {nameof(enumValueContainer)}.{nameof(enumValueContainer.Value)} }}.";
+#else
+        var enumValueContainerDetails = string.Empty;
+#endif
+        var expectedEnumValueContainerErrorMessage = baseExpectedErrorMessage + enumValueContainerDetails;
+
+        Assert.That(
+            () => enumValueContainer.Value.CreateEnumValueNotSupportedException(),
+            Is.TypeOf<NotSupportedException>().With.Message.EqualTo(expectedEnumValueContainerErrorMessage));
+    }
 
     [Flags]
     public enum ULongTestFlags : ulong

@@ -13,6 +13,8 @@
     <PropertyGroup>
         <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
         <EnablePackageValidation>true</EnablePackageValidation>
+        <!-- Set `GenerateCompatibilitySuppressionFile` to `true` to regenerate "CompatibilitySuppressions.xml" -->
+        <GenerateCompatibilitySuppressionFile>false</GenerateCompatibilitySuppressionFile>
     </PropertyGroup>
 
     <ItemGroup Condition="'$(TargetFramework)'=='net461' or '$(TargetFramework)'=='net472'">
