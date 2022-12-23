@@ -548,6 +548,81 @@ public static class OmnifactotumCollectionExtensions
         => source ?? Enumerable.Empty<T>();
 
     /// <summary>
+    ///     Filters a sequence of nullable reference type elements and returns only those elements that are not <see langword="null"/>.
+    /// </summary>
+    /// <param name="source">
+    ///     An <see cref="IEnumerable{T}" /> to filter.
+    /// </param>
+    /// <typeparam name="T">
+    ///     The reference type that defines the corresponding nullable reference type of the elements of <paramref name="source" />.
+    /// </typeparam>
+    /// <returns>
+    ///     A sequence containing only those elements from <paramref name="source" /> that are not <see langword="null"/>.
+    /// </returns>
+    /// <exception cref="ArgumentNullException">
+    ///     <paramref name="source" /> is <see langword="null" />.
+    /// </exception>
+    [NotNull]
+    [ItemNotNull]
+    [LinqTunnel]
+    [Pure]
+    [System.Diagnostics.Contracts.Pure]
+    public static IEnumerable<T> WhereNotNull<T>([NotNull] [ItemCanBeNull] this IEnumerable<T?> source)
+        where T : class
+    {
+        if (source is null)
+        {
+            throw new ArgumentNullException(nameof(source));
+        }
+
+        //// ReSharper disable once LoopCanBePartlyConvertedToQuery
+        foreach (var item in source)
+        {
+            if (item is not null)
+            {
+                yield return item;
+            }
+        }
+    }
+
+    /// <summary>
+    ///     Filters a sequence of nullable value type elements and returns only those elements that are not <see langword="null"/>.
+    /// </summary>
+    /// <param name="source">
+    ///     An <see cref="IEnumerable{T}" /> to filter.
+    /// </param>
+    /// <typeparam name="T">
+    ///     The value type that defines the corresponding nullable value type of the elements of <paramref name="source" />.
+    /// </typeparam>
+    /// <returns>
+    ///     A sequence containing only those elements from <paramref name="source" /> that are not <see langword="null"/>.
+    /// </returns>
+    /// <exception cref="ArgumentNullException">
+    ///     <paramref name="source" /> is <see langword="null" />.
+    /// </exception>
+    [NotNull]
+    [LinqTunnel]
+    [Pure]
+    [System.Diagnostics.Contracts.Pure]
+    public static IEnumerable<T> WhereNotNull<T>([NotNull] this IEnumerable<T?> source)
+        where T : struct
+    {
+        if (source is null)
+        {
+            throw new ArgumentNullException(nameof(source));
+        }
+
+        //// ReSharper disable once LoopCanBePartlyConvertedToQuery
+        foreach (var item in source)
+        {
+            if (item is { } itemValue)
+            {
+                yield return itemValue;
+            }
+        }
+    }
+
+    /// <summary>
     ///     Creates a new instance of the <see cref="HashSet{T}"/> class that uses the specified equality comparer
     ///     for the set type, contains elements copied from the specified collection, and has sufficient capacity
     ///     to accommodate the number of elements copied.
@@ -819,7 +894,6 @@ public static class OmnifactotumCollectionExtensions
         => list is null ? throw new ArgumentNullException(nameof(list)) : new ReadOnlyCollection<T>(list);
 
 #if !NET6_0_OR_GREATER
-
     /// <summary>
     ///     Splits the elements of a sequence into chunks of size at most <paramref name="size"/>.
     /// </summary>
@@ -898,7 +972,6 @@ public static class OmnifactotumCollectionExtensions
             }
         }
     }
-
 #endif
 
     /// <summary>

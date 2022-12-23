@@ -1,11 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using NUnit.Framework;
+using NUnit.Framework.Constraints;
 using Omnifactotum.NUnit;
 
 namespace Omnifactotum.Tests.ExtensionMethods;
@@ -323,6 +325,86 @@ internal sealed class OmnifactotumCollectionExtensionsTests
     }
 
 #endif
+
+    [Test]
+    public void TestWhereNotNullWhenInvalidArgumentAndReferenceTypeElementThenThrows()
+    {
+        // Note: `ToArray()` call is required to ensure that the compiler generated `IEnumerable<T>` instance actually invokes `WhereNotNull()`
+
+        Assert.That(() => ((IEnumerable<object?>?)null)!.WhereNotNull().ToArray(), CreateConstraint());
+        Assert.That(() => ((IEnumerable<string?>?)null)!.WhereNotNull().ToArray(), CreateConstraint());
+        Assert.That(() => ((IEnumerable<int[]?>?)null)!.WhereNotNull().ToArray(), CreateConstraint());
+        Assert.That(() => ((IEnumerable<List<int>?>?)null)!.WhereNotNull().ToArray(), CreateConstraint());
+
+        static EqualConstraint CreateConstraint() => Throws.ArgumentNullException.With.Property(nameof(ArgumentException.ParamName)).EqualTo("source");
+    }
+
+    [Test]
+    public void TestWhereNotNullWhenValidArgumentAndReferenceTypeElementThenSucceeds()
+    {
+        ExecuteTestCase(Array.Empty<string?>(), Array.Empty<string>());
+        ExecuteTestCase(new string?[] { null }, Array.Empty<string>());
+        ExecuteTestCase(new string?[] { null, null }, Array.Empty<string>());
+        ExecuteTestCase(new[] { null, string.Empty, "\x0020\t\r\n\x0020", null }, new[] { string.Empty, "\x0020\t\r\n\x0020" });
+        ExecuteTestCase(new[] { null, "q", null }, new[] { "q" });
+
+        ExecuteTestCase(
+            new[] { "Hello\x0020world", "?", null, string.Empty, "\t\x0020\r\n", null, "Bye!" },
+            new[] { "Hello\x0020world", "?", string.Empty, "\t\x0020\r\n", "Bye!" });
+
+        ExecuteTestCase(Array.Empty<int[]?>(), Array.Empty<int[]>());
+        ExecuteTestCase(new int[]?[] { null, null }, Array.Empty<int[]>());
+        ExecuteTestCase(new int[]?[] { null, null }, Array.Empty<int[]>());
+        ExecuteTestCase(new[] { null, new[] { 42 }, null }, new[] { new[] { 42 } });
+
+        ExecuteTestCase(
+            new[] { new[] { 1, 2, 3 }, null, new[] { 42, -42, 17 }, new[] { -13 }, null, new[] { 11 }, new[] { 7 } },
+            new[] { new[] { 1, 2, 3 }, new[] { 42, -42, 17 }, new[] { -13 }, new[] { 11 }, new[] { 7 } });
+
+        //// ReSharper disable once SuggestBaseTypeForParameter
+        static void ExecuteTestCase<T>(T?[] input, T[] expectedResult)
+            where T : class
+        {
+            // Note: `ToArray()` call is required to ensure that the compiler generated `IEnumerable<T>` instance actually invokes `WhereNotNull()`
+            Assert.That(() => input.AsEnumerable().WhereNotNull().ToArray(), Is.EqualTo(expectedResult) & Is.TypeOf<T[]>());
+        }
+    }
+
+    [Test]
+    public void TestWhereNotNullWhenInvalidArgumentAndValueTypeElementThenThrows()
+    {
+        // Note: `ToArray()` call is required to ensure that the compiler generated `IEnumerable<T>` instance actually invokes `WhereNotNull()`
+
+        Assert.That(() => ((IEnumerable<int?>?)null)!.WhereNotNull().ToArray(), CreateConstraint());
+        Assert.That(() => ((IEnumerable<char?>?)null)!.WhereNotNull().ToArray(), CreateConstraint());
+
+        static EqualConstraint CreateConstraint() => Throws.ArgumentNullException.With.Property(nameof(ArgumentException.ParamName)).EqualTo("source");
+    }
+
+    [Test]
+    [SuppressMessage("ReSharper", "UseArrayEmptyMethod")]
+    public void TestWhereNotNullWhenValidArgumentAndValueTypeElementThenSucceeds()
+    {
+        ExecuteTestCase(new int?[0], new int[0]);
+        ExecuteTestCase(new int?[] { null }, new int[0]);
+        ExecuteTestCase(new int?[] { null, null }, new int[0]);
+        ExecuteTestCase(new int?[] { null, 42, null }, new[] { 42 });
+        ExecuteTestCase(new int?[] { 42, null, 17, -11, null, 13, 7 }, new[] { 42, 17, -11, 13, 7 });
+
+        ExecuteTestCase(new char?[0], new char[0]);
+        ExecuteTestCase(new char?[] { null }, new char[0]);
+        ExecuteTestCase(new char?[] { null, null }, new char[0]);
+        ExecuteTestCase(new char?[] { null, 'q', null }, new[] { 'q' });
+        ExecuteTestCase(new char?[] { 'w', null, 'z', '•', null, 'é', 'ò' }, new[] { 'w', 'z', '•', 'é', 'ò' });
+
+        //// ReSharper disable once SuggestBaseTypeForParameter
+        static void ExecuteTestCase<T>(T?[] input, T[] expectedResult)
+            where T : struct
+        {
+            // Note: `ToArray()` call is required to ensure that the compiler generated `IEnumerable<T>` instance actually invokes `WhereNotNull()`
+            Assert.That(() => input.AsEnumerable().WhereNotNull().ToArray(), Is.EqualTo(expectedResult) & Is.TypeOf<T[]>());
+        }
+    }
 
     private static void InvokeTestSetItems<T, TCollection>(Func<T[]> createItems1, Func<T[]> createItems2)
         where TCollection : ICollection<T>, new()
