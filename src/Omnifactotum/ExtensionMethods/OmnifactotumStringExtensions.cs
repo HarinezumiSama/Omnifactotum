@@ -133,6 +133,75 @@ public static class OmnifactotumStringExtensions
         => string.Join(separator, values ?? throw new ArgumentNullException(nameof(values)));
 
     /// <summary>
+    ///     Filters a sequence of string elements and returns only those that are not <see langword="null"/> and not an <see cref="string.Empty"/> string.
+    /// </summary>
+    /// <param name="source">
+    ///     A sequence of string elements to filter.
+    /// </param>
+    /// <returns>
+    ///     A sequence containing only those elements from <paramref name="source" />
+    ///     that are not <see langword="null"/> and not an <see cref="string.Empty"/> string.
+    /// </returns>
+    /// <exception cref="ArgumentNullException">
+    ///     <paramref name="source" /> is <see langword="null" />.
+    /// </exception>
+    [NotNull]
+    [ItemNotNull]
+    [LinqTunnel]
+    [Pure]
+    public static IEnumerable<string> WhereNotEmpty([NotNull] [ItemCanBeNull] this IEnumerable<string?> source)
+    {
+        if (source is null)
+        {
+            throw new ArgumentNullException(nameof(source));
+        }
+
+        //// ReSharper disable once LoopCanBePartlyConvertedToQuery
+        foreach (var item in source)
+        {
+            if (!item.IsNullOrEmpty())
+            {
+                yield return item;
+            }
+        }
+    }
+
+    /// <summary>
+    ///     Filters a sequence of string elements and returns only those that are not <see langword="null"/>, are not an <see cref="string.Empty"/> string,
+    ///     and do not consist exclusively of white-space characters.
+    /// </summary>
+    /// <param name="source">
+    ///     A sequence of string elements to filter.
+    /// </param>
+    /// <returns>
+    ///     A sequence containing only those elements from <paramref name="source" />
+    ///     that are not <see langword="null"/>, are not an <see cref="string.Empty"/> string, and do not consist exclusively of white-space characters.
+    /// </returns>
+    /// <exception cref="ArgumentNullException">
+    ///     <paramref name="source" /> is <see langword="null" />.
+    /// </exception>
+    [NotNull]
+    [ItemNotNull]
+    [LinqTunnel]
+    [Pure]
+    public static IEnumerable<string> WhereNotBlank([NotNull] [ItemCanBeNull] this IEnumerable<string?> source)
+    {
+        if (source is null)
+        {
+            throw new ArgumentNullException(nameof(source));
+        }
+
+        //// ReSharper disable once LoopCanBePartlyConvertedToQuery
+        foreach (var item in source)
+        {
+            if (!item.IsNullOrWhiteSpace())
+            {
+                yield return item;
+            }
+        }
+    }
+
+    /// <summary>
     ///     Avoids the specified string value to be a <see langword="null"/> reference: returns the specified string value
     ///     if it is not <see langword="null"/> or an empty string otherwise.
     /// </summary>

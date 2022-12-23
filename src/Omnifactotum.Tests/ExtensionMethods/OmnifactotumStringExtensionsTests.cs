@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
+using System.Linq;
 using System.Net;
 using NUnit.Framework;
 using NUnit.Framework.Constraints;
@@ -91,6 +92,68 @@ internal sealed class OmnifactotumStringExtensionsTests
     [TestCase(new[] { "foo", "bar" }, "", "foobar")]
     public void TestJoinWhenValidArgumentsThenSucceeds(string?[] values, string? separator, string expectedResult)
         => Assert.That(() => values.Join(separator), Is.EqualTo(expectedResult));
+
+    [Test]
+    public void TestWhereNotEmptyWhenInvalidArgumentsThenThrows()
+    {
+        // Note: `ToArray()` call is required to ensure that the compiler generated `IEnumerable<string>` instance actually invokes `WhereNotEmpty()`
+
+        Assert.That(
+            () => default(IEnumerable<string?>)!.WhereNotEmpty().ToArray(),
+            Throws.ArgumentNullException.With.Property(nameof(ArgumentException.ParamName)).EqualTo("source"));
+    }
+
+    [Test]
+    public void TestWhereNotEmptyWhenValidArgumentThenSucceeds()
+    {
+        ExecuteTestCase(Array.Empty<string?>(), Array.Empty<string>());
+        ExecuteTestCase(new string?[] { null }, Array.Empty<string>());
+        ExecuteTestCase(new string?[] { null, null }, Array.Empty<string>());
+        ExecuteTestCase(new[] { null, string.Empty, "\x0020\t\r\n\x0020", null }, new[] { "\x0020\t\r\n\x0020" });
+        ExecuteTestCase(new[] { null, "q", null }, new[] { "q" });
+
+        ExecuteTestCase(
+            new[] { "Hello\x0020world", "?", null, string.Empty, "\t\x0020\r\n", null, "Bye!" },
+            new[] { "Hello\x0020world", "?", "\t\x0020\r\n", "Bye!" });
+
+        //// ReSharper disable once SuggestBaseTypeForParameter
+        static void ExecuteTestCase(string?[] input, string[] expectedResult)
+        {
+            // Note: `ToArray()` call is required to ensure that the compiler generated `IEnumerable<string>` instance actually invokes `WhereNotEmpty()`
+            Assert.That(() => input.AsEnumerable().WhereNotEmpty().ToArray(), Is.EqualTo(expectedResult) & Is.TypeOf<string[]>());
+        }
+    }
+
+    [Test]
+    public void TestWhereNotBlankWhenInvalidArgumentsThenThrows()
+    {
+        // Note: `ToArray()` call is required to ensure that the compiler generated `IEnumerable<string>` instance actually invokes `WhereNotBlank()`
+
+        Assert.That(
+            () => default(IEnumerable<string?>)!.WhereNotBlank().ToArray(),
+            Throws.ArgumentNullException.With.Property(nameof(ArgumentException.ParamName)).EqualTo("source"));
+    }
+
+    [Test]
+    public void TestWhereNotBlankWhenValidArgumentThenSucceeds()
+    {
+        ExecuteTestCase(Array.Empty<string?>(), Array.Empty<string>());
+        ExecuteTestCase(new string?[] { null }, Array.Empty<string>());
+        ExecuteTestCase(new string?[] { null, null }, Array.Empty<string>());
+        ExecuteTestCase(new[] { null, string.Empty, "\x0020\t\r\n\x0020", null }, Array.Empty<string>());
+        ExecuteTestCase(new[] { null, "q", null }, new[] { "q" });
+
+        ExecuteTestCase(
+            new[] { "Hello\x0020world", "?", null, string.Empty, "\t\x0020\r\n", null, "Bye!" },
+            new[] { "Hello\x0020world", "?", "Bye!" });
+
+        //// ReSharper disable once SuggestBaseTypeForParameter
+        static void ExecuteTestCase(string?[] input, string[] expectedResult)
+        {
+            // Note: `ToArray()` call is required to ensure that the compiler generated `IEnumerable<string>` instance actually invokes `WhereNotBlank()`
+            Assert.That(() => input.AsEnumerable().WhereNotBlank().ToArray(), Is.EqualTo(expectedResult) & Is.TypeOf<string[]>());
+        }
+    }
 
     [Test]
     [TestCase(null)]
