@@ -328,8 +328,9 @@ public static class OmnifactotumGenericObjectExtensions
         => value;
 
     /// <summary>
-    ///     Avoids the specified reference type value to be a <see langword="null"/> reference: returns the specified value
-    ///     if it is not <see langword="null"/> or a default value which is returned by the specified ad-hoc method.
+    ///     Avoids the specified reference type value being a <see langword="null"/> reference.
+    ///     Returns the specified value if it is not <see langword="null"/>;
+    ///     otherwise, returns the fallback value retrieved via calling the method specified by the <paramref name="getFallbackValue"/> parameter.
     /// </summary>
     /// <typeparam name="T">
     ///     The type of the value to handle.
@@ -337,23 +338,26 @@ public static class OmnifactotumGenericObjectExtensions
     /// <param name="source">
     ///     The value to secure from a <see langword="null"/> reference.
     /// </param>
-    /// <param name="getDefault">
+    /// <param name="getFallbackValue">
     ///     The method that will return the default value to use instead of <see langword="null"/>.
     /// </param>
     /// <returns>
-    ///     The string value if it is not <see langword="null"/>; otherwise, the value returned from call to
-    ///     <paramref name="getDefault"/> method.
+    ///     The original reference type value if it is not <see langword="null"/>;
+    ///     otherwise, the fallback value retrieved via calling the method specified by the <paramref name="getFallbackValue"/> parameter.
     /// </returns>
+    /// <exception cref="ArgumentNullException">
+    ///     <paramref name="getFallbackValue"/> is <see langword="null"/>.
+    /// </exception>
     [NotNull]
-    public static T AvoidNull<T>([CanBeNull] this T? source, [NotNull] [InstantHandle] Func<T> getDefault)
+    public static T AvoidNull<T>([CanBeNull] this T? source, [NotNull] [InstantHandle] Func<T> getFallbackValue)
         where T : class
     {
-        if (getDefault is null)
+        if (getFallbackValue is null)
         {
-            throw new ArgumentNullException(nameof(getDefault));
+            throw new ArgumentNullException(nameof(getFallbackValue));
         }
 
-        var result = source ?? getDefault();
+        var result = source ?? getFallbackValue();
         if (result is null)
         {
             throw new InvalidOperationException("The method that had to return non-null value returned null.");

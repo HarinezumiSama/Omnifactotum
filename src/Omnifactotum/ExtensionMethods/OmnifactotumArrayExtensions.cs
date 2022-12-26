@@ -132,8 +132,8 @@ public static class OmnifactotumArrayExtensions
     }
 
     /// <summary>
-    ///     Avoids the specified array to be a <see langword="null"/> reference: returns the specified array
-    ///     if it is not <see langword="null"/> or an empty array otherwise.
+    ///     Avoids the specified array being a <see langword="null"/> reference.
+    ///     Returns the specified array if it is not <see langword="null"/>; otherwise, returns an empty array.
     /// </summary>
     /// <typeparam name="T">
     ///     The type of elements in the array.
@@ -142,7 +142,7 @@ public static class OmnifactotumArrayExtensions
     ///     The array to secure from a <see langword="null"/> reference.
     /// </param>
     /// <returns>
-    ///     The source array if it is not <see langword="null"/>; otherwise, empty array.
+    ///     The source array if it is not <see langword="null"/>; otherwise, an empty array.
     /// </returns>
     [MethodImpl(OmnifactotumConstants.MethodOptimizationOptions.Maximum)]
     [NotNull]

@@ -531,8 +531,8 @@ public static class OmnifactotumCollectionExtensions
     }
 
     /// <summary>
-    ///     Avoids the specified collection being a <see langword="null"/> reference: returns the specified collection
-    ///     if it is not <see langword="null"/> or an empty collection otherwise.
+    ///     Avoids the specified collection being a <see langword="null"/> reference.
+    ///     Returns the specified collection if it is not <see langword="null"/>; otherwise, returns an empty collection.
     /// </summary>
     /// <typeparam name="T">
     ///     The type of elements in the collection.
@@ -541,7 +541,7 @@ public static class OmnifactotumCollectionExtensions
     ///     The collection to secure from a <see langword="null"/> reference.
     /// </param>
     /// <returns>
-    ///     The source collection if it is not <see langword="null"/>; otherwise, empty collection.
+    ///     The source collection if it is not <see langword="null"/>; otherwise, an empty collection.
     /// </returns>
     [MethodImpl(OmnifactotumConstants.MethodOptimizationOptions.Maximum)]
     [NotNull]

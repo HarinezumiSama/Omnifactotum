@@ -202,14 +202,14 @@ public static class OmnifactotumStringExtensions
     }
 
     /// <summary>
-    ///     Avoids the specified string value to be a <see langword="null"/> reference: returns the specified string value
-    ///     if it is not <see langword="null"/> or an empty string otherwise.
+    ///     Avoids the specified string value being a <see langword="null"/> reference.
+    ///     Returns the specified string value if it is not <see langword="null"/>; otherwise, returns <see cref="string.Empty"/>.
     /// </summary>
     /// <param name="source">
     ///     The string value to secure from a <see langword="null"/> reference.
     /// </param>
     /// <returns>
-    ///     The source string value if it is not <see langword="null"/>; otherwise, empty string.
+    ///     The source string value if it is not <see langword="null"/>; otherwise, <see cref="string.Empty"/>.
     /// </returns>
     [NotNull]
     [Pure]
