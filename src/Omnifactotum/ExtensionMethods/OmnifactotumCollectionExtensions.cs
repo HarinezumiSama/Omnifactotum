@@ -1,4 +1,5 @@
-﻿using System.Collections.ObjectModel;
+﻿using System.Collections.Immutable;
+using System.Collections.ObjectModel;
 using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using System.Runtime.CompilerServices;
@@ -530,7 +531,7 @@ public static class OmnifactotumCollectionExtensions
     }
 
     /// <summary>
-    ///     Avoids the specified collection to be a <see langword="null"/> reference: returns the specified collection
+    ///     Avoids the specified collection being a <see langword="null"/> reference: returns the specified collection
     ///     if it is not <see langword="null"/> or an empty collection otherwise.
     /// </summary>
     /// <typeparam name="T">
@@ -545,7 +546,7 @@ public static class OmnifactotumCollectionExtensions
     [MethodImpl(OmnifactotumConstants.MethodOptimizationOptions.Maximum)]
     [NotNull]
     public static IEnumerable<T> AvoidNull<T>([CanBeNull] [NoEnumeration] this IEnumerable<T>? source)
-        => source ?? Enumerable.Empty<T>();
+        => source is null or ImmutableArray<T> { IsDefault: true } ? Enumerable.Empty<T>() : source;
 
     /// <summary>
     ///     Filters a sequence of nullable reference type elements and returns only those elements that are not <see langword="null"/>.
