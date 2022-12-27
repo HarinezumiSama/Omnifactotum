@@ -15,9 +15,17 @@ using NotNullAttribute = Omnifactotum.Annotations.NotNullAttribute;
 //// ReSharper disable once CheckNamespace :: Namespace is intentionally named so in order to simplify usage of extension methods
 namespace System.Collections.Generic;
 
+#if NETSTANDARD2_1_OR_GREATER || NET5_0_OR_GREATER
 /// <summary>
-///     Contains extension methods for collections, that is, for <see cref="IEnumerable{T}"/>.
+///     Contains extension methods for collections, that is, for <see cref="IEnumerable{T}"/>, <see cref="ICollection{T}"/>, <see cref="ICollection"/>,
+///     <see cref="IList{T}"/>, <see cref="IAsyncEnumerable{T}"/>, <see cref="ConfiguredCancelableAsyncEnumerable{T}"/> etc.
 /// </summary>
+#else
+/// <summary>
+///     Contains extension methods for collections, that is, for <see cref="IEnumerable{T}"/>, <see cref="ICollection{T}"/>, <see cref="ICollection"/>,
+///     <see cref="IList{T}"/> etc.
+/// </summary>
+#endif
 [SuppressMessage("ReSharper", "UseDeconstruction", Justification = "Multiple target frameworks.")]
 public static class OmnifactotumCollectionExtensions
 {
@@ -973,6 +981,100 @@ public static class OmnifactotumCollectionExtensions
             }
         }
     }
+#endif
+
+#if NETSTANDARD2_1_OR_GREATER || NET5_0_OR_GREATER
+    /// <summary>
+    ///     Configures an async iteration so that the awaits on the tasks returned from this iteration do not attempt
+    ///     to marshal the continuation back to the original context captured.
+    /// </summary>
+    /// <param name="source">
+    ///     The source <see cref="IAsyncEnumerable{T}"/> to iterate.
+    /// </param>
+    /// <returns>
+    ///     The configured enumerable.
+    /// </returns>
+    /// <exception cref="ArgumentNullException">
+    ///     <paramref name="source"/> is <see langword="null"/>.
+    /// </exception>
+    [MethodImpl(OmnifactotumConstants.MethodOptimizationOptions.Maximum)]
+    public static ConfiguredCancelableAsyncEnumerable<T> ConfigureAwaitNoCapturedContext<T>([NotNull] this IAsyncEnumerable<T> source)
+        => (source ?? throw new ArgumentNullException(nameof(source))).ConfigureAwait(false);
+
+    /// <summary>
+    ///     Configures an async iteration so that the awaits on the tasks returned from this iteration do not attempt
+    ///     to marshal the continuation back to the original context captured.
+    /// </summary>
+    /// <param name="source">
+    ///     The source <see cref="ConfiguredCancelableAsyncEnumerable{T}"/> to iterate.
+    /// </param>
+    /// <returns>
+    ///     The configured enumerable.
+    /// </returns>
+    /// <exception cref="ArgumentNullException">
+    ///     <paramref name="source"/> is <see langword="null"/>.
+    /// </exception>
+    [MethodImpl(OmnifactotumConstants.MethodOptimizationOptions.Maximum)]
+    public static ConfiguredCancelableAsyncEnumerable<T> ConfigureAwaitNoCapturedContext<T>(this in ConfiguredCancelableAsyncEnumerable<T> source)
+        => source.ConfigureAwait(false);
+
+    /// <summary>
+    ///     Asynchronously enumerates the specified <see cref="IAsyncEnumerable{T}"/> and returns a <see cref="List{T}"/> containing the elements yielded.
+    /// </summary>
+    /// <param name="source">
+    ///     The source collection to enumerate.
+    /// </param>
+    /// <param name="cancellationToken">
+    ///     The token to monitor for cancellation requests.
+    /// </param>
+    /// <typeparam name="T">
+    ///     The type of the objects to iterate.
+    /// </typeparam>
+    /// <returns>
+    ///     A task whose result is a <see cref="List{T}"/> containing the elements yielded.
+    /// </returns>
+    /// <exception cref="ArgumentNullException">
+    ///     <paramref name="source"/> is <see langword="null"/>.
+    /// </exception>
+    [NotNull]
+    public static async Task<List<T>> EnumerateToListAsync<T>([NotNull] this IAsyncEnumerable<T> source, CancellationToken cancellationToken = default)
+    {
+        if (source is null)
+        {
+            throw new ArgumentNullException(nameof(source));
+        }
+
+        var result = new List<T>();
+        await foreach (var item in source.WithCancellation(cancellationToken).ConfigureAwaitNoCapturedContext())
+        {
+            cancellationToken.ThrowIfCancellationRequested();
+            result.Add(item);
+        }
+
+        return result;
+    }
+
+    /// <summary>
+    ///     Asynchronously enumerates the specified <see cref="IAsyncEnumerable{T}"/> and returns an array containing the elements yielded.
+    /// </summary>
+    /// <param name="source">
+    ///     The source collection to enumerate.
+    /// </param>
+    /// <param name="cancellationToken">
+    ///     The token to monitor for cancellation requests.
+    /// </param>
+    /// <typeparam name="T">
+    ///     The type of the objects to iterate.
+    /// </typeparam>
+    /// <returns>
+    ///     A task whose result is an array containing the elements yielded.
+    /// </returns>
+    /// <exception cref="ArgumentNullException">
+    ///     <paramref name="source"/> is <see langword="null"/>.
+    /// </exception>
+    [NotNull]
+    public static async Task<T[]> EnumerateToArrayAsync<T>([NotNull] this IAsyncEnumerable<T> source, CancellationToken cancellationToken = default)
+        => (await source.EnumerateToListAsync(cancellationToken)).ToArray();
 #endif
 
     /// <summary>

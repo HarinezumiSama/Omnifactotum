@@ -11,6 +11,11 @@ using NUnit.Framework;
 using NUnit.Framework.Constraints;
 using Omnifactotum.NUnit;
 
+#if NETCOREAPP3_1_OR_GREATER || NET5_0_OR_GREATER
+using System.Runtime.CompilerServices;
+using Omnifactotum.Annotations;
+#endif
+
 namespace Omnifactotum.Tests.ExtensionMethods;
 
 [TestFixture(TestOf = typeof(OmnifactotumCollectionExtensions))]
@@ -295,7 +300,6 @@ internal sealed class OmnifactotumCollectionExtensionsTests
     }
 
 #if !NET6_0_OR_GREATER
-
     [Test]
     public void TestChunkWhenInvalidArgumentThenThrows()
     {
@@ -464,6 +468,153 @@ internal sealed class OmnifactotumCollectionExtensionsTests
             Assert.That(() => input.AsEnumerable().WhereNotNull().ToArray(), Is.EqualTo(expectedResult) & Is.TypeOf<T[]>());
         }
     }
+
+#if NETCOREAPP3_1_OR_GREATER || NET5_0_OR_GREATER
+    [Test]
+    public void TestEnumerateToListAsyncWhenInvalidArgumentThenThrows()
+    {
+        ExecuteTestCase<int>();
+        ExecuteTestCase<string>();
+        ExecuteTestCase<object>();
+
+        static void ExecuteTestCase<T>()
+        {
+            Assert.That(() => ((IAsyncEnumerable<T>?)null)!.EnumerateToListAsync(CancellationToken.None), Throws.ArgumentNullException);
+
+            using var cancellationTokenSource = new CancellationTokenSource();
+            var cancellationToken = cancellationTokenSource.Token;
+            Assert.That(() => ((IAsyncEnumerable<T>?)null)!.EnumerateToListAsync(cancellationToken), Throws.ArgumentNullException);
+        }
+    }
+
+    [Test]
+    [TestCase(false)]
+    [TestCase(true)]
+    public async Task TestEnumerateToListAsyncWhenValidArgumentsThenSucceedsAsync(bool shouldCheckCancellationTokenValue)
+    {
+        const int Value1 = 17;
+        const int Value2 = -23;
+        const int Value3 = 11;
+
+        using var cancellationTokenSource1 = new CancellationTokenSource();
+
+        await ExecuteRegularTestCaseAsync(
+            CreateInputAsync(shouldCheckCancellationTokenValue),
+            new List<int> { Value1, Value2, Value3 },
+            cancellationTokenSource1.Token);
+
+        using var cancellationTokenSource2 = new CancellationTokenSource();
+
+        ExecuteCancellationTestCase(
+            CreateInputAsync(shouldCheckCancellationTokenValue, () => cancellationTokenSource2.Cancel(), cancellationTokenSource2.Token),
+            cancellationTokenSource2.Token);
+
+        static async IAsyncEnumerable<int> CreateInputAsync(
+            bool shouldCheckCancellationToken,
+            [InstantHandle] Action? cancelBeforeLastItem = null,
+            [EnumeratorCancellation] CancellationToken cancellationToken = default)
+        {
+            Task CheckCancellationTokenAsync() => shouldCheckCancellationToken ? Task.Delay(TimeSpan.Zero, cancellationToken) : Task.CompletedTask;
+
+            await CheckCancellationTokenAsync();
+            yield return Value1;
+
+            await CheckCancellationTokenAsync();
+            yield return Value2;
+
+            cancelBeforeLastItem?.Invoke();
+            await CheckCancellationTokenAsync();
+            yield return Value3;
+        }
+
+        static async Task ExecuteRegularTestCaseAsync<T>(IAsyncEnumerable<T> input, List<T> expectedResult, CancellationToken cancellationToken)
+        {
+            var actualResult = await input.EnumerateToListAsync(cancellationToken);
+            Assert.That(actualResult, Is.EqualTo(expectedResult) & Is.TypeOf<List<T>>());
+        }
+
+        static void ExecuteCancellationTestCase<T>(IAsyncEnumerable<T> input, CancellationToken cancellationToken)
+            => Assert.That(
+                async () => await input.EnumerateToListAsync(cancellationToken),
+                Throws.InstanceOf<OperationCanceledException>()
+                    .With
+                    .Property(nameof(OperationCanceledException.CancellationToken))
+                    .EqualTo(cancellationToken));
+    }
+
+    [Test]
+    public void TestEnumerateToArrayAsyncWhenInvalidArgumentThenThrows()
+    {
+        ExecuteTestCase<int>();
+        ExecuteTestCase<string>();
+        ExecuteTestCase<object>();
+
+        static void ExecuteTestCase<T>()
+        {
+            Assert.That(() => ((IAsyncEnumerable<T>?)null)!.EnumerateToArrayAsync(CancellationToken.None), Throws.ArgumentNullException);
+
+            using var cancellationTokenSource = new CancellationTokenSource();
+            var cancellationToken = cancellationTokenSource.Token;
+            Assert.That(() => ((IAsyncEnumerable<T>?)null)!.EnumerateToArrayAsync(cancellationToken), Throws.ArgumentNullException);
+        }
+    }
+
+    [Test]
+    [TestCase(false)]
+    [TestCase(true)]
+    public async Task TestEnumerateToArrayAsyncWhenValidArgumentsThenSucceedsAsync(bool shouldCheckCancellationTokenValue)
+    {
+        const int Value1 = -13;
+        const int Value2 = -17;
+        const int Value3 = 29;
+
+        using var cancellationTokenSource1 = new CancellationTokenSource();
+
+        await ExecuteRegularTestCaseAsync(
+            CreateInputAsync(shouldCheckCancellationTokenValue),
+            new[] { Value1, Value2, Value3 },
+            cancellationTokenSource1.Token);
+
+        using var cancellationTokenSource2 = new CancellationTokenSource();
+
+        ExecuteCancellationTestCase(
+            CreateInputAsync(shouldCheckCancellationTokenValue, () => cancellationTokenSource2.Cancel(), cancellationTokenSource2.Token),
+            cancellationTokenSource2.Token);
+
+        static async IAsyncEnumerable<int> CreateInputAsync(
+            bool shouldCheckCancellationToken,
+            [InstantHandle] Action? cancelBeforeLastItem = null,
+            [EnumeratorCancellation] CancellationToken cancellationToken = default)
+        {
+            Task CheckCancellationTokenAsync() => shouldCheckCancellationToken ? Task.Delay(TimeSpan.Zero, cancellationToken) : Task.CompletedTask;
+
+            await CheckCancellationTokenAsync();
+            yield return Value1;
+
+            await CheckCancellationTokenAsync();
+            yield return Value2;
+
+            cancelBeforeLastItem?.Invoke();
+            await CheckCancellationTokenAsync();
+            yield return Value3;
+        }
+
+        [SuppressMessage("ReSharper", "SuggestBaseTypeForParameter")]
+        static async Task ExecuteRegularTestCaseAsync<T>(IAsyncEnumerable<T> input, T[] expectedResult, CancellationToken cancellationToken)
+        {
+            var actualResult = await input.EnumerateToArrayAsync(cancellationToken);
+            Assert.That(actualResult, Is.EqualTo(expectedResult) & Is.TypeOf<T[]>());
+        }
+
+        static void ExecuteCancellationTestCase<T>(IAsyncEnumerable<T> input, CancellationToken cancellationToken)
+            => Assert.That(
+                async () => await input.EnumerateToArrayAsync(cancellationToken),
+                Throws.InstanceOf<OperationCanceledException>()
+                    .With
+                    .Property(nameof(OperationCanceledException.CancellationToken))
+                    .EqualTo(cancellationToken));
+    }
+#endif
 
     private static void InvokeTestSetItems<T, TCollection>(Func<T[]> createItems1, Func<T[]> createItems2)
         where TCollection : ICollection<T>, new()
