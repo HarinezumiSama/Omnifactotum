@@ -34,7 +34,7 @@ public static class OmnifactotumValueTaskExtensions
     ///     to marshal the continuation back to the original context captured.
     /// </summary>
     /// <param name="task">
-    ///     The <see cref="Task"/> to create an awaiter for.
+    ///     The <see cref="ValueTask{TResult}"/> to create an awaiter for.
     /// </param>
     /// <returns>
     ///     An awaiter used to await the specified <see cref="ValueTask{TResult}"/>, configured so that it does not attempt to marshal
