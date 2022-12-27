@@ -173,7 +173,7 @@ public static class OmnifactotumCollectionExtensions
         foreach (var item in collection)
         {
             cancellationToken.ThrowIfCancellationRequested();
-            await actionAsync(item, cancellationToken);
+            await actionAsync(item, cancellationToken).ConfigureAwaitNoCapturedContext();
         }
     }
 
@@ -221,7 +221,7 @@ public static class OmnifactotumCollectionExtensions
         foreach (var item in collection)
         {
             cancellationToken.ThrowIfCancellationRequested();
-            await actionAsync(item, index, cancellationToken);
+            await actionAsync(item, index, cancellationToken).ConfigureAwaitNoCapturedContext();
             index++;
         }
     }

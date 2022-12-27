@@ -43,7 +43,7 @@ public static class EventHandlerAsyncExtensions
 
         foreach (var invocation in invocations)
         {
-            await invocation(sender, eventArgs, cancellationToken);
+            await invocation(sender, eventArgs, cancellationToken).ConfigureAwaitNoCapturedContext();
         }
     }
 
@@ -78,6 +78,9 @@ public static class EventHandlerAsyncExtensions
             return;
         }
 
-        await invocations.Select(invocation => invocation(sender, eventArgs, cancellationToken)).AwaitAllAsync();
+        await invocations
+            .Select(async invocation => await invocation(sender, eventArgs, cancellationToken).ConfigureAwaitNoCapturedContext())
+            .AwaitAllAsync()
+            .ConfigureAwaitNoCapturedContext();
     }
 }

@@ -103,7 +103,7 @@ public sealed class SemaphoreSlimBasedLock : IDisposable
     /// </returns>
     public async Task<IDisposable> AcquireAsync(CancellationToken cancellationToken = default)
     {
-        await UnderlyingSemaphore.WaitAsync(cancellationToken);
+        await UnderlyingSemaphore.WaitAsync(cancellationToken).ConfigureAwaitNoCapturedContext();
         return new LockHolder(_releaseCachedDelegate);
     }
 

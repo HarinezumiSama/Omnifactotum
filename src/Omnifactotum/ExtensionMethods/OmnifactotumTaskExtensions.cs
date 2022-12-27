@@ -64,7 +64,8 @@ public static class OmnifactotumTaskExtensions
     ///     A task that represents the completion of all of the supplied tasks.
     /// </returns>
     [MethodImpl(OmnifactotumConstants.MethodOptimizationOptions.Maximum)]
-    public static Task AwaitAllAsync([NotNull] this IEnumerable<Task> tasks) => Task.WhenAll(tasks);
+    public static async Task AwaitAllAsync([NotNull] this IEnumerable<Task> tasks)
+        => await Task.WhenAll(tasks).ConfigureAwaitNoCapturedContext();
 
     /// <summary>
     ///     Creates a task that will complete when all of the <see cref="Task{TResult}"/> objects in an enumerable collection
@@ -80,5 +81,6 @@ public static class OmnifactotumTaskExtensions
     ///     A task that represents the completion of all of the supplied tasks.
     /// </returns>
     [MethodImpl(OmnifactotumConstants.MethodOptimizationOptions.Maximum)]
-    public static Task<TResult[]> AwaitAllAsync<TResult>([NotNull] this IEnumerable<Task<TResult>> tasks) => Task.WhenAll(tasks);
+    public static async Task<TResult[]> AwaitAllAsync<TResult>([NotNull] this IEnumerable<Task<TResult>> tasks)
+        => await Task.WhenAll(tasks).ConfigureAwaitNoCapturedContext();
 }
