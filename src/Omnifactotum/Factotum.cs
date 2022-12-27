@@ -9,7 +9,6 @@ using System.Reflection;
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 using System.Security.Cryptography;
-using System.Threading.Tasks;
 using Omnifactotum.Annotations;
 using NotNullIfNotNullAttribute = System.Diagnostics.CodeAnalysis.NotNullIfNotNullAttribute;
 using static Omnifactotum.FormattableStringFactotum;
@@ -391,28 +390,6 @@ public static partial class Factotum
 
         return Path.GetDirectoryName(path).EnsureNotNull();
     }
-
-    /// <summary>
-    ///     Creates a task that does nothing and whose status is <see cref="TaskStatus.RanToCompletion"/>.
-    /// </summary>
-    /// <returns>
-    ///     An empty completed task.
-    /// </returns>
-    [Obsolete("This method has been deprecated. Use `" + nameof(Task) + "." + nameof(Task.CompletedTask) + "` instead.")]
-    [NotNull]
-    [MethodImpl(OmnifactotumConstants.MethodOptimizationOptions.Standard)]
-    public static Task CreateEmptyCompletedTask() => Task.CompletedTask;
-
-    /// <summary>
-    ///     Creates a task that does nothing and whose status is <see cref="TaskStatus.Faulted"/>.
-    /// </summary>
-    /// <returns>
-    ///     An empty faulted task.
-    /// </returns>
-    [Obsolete("This method has been deprecated. Use `" + nameof(Task) + "." + nameof(Task.FromException) + "(Exception)` instead.")]
-    [NotNull]
-    [MethodImpl(OmnifactotumConstants.MethodOptimizationOptions.Standard)]
-    public static Task CreateEmptyFaultedTask([NotNull] Exception exception) => Task.FromException(exception);
 
     /// <summary>
     ///     Gets the <see cref="MemberInfo"/> of the field or property specified by the lambda expression.
