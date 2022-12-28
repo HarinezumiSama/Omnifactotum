@@ -1,7 +1,4 @@
 ﻿using System;
-#if !NETFRAMEWORK
-using System.Collections;
-#endif
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using System.Globalization;
@@ -12,6 +9,10 @@ using Omnifactotum.NUnit;
 using Omnifactotum.Validation;
 using Omnifactotum.Validation.Constraints;
 using static Omnifactotum.FormattableStringFactotum;
+
+#if !NETFRAMEWORK
+using System.Collections;
+#endif
 
 namespace Omnifactotum.Tests.Validation;
 
@@ -81,7 +82,7 @@ internal sealed class ObjectValidatorTests
             .ToArray();
 
 #if NETFRAMEWORK
-            var itemPropertyPathConvertSpecifier = string.Empty;
+        var itemPropertyPathConvertSpecifier = string.Empty;
 #else
         var itemPropertyPathConvertSpecifier = AsInvariant($@", {nameof(AnotherSimpleData)}");
 #endif
@@ -131,8 +132,8 @@ internal sealed class ObjectValidatorTests
         };
 
 #if NETFRAMEWORK
-            var propertiesPropertyPathConvertSpecifier = string.Empty;
-            var keyValuePairPropertyPathConvertSpecifier = string.Empty;
+        var propertiesPropertyPathConvertSpecifier = string.Empty;
+        var keyValuePairPropertyPathConvertSpecifier = string.Empty;
 #else
         var propertiesPropertyPathConvertSpecifier = AsInvariant($@", {nameof(IEnumerable)}");
         var keyValuePairPropertyPathConvertSpecifier = AsInvariant($@", {typeof(KeyValuePair<,>).Name}");

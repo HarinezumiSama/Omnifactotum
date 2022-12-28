@@ -46,10 +46,10 @@ public static class OmnifactotumDictionaryExtensions
 #if NETFRAMEWORK
         this IDictionary<TKey, TValue> dictionary,
 #else
-            IDictionary<TKey, TValue> dictionary,
+        IDictionary<TKey, TValue> dictionary,
 #endif
 #if NET5_0_OR_GREATER || NETSTANDARD2_1_OR_GREATER
-            [NotNull] [DisallowNull] TKey key,
+        [NotNull] [DisallowNull] TKey key,
 #else
         [NotNull] TKey key,
 #endif
@@ -96,10 +96,10 @@ public static class OmnifactotumDictionaryExtensions
 #if NETFRAMEWORK
         this IDictionary<TKey, TValue> dictionary,
 #else
-            IDictionary<TKey, TValue> dictionary,
+        IDictionary<TKey, TValue> dictionary,
 #endif
 #if NET5_0_OR_GREATER || NETSTANDARD2_1_OR_GREATER
-            [NotNull] [DisallowNull] TKey key
+        [NotNull] [DisallowNull] TKey key
 #else
         [NotNull] TKey key
 #endif
@@ -132,7 +132,7 @@ public static class OmnifactotumDictionaryExtensions
     public static TValue GetOrCreateValue<TKey, TValue>(
         [NotNull] this IDictionary<TKey, TValue> dictionary,
 #if NET5_0_OR_GREATER || NETSTANDARD2_1_OR_GREATER
-            [NotNull] [DisallowNull] TKey key,
+        [NotNull] [DisallowNull] TKey key,
 #else
         [NotNull] TKey key,
 #endif
@@ -188,7 +188,7 @@ public static class OmnifactotumDictionaryExtensions
     public static TValue GetOrCreateValue<TKey, TValue>(
         [NotNull] this IDictionary<TKey, TValue> dictionary,
 #if NET5_0_OR_GREATER || NETSTANDARD2_1_OR_GREATER
-            [NotNull] [DisallowNull] TKey key
+        [NotNull] [DisallowNull] TKey key
 #else
         [NotNull] TKey key
 #endif
@@ -216,7 +216,7 @@ public static class OmnifactotumDictionaryExtensions
     public static ReadOnlyDictionary<TKey, TValue> AsReadOnly<TKey, TValue>(
         [NotNull] this IDictionary<TKey, TValue> dictionary)
 #if !NETFRAMEWORK
-            where TKey : notnull
+        where TKey : notnull
 #endif
         => new(dictionary);
 }

@@ -153,6 +153,7 @@ internal abstract class GenericTaskExtensionsTestsBase
     }
 
     [SuppressMessage("ReSharper", "ConditionIsAlwaysTrueOrFalse", Justification = ".NET version dependent.")]
+    [SuppressMessage("ReSharper", "ConditionIsAlwaysTrueOrFalseAccordingToNullableAPIContract", Justification = ".NET version dependent.")]
     private void OnTaskSchedulerUnobservedTaskException(object? sender, UnobservedTaskExceptionEventArgs e)
     {
         if (e.Exception is null)

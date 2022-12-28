@@ -46,7 +46,7 @@ internal sealed class ReadOnlySetTests
         Assert.That(readOnlySet.Count, Is.EqualTo(count));
         Assert.That(readOnlySet, Is.EquivalentTo(set));
 #if NET5_0_OR_GREATER
-            Assert.That(readOnlySet, Is.InstanceOf<IReadOnlySet<int>>());
+        Assert.That(readOnlySet, Is.InstanceOf<IReadOnlySet<int>>());
 #endif
     }
 

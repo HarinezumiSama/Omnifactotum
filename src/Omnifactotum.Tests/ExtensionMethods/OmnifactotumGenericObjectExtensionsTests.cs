@@ -56,7 +56,7 @@ internal sealed class OmnifactotumGenericObjectExtensionsTests
     }
 
     [Test]
-    [SuppressMessage("ReSharper", "InconsistentNaming")]
+    [SuppressMessage("ReSharper", "InconsistentNaming", Justification = "Multiple target frameworks.")]
     public void TestEnsureNotNullForNullableValueTypeSucceeds()
     {
         int? someValue = 42;
@@ -64,7 +64,7 @@ internal sealed class OmnifactotumGenericObjectExtensionsTests
 
 #if NET5_0_OR_GREATER
         const string expectedExpressionFailureMessage =
-            $"The following expression is null: {{ (int?)null }}. (Parameter 'value')";
+            "The following expression is null: { (int?)null }. (Parameter 'value')";
 #elif NETCOREAPP3_1_OR_GREATER
         const string expectedExpressionFailureMessage = $"Exception of type '{nameof(System)}.{nameof(ArgumentNullException)}' was thrown. (Parameter 'value')";
 #else

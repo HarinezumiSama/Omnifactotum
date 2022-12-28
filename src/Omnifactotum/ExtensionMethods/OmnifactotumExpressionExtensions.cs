@@ -178,6 +178,7 @@ public static class OmnifactotumExpressionExtensions
         /// </returns>
         [return: NotNullIfNotNull("node")]
         //// ReSharper disable once ReturnTypeCanBeNotNullable :: No nullability annotations in `ExpressionVisitor` in the older .NET versions
+        //// ReSharper disable once AssignNullToNotNullAttribute :: No nullability annotations in `ExpressionVisitor` in the older .NET versions
         public override Expression? Visit(Expression? node) => node == _sourceExpression ? _targetExpression : base.Visit(node);
     }
 }

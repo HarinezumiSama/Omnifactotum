@@ -187,7 +187,7 @@ public static class OmnifactotumMethodBaseExtensions
                 resultBuilder.Append("ref\x0020");
             }
 
-            var actualParameterType = parameterType.IsByRef && parameterType.HasElementType
+            var actualParameterType = parameterType is { IsByRef: true, HasElementType: true }
                 ? parameterType.GetElementType().EnsureNotNull()
                 : parameterType;
 
