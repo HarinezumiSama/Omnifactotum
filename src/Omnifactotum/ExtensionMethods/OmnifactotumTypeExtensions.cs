@@ -186,6 +186,15 @@ public static class OmnifactotumTypeExtensions
     public static string GetFullName([NotNull] this Type type) => GetNameInternal(type, true);
 
     /// <summary>
+    ///     Deprecated. Use <see cref="IsNullableValueType"/> instead.
+    /// </summary>
+    [Obsolete(
+        $@"""{nameof(OmnifactotumTypeExtensions)}.{nameof(IsNullable)}"" is deprecated and will be removed in a future version"
+        + $@". Please use ""{nameof(OmnifactotumTypeExtensions)}.{nameof(IsNullableValueType)}"" instead.",
+        false)]
+    public static bool IsNullable([NotNull] this Type type) => IsNullableValueType(type);
+
+    /// <summary>
     ///     Determines whether the specified type is <see cref="Nullable{T}"/> for a certain type T.
     /// </summary>
     /// <param name="type">
@@ -195,16 +204,14 @@ public static class OmnifactotumTypeExtensions
     ///     <see langword="true"/> if the specified type is <see cref="Nullable{T}"/> for a certain type T;
     ///     otherwise, <see langword="false"/>.
     /// </returns>
-    public static bool IsNullable([NotNull] this Type type)
+    public static bool IsNullableValueType([NotNull] this Type type)
     {
         if (type is null)
         {
             throw new ArgumentNullException(nameof(type));
         }
 
-        return type.IsGenericType
-            && !type.IsGenericTypeDefinition
-            && type.GetGenericTypeDefinition() == typeof(Nullable<>);
+        return type is { IsGenericType: true, IsGenericTypeDefinition: false } && type.GetGenericTypeDefinition() == typeof(Nullable<>);
     }
 
     /// <summary>
@@ -281,7 +288,7 @@ public static class OmnifactotumTypeExtensions
             throw new ArgumentNullException(nameof(type));
         }
 
-        if (type.IsNullable())
+        if (type.IsNullableValueType())
         {
             var underlyingTypeName = GetShortTypeNameInternal(Nullable.GetUnderlyingType(type)!);
             return underlyingTypeName + "?";
@@ -407,7 +414,7 @@ public static class OmnifactotumTypeExtensions
             resultBuilder.Append(Type.Delimiter);
         }
 
-        if (!fullName && (type.IsNullable() || !type.IsGenericType && !type.IsGenericTypeDefinition))
+        if (!fullName && (type.IsNullableValueType() || !type.IsGenericType && !type.IsGenericTypeDefinition))
         {
             var shortTypeName = GetShortTypeNameInternal(type);
             resultBuilder.Append(shortTypeName);

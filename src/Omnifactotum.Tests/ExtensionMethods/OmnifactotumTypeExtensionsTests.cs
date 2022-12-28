@@ -36,16 +36,40 @@ internal sealed class OmnifactotumTypeExtensionsTests
     }
 
     [Test]
-    public void TestIsNullableWhenNullArgumentIsPassedThenThrows()
-        => Assert.That(() => ((Type?)null)!.IsNullable(), Throws.ArgumentNullException);
+    public void TestIsNullableValueTypeWhenNullArgumentIsPassedThenThrows()
+    {
+        Assert.That(() => ((Type?)null)!.IsNullableValueType(), Throws.ArgumentNullException);
+
+#pragma warning disable CS0618
+        Assert.That(() => ((Type?)null)!.IsNullable(), Throws.ArgumentNullException);
+#pragma warning restore CS0618
+    }
 
     [Test]
+    [TestCase(typeof(void), false)]
+    [TestCase(typeof(void*), false)]
     [TestCase(typeof(bool), false)]
     [TestCase(typeof(bool?), true)]
+    [TestCase(typeof(int), false)]
+    [TestCase(typeof(int*), false)]
+    [TestCase(typeof(int?), true)]
+    [TestCase(typeof(IntPtr), false)]
+    [TestCase(typeof(IntPtr*), false)]
+    [TestCase(typeof(IntPtr?), true)]
+    [TestCase(typeof(DateTime), false)]
+    [TestCase(typeof(DateTime?), true)]
+    [TestCase(typeof(DateTimeKind), false)]
+    [TestCase(typeof(DateTimeKind?), true)]
     [TestCase(typeof(string), false)]
     [TestCase(typeof(object), false)]
     [TestCase(typeof(Action), false)]
     [TestCase(typeof(IDisposable), false)]
-    public void TestIsNullableWhenValidArgumentIsPassedThenSucceeds(Type type, bool expectedResult)
-        => Assert.That(type.IsNullable(), Is.EqualTo(expectedResult));
+    public void TestIsNullableValueTypeWhenValidArgumentIsPassedThenSucceeds(Type type, bool expectedResult)
+    {
+        Assert.That(type.IsNullableValueType(), Is.EqualTo(expectedResult));
+
+#pragma warning disable CS0618
+        Assert.That(type.IsNullable(), Is.EqualTo(expectedResult));
+#pragma warning restore CS0618
+    }
 }

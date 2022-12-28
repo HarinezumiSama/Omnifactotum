@@ -67,7 +67,7 @@ public abstract class MemberConstraintBase : IMemberConstraint
         {
             TTarget target => target,
 
-            null => !targetType.IsValueType || targetType.IsNullable()
+            null => !targetType.IsValueType || targetType.IsNullableValueType()
                 ? (TTarget)value!
                 : throw new InvalidOperationException(
                     AsInvariant(

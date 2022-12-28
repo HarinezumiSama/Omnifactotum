@@ -108,7 +108,7 @@ public static class ObjectValidator
             || type == typeof(Pointer)
             || type == typeof(DateTime)
             || type == typeof(DateTimeOffset)
-            || type.IsNullable();
+            || type.IsNullableValueType();
 
     [CanBeNull]
     private static BaseMemberConstraintAttribute[]? FilterBy<TAttribute>(
