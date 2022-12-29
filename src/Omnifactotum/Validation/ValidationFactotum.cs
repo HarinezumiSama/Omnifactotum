@@ -40,7 +40,7 @@ internal static class ValidationFactotum
             throw new ArgumentNullException(nameof(valueType));
         }
 
-        var expressionType = expression.Type.GetCollectionElementType() ?? expression.Type;
+        var expressionType = expression.Type.GetCollectionElementTypeOrDefault() ?? expression.Type;
 
         return expressionType == valueType ? expression : Expression.Convert(expression, valueType);
     }

@@ -215,12 +215,28 @@ public static class OmnifactotumTypeExtensions
     }
 
     /// <summary>
-    ///     <para>Determines the type of the elements in the collection represented by the specified type.</para>
-    ///     <para>If the specified type is not a collection (<see cref="IEnumerable"/>) or if it is a generic type
-    ///     definition, <see langword="null"/> is returned.</para>
-    ///     <para>If the specified type is not a generic collection (<see cref="IEnumerable{T}"/>) but it is
-    ///     a non-generic collection (<see cref="IEnumerable"/>), <c>typeof(<see cref="System.Object"/>)</c>
-    ///     is returned.</para>
+    ///     Deprecated. Use <see cref="GetCollectionElementTypeOrDefault"/> instead.
+    /// </summary>
+    [Obsolete(
+        $@"""{nameof(OmnifactotumTypeExtensions)}.{nameof(GetCollectionElementType)}"" is deprecated and will be removed in a future version"
+        + $@". Please use ""{nameof(OmnifactotumTypeExtensions)}.{nameof(GetCollectionElementTypeOrDefault)}"" instead.",
+        false)]
+    [CanBeNull]
+    public static Type? GetCollectionElementType([NotNull] this Type type) => GetCollectionElementTypeOrDefault(type);
+
+    /// <summary>
+    ///     <para>
+    ///         Determines the type of the elements in the collection represented by the specified type.
+    ///     </para>
+    ///     <para>
+    ///         If the specified type is not a collection (<see cref="IEnumerable"/> or <see cref="IEnumerable{T}"/>) or if it is a generic type
+    ///         definition, <see langword="null"/> is returned.
+    ///     </para>
+    ///     <para>
+    ///         If the specified type is not a generic collection (<see cref="IEnumerable{T}"/>) but it is
+    ///         a non-generic collection (<see cref="IEnumerable"/>), <c>typeof(<see cref="System.Object"/>)</c>
+    ///         is returned.
+    ///     </para>
     /// </summary>
     /// <param name="type">
     ///     The type for which to get the type of the elements in the collection represented by the specified type.
@@ -229,43 +245,30 @@ public static class OmnifactotumTypeExtensions
     ///     The type of the elements in the collection represented by the specified type.
     /// </returns>
     [CanBeNull]
-    public static Type? GetCollectionElementType([NotNull] this Type type)
+    public static Type? GetCollectionElementTypeOrDefault([NotNull] this Type type)
     {
         if (type is null)
         {
             throw new ArgumentNullException(nameof(type));
         }
 
-        if (type.HasElementType && type.IsArray)
+        if (type is { HasElementType: true, IsArray: true } && type.GetElementType() is { } arrayElementType)
         {
-            var defaultElementType = type.GetElementType();
-            if (defaultElementType != null)
-            {
-                return defaultElementType;
-            }
+            return arrayElementType;
         }
 
-        var interfaces = type.GetInterfaces();
-        foreach (var @interface in interfaces)
+        if (type is { IsInterface: true, IsGenericType: true, IsGenericTypeDefinition: false } && type.GetGenericTypeDefinition() == typeof(IEnumerable<>))
         {
-            if (!@interface.IsGenericType)
-            {
-                continue;
-            }
+            return type.GetGenericArguments().Single();
+        }
 
-            var definition = @interface.GetGenericTypeDefinition();
-            if (definition != typeof(IEnumerable<>))
-            {
-                continue;
-            }
+        var enumerableInterfaceType = type
+            .GetInterfaces()
+            .FirstOrDefault(interfaceType => interfaceType.IsGenericType && interfaceType.GetGenericTypeDefinition() == typeof(IEnumerable<>));
 
-            var elementType = @interface.GetGenericArguments().Single();
-            if (elementType.IsGenericParameter)
-            {
-                break;
-            }
-
-            return elementType;
+        if (enumerableInterfaceType?.GetGenericArguments().Single() is { IsGenericParameter: false } enumerableElementType)
+        {
+            return enumerableElementType;
         }
 
         return typeof(IEnumerable).IsAssignableFrom(type) ? typeof(object) : null;
