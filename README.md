@@ -43,6 +43,7 @@
 - [**`HttpStatusCode`**](https://docs.microsoft.com/en-us/dotnet/api/system.net.httpstatuscode) extension methods
 - [**`IDisposable`**](https://docs.microsoft.com/en-us/dotnet/api/system.idisposable) extension methods
 - [**`IEqualityComparer<T>`**](https://docs.microsoft.com/en-us/dotnet/api/system.collections.generic.iequalitycomparer-1) extension methods
+- [**`ImmutableArray<T>`**](https://learn.microsoft.com/en-us/dotnet/api/system.collections.immutable.immutablearray-1) extension methods
 - [**`ISet<T>`**](https://docs.microsoft.com/en-us/dotnet/api/system.collections.generic.iset-1) extension methods
 - Math extension methods for numeric types
 - [**`Nullable<Boolean>` (`bool?`)**](https://docs.microsoft.com/en-us/dotnet/api/system.nullable-1) extension methods
