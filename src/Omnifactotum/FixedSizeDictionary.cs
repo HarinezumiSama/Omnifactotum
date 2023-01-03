@@ -184,7 +184,7 @@ public class FixedSizeDictionary<TKey, TValue, TDeterminant> : IDictionary<TKey,
 
     /// <inheritdoc cref="IReadOnlyDictionary{TKey,TValue}.TryGetValue" />
 #if NET5_0_OR_GREATER
-        public bool TryGetValue(TKey key, [MaybeNullWhen(false)] out TValue value)
+    public bool TryGetValue(TKey key, [MaybeNullWhen(false)] out TValue value)
 #else
     public bool TryGetValue(TKey key, out TValue value)
 #endif

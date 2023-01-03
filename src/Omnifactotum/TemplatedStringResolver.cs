@@ -91,7 +91,7 @@ public sealed class TemplatedStringResolver
             if (!match.Success)
             {
 #if NETSTANDARD2_1_OR_GREATER || NET5_0_OR_GREATER
-                    resultBuilder.Append(templatedString.AsSpan(index));
+                resultBuilder.Append(templatedString.AsSpan(index));
 #else
                 resultBuilder.Append(templatedString.Substring(index));
 #endif
@@ -99,27 +99,27 @@ public sealed class TemplatedStringResolver
             }
 
 #if NETSTANDARD2_1_OR_GREATER || NET5_0_OR_GREATER
-                resultBuilder.Append(templatedString.AsSpan(index, match.Index - index));
+            resultBuilder.Append(templatedString.AsSpan(index, match.Index - index));
 #else
             resultBuilder.Append(templatedString.Substring(index, match.Index - index));
 #endif
             index = match.Index + match.Length;
 
-            var openingBraceGroup = match.Groups[Constants.OpeningBraceGroupName];
+            var openingBraceGroup = match.Groups[Constants.GroupNames.OpeningBrace];
             if (openingBraceGroup.Success)
             {
-                resultBuilder.Append(Constants.OpeningBrace);
+                resultBuilder.Append(Constants.OpeningBraceChar);
                 continue;
             }
 
-            var closingBraceGroup = match.Groups[Constants.ClosingBraceGroupName];
+            var closingBraceGroup = match.Groups[Constants.GroupNames.ClosingBrace];
             if (closingBraceGroup.Success)
             {
-                resultBuilder.Append(Constants.ClosingBrace);
+                resultBuilder.Append(Constants.ClosingBraceChar);
                 continue;
             }
 
-            var variableNameGroup = match.Groups[Constants.VariableNameGroupName];
+            var variableNameGroup = match.Groups[Constants.GroupNames.VariableName];
             if (variableNameGroup.Success)
             {
                 var variableName = variableNameGroup.Value;
@@ -138,7 +138,7 @@ public sealed class TemplatedStringResolver
                 continue;
             }
 
-            var unexpectedTokenGroup = match.Groups[Constants.UnexpectedTokenGroupName];
+            var unexpectedTokenGroup = match.Groups[Constants.GroupNames.UnexpectedToken];
             if (unexpectedTokenGroup.Success)
             {
                 if (!options.IsAnySet(TemplatedStringResolverOptions.TolerateUnexpectedTokens))
@@ -182,33 +182,36 @@ public sealed class TemplatedStringResolver
 
     private static class Constants
     {
-        public const string OpeningBraceGroupName = "openingBrace";
-        public const string ClosingBraceGroupName = "closingBrace";
-        public const string VariableNameGroupName = "varName";
-        public const string UnexpectedTokenGroupName = "unexpectedToken";
-
-        public const char OpeningBrace = '{';
-        public const char ClosingBrace = '}';
+        public const char OpeningBraceChar = '{';
+        public const char ClosingBraceChar = '}';
 
         private const RegexOptions CommonRegexOptions = RegexOptions.Compiled | RegexOptions.ExplicitCapture | RegexOptions.Singleline
             | RegexOptions.IgnorePatternWhitespace;
 
         private static readonly TimeSpan RegexTimeout = TimeSpan.FromMilliseconds(50);
 
-        private static readonly string EscapedOpeningBrace = Regex.Escape(OpeningBrace.ToString(CultureInfo.InvariantCulture));
-        private static readonly string EscapedClosingBrace = Regex.Escape(ClosingBrace.ToString(CultureInfo.InvariantCulture));
+        private static readonly string EscapedOpeningBraceChar = Regex.Escape(OpeningBraceChar.ToString(CultureInfo.InvariantCulture));
+        private static readonly string EscapedClosingBraceChar = Regex.Escape(ClosingBraceChar.ToString(CultureInfo.InvariantCulture));
 
-        private static readonly string VariableNameRegexPattern = $@"[^{EscapedOpeningBrace}{EscapedClosingBrace}]*";
+        private static readonly string VariableNameRegexPattern = $@"[^{EscapedOpeningBraceChar}{EscapedClosingBraceChar}]*";
         private static readonly string ValidVariableNameRegexPattern = $@"^{VariableNameRegexPattern}$";
 
         private static readonly string TemplateRegexPattern =
-            $@"(?<{OpeningBraceGroupName}>{EscapedOpeningBrace}{EscapedOpeningBrace}) | (?:{
-                EscapedOpeningBrace}(?<{VariableNameGroupName}>{VariableNameRegexPattern}){EscapedClosingBrace}) | (?<{
-                    ClosingBraceGroupName}>{EscapedClosingBrace}{EscapedClosingBrace}) | (?<{
-                        UnexpectedTokenGroupName}>(?:{EscapedOpeningBrace}|{EscapedClosingBrace}))";
+            $@"(?<{GroupNames.OpeningBrace}>{EscapedOpeningBraceChar}{EscapedOpeningBraceChar}) | (?:{
+                EscapedOpeningBraceChar}(?<{GroupNames.VariableName}>{VariableNameRegexPattern}){EscapedClosingBraceChar}) | (?<{
+                    GroupNames.ClosingBrace}>{EscapedClosingBraceChar}{EscapedClosingBraceChar}) | (?<{
+                        GroupNames.UnexpectedToken}>(?:{EscapedOpeningBraceChar}|{EscapedClosingBraceChar}))";
 
         public static Regex TemplateRegex { get; } = new(TemplateRegexPattern, CommonRegexOptions, RegexTimeout);
 
         public static Regex ValidVariableNameRegex { get; } = new(ValidVariableNameRegexPattern, CommonRegexOptions, RegexTimeout);
+
+        public static class GroupNames
+        {
+            public const string OpeningBrace = nameof(OpeningBrace);
+            public const string ClosingBrace = nameof(ClosingBrace);
+            public const string VariableName = nameof(VariableName);
+            public const string UnexpectedToken = nameof(UnexpectedToken);
+        }
     }
 }

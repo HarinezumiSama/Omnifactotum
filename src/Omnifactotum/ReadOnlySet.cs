@@ -18,8 +18,8 @@ namespace Omnifactotum;
 public sealed class ReadOnlySet<T>
     : ISet<T>
 #if NET5_0_OR_GREATER
-            ,
-            IReadOnlySet<T>
+        ,
+        IReadOnlySet<T>
 #endif
 {
     private const string ReadOnlyMessage = "The set is read-only and cannot be modified.";
