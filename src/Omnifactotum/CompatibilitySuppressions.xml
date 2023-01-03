@@ -7,4 +7,25 @@
         <Left>lib/net5.0/Omnifactotum.dll</Left>
         <Right>lib/net6.0/Omnifactotum.dll</Right>
     </Suppression>
+    <Suppression>
+        <DiagnosticId>CP0001</DiagnosticId>
+        <Target>T:System.ServiceModel.OmnifactotumOperationContextExtensions</Target>
+        <Left>lib/net461/Omnifactotum.dll</Left>
+        <Right>lib/netstandard2.0/Omnifactotum.dll</Right>
+        <IsBaselineSuppression>true</IsBaselineSuppression>
+    </Suppression>
+    <Suppression>
+        <DiagnosticId>CP0001</DiagnosticId>
+        <Target>T:System.Collections.Generic.KeyValuePair</Target>
+        <Left>lib/net461/Omnifactotum.dll</Left>
+        <Right>lib/netstandard2.0/Omnifactotum.dll</Right>
+        <IsBaselineSuppression>true</IsBaselineSuppression>
+    </Suppression>
+    <Suppression>
+        <DiagnosticId>CP0001</DiagnosticId>
+        <Target>T:Omnifactotum.WinEventLog</Target>
+        <Left>lib/net461/Omnifactotum.dll</Left>
+        <Right>lib/netstandard2.0/Omnifactotum.dll</Right>
+        <IsBaselineSuppression>true</IsBaselineSuppression>
+    </Suppression>
 </Suppressions>

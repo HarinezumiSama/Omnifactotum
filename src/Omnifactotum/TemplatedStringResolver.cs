@@ -173,7 +173,7 @@ public sealed class TemplatedStringResolver
         //// ReSharper disable once UnusedParameter.Local :: Local contract
         [NotNull]
         static string GetGroupName([NotNull] Group group)
-#if NET461 || NETSTANDARD2_0
+#if NETSTANDARD2_0
             => nameof(Group);
 #else
             => $@"{nameof(Group)} {group.Name.ToUIString()}";
