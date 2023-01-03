@@ -54,7 +54,7 @@
         <Authors>Vitalii Maklai</Authors>
         <Company>$(Authors)</Company>
         <Product>$(SolutionName)</Product>
-        <Description>$(Product): Provides own helper and functional classes as well as extension methods for standard .NET classes.</Description>
+        <Description>$(Product) is the ultimate solution for .NET developers who want to streamline their development process. It provides its own helper and functional classes and interfaces as well as the extension methods for the standard .NET types. $(Product) is compatible with the older and newer .NET versions. It's the perfect way to reduce errors and save time, allowing developers to focus on creating quality code.</Description>
         <Copyright>Copyright © $(Authors) 2004-$(BuildDateYear)</Copyright>
         <RepositoryUrl>https://github.com/HarinezumiSama/$(SolutionName)</RepositoryUrl>
         <RepositoryType>git</RepositoryType>
