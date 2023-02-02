@@ -19,22 +19,44 @@ namespace Omnifactotum;
 public sealed class TemplatedStringResolver
 {
     /// <summary>
+    ///     The default <see cref="IEqualityComparer{T}"/> used to compare the names of the template variables.
+    /// </summary>
+    /// <seealso cref="TemplateVariableNameComparer"/>
+    /// <seealso cref="TemplateVariables"/>
+    public static readonly StringComparer DefaultTemplateVariableNameComparer = StringComparer.Ordinal;
+
+#if NETSTANDARD2_1_OR_GREATER || NET5_0_OR_GREATER
+    private delegate void AppendAction(ReadOnlySpan<char> value);
+#else
+    private delegate void AppendAction(string value);
+#endif
+
+    /// <summary>
     ///     Initializes a new instance of the <see cref="TemplatedStringResolver"/> class using the specified template variables.
     /// </summary>
     /// <param name="templateVariables">
     ///     The template variables. See <see cref="TemplateVariables"/> for more details.
     /// </param>
+    /// <param name="templateVariableNameComparer">
+    ///     <see cref="IEqualityComparer{T}"/> used to compare the names of the template variables,
+    ///     or <see langword="null"/> to use <see cref="DefaultTemplateVariableNameComparer"/>.
+    /// </param>
     /// <exception cref="ArgumentNullException">
     ///     <paramref name="templateVariables"/> is <see langword="null"/>.
     /// </exception>
-    public TemplatedStringResolver([NotNull] IReadOnlyDictionary<string, string> templateVariables)
+    public TemplatedStringResolver(
+        [NotNull] IReadOnlyDictionary<string, string> templateVariables,
+        [CanBeNull] IEqualityComparer<string>? templateVariableNameComparer = null)
     {
         if (templateVariables is null)
         {
             throw new ArgumentNullException(nameof(templateVariables));
         }
 
-        TemplateVariables = templateVariables.ToImmutableDictionary(StringComparer.Ordinal);
+        var resolvedTemplateVariableNameComparer = ResolveVariableNameComparer(templateVariableNameComparer);
+
+        TemplateVariableNameComparer = resolvedTemplateVariableNameComparer;
+        TemplateVariables = templateVariables.ToImmutableDictionary(resolvedTemplateVariableNameComparer);
 
         var invalidVariableNames = TemplateVariables
             .Keys
@@ -49,10 +71,64 @@ public sealed class TemplatedStringResolver
     }
 
     /// <summary>
-    ///     Gets the dictionary having variable names as its keys and corresponding variable values as its values. The variable names are case-sensitive.
+    ///     <see cref="IEqualityComparer{T}"/> used to compare the names of the template variables.
+    /// </summary>
+    /// <seealso cref="TemplatedStringResolver(IReadOnlyDictionary{string, string}, IEqualityComparer{string})"/>
+    [NotNull]
+    public IEqualityComparer<string> TemplateVariableNameComparer { get; }
+
+    /// <summary>
+    ///     Gets the dictionary having the template variable names as its keys and the corresponding template variable values as its values.
+    ///     How the variable names are compared depends on <see cref="TemplateVariableNameComparer"/>.
     /// </summary>
     [NotNull]
     public ImmutableDictionary<string, string> TemplateVariables { get; }
+
+    /// <summary>
+    ///     Determines the names of the template variables used in the specified templated string.
+    /// </summary>
+    /// <param name="templatedString">
+    ///     The templated string to determine the names of the template variables in.
+    /// </param>
+    /// <param name="templateVariableNameComparer">
+    ///     <see cref="IEqualityComparer{T}"/> used to compare the names of the template variables.
+    /// </param>
+    /// <param name="tolerateUnexpectedTokens">
+    ///     Specifies whether unexpected tokens should be tolerated.
+    ///     Corresponds to the <see cref="TemplatedStringResolverOptions.TolerateUnexpectedTokens"/> flag.
+    /// </param>
+    /// <returns>
+    ///     An array of the unique names of the template variables used in the specified templated string.
+    /// </returns>
+    /// <exception cref="TemplatedStringResolverException">
+    ///     There is an error in the templated string.
+    /// </exception>
+    [NotNull]
+    [ItemNotNull]
+    public static string[] GetVariableNames(
+        [NotNull] string templatedString,
+        [CanBeNull] IEqualityComparer<string>? templateVariableNameComparer = null,
+        bool tolerateUnexpectedTokens = false)
+    {
+        var resultSet = new HashSet<string>(templateVariableNameComparer);
+
+        string? OnResolveVariable(string variableName)
+        {
+            resultSet.Add(variableName);
+            return null;
+        }
+
+        var options = TemplatedStringResolverOptions.TolerateUndefinedVariables;
+
+        if (tolerateUnexpectedTokens)
+        {
+            options |= TemplatedStringResolverOptions.TolerateUnexpectedTokens;
+        }
+
+        ProcessTemplatedString(templatedString, OnResolveVariable, null, options);
+
+        return resultSet.ToArray();
+    }
 
     /// <summary>
     ///     Resolves the specified templated string.
@@ -70,7 +146,7 @@ public sealed class TemplatedStringResolver
     ///     <paramref name="templatedString"/> is <see langword="null"/>.
     /// </exception>
     /// <exception cref="TemplatedStringResolverException">
-    ///     An error in the templated string has occurred.
+    ///     There is an error in the templated string.
     /// </exception>
     [NotNull]
     public string Resolve(
@@ -84,6 +160,29 @@ public sealed class TemplatedStringResolver
 
         var resultBuilder = new StringBuilder(templatedString.Length);
 
+        ProcessTemplatedString(
+            templatedString,
+            variableName => TemplateVariables.TryGetValue(variableName, out var variableValue) ? variableValue : null,
+            value => resultBuilder.Append(value),
+            options);
+
+        return resultBuilder.ToString();
+    }
+
+    private static IEqualityComparer<string> ResolveVariableNameComparer([CanBeNull] IEqualityComparer<string>? templateVariableNameComparer)
+        => templateVariableNameComparer ?? DefaultTemplateVariableNameComparer;
+
+    private static void ProcessTemplatedString(
+        [NotNull] string templatedString,
+        [NotNull] Func<string, string?> onResolveVariable,
+        [CanBeNull] AppendAction? onAppend,
+        TemplatedStringResolverOptions options)
+    {
+        if (templatedString is null)
+        {
+            throw new ArgumentNullException(nameof(templatedString));
+        }
+
         var index = 0;
         while (index < templatedString.Length)
         {
@@ -91,31 +190,31 @@ public sealed class TemplatedStringResolver
             if (!match.Success)
             {
 #if NETSTANDARD2_1_OR_GREATER || NET5_0_OR_GREATER
-                resultBuilder.Append(templatedString.AsSpan(index));
+                onAppend?.Invoke(templatedString.AsSpan(index));
 #else
-                resultBuilder.Append(templatedString.Substring(index));
+                onAppend?.Invoke(templatedString.Substring(index));
 #endif
                 break;
             }
 
 #if NETSTANDARD2_1_OR_GREATER || NET5_0_OR_GREATER
-            resultBuilder.Append(templatedString.AsSpan(index, match.Index - index));
+            onAppend?.Invoke(templatedString.AsSpan(index, match.Index - index));
 #else
-            resultBuilder.Append(templatedString.Substring(index, match.Index - index));
+            onAppend?.Invoke(templatedString.Substring(index, match.Index - index));
 #endif
             index = match.Index + match.Length;
 
             var openingBraceGroup = match.Groups[Constants.GroupNames.OpeningBrace];
             if (openingBraceGroup.Success)
             {
-                resultBuilder.Append(Constants.OpeningBraceChar);
+                onAppend?.Invoke(Constants.OpeningBraceChar);
                 continue;
             }
 
             var closingBraceGroup = match.Groups[Constants.GroupNames.ClosingBrace];
             if (closingBraceGroup.Success)
             {
-                resultBuilder.Append(Constants.ClosingBraceChar);
+                onAppend?.Invoke(Constants.ClosingBraceChar);
                 continue;
             }
 
@@ -123,7 +222,8 @@ public sealed class TemplatedStringResolver
             if (variableNameGroup.Success)
             {
                 var variableName = variableNameGroup.Value;
-                if (!TemplateVariables.TryGetValue(variableName, out var variableValue))
+                var variableValue = onResolveVariable(variableName);
+                if (variableValue is null)
                 {
                     if (options.IsAnySet(TemplatedStringResolverOptions.TolerateUndefinedVariables))
                     {
@@ -134,7 +234,7 @@ public sealed class TemplatedStringResolver
                         $@"Error at index {match.Index}: the injected variable {variableName.ToUIString()} is not defined.");
                 }
 
-                resultBuilder.Append(variableValue);
+                onAppend?.Invoke(variableValue);
                 continue;
             }
 
@@ -147,7 +247,7 @@ public sealed class TemplatedStringResolver
                         $@"Error at index {match.Index}: unexpected token {unexpectedTokenGroup.Value.ToUIString()}.");
                 }
 
-                resultBuilder.Append(unexpectedTokenGroup.Value);
+                onAppend?.Invoke(unexpectedTokenGroup.Value);
                 continue;
             }
 
@@ -168,8 +268,6 @@ public sealed class TemplatedStringResolver
                 $@"[Internal error] Error at index {match.Index}: unexpected regular expression match has occurred: {successfulGroupsDescription}.");
         }
 
-        return resultBuilder.ToString();
-
         //// ReSharper disable once UnusedParameter.Local :: Local contract
         [NotNull]
         static string GetGroupName([NotNull] Group group)
@@ -182,8 +280,8 @@ public sealed class TemplatedStringResolver
 
     private static class Constants
     {
-        public const char OpeningBraceChar = '{';
-        public const char ClosingBraceChar = '}';
+        public const string OpeningBraceChar = "{";
+        public const string ClosingBraceChar = "}";
 
         private const RegexOptions CommonRegexOptions = RegexOptions.Compiled | RegexOptions.ExplicitCapture | RegexOptions.Singleline
             | RegexOptions.IgnorePatternWhitespace;
