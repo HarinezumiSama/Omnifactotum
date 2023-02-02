@@ -1250,6 +1250,12 @@ public enum CollectionAccessType
 ///     Indicates that the marked method is assertion method, i.e. it halts the control flow if one of the conditions is satisfied.
 ///     To set the condition, mark one of the parameters with <see cref="AssertionConditionAttribute"/> attribute.
 /// </summary>
+/// <remarks>
+///     While the <see cref="AssertionMethodAttribute"/> has not been made obsolete, is is no longer used to indicate the fact
+///     that a particular condition halts the execution of the method. In other words, it is the <see cref="AssertionConditionAttribute"/> that
+///     has been made obsolete and needs to be replaced with a contract annotation (see <see cref="ContractAnnotationAttribute"/>).
+/// </remarks>
+/// <seealso cref="!:https://blog.jetbrains.com/dotnet/2012/08/15/contract-annotations-in-resharper-7/"/>
 [AttributeUsage(AttributeTargets.Method)]
 [ExcludeFromCodeCoverage]
 public sealed class AssertionMethodAttribute : Attribute
@@ -1257,9 +1263,17 @@ public sealed class AssertionMethodAttribute : Attribute
 }
 
 /// <summary>
-///     Indicates the condition parameter of the assertion method. The method itself should be marked by
-///     <see cref="AssertionMethodAttribute"/> attribute. The mandatory argument of the attribute is the assertion type.
+///     <para>Indicates the condition parameter of the assertion method.</para>
+///     <para>If the assertion method argument satisfies the condition, then the execution continues. Otherwise, execution is assumed to be halted.</para>
+///     <para>The method itself should be marked by
+///     <see cref="AssertionMethodAttribute"/> attribute. The mandatory argument of the attribute is the assertion type.</para>
 /// </summary>
+/// <remarks>
+///     While the <see cref="AssertionMethodAttribute"/> has not been made obsolete, is is no longer used to indicate the fact
+///     that a particular condition halts the execution of the method. In other words, it is the <see cref="AssertionConditionAttribute"/> that
+///     has been made obsolete and needs to be replaced with a contract annotation (see <see cref="ContractAnnotationAttribute"/>).
+/// </remarks>
+/// <seealso cref="!:https://blog.jetbrains.com/dotnet/2012/08/15/contract-annotations-in-resharper-7/"/>
 [AttributeUsage(AttributeTargets.Parameter)]
 [ExcludeFromCodeCoverage]
 public sealed class AssertionConditionAttribute : Attribute
