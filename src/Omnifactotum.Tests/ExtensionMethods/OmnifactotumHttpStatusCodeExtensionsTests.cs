@@ -7,6 +7,8 @@ namespace Omnifactotum.Tests.ExtensionMethods;
 internal sealed class OmnifactotumHttpStatusCodeExtensionsTests
 {
     [Test]
+    [TestCase((HttpStatusCode)(-12345), "-12345")]
+    [TestCase((HttpStatusCode)(-1), "-1")]
     [TestCase((HttpStatusCode)0, "0")]
     [TestCase((HttpStatusCode)100, "100 Continue")]
     [TestCase((HttpStatusCode)101, "101 SwitchingProtocols")]

@@ -31,6 +31,13 @@ public static class OmnifactotumHttpStatusCodeExtensions
     /// <returns>
     ///     The UI representation of the specified <see cref="HttpStatusCode"/> value.
     /// </returns>
+    /// <example>
+    ///     <code>
+    /// <![CDATA[
+    ///         Console.WriteLine("Status code: {0}.", HttpStatusCode.NotFound.ToUIString()); // Output: Status code: 404 NotFound.
+    /// ]]>
+    ///     </code>
+    /// </example>
     public static string ToUIString(this HttpStatusCode value)
     {
         var valueAsInt = (int)value;
@@ -43,6 +50,6 @@ public static class OmnifactotumHttpStatusCodeExtensions
 
         return valueAsString is null
             ? valueAsInt.ToString(CultureInfo.InvariantCulture)
-            : AsInvariant($@"{valueAsInt} {valueAsString}");
+            : AsInvariant($@"{valueAsInt:D} {valueAsString}");
     }
 }
