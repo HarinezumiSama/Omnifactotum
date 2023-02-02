@@ -286,6 +286,45 @@ internal sealed class FactotumTests
         Assert.That(name, Is.EqualTo($@"{nameof(FactotumTests)}.{nameof(TestObjectBase)}.{nameof(TestObjectBase.StaticProperty)}"));
     }
 
+    [Test]
+    public void TestAssertWhenConditionEvaluatesToTrueThenSucceeds()
+    {
+        Assert.That(() => Factotum.Assert(true), Throws.Nothing);
+        Assert.That(() => Factotum.Assert(true, message => new AssertionException(message)), Throws.Nothing);
+    }
+
+    [Test]
+    public void TestAssertWhenConditionEvaluatesToFalseThenSucceeds()
+    {
+#if NET5_0_OR_GREATER
+        const string SimpleConditionExpectedExceptionMessage = "The following condition is not met: { false }. Location:\x0020";
+#else
+        const string SimpleConditionExpectedExceptionMessage = "The specified condition is not met. Location:\x0020";
+#endif
+
+        Assert.That(
+            () => Factotum.Assert(false),
+            Throws.TypeOf<OmnifactotumAssertionException>().With.Message.StartsWith(SimpleConditionExpectedExceptionMessage));
+
+        Assert.That(
+            () => Factotum.Assert(false, message => new InvalidOperationException(message)),
+            Throws.TypeOf<InvalidOperationException>().With.Message.StartsWith(SimpleConditionExpectedExceptionMessage));
+
+#if NET5_0_OR_GREATER
+        const string ComplexConditionExpectedExceptionMessage = "The following condition is not met: { Math.Sign(Math.PI) == 0 }. Location:\x0020";
+#else
+        const string ComplexConditionExpectedExceptionMessage = "The specified condition is not met. Location:\x0020";
+#endif
+
+        Assert.That(
+            () => Factotum.Assert(Math.Sign(Math.PI) == 0),
+            Throws.TypeOf<OmnifactotumAssertionException>().With.Message.StartsWith(ComplexConditionExpectedExceptionMessage));
+
+        Assert.That(
+            () => Factotum.Assert(Math.Sign(Math.PI) == 0, message => new InvalidOperationException(message)),
+            Throws.TypeOf<InvalidOperationException>().With.Message.StartsWith(ComplexConditionExpectedExceptionMessage));
+    }
+
     private abstract class TestObjectBase
     {
         public static string? StaticProperty { get; set; }

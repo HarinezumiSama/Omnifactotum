@@ -727,7 +727,59 @@ public static partial class Factotum
         }
     }
 
-    internal static string GetDefaultCallerArgumentExpressionDetails(string? valueExpression = null)
+    /// <summary>
+    ///     Checks for a condition.
+    ///     If the condition is <see langword="false"/>, throws an exception; otherwise, continues normal execution.
+    /// </summary>
+    /// <param name="condition">
+    ///     The conditional expression to evaluate.
+    /// </param>
+    /// <param name="createAssertionFailureException">
+    ///     A reference to a method that creates an assertion failure exception with the specified message,
+    ///     or <see langword="null"/> to create <see cref="OmnifactotumAssertionException"/>.
+    ///     This method is only called if <paramref name="condition"/> is <see langword="false"/>.
+    /// </param>
+    /// <param name="callerFilePath">
+    ///     <para><b>NOTE</b>: Do not pass a value for this parameter as it is automatically injected by the compiler (.NET 5+ and C# 10+).</para>
+    ///     <para>The full path of the source file that contains the caller of the method.</para>
+    /// </param>
+    /// <param name="callerFileNumber">
+    ///     <para><b>NOTE</b>: Do not pass a value for this parameter as it is automatically injected by the compiler (.NET 5+ and C# 10+).</para>
+    ///     <para>The line number in the source file at which the method is called.</para>
+    /// </param>
+    /// <param name="conditionExpression">
+    ///     <para><b>NOTE</b>: Do not pass a value for this parameter as it is automatically injected by the compiler (.NET 5+ and C# 10+).</para>
+    ///     <para>A string value representing the expression passed as the value of the <paramref name="condition"/> parameter.</para>
+    /// </param>
+    [ContractAnnotation("condition:false => stop", true)]
+    public static void Assert(
+        bool condition,
+        Func<string, Exception>? createAssertionFailureException = null,
+        [CallerFilePath] string? callerFilePath = null,
+        [CallerLineNumber] int callerFileNumber = 0,
+#if NET5_0_OR_GREATER
+        [CallerArgumentExpression("condition")]
+#endif
+        string? conditionExpression = null)
+    {
+        if (condition)
+        {
+            return;
+        }
+
+        var message = AsInvariant($@"{GetDetails(conditionExpression)}. Location: {callerFilePath.ToUIString()} @ {callerFileNumber}.");
+
+        var exception = createAssertionFailureException is null
+            ? new OmnifactotumAssertionException(message)
+            : createAssertionFailureException(message).EnsureNotNull();
+
+        throw exception;
+
+        static string GetDetails(string? valueExpression)
+            => valueExpression is null ? "The specified condition is not met" : AsInvariant($"The following condition is not met: {{ {valueExpression} }}");
+    }
+
+    internal static string GetDefaultCallerArgumentExpressionDetails(string? valueExpression)
         => valueExpression is null ? string.Empty : $"\x0020Expression: {{ {valueExpression} }}.";
 
     private static bool ProcessRecursivelyInternal<T>(
