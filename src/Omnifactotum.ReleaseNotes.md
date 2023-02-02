@@ -1,4 +1,22 @@
-﻿### Changes in 0.11.0 (since 0.10.0)
+﻿### Changes in 0.12.0 (since 0.11.0)
+
+#### Breaking Changes
+
+- Removed support of **.NET Framework 4.6.1**
+
+#### New features
+
+- `TemplatedStringResolver`: Added the static `GetVariableNames()` method
+- `Factotum`: Added the `Assert(...)` method
+  - For .NET 5+ and higher, the `conditionExpression` parameter is marked with the `CallerArgumentExpression` attribute
+  - For the older .NET versions, the `conditionExpression` parameter is supplied only for binary compatibility between the different target frameworks
+
+#### Minor updates and fixes
+
+- Minor improvements in `OmnifactotumHttpStatusCodeExtensions.ToUIString()`
+- Improved documentation on `AssertionMethodAttribute` and `AssertionConditionAttribute`
+
+### Changes in 0.11.0 (since 0.10.0)
 
 #### Breaking Changes
 
