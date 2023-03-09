@@ -98,23 +98,25 @@ public sealed class TemplatedStringResolver
     ///     Corresponds to the <see cref="TemplatedStringResolverOptions.TolerateUnexpectedTokens"/> flag.
     /// </param>
     /// <returns>
-    ///     An array of the unique names of the template variables used in the specified templated string.
+    ///     A <see cref="HashSet{T}"/> containing the unique names of the template variables used in the specified templated string.
     /// </returns>
     /// <exception cref="TemplatedStringResolverException">
     ///     There is an error in the templated string.
     /// </exception>
     [NotNull]
     [ItemNotNull]
-    public static string[] GetVariableNames(
+    public static HashSet<string> GetVariableNames(
         [NotNull] string templatedString,
         [CanBeNull] IEqualityComparer<string>? templateVariableNameComparer = null,
         bool tolerateUnexpectedTokens = false)
     {
-        var resultSet = new HashSet<string>(templateVariableNameComparer);
+        var resolvedTemplateVariableNameComparer = ResolveVariableNameComparer(templateVariableNameComparer);
+
+        var result = new HashSet<string>(resolvedTemplateVariableNameComparer);
 
         string? OnResolveVariable(string variableName)
         {
-            resultSet.Add(variableName);
+            result.Add(variableName);
             return null;
         }
 
@@ -127,7 +129,7 @@ public sealed class TemplatedStringResolver
 
         ProcessTemplatedString(templatedString, OnResolveVariable, null, options);
 
-        return resultSet.ToArray();
+        return result;
     }
 
     /// <summary>
