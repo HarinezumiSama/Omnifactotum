@@ -19,7 +19,7 @@ internal sealed class OmnifactotumEnumExtensionsTests
     [TestCase(UIntTestFlags.Flag2)]
     public void TestEnsureDefinedWhenDefinedEnumerationValueArgumentIsPassedThenSucceeds<TEnum>(TEnum enumValue)
         where TEnum : struct, Enum
-        => Assert.That(() => enumValue.EnsureDefined(), Throws.Nothing);
+        => Assert.That(() => enumValue.EnsureDefined(), Is.EqualTo(enumValue));
 
     [Test]
     [TestCase(

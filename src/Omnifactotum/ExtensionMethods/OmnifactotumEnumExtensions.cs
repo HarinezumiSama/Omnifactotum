@@ -237,14 +237,14 @@ public static class OmnifactotumEnumExtensions
     ///     <para>A string value representing the expression passed as the value of the <paramref name="enumerationValue"/> parameter.</para>
     ///     <para><b>NOTE</b>: Do not pass a value for this parameter as it is automatically injected by the compiler (.NET 5+ and C# 10+).</para>
     /// </param>
-    /// <exception cref="System.ArgumentNullException">
-    ///     <paramref name="enumerationValue"/> is <see langword="null"/>.
-    /// </exception>
+    /// <returns>
+    ///     The specified enumeration value if it is defined; otherwise, <see cref="System.ComponentModel.InvalidEnumArgumentException"/> is thrown.
+    /// </returns>
     /// <exception cref="System.ComponentModel.InvalidEnumArgumentException">
     ///     <paramref name="enumerationValue"/> is not defined in the corresponding enumeration.
     /// </exception>
     [MethodImpl(OmnifactotumConstants.MethodOptimizationOptions.Standard)]
-    public static void EnsureDefined<TEnum>(
+    public static TEnum EnsureDefined<TEnum>(
         this TEnum enumerationValue,
 #if NET5_0_OR_GREATER
         [CallerArgumentExpression("enumerationValue")]
@@ -254,7 +254,7 @@ public static class OmnifactotumEnumExtensions
     {
         if (IsDefinedInternal(enumerationValue))
         {
-            return;
+            return enumerationValue;
         }
 
         var details = Factotum.GetDefaultCallerArgumentExpressionDetails(enumerationValueExpression);
