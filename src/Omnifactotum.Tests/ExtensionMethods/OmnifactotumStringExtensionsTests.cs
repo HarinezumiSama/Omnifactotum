@@ -171,6 +171,79 @@ internal sealed class OmnifactotumStringExtensionsTests
     public void TestToUIString(string? value, string expectedResult) => Assert.That(value.ToUIString, Is.EqualTo(expectedResult));
 
     [Test]
+    [TestCase(null, "null")]
+    [TestCase("", @"{ Length = 0 }")]
+    [TestCase("b054ab0a11eb9889c8aB693", @"{ Length = 23 }")]
+    [TestCase("4C15538a053f4b89a1961A5e", @"""4C15...1A5e""")]
+    [TestCase("a9251868d527450384d88c3a39de1958", @"""a925...1958""")]
+    [SuppressMessage("ReSharper", "ArgumentsStyleNamedExpression")]
+    public void TestToSecuredUIStringWhenDefaultOptionalParametersThenSucceeds(string? value, string expectedResult)
+    {
+        Assert.That(() => value.ToSecuredUIString(), Is.EqualTo(expectedResult));
+
+        Assert.That(
+            () => value.ToSecuredUIString(
+                loggedPartLength: OmnifactotumStringExtensions.DefaultLoggedPartLength,
+                minimumSecuredPartLength: OmnifactotumStringExtensions.DefaultMinimumSecuredPartLength),
+            Is.EqualTo(expectedResult));
+    }
+
+    [Test]
+    [TestCase(null, 1, 1, "null")]
+    [TestCase("", 1, 1, @"{ Length = 0 }")]
+    [TestCase("bQ3", 1, 1, @"""b...3""")]
+    [TestCase("bQ3", 2, 1, @"{ Length = 3 }")]
+    [TestCase("bQ3", 1, 2, @"{ Length = 3 }")]
+    [TestCase(@"4C""5538a053f4b""9a1961A5e", 1, 1, @"""4...e""")]
+    [TestCase(@"4C""5538a053f4b""9a1961A5e", 2, 1, @"""4C...5e""")]
+    [TestCase(@"4C""5538a053f4b""9a1961A5e", 3, 1, @"""4C""""...A5e""")]
+    [TestCase(@"4C""5538a053f4b""9a1961A5e", 4, 1, @"""4C""""5...1A5e""")]
+    [TestCase(@"4C""5538a053f4b""9a1961A5e", 11, 1, @"""4C""""5538a053...b""""9a1961A5e""")]
+    [TestCase(@"4C""5538a053f4b""9a1961A5e", 11, 2, @"""4C""""5538a053...b""""9a1961A5e""")]
+    [TestCase(@"4C""5538a053f4b""9a1961A5e", 12, 1, @"{ Length = 24 }")]
+    [TestCase(@"4C""5538a053f4b""9a1961A5e", 3, 18, @"""4C""""...A5e""")]
+    [TestCase(@"4C""5538a053f4b""9a1961A5e", 3, 19, @"{ Length = 24 }")]
+    [TestCase("a9251868d527450384d88c3a39de1958", 1, 1, @"""a...8""")]
+    [SuppressMessage("ReSharper", "ArgumentsStyleNamedExpression")]
+    public void TestToSecuredUIStringWhenValidSpecifiedOptionalParametersThenSucceeds(
+        string? value,
+        int loggedPartLength,
+        int minimumSecuredPartLength,
+        string expectedResult)
+        => Assert.That(
+            () => value.ToSecuredUIString(loggedPartLength: loggedPartLength, minimumSecuredPartLength: minimumSecuredPartLength),
+            Is.EqualTo(expectedResult));
+
+    [Test]
+    [TestCase(null, 0, OmnifactotumStringExtensions.DefaultMinimumSecuredPartLength, "loggedPartLength")]
+    [TestCase(null, -1, OmnifactotumStringExtensions.DefaultMinimumSecuredPartLength, "loggedPartLength")]
+    [TestCase(null, int.MinValue, OmnifactotumStringExtensions.DefaultMinimumSecuredPartLength, "loggedPartLength")]
+    [TestCase("", 0, OmnifactotumStringExtensions.DefaultMinimumSecuredPartLength, "loggedPartLength")]
+    [TestCase("", -1, OmnifactotumStringExtensions.DefaultMinimumSecuredPartLength, "loggedPartLength")]
+    [TestCase("", int.MinValue, OmnifactotumStringExtensions.DefaultMinimumSecuredPartLength, "loggedPartLength")]
+    [TestCase("Value1", 0, OmnifactotumStringExtensions.DefaultMinimumSecuredPartLength, "loggedPartLength")]
+    [TestCase("Value1", -1, OmnifactotumStringExtensions.DefaultMinimumSecuredPartLength, "loggedPartLength")]
+    [TestCase("Value1", int.MinValue, OmnifactotumStringExtensions.DefaultMinimumSecuredPartLength, "loggedPartLength")]
+    [TestCase(null, OmnifactotumStringExtensions.DefaultLoggedPartLength, 0, "minimumSecuredPartLength")]
+    [TestCase(null, OmnifactotumStringExtensions.DefaultLoggedPartLength, -1, "minimumSecuredPartLength")]
+    [TestCase(null, OmnifactotumStringExtensions.DefaultLoggedPartLength, int.MinValue, "minimumSecuredPartLength")]
+    [TestCase("", OmnifactotumStringExtensions.DefaultLoggedPartLength, 0, "minimumSecuredPartLength")]
+    [TestCase("", OmnifactotumStringExtensions.DefaultLoggedPartLength, -1, "minimumSecuredPartLength")]
+    [TestCase("", OmnifactotumStringExtensions.DefaultLoggedPartLength, int.MinValue, "minimumSecuredPartLength")]
+    [TestCase("Value2", OmnifactotumStringExtensions.DefaultLoggedPartLength, 0, "minimumSecuredPartLength")]
+    [TestCase("Value2", OmnifactotumStringExtensions.DefaultLoggedPartLength, -1, "minimumSecuredPartLength")]
+    [TestCase("Value2", OmnifactotumStringExtensions.DefaultLoggedPartLength, int.MinValue, "minimumSecuredPartLength")]
+    [SuppressMessage("ReSharper", "ArgumentsStyleNamedExpression")]
+    public void TestToSecuredUIStringWhenInvalidSpecifiedOptionalParametersThenSucceeds(
+        string? value,
+        int loggedPartLength,
+        int minimumSecuredPartLength,
+        string erroneousParameterName)
+        => Assert.That(
+            () => value.ToSecuredUIString(loggedPartLength: loggedPartLength, minimumSecuredPartLength: minimumSecuredPartLength),
+            Throws.TypeOf<ArgumentOutOfRangeException>().With.Property(nameof(ArgumentException.ParamName)).EqualTo(erroneousParameterName));
+
+    [Test]
     [TestCase(null, null, "")]
     [TestCase(null, new[] { '#' }, "")]
     [TestCase("", null, "")]

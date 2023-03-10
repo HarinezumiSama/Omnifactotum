@@ -22,6 +22,16 @@ namespace System;
 public static class OmnifactotumStringExtensions
 {
     /// <summary>
+    ///     The default value of the minimum secured part length parameter in the <see cref="ToSecuredUIString"/> method.
+    /// </summary>
+    public const int DefaultMinimumSecuredPartLength = 16;
+
+    /// <summary>
+    ///     The default value of the logged part length parameter in the <see cref="ToSecuredUIString"/> method.
+    /// </summary>
+    public const int DefaultLoggedPartLength = 4;
+
+    /// <summary>
     ///     Determines whether the specified string is <see langword="null"/> or an <see cref="String.Empty"/> string.
     /// </summary>
     /// <param name="value">
@@ -34,8 +44,7 @@ public static class OmnifactotumStringExtensions
     [Pure]
     [ContractAnnotation("null => true", true)]
     [MethodImpl(OmnifactotumConstants.MethodOptimizationOptions.Standard)]
-    public static bool IsNullOrEmpty([NotNullWhen(false)] [CanBeNull] this string? value)
-        => string.IsNullOrEmpty(value);
+    public static bool IsNullOrEmpty([NotNullWhen(false)] [CanBeNull] this string? value) => string.IsNullOrEmpty(value);
 
     /// <summary>
     ///     Determines whether a specified string is <see langword="null"/>, <see cref="String.Empty"/>,
@@ -51,8 +60,7 @@ public static class OmnifactotumStringExtensions
     [Pure]
     [ContractAnnotation("null => true", true)]
     [MethodImpl(OmnifactotumConstants.MethodOptimizationOptions.Standard)]
-    public static bool IsNullOrWhiteSpace([NotNullWhen(false)] [CanBeNull] this string? value)
-        => string.IsNullOrWhiteSpace(value);
+    public static bool IsNullOrWhiteSpace([NotNullWhen(false)] [CanBeNull] this string? value) => string.IsNullOrWhiteSpace(value);
 
     /// <summary>
     ///     Converts the specified string value to an equivalent <see cref="Boolean"/> value.
@@ -280,6 +288,68 @@ public static class OmnifactotumStringExtensions
                 OmnifactotumConstants.DoubleQuote,
                 value.Replace(OmnifactotumConstants.DoubleQuote, OmnifactotumConstants.DoubleDoubleQuote),
                 OmnifactotumConstants.DoubleQuote);
+
+    /// <summary>
+    ///     <para>
+    ///         Converts the specified string to its secured UI representation.
+    ///     </para>
+    ///     <para>
+    ///         Depending on the input string and the <paramref name="loggedPartLength"/> and <paramref name="minimumSecuredPartLength"/> parameters,
+    ///         the resulting secured UI representation has one of the following formats:
+    ///         <list type="bullet">
+    ///             <item><c>"ABC...XYZ"</c></item>
+    ///             <item><c>{ Length = NNN }</c></item>
+    ///         </list>
+    ///         where:
+    ///         <list type="bullet">
+    ///             <item><c>ABC</c> is the first <paramref name="loggedPartLength"/> characters of the input string.</item>
+    ///             <item><c>XYZ</c> is the last <paramref name="loggedPartLength"/> characters of the input string.</item>
+    ///             <item><c>NNN</c> is the length of the input string.</item>
+    ///         </list>
+    ///     </para>
+    /// </summary>
+    /// <param name="value">
+    ///     The string value to convert.
+    /// </param>
+    /// <param name="minimumSecuredPartLength">
+    ///     The minimum length of the part of the input string that should be hidden from the resulting UI representation.
+    /// </param>
+    /// <param name="loggedPartLength">
+    ///     The length of the part in the beginning and the part in the end of the input string that are displayed in the resulting UI representation.
+    /// </param>
+    /// <returns>
+    ///     The secured UI representation of the specified string.
+    /// </returns>
+    [NotNull]
+    [Pure]
+    public static string ToSecuredUIString(
+        this string? value,
+        int loggedPartLength = DefaultLoggedPartLength,
+        int minimumSecuredPartLength = DefaultMinimumSecuredPartLength)
+    {
+        if (loggedPartLength <= 0)
+        {
+            throw new ArgumentOutOfRangeException(nameof(loggedPartLength), loggedPartLength, @"The value must be greater than zero.");
+        }
+
+        if (minimumSecuredPartLength <= 0)
+        {
+            throw new ArgumentOutOfRangeException(nameof(minimumSecuredPartLength), minimumSecuredPartLength, @"The value must be greater than zero.");
+        }
+
+        var minimumLoggedValueLength = checked(loggedPartLength * 2 + minimumSecuredPartLength);
+
+        if (value is null)
+        {
+            return OmnifactotumRepresentationConstants.NullValueRepresentation;
+        }
+
+        var result = value.Length >= minimumLoggedValueLength
+            ? ToUIString($@"{value.Substring(0, loggedPartLength)}...{value.Substring(value.Length - loggedPartLength)}")
+            : $@"{{ {nameof(string.Length)} = {value.Length} }}";
+
+        return result;
+    }
 
     /// <summary>
     ///     Removes all leading and trailing occurrences of a set of characters specified in an array
