@@ -50,4 +50,35 @@ public static class OmnifactotumExceptionExtensions
     [DebuggerNonUserCode]
     public static bool IsFatal([CanBeNull] this Exception? exception)
         => exception is ThreadAbortException or OperationCanceledException or OutOfMemoryException or StackOverflowException;
+
+    /// <summary>
+    ///     Determines whether the specified exception or any of its inner exceptions is <typeparamref name="TOriginatingException"/> (or its descendant).
+    /// </summary>
+    /// <param name="exception">
+    ///     The exception to check.
+    /// </param>
+    /// <typeparam name="TOriginatingException">
+    ///     The type of the originating exception to check <paramref name="exception"/> against.
+    /// </typeparam>
+    /// <returns>
+    ///     <see langword="true"/> if the specified exception or any of its inner exceptions is <typeparamref name="TOriginatingException"/>
+    ///     (or its descendant); otherwise, <see langword="false"/>.
+    /// </returns>
+    [DebuggerNonUserCode]
+    public static bool IsOriginatedFrom<TOriginatingException>([CanBeNull] this Exception? exception)
+        where TOriginatingException : Exception
+    {
+        var currentException = exception;
+        while (currentException is not null)
+        {
+            if (currentException is TOriginatingException)
+            {
+                return true;
+            }
+
+            currentException = currentException.InnerException;
+        }
+
+        return false;
+    }
 }
