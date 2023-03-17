@@ -2,8 +2,8 @@
 
 <Project>
     <PropertyGroup>
-        <Version>0.13.0</Version>
-        <PackageValidationBaselineVersion>0.12.0</PackageValidationBaselineVersion>
+        <Version>0.14.0</Version>
+        <PackageValidationBaselineVersion>0.13.0</PackageValidationBaselineVersion>
     </PropertyGroup>
 
     <PropertyGroup>
@@ -25,7 +25,7 @@
 
     <Target Name="PrintBuildPropertiesBeforeBuild" BeforeTargets="Build">
         <Message
-                Text="AssemblyVersion = &quot;$(AssemblyVersion)&quot;, PackageVersion = &quot;$(PackageVersion)&quot;, InformationalVersion = &quot;$(InformationalVersion)&quot;"
+                Text="[$(MSBuildProjectName):$(TargetFramework)] AssemblyVersion = &quot;$(AssemblyVersion)&quot;, PackageVersion = &quot;$(PackageVersion)&quot;, InformationalVersion = &quot;$(InformationalVersion)&quot;"
                 Importance="high" />
     </Target>
 
