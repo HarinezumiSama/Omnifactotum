@@ -252,7 +252,7 @@ public class FixedSizeDictionary<TKey, TValue, TDeterminant> : IDictionary<TKey,
             }
 
             var key = Determinant.GetKey(index);
-            array[currentArrayIndex] = OmnifactotumKeyValuePair.Create(key, item.Value);
+            array[currentArrayIndex] = KeyValuePair.Create(key, item.Value);
             currentArrayIndex++;
         }
     }

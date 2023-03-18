@@ -16,10 +16,12 @@ public static class OmnifactotumHttpStatusCodeExtensions
         new()
         {
             { 418, @"IAmATeapot" },
-            { 422, @"UnprocessableEntity" },
             { 425, @"TooEarly" },
+#if !NET5_0_OR_GREATER
+            { 422, @"UnprocessableEntity" },
             { 429, @"TooManyRequests" },
             { 451, @"UnavailableForLegalReasons" }
+#endif
         };
 
     /// <summary>

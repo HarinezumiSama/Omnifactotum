@@ -2,26 +2,6 @@
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 
-#if NETFRAMEWORK && !NET472_OR_GREATER
-#error [NETFRAMEWORK] The compiler does not support `NET*_OR_GREATER` preprocessor symbols required to compile this project.
-#endif
-
-#if NETSTANDARD && !NETSTANDARD1_0_OR_GREATER
-#error [NETSTANDARD] The compiler does not support `NETSTANDARD*_OR_GREATER` preprocessor symbols required to compile this project.
-#endif
-
-#if NETCOREAPP && !NETCOREAPP1_0_OR_GREATER
-#error [NETCOREAPP] The compiler does not support `NETCOREAPP*_OR_GREATER` preprocessor symbols required to compile this project.
-#endif
-
-#if NET5_0 && !NET5_0_OR_GREATER
-#error [NET5_0] The compiler does not support `NET*_OR_GREATER` preprocessor symbols required to compile this project.
-#endif
-
-#if NET6_0 && !NET6_0_OR_GREATER
-#error [NET6_0] The compiler does not support `NET*_OR_GREATER` preprocessor symbols required to compile this project.
-#endif
-
 // Miscellaneous
 [assembly: CLSCompliant(true)]
 

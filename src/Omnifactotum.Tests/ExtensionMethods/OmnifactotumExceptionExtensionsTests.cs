@@ -4,10 +4,6 @@ using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using NUnit.Framework;
 
-#if NETFRAMEWORK
-using System.Threading;
-#endif
-
 namespace Omnifactotum.Tests.ExtensionMethods;
 
 [TestFixture(TestOf = typeof(OmnifactotumExceptionExtensions))]
@@ -20,28 +16,6 @@ internal sealed class OmnifactotumExceptionExtensionsTests
 
         Assert.That(() => NullException.IsFatal(), Is.False);
     }
-
-#if NETFRAMEWORK
-    [Test]
-    public void TestIsFatalWhenThreadAbortExceptionIsPassedThenReturnsTrue()
-    {
-        var currentThread = Thread.CurrentThread;
-        var stateInfo = new object();
-
-        try
-        {
-            currentThread.Abort(stateInfo);
-        }
-        catch (ThreadAbortException ex)
-            when (ReferenceEquals(ex.ExceptionState, stateInfo))
-        {
-            Thread.ResetAbort();
-
-            Assert.That(() => ex.IsFatal(), Is.True);
-        }
-    }
-
-#endif
 
     [Test]
     [TestCase(typeof(OperationCanceledException), true)]

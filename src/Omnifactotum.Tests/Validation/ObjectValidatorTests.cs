@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using System.Globalization;
@@ -9,10 +10,6 @@ using Omnifactotum.NUnit;
 using Omnifactotum.Validation;
 using Omnifactotum.Validation.Constraints;
 using static Omnifactotum.FormattableStringFactotum;
-
-#if !NETFRAMEWORK
-using System.Collections;
-#endif
 
 namespace Omnifactotum.Tests.Validation;
 
@@ -81,11 +78,7 @@ internal sealed class ObjectValidatorTests
             .Select(obj => obj.Context.Expression.ToString())
             .ToArray();
 
-#if NETFRAMEWORK
-        var itemPropertyPathConvertSpecifier = string.Empty;
-#else
         var itemPropertyPathConvertSpecifier = AsInvariant($@", {nameof(AnotherSimpleData)}");
-#endif
 
         var expectedNotNullErrorExpressions =
             new[]
@@ -131,14 +124,8 @@ internal sealed class ObjectValidatorTests
             }
         };
 
-#if NETFRAMEWORK
-        var propertiesPropertyPathConvertSpecifier = string.Empty;
-        var keyValuePairPropertyPathConvertSpecifier = string.Empty;
-#else
         var propertiesPropertyPathConvertSpecifier = AsInvariant($@", {nameof(IEnumerable)}");
         var keyValuePairPropertyPathConvertSpecifier = AsInvariant($@", {typeof(KeyValuePair<,>).Name}");
-#endif
-
         var propertiesPropertyPath = AsInvariant($@"Convert({{0}}.Properties{propertiesPropertyPathConvertSpecifier})");
 
         var validationResult = ObjectValidator.Validate(mapContainer);
@@ -181,7 +168,7 @@ internal sealed class ObjectValidatorTests
         var nullContainedValue =
             (int?)notNullError.Context.CreateLambdaExpression("value").Compile().Invoke(mapContainer);
 
-        Assert.That(nullContainedValue.HasValue, Is.False);
+        Assert.That(() => nullContainedValue.HasValue, Is.False);
     }
 
     private static string MakeExpressionString(string propertyPathTemplate)

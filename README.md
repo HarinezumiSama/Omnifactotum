@@ -36,11 +36,11 @@
 - [**`DateTime`**](https://docs.microsoft.com/en-us/dotnet/api/system.datetime) extension methods
 - [**`DateTimeOffset`**](https://docs.microsoft.com/en-us/dotnet/api/system.datetimeoffset) extension methods
 - [**`Delegate`**](https://docs.microsoft.com/en-us/dotnet/api/system.delegate) extension methods
-- [**`Dictionary<TKey, TValue>`**](https://docs.microsoft.com/en-us/dotnet/api/system.collections.generic.dictionary-2) extension methods
 - [**`Enum`**](https://docs.microsoft.com/en-us/dotnet/api/system.enum) extension methods
 - [**`Exception`**](https://docs.microsoft.com/en-us/dotnet/api/system.exception) extension methods
 - [**`Expression<TDelegate>`**](https://docs.microsoft.com/en-us/dotnet/api/system.linq.expressions.expression-1) extension methods
 - [**`HttpStatusCode`**](https://docs.microsoft.com/en-us/dotnet/api/system.net.httpstatuscode) extension methods
+- [**`IDictionary<TKey, TValue>`**](https://docs.microsoft.com/en-us/dotnet/api/system.collections.generic.idictionary-2) extension methods
 - [**`IDisposable`**](https://docs.microsoft.com/en-us/dotnet/api/system.idisposable) extension methods
 - [**`IEqualityComparer<T>`**](https://docs.microsoft.com/en-us/dotnet/api/system.collections.generic.iequalitycomparer-1) extension methods
 - [**`ImmutableArray<T>`**](https://learn.microsoft.com/en-us/dotnet/api/system.collections.immutable.immutablearray-1) extension methods
@@ -99,13 +99,3 @@
 - `OutFunc<in T, TOutput, out TResult>`
 - `OutFunc<in T1, in T2, TOutput, out TResult>`
 - `OutFunc<in T1, in T2, in T3, TOutput, out TResult>`
-
-### Dealing with Compatibility Issues
-
-Due to certain inconsistencies between `.NET Standard 2.0` and `.NET Core 2.x`, you may need to apply one or more workarounds as described below when using **`Omnifactotum`** with your projects compiled for `.NET Standard 2.0` or `.NET Core 2.x` **-or-** a mix of `.NET Standard 2.0` and/or `.NET Core 2.x` and/or `.NET Framework 4.x`:
-
-| Omnifactotum's Class or Method                                                                                                             | Workaround                                                                                                                                                                                  |
-|:-------------------------------------------------------------------------------------------------------------------------------------------|:--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
-| `System.Collections.Generic.KeyValuePair`                                                                                                  | Use [`Omnifactotum.OmnifactotumKeyValuePair`](./src/Omnifactotum/OmnifactotumKeyValuePair.cs).                                                                                              |
-| <code>[OmnifactotumCollectionExtensions](./src/Omnifactotum/ExtensionMethods/OmnifactotumCollectionExtensions.cs).ToHashSet(...)</code>    | Use static method invocation instead of extension method invocation. That is: `OmnifactotumCollectionExtensions.ToHashSet(collection)` instead of `collection.ToHashSet()`.                 |
-| <code>[OmnifactotumDictionaryExtensions](./src/Omnifactotum/ExtensionMethods/OmnifactotumDictionaryExtensions.cs).GetValueOrDefault</code> | Use static method invocation instead of extension method invocation. That is: `OmnifactotumDictionaryExtensions.GetValueOrDefault(dictionary)` instead of `dictionary.GetValueOrDefault()`. |

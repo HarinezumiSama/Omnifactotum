@@ -1,6 +1,56 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
+<!-- https://learn.microsoft.com/en-us/dotnet/fundamentals/package-validation/diagnostic-ids -->
 <!--suppress XmlUnusedNamespaceDeclaration -->
 <Suppressions xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+    <Suppression>
+        <DiagnosticId>CP0001</DiagnosticId>
+        <Target>T:Omnifactotum.OmnifactotumKeyValuePair</Target>
+        <Left>lib/net5.0/Omnifactotum.dll</Left>
+        <Right>lib/net5.0/Omnifactotum.dll</Right>
+        <IsBaselineSuppression>true</IsBaselineSuppression>
+    </Suppression>
+    <Suppression>
+        <DiagnosticId>CP0001</DiagnosticId>
+        <Target>T:Omnifactotum.OmnifactotumKeyValuePair</Target>
+        <Left>lib/net6.0/Omnifactotum.dll</Left>
+        <Right>lib/net6.0/Omnifactotum.dll</Right>
+        <IsBaselineSuppression>true</IsBaselineSuppression>
+    </Suppression>
+    <Suppression>
+        <DiagnosticId>CP0001</DiagnosticId>
+        <Target>T:Omnifactotum.OmnifactotumKeyValuePair</Target>
+        <Left>lib/netstandard2.1/Omnifactotum.dll</Left>
+        <Right>lib/netstandard2.1/Omnifactotum.dll</Right>
+        <IsBaselineSuppression>true</IsBaselineSuppression>
+    </Suppression>
+    <Suppression>
+        <DiagnosticId>CP0002</DiagnosticId>
+        <Target>M:System.Collections.Generic.OmnifactotumCollectionExtensions.ToHashSet``1(System.Collections.Generic.IEnumerable{``0},System.Collections.Generic.IEqualityComparer{``0})</Target>
+        <Left>lib/net5.0/Omnifactotum.dll</Left>
+        <Right>lib/net5.0/Omnifactotum.dll</Right>
+        <IsBaselineSuppression>true</IsBaselineSuppression>
+    </Suppression>
+    <Suppression>
+        <DiagnosticId>CP0002</DiagnosticId>
+        <Target>M:System.Collections.Generic.OmnifactotumCollectionExtensions.ToHashSet``1(System.Collections.Generic.IEnumerable{``0})</Target>
+        <Left>lib/net5.0/Omnifactotum.dll</Left>
+        <Right>lib/net5.0/Omnifactotum.dll</Right>
+        <IsBaselineSuppression>true</IsBaselineSuppression>
+    </Suppression>
+    <Suppression>
+        <DiagnosticId>CP0002</DiagnosticId>
+        <Target>M:System.Collections.Generic.OmnifactotumDictionaryExtensions.GetValueOrDefault``2(System.Collections.Generic.IDictionary{``0,``1},``0,``1)</Target>
+        <Left>lib/net5.0/Omnifactotum.dll</Left>
+        <Right>lib/net5.0/Omnifactotum.dll</Right>
+        <IsBaselineSuppression>true</IsBaselineSuppression>
+    </Suppression>
+    <Suppression>
+        <DiagnosticId>CP0002</DiagnosticId>
+        <Target>M:System.Collections.Generic.OmnifactotumDictionaryExtensions.GetValueOrDefault``2(System.Collections.Generic.IDictionary{``0,``1},``0)</Target>
+        <Left>lib/net5.0/Omnifactotum.dll</Left>
+        <Right>lib/net5.0/Omnifactotum.dll</Right>
+        <IsBaselineSuppression>true</IsBaselineSuppression>
+    </Suppression>
     <Suppression>
         <DiagnosticId>CP0002</DiagnosticId>
         <Target>M:System.Collections.Generic.OmnifactotumCollectionExtensions.Chunk``1(System.Collections.Generic.IEnumerable{``0},System.Int32)</Target>
@@ -8,66 +58,67 @@
         <Right>lib/net6.0/Omnifactotum.dll</Right>
     </Suppression>
     <Suppression>
-        <DiagnosticId>CP0001</DiagnosticId>
-        <Target>T:System.ServiceModel.OmnifactotumOperationContextExtensions</Target>
-        <Left>lib/net461/Omnifactotum.dll</Left>
-        <Right>lib/netstandard2.0/Omnifactotum.dll</Right>
-        <IsBaselineSuppression>true</IsBaselineSuppression>
-    </Suppression>
-    <Suppression>
-        <DiagnosticId>CP0001</DiagnosticId>
-        <Target>T:System.Collections.Generic.KeyValuePair</Target>
-        <Left>lib/net461/Omnifactotum.dll</Left>
-        <Right>lib/netstandard2.0/Omnifactotum.dll</Right>
-        <IsBaselineSuppression>true</IsBaselineSuppression>
-    </Suppression>
-    <Suppression>
-        <DiagnosticId>CP0001</DiagnosticId>
-        <Target>T:Omnifactotum.WinEventLog</Target>
-        <Left>lib/net461/Omnifactotum.dll</Left>
-        <Right>lib/netstandard2.0/Omnifactotum.dll</Right>
-        <IsBaselineSuppression>true</IsBaselineSuppression>
-    </Suppression>
-    <Suppression>
         <DiagnosticId>CP0002</DiagnosticId>
-        <Target>M:Omnifactotum.TemplatedStringResolver.#ctor(System.Collections.Generic.IReadOnlyDictionary{System.String,System.String})</Target>
-        <Left>lib/net461/Omnifactotum.dll</Left>
-        <Right>lib/netstandard2.0/Omnifactotum.dll</Right>
-        <IsBaselineSuppression>true</IsBaselineSuppression>
-    </Suppression>
-    <Suppression>
-        <DiagnosticId>CP0002</DiagnosticId>
-        <Target>M:Omnifactotum.TemplatedStringResolver.#ctor(System.Collections.Generic.IReadOnlyDictionary{System.String,System.String})</Target>
-        <Left>lib/net472/Omnifactotum.dll</Left>
-        <Right>lib/net472/Omnifactotum.dll</Right>
-        <IsBaselineSuppression>true</IsBaselineSuppression>
-    </Suppression>
-    <Suppression>
-        <DiagnosticId>CP0002</DiagnosticId>
-        <Target>M:Omnifactotum.TemplatedStringResolver.#ctor(System.Collections.Generic.IReadOnlyDictionary{System.String,System.String})</Target>
-        <Left>lib/net5.0/Omnifactotum.dll</Left>
-        <Right>lib/net5.0/Omnifactotum.dll</Right>
-        <IsBaselineSuppression>true</IsBaselineSuppression>
-    </Suppression>
-    <Suppression>
-        <DiagnosticId>CP0002</DiagnosticId>
-        <Target>M:Omnifactotum.TemplatedStringResolver.#ctor(System.Collections.Generic.IReadOnlyDictionary{System.String,System.String})</Target>
+        <Target>M:System.Collections.Generic.OmnifactotumCollectionExtensions.ToHashSet``1(System.Collections.Generic.IEnumerable{``0},System.Collections.Generic.IEqualityComparer{``0})</Target>
         <Left>lib/net6.0/Omnifactotum.dll</Left>
         <Right>lib/net6.0/Omnifactotum.dll</Right>
         <IsBaselineSuppression>true</IsBaselineSuppression>
     </Suppression>
     <Suppression>
         <DiagnosticId>CP0002</DiagnosticId>
-        <Target>M:Omnifactotum.TemplatedStringResolver.#ctor(System.Collections.Generic.IReadOnlyDictionary{System.String,System.String})</Target>
-        <Left>lib/netstandard2.0/Omnifactotum.dll</Left>
-        <Right>lib/netstandard2.0/Omnifactotum.dll</Right>
+        <Target>M:System.Collections.Generic.OmnifactotumCollectionExtensions.ToHashSet``1(System.Collections.Generic.IEnumerable{``0})</Target>
+        <Left>lib/net6.0/Omnifactotum.dll</Left>
+        <Right>lib/net6.0/Omnifactotum.dll</Right>
         <IsBaselineSuppression>true</IsBaselineSuppression>
     </Suppression>
     <Suppression>
         <DiagnosticId>CP0002</DiagnosticId>
-        <Target>M:Omnifactotum.TemplatedStringResolver.#ctor(System.Collections.Generic.IReadOnlyDictionary{System.String,System.String})</Target>
+        <Target>M:System.Collections.Generic.OmnifactotumDictionaryExtensions.GetValueOrDefault``2(System.Collections.Generic.IDictionary{``0,``1},``0,``1)</Target>
+        <Left>lib/net6.0/Omnifactotum.dll</Left>
+        <Right>lib/net6.0/Omnifactotum.dll</Right>
+        <IsBaselineSuppression>true</IsBaselineSuppression>
+    </Suppression>
+    <Suppression>
+        <DiagnosticId>CP0002</DiagnosticId>
+        <Target>M:System.Collections.Generic.OmnifactotumDictionaryExtensions.GetValueOrDefault``2(System.Collections.Generic.IDictionary{``0,``1},``0)</Target>
+        <Left>lib/net6.0/Omnifactotum.dll</Left>
+        <Right>lib/net6.0/Omnifactotum.dll</Right>
+        <IsBaselineSuppression>true</IsBaselineSuppression>
+    </Suppression>
+    <Suppression>
+        <DiagnosticId>CP0002</DiagnosticId>
+        <Target>M:System.Collections.Generic.OmnifactotumCollectionExtensions.ToHashSet``1(System.Collections.Generic.IEnumerable{``0},System.Collections.Generic.IEqualityComparer{``0})</Target>
         <Left>lib/netstandard2.1/Omnifactotum.dll</Left>
         <Right>lib/netstandard2.1/Omnifactotum.dll</Right>
         <IsBaselineSuppression>true</IsBaselineSuppression>
+    </Suppression>
+    <Suppression>
+        <DiagnosticId>CP0002</DiagnosticId>
+        <Target>M:System.Collections.Generic.OmnifactotumCollectionExtensions.ToHashSet``1(System.Collections.Generic.IEnumerable{``0})</Target>
+        <Left>lib/netstandard2.1/Omnifactotum.dll</Left>
+        <Right>lib/netstandard2.1/Omnifactotum.dll</Right>
+        <IsBaselineSuppression>true</IsBaselineSuppression>
+    </Suppression>
+    <Suppression>
+        <DiagnosticId>CP0002</DiagnosticId>
+        <Target>M:System.Collections.Generic.OmnifactotumDictionaryExtensions.GetValueOrDefault``2(System.Collections.Generic.IDictionary{``0,``1},``0,``1)</Target>
+        <Left>lib/netstandard2.1/Omnifactotum.dll</Left>
+        <Right>lib/netstandard2.1/Omnifactotum.dll</Right>
+        <IsBaselineSuppression>true</IsBaselineSuppression>
+    </Suppression>
+    <Suppression>
+        <DiagnosticId>CP0002</DiagnosticId>
+        <Target>M:System.Collections.Generic.OmnifactotumDictionaryExtensions.GetValueOrDefault``2(System.Collections.Generic.IDictionary{``0,``1},``0)</Target>
+        <Left>lib/netstandard2.1/Omnifactotum.dll</Left>
+        <Right>lib/netstandard2.1/Omnifactotum.dll</Right>
+        <IsBaselineSuppression>true</IsBaselineSuppression>
+    </Suppression>
+    <Suppression>
+        <DiagnosticId>PKV006</DiagnosticId>
+        <Target>.NETFramework,Version=v4.7.2</Target>
+    </Suppression>
+    <Suppression>
+        <DiagnosticId>PKV006</DiagnosticId>
+        <Target>.NETStandard,Version=v2.0</Target>
     </Suppression>
 </Suppressions>

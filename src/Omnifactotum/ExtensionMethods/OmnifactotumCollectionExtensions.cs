@@ -15,17 +15,10 @@ using NotNullAttribute = Omnifactotum.Annotations.NotNullAttribute;
 //// ReSharper disable once CheckNamespace :: Namespace is intentionally named so in order to simplify usage of extension methods
 namespace System.Collections.Generic;
 
-#if NETSTANDARD2_1_OR_GREATER || NET5_0_OR_GREATER
 /// <summary>
 ///     Contains extension methods for collections, that is, for <see cref="IEnumerable{T}"/>, <see cref="ICollection{T}"/>, <see cref="ICollection"/>,
 ///     <see cref="IList{T}"/>, <see cref="IAsyncEnumerable{T}"/>, <see cref="ConfiguredCancelableAsyncEnumerable{T}"/> etc.
 /// </summary>
-#else
-/// <summary>
-///     Contains extension methods for collections, that is, for <see cref="IEnumerable{T}"/>, <see cref="ICollection{T}"/>, <see cref="ICollection"/>,
-///     <see cref="IList{T}"/> etc.
-/// </summary>
-#endif
 [SuppressMessage("ReSharper", "UseDeconstruction", Justification = "Multiple target frameworks.")]
 public static class OmnifactotumCollectionExtensions
 {
@@ -454,7 +447,7 @@ public static class OmnifactotumCollectionExtensions
         return collection
             .GroupBy(keySelector, actualComparer)
             .Where(group => group.Count() > 1)
-            .Select(group => OmnifactotumKeyValuePair.Create(group.Key, group.ToList()))
+            .Select(group => KeyValuePair.Create(group.Key, group.ToList()))
             .ToDictionary(item => item.Key, item => item.Value, actualComparer);
     }
 
@@ -630,60 +623,6 @@ public static class OmnifactotumCollectionExtensions
             }
         }
     }
-
-    /// <summary>
-    ///     Creates a new instance of the <see cref="HashSet{T}"/> class that uses the specified equality comparer
-    ///     for the set type, contains elements copied from the specified collection, and has sufficient capacity
-    ///     to accommodate the number of elements copied.
-    /// </summary>
-    /// <typeparam name="T">
-    ///     The type of elements in the collection.
-    /// </typeparam>
-    /// <param name="collection">
-    ///     The collection to create a hash set from.
-    /// </param>
-    /// <param name="comparer">
-    ///     The comparer to initialize a hash set with.
-    /// </param>
-    /// <returns>
-    ///     A created hash set.
-    /// </returns>
-    [MethodImpl(OmnifactotumConstants.MethodOptimizationOptions.Maximum)]
-    [NotNull]
-    public static HashSet<T> ToHashSet<T>(
-        [NotNull] [InstantHandle]
-#if NETFRAMEWORK && !NET472_OR_GREATER
-        this IEnumerable<T> collection,
-#else
-        IEnumerable<T> collection,
-#endif
-        [CanBeNull] IEqualityComparer<T>? comparer)
-        => collection is null ? throw new ArgumentNullException(nameof(collection)) : new HashSet<T>(collection, comparer);
-
-    /// <summary>
-    ///     Creates a new instance of the <see cref="HashSet{T}"/> class that uses the default equality comparer
-    ///     for the set type, contains elements copied from the specified collection, and has sufficient capacity
-    ///     to accommodate the number of elements copied.
-    /// </summary>
-    /// <typeparam name="T">
-    ///     The type of elements in the collection.
-    /// </typeparam>
-    /// <param name="collection">
-    ///     The collection to create a hash set from.
-    /// </param>
-    /// <returns>
-    ///     A created hash set.
-    /// </returns>
-    [MethodImpl(OmnifactotumConstants.MethodOptimizationOptions.Maximum)]
-    [NotNull]
-    public static HashSet<T> ToHashSet<T>(
-        [NotNull] [InstantHandle]
-#if NETFRAMEWORK && !NET472_OR_GREATER
-        this IEnumerable<T> collection
-#else
-        IEnumerable<T> collection
-#endif
-    ) => collection is null ? throw new ArgumentNullException(nameof(collection)) : new HashSet<T>(collection);
 
     /// <summary>
     ///     Gets an object that can be used to synchronize access to the specified collection.
@@ -983,7 +922,6 @@ public static class OmnifactotumCollectionExtensions
     }
 #endif
 
-#if NETSTANDARD2_1_OR_GREATER || NET5_0_OR_GREATER
     /// <summary>
     ///     Configures an async iteration so that the awaits on the tasks returned from this iteration do not attempt
     ///     to marshal the continuation back to the original context captured.
@@ -1075,7 +1013,6 @@ public static class OmnifactotumCollectionExtensions
     [NotNull]
     public static async Task<T[]> EnumerateToArrayAsync<T>([NotNull] this IAsyncEnumerable<T> source, CancellationToken cancellationToken = default)
         => (await source.EnumerateToListAsync(cancellationToken)).ToArray();
-#endif
 
     /// <summary>
     ///     Checks the reference and count equality.
@@ -1125,7 +1062,7 @@ public static class OmnifactotumCollectionExtensions
         [NotNull] IEqualityComparer<KeyWrapper<T>> wrapperComparer)
         => collection
             .GroupBy(item => item, comparer)
-            .Select(group => OmnifactotumKeyValuePair.Create(new KeyWrapper<T>(group.Key), group.Count()))
+            .Select(group => KeyValuePair.Create(new KeyWrapper<T>(group.Key), group.Count()))
             .ToDictionary(item => item.Key, item => item.Value, wrapperComparer);
 
     private readonly struct KeyWrapper<T>

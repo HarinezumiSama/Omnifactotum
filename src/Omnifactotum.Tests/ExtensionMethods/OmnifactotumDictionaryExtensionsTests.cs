@@ -34,55 +34,6 @@ internal sealed class OmnifactotumDictionaryExtensionsTests
     public void TearDown() => _dictionary = null;
 
     [Test]
-    public void TestGetValueOrDefaultNegative()
-    {
-        //// ReSharper disable AssignNullToNotNullAttribute
-        Assert.That(() => NullDictionary!.GetValueOrDefault(Key1), Throws.TypeOf<ArgumentNullException>());
-
-        RecreateDictionary();
-        Assert.That(() => _dictionary.AssertNotNull().GetValueOrDefault(null!), Throws.TypeOf<ArgumentNullException>());
-        AssertInitialDictionaryState();
-
-        //// ReSharper restore AssignNullToNotNullAttribute
-    }
-
-    [Test]
-    public void TestGetValueOrDefault()
-    {
-        RecreateDictionary();
-#if NETCOREAPP2_1
-        Assert.That(OmnifactotumDictionaryExtensions.GetValueOrDefault(_dictionary!, Key1), Is.EqualTo(Value1));
-#else
-        Assert.That(_dictionary!.GetValueOrDefault(Key1), Is.EqualTo(Value1));
-#endif
-        AssertInitialDictionaryState();
-
-        RecreateDictionary();
-#if NETCOREAPP2_1
-        Assert.That(OmnifactotumDictionaryExtensions.GetValueOrDefault(_dictionary!, Key2), Is.Null);
-#else
-        Assert.That(_dictionary!.GetValueOrDefault(Key2), Is.Null);
-#endif
-        AssertInitialDictionaryState();
-
-        RecreateDictionary();
-#if NETCOREAPP2_1
-        Assert.That(OmnifactotumDictionaryExtensions.GetValueOrDefault(_dictionary!, Key2, null), Is.Null);
-#else
-        Assert.That(_dictionary!.GetValueOrDefault(Key2, null), Is.Null);
-#endif
-        AssertInitialDictionaryState();
-
-        RecreateDictionary();
-#if NETCOREAPP2_1
-        Assert.That(OmnifactotumDictionaryExtensions.GetValueOrDefault(_dictionary!, Key2, ExplicitValue2), Is.EqualTo(ExplicitValue2));
-#else
-        Assert.That(_dictionary!.GetValueOrDefault(Key2, ExplicitValue2), Is.EqualTo(ExplicitValue2));
-#endif
-        AssertInitialDictionaryState();
-    }
-
-    [Test]
     public void TestGetOrCreateValueNegative()
     {
         //// ReSharper disable AssignNullToNotNullAttribute

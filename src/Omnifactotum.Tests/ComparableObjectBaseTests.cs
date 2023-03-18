@@ -45,16 +45,9 @@ internal sealed class ComparableObjectBaseTests
         Assert.That(() => null >= object1A, Is.False);
         Assert.That(() => null > object1A, Is.False);
 
-#if NETCOREAPP3_1_OR_GREATER
-            //// ReSharper disable once ConvertToConstant.Local
-            var parameterNameSuffix = @" (Parameter 'obj')";
-#else
-        var parameterNameSuffix = $@"{Environment.NewLine}Parameter name: obj";
-#endif
-
         Assert.That(
             () => ((IComparable)object1A).CompareTo(new object()),
-            Throws.ArgumentException.With.Message.EqualTo($@"Incompatible comparand type: ""System.Object"".{parameterNameSuffix}"));
+            Throws.ArgumentException.With.Message.EqualTo(@"Incompatible comparand type: ""System.Object"". (Parameter 'obj')"));
 
         AssertSelfEquality<TestDescendant>(null);
         AssertSelfEquality(object1A);

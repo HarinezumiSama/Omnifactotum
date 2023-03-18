@@ -467,11 +467,9 @@ internal sealed class SemaphoreSlimBasedLockTests
 
         var parts = new[]
         {
-#if NETCOREAPP3_1_OR_GREATER
             $@"{nameof(ThreadPool)}.{nameof(ThreadPool.ThreadCount)} = {ThreadPool.ThreadCount}",
             $@"{nameof(ThreadPool)}.{nameof(ThreadPool.CompletedWorkItemCount)} = {ThreadPool.CompletedWorkItemCount}",
             $@"{nameof(ThreadPool)}.{nameof(ThreadPool.PendingWorkItemCount)} = {ThreadPool.PendingWorkItemCount}",
-#endif
             $@"{nameof(minWorkerThreads)} = {minWorkerThreads}",
             $@"{nameof(minCompletionPortThreads)} = {minCompletionPortThreads}",
             $@"{nameof(maxWorkerThreads)} = {maxWorkerThreads}",

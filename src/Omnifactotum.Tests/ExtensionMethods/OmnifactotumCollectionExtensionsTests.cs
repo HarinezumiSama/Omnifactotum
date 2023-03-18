@@ -4,17 +4,14 @@ using System.Collections.Immutable;
 using System.Collections.ObjectModel;
 using System.Diagnostics.CodeAnalysis;
 using System.Linq;
+using System.Runtime.CompilerServices;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using NUnit.Framework;
 using NUnit.Framework.Constraints;
-using Omnifactotum.NUnit;
-
-#if NETCOREAPP3_1_OR_GREATER || NET5_0_OR_GREATER
-using System.Runtime.CompilerServices;
 using Omnifactotum.Annotations;
-#endif
+using Omnifactotum.NUnit;
 
 namespace Omnifactotum.Tests.ExtensionMethods;
 
@@ -469,7 +466,6 @@ internal sealed class OmnifactotumCollectionExtensionsTests
         }
     }
 
-#if NETCOREAPP3_1_OR_GREATER || NET5_0_OR_GREATER
     [Test]
     public void TestEnumerateToListAsyncWhenInvalidArgumentThenThrows()
     {
@@ -614,7 +610,6 @@ internal sealed class OmnifactotumCollectionExtensionsTests
                     .Property(nameof(OperationCanceledException.CancellationToken))
                     .EqualTo(cancellationToken));
     }
-#endif
 
     private static void InvokeTestSetItems<T, TCollection>(Func<T[]> createItems1, Func<T[]> createItems2)
         where TCollection : ICollection<T>, new()

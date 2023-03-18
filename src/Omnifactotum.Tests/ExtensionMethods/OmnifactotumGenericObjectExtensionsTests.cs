@@ -20,7 +20,6 @@ internal sealed class OmnifactotumGenericObjectExtensionsTests
     private const object? NullObject = null;
 
     [Test]
-    [SuppressMessage("ReSharper", "InconsistentNaming", Justification = "Multiple target frameworks.")]
     public void TestEnsureNotNullForReferenceTypeSucceeds()
     {
         var emptyString = string.Empty;
@@ -30,49 +29,39 @@ internal sealed class OmnifactotumGenericObjectExtensionsTests
         Assert.That(() => someObject.EnsureNotNull(), Is.SameAs(someObject));
 
 #if NET5_0_OR_GREATER
-        const string expectedNullObjectFailureMessage = $"The following expression is null: {{ {nameof(NullObject)} }}. (Parameter 'value')";
-#elif NETCOREAPP3_1_OR_GREATER
-        const string expectedNullObjectFailureMessage = $"Exception of type '{nameof(System)}.{nameof(ArgumentNullException)}' was thrown. (Parameter 'value')";
+        const string ExpectedNullObjectFailureMessage = $"The following expression is null: {{ {nameof(NullObject)} }}. (Parameter 'value')";
 #else
-        var expectedNullObjectFailureMessage =
-            $"Exception of type '{nameof(System)}.{nameof(ArgumentNullException)}' was thrown.{Environment.NewLine}Parameter name: value";
+        const string ExpectedNullObjectFailureMessage = $"Exception of type '{nameof(System)}.{nameof(ArgumentNullException)}' was thrown. (Parameter 'value')";
 #endif
 
-        Assert.That(() => NullObject.EnsureNotNull(), Throws.TypeOf<ArgumentNullException>().With.Message.EqualTo(expectedNullObjectFailureMessage));
+        Assert.That(() => NullObject.EnsureNotNull(), Throws.TypeOf<ArgumentNullException>().With.Message.EqualTo(ExpectedNullObjectFailureMessage));
 
 #if NET5_0_OR_GREATER
-        const string expectedExpressionFailureMessage =
+        const string ExpectedExpressionFailureMessage =
             $"The following expression is null: {{ new {nameof(RecursiveNode)}().Parent?.Parent?.Value }}. (Parameter 'value')";
-#elif NETCOREAPP3_1_OR_GREATER
-        const string expectedExpressionFailureMessage = $"Exception of type '{nameof(System)}.{nameof(ArgumentNullException)}' was thrown. (Parameter 'value')";
 #else
-        var expectedExpressionFailureMessage =
-            $"Exception of type '{nameof(System)}.{nameof(ArgumentNullException)}' was thrown.{Environment.NewLine}Parameter name: value";
+        const string ExpectedExpressionFailureMessage = $"Exception of type '{nameof(System)}.{nameof(ArgumentNullException)}' was thrown. (Parameter 'value')";
 #endif
 
         Assert.That(
             () => (new RecursiveNode().Parent?.Parent?.Value).EnsureNotNull(),
-            Throws.TypeOf<ArgumentNullException>().With.Message.EqualTo(expectedExpressionFailureMessage));
+            Throws.TypeOf<ArgumentNullException>().With.Message.EqualTo(ExpectedExpressionFailureMessage));
     }
 
     [Test]
-    [SuppressMessage("ReSharper", "InconsistentNaming", Justification = "Multiple target frameworks.")]
     public void TestEnsureNotNullForNullableValueTypeSucceeds()
     {
         int? someValue = 42;
         Assert.That(() => someValue.EnsureNotNull(), Is.EqualTo(someValue.Value));
 
 #if NET5_0_OR_GREATER
-        const string expectedExpressionFailureMessage =
+        const string ExpectedExpressionFailureMessage =
             "The following expression is null: { (int?)null }. (Parameter 'value')";
-#elif NETCOREAPP3_1_OR_GREATER
-        const string expectedExpressionFailureMessage = $"Exception of type '{nameof(System)}.{nameof(ArgumentNullException)}' was thrown. (Parameter 'value')";
 #else
-        var expectedExpressionFailureMessage =
-            $"Exception of type '{nameof(System)}.{nameof(ArgumentNullException)}' was thrown.{Environment.NewLine}Parameter name: value";
+        const string ExpectedExpressionFailureMessage = $"Exception of type '{nameof(System)}.{nameof(ArgumentNullException)}' was thrown. (Parameter 'value')";
 #endif
 
-        Assert.That(() => ((int?)null).EnsureNotNull(), Throws.TypeOf<ArgumentNullException>().With.Message.EqualTo(expectedExpressionFailureMessage));
+        Assert.That(() => ((int?)null).EnsureNotNull(), Throws.TypeOf<ArgumentNullException>().With.Message.EqualTo(ExpectedExpressionFailureMessage));
     }
 
     [Test]

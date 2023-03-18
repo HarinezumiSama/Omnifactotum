@@ -25,11 +25,7 @@ public sealed class TemplatedStringResolver
     /// <seealso cref="TemplateVariables"/>
     public static readonly StringComparer DefaultTemplateVariableNameComparer = StringComparer.Ordinal;
 
-#if NETSTANDARD2_1_OR_GREATER || NET5_0_OR_GREATER
     private delegate void AppendAction(ReadOnlySpan<char> value);
-#else
-    private delegate void AppendAction(string value);
-#endif
 
     /// <summary>
     ///     Initializes a new instance of the <see cref="TemplatedStringResolver"/> class using the specified template variables.
@@ -191,19 +187,11 @@ public sealed class TemplatedStringResolver
             var match = Constants.TemplateRegex.Match(templatedString, index);
             if (!match.Success)
             {
-#if NETSTANDARD2_1_OR_GREATER || NET5_0_OR_GREATER
                 onAppend?.Invoke(templatedString.AsSpan(index));
-#else
-                onAppend?.Invoke(templatedString.Substring(index));
-#endif
                 break;
             }
 
-#if NETSTANDARD2_1_OR_GREATER || NET5_0_OR_GREATER
             onAppend?.Invoke(templatedString.AsSpan(index, match.Index - index));
-#else
-            onAppend?.Invoke(templatedString.Substring(index, match.Index - index));
-#endif
             index = match.Index + match.Length;
 
             var openingBraceGroup = match.Groups[Constants.GroupNames.OpeningBrace];
@@ -253,13 +241,7 @@ public sealed class TemplatedStringResolver
                 continue;
             }
 
-            var successfulGroups = match
-                .Groups
-#if !NETSTANDARD2_1_OR_GREATER
-                .Cast<Group>()
-#endif
-                .Where(group => group.Success)
-                .ToArray();
+            var successfulGroups = ((IEnumerable<Group>)match.Groups).Where(group => group.Success).ToArray();
 
             var successfulGroupsDescription = successfulGroups
                 .Select(group => $@"{GetGroupName(group)} @ {group.Index}: {group.Value.ToUIString()}")
@@ -270,14 +252,8 @@ public sealed class TemplatedStringResolver
                 $@"[Internal error] Error at index {match.Index}: unexpected regular expression match has occurred: {successfulGroupsDescription}.");
         }
 
-        //// ReSharper disable once UnusedParameter.Local :: Local contract
         [NotNull]
-        static string GetGroupName([NotNull] Group group)
-#if NETSTANDARD2_0
-            => nameof(Group);
-#else
-            => $@"{nameof(Group)} {group.Name.ToUIString()}";
-#endif
+        static string GetGroupName([NotNull] Group group) => $@"{nameof(Group)} {group.Name.ToUIString()}";
     }
 
     private static class Constants

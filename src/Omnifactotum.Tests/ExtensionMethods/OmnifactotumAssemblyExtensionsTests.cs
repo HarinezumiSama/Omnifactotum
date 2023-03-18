@@ -1,17 +1,4 @@
-﻿#if NETFRAMEWORK
-using System;
-using System.CodeDom.Compiler;
-using System.IO;
-using System.Diagnostics.CodeAnalysis;
-using System.Reflection;
-using System.Reflection.Emit;
-using Microsoft.CSharp;
-using NUnit.Framework;
-using Omnifactotum.NUnit;
-using static Omnifactotum.FormattableStringFactotum;
-
-#else
-using System;
+﻿using System;
 using System.Diagnostics.CodeAnalysis;
 using System.IO;
 using System.Linq;
@@ -23,8 +10,6 @@ using Microsoft.CodeAnalysis.CSharp;
 using NUnit.Framework;
 using Omnifactotum.NUnit;
 using static Omnifactotum.FormattableStringFactotum;
-
-#endif
 
 namespace Omnifactotum.Tests.ExtensionMethods;
 
@@ -45,36 +30,14 @@ internal sealed class OmnifactotumAssemblyExtensionsTests
         => Assert.That(() => ((Assembly?)null)!.GetLocalPath(), Throws.TypeOf<ArgumentNullException>());
 
     [Test]
-#if NETFRAMEWORK
-        [TestCase(false)]
-        [TestCase(true)]
-#else
     [TestCase(OutputKind.DynamicallyLinkedLibrary)]
     [TestCase(OutputKind.ConsoleApplication)]
-#endif
     public void TestGetLocalPathWhenInMemoryAssemblyIsPassedThenThrows(
-#if NETFRAMEWORK
-            bool generateExecutable
-#else
         OutputKind outputKind
-#endif
     )
     {
         const string SourceCode = @"static class Program { static void Main() { } }";
 
-#if NETFRAMEWORK
-            var codeProvider = new CSharpCodeProvider();
-
-            var compilerResults = codeProvider.CompileAssemblyFromSource(
-                new CompilerParameters { GenerateInMemory = true, GenerateExecutable = generateExecutable },
-                SourceCode);
-
-            Assert.That(compilerResults, Is.Not.Null);
-            Assert.That(compilerResults.Errors, Is.Empty);
-
-            var assembly = compilerResults.CompiledAssembly.AssertNotNull();
-
-#else
         var syntaxTree = CSharpSyntaxTree.ParseText(SourceCode);
 
         var compilation = CSharpCompilation
@@ -101,7 +64,6 @@ internal sealed class OmnifactotumAssemblyExtensionsTests
 
         stream.Position = 0;
         var assembly = AssemblyLoadContext.Default.LoadFromStream(stream).AssertNotNull();
-#endif
 
         Assert.That(() => assembly.GetLocalPath(), Throws.TypeOf<ArgumentException>());
     }
@@ -109,16 +71,9 @@ internal sealed class OmnifactotumAssemblyExtensionsTests
     [Test]
     [TestCase(AssemblyBuilderAccess.Run)]
     [TestCase(AssemblyBuilderAccess.RunAndCollect)]
-#if NETFRAMEWORK
-        [TestCase(AssemblyBuilderAccess.RunAndSave)]
-#endif
     public void TestGetLocalPathWhenDynamicAssemblyIsPassedThenThrows(AssemblyBuilderAccess assemblyBuilderAccess)
     {
-#if NETFRAMEWORK
-            var assemblyBuilder = AppDomain.CurrentDomain.DefineDynamicAssembly(
-#else
         var assemblyBuilder = AssemblyBuilder.DefineDynamicAssembly(
-#endif
             new AssemblyName(AsInvariant($@"{nameof(TestGetLocalPathWhenDynamicAssemblyIsPassedThenThrows)}_{Guid.NewGuid():N}")),
             assemblyBuilderAccess);
 

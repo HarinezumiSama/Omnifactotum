@@ -118,17 +118,7 @@ public static partial class Factotum
     ///     The second value to exchange with the first value.
     /// </param>
     [MethodImpl(OmnifactotumConstants.MethodOptimizationOptions.Standard)]
-    public static void Exchange<T>(ref T value1, ref T value2)
-    {
-#if NETSTANDARD2_0_OR_GREATER || NETCOREAPP3_1_OR_GREATER
-        (value1, value2) = (value2, value1);
-#else
-        //// ReSharper disable once SwapViaDeconstruction :: Avoiding multi-target issues
-        var temporary = value1;
-        value1 = value2;
-        value2 = temporary;
-#endif
-    }
+    public static void Exchange<T>(ref T value1, ref T value2) => (value1, value2) = (value2, value1);
 
     /// <summary>
     ///     Represents an identity function which returns the instance passed as an argument.
@@ -173,9 +163,9 @@ public static partial class Factotum
             .GetType()
             .GetProperties(BindingFlags.Public | BindingFlags.Instance)
             .Where(info => info.CanWrite && info.GetIndexParameters().Length == 0)
-            .Select(info => OmnifactotumKeyValuePair.Create(info, info.GetSingleOrDefaultCustomAttribute<DefaultValueAttribute>(false)))
+            .Select(info => KeyValuePair.Create(info, info.GetSingleOrDefaultCustomAttribute<DefaultValueAttribute>(false)))
             .Where(pair => pair.Value is not null)
-            .Select(pair => OmnifactotumKeyValuePair.Create(pair.Key, pair.Value!.Value))
+            .Select(pair => KeyValuePair.Create(pair.Key, pair.Value!.Value))
             .ToArray();
 
         foreach (var propertyRecord in propertyRecords)

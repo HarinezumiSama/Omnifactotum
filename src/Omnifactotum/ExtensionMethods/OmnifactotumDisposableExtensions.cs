@@ -1,10 +1,7 @@
 ﻿using System.Runtime.CompilerServices;
+using System.Threading.Tasks;
 using Omnifactotum;
 using Omnifactotum.Annotations;
-
-#if NETSTANDARD2_1_OR_GREATER || NET5_0_OR_GREATER
-using System.Threading.Tasks;
-#endif
 
 //// ReSharper disable RedundantNullnessAttributeWithNullableReferenceTypes
 //// ReSharper disable UseNullableReferenceTypesAnnotationSyntax
@@ -12,15 +9,9 @@ using System.Threading.Tasks;
 //// ReSharper disable once CheckNamespace :: Namespace is intentionally named so in order to simplify usage of extension methods
 namespace System;
 
-#if NETSTANDARD2_1_OR_GREATER || NET5_0_OR_GREATER
 /// <summary>
 ///     Contains extension methods for the <see cref="IDisposable"/> and <see cref="IAsyncDisposable"/> interfaces.
 /// </summary>
-#else
-/// <summary>
-///     Contains extension methods for the <see cref="IDisposable"/> interface.
-/// </summary>
-#endif
 public static class OmnifactotumDisposableExtensions
 {
     /// <summary>
@@ -55,7 +46,6 @@ public static class OmnifactotumDisposableExtensions
         where T : struct, IDisposable
         => disposable?.Dispose();
 
-#if NETSTANDARD2_1_OR_GREATER || NET5_0_OR_GREATER
     /// <summary>
     ///     Configures an async disposable so that the awaits on the tasks returned from this disposable do not attempt
     ///     to marshal the continuation back to the original context captured.
@@ -72,5 +62,4 @@ public static class OmnifactotumDisposableExtensions
     [MethodImpl(OmnifactotumConstants.MethodOptimizationOptions.Maximum)]
     public static ConfiguredAsyncDisposable ConfigureAwaitNoCapturedContext([NotNull] this IAsyncDisposable source)
         => (source ?? throw new ArgumentNullException(nameof(source))).ConfigureAwait(false);
-#endif
 }

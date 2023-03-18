@@ -2,7 +2,7 @@
 
 <Project Sdk="Microsoft.NET.Sdk">
     <PropertyGroup>
-        <TargetFrameworks>net472;netcoreapp2.1;netcoreapp3.1;net5.0;net6.0</TargetFrameworks>
+        <TargetFrameworks>netcoreapp3.1;net5.0;net6.0</TargetFrameworks>
     </PropertyGroup>
 
     <PropertyGroup>
@@ -12,20 +12,15 @@
         <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
     </PropertyGroup>
 
-    <ItemGroup Condition="'$(TargetFramework)'=='net472'">
-        <Reference Include="Microsoft.CSharp" />
-        <Reference Include="System.Windows.Forms" />
-    </ItemGroup>
-
     <ItemGroup>
         <PackageReference Include="Appveyor.TestLogger" Version="2.0.0" Condition="$(IsAppveyorBuild)" />
-        <PackageReference Include="Microsoft.CodeAnalysis.CSharp" Version="4.1.0" Condition="'$(TargetFramework)'!='net472'" />
+        <PackageReference Include="Microsoft.CodeAnalysis.CSharp" Version="4.1.0" />
         <PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.3.2" />
         <PackageReference Include="Moq" Version="4.17.2" />
         <PackageReference Include="NUnit" Version="3.13.3" />
         <PackageReference Include="NUnit3TestAdapter" Version="4.3.0" />
-        <PackageReference Include="System.Reflection.Emit" Version="4.7.0" Condition="'$(TargetFramework)'!='net472'" />
-        <PackageReference Include="System.Runtime.Loader" Version="4.3.0" Condition="'$(TargetFramework)'!='net472'" />
+        <PackageReference Include="System.Reflection.Emit" Version="4.7.0" />
+        <PackageReference Include="System.Runtime.Loader" Version="4.3.0" />
     </ItemGroup>
 
     <ItemGroup>
@@ -43,6 +38,11 @@
 
     <ItemGroup>
         <Compile Include="**/*.cs" Exclude="**/obj/**" />
+
+        <Compile Include="..\Common\AssemblyInfo.Common.cs">
+            <Link>Properties\AssemblyInfo.Common.cs</Link>
+        </Compile>
+
         <None Include="**/*.md" />
 
         <None Include="..\Common\Omnifactotum.snk">
