@@ -12,6 +12,9 @@ namespace System.Net;
 /// </summary>
 public static class OmnifactotumHttpStatusCodeExtensions
 {
+    private const int MinSuccessfulHttpStatusCode = 200;
+    private const int MaxSuccessfulHttpStatusCode = 299;
+
     private static readonly Dictionary<int, string> ExtraHttpStatusCodeValueMap =
         new()
         {
@@ -54,4 +57,16 @@ public static class OmnifactotumHttpStatusCodeExtensions
             ? valueAsInt.ToString(CultureInfo.InvariantCulture)
             : AsInvariant($@"{valueAsInt:D} {valueAsString}");
     }
+
+    /// <summary>
+    ///     Gets a <see cref="bool"/> value that indicates if the HTTP status code is successful (that is, in the range <c>200 .. 299</c>, inclusive).
+    /// </summary>
+    /// <param name="value">
+    ///     The <see cref="HttpStatusCode"/> value to check.
+    /// </param>
+    /// <returns>
+    ///     <see langword="true"/> if the specified <see cref="HttpStatusCode"/> value is in the range <c>200 .. 299</c>, inclusive;
+    ///     otherwise, <see langword="false"/>.
+    /// </returns>
+    public static bool IsSuccessful(this HttpStatusCode value) => (int)value is >= MinSuccessfulHttpStatusCode and <= MaxSuccessfulHttpStatusCode;
 }
