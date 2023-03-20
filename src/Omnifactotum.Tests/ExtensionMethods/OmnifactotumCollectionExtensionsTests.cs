@@ -255,16 +255,17 @@ internal sealed class OmnifactotumCollectionExtensionsTests
         Assert.That(actualResult, Is.EqualTo(expectedResult));
     }
 
+#if !NET7_0_OR_GREATER
     [Test]
     public void TestAsReadOnlyNegative()
-        => Assert.That(() => ((IList<string>?)null)!.AsReadOnly(), Throws.TypeOf<ArgumentNullException>());
+        => Assert.That(() => default(IList<string>)!.AsReadOnly(), Throws.TypeOf<ArgumentNullException>());
 
     [Test]
     public void TestAsReadOnly()
     {
         var initialValues = new[] { "foo", "bar" };
 
-        var list = new List<string>(initialValues);
+        IList<string> list = new List<string>(initialValues);
         var readOnly = list.AsReadOnly();
 
         Assert.That(readOnly, Is.Not.Null);
@@ -295,6 +296,7 @@ internal sealed class OmnifactotumCollectionExtensionsTests
         list.Add("double bar");
         Assert.That(readOnly, Is.EqualTo(list));
     }
+#endif
 
 #if !NET6_0_OR_GREATER
     [Test]

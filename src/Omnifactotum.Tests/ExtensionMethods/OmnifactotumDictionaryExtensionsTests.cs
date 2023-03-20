@@ -70,6 +70,7 @@ internal sealed class OmnifactotumDictionaryExtensionsTests
         AssertValueCreatedDictionaryState(ExplicitValue2);
     }
 
+#if !NET7_0_OR_GREATER
     [Test]
     public void TestAsReadOnly()
     {
@@ -78,6 +79,7 @@ internal sealed class OmnifactotumDictionaryExtensionsTests
 
         Assert.That(readOnlyDictionary, Is.InstanceOf<ReadOnlyDictionary<string, Version>>());
     }
+#endif
 
     private void RecreateDictionary()
     {

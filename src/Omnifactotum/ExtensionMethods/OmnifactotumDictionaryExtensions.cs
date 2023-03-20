@@ -97,6 +97,7 @@ public static class OmnifactotumDictionaryExtensions
         where TValue : new()
         => GetOrCreateValue(dictionary, key, _ => new TValue());
 
+#if !NET7_0_OR_GREATER
     /// <summary>
     ///     Creates a read-only wrapper for the specified dictionary.
     /// </summary>
@@ -118,4 +119,5 @@ public static class OmnifactotumDictionaryExtensions
         [NotNull] this IDictionary<TKey, TValue> dictionary)
         where TKey : notnull
         => new(dictionary);
+#endif
 }

@@ -1,5 +1,4 @@
 ﻿using System.Collections.Immutable;
-using System.Collections.ObjectModel;
 using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using System.Runtime.CompilerServices;
@@ -8,6 +7,10 @@ using System.Threading.Tasks;
 using Omnifactotum;
 using Omnifactotum.Annotations;
 using NotNullAttribute = Omnifactotum.Annotations.NotNullAttribute;
+
+#if !NET7_0_OR_GREATER
+using System.Collections.ObjectModel;
+#endif
 
 //// ReSharper disable RedundantNullnessAttributeWithNullableReferenceTypes
 //// ReSharper disable UseNullableReferenceTypesAnnotationSyntax
@@ -824,6 +827,7 @@ public static class OmnifactotumCollectionExtensions
         where T : struct, IFormattable
         => values.ToUIString(null, formatProvider);
 
+#if !NET7_0_OR_GREATER
     /// <summary>
     ///     Creates a read-only wrapper for the specified list.
     /// </summary>
@@ -840,6 +844,7 @@ public static class OmnifactotumCollectionExtensions
     [NotNull]
     public static ReadOnlyCollection<T> AsReadOnly<T>([NotNull] this IList<T> list)
         => list is null ? throw new ArgumentNullException(nameof(list)) : new ReadOnlyCollection<T>(list);
+#endif
 
 #if !NET6_0_OR_GREATER
     /// <summary>
