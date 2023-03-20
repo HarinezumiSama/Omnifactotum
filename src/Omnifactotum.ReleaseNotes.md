@@ -1,4 +1,19 @@
-﻿### Changes in 0.13.0 (since 0.12.0)
+﻿### Changes in 0.14.0 (since 0.13.0)
+
+#### Breaking Changes
+
+- Dropped support of **.NET Framework 4.7.2** and **.NET Standard 2.0**
+- **.NET 7+**: Removed the following extension methods since the analogous ones are available since .NET 7:
+  - `OmnifactotumCollectionExtensions`
+    - `AsReadOnly<T>(this IList<T>)`
+  - `OmnifactotumDictionaryExtensions`
+    - `AsReadOnly<TKey, TValue>(this IDictionary<TKey, TValue>)`
+
+#### New features
+
+- Implemented compiling package for .NET 7
+
+### Changes in 0.13.0 (since 0.12.0)
 
 #### Breaking Changes
 

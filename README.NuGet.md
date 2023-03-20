@@ -9,18 +9,17 @@
 - [Complete Release Notes](https://github.com/HarinezumiSama/Omnifactotum/blob/master/src/Omnifactotum.ReleaseNotes.md)
 - [ReadMe](https://github.com/HarinezumiSama/Omnifactotum/blob/master/README.md)
 
-### Changes in 0.13.0 (since 0.12.0)
+### Changes in 0.14.0 (since 0.13.0)
 
 #### Breaking Changes
 
-- `OmnifactotumEnumExtensions`: `EnsureDefined<TEnum>(this TEnum ...)` now returns the input value instead of `void`
-- `TemplatedStringResolver`: `GetVariableNames()` now returns `HashSet<string>` instead of `string[]`
+- Dropped support of **.NET Framework 4.7.2** and **.NET Standard 2.0**
+- **.NET 7+**: Removed the following extension methods since the analogous ones are available since .NET 7:
+  - `OmnifactotumCollectionExtensions`
+    - `AsReadOnly<T>(this IList<T>)`
+  - `OmnifactotumDictionaryExtensions`
+    - `AsReadOnly<TKey, TValue>(this IDictionary<TKey, TValue>)`
 
 #### New features
 
-- `OmnifactotumExceptionExtensions`: Added the `IsOriginatedFrom<TOriginatingException>(this Exception?)` extension method
-- `OmnifactotumStringExtensions`: Added the `ToSecuredUIString(this string? ...)` extension method
-
-#### Minor updates and fixes
-
-- `TemplatedStringResolver`: `GetVariableNames()` now uses the same resolver function for the variable name comparer as in the `TemplatedStringResolver` constructor
+- Implemented compiling package for .NET 7
