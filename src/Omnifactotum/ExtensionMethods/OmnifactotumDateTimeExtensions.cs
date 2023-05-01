@@ -177,7 +177,7 @@ public static class OmnifactotumDateTimeExtensions
         this DateTime value,
         DateTimeKind requiredKind,
 #if NET5_0_OR_GREATER
-        [CallerArgumentExpression("value")]
+        [CallerArgumentExpression(nameof(value))]
 #endif
         string? valueExpression = null)
     {
@@ -214,7 +214,7 @@ public static class OmnifactotumDateTimeExtensions
     public static DateTime EnsureUtc(
         this DateTime value,
 #if NET5_0_OR_GREATER
-        [CallerArgumentExpression("value")]
+        [CallerArgumentExpression(nameof(value))]
 #endif
         string? valueExpression = null)
         => value.EnsureKind(DateTimeKind.Utc, valueExpression);
@@ -240,7 +240,7 @@ public static class OmnifactotumDateTimeExtensions
     public static DateTime EnsureLocal(
         this DateTime value,
 #if NET5_0_OR_GREATER
-        [CallerArgumentExpression("value")]
+        [CallerArgumentExpression(nameof(value))]
 #endif
         string? valueExpression = null)
         => value.EnsureKind(DateTimeKind.Local, valueExpression);

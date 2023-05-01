@@ -247,7 +247,7 @@ public static class OmnifactotumEnumExtensions
     public static TEnum EnsureDefined<TEnum>(
         this TEnum enumerationValue,
 #if NET5_0_OR_GREATER
-        [CallerArgumentExpression("enumerationValue")]
+        [CallerArgumentExpression(nameof(enumerationValue))]
 #endif
         string? enumerationValueExpression = null)
         where TEnum : struct, Enum
@@ -285,7 +285,7 @@ public static class OmnifactotumEnumExtensions
     public static NotImplementedException CreateEnumValueNotImplementedException<TEnum>(
         this TEnum enumerationValue,
 #if NET5_0_OR_GREATER
-        [CallerArgumentExpression("enumerationValue")]
+        [CallerArgumentExpression(nameof(enumerationValue))]
 #endif
         string? enumerationValueExpression = null)
         where TEnum : struct, Enum
@@ -317,7 +317,7 @@ public static class OmnifactotumEnumExtensions
     public static NotSupportedException CreateEnumValueNotSupportedException<TEnum>(
         this TEnum enumerationValue,
 #if NET5_0_OR_GREATER
-        [CallerArgumentExpression("enumerationValue")]
+        [CallerArgumentExpression(nameof(enumerationValue))]
 #endif
         string? enumerationValueExpression = null)
         where TEnum : struct, Enum

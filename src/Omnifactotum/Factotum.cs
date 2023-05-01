@@ -134,7 +134,7 @@ public static partial class Factotum
     /// <returns>
     ///     The instance passed as an argument.
     /// </returns>
-    [return: NotNullIfNotNull("obj")]
+    [return: NotNullIfNotNull(nameof(obj))]
     public static T Identity<T>(T obj) => obj;
 
     /// <summary>
@@ -753,7 +753,7 @@ public static partial class Factotum
         [CallerFilePath] string? callerFilePath = null,
         [CallerLineNumber] int callerFileNumber = 0,
 #if NET5_0_OR_GREATER
-        [CallerArgumentExpression("condition")]
+        [CallerArgumentExpression(nameof(condition))]
 #endif
         string? conditionExpression = null)
     {

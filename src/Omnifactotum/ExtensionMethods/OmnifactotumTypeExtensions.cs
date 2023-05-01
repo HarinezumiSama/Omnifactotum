@@ -417,7 +417,7 @@ public static class OmnifactotumTypeExtensions
             resultBuilder.Append(Type.Delimiter);
         }
 
-        if (!fullName && (type.IsNullableValueType() || !type.IsGenericType && !type.IsGenericTypeDefinition))
+        if (!fullName && (type.IsNullableValueType() || type is { IsGenericType: false, IsGenericTypeDefinition: false }))
         {
             var shortTypeName = GetShortTypeNameInternal(type);
             resultBuilder.Append(shortTypeName);

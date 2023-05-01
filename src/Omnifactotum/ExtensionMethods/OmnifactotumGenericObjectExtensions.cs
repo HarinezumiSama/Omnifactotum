@@ -51,7 +51,7 @@ public static class OmnifactotumGenericObjectExtensions
     public static T EnsureNotNull<T>(
         [CanBeNull] [System.Diagnostics.CodeAnalysis.NotNull] this T? value,
 #if NET5_0_OR_GREATER
-        [CallerArgumentExpression("value")]
+        [CallerArgumentExpression(nameof(value))]
 #endif
         string? valueExpression = null)
         where T : class
@@ -85,7 +85,7 @@ public static class OmnifactotumGenericObjectExtensions
     public static T EnsureNotNull<T>(
         [CanBeNull] [System.Diagnostics.CodeAnalysis.NotNull] this T? value,
 #if NET5_0_OR_GREATER
-        [CallerArgumentExpression("value")]
+        [CallerArgumentExpression(nameof(value))]
 #endif
         string? valueExpression = null)
         where T : struct

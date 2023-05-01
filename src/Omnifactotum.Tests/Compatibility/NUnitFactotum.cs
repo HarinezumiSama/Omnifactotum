@@ -333,7 +333,7 @@ internal static class NUnitFactotum
     [return: System.Diagnostics.CodeAnalysis.NotNull]
     public static T AssertNotNull<T>(
         [CanBeNull] [System.Diagnostics.CodeAnalysis.NotNull] this T? value,
-        [CallerArgumentExpression("value")]
+        [CallerArgumentExpression(nameof(value))]
         string? valueExpression = null)
         where T : class
     {
@@ -367,7 +367,7 @@ internal static class NUnitFactotum
     [DebuggerStepThrough]
     public static T AssertNotNull<T>(
         [CanBeNull] [System.Diagnostics.CodeAnalysis.NotNull] this T? value,
-        [CallerArgumentExpression("value")]
+        [CallerArgumentExpression(nameof(value))]
         string? valueExpression = null)
         where T : struct
     {

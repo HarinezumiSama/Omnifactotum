@@ -51,7 +51,7 @@ internal sealed class OmnifactotumDateTimeExtensionsTests
         const string ErrorDetails =
             $"\x0020Expression: {{ {nameof(ValueContainer)}.{nameof(ValueContainer.Create)}({nameof(value)}).{nameof(ValueContainer<DateTime>.Value)} }}.";
 #else
-        const string? ErrorDetails = default(string);
+        const string? ErrorDetails = null;
 #endif
 
         Assert.That(
@@ -74,7 +74,7 @@ internal sealed class OmnifactotumDateTimeExtensionsTests
         const string ErrorDetails =
             $"\x0020Expression: {{ {nameof(ValueContainer)}.{nameof(ValueContainer.Create)}({nameof(value)}).{nameof(ValueContainer<DateTime>.Value)} }}.";
 #else
-        const string? ErrorDetails = default(string);
+        const string? ErrorDetails = null;
 #endif
 
         Assert.That(
@@ -97,7 +97,7 @@ internal sealed class OmnifactotumDateTimeExtensionsTests
         const string ErrorDetails =
             $"\x0020Expression: {{ {nameof(ValueContainer)}.{nameof(ValueContainer.Create)}({nameof(value)}).{nameof(ValueContainer<DateTime>.Value)} }}.";
 #else
-        const string? ErrorDetails = default(string);
+        const string? ErrorDetails = null;
 #endif
 
         Assert.That(

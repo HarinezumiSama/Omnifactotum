@@ -65,7 +65,7 @@ public static class OmnifactotumUriExtensions
     public static Uri EnsureWebUri(
         [CanBeNull] [System.Diagnostics.CodeAnalysis.NotNull] this Uri? value,
 #if NET5_0_OR_GREATER
-        [CallerArgumentExpression("value")]
+        [CallerArgumentExpression(nameof(value))]
 #endif
         string? valueExpression = null)
     {
@@ -103,7 +103,7 @@ public static class OmnifactotumUriExtensions
     public static Uri EnsureAbsoluteUri(
         [CanBeNull] [System.Diagnostics.CodeAnalysis.NotNull] this Uri? value,
 #if NET5_0_OR_GREATER
-        [CallerArgumentExpression("value")]
+        [CallerArgumentExpression(nameof(value))]
 #endif
         string? valueExpression = null)
     {
