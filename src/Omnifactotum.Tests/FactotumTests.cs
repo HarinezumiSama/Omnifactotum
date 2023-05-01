@@ -294,8 +294,10 @@ internal sealed class FactotumTests
     }
 
     [Test]
-    public void TestAssertWhenConditionEvaluatesToFalseThenSucceeds()
+    public void TestAssertWhenConditionEvaluatesToFalseThenThrowsAssertionException()
     {
+        const string CustomExceptionMessage = "0dd8dc793db84e55919861a81d741da8";
+
 #if NET5_0_OR_GREATER
         const string SimpleConditionExpectedExceptionMessage = "The following condition is not met: { false }. Location:\x0020";
 #else
@@ -307,8 +309,16 @@ internal sealed class FactotumTests
             Throws.TypeOf<OmnifactotumAssertionException>().With.Message.StartsWith(SimpleConditionExpectedExceptionMessage));
 
         Assert.That(
+            () => Factotum.Assert(false, _ => null),
+            Throws.TypeOf<OmnifactotumAssertionException>().With.Message.StartsWith(SimpleConditionExpectedExceptionMessage));
+
+        Assert.That(
             () => Factotum.Assert(false, message => new InvalidOperationException(message)),
             Throws.TypeOf<InvalidOperationException>().With.Message.StartsWith(SimpleConditionExpectedExceptionMessage));
+
+        Assert.That(
+            () => Factotum.Assert(false, _ => new InvalidOperationException(CustomExceptionMessage)),
+            Throws.TypeOf<InvalidOperationException>().With.Message.StartsWith(CustomExceptionMessage));
 
 #if NET5_0_OR_GREATER
         const string ComplexConditionExpectedExceptionMessage = "The following condition is not met: { Math.Sign(Math.PI) == 0 }. Location:\x0020";
@@ -321,8 +331,16 @@ internal sealed class FactotumTests
             Throws.TypeOf<OmnifactotumAssertionException>().With.Message.StartsWith(ComplexConditionExpectedExceptionMessage));
 
         Assert.That(
+            () => Factotum.Assert(Math.Sign(Math.PI) == 0, _ => null),
+            Throws.TypeOf<OmnifactotumAssertionException>().With.Message.StartsWith(ComplexConditionExpectedExceptionMessage));
+
+        Assert.That(
             () => Factotum.Assert(Math.Sign(Math.PI) == 0, message => new InvalidOperationException(message)),
             Throws.TypeOf<InvalidOperationException>().With.Message.StartsWith(ComplexConditionExpectedExceptionMessage));
+
+        Assert.That(
+            () => Factotum.Assert(Math.Sign(Math.PI) == 0, _ => new InvalidOperationException(CustomExceptionMessage)),
+            Throws.TypeOf<InvalidOperationException>().With.Message.EqualTo(CustomExceptionMessage));
     }
 
     private abstract class TestObjectBase

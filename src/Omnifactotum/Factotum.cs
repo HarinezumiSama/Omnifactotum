@@ -10,6 +10,7 @@ using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 using System.Security.Cryptography;
 using Omnifactotum.Annotations;
+using DoesNotReturnIfAttribute = System.Diagnostics.CodeAnalysis.DoesNotReturnIfAttribute;
 using NotNullIfNotNullAttribute = System.Diagnostics.CodeAnalysis.NotNullIfNotNullAttribute;
 using static Omnifactotum.FormattableStringFactotum;
 
@@ -725,9 +726,13 @@ public static partial class Factotum
     ///     The conditional expression to evaluate.
     /// </param>
     /// <param name="createAssertionFailureException">
-    ///     A reference to a method that creates an assertion failure exception with the specified message,
-    ///     or <see langword="null"/> to create <see cref="OmnifactotumAssertionException"/>.
-    ///     This method is only called if <paramref name="condition"/> is <see langword="false"/>.
+    ///     <para>
+    ///         A reference to a method that creates an assertion failure exception with the specified message,
+    ///         or <see langword="null"/> to create <see cref="OmnifactotumAssertionException"/>. If the method referenced by
+    ///         the <paramref name="createAssertionFailureException"/> parameter returns <see langword="null"/>,
+    ///         then <see cref="OmnifactotumAssertionException"/> is used.
+    ///     </para>
+    ///     <para>This method is only called if <paramref name="condition"/> is <see langword="false"/>.</para>
     /// </param>
     /// <param name="callerFilePath">
     ///     <para><b>NOTE</b>: Do not pass a value for this parameter as it is automatically injected by the compiler (.NET 5+ and C# 10+).</para>
@@ -743,8 +748,8 @@ public static partial class Factotum
     /// </param>
     [ContractAnnotation("condition:false => stop", true)]
     public static void Assert(
-        bool condition,
-        Func<string, Exception>? createAssertionFailureException = null,
+        [DoesNotReturnIf(false)] bool condition,
+        Func<string, Exception?>? createAssertionFailureException = null,
         [CallerFilePath] string? callerFilePath = null,
         [CallerLineNumber] int callerFileNumber = 0,
 #if NET5_0_OR_GREATER
@@ -759,10 +764,7 @@ public static partial class Factotum
 
         var message = AsInvariant($@"{GetDetails(conditionExpression)}. Location: {callerFilePath.ToUIString()} @ {callerFileNumber}.");
 
-        var exception = createAssertionFailureException is null
-            ? new OmnifactotumAssertionException(message)
-            : createAssertionFailureException(message).EnsureNotNull();
-
+        var exception = createAssertionFailureException?.Invoke(message) ?? new OmnifactotumAssertionException(message);
         throw exception;
 
         static string GetDetails(string? valueExpression)
