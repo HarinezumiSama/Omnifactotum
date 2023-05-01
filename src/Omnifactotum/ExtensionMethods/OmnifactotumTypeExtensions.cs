@@ -119,6 +119,12 @@ public static class OmnifactotumTypeExtensions
     ///         </listheader>
     ///         <item>
     ///             <term>
+    ///                 typeof(SomeNamespace1.SomeNamespace2.RootType)
+    ///             </term>
+    ///             <description>RootType</description>
+    ///         </item>
+    ///         <item>
+    ///             <term>
     ///                 typeof(SomeNamespace1.SomeNamespace2.RootType.NestedType1&lt;,&gt;.NestedType2)
     ///             </term>
     ///             <description>RootType.NestedType1&lt;TKey, TValue&gt;.NestedType2</description>

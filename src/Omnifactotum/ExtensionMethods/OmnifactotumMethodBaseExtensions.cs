@@ -54,6 +54,7 @@ public static class OmnifactotumMethodBaseExtensions
     /// <returns>
     ///     The qualified name of the <paramref name="method"/>.
     /// </returns>
+    /// <seealso cref="OmnifactotumTypeExtensions.GetQualifiedName"/>
     [Pure]
     [Omnifactotum.Annotations.Pure]
     [MethodImpl(OmnifactotumConstants.MethodOptimizationOptions.Standard)]
