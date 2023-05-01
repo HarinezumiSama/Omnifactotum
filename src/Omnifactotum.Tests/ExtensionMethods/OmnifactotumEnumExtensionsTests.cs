@@ -78,104 +78,69 @@ internal sealed class OmnifactotumEnumExtensionsTests
         => Assert.That(() => enumValue.IsDefined(), Is.EqualTo(expectedResult));
 
     [Test]
-    [TestCase(FileAccess.Read, nameof(FileAccess.Read))]
-    [TestCase(ConsoleModifiers.Alt, nameof(ConsoleModifiers.Alt))]
-    [TestCase(ConsoleColor.Green, nameof(ConsoleColor.Green))]
-    [TestCase(TestEnumeration.NoZeroValue, nameof(TestEnumeration.NoZeroValue))]
-    [TestCase(UIntTestFlags.Flag2, nameof(UIntTestFlags.Flag2))]
-    [TestCase(
-        ConsoleModifiers.Alt | ConsoleModifiers.Shift | ConsoleModifiers.Control,
-        nameof(ConsoleModifiers.Alt) + ", " + nameof(ConsoleModifiers.Shift) + ", "
-        + nameof(ConsoleModifiers.Control))]
-    [TestCase(
-        ConsoleModifiers.Alt | ConsoleModifiers.Shift | ConsoleModifiers.Control | (ConsoleModifiers)1024,
-        "1031")]
+    [TestCase(FileAccess.Read, "Read")]
+    [TestCase(ConsoleModifiers.Alt, "Alt")]
+    [TestCase(ConsoleColor.Green, "Green")]
+    [TestCase(TestEnumeration.NoZeroValue, "NoZeroValue")]
+    [TestCase(UIntTestFlags.Flag2, "Flag2")]
+    [TestCase(ConsoleModifiers.Alt | ConsoleModifiers.Shift | ConsoleModifiers.Control, "Alt, Shift, Control")]
+    [TestCase(ConsoleModifiers.Alt | ConsoleModifiers.Shift | ConsoleModifiers.Control | (ConsoleModifiers)1024, "1031")]
     [TestCase((ConsoleColor)(-1), "-1")]
     [TestCase((TestEnumeration)0, "0")]
     [TestCase((UIntTestFlags)0, "0")]
-    [TestCase(
-        UIntTestFlags.Flag1 | UIntTestFlags.Flag2,
-        nameof(UIntTestFlags.Flag1) + ", " + nameof(UIntTestFlags.Flag2))]
+    [TestCase(UIntTestFlags.Flag1 | UIntTestFlags.Flag2, "Flag1, Flag2")]
     [TestCase((UIntTestFlags)1024, "1024")]
     public void TestGetNameWhenEnumerationValueArgumentIsPassedThenSucceeds<TEnum>(TEnum enumValue, string expectedResult)
         where TEnum : struct, Enum
         => Assert.That(() => enumValue.GetName(), Is.EqualTo(expectedResult));
 
     [Test]
-    [TestCase(FileAccess.Read, nameof(FileAccess) + "." + nameof(FileAccess.Read))]
-    [TestCase(ConsoleModifiers.Alt, nameof(ConsoleModifiers) + "." + nameof(ConsoleModifiers.Alt))]
-    [TestCase(ConsoleColor.Green, nameof(ConsoleColor) + "." + nameof(ConsoleColor.Green))]
-    [TestCase(TestEnumeration.NoZeroValue, nameof(TestEnumeration) + "." + nameof(TestEnumeration.NoZeroValue))]
-    [TestCase(UIntTestFlags.Flag2, nameof(UIntTestFlags) + "." + nameof(UIntTestFlags.Flag2))]
+    [TestCase(FileAccess.Read, "FileAccess.Read")]
+    [TestCase(ConsoleModifiers.Alt, "ConsoleModifiers.Alt")]
+    [TestCase(ConsoleColor.Green, "ConsoleColor.Green")]
+    [TestCase(TestEnumeration.NoZeroValue, "TestEnumeration.NoZeroValue")]
+    [TestCase(UIntTestFlags.Flag2, "UIntTestFlags.Flag2")]
     [TestCase(
         ConsoleModifiers.Alt | ConsoleModifiers.Shift | ConsoleModifiers.Control,
-        nameof(ConsoleModifiers) + "." + nameof(ConsoleModifiers.Alt) + ", "
-        + nameof(ConsoleModifiers) + "." + nameof(ConsoleModifiers.Shift) + ", "
-        + nameof(ConsoleModifiers) + "." + nameof(ConsoleModifiers.Control))]
+        "ConsoleModifiers.Alt, ConsoleModifiers.Shift, ConsoleModifiers.Control")]
     [TestCase(
         ConsoleModifiers.Alt | ConsoleModifiers.Shift | ConsoleModifiers.Control | (ConsoleModifiers)1024,
-        nameof(ConsoleModifiers) + "." + "1031")]
-    [TestCase((ConsoleColor)(-1), nameof(ConsoleColor) + "." + "-1")]
-    [TestCase((TestEnumeration)0, nameof(TestEnumeration) + "." + "0")]
-    [TestCase((UIntTestFlags)0, nameof(UIntTestFlags) + "." + "0")]
-    [TestCase(
-        UIntTestFlags.Flag1 | UIntTestFlags.Flag2,
-        nameof(UIntTestFlags) + "." + nameof(UIntTestFlags.Flag1) + ", "
-        + nameof(UIntTestFlags) + "." + nameof(UIntTestFlags.Flag2))]
-    [TestCase((UIntTestFlags)1024, nameof(UIntTestFlags) + "." + "1024")]
+        "ConsoleModifiers.1031")]
+    [TestCase((ConsoleColor)(-1), "ConsoleColor.-1")]
+    [TestCase((TestEnumeration)0, "TestEnumeration.0")]
+    [TestCase((UIntTestFlags)0, "UIntTestFlags.0")]
+    [TestCase(UIntTestFlags.Flag1 | UIntTestFlags.Flag2, "UIntTestFlags.Flag1, UIntTestFlags.Flag2")]
+    [TestCase((UIntTestFlags)1024, "UIntTestFlags.1024")]
     public void TestGetQualifiedNameWhenEnumerationValueArgumentIsPassedThenSucceeds<TEnum>(TEnum enumValue, string expectedResult)
         where TEnum : struct, Enum
         => Assert.That(() => enumValue.GetQualifiedName(), Is.EqualTo(expectedResult));
 
     [Test]
-    [TestCase(
-        FileAccess.Read,
-        nameof(System) + "." + nameof(System.IO) + "." + nameof(FileAccess) + "." + nameof(FileAccess.Read))]
-    [TestCase(
-        ConsoleModifiers.Alt,
-        nameof(System) + "." + nameof(ConsoleModifiers) + "." + nameof(ConsoleModifiers.Alt))]
-    [TestCase(
-        ConsoleColor.Green,
-        nameof(System) + "." + nameof(ConsoleColor) + "." + nameof(ConsoleColor.Green))]
-    [TestCase(
-        TestEnumeration.NoZeroValue,
-        nameof(Omnifactotum) + "." + nameof(Tests) + "." + nameof(ExtensionMethods) + "."
-        + nameof(OmnifactotumEnumExtensionsTests) + "." + nameof(TestEnumeration) + "."
-        + nameof(TestEnumeration.NoZeroValue))]
-    [TestCase(
-        UIntTestFlags.Flag2,
-        nameof(Omnifactotum) + "." + nameof(Tests) + "." + nameof(ExtensionMethods) + "."
-        + nameof(OmnifactotumEnumExtensionsTests) + "." + nameof(UIntTestFlags) + "."
-        + nameof(UIntTestFlags.Flag2))]
+    [TestCase(FileAccess.Read, "System.IO.FileAccess.Read")]
+    [TestCase(ConsoleModifiers.Alt, "System.ConsoleModifiers.Alt")]
+    [TestCase(ConsoleColor.Green, "System.ConsoleColor.Green")]
+    [TestCase(TestEnumeration.NoZeroValue, "Omnifactotum.Tests.ExtensionMethods.OmnifactotumEnumExtensionsTests.TestEnumeration.NoZeroValue")]
+    [TestCase(UIntTestFlags.Flag2, "Omnifactotum.Tests.ExtensionMethods.OmnifactotumEnumExtensionsTests.UIntTestFlags.Flag2")]
     [TestCase(
         ConsoleModifiers.Alt | ConsoleModifiers.Shift | ConsoleModifiers.Control,
-        nameof(System) + "." + nameof(ConsoleModifiers) + "." + nameof(ConsoleModifiers.Alt) + ", "
-        + nameof(System) + "." + nameof(ConsoleModifiers) + "." + nameof(ConsoleModifiers.Shift) + ", "
-        + nameof(System) + "." + nameof(ConsoleModifiers) + "." + nameof(ConsoleModifiers.Control))]
+        "System.ConsoleModifiers.Alt, System.ConsoleModifiers.Shift, System.ConsoleModifiers.Control")]
     [TestCase(
         ConsoleModifiers.Alt | ConsoleModifiers.Shift | ConsoleModifiers.Control | (ConsoleModifiers)1024,
-        nameof(System) + "." + nameof(ConsoleModifiers) + "." + "1031")]
+        "System.ConsoleModifiers.1031")]
     [TestCase((ConsoleColor)(-1), nameof(System) + "." + nameof(ConsoleColor) + "." + "-1")]
     [TestCase(
         (TestEnumeration)0,
-        nameof(Omnifactotum) + "." + nameof(Tests) + "." + nameof(ExtensionMethods) + "."
-        + nameof(OmnifactotumEnumExtensionsTests) + "." + nameof(TestEnumeration) + "." + "0")]
+        "Omnifactotum.Tests.ExtensionMethods.OmnifactotumEnumExtensionsTests.TestEnumeration.0")]
     [TestCase(
         (UIntTestFlags)0,
-        nameof(Omnifactotum) + "." + nameof(Tests) + "." + nameof(ExtensionMethods) + "."
-        + nameof(OmnifactotumEnumExtensionsTests) + "." + nameof(UIntTestFlags) + "." + "0")]
+        "Omnifactotum.Tests.ExtensionMethods.OmnifactotumEnumExtensionsTests.UIntTestFlags.0")]
     [TestCase(
         UIntTestFlags.Flag1 | UIntTestFlags.Flag2,
-        nameof(Omnifactotum) + "." + nameof(Tests) + "." + nameof(ExtensionMethods) + "."
-        + nameof(OmnifactotumEnumExtensionsTests) + "."
-        + nameof(UIntTestFlags) + "." + nameof(UIntTestFlags.Flag1) + ", "
-        + nameof(Omnifactotum) + "." + nameof(Tests) + "." + nameof(ExtensionMethods) + "."
-        + nameof(OmnifactotumEnumExtensionsTests) + "." + nameof(UIntTestFlags) + "."
-        + nameof(UIntTestFlags.Flag2))]
+        "Omnifactotum.Tests.ExtensionMethods.OmnifactotumEnumExtensionsTests.UIntTestFlags.Flag1"
+        + ", Omnifactotum.Tests.ExtensionMethods.OmnifactotumEnumExtensionsTests.UIntTestFlags.Flag2")]
     [TestCase(
         (UIntTestFlags)1024,
-        nameof(Omnifactotum) + "." + nameof(Tests) + "." + nameof(ExtensionMethods) + "."
-        + nameof(OmnifactotumEnumExtensionsTests) + "." + nameof(UIntTestFlags) + "." + "1024")]
+        "Omnifactotum.Tests.ExtensionMethods.OmnifactotumEnumExtensionsTests.UIntTestFlags.1024")]
     public void TestGetFullNameWhenEnumerationValueArgumentIsPassedThenSucceeds<TEnum>(TEnum enumValue, string expectedResult)
         where TEnum : struct, Enum
         => Assert.That(() => enumValue.GetFullName(), Is.EqualTo(expectedResult));
