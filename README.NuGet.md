@@ -9,17 +9,11 @@
 - [Complete Release Notes](https://github.com/HarinezumiSama/Omnifactotum/blob/master/src/Omnifactotum.ReleaseNotes.md)
 - [ReadMe](https://github.com/HarinezumiSama/Omnifactotum/blob/master/README.md)
 
-### Changes in 0.14.0 (since 0.13.0)
+### Changes in 0.14.1 (since 0.14.0)
 
-#### Breaking Changes
+#### Minor updates and fixes
 
-- Dropped support of **.NET Framework 4.7.2** and **.NET Standard 2.0**
-- **.NET 7+**: Removed the following extension methods since the analogous ones are available since .NET 7:
-  - `OmnifactotumCollectionExtensions`
-    - `AsReadOnly<T>(this IList<T>)`
-  - `OmnifactotumDictionaryExtensions`
-    - `AsReadOnly<TKey, TValue>(this IDictionary<TKey, TValue>)`
-
-#### New features
-
-- Implemented compiling package for .NET 7
+- Improvements in `Factotum.Assert(...)`
+  - Applied the `DoesNotReturnIf` attribute on the `condition` parameter
+  - Now the method referenced by the `createAssertionFailureException` parameter can return `null` (`OmnifactotumAssertionException` is used in this case)
+- Minor improvements in XML documentation in `OmnifactotumMethodBaseExtensions` and `OmnifactotumTypeExtensions`

@@ -1,4 +1,15 @@
-﻿### Changes in 0.14.0 (since 0.13.0)
+﻿### Changes in 0.14.1 (since 0.14.0)
+
+#### Minor updates and fixes
+
+- Improvements in `Factotum.Assert(...)`
+  - The `DoesNotReturnIf` attribute has been applied on the `condition` parameter
+  - Now the method referenced by the `createAssertionFailureException` parameter can return `null` (`OmnifactotumAssertionException` is used in this case)
+- Minor improvements in XML documentation in `OmnifactotumMethodBaseExtensions` and `OmnifactotumTypeExtensions`
+
+---
+
+### Changes in 0.14.0 (since 0.13.0)
 
 #### Breaking Changes
 
@@ -12,6 +23,8 @@
 #### New features
 
 - Implemented compiling package for .NET 7
+
+---
 
 ### Changes in 0.13.0 (since 0.12.0)
 
@@ -28,6 +41,8 @@
 #### Minor updates and fixes
 
 - `TemplatedStringResolver`: `GetVariableNames()` now uses the same resolver function for the variable name comparer as in the `TemplatedStringResolver` constructor
+
+---
 
 ### Changes in 0.12.0 (since 0.11.0)
 
@@ -46,6 +61,8 @@
 
 - Minor improvements in `OmnifactotumHttpStatusCodeExtensions.ToUIString()`
 - Improved documentation on `AssertionMethodAttribute` and `AssertionConditionAttribute`
+
+---
 
 ### Changes in 0.11.0 (since 0.10.0)
 
@@ -115,12 +132,16 @@
 - Minor code improvements
 - Minor XML documentation improvements
 
+---
+
 ### Changes in 0.10.0 (since 0.9.0)
 
 #### New features
 
 - Added the `CaseInsensitiveStringKey` structure
 - `OmnifactotumDateTimeExtensions`: Added the `AsKind(this DateTime, DateTimeKind)` extension method
+
+---
 
 ### Changes in 0.9.0 (since 0.8.0)
 
