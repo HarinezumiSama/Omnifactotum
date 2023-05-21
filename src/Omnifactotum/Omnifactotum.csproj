@@ -13,7 +13,7 @@
     <PropertyGroup>
         <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
         <EnablePackageValidation>true</EnablePackageValidation>
-        <!-- Set `GenerateCompatibilitySuppressionFile` to `true` to regenerate "CompatibilitySuppressions.xml" -->
+        <!-- Set `GenerateCompatibilitySuppressionFile` to `true` to regenerate "CompatibilitySuppressions.xml"; then set back to `false` -->
         <GenerateCompatibilitySuppressionFile>false</GenerateCompatibilitySuppressionFile>
     </PropertyGroup>
 
