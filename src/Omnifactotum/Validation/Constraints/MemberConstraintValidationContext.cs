@@ -136,7 +136,7 @@ public sealed class MemberConstraintValidationContext
     /// </returns>
     [NotNull]
     public Expression<Func<object, object>> CreateLambdaExpression(out ParameterExpression parameterExpression)
-        => CreateLambdaExpression(ObjectValidator.RootObjectParameterName, out parameterExpression);
+        => CreateLambdaExpression(ObjectValidator.DefaultRootObjectParameterName, out parameterExpression);
 
     /// <summary>
     ///     Creates a lambda expression, using the default parameter name, based on the expression describing
@@ -146,5 +146,5 @@ public sealed class MemberConstraintValidationContext
     ///     A lambda expression based on the expression describing the path to the value from the root object.
     /// </returns>
     [NotNull]
-    public Expression<Func<object, object>> CreateLambdaExpression() => CreateLambdaExpression(ObjectValidator.RootObjectParameterName);
+    public Expression<Func<object, object>> CreateLambdaExpression() => CreateLambdaExpression(ObjectValidator.DefaultRootObjectParameterName);
 }

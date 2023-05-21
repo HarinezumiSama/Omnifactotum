@@ -24,7 +24,7 @@ public sealed class ObjectValidationResult
     /// <param name="errors">
     ///     The collection of the validation errors found, if any.
     /// </param>
-    internal ObjectValidationResult(ICollection<MemberConstraintValidationError> errors)
+    internal ObjectValidationResult([NotNull] IReadOnlyCollection<MemberConstraintValidationError> errors)
     {
         if (errors is null)
         {

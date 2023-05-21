@@ -1,15 +1,12 @@
 ﻿using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
-using System.Globalization;
 using System.Linq;
 using NUnit.Framework;
 using Omnifactotum.Annotations;
 using Omnifactotum.NUnit;
 using Omnifactotum.Validation;
 using Omnifactotum.Validation.Constraints;
-using static Omnifactotum.FormattableStringFactotum;
 
 namespace Omnifactotum.Tests.Validation;
 
@@ -17,6 +14,13 @@ namespace Omnifactotum.Tests.Validation;
 internal sealed class ObjectValidatorTests
 {
     private const string ValidationResultPropertyName = nameof(ObjectValidationException.ValidationResult);
+
+    [Test]
+    public void TestValidateWhenArgumentIsNull()
+    {
+        Assert.That(() => ObjectValidator.Validate<SimpleData>(null!), Throws.ArgumentNullException);
+        Assert.That(() => ObjectValidator.Validate<SimpleData>(null!, "expression-2ca70053810c4ac6ad1e0c1fc65dd289"), Throws.ArgumentNullException);
+    }
 
     [Test]
     public void TestValidateWhenValidationSucceeded()
@@ -46,69 +50,176 @@ internal sealed class ObjectValidatorTests
     [Test]
     public void TestValidateWhenValidationFailed()
     {
-        var data = new ComplexData
+        var dataContainer = new SimpleContainer<ComplexData>
         {
-            Data = new SimpleData { StartDate = DateTime.Now },
-            NonEmptyValue = string.Empty,
-            MultipleDataItems = new BaseAnotherSimpleData[] { new AnotherSimpleData { Value = "C" }, new AnotherSimpleData() },
-            SingleBaseData = new AnotherSimpleData()
+            ContainedValue = new ComplexData
+            {
+                Data = new SimpleData { StartDate = DateTime.Now },
+                NonEmptyValue = string.Empty,
+                MultipleDataItems = new BaseAnotherSimpleData[] { new AnotherSimpleData { Value = "C" }, new AnotherSimpleData() },
+                SingleBaseData = new AnotherSimpleData()
+            }
         };
 
-        var validationResult = ObjectValidator.Validate(data);
+        var validationResult = ObjectValidator.Validate(dataContainer);
+
+#if NET5_0_OR_GREATER
+        const string InstanceExpression = nameof(dataContainer);
+#else
+        const string InstanceExpression = ObjectValidator.DefaultRootObjectParameterName;
+#endif
+
+        var expectedTypeToExpressionsMap = new Dictionary<Type, string[]>
+        {
+            {
+                typeof(NotNullConstraint),
+                new[]
+                {
+                    $"{InstanceExpression}.ContainedValue.Data.Value",
+                    $"{InstanceExpression}.ContainedValue.Data.NullableValue",
+                    $"Convert({InstanceExpression}.ContainedValue.MultipleDataItems[1], AnotherSimpleData).Value",
+                    $"Convert({InstanceExpression}.ContainedValue.SingleBaseData, AnotherSimpleData).Value"
+                }
+            },
+            {
+                typeof(NotNullOrEmptyStringConstraint),
+                new[] { $"{InstanceExpression}.ContainedValue.NonEmptyValue" }
+            },
+            {
+                typeof(UtcDateConstraint),
+                new[] { $"{InstanceExpression}.ContainedValue.Data.StartDate" }
+            },
+            {
+                typeof(UtcDateTypedConstraint),
+                new[] { $"{InstanceExpression}.ContainedValue.Data.StartDate" }
+            }
+        };
 
         Assert.That(validationResult, Is.Not.Null);
-        Assert.That(validationResult.Errors.Count, Is.EqualTo(6));
-        Assert.That(validationResult.IsObjectValid, Is.False);
+        Assert.That(() => validationResult.IsObjectValid, Is.False);
+        Assert.That(() => validationResult.Errors.Count, Is.EqualTo(expectedTypeToExpressionsMap.SelectMany(pair => pair.Value).Count()));
 
-        var validationException = validationResult.GetException();
-        Assert.That(validationException, Is.Not.Null & Is.TypeOf<ObjectValidationException>());
-        Assert.That(validationException.EnsureNotNull().ValidationResult, Is.SameAs(validationResult));
+        var validationException = validationResult.GetException().AssertNotNull();
+        Assert.That(validationException, Is.TypeOf<ObjectValidationException>());
+        Assert.That(() => validationException.ValidationResult, Is.SameAs(validationResult));
 
         Assert.That(
-            validationResult.EnsureSucceeded,
+            () => validationResult.EnsureSucceeded(),
             Throws
                 .TypeOf<ObjectValidationException>()
                 .With
                 .Property(ValidationResultPropertyName)
                 .SameAs(validationResult));
 
-        var actualNotNullErrorExpressions = validationResult
+        var groupedErrorMap = validationResult.Errors
+            .GroupBy(error => error.FailedConstraintType)
+            .ToDictionary(grouping => grouping.Key, grouping => grouping.Select(error => error.Context.Expression.ToString()).ToArray());
+
+        Assert.That(() => groupedErrorMap.Keys, Is.EquivalentTo(expectedTypeToExpressionsMap.Keys));
+
+        foreach (var pair in expectedTypeToExpressionsMap)
+        {
+            Assert.That(() => groupedErrorMap[pair.Key], Is.EquivalentTo(pair.Value));
+        }
+
+        var utcDateErrorExpression = validationResult
             .Errors
-            .Where(obj => obj.FailedConstraintType == typeof(NotNullConstraint))
-            .Select(obj => obj.Context.Expression.ToString())
-            .ToArray();
+            .Single(obj => obj.FailedConstraintType == typeof(UtcDateConstraint))
+            .Context
+            .CreateLambdaExpression()
+            .AssertNotNull();
 
-        var itemPropertyPathConvertSpecifier = AsInvariant($@", {nameof(AnotherSimpleData)}");
+        Assert.That(() => utcDateErrorExpression.Compile().Invoke(dataContainer), Is.EqualTo(dataContainer.ContainedValue.Data.StartDate));
+    }
 
-        var expectedNotNullErrorExpressions =
-            new[]
+    [Test]
+    [TestCase("")]
+    [TestCase("\x0020")]
+    [TestCase("\t")]
+    [TestCase("\t\x0020\t\r\n")]
+    public void TestValidateWhenInvalidInstanceExpressionThenThrows(string? explicitInstanceExpression)
+    {
+        var dataContainer = new SimpleContainer<SimpleData>
+        {
+            ContainedValue = new SimpleData { StartDate = DateTime.Now }
+        };
+
+        Assert.That(
+            () => ObjectValidator.Validate(dataContainer, explicitInstanceExpression),
+            Throws.ArgumentException.With.Property(nameof(ArgumentException.ParamName)).EqualTo("instanceExpression"));
+    }
+
+    [Test]
+    [TestCase(null)]
+    [TestCase("var_842c9c8e")]
+    [TestCase("[var1.var2.var3]")]
+    [TestCase("[var:SimpleContainer<SimpleData>]")]
+    public void TestValidateWhenValidInstanceExpressionAndValidationFailed(string? explicitInstanceExpression)
+    {
+        var expectedInstanceExpression = explicitInstanceExpression ?? ObjectValidator.DefaultRootObjectParameterName;
+
+        var dataContainer = new SimpleContainer<SimpleData>
+        {
+            ContainedValue = new SimpleData { StartDate = DateTime.Now }
+        };
+
+        var validationResult = ObjectValidator.Validate(dataContainer, explicitInstanceExpression);
+
+        var expectedTypeToExpressionsMap = new Dictionary<Type, string[]>
+        {
             {
-                MakeExpressionString("{0}.Data.Value"),
-                MakeExpressionString("{0}.Data.NullableValue"),
-                MakeExpressionString(AsInvariant($@"Convert({{0}}.MultipleDataItems[1]{itemPropertyPathConvertSpecifier}).Value")),
-                MakeExpressionString(AsInvariant($@"Convert({{0}}.SingleBaseData{itemPropertyPathConvertSpecifier}).Value"))
-            };
+                typeof(NotNullConstraint),
+                new[]
+                {
+                    $"{expectedInstanceExpression}.ContainedValue.Value",
+                    $"{expectedInstanceExpression}.ContainedValue.NullableValue"
+                }
+            },
+            {
+                typeof(UtcDateConstraint),
+                new[] { $"{expectedInstanceExpression}.ContainedValue.StartDate" }
+            },
+            {
+                typeof(UtcDateTypedConstraint),
+                new[] { $"{expectedInstanceExpression}.ContainedValue.StartDate" }
+            }
+        };
 
-        Assert.That(actualNotNullErrorExpressions, Is.EquivalentTo(expectedNotNullErrorExpressions));
+        Assert.That(validationResult, Is.Not.Null);
+        Assert.That(() => validationResult.IsObjectValid, Is.False);
+        Assert.That(() => validationResult.Errors.Count, Is.EqualTo(expectedTypeToExpressionsMap.SelectMany(pair => pair.Value).Count()));
 
-        var notEmptyError =
-            validationResult.Errors.Single(
-                obj => obj.FailedConstraintType == typeof(NotNullOrEmptyStringConstraint));
+        var validationException = validationResult.GetException().AssertNotNull();
+        Assert.That(validationException, Is.TypeOf<ObjectValidationException>());
+        Assert.That(() => validationException.ValidationResult, Is.SameAs(validationResult));
 
         Assert.That(
-            notEmptyError.Context.Expression.ToString(),
-            Is.EqualTo(MakeExpressionString("{0}.NonEmptyValue")));
+            () => validationResult.EnsureSucceeded(),
+            Throws
+                .TypeOf<ObjectValidationException>()
+                .With
+                .Property(ValidationResultPropertyName)
+                .SameAs(validationResult));
 
-        var utcDateError =
-            validationResult.Errors.Single(obj => obj.FailedConstraintType == typeof(UtcDateConstraint));
+        var groupedErrorMap = validationResult.Errors
+            .GroupBy(error => error.FailedConstraintType)
+            .ToDictionary(grouping => grouping.Key, grouping => grouping.Select(error => error.Context.Expression.ToString()).ToArray());
 
-        Assert.That(
-            utcDateError.Context.Expression.ToString(),
-            Is.EqualTo(MakeExpressionString("{0}.Data.StartDate")));
+        Assert.That(() => groupedErrorMap.Keys, Is.EquivalentTo(expectedTypeToExpressionsMap.Keys));
 
-        var lambdaExpression = utcDateError.Context.CreateLambdaExpression();
-        Assert.That(lambdaExpression, Is.Not.Null);
-        Assert.That(() => lambdaExpression.Compile().Invoke(data), Is.EqualTo(data.Data.StartDate));
+        foreach (var pair in expectedTypeToExpressionsMap)
+        {
+            Assert.That(() => groupedErrorMap[pair.Key], Is.EquivalentTo(pair.Value));
+        }
+
+        var utcDateErrorExpression = validationResult
+            .Errors
+            .Single(obj => obj.FailedConstraintType == typeof(UtcDateConstraint))
+            .Context
+            .CreateLambdaExpression()
+            .AssertNotNull();
+
+        Assert.That(() => utcDateErrorExpression.Compile().Invoke(dataContainer), Is.EqualTo(dataContainer.ContainedValue.StartDate));
     }
 
     [Test]
@@ -124,30 +235,29 @@ internal sealed class ObjectValidatorTests
             }
         };
 
-        var propertiesPropertyPathConvertSpecifier = AsInvariant($@", {nameof(IEnumerable)}");
-        var keyValuePairPropertyPathConvertSpecifier = AsInvariant($@", {typeof(KeyValuePair<,>).Name}");
-        var propertiesPropertyPath = AsInvariant($@"Convert({{0}}.Properties{propertiesPropertyPathConvertSpecifier})");
-
         var validationResult = ObjectValidator.Validate(mapContainer);
 
-        Assert.That(validationResult, Is.Not.Null);
-        Assert.That(validationResult.Errors.Count, Is.EqualTo(2));
-        Assert.That(validationResult.IsObjectValid, Is.False);
+#if NET5_0_OR_GREATER
+        const string InstanceExpression = nameof(mapContainer);
+#else
+        const string InstanceExpression = ObjectValidator.DefaultRootObjectParameterName;
+#endif
 
-        var validationException = validationResult.GetException();
-        Assert.That(validationException, Is.Not.Null & Is.TypeOf<ObjectValidationException>());
-        Assert.That(validationException.EnsureNotNull().ValidationResult, Is.SameAs(validationResult));
+        Assert.That(validationResult, Is.Not.Null);
+        Assert.That(() => validationResult.Errors.Count, Is.EqualTo(2));
+        Assert.That(() => validationResult.IsObjectValid, Is.False);
+
+        var validationException = validationResult.GetException().AssertNotNull();
+        Assert.That(validationException, Is.TypeOf<ObjectValidationException>());
+        Assert.That(() => validationException.ValidationResult, Is.SameAs(validationResult));
 
         var notNullOrEmptyError =
             validationResult.Errors.Single(
                 obj => obj.FailedConstraintType == typeof(NotNullOrEmptyStringConstraint));
 
         Assert.That(
-            notNullOrEmptyError.Context.Expression.ToString(),
-            Is.EqualTo(
-                MakeExpressionString(
-                    AsInvariant(
-                        $@"Convert({propertiesPropertyPath}.Cast().First(){keyValuePairPropertyPathConvertSpecifier}).Key"))));
+            () => notNullOrEmptyError.Context.Expression.ToString(),
+            Is.EqualTo($"Convert(Convert({InstanceExpression}.Properties, IEnumerable).Cast().First(), KeyValuePair`2).Key"));
 
         var emptyKey =
             (string)notNullOrEmptyError.Context.CreateLambdaExpression("key").Compile().Invoke(mapContainer);
@@ -158,31 +268,32 @@ internal sealed class ObjectValidatorTests
             validationResult.Errors.Single(obj => obj.FailedConstraintType == typeof(NotNullConstraint));
 
         Assert.That(
-            notNullError.Context.Expression.ToString(),
+            () => notNullError.Context.Expression.ToString(),
             Is.EqualTo(
-                MakeExpressionString(
-                    AsInvariant(
-                        $@"Convert({propertiesPropertyPath}.Cast().Skip(2).First(){
-                            keyValuePairPropertyPathConvertSpecifier}).Value.ContainedValue"))));
+                $"Convert(Convert({InstanceExpression}.Properties, IEnumerable).Cast().Skip(2).First(), KeyValuePair`2).Value.ContainedValue"));
 
         var nullContainedValue =
             (int?)notNullError.Context.CreateLambdaExpression("value").Compile().Invoke(mapContainer);
 
+        // ReSharper disable once ConditionIsAlwaysTrueOrFalseAccordingToNullableAPIContract :: False detection
         Assert.That(() => nullContainedValue.HasValue, Is.False);
     }
 
-    private static string MakeExpressionString(string propertyPathTemplate)
-        => string.Format(CultureInfo.InvariantCulture, propertyPathTemplate, ObjectValidator.RootObjectParameterName);
-
     private static void EnsureTestValidationSucceeded<T>(T data)
     {
-        var validationResult = ObjectValidator.Validate(data!);
+        var validationResult1 = ObjectValidator.Validate(data!).AssertNotNull();
 
-        Assert.That(validationResult, Is.Not.Null);
-        Assert.That(validationResult.Errors.Count, Is.EqualTo(0));
-        Assert.That(validationResult.IsObjectValid, Is.True);
-        Assert.That(validationResult.GetException(), Is.Null);
-        Assert.That(validationResult.EnsureSucceeded, Throws.Nothing);
+        Assert.That(() => validationResult1.Errors.Count, Is.EqualTo(0));
+        Assert.That(() => validationResult1.IsObjectValid, Is.True);
+        Assert.That(() => validationResult1.GetException(), Is.Null);
+        Assert.That(() => validationResult1.EnsureSucceeded(), Throws.Nothing);
+
+        var validationResult2 = ObjectValidator.Validate(data!, "customExpression-5d804913def74aa2b441496a9e92dba6").AssertNotNull();
+
+        Assert.That(() => validationResult2.Errors.Count, Is.EqualTo(0));
+        Assert.That(() => validationResult2.IsObjectValid, Is.True);
+        Assert.That(() => validationResult2.GetException(), Is.Null);
+        Assert.That(() => validationResult2.EnsureSucceeded(), Throws.Nothing);
     }
 
     public sealed class SimpleData
@@ -192,6 +303,7 @@ internal sealed class ObjectValidatorTests
             "SA1401:FieldsMustBePrivate",
             Justification = "OK in the unit test.")]
         [MemberConstraint(typeof(UtcDateConstraint))]
+        [MemberConstraint(typeof(UtcDateTypedConstraint))]
         public DateTime StartDate;
 
         [UsedImplicitly]
@@ -223,7 +335,7 @@ internal sealed class ObjectValidatorTests
 
         [MemberConstraint(typeof(NeverCalledConstraint))]
         [UsedImplicitly]
-        public string? this[int index] => null;
+        public string this[int index] => throw new NotSupportedException();
     }
 
     public abstract class BaseAnotherSimpleData
@@ -293,6 +405,18 @@ internal sealed class ObjectValidatorTests
         }
     }
 
+    private sealed class MapContainer
+    {
+        [MemberConstraint(typeof(NotNullConstraint))]
+        [MemberItemConstraint(typeof(MapContainerPropertiesPairConstraint))]
+        public IEnumerable<KeyValuePair<string, SimpleContainer<int?>>>? Properties
+        {
+            [UsedImplicitly]
+            get;
+            set;
+        }
+    }
+
     private sealed class MapContainerPropertiesPairConstraint : KeyValuePairConstraintBase<string, SimpleContainer<int?>>
     {
         public MapContainerPropertiesPairConstraint()
@@ -306,7 +430,7 @@ internal sealed class ObjectValidatorTests
     {
         protected override void ValidateValue(
             ObjectValidatorContext validatorContext,
-            MemberConstraintValidationContext context,
+            MemberConstraintValidationContext memberContext,
             object? value)
         {
             var dateTime = (DateTime)value.AssertNotNull();
@@ -315,7 +439,19 @@ internal sealed class ObjectValidatorTests
                 return;
             }
 
-            AddDefaultError(validatorContext, context);
+            AddDefaultError(validatorContext, memberContext);
+        }
+    }
+
+    private sealed class UtcDateTypedConstraint : TypedMemberConstraintBase<DateTime>
+    {
+        /// <inheritdoc />
+        protected override void ValidateTypedValue(ObjectValidatorContext validatorContext, MemberConstraintValidationContext memberContext, DateTime value)
+        {
+            if (value.Kind != DateTimeKind.Utc)
+            {
+                AddDefaultError(validatorContext, memberContext);
+            }
         }
     }
 
@@ -323,25 +459,13 @@ internal sealed class ObjectValidatorTests
     {
         protected override void ValidateValue(
             ObjectValidatorContext validatorContext,
-            MemberConstraintValidationContext context,
+            MemberConstraintValidationContext memberContext,
             object? value)
         {
             const string Message = "This constraint is not supposed to be called ever.";
 
             Assert.Fail(Message);
             throw new InvalidOperationException(Message);
-        }
-    }
-
-    private sealed class MapContainer
-    {
-        [MemberConstraint(typeof(NotNullConstraint))]
-        [MemberItemConstraint(typeof(MapContainerPropertiesPairConstraint))]
-        public IEnumerable<KeyValuePair<string, SimpleContainer<int?>>>? Properties
-        {
-            [UsedImplicitly]
-            get;
-            set;
         }
     }
 }

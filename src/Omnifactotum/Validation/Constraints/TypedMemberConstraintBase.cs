@@ -160,7 +160,11 @@ public abstract class TypedMemberConstraintBase<T> : MemberConstraintBase
             return;
         }
 
-        var memberValidationResult = ObjectValidator.Validate(memberValue, validatorContext.RecursiveProcessingContext);
+        var memberValidationResult = ObjectValidator.Validate(
+            memberValue,
+            ObjectValidator.DefaultRootObjectParameterName,
+            validatorContext.RecursiveProcessingContext);
+
         if (memberValidationResult.IsObjectValid)
         {
             return;

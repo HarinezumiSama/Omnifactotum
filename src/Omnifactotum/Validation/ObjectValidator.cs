@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
 using System.Reflection;
+using System.Runtime.CompilerServices;
 using Omnifactotum.Annotations;
 using Omnifactotum.Validation.Constraints;
 using DisallowNullAttribute = System.Diagnostics.CodeAnalysis.DisallowNullAttribute;
@@ -22,7 +23,7 @@ public static class ObjectValidator
     /// <summary>
     ///     The root object parameter name (used in expressions).
     /// </summary>
-    internal const string RootObjectParameterName = "instance";
+    internal const string DefaultRootObjectParameterName = "instance";
 
     private static readonly MethodInfo EnumerableCastBaseMethodInfo =
         new Func<IEnumerable, object>(Enumerable.Cast<object>).Method.GetGenericMethodDefinition();
@@ -53,11 +54,34 @@ public static class ObjectValidator
     /// <param name="instance">
     ///     The instance to validate.
     /// </param>
+    /// <param name="instanceExpression">
+    ///     <para>
+    ///         A string value representing the expression passed as the value of the <paramref name="instance"/> parameter.
+    ///         It's later used in the error validation message to display the path to properties that failed validation.
+    ///     </para>
+    ///     <para>
+    ///         <b>NOTE</b>: By default, the value for this parameter is automatically injected by the compiler (.NET 5+ and C# 10+).
+    ///         Pass the value explicitly only if you wish to override it.
+    ///     </para>
+    /// </param>
     /// <returns>
     ///     An <see cref="ObjectValidationResult"/> representing the validation result.
     /// </returns>
     [NotNull]
-    public static ObjectValidationResult Validate<T>([DisallowNull] T instance) => Validate(instance, null);
+    public static ObjectValidationResult Validate<T>(
+        [DisallowNull] T instance,
+#if NET5_0_OR_GREATER
+        [CallerArgumentExpression(nameof(instance))]
+#endif
+        string? instanceExpression = null)
+    {
+        if (instanceExpression is not null && string.IsNullOrWhiteSpace(instanceExpression))
+        {
+            throw new ArgumentException(@"The value cannot be a blank string (but can be null).", nameof(instanceExpression));
+        }
+
+        return Validate(instance, instanceExpression ?? DefaultRootObjectParameterName, null);
+    }
 
     /// <summary>
     ///     Validates the specified instance.
@@ -68,6 +92,9 @@ public static class ObjectValidator
     /// <param name="instance">
     ///     The instance to validate.
     /// </param>
+    /// <param name="instanceExpression">
+    ///     <para>A string value representing the expression passed as the value of the <paramref name="instance"/> parameter.</para>
+    /// </param>
     /// <param name="recursiveProcessingContext">
     ///     The context of the recursive processing, or <see langword="null"/> to use a new context.
     /// </param>
@@ -77,6 +104,7 @@ public static class ObjectValidator
     [NotNull]
     internal static ObjectValidationResult Validate<T>(
         [DisallowNull] T instance,
+        [NotNull] string instanceExpression,
         [CanBeNull] RecursiveProcessingContext<MemberData>? recursiveProcessingContext)
     {
         if (instance is null)
@@ -84,7 +112,12 @@ public static class ObjectValidator
             throw new ArgumentNullException(nameof(instance));
         }
 
-        var parameterExpression = Expression.Parameter(instance.GetType(), RootObjectParameterName);
+        if (string.IsNullOrWhiteSpace(instanceExpression))
+        {
+            throw new ArgumentException(@"The value cannot be null or a blank string.", nameof(instanceExpression));
+        }
+
+        var parameterExpression = Expression.Parameter(instance.GetType(), instanceExpression);
         var rootMemberData = new MemberData(parameterExpression, null, instance, null, null);
 
         var objectValidatorContext = new ObjectValidatorContext(recursiveProcessingContext);

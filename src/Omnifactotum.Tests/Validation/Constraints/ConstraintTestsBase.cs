@@ -21,7 +21,7 @@ internal abstract class ConstraintTestsBase
     [NotNull]
     protected MemberConstraintValidationContext CreateMemberConstraintValidationContext()
     {
-        var parameterExpression = Expression.Parameter(GetType(), ObjectValidator.RootObjectParameterName);
+        var parameterExpression = Expression.Parameter(GetType(), ObjectValidator.DefaultRootObjectParameterName);
 
         var expression = Expression.MakeMemberAccess(
             parameterExpression,
