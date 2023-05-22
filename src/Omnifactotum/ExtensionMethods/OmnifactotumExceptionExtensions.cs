@@ -1,5 +1,7 @@
 ﻿using System.Diagnostics;
+using System.Runtime.CompilerServices;
 using System.Threading;
+using Omnifactotum;
 
 //// Namespace is intentionally named so in order to simplify usage of extension methods
 using Omnifactotum.Annotations;
@@ -48,6 +50,7 @@ public static class OmnifactotumExceptionExtensions
     ///     </code>
     /// </example>
     [DebuggerNonUserCode]
+    [MethodImpl(OmnifactotumConstants.MethodOptimizationOptions.Standard)]
     public static bool IsFatal([CanBeNull] this Exception? exception)
         => exception is ThreadAbortException or OperationCanceledException or OutOfMemoryException or StackOverflowException;
 

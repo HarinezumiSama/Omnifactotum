@@ -1,5 +1,7 @@
 ﻿using System.Diagnostics;
 using System.Globalization;
+using System.Runtime.CompilerServices;
+using Omnifactotum;
 using Omnifactotum.Annotations;
 using PureAttribute = System.Diagnostics.Contracts.PureAttribute;
 
@@ -68,10 +70,11 @@ public static class OmnifactotumDateTimeOffsetExtensions
     ///     <code>2001-02-03 07:08:09 UTC+02:30</code>
     /// </example>
     /// <seealso cref="FixedStringFormat"/>
-    [NotNull]
     [Pure]
     [Omnifactotum.Annotations.Pure]
     [DebuggerStepThrough]
+    [MethodImpl(OmnifactotumConstants.MethodOptimizationOptions.Standard)]
+    [NotNull]
     public static string ToFixedString(this DateTimeOffset value)
         => value.ToString(FixedStringFormat, CultureInfo.InvariantCulture);
 
@@ -107,10 +110,11 @@ public static class OmnifactotumDateTimeOffsetExtensions
     ///     <code>2001-02-03 07:08:09.456 UTC+02:30</code>
     /// </example>
     /// <seealso cref="FixedStringWithMillisecondsFormat"/>
-    [NotNull]
     [Pure]
     [Omnifactotum.Annotations.Pure]
     [DebuggerStepThrough]
+    [MethodImpl(OmnifactotumConstants.MethodOptimizationOptions.Standard)]
+    [NotNull]
     public static string ToFixedStringWithMilliseconds(this DateTimeOffset value)
         => value.ToString(FixedStringWithMillisecondsFormat, CultureInfo.InvariantCulture);
 
@@ -148,10 +152,11 @@ public static class OmnifactotumDateTimeOffsetExtensions
     ///     <code>2001-02-03 07:08:09.4560000 UTC+02:30</code>
     /// </example>
     /// <seealso cref="PreciseFixedStringFormat"/>
-    [NotNull]
     [Pure]
     [Omnifactotum.Annotations.Pure]
     [DebuggerStepThrough]
+    [MethodImpl(OmnifactotumConstants.MethodOptimizationOptions.Standard)]
+    [NotNull]
     public static string ToPreciseFixedString(this DateTimeOffset value)
         => value.ToString(PreciseFixedStringFormat, CultureInfo.InvariantCulture);
 }

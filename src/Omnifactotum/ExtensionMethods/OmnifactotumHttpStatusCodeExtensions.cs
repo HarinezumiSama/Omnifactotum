@@ -1,5 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Globalization;
+using System.Runtime.CompilerServices;
+using Omnifactotum;
 using static Omnifactotum.FormattableStringFactotum;
 
 //// ReSharper disable RedundantNullnessAttributeWithNullableReferenceTypes
@@ -55,7 +57,7 @@ public static class OmnifactotumHttpStatusCodeExtensions
 
         return valueAsString is null
             ? valueAsInt.ToString(CultureInfo.InvariantCulture)
-            : AsInvariant($@"{valueAsInt:D} {valueAsString}");
+            : AsInvariant($"{valueAsInt:D}\x0020{valueAsString}");
     }
 
     /// <summary>
@@ -68,5 +70,6 @@ public static class OmnifactotumHttpStatusCodeExtensions
     ///     <see langword="true"/> if the specified <see cref="HttpStatusCode"/> value is in the range <c>200 .. 299</c>, inclusive;
     ///     otherwise, <see langword="false"/>.
     /// </returns>
+    [MethodImpl(OmnifactotumConstants.MethodOptimizationOptions.Standard)]
     public static bool IsSuccessful(this HttpStatusCode value) => (int)value is >= MinSuccessfulHttpStatusCode and <= MaxSuccessfulHttpStatusCode;
 }

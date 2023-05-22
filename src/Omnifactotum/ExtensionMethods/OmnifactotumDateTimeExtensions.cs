@@ -64,11 +64,11 @@ public static class OmnifactotumDateTimeExtensions
     ///     <code>2001-02-03 07:08:09</code>
     /// </example>
     /// <seealso cref="FixedStringFormat"/>
-    [NotNull]
     [Pure]
     [Omnifactotum.Annotations.Pure]
     [DebuggerStepThrough]
-    [MethodImpl(OmnifactotumConstants.MethodOptimizationOptions.Maximum)]
+    [MethodImpl(OmnifactotumConstants.MethodOptimizationOptions.Standard)]
+    [NotNull]
     public static string ToFixedString(this DateTime value)
         => value.ToString(FixedStringFormat, CultureInfo.InvariantCulture);
 
@@ -104,11 +104,11 @@ public static class OmnifactotumDateTimeExtensions
     ///     <code>2001-02-03 07:08:09.456</code>
     /// </example>
     /// <seealso cref="FixedStringWithMillisecondsFormat"/>
-    [NotNull]
     [Pure]
     [Omnifactotum.Annotations.Pure]
     [DebuggerStepThrough]
-    [MethodImpl(OmnifactotumConstants.MethodOptimizationOptions.Maximum)]
+    [MethodImpl(OmnifactotumConstants.MethodOptimizationOptions.Standard)]
+    [NotNull]
     public static string ToFixedStringWithMilliseconds(this DateTime value)
         => value.ToString(FixedStringWithMillisecondsFormat, CultureInfo.InvariantCulture);
 
@@ -144,11 +144,11 @@ public static class OmnifactotumDateTimeExtensions
     ///     <code>2001-02-03 07:08:09.4560000</code>
     /// </example>
     /// <seealso cref="PreciseFixedStringFormat"/>
-    [NotNull]
     [Pure]
     [Omnifactotum.Annotations.Pure]
     [DebuggerStepThrough]
-    [MethodImpl(OmnifactotumConstants.MethodOptimizationOptions.Maximum)]
+    [MethodImpl(OmnifactotumConstants.MethodOptimizationOptions.Standard)]
+    [NotNull]
     public static string ToPreciseFixedString(this DateTime value)
         => value.ToString(PreciseFixedStringFormat, CultureInfo.InvariantCulture);
 
@@ -210,7 +210,7 @@ public static class OmnifactotumDateTimeExtensions
     /// <exception cref="ArgumentException">
     ///     <see cref="DateTime.Kind"/> of <paramref name="value"/> is not equal to <see cref="DateTimeKind.Utc"/>.
     /// </exception>
-    [MethodImpl(OmnifactotumConstants.MethodOptimizationOptions.Maximum)]
+    [MethodImpl(OmnifactotumConstants.MethodOptimizationOptions.Standard)]
     public static DateTime EnsureUtc(
         this DateTime value,
 #if NET5_0_OR_GREATER
@@ -236,7 +236,7 @@ public static class OmnifactotumDateTimeExtensions
     /// <exception cref="ArgumentException">
     ///     <see cref="DateTime.Kind"/> of <paramref name="value"/> is not equal to <see cref="DateTimeKind.Local"/>.
     /// </exception>
-    [MethodImpl(OmnifactotumConstants.MethodOptimizationOptions.Maximum)]
+    [MethodImpl(OmnifactotumConstants.MethodOptimizationOptions.Standard)]
     public static DateTime EnsureLocal(
         this DateTime value,
 #if NET5_0_OR_GREATER
@@ -261,6 +261,6 @@ public static class OmnifactotumDateTimeExtensions
     /// </returns>
     [Pure]
     [Omnifactotum.Annotations.Pure]
-    [MethodImpl(OmnifactotumConstants.MethodOptimizationOptions.Maximum)]
+    [MethodImpl(OmnifactotumConstants.MethodOptimizationOptions.Standard)]
     public static DateTime AsKind(this DateTime value, DateTimeKind kind) => DateTime.SpecifyKind(value, kind);
 }

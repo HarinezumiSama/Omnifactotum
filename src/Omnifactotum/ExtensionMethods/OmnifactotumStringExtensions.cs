@@ -72,8 +72,8 @@ public static class OmnifactotumStringExtensions
     /// <returns>
     ///     The <see cref="Nullable{Boolean}"/> representation of the specified string value.
     /// </returns>
-    [CanBeNull]
     [Pure]
+    [CanBeNull]
     public static bool? ToNullableBoolean([CanBeNull] this string? value)
     {
         if (string.IsNullOrWhiteSpace(value))
@@ -133,8 +133,8 @@ public static class OmnifactotumStringExtensions
     ///     A <see cref="System.String"/> consisting of the elements of <paramref name="values"/> delimited
     ///     by the <paramref name="separator"/> string.
     /// </returns>
-    [NotNull]
     [MethodImpl(OmnifactotumConstants.MethodOptimizationOptions.Standard)]
+    [NotNull]
     public static string Join(
         [NotNull] [ItemCanBeNull] [InstantHandle] this IEnumerable<string?> values,
         [CanBeNull] string? separator)
@@ -153,10 +153,10 @@ public static class OmnifactotumStringExtensions
     /// <exception cref="ArgumentNullException">
     ///     <paramref name="source" /> is <see langword="null" />.
     /// </exception>
-    [NotNull]
-    [ItemNotNull]
     [LinqTunnel]
     [Pure]
+    [NotNull]
+    [ItemNotNull]
     public static IEnumerable<string> WhereNotEmpty([NotNull] [ItemCanBeNull] this IEnumerable<string?> source)
     {
         if (source is null)
@@ -188,10 +188,10 @@ public static class OmnifactotumStringExtensions
     /// <exception cref="ArgumentNullException">
     ///     <paramref name="source" /> is <see langword="null" />.
     /// </exception>
-    [NotNull]
-    [ItemNotNull]
     [LinqTunnel]
     [Pure]
+    [NotNull]
+    [ItemNotNull]
     public static IEnumerable<string> WhereNotBlank([NotNull] [ItemCanBeNull] this IEnumerable<string?> source)
     {
         if (source is null)
@@ -219,9 +219,9 @@ public static class OmnifactotumStringExtensions
     /// <returns>
     ///     The source string value if it is not <see langword="null"/>; otherwise, <see cref="string.Empty"/>.
     /// </returns>
-    [NotNull]
     [Pure]
     [MethodImpl(OmnifactotumConstants.MethodOptimizationOptions.Standard)]
+    [NotNull]
     public static string AvoidNull([CanBeNull] this string? source) => source ?? string.Empty;
 
     /// <summary>
@@ -279,8 +279,8 @@ public static class OmnifactotumStringExtensions
     /// ]]>
     ///     </code>
     /// </example>
-    [NotNull]
     [Pure]
+    [NotNull]
     public static string ToUIString([CanBeNull] this string? value)
         => value is null
             ? OmnifactotumRepresentationConstants.NullValueRepresentation
@@ -320,8 +320,8 @@ public static class OmnifactotumStringExtensions
     /// <returns>
     ///     The secured UI representation of the specified string.
     /// </returns>
-    [NotNull]
     [Pure]
+    [NotNull]
     public static string ToSecuredUIString(
         this string? value,
         int loggedPartLength = DefaultLoggedPartLength,
@@ -367,9 +367,9 @@ public static class OmnifactotumStringExtensions
     ///     If <paramref name="trimChars"/> is <see langword="null"/> or an empty array, Unicode white-space characters
     ///     are removed instead.
     /// </returns>
-    [NotNull]
     [Pure]
     [MethodImpl(OmnifactotumConstants.MethodOptimizationOptions.Standard)]
+    [NotNull]
     public static string TrimSafely([CanBeNull] this string? value, [CanBeNull] params char[]? trimChars)
         => value?.Trim(trimChars) ?? string.Empty;
 
@@ -389,9 +389,9 @@ public static class OmnifactotumStringExtensions
     ///     If <paramref name="trimChars"/> is <see langword="null"/> or an empty array, Unicode white-space characters
     ///     are removed instead.
     /// </returns>
-    [NotNull]
     [Pure]
     [MethodImpl(OmnifactotumConstants.MethodOptimizationOptions.Standard)]
+    [NotNull]
     public static string TrimStartSafely([CanBeNull] this string? value, [CanBeNull] params char[]? trimChars)
         => value?.TrimStart(trimChars) ?? string.Empty;
 
@@ -411,9 +411,9 @@ public static class OmnifactotumStringExtensions
     ///     If <paramref name="trimChars"/> is <see langword="null"/> or an empty array, Unicode white-space characters
     ///     are removed instead.
     /// </returns>
-    [NotNull]
     [Pure]
     [MethodImpl(OmnifactotumConstants.MethodOptimizationOptions.Standard)]
+    [NotNull]
     public static string TrimEndSafely([CanBeNull] this string? value, [CanBeNull] params char[]? trimChars)
         => value?.TrimEnd(trimChars) ?? string.Empty;
 
@@ -437,8 +437,8 @@ public static class OmnifactotumStringExtensions
     ///     -or-
     ///     <para><paramref name="prefix"/> is <see langword="null"/>.</para>
     /// </exception>
-    [NotNull]
     [Pure]
+    [NotNull]
     public static string TrimPrefix([NotNull] this string value, [NotNull] string prefix, StringComparison comparison)
     {
         if (value is null)
@@ -474,8 +474,8 @@ public static class OmnifactotumStringExtensions
     ///     -or-
     ///     <para><paramref name="postfix"/> is <see langword="null"/>.</para>
     /// </exception>
-    [NotNull]
     [Pure]
+    [NotNull]
     public static string TrimPostfix([NotNull] this string value, [NotNull] string postfix, StringComparison comparison)
     {
         if (value is null)
@@ -508,8 +508,8 @@ public static class OmnifactotumStringExtensions
     /// <exception cref="ArgumentOutOfRangeException">
     ///     <paramref name="maximumLength"/> is less than zero.
     /// </exception>
-    [NotNull]
     [Pure]
+    [NotNull]
     public static string Shorten([CanBeNull] this string? value, int maximumLength)
     {
         if (maximumLength < 0)
@@ -540,8 +540,8 @@ public static class OmnifactotumStringExtensions
     ///     The specified value repeated the specified number of times, or <see cref="String.Empty"/> if
     ///     <paramref name="value"/> is <see langword="null"/> or an empty string or <paramref name="count"/> is zero.
     /// </returns>
-    [NotNull]
     [Pure]
+    [NotNull]
     public static string Replicate([CanBeNull] this string? value, int count)
     {
         if (count < 0)
@@ -588,8 +588,8 @@ public static class OmnifactotumStringExtensions
     ///     A <see cref="string"/> which is equal to the specified <see cref="string"/> ending with a single trailing forward slash
     ///     character ("/").
     /// </returns>
-    [NotNull]
     [Pure]
+    [NotNull]
     public static string WithSingleTrailingSlash([NotNull] this string value)
     {
         if (value is null)
@@ -621,8 +621,8 @@ public static class OmnifactotumStringExtensions
     ///     A <see cref="string"/> which is equal to the specified <see cref="string"/> with the trailing forward slash characters
     ///     ("/") removed, if there were any.
     /// </returns>
-    [NotNull]
     [Pure]
+    [NotNull]
     public static string WithoutTrailingSlash([NotNull] this string value)
     {
         if (value is null)
@@ -644,8 +644,8 @@ public static class OmnifactotumStringExtensions
     ///     <see cref="SecureString"/> that contains the specified plain text value.
     /// </returns>
     [ContractAnnotation("null => null; notnull => notnull", true)]
-    [CanBeNull]
     [Pure]
+    [CanBeNull]
     [return: NotNullIfNotNull(@"value")]
     public static unsafe SecureString? ToSecureString([CanBeNull] this string? value)
     {

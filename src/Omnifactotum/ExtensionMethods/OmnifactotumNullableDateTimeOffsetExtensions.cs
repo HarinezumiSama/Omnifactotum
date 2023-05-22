@@ -1,4 +1,5 @@
 ﻿using System.Diagnostics;
+using System.Runtime.CompilerServices;
 using Omnifactotum;
 using Omnifactotum.Annotations;
 using PureAttribute = System.Diagnostics.Contracts.PureAttribute;
@@ -26,10 +27,11 @@ public static class OmnifactotumNullableDateTimeOffsetExtensions
     ///     A string representation of the specified nullable <see cref="DateTimeOffset"/> value.
     /// </returns>
     /// <seealso cref="OmnifactotumDateTimeOffsetExtensions.ToFixedString"/>
-    [NotNull]
     [Pure]
     [Omnifactotum.Annotations.Pure]
     [DebuggerStepThrough]
+    [MethodImpl(OmnifactotumConstants.MethodOptimizationOptions.Standard)]
+    [NotNull]
     public static string ToFixedString(this DateTimeOffset? value)
         => value is null ? OmnifactotumRepresentationConstants.NullValueRepresentation : value.Value.ToFixedString();
 
@@ -45,10 +47,11 @@ public static class OmnifactotumNullableDateTimeOffsetExtensions
     ///     A string representation of the specified nullable <see cref="DateTimeOffset"/> value.
     /// </returns>
     /// <seealso cref="OmnifactotumDateTimeOffsetExtensions.ToFixedStringWithMilliseconds"/>
-    [NotNull]
     [Pure]
     [Omnifactotum.Annotations.Pure]
     [DebuggerStepThrough]
+    [MethodImpl(OmnifactotumConstants.MethodOptimizationOptions.Standard)]
+    [NotNull]
     public static string ToFixedStringWithMilliseconds(this DateTimeOffset? value)
         => value is null ? OmnifactotumRepresentationConstants.NullValueRepresentation : value.Value.ToFixedStringWithMilliseconds();
 
@@ -64,10 +67,11 @@ public static class OmnifactotumNullableDateTimeOffsetExtensions
     ///     A string representation of the specified nullable <see cref="DateTimeOffset"/> value.
     /// </returns>
     /// <seealso cref="OmnifactotumDateTimeOffsetExtensions.ToPreciseFixedString"/>
-    [NotNull]
     [Pure]
     [Omnifactotum.Annotations.Pure]
     [DebuggerStepThrough]
+    [MethodImpl(OmnifactotumConstants.MethodOptimizationOptions.Standard)]
+    [NotNull]
     public static string ToPreciseFixedString(this DateTimeOffset? value)
         => value is null ? OmnifactotumRepresentationConstants.NullValueRepresentation : value.Value.ToPreciseFixedString();
 }

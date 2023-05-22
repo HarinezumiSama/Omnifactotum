@@ -144,9 +144,9 @@ public static class OmnifactotumUriExtensions
     ///     The UI representation of the specified <see cref="Uri"/> value.
     /// </returns>
     /// <seealso cref="OmnifactotumStringExtensions.ToUIString(string?)"/>
-    [NotNull]
     [Pure]
     [MethodImpl(OmnifactotumConstants.MethodOptimizationOptions.Maximum)]
+    [NotNull]
     public static string ToUIString([CanBeNull] this Uri? value)
         => value is null ? OmnifactotumRepresentationConstants.NullValueRepresentation : value.ToString().ToUIString();
 
@@ -169,8 +169,8 @@ public static class OmnifactotumUriExtensions
     ///     A <see cref="Uri"/> which is equal to the specified <see cref="Uri"/> ending with a single trailing forward slash
     ///     character ("/").
     /// </returns>
-    [NotNull]
     [Pure]
+    [NotNull]
     public static Uri WithSingleTrailingSlash([NotNull] this Uri value)
     {
         if (value is null)
@@ -203,8 +203,8 @@ public static class OmnifactotumUriExtensions
     ///     A <see cref="Uri"/> which is equal to the specified <see cref="Uri"/> with the trailing forward slash characters ("/")
     ///     removed, if there were any.
     /// </returns>
-    [NotNull]
     [Pure]
+    [NotNull]
     public static Uri WithoutTrailingSlash([NotNull] this Uri value)
     {
         if (value is null)

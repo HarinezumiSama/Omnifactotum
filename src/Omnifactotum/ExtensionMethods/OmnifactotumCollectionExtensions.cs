@@ -1,5 +1,4 @@
 ﻿using System.Collections.Immutable;
-using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Threading;
@@ -22,7 +21,6 @@ namespace System.Collections.Generic;
 ///     Contains extension methods for collections, that is, for <see cref="IEnumerable{T}"/>, <see cref="ICollection{T}"/>, <see cref="ICollection"/>,
 ///     <see cref="IList{T}"/>, <see cref="IAsyncEnumerable{T}"/>, <see cref="ConfiguredCancelableAsyncEnumerable{T}"/> etc.
 /// </summary>
-[SuppressMessage("ReSharper", "UseDeconstruction", Justification = "Multiple target frameworks.")]
 public static class OmnifactotumCollectionExtensions
 {
     /// <summary>
@@ -66,6 +64,7 @@ public static class OmnifactotumCollectionExtensions
     ///     <para>-or-</para>
     ///     <para><paramref name="action"/> is <see langword="null"/>.</para>
     /// </exception>
+    [MethodImpl(OmnifactotumConstants.MethodOptimizationOptions.Standard)]
     public static void DoForEach<T>(
         [NotNull] this IEnumerable<T> collection,
         [NotNull] [InstantHandle] Action<T> action)
@@ -105,6 +104,7 @@ public static class OmnifactotumCollectionExtensions
     ///     <para>-or-</para>
     ///     <para><paramref name="action"/> is <see langword="null"/>.</para>
     /// </exception>
+    [MethodImpl(OmnifactotumConstants.MethodOptimizationOptions.Standard)]
     public static void DoForEach<T>(
         [NotNull] this IEnumerable<T> collection,
         [NotNull] [InstantHandle] Action<T, int> action)
@@ -149,6 +149,7 @@ public static class OmnifactotumCollectionExtensions
     ///     <para>-or-</para>
     ///     <para><paramref name="actionAsync"/> is <see langword="null"/>.</para>
     /// </exception>
+    [MethodImpl(OmnifactotumConstants.MethodOptimizationOptions.Standard)]
     public static async Task DoForEachAsync<T>(
         [NotNull] this IEnumerable<T> collection,
         [NotNull] [InstantHandle] Func<T, CancellationToken, Task> actionAsync,
@@ -196,6 +197,7 @@ public static class OmnifactotumCollectionExtensions
     ///     <para>-or-</para>
     ///     <para><paramref name="actionAsync"/> is <see langword="null"/>.</para>
     /// </exception>
+    [MethodImpl(OmnifactotumConstants.MethodOptimizationOptions.Standard)]
     public static async Task DoForEachAsync<T>(
         [NotNull] this IEnumerable<T> collection,
         [NotNull] [InstantHandle] Func<T, int, CancellationToken, Task> actionAsync,
@@ -399,6 +401,7 @@ public static class OmnifactotumCollectionExtensions
     ///     <see langword="true"/> if two specified collections contain identical items in the same order or
     ///     they both are <see langword="null"/>; otherwise, <see langword="false"/>.
     /// </returns>
+    [MethodImpl(OmnifactotumConstants.MethodOptimizationOptions.Standard)]
     public static bool CollectionsEqual<T>(
         [CanBeNull] this IEnumerable<T>? collection,
         [CanBeNull] IEnumerable<T>? otherCollection)
@@ -475,6 +478,7 @@ public static class OmnifactotumCollectionExtensions
     ///     A dictionary in which a key is a duplicated key from the source collection keys and a value is
     ///     the list of the corresponding duplicated items from the source collection.
     /// </returns>
+    [MethodImpl(OmnifactotumConstants.MethodOptimizationOptions.Standard)]
     [NotNull]
     public static Dictionary<TKey, List<T>> FindDuplicates<T, TKey>(
         [NotNull] [InstantHandle] this IEnumerable<T> collection,
@@ -820,6 +824,7 @@ public static class OmnifactotumCollectionExtensions
     /// <returns>
     ///     The UI representation of the specified collection of nullable values.
     /// </returns>
+    [MethodImpl(OmnifactotumConstants.MethodOptimizationOptions.Maximum)]
     [NotNull]
     public static string ToUIString<T>(
         [CanBeNull] [InstantHandle] this IEnumerable<T?>? values,
@@ -1015,6 +1020,7 @@ public static class OmnifactotumCollectionExtensions
     /// <exception cref="ArgumentNullException">
     ///     <paramref name="source"/> is <see langword="null"/>.
     /// </exception>
+    [MethodImpl(OmnifactotumConstants.MethodOptimizationOptions.Standard)]
     [NotNull]
     public static async Task<T[]> EnumerateToArrayAsync<T>([NotNull] this IAsyncEnumerable<T> source, CancellationToken cancellationToken = default)
         => (await source.EnumerateToListAsync(cancellationToken)).ToArray();

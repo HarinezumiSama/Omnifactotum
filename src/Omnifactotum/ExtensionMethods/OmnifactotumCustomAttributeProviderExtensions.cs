@@ -1,4 +1,6 @@
 ﻿using System.Linq;
+using System.Runtime.CompilerServices;
+using Omnifactotum;
 using Omnifactotum.Annotations;
 
 //// ReSharper disable RedundantNullnessAttributeWithNullableReferenceTypes
@@ -79,6 +81,7 @@ public static class OmnifactotumCustomAttributeProviderExtensions
     ///     The specified attribute either is not applied to the specified provider at all
     ///     or is applied more than once.
     /// </exception>
+    [MethodImpl(OmnifactotumConstants.MethodOptimizationOptions.Maximum)]
     [NotNull]
     public static TAttribute GetSingleCustomAttribute<TAttribute>(
         [NotNull] this ICustomAttributeProvider provider,
@@ -109,6 +112,7 @@ public static class OmnifactotumCustomAttributeProviderExtensions
     /// <exception cref="System.InvalidOperationException">
     ///     The specified attribute is applied more than once.
     /// </exception>
+    [MethodImpl(OmnifactotumConstants.MethodOptimizationOptions.Maximum)]
     [CanBeNull]
     public static TAttribute? GetSingleOrDefaultCustomAttribute<TAttribute>(
         [NotNull] this ICustomAttributeProvider provider,

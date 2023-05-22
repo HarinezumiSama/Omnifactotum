@@ -61,6 +61,7 @@ public static class OmnifactotumTimeSpanExtensions
     /// </returns>
     [Pure]
     [Omnifactotum.Annotations.Pure]
+    [MethodImpl(OmnifactotumConstants.MethodOptimizationOptions.Standard)]
     public static TimeSpan Multiply(this TimeSpan value, decimal coefficient)
         => TimeSpan.FromTicks(Convert.ToInt64(value.Ticks * coefficient));
 
@@ -78,6 +79,7 @@ public static class OmnifactotumTimeSpanExtensions
     /// </returns>
     [Pure]
     [Omnifactotum.Annotations.Pure]
+    [MethodImpl(OmnifactotumConstants.MethodOptimizationOptions.Standard)]
     public static TimeSpan Divide(this TimeSpan value, decimal divisor)
     {
         if (divisor == 0m)
@@ -128,11 +130,11 @@ public static class OmnifactotumTimeSpanExtensions
     ///         -1.10:17:36
     ///     </code>
     /// </example>
-    [Omnifactotum.Annotations.NotNull]
     [Pure]
     [Omnifactotum.Annotations.Pure]
     [DebuggerStepThrough]
     [MethodImpl(OmnifactotumConstants.MethodOptimizationOptions.Standard)]
+    [Omnifactotum.Annotations.NotNull]
     public static string ToFixedString(this TimeSpan value) => InternalToFixedString(value, FixedStringFormats);
 
     /// <summary>
@@ -176,11 +178,11 @@ public static class OmnifactotumTimeSpanExtensions
     ///         -1.10:17:36.789
     ///     </code>
     /// </example>
-    [Omnifactotum.Annotations.NotNull]
     [Pure]
     [Omnifactotum.Annotations.Pure]
     [DebuggerStepThrough]
     [MethodImpl(OmnifactotumConstants.MethodOptimizationOptions.Standard)]
+    [Omnifactotum.Annotations.NotNull]
     public static string ToFixedStringWithMilliseconds(this TimeSpan value) => InternalToFixedString(value, FixedStringWithMillisecondsFormats);
 
     /// <summary>
@@ -224,11 +226,11 @@ public static class OmnifactotumTimeSpanExtensions
     ///         -1.10:17:36.7890123
     ///     </code>
     /// </example>
-    [Omnifactotum.Annotations.NotNull]
     [Pure]
     [Omnifactotum.Annotations.Pure]
     [DebuggerStepThrough]
     [MethodImpl(OmnifactotumConstants.MethodOptimizationOptions.Standard)]
+    [Omnifactotum.Annotations.NotNull]
     public static string ToPreciseFixedString(this TimeSpan value) => InternalToFixedString(value, PreciseFixedStringFormats);
 
     //// ReSharper disable once SuggestBaseTypeForParameter :: Optimization

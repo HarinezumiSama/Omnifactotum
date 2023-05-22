@@ -1,4 +1,6 @@
 ﻿using System.Reflection;
+using System.Runtime.CompilerServices;
+using Omnifactotum;
 using Omnifactotum.Annotations;
 using NotNullIfNotNullAttribute = System.Diagnostics.CodeAnalysis.NotNullIfNotNullAttribute;
 
@@ -25,6 +27,7 @@ public static class OmnifactotumExpressionExtensions
     /// <returns>
     ///     The last called method, or <see langword="null"/> if the last element in the expression is not a method call.
     /// </returns>
+    [MethodImpl(OmnifactotumConstants.MethodOptimizationOptions.Standard)]
     [CanBeNull]
     public static MethodInfo? GetLastMethod<TDelegate>([NotNull] this Expression<TDelegate> expression)
     {
