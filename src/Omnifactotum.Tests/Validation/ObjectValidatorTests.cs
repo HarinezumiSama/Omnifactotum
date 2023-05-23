@@ -97,7 +97,6 @@ internal sealed class ObjectValidatorTests
 
         Assert.That(validationResult, Is.Not.Null);
         Assert.That(() => validationResult.IsObjectValid, Is.False);
-        Assert.That(() => validationResult.Errors.Count, Is.EqualTo(expectedTypeToExpressionsMap.SelectMany(pair => pair.Value).Count()));
 
         var validationException = validationResult.GetException().AssertNotNull();
         Assert.That(validationException, Is.TypeOf<ObjectValidationException>());
@@ -119,8 +118,13 @@ internal sealed class ObjectValidatorTests
 
         foreach (var pair in expectedTypeToExpressionsMap)
         {
-            Assert.That(() => groupedErrorMap[pair.Key], Is.EquivalentTo(pair.Value));
+            Assert.That(
+                () => groupedErrorMap[pair.Key],
+                Is.EquivalentTo(pair.Value),
+                $"Expression list mismatch for the constraint type {pair.Key.GetFullName().ToUIString()}.");
         }
+
+        Assert.That(() => validationResult.Errors.Count, Is.EqualTo(expectedTypeToExpressionsMap.SelectMany(pair => pair.Value).Count()));
 
         var utcDateErrorExpression = validationResult
             .Errors
@@ -187,7 +191,6 @@ internal sealed class ObjectValidatorTests
 
         Assert.That(validationResult, Is.Not.Null);
         Assert.That(() => validationResult.IsObjectValid, Is.False);
-        Assert.That(() => validationResult.Errors.Count, Is.EqualTo(expectedTypeToExpressionsMap.SelectMany(pair => pair.Value).Count()));
 
         var validationException = validationResult.GetException().AssertNotNull();
         Assert.That(validationException, Is.TypeOf<ObjectValidationException>());
@@ -209,8 +212,13 @@ internal sealed class ObjectValidatorTests
 
         foreach (var pair in expectedTypeToExpressionsMap)
         {
-            Assert.That(() => groupedErrorMap[pair.Key], Is.EquivalentTo(pair.Value));
+            Assert.That(
+                () => groupedErrorMap[pair.Key],
+                Is.EquivalentTo(pair.Value),
+                $"Expression list mismatch for the constraint type {pair.Key.GetFullName().ToUIString()}.");
         }
+
+        Assert.That(() => validationResult.Errors.Count, Is.EqualTo(expectedTypeToExpressionsMap.SelectMany(pair => pair.Value).Count()));
 
         var utcDateErrorExpression = validationResult
             .Errors
@@ -243,40 +251,65 @@ internal sealed class ObjectValidatorTests
         const string InstanceExpression = ObjectValidator.DefaultRootObjectParameterName;
 #endif
 
+        var expectedTypeToExpressionsMap = new Dictionary<Type, string[]>
+        {
+            {
+                typeof(NotNullConstraint),
+                new[]
+                {
+                    $"Convert(Convert({InstanceExpression}.Properties, IEnumerable).Cast().Skip(2).First(), KeyValuePair`2).Value.ContainedValue",
+                    $"Convert(Convert({InstanceExpression}.Properties, IEnumerable).Cast().Skip(2).First(), KeyValuePair`2).Value.ContainedValue"
+                }
+            },
+            {
+                typeof(NotNullOrEmptyStringConstraint),
+                new[]
+                {
+                    $"Convert(Convert({InstanceExpression}.Properties, IEnumerable).Cast().First(), KeyValuePair`2).Key"
+                }
+            },
+            {
+                typeof(NotAbcStringConstraint),
+                new[]
+                {
+                    $"Convert(Convert({InstanceExpression}.Properties, IEnumerable).Cast().Skip(1).First(), KeyValuePair`2).Key"
+                }
+            }
+        };
+
         Assert.That(validationResult, Is.Not.Null);
-        Assert.That(() => validationResult.Errors.Count, Is.EqualTo(2));
         Assert.That(() => validationResult.IsObjectValid, Is.False);
 
         var validationException = validationResult.GetException().AssertNotNull();
         Assert.That(validationException, Is.TypeOf<ObjectValidationException>());
         Assert.That(() => validationException.ValidationResult, Is.SameAs(validationResult));
 
-        var notNullOrEmptyError =
-            validationResult.Errors.Single(
-                obj => obj.FailedConstraintType == typeof(NotNullOrEmptyStringConstraint));
-
         Assert.That(
-            () => notNullOrEmptyError.Context.Expression.ToString(),
-            Is.EqualTo($"Convert(Convert({InstanceExpression}.Properties, IEnumerable).Cast().First(), KeyValuePair`2).Key"));
+            () => validationResult.EnsureSucceeded(),
+            Throws
+                .TypeOf<ObjectValidationException>()
+                .With
+                .Property(ValidationResultPropertyName)
+                .SameAs(validationResult));
 
-        var emptyKey =
-            (string)notNullOrEmptyError.Context.CreateLambdaExpression("key").Compile().Invoke(mapContainer);
+        var groupedErrorMap = validationResult.Errors
+            .GroupBy(error => error.FailedConstraintType)
+            .ToDictionary(grouping => grouping.Key, grouping => grouping.Select(error => error.Context.Expression.ToString()).ToArray());
 
-        Assert.That(emptyKey, Is.EqualTo(string.Empty));
+        Assert.That(() => groupedErrorMap.Keys, Is.EquivalentTo(expectedTypeToExpressionsMap.Keys));
 
-        var notNullError =
-            validationResult.Errors.Single(obj => obj.FailedConstraintType == typeof(NotNullConstraint));
+        foreach (var pair in expectedTypeToExpressionsMap)
+        {
+            Assert.That(
+                () => groupedErrorMap[pair.Key],
+                Is.EquivalentTo(pair.Value),
+                $"Expression list mismatch for the constraint type {pair.Key.GetFullName().ToUIString()}.");
+        }
 
-        Assert.That(
-            () => notNullError.Context.Expression.ToString(),
-            Is.EqualTo(
-                $"Convert(Convert({InstanceExpression}.Properties, IEnumerable).Cast().Skip(2).First(), KeyValuePair`2).Value.ContainedValue"));
+        Assert.That(() => validationResult.Errors.Count, Is.EqualTo(expectedTypeToExpressionsMap.SelectMany(pair => pair.Value).Count()));
 
-        var nullContainedValue =
-            (int?)notNullError.Context.CreateLambdaExpression("value").Compile().Invoke(mapContainer);
-
-        // ReSharper disable once ConditionIsAlwaysTrueOrFalseAccordingToNullableAPIContract :: False detection
-        Assert.That(() => nullContainedValue.HasValue, Is.False);
+        var notAbcStringError = validationResult.Errors.Single(obj => obj.FailedConstraintType == typeof(NotAbcStringConstraint));
+        Assert.That(() => (string?)notAbcStringError.Context.CreateLambdaExpression("value").Compile().Invoke(mapContainer), Is.EqualTo("abc"));
     }
 
     private static void EnsureTestValidationSucceeded<T>(T data)
@@ -409,11 +442,24 @@ internal sealed class ObjectValidatorTests
     {
         [MemberConstraint(typeof(NotNullConstraint))]
         [MemberItemConstraint(typeof(MapContainerPropertiesPairConstraint))]
+        [MemberItemConstraint(
+            typeof(KeyValuePairConstraint<string, SimpleContainer<int?>?, NotAbcStringConstraint, NotNullConstraint<SimpleContainer<int?>>>))]
         public IEnumerable<KeyValuePair<string, SimpleContainer<int?>>>? Properties
         {
             [UsedImplicitly]
             get;
             set;
+        }
+    }
+
+    private sealed class NotAbcStringConstraint : TypedMemberConstraintBase<string>
+    {
+        protected override void ValidateTypedValue(ObjectValidatorContext validatorContext, MemberConstraintValidationContext memberContext, string value)
+        {
+            if (value == "abc")
+            {
+                AddDefaultError(validatorContext, memberContext);
+            }
         }
     }
 
