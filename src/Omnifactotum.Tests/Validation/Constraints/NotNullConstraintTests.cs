@@ -20,4 +20,6 @@ internal sealed class NotNullConstraintTests : ConstraintTestsBase<NotNullConstr
     {
         yield return null;
     }
+
+    protected override string GetInvalidValueErrorMessage(object? invalidValue) => "The value cannot be null.";
 }

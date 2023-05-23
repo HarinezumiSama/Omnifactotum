@@ -19,4 +19,6 @@ internal sealed class NotBlankStringConstraintTests : TypedConstraintTestsBase<N
         yield return string.Empty;
         yield return "\t\x0020\r\n";
     }
+
+    protected override string GetTypedInvalidValueErrorMessage(string? invalidValue) => "The string value must not be null or blank.";
 }

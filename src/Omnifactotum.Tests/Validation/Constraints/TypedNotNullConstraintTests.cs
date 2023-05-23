@@ -10,10 +10,13 @@ internal sealed class TypedNotNullConstraintTests : TypedConstraintTestsBase<Not
     protected override IEnumerable<string?> GetTypedValidValues()
     {
         yield return "A";
+        yield return "ad414644a9324f8ebdde4befbc2d3c6a";
     }
 
     protected override IEnumerable<string?> GetTypedInvalidValues()
     {
         yield return null;
     }
+
+    protected override string GetTypedInvalidValueErrorMessage(string? invalidValue) => "The value cannot be null.";
 }

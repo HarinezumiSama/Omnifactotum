@@ -18,4 +18,6 @@ internal sealed class NotNullOrEmptyStringConstraintTests : TypedConstraintTests
         yield return null;
         yield return string.Empty;
     }
+
+    protected override string GetTypedInvalidValueErrorMessage(string? invalidValue) => "The value must not be null or an empty string.";
 }

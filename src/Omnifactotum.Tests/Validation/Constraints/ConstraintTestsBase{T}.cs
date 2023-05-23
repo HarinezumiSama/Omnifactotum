@@ -2,11 +2,13 @@
 using System.Collections.Generic;
 using System.Linq;
 using NUnit.Framework;
+using Omnifactotum.Annotations;
+using Omnifactotum.NUnit;
 using Omnifactotum.Validation.Constraints;
 
 namespace Omnifactotum.Tests.Validation.Constraints;
 
-internal abstract class ConstraintTestsBase<TConstraint> : ConstraintTestsBase
+internal abstract class ConstraintTestsBase<[MeansImplicitUse] TConstraint> : ConstraintTestsBase
     where TConstraint : IMemberConstraint, new()
 {
     [Test]
@@ -59,6 +61,8 @@ internal abstract class ConstraintTestsBase<TConstraint> : ConstraintTestsBase
         var invalidValues = GetInvalidValues();
         foreach (var invalidValue in invalidValues)
         {
+            var expectedErrorMessage = GetInvalidValueErrorMessage(invalidValue).AssertNotNull();
+
             var objectValidatorContext = CreateObjectValidatorContext();
             var testee = CreateTestee();
             var validationContext = CreateMemberConstraintValidationContext();
@@ -69,6 +73,7 @@ internal abstract class ConstraintTestsBase<TConstraint> : ConstraintTestsBase
             Assert.That(validationError, Is.Not.Null);
             Assert.That(validationError.FailedConstraintType, Is.EqualTo(testee.GetType()));
             Assert.That(validationError.Context, Is.SameAs(validationContext));
+            Assert.That(validationError.ErrorMessage, Is.EqualTo(expectedErrorMessage));
         }
     }
 
@@ -77,6 +82,8 @@ internal abstract class ConstraintTestsBase<TConstraint> : ConstraintTestsBase
     protected abstract IEnumerable<object?> GetValidValues();
 
     protected abstract IEnumerable<object?> GetInvalidValues();
+
+    protected abstract string GetInvalidValueErrorMessage(object? invalidValue);
 
     private sealed class UnknownClass
     {

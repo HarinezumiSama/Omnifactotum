@@ -18,4 +18,7 @@ internal sealed class TypedNotNullOrEmptyCollectionConstraintTests : TypedConstr
         yield return null;
         yield return Array.Empty<int>();
     }
+
+    protected override string GetTypedInvalidValueErrorMessage(ICollection<int>? invalidValue)
+        => invalidValue is null ? "The value cannot be null." : "The collection cannot be empty.";
 }
