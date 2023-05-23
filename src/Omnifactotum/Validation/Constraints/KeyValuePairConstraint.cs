@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using Omnifactotum.Annotations;
 
 namespace Omnifactotum.Validation.Constraints;
 
@@ -17,7 +18,7 @@ namespace Omnifactotum.Validation.Constraints;
 /// <typeparam name="TValueConstraint">
 ///     The type specifying the value constraint.
 /// </typeparam>
-public sealed class KeyValuePairConstraint<TKey, TValue, TKeyConstraint, TValueConstraint>
+public sealed class KeyValuePairConstraint<TKey, TValue, [MeansImplicitUse] TKeyConstraint, [MeansImplicitUse] TValueConstraint>
     : KeyValuePairConstraintBase<TKey, TValue>
     where TKeyConstraint : TypedMemberConstraintBase<TKey>
     where TValueConstraint : TypedMemberConstraintBase<TValue>
