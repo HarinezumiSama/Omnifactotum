@@ -368,24 +368,98 @@ internal sealed class OmnifactotumStringExtensionsTests
     public void TestIsWebUriSucceeds(string value, bool expectedResult) => Assert.That(value.IsWebUri, Is.EqualTo(expectedResult));
 
     [Test]
+    public void TestWithSingleLeadingSlashWhenInvalidArgumentThenThrows()
+        => Assert.That(() => default(string)!.WithSingleLeadingSlash(), Throws.ArgumentNullException);
+
+    [Test]
+    [TestCase("", "/", false)]
+    [TestCase("foo", "/foo", false)]
+    [TestCase("foo/", "/foo/", false)]
+    [TestCase("foo//////////", "/foo//////////", false)]
+    [TestCase("foo/bar", "/foo/bar", false)]
+    [TestCase("/foo/bar", "/foo/bar", true)]
+    [TestCase("foo/bar/", "/foo/bar/", false)]
+    [TestCase("/foo/bar/", "/foo/bar/", true)]
+    [TestCase("foo/bar//////////", "/foo/bar//////////", false)]
+    [TestCase("//foo/bar//////////", "/foo/bar//////////", false)]
+    [TestCase("//foo//bar//////////", "/foo//bar//////////", false)]
+    [TestCase("mailto://example.com", "/mailto://example.com", false)]
+    [TestCase("https://example.com", "/https://example.com", false)]
+    public void TestWithSingleLeadingSlashWhenValidArgumentThenSucceeds(
+        string value,
+        string expectedResult,
+        bool isSameObjectAsInput)
+    {
+        var actualResult = value.WithSingleLeadingSlash();
+        Assert.That(actualResult, Is.EqualTo(expectedResult));
+
+        Constraint referenceConstraint = Is.SameAs(value);
+        if (!isSameObjectAsInput)
+        {
+            referenceConstraint = !referenceConstraint;
+        }
+
+        Assert.That(actualResult, referenceConstraint);
+    }
+
+    [Test]
+    public void TestWithoutLeadingSlashWhenInvalidArgumentThenThrows()
+        => Assert.That(() => default(string)!.WithoutLeadingSlash(), Throws.ArgumentNullException);
+
+    [Test]
+    [TestCase("", "", true)]
+    [TestCase("foo", "foo", true)]
+    [TestCase("foo/", "foo/", true)]
+    [TestCase("foo//////////", "foo//////////", true)]
+    [TestCase("foo/bar", "foo/bar", true)]
+    [TestCase("/foo/bar", "foo/bar", false)]
+    [TestCase("foo/bar/", "foo/bar/", true)]
+    [TestCase("/foo/bar/", "foo/bar/", false)]
+    [TestCase("foo/bar//////////", "foo/bar//////////", true)]
+    [TestCase("//foo/bar//////////", "foo/bar//////////", false)]
+    [TestCase("//foo//bar//////////", "foo//bar//////////", false)]
+    [TestCase("mailto://example.com", "mailto://example.com", true)]
+    [TestCase("https://example.com", "https://example.com", true)]
+    public void TestWithoutLeadingSlashWhenValidArgumentThenSucceeds(
+        string value,
+        string expectedResult,
+        bool isSameObjectAsInput)
+    {
+        var actualResult = value.WithoutLeadingSlash();
+        Assert.That(actualResult, Is.EqualTo(expectedResult));
+
+        Constraint referenceConstraint = Is.SameAs(value);
+        if (!isSameObjectAsInput)
+        {
+            referenceConstraint = !referenceConstraint;
+        }
+
+        Assert.That(actualResult, referenceConstraint);
+    }
+
+    [Test]
     public void TestWithSingleTrailingSlashWhenInvalidArgumentThenThrows()
         => Assert.That(() => default(string)!.WithSingleTrailingSlash(), Throws.ArgumentNullException);
 
     [Test]
-    [TestCase(@"", @"/", false)]
-    [TestCase(@"foo", @"foo/", false)]
-    [TestCase(@"foo/", @"foo/", true)]
-    [TestCase(@"foo//////////", @"foo/", false)]
-    [TestCase(@"foo/bar", @"foo/bar/", false)]
-    [TestCase(@"foo/bar/", @"foo/bar/", true)]
-    [TestCase(@"foo/bar//////////", @"foo/bar/", false)]
-    [TestCase(@"mailto://example.com", @"mailto://example.com/", false)]
-    [TestCase(@"http://example.com", @"http://example.com/", false)]
-    [TestCase(@"http://example.com/", @"http://example.com/", true)]
-    [TestCase(@"http://example.com//////////", @"http://example.com/", false)]
-    [TestCase(@"http://example.com/api/v1", @"http://example.com/api/v1/", false)]
-    [TestCase(@"http://example.com/api/v1/", @"http://example.com/api/v1/", true)]
-    [TestCase(@"http://example.com/api/v1//////////", @"http://example.com/api/v1/", false)]
+    [TestCase("", "/", false)]
+    [TestCase("foo", "foo/", false)]
+    [TestCase("foo/", "foo/", true)]
+    [TestCase("foo//////////", "foo/", false)]
+    [TestCase("foo/bar", "foo/bar/", false)]
+    [TestCase("/foo/bar", "/foo/bar/", false)]
+    [TestCase("foo/bar/", "foo/bar/", true)]
+    [TestCase("/foo/bar/", "/foo/bar/", true)]
+    [TestCase("foo/bar//////////", "foo/bar/", false)]
+    [TestCase("//foo/bar//////////", "//foo/bar/", false)]
+    [TestCase("//foo//bar//////////", "//foo//bar/", false)]
+    [TestCase("mailto://example.com", "mailto://example.com/", false)]
+    [TestCase("https://example.com", "https://example.com/", false)]
+    [TestCase("https://example.com/", "https://example.com/", true)]
+    [TestCase("https://example.com//////////", "https://example.com/", false)]
+    [TestCase("https://example.com/api/v1", "https://example.com/api/v1/", false)]
+    [TestCase("https://example.com/api/v1/", "https://example.com/api/v1/", true)]
+    [TestCase("https://example.com/api/v1//////////", "https://example.com/api/v1/", false)]
     public void TestWithSingleTrailingSlashWhenValidArgumentThenSucceeds(
         string value,
         string expectedResult,
@@ -408,20 +482,24 @@ internal sealed class OmnifactotumStringExtensionsTests
         => Assert.That(() => default(string)!.WithoutTrailingSlash(), Throws.ArgumentNullException);
 
     [Test]
-    [TestCase(@"", @"", true)]
-    [TestCase(@"foo", @"foo", true)]
-    [TestCase(@"foo/", @"foo", false)]
-    [TestCase(@"foo//////////", @"foo", false)]
-    [TestCase(@"foo/bar", @"foo/bar", true)]
-    [TestCase(@"foo/bar/", @"foo/bar", false)]
-    [TestCase(@"foo/bar//////////", @"foo/bar", false)]
-    [TestCase(@"mailto://example.com", @"mailto://example.com", true)]
-    [TestCase(@"http://example.com", @"http://example.com", true)]
-    [TestCase(@"http://example.com/", @"http://example.com", false)]
-    [TestCase(@"http://example.com//////////", @"http://example.com", false)]
-    [TestCase(@"http://example.com/api/v1", @"http://example.com/api/v1", true)]
-    [TestCase(@"http://example.com/api/v1/", @"http://example.com/api/v1", false)]
-    [TestCase(@"http://example.com/api/v1//////////", @"http://example.com/api/v1", false)]
+    [TestCase("", "", true)]
+    [TestCase("foo", "foo", true)]
+    [TestCase("foo/", "foo", false)]
+    [TestCase("foo//////////", "foo", false)]
+    [TestCase("foo/bar", "foo/bar", true)]
+    [TestCase("/foo/bar", "/foo/bar", true)]
+    [TestCase("foo/bar/", "foo/bar", false)]
+    [TestCase("/foo/bar/", "/foo/bar", false)]
+    [TestCase("foo/bar//////////", "foo/bar", false)]
+    [TestCase("//foo/bar//////////", "//foo/bar", false)]
+    [TestCase("//foo//bar//////////", "//foo//bar", false)]
+    [TestCase("mailto://example.com", "mailto://example.com", true)]
+    [TestCase("https://example.com", "https://example.com", true)]
+    [TestCase("https://example.com/", "https://example.com", false)]
+    [TestCase("https://example.com//////////", "https://example.com", false)]
+    [TestCase("https://example.com/api/v1", "https://example.com/api/v1", true)]
+    [TestCase("https://example.com/api/v1/", "https://example.com/api/v1", false)]
+    [TestCase("https://example.com/api/v1//////////", "https://example.com/api/v1", false)]
     public void TestWithoutTrailingSlashWhenValidArgumentThenSucceeds(
         string value,
         string expectedResult,

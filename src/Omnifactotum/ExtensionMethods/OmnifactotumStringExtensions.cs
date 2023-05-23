@@ -571,13 +571,77 @@ public static class OmnifactotumStringExtensions
 
     /// <summary>
     ///     <para>
+    ///         Returns a <see cref="string"/> which is equal to the specified <see cref="string"/> starting with a single leading
+    ///         forward slash character (<c>/</c>).
+    ///     </para>
+    ///     <para>
+    ///         If the specified <see cref="string"/> starts with exactly one forward slash character, then the original object is
+    ///         returned; otherwise, a new <see cref="string"/> object is returned with a single forward slash character prepended.
+    ///         Thus, if the specified <see cref="string"/> starts with multiple forward slash characters, a new <see cref="string"/> object
+    ///         is returned with the number of the leading forward slash characters reduced to exactly one.
+    ///     </para>
+    /// </summary>
+    /// <param name="value">
+    ///     The <see cref="string"/> value that needs to start with the single forward slash character.
+    /// </param>
+    /// <returns>
+    ///     A <see cref="string"/> which is equal to the specified <see cref="string"/> starting with a single leading forward slash
+    ///     character (<c>/</c>).
+    /// </returns>
+    [Pure]
+    [NotNull]
+    public static string WithSingleLeadingSlash([NotNull] this string value)
+    {
+        if (value is null)
+        {
+            throw new ArgumentNullException(nameof(value));
+        }
+
+        return value.StartsWith(OmnifactotumConstants.Slash, StringComparison.Ordinal)
+            && !value.StartsWith(OmnifactotumConstants.DoubleSlash, StringComparison.Ordinal)
+                ? value
+                : OmnifactotumConstants.Slash + value.TrimStart(OmnifactotumConstants.SlashChar);
+    }
+
+    /// <summary>
+    ///     <para>
+    ///         Returns a <see cref="string"/> which is equal to the specified <see cref="string"/> with the leading forward slash
+    ///         characters (<c>/</c>) removed, if there were any.
+    ///     </para>
+    ///     <para>
+    ///         If the specified <see cref="string"/> does not start with a forward slash character, then the original object is
+    ///         returned; otherwise, a new <see cref="string"/> object is returned with the leading forward slash characters
+    ///         removed.
+    ///     </para>
+    /// </summary>
+    /// <param name="value">
+    ///     The <see cref="string"/> value that needs to not start with any forward slash characters.
+    /// </param>
+    /// <returns>
+    ///     A <see cref="string"/> which is equal to the specified <see cref="string"/> with the leading forward slash characters
+    ///     (<c>/</c>) removed, if there were any.
+    /// </returns>
+    [Pure]
+    [NotNull]
+    public static string WithoutLeadingSlash([NotNull] this string value)
+    {
+        if (value is null)
+        {
+            throw new ArgumentNullException(nameof(value));
+        }
+
+        return value.TrimStart(OmnifactotumConstants.SlashChar);
+    }
+
+    /// <summary>
+    ///     <para>
     ///         Returns a <see cref="string"/> which is equal to the specified <see cref="string"/> ending with a single trailing
-    ///         forward slash character ("/").
+    ///         forward slash character (<c>/</c>).
     ///     </para>
     ///     <para>
     ///         If the specified <see cref="string"/> ends with exactly one forward slash character, then the original object is
     ///         returned; otherwise, a new <see cref="string"/> object is returned with a single forward slash character appended.
-    ///         If the specified <see cref="string"/> ends with multiple forward slash characters, a new <see cref="string"/> object
+    ///         Thus, if the specified <see cref="string"/> ends with multiple forward slash characters, a new <see cref="string"/> object
     ///         is returned with the number of the trailing forward slash characters reduced to exactly one.
     ///     </para>
     /// </summary>
@@ -586,7 +650,7 @@ public static class OmnifactotumStringExtensions
     /// </param>
     /// <returns>
     ///     A <see cref="string"/> which is equal to the specified <see cref="string"/> ending with a single trailing forward slash
-    ///     character ("/").
+    ///     character (<c>/</c>).
     /// </returns>
     [Pure]
     [NotNull]
@@ -606,7 +670,7 @@ public static class OmnifactotumStringExtensions
     /// <summary>
     ///     <para>
     ///         Returns a <see cref="string"/> which is equal to the specified <see cref="string"/> with the trailing forward slash
-    ///         characters ("/") removed, if there were any.
+    ///         characters (<c>/</c>) removed, if there were any.
     ///     </para>
     ///     <para>
     ///         If the specified <see cref="string"/> does not end with a forward slash character, then the original object is
@@ -619,7 +683,7 @@ public static class OmnifactotumStringExtensions
     /// </param>
     /// <returns>
     ///     A <see cref="string"/> which is equal to the specified <see cref="string"/> with the trailing forward slash characters
-    ///     ("/") removed, if there were any.
+    ///     (<c>/</c>) removed, if there were any.
     /// </returns>
     [Pure]
     [NotNull]
