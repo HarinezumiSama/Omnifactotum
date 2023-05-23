@@ -84,4 +84,44 @@ public static class OmnifactotumExceptionExtensions
 
         return false;
     }
+
+    /// <summary>
+    ///     Determines whether the specified exception or any of its inner exceptions is of the specified type (or its descendant).
+    /// </summary>
+    /// <param name="exception">
+    ///     The exception to check.
+    /// </param>
+    /// <param name="originatingExceptionType">
+    ///     The type of the originating exception to check <paramref name="exception"/> against.
+    /// </param>
+    /// <returns>
+    ///     <see langword="true"/> if the specified exception or any of its inner exceptions is of the specified type
+    ///     (or its descendant); otherwise, <see langword="false"/>.
+    /// </returns>
+    [DebuggerNonUserCode]
+    public static bool IsOriginatedFrom([CanBeNull] this Exception? exception, [NotNull] Type originatingExceptionType)
+    {
+        if (originatingExceptionType is null)
+        {
+            throw new ArgumentNullException(nameof(originatingExceptionType));
+        }
+
+        if (!typeof(Exception).IsAssignableFrom(originatingExceptionType))
+        {
+            throw new ArgumentException($"Invalid exception type {originatingExceptionType.GetFullName().ToUIString()}.", nameof(originatingExceptionType));
+        }
+
+        var currentException = exception;
+        while (currentException is not null)
+        {
+            if (originatingExceptionType.IsInstanceOfType(currentException))
+            {
+                return true;
+            }
+
+            currentException = currentException.InnerException;
+        }
+
+        return false;
+    }
 }
