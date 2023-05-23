@@ -146,6 +146,16 @@ internal sealed class OmnifactotumEnumExtensionsTests
         => Assert.That(() => enumValue.GetFullName(), Is.EqualTo(expectedResult));
 
     [Test]
+    [TestCase(ConsoleColor.Green, @"""Green""")]
+    [TestCase((ConsoleColor)(-1), @"""-1""")]
+    [TestCase(ConsoleModifiers.Alt | ConsoleModifiers.Control | ConsoleModifiers.Shift, @"""Alt"", ""Shift"", ""Control""")]
+    [TestCase((ConsoleModifiers)0, @"""0""")]
+    [TestCase(ConsoleModifiers.Alt | (ConsoleModifiers)16_777_216, @"""16777217""")]
+    public void TestToUIString<TEnum>(TEnum enumValue, string expectedResult)
+        where TEnum : struct, Enum
+        => Assert.That(() => enumValue.ToUIString(), Is.EqualTo(expectedResult));
+
+    [Test]
     [TestCase(FileAttributes.Hidden, FileAttributes.Hidden, true)]
     [TestCase(FileAttributes.Hidden, FileAttributes.Normal, false)]
     [TestCase(FileAttributes.Normal | FileAttributes.ReadOnly, FileAttributes.Normal, true)]

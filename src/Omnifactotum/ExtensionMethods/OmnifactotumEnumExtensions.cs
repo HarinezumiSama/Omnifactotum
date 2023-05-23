@@ -74,6 +74,59 @@ public static class OmnifactotumEnumExtensions
         => value.GetName(EnumNameMode.Full);
 
     /// <summary>
+    ///     <para>
+    ///         Converts the specified enumeration value to its UI representation.
+    ///     </para>
+    ///     <list type="table">
+    ///         <listheader>
+    ///             <term>The input value</term>
+    ///             <description>The result of the method</description>
+    ///         </listheader>
+    ///         <item>
+    ///             <term>Non-flag enumeration value.</term>
+    ///             <description>An input value enclosed in the double quote characters (<c>"</c>).</description>
+    ///         </item>
+    ///         <item>
+    ///             <term>Flag enumeration value (see: <see cref="FlagsAttribute"/>).</term>
+    ///             <description>The comma-separated flags present in the input value, each enclosed in the double quote characters (<c>"</c>).</description>
+    ///         </item>
+    ///     </list>
+    /// </summary>
+    /// <param name="value">
+    ///     The enumeration value to convert.
+    /// </param>
+    /// <returns>
+    ///     The UI representation of the specified enumeration value.
+    /// </returns>
+    /// <example>
+    ///     <code>
+    /// <![CDATA[
+    ///         var value1 = ConsoleColor.Green;
+    ///         Console.WriteLine("Value is {0}.", value1.ToUIString()); // Output: Value is "Green".
+    /// ]]>
+    ///     </code>
+    ///     <code>
+    /// <![CDATA[
+    ///         var value2 = (ConsoleColor)(-1);
+    ///         Console.WriteLine("Value is {0}.", value2.ToUIString()); // Output: Value is "-1".
+    /// ]]>
+    ///     </code>
+    ///     <code>
+    /// <![CDATA[
+    ///         var value3 = ConsoleModifiers.Alt | ConsoleModifiers.Control | ConsoleModifiers.Shift;
+    ///         Console.WriteLine("Value is {0}.", value3.ToUIString()); // Output: Value is "Alt", "Shift", "Control".
+    /// ]]>
+    ///     </code>
+    /// </example>
+    [Pure]
+    [Omnifactotum.Annotations.Pure]
+    public static string ToUIString<TEnum>(this TEnum value)
+        where TEnum : struct, Enum
+        => value.GetType().IsDefined(typeof(FlagsAttribute), false)
+            ? value.DecomposeEnumFlags().Select(flag => flag.GetSingleValueName(EnumNameMode.Short).ToUIString()).Join(EnumValueSeparator)
+            : value.GetSingleValueName(EnumNameMode.Short).ToUIString();
+
+    /// <summary>
     ///     Determines whether the specified enumeration value contains all the specified flags set.
     /// </summary>
     /// <typeparam name="TEnum">
