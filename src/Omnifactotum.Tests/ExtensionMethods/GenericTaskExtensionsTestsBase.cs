@@ -8,14 +8,17 @@ using System.Threading;
 using System.Threading.Tasks;
 using Moq;
 using NUnit.Framework;
+using Omnifactotum.Tests.Internal;
 
 namespace Omnifactotum.Tests.ExtensionMethods;
 
 [TestFixture]
+[NonParallelizable]
 internal abstract class GenericTaskExtensionsTestsBase
 {
     private const int SensitiveTestRepeatCount = 25;
     private const int SensitiveTestTimeoutInMilliseconds = 2_000;
+    private const int SensitiveTestRetryCount = 3;
 
     private static readonly TimeSpan WaitInterval = TimeSpan.FromMilliseconds(25);
 
@@ -34,8 +37,26 @@ internal abstract class GenericTaskExtensionsTestsBase
     private Mock<SynchronizationContext>? _synchronizationContextMock;
     private SynchronizationContext? _previousSynchronizationContext;
 
+    public static IEnumerable<TestCaseData> ConfigureAwaitNoCapturedContextTestCases
+    {
+        get
+        {
+            for (var repeatIndex = 1; repeatIndex <= SensitiveTestRepeatCount; repeatIndex++)
+            {
+                yield return new TestCaseData(repeatIndex, ConfigureAwaitMode.StandardWithTrue, true);
+                yield return new TestCaseData(repeatIndex, ConfigureAwaitMode.StandardWithFalse, false);
+                yield return new TestCaseData(repeatIndex, ConfigureAwaitMode.TesteeExtensionMethod, false);
+            }
+        }
+    }
+
     [OneTimeSetUp]
-    public void OneTimeSetUp() => TaskScheduler.UnobservedTaskException += OnTaskSchedulerUnobservedTaskException;
+    public void OneTimeSetUp()
+    {
+        TestFactotum.AdjustThreadPoolSettingsForHigherLoad();
+
+        TaskScheduler.UnobservedTaskException += OnTaskSchedulerUnobservedTaskException;
+    }
 
     [OneTimeTearDown]
     public void OneTimeTearDown() => TaskScheduler.UnobservedTaskException -= OnTaskSchedulerUnobservedTaskException;
@@ -43,6 +64,9 @@ internal abstract class GenericTaskExtensionsTestsBase
     [SetUp]
     public void SetUp()
     {
+        TestFactotum.ReportThreadPoolInformation("BEFORE");
+        TestContext.WriteLine();
+
         _unobservedTaskExceptions.Clear();
 
         _synchronizationContextMock = new Mock<SynchronizationContext>(MockBehavior.Strict) { CallBase = false };
@@ -57,32 +81,43 @@ internal abstract class GenericTaskExtensionsTestsBase
 
         _previousSynchronizationContext = SynchronizationContext.Current;
         SynchronizationContext.SetSynchronizationContext(_synchronizationContextMock.Object);
+
+        TestFactotum.ReportThreadPoolInformation("AFTER");
+        TestContext.WriteLine();
     }
 
     [TearDown]
     public void TearDown()
     {
+        TestContext.WriteLine();
+        TestFactotum.ReportThreadPoolInformation("BEFORE");
+
         SynchronizationContext.SetSynchronizationContext(_previousSynchronizationContext);
         _synchronizationContextMock = null;
+
+        TestContext.WriteLine();
+        TestFactotum.ReportThreadPoolInformation("AFTER");
     }
 
     [Test]
-    [TestCase(ConfigureAwaitMode.StandardWithTrue, true)]
-    [TestCase(ConfigureAwaitMode.StandardWithFalse, false)]
-    [TestCase(ConfigureAwaitMode.TesteeExtensionMethod, false)]
+    [TestCaseSource(nameof(ConfigureAwaitNoCapturedContextTestCases))]
     [Timeout(SensitiveTestTimeoutInMilliseconds)]
-    [Repeat(SensitiveTestRepeatCount)]
-    public void TestConfigureAwaitNoCapturedContextForVoidTask(ConfigureAwaitMode mode, bool isExpectedOnContext)
-        => InternalTestConfigureAwaitNoCapturedContext(mode, isExpectedOnContext, OnRunTestCaseForVoidTaskAsync);
+    [Retry(SensitiveTestRetryCount)]
+    public void TestConfigureAwaitNoCapturedContextForVoidTask(
+        int repeatIndex,
+        ConfigureAwaitMode mode,
+        bool isExpectedOnContext)
+        => InternalTestConfigureAwaitNoCapturedContext(repeatIndex, mode, isExpectedOnContext, OnRunTestCaseForVoidTaskAsync);
 
     [Test]
-    [TestCase(ConfigureAwaitMode.StandardWithTrue, true)]
-    [TestCase(ConfigureAwaitMode.StandardWithFalse, false)]
-    [TestCase(ConfigureAwaitMode.TesteeExtensionMethod, false)]
+    [TestCaseSource(nameof(ConfigureAwaitNoCapturedContextTestCases))]
     [Timeout(SensitiveTestTimeoutInMilliseconds)]
-    [Repeat(SensitiveTestRepeatCount)]
-    public void TestConfigureAwaitNoCapturedContextForTaskWithResult(ConfigureAwaitMode mode, bool isExpectedOnContext)
-        => InternalTestConfigureAwaitNoCapturedContext(mode, isExpectedOnContext, OnRunTestCaseForTaskWithResultAsync);
+    [Retry(SensitiveTestRetryCount)]
+    public void TestConfigureAwaitNoCapturedContextForTaskWithResult(
+        int repeatIndex,
+        ConfigureAwaitMode mode,
+        bool isExpectedOnContext)
+        => InternalTestConfigureAwaitNoCapturedContext(repeatIndex, mode, isExpectedOnContext, OnRunTestCaseForTaskWithResultAsync);
 
     protected static Task CreateNonCompleteTask() => Task.Delay(WaitInterval);
 
@@ -130,12 +165,12 @@ internal abstract class GenericTaskExtensionsTestsBase
     protected abstract Task OnRunTestCaseForTaskWithResultAsync(ConfigureAwaitMode mode, ValueContainer<int> container);
 
     private void InternalTestConfigureAwaitNoCapturedContext(
+        int repeatIndex,
         ConfigureAwaitMode mode,
         bool isExpectedOnContext,
         Func<ConfigureAwaitMode, ValueContainer<int>, Task> runTestCaseAsync)
     {
-        TestContext.WriteLine(
-            $@"{nameof(TestContext.CurrentContext.CurrentRepeatCount)} = {TestContext.CurrentContext.CurrentRepeatCount}");
+        TestFactotum.ReportCurrentRepeatCount(repeatIndex);
 
         var callCountValueContainer = ValueContainer.Create(0);
         runTestCaseAsync(mode, callCountValueContainer).Wait();

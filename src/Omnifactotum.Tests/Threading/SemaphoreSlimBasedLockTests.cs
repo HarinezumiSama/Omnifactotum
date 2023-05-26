@@ -8,30 +8,40 @@ using System.Runtime.CompilerServices;
 using System.Threading;
 using System.Threading.Tasks;
 using NUnit.Framework;
+using Omnifactotum.Tests.Internal;
 using Omnifactotum.Threading;
 
 namespace Omnifactotum.Tests.Threading;
 
 [TestFixture(TestOf = typeof(SemaphoreSlimBasedLock))]
+[NonParallelizable]
 internal sealed class SemaphoreSlimBasedLockTests
 {
-    private const int WaitIntervalInMilliseconds = 20;
+    private const int WaitIntervalInMilliseconds = 5;
 
-    private const int TimeSensitiveTestRepeatCount = 25;
-    private const int TimeSensitiveTestTimeout = WaitIntervalInMilliseconds * 50;
+    private const int SensitiveTestRepeatCount = 25;
+    private const int SensitiveTestTimeout = WaitIntervalInMilliseconds * 50;
+    private const int SensitiveTestRetryCount = 3;
 
     private static readonly TimeSpan WaitInterval = TimeSpan.FromMilliseconds(WaitIntervalInMilliseconds);
     private static readonly TimeSpan ConditionTimeout = TimeSpan.FromMilliseconds(WaitIntervalInMilliseconds * 10);
 
     [OneTimeSetUp]
-    public void OneTimeSetUp() => AdjustThreadPoolSettingsForHigherLoad();
+    public void OneTimeSetUp() => TestFactotum.AdjustThreadPoolSettingsForHigherLoad();
 
     [SetUp]
-    [SuppressMessage("Interoperability", "CA1416")]
-    public void SetUp() => ReportThreadPoolInformation();
+    public void SetUp()
+    {
+        TestFactotum.ReportThreadPoolInformation();
+        TestContext.WriteLine();
+    }
 
     [TearDown]
-    public void TearDown() => ReportThreadPoolInformation();
+    public void TearDown()
+    {
+        TestContext.WriteLine();
+        TestFactotum.ReportThreadPoolInformation();
+    }
 
     [Test]
     [TestCase(0)]
@@ -65,12 +75,15 @@ internal sealed class SemaphoreSlimBasedLockTests
     }
 
     [Test]
-    [Timeout(TimeSensitiveTestTimeout)]
+    [Timeout(SensitiveTestTimeout)]
+    [Retry(SensitiveTestRetryCount)]
     [SuppressMessage("ReSharper", "AccessToDisposedClosure")]
     public void TestAcquireWhenSingleAllowed(
-        [Values] bool useExplicitCount,
-        [Range(1, TimeSensitiveTestRepeatCount)] int repeatIndex)
+        [Range(1, SensitiveTestRepeatCount)] int repeatIndex,
+        [Values] bool useExplicitCount)
     {
+        TestFactotum.ReportCurrentRepeatCount(repeatIndex);
+
         using var testee = useExplicitCount ? CreateTestee(1) : CreateTestee();
 
         var protectedResource = 0;
@@ -113,11 +126,14 @@ internal sealed class SemaphoreSlimBasedLockTests
     }
 
     [Test]
-    [Timeout(TimeSensitiveTestTimeout)]
+    [Timeout(SensitiveTestTimeout)]
+    [Retry(SensitiveTestRetryCount)]
     [SuppressMessage("ReSharper", "AccessToDisposedClosure")]
     public void TestAcquireWhenCancelledWhileWaiting(
-        [Range(1, TimeSensitiveTestRepeatCount)] int repeatIndex)
+        [Range(1, SensitiveTestRepeatCount)] int repeatIndex)
     {
+        TestFactotum.ReportCurrentRepeatCount(repeatIndex);
+
         using var testee = CreateTestee();
 
         var cancellationTokenSource = new CancellationTokenSource();
@@ -189,12 +205,15 @@ internal sealed class SemaphoreSlimBasedLockTests
     }
 
     [Test]
-    [Timeout(TimeSensitiveTestTimeout)]
+    [Timeout(SensitiveTestTimeout)]
+    [Retry(SensitiveTestRetryCount)]
     [SuppressMessage("ReSharper", "AccessToDisposedClosure")]
     public void TestAcquireWhenSpecifiedCountAllowed(
-        [Values(2, 7)] int count,
-        [Range(1, TimeSensitiveTestRepeatCount)] int repeatIndex)
+        [Range(1, SensitiveTestRepeatCount)] int repeatIndex,
+        [Values(2, 7)] int count)
     {
+        TestFactotum.ReportCurrentRepeatCount(repeatIndex);
+
         var methodName = MethodBase.GetCurrentMethod().EnsureNotNull().GetQualifiedName();
 
         using var testee = CreateTestee(count);
@@ -260,12 +279,15 @@ internal sealed class SemaphoreSlimBasedLockTests
     }
 
     [Test]
-    [Timeout(TimeSensitiveTestTimeout)]
+    [Timeout(SensitiveTestTimeout)]
+    [Retry(SensitiveTestRetryCount)]
     [SuppressMessage("ReSharper", "AccessToDisposedClosure")]
     public async Task TestAcquireAsyncWhenSingleAllowed(
-        [Values] bool useExplicitCount,
-        [Range(1, TimeSensitiveTestRepeatCount)] int repeatIndex)
+        [Range(1, SensitiveTestRepeatCount)] int repeatIndex,
+        [Values] bool useExplicitCount)
     {
+        TestFactotum.ReportCurrentRepeatCount(repeatIndex);
+
         using var testee = useExplicitCount ? CreateTestee(1) : CreateTestee();
 
         var protectedResource = 0;
@@ -273,14 +295,21 @@ internal sealed class SemaphoreSlimBasedLockTests
 
         async Task RunAsync()
         {
+            TestContext.WriteLine($"[{nameof(TestAcquireAsyncWhenSingleAllowed)}:{nameof(RunAsync)}] Entered.");
+
             taskState = WorkItemState.Started;
+            TestContext.WriteLine($"[{nameof(TestAcquireAsyncWhenSingleAllowed)}:{nameof(RunAsync)}] State: {taskState}.");
+
             using (await testee.AcquireAsync())
             {
                 taskState = WorkItemState.EnteredLock;
+                TestContext.WriteLine($"[{nameof(TestAcquireAsyncWhenSingleAllowed)}:{nameof(RunAsync)}] State: {taskState}.");
+
                 protectedResource++;
             }
 
             taskState = WorkItemState.Finished;
+            TestContext.WriteLine($"[{nameof(TestAcquireAsyncWhenSingleAllowed)}:{nameof(RunAsync)}] State: {taskState}.");
         }
 
         Task task;
@@ -305,11 +334,14 @@ internal sealed class SemaphoreSlimBasedLockTests
     }
 
     [Test]
-    [Timeout(TimeSensitiveTestTimeout)]
+    [Timeout(SensitiveTestTimeout)]
+    [Retry(SensitiveTestRetryCount)]
     [SuppressMessage("ReSharper", "AccessToDisposedClosure")]
     public async Task TestAcquireAsyncWhenCancelledWhileWaiting(
-        [Range(1, TimeSensitiveTestRepeatCount)] int repeatIndex)
+        [Range(1, SensitiveTestRepeatCount)] int repeatIndex)
     {
+        TestFactotum.ReportCurrentRepeatCount(repeatIndex);
+
         using var testee = CreateTestee();
 
         var cancellationTokenSource = new CancellationTokenSource();
@@ -379,12 +411,15 @@ internal sealed class SemaphoreSlimBasedLockTests
     }
 
     [Test]
-    [Timeout(TimeSensitiveTestTimeout)]
+    [Timeout(SensitiveTestTimeout)]
+    [Retry(SensitiveTestRetryCount)]
     [SuppressMessage("ReSharper", "AccessToDisposedClosure")]
     public async Task TestAcquireAsyncWhenSpecifiedCountAllowed(
-        [Values(2, 7)] int count,
-        [Range(1, TimeSensitiveTestRepeatCount)] int repeatIndex)
+        [Range(1, SensitiveTestRepeatCount)] int repeatIndex,
+        [Values(2, 7)] int count)
     {
+        TestFactotum.ReportCurrentRepeatCount(repeatIndex);
+
         using var testee = CreateTestee(count);
 
         var protectedResources = new int[count];
@@ -436,62 +471,31 @@ internal sealed class SemaphoreSlimBasedLockTests
         }
     }
 
-    private static async Task WaitForConditionAsync(Func<bool> condition)
+    private static async Task WaitForConditionAsync(Func<bool> condition, [CallerArgumentExpression(nameof(condition))] string? conditionExpression = null)
     {
+        var details = conditionExpression.IsNullOrWhiteSpace() ? string.Empty : $"\x0020Condition: {{ {conditionExpression} }}.";
+
+        TestContext.WriteLine($"[{nameof(WaitForConditionAsync)}] Entered.{details}");
+
         var stopwatch = Stopwatch.StartNew();
         while (stopwatch.Elapsed <= ConditionTimeout)
         {
             if (condition())
             {
+                TestContext.WriteLine($"[{nameof(WaitForConditionAsync)}] Succeeded.{details}");
                 return;
             }
 
-            await Task.Delay(WaitInterval);
+            await Task.Delay(WaitInterval).ConfigureAwait(false);
         }
 
-        throw new TimeoutException(
-            $@"Failed to transition to the required state within the allotted time ({ConditionTimeout}).");
+        throw new AssertionException(
+            $"{nameof(WaitForConditionAsync)}: Failed to transition to the required state within the allotted time ({ConditionTimeout}).{details}");
     }
 
     private static SemaphoreSlimBasedLock CreateTestee(int count) => new(count);
 
     private static SemaphoreSlimBasedLock CreateTestee() => new();
-
-    private static void ReportThreadPoolInformation(string? suffix = null, [CallerMemberName] string callerName = null!)
-    {
-        var marker = new[] { callerName, suffix }.Where(s => !s.IsNullOrWhiteSpace()).Join("\x0020:\x0020");
-
-        ThreadPool.GetMinThreads(out var minWorkerThreads, out var minCompletionPortThreads);
-        ThreadPool.GetMaxThreads(out var maxWorkerThreads, out var maxCompletionPortThreads);
-        ThreadPool.GetAvailableThreads(out var availableWorkerThreads, out var availableCompletionPortThreads);
-
-        var parts = new[]
-        {
-            $@"{nameof(ThreadPool)}.{nameof(ThreadPool.ThreadCount)} = {ThreadPool.ThreadCount}",
-            $@"{nameof(ThreadPool)}.{nameof(ThreadPool.CompletedWorkItemCount)} = {ThreadPool.CompletedWorkItemCount}",
-            $@"{nameof(ThreadPool)}.{nameof(ThreadPool.PendingWorkItemCount)} = {ThreadPool.PendingWorkItemCount}",
-            $@"{nameof(minWorkerThreads)} = {minWorkerThreads}",
-            $@"{nameof(minCompletionPortThreads)} = {minCompletionPortThreads}",
-            $@"{nameof(maxWorkerThreads)} = {maxWorkerThreads}",
-            $@"{nameof(maxCompletionPortThreads)} = {maxCompletionPortThreads}",
-            $@"{nameof(availableWorkerThreads)} = {availableWorkerThreads}",
-            $@"{nameof(availableCompletionPortThreads)} = {availableCompletionPortThreads}"
-        };
-
-        TestContext.WriteLine($@"[{marker}] {parts.Join(",\x0020")}");
-    }
-
-    private static void AdjustThreadPoolSettingsForHigherLoad([CallerMemberName] string callerName = null!)
-    {
-        const int RequiredMinWorkerThreads = sbyte.MaxValue;
-
-        var fullCallerName = $@"{callerName} > {nameof(AdjustThreadPoolSettingsForHigherLoad)}";
-
-        ReportThreadPoolInformation("BEFORE", fullCallerName);
-        ThreadPool.GetMinThreads(out var minWorkerThreads, out var minCompletionPortThreads);
-        ThreadPool.SetMinThreads(Math.Max(minWorkerThreads, RequiredMinWorkerThreads), minCompletionPortThreads);
-        ReportThreadPoolInformation("AFTER", fullCallerName);
-    }
 
     private enum WorkItemState
     {

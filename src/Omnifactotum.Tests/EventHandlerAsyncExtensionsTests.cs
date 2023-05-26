@@ -2,22 +2,41 @@
 using System.Threading;
 using System.Threading.Tasks;
 using NUnit.Framework;
+using Omnifactotum.Tests.Internal;
 
 namespace Omnifactotum.Tests;
 
 [TestFixture(TestOf = typeof(EventHandlerAsyncExtensions))]
+[NonParallelizable]
 internal sealed class EventHandlerAsyncExtensionsTests
 {
     private const int SensitiveTestRepeatCount = 100;
-    private const int SensitiveTestTimeoutInMilliseconds = 2_000;
+    private const int SensitiveTestTimeoutInMilliseconds = 500;
+    private const int SensitiveTestRetryCount = 3;
+
+    [OneTimeSetUp]
+    public void OneTimeSetUp() => TestFactotum.AdjustThreadPoolSettingsForHigherLoad();
+
+    [SetUp]
+    public void SetUp()
+    {
+        TestFactotum.ReportThreadPoolInformation();
+        TestContext.WriteLine();
+    }
+
+    [TearDown]
+    public void TearDown()
+    {
+        TestContext.WriteLine();
+        TestFactotum.ReportThreadPoolInformation();
+    }
 
     [Test]
     [Timeout(SensitiveTestTimeoutInMilliseconds)]
-    [Repeat(SensitiveTestRepeatCount)]
-    public async Task TestInvokeAsync()
+    [Retry(SensitiveTestRetryCount)]
+    public async Task TestInvokeAsync([Range(1, SensitiveTestRepeatCount)] int repeatIndex)
     {
-        TestContext.WriteLine(
-            $@"{nameof(TestContext.CurrentContext.CurrentRepeatCount)} = {TestContext.CurrentContext.CurrentRepeatCount}");
+        TestFactotum.ReportCurrentRepeatCount(repeatIndex);
 
         const int Value = 17;
 
@@ -58,11 +77,10 @@ internal sealed class EventHandlerAsyncExtensionsTests
 
     [Test]
     [Timeout(SensitiveTestTimeoutInMilliseconds)]
-    [Repeat(SensitiveTestRepeatCount)]
-    public async Task TestInvokeParallelAsync()
+    [Retry(SensitiveTestRetryCount)]
+    public async Task TestInvokeParallelAsync([Range(1, SensitiveTestRepeatCount)] int repeatIndex)
     {
-        TestContext.WriteLine(
-            $@"{nameof(TestContext.CurrentContext.CurrentRepeatCount)} = {TestContext.CurrentContext.CurrentRepeatCount}");
+        TestFactotum.ReportCurrentRepeatCount(repeatIndex);
 
         const int Value = 23;
 
@@ -90,6 +108,7 @@ internal sealed class EventHandlerAsyncExtensionsTests
                 //// ReSharper disable once LoopVariableIsNeverChangedInsideLoop :: False detection
                 while (!isThirdActionExecuted)
                 {
+                    token.ThrowIfCancellationRequested();
                     await Task.Yield();
                 }
 
@@ -108,6 +127,7 @@ internal sealed class EventHandlerAsyncExtensionsTests
             {
                 while (!isSecondActionExecuted)
                 {
+                    token.ThrowIfCancellationRequested();
                     await Task.Yield();
                 }
 

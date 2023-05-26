@@ -5,6 +5,7 @@ using NUnit.Framework;
 namespace Omnifactotum.Tests.ExtensionMethods;
 
 [TestFixture(TestOf = typeof(OmnifactotumValueTaskExtensions))]
+[NonParallelizable]
 internal sealed class OmnifactotumValueTaskExtensionsTests : GenericTaskExtensionsTestsBase
 {
     protected override Task OnRunTestCaseForVoidTaskAsync(ConfigureAwaitMode mode, ValueContainer<int> container)

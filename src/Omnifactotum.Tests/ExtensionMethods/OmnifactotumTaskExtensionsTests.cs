@@ -6,6 +6,7 @@ using NUnit.Framework;
 namespace Omnifactotum.Tests.ExtensionMethods;
 
 [TestFixture(TestOf = typeof(OmnifactotumTaskExtensions))]
+[NonParallelizable]
 internal sealed class OmnifactotumTaskExtensionsTests : GenericTaskExtensionsTestsBase
 {
     [Test]
