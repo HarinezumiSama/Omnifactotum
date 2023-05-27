@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
 using NUnit.Framework;
 using Omnifactotum.Annotations;
@@ -42,25 +43,39 @@ internal abstract class ConstraintTestsBase<[MeansImplicitUse] TConstraint> : Co
     [Test]
     public void TestValidateWhenValidValueThenNoValidationErrors()
     {
+        var atLeastOneValue = false;
+
         var validValues = GetValidValues();
         foreach (var validValue in validValues)
         {
+            atLeastOneValue = true;
+
+            var testCaseDetails = $"Test case value: {FormatTestCaseValue(validValue)}";
+
             var objectValidatorContext = CreateObjectValidatorContext();
             var testee = CreateTestee();
             var memberContext = CreateMemberConstraintValidationContext();
             testee.Validate(objectValidatorContext, memberContext, validValue);
             var validationErrors = objectValidatorContext.Errors.Items;
 
-            Assert.That(validationErrors, Is.Not.Null & Is.Empty);
+            Assert.That(validationErrors, Is.Not.Null & Is.Empty, testCaseDetails);
         }
+
+        Assert.That(atLeastOneValue, Is.True);
     }
 
     [Test]
     public void TestValidateWhenInvalidValueThenSingleValidationError()
     {
+        var atLeastOneValue = false;
+
         var invalidValues = GetInvalidValues();
         foreach (var invalidValue in invalidValues)
         {
+            atLeastOneValue = true;
+
+            var testCaseDetails = $"Test case value: {FormatTestCaseValue(invalidValue)}";
+
             var expectedErrorMessage = GetInvalidValueErrorMessage(invalidValue).AssertNotNull();
 
             var objectValidatorContext = CreateObjectValidatorContext();
@@ -68,15 +83,21 @@ internal abstract class ConstraintTestsBase<[MeansImplicitUse] TConstraint> : Co
             var validationContext = CreateMemberConstraintValidationContext();
 
             testee.Validate(objectValidatorContext, validationContext, invalidValue);
-            var validationError = objectValidatorContext.Errors.Items.Single();
 
-            Assert.That(validationError, Is.Not.Null);
-            Assert.That(validationError.FailedConstraintType, Is.EqualTo(testee.GetType()));
-            Assert.That(validationError.Context, Is.SameAs(validationContext));
-            Assert.That(validationError.ErrorMessage, Is.EqualTo(expectedErrorMessage));
+            var validationErrors = objectValidatorContext.Errors.Items;
+            Assert.That(validationErrors, Is.Not.Null & Has.Count.EqualTo(1), testCaseDetails);
+
+            var validationError = validationErrors.Single();
+            Assert.That(validationError, Is.Not.Null, testCaseDetails);
+            Assert.That(validationError.FailedConstraintType, Is.EqualTo(testee.GetType()), testCaseDetails);
+            Assert.That(validationError.Context, Is.SameAs(validationContext), testCaseDetails);
+            Assert.That(validationError.ErrorMessage, Is.EqualTo(expectedErrorMessage), testCaseDetails);
         }
+
+        Assert.That(atLeastOneValue, Is.True);
     }
 
+    //// ReSharper disable once MemberCanBePrivate.Global
     protected static TConstraint CreateTestee() => new();
 
     protected abstract IEnumerable<object?> GetValidValues();
@@ -84,6 +105,15 @@ internal abstract class ConstraintTestsBase<[MeansImplicitUse] TConstraint> : Co
     protected abstract IEnumerable<object?> GetInvalidValues();
 
     protected abstract string GetInvalidValueErrorMessage(object? invalidValue);
+
+    private static string FormatTestCaseValue(object? value)
+        => value switch
+        {
+            null => OmnifactotumRepresentationConstants.NullValueRepresentation,
+            string s => s.ToUIString(),
+            IFormattable formattable => formattable.ToString(null, CultureInfo.InvariantCulture),
+            _ => value.ToString().AvoidNull()
+        };
 
     private sealed class UnknownClass
     {
