@@ -4,10 +4,13 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
 using System.Reflection;
-using System.Runtime.CompilerServices;
 using Omnifactotum.Annotations;
 using Omnifactotum.Validation.Constraints;
 using DisallowNullAttribute = System.Diagnostics.CodeAnalysis.DisallowNullAttribute;
+
+#if NET5_0_OR_GREATER
+using System.Runtime.CompilerServices;
+#endif
 
 //// ReSharper disable RedundantNullnessAttributeWithNullableReferenceTypes
 //// ReSharper disable AnnotationRedundancyInHierarchy
@@ -15,13 +18,12 @@ using DisallowNullAttribute = System.Diagnostics.CodeAnalysis.DisallowNullAttrib
 namespace Omnifactotum.Validation;
 
 /// <summary>
-///     Provides functionality to recursively validate objects annotated
-///     with <see cref="MemberConstraintAttribute"/>.
+///     Provides functionality to recursively validate objects annotated with <see cref="MemberConstraintAttribute"/>.
 /// </summary>
 public static class ObjectValidator
 {
     /// <summary>
-    ///     The root object parameter name (used in expressions).
+    ///     The default root object parameter name (used in expressions).
     /// </summary>
     internal const string DefaultRootObjectParameterName = "instance";
 

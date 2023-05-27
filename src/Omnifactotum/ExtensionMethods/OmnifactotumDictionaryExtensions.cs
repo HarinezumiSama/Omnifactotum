@@ -1,8 +1,11 @@
-﻿using System.Collections.ObjectModel;
-using System.Runtime.CompilerServices;
+﻿using System.Runtime.CompilerServices;
 using Omnifactotum;
 using Omnifactotum.Annotations;
 using DisallowNullAttribute = System.Diagnostics.CodeAnalysis.DisallowNullAttribute;
+
+#if !NET7_0_OR_GREATER
+using System.Collections.ObjectModel;
+#endif
 
 //// ReSharper disable RedundantNullnessAttributeWithNullableReferenceTypes
 //// ReSharper disable UseNullableReferenceTypesAnnotationSyntax
