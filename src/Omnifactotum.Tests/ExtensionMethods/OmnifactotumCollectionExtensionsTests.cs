@@ -613,6 +613,28 @@ internal sealed class OmnifactotumCollectionExtensionsTests
                     .EqualTo(cancellationToken));
     }
 
+    [Test]
+    public void TestFlattenWhenInvalidArgumentThenThrows()
+    {
+        Assert.That(() => default(IEnumerable<IEnumerable<object?>>)!.Flatten(), Throws.ArgumentNullException);
+        Assert.That(() => default(IEnumerable<IEnumerable<int>>)!.Flatten(), Throws.ArgumentNullException);
+        Assert.That(() => default(IEnumerable<IEnumerable<int?>>)!.Flatten(), Throws.ArgumentNullException);
+        Assert.That(() => default(IEnumerable<IEnumerable<string?>>)!.Flatten(), Throws.ArgumentNullException);
+        Assert.That(() => default(IEnumerable<IEnumerable<string>>)!.Flatten(), Throws.ArgumentNullException);
+    }
+
+    [Test]
+    public void TestFlattenWhenValidArgumentThenSucceeds()
+    {
+        Assert.That(
+            () => new[] { new[] { 1, 2, 3 }, new[] { 6, 5, 4 }, new[] { 13, 19, -7 } }.Flatten(),
+            Is.EqualTo(new[] { 1, 2, 3, 6, 5, 4, 13, 19, -7 }));
+
+        Assert.That(
+            () => new[] { new[] { 'a', 'c', '?' }, new[] { 'w', 'b', '4' }, new[] { '3', 'X', '!' } }.Flatten(),
+            Is.EqualTo(new[] { 'a', 'c', '?', 'w', 'b', '4', '3', 'X', '!' }));
+    }
+
     private static void InvokeTestSetItems<T, TCollection>(Func<T[]> createItems1, Func<T[]> createItems2)
         where TCollection : ICollection<T>, new()
     {

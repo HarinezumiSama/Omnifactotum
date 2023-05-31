@@ -1026,6 +1026,30 @@ public static class OmnifactotumCollectionExtensions
         => (await source.EnumerateToListAsync(cancellationToken)).ToArray();
 
     /// <summary>
+    ///     Flattens the specified sequence of sequences into one sequence.
+    /// </summary>
+    /// <param name="collections">
+    ///     A sequence of sequences to flatten.
+    /// </param>
+    /// <typeparam name="T">
+    ///     The type of the elements in each sequence in the <paramref name="collections"/> parameter.
+    /// </typeparam>
+    /// <returns>
+    ///     An <see cref="IEnumerable{T}"/> whose elements are the result of flattening the specified sequence of sequences into one sequence.
+    /// </returns>
+    [MethodImpl(OmnifactotumConstants.MethodOptimizationOptions.Standard)]
+    [NotNull]
+    public static IEnumerable<T> Flatten<T>([NotNull] this IEnumerable<IEnumerable<T>> collections)
+    {
+        if (collections is null)
+        {
+            throw new ArgumentNullException(nameof(collections));
+        }
+
+        return collections.SelectMany(Factotum.For<IEnumerable<T>>.IdentityMethod);
+    }
+
+    /// <summary>
     ///     Checks the reference and count equality.
     /// </summary>
     /// <typeparam name="T">
