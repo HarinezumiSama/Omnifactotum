@@ -9,11 +9,28 @@
 - [Complete Release Notes](https://github.com/HarinezumiSama/Omnifactotum/blob/master/src/Omnifactotum.ReleaseNotes.md)
 - [ReadMe](https://github.com/HarinezumiSama/Omnifactotum/blob/master/README.md)
 
-### Changes in 0.14.1 (since 0.14.0)
+### Changes in 0.15.0 (since [0.14.1](https://www.nuget.org/packages/Omnifactotum/0.14.1))
+
+#### Breaking Changes
+
+- `ObjectValidator.Validate()` method: Added `instanceExpression` parameter 
+  - For .NET 5+ and higher, the `instanceExpression` parameter is marked with the `CallerArgumentExpression` attribute
+  - For the older .NET versions, the `instanceExpression` parameter is supplied only for binary compatibility between the different target frameworks
+
+#### New features
+
+- `ElapsedTimeProviderExtensions`: Added the `GetStoppedElapsed()` extension method
+- `OmnifactotumCollectionExtensions`: Added the `Flatten()` extension method
+- `OmnifactotumEnumExtensions`: Added the `ToUIString()` extension method
+- `OmnifactotumExceptionExtensions`: Added the `IsOriginatedFrom(this Exception?, Type)` extension method
+- Added `OmnifactotumStopwatchExtensions` with the `GetStoppedElapsed()` extension method
+- `OmnifactotumStringExtensions`: Added new extension methods for `System.String`:
+  - `WithSingleLeadingSlash(string)`
+  - `WithoutLeadingSlash(string)`
+- Object validation
+  - Added `RegexStringConstraintBase`
+  - Added `ValueRangeConstraintBase<T>`
 
 #### Minor updates and fixes
 
-- Improvements in `Factotum.Assert(...)`
-  - Applied the `DoesNotReturnIf` attribute on the `condition` parameter
-  - Now the method referenced by the `createAssertionFailureException` parameter can return `null` (`OmnifactotumAssertionException` is used in this case)
-- Minor improvements in XML documentation in `OmnifactotumMethodBaseExtensions` and `OmnifactotumTypeExtensions`
+- Applied `MeansImplicitUse` annotations to `TKeyConstraint` and `TValueConstraint` in `KeyValuePairConstraint<TKey, TValue, TKeyConstraint, TValueConstraint>`
