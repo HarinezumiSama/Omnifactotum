@@ -2,8 +2,8 @@
 
 <Project>
     <PropertyGroup>
-        <Version>0.15.0</Version>
-        <PackageValidationBaselineVersion>0.14.1</PackageValidationBaselineVersion>
+        <Version>0.16.0</Version>
+        <PackageValidationBaselineVersion>0.15.0</PackageValidationBaselineVersion>
     </PropertyGroup>
 
     <PropertyGroup>
