@@ -51,6 +51,7 @@
 - [**`Nullable<DateTimeOffset>` (`DateTimeOffset?`)**](https://docs.microsoft.com/en-us/dotnet/api/system.nullable-1) extension methods
 - [**`Nullable<TimeSpan>` (`TimeSpan?`)**](https://docs.microsoft.com/en-us/dotnet/api/system.nullable-1) extension methods
 - [**`SecureString`**](https://docs.microsoft.com/en-us/dotnet/api/system.security.securestring) extension methods
+- [**`Stopwatch`**](https://docs.microsoft.com/en-us/dotnet/api/system.diagnostics.stopwatch) extension methods
 - [**`String`**](https://docs.microsoft.com/en-us/dotnet/api/system.string) extension methods
 - [**`Task`**](https://docs.microsoft.com/en-us/dotnet/api/system.threading.tasks.task) extension methods
 - [**`Task<TResult>`**](https://docs.microsoft.com/en-us/dotnet/api/system.threading.tasks.task-1) extension methods
