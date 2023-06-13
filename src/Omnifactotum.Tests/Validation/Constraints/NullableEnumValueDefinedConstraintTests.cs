@@ -22,5 +22,5 @@ internal sealed class NullableEnumValueDefinedConstraintTests : TypedConstraintT
     protected override string GetTypedInvalidValueErrorMessage(ConsoleColor? invalidValue)
         => invalidValue is null
             ? "The value cannot be null."
-            : AsInvariant($@"The value {invalidValue:D} is not defined in the enumeration ""System.ConsoleColor"".");
+            : AsInvariant($@"The value {(int)invalidValue} is not defined in the enumeration ""System.ConsoleColor"".");
 }

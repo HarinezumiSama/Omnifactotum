@@ -8,6 +8,14 @@ namespace Omnifactotum.Tests.Validation.Constraints;
 internal sealed class ValueRangeConstraintBaseOfDecimalTests
     : TypedConstraintTestsBase<ValueRangeConstraintBaseOfDecimalTests.ValueRangeConstraint, decimal>
 {
+    protected override void OnTestConstruction(ValueRangeConstraint testee)
+    {
+        base.OnTestConstruction(testee);
+
+        Assert.That(() => testee.ExposedRange.Lower, Is.EqualTo(1.1m));
+        Assert.That(() => testee.ExposedRange.Upper, Is.EqualTo(3.9m));
+    }
+
     protected override IEnumerable<decimal> GetTypedValidValues()
     {
         yield return 1.1m;
@@ -27,14 +35,17 @@ internal sealed class ValueRangeConstraintBaseOfDecimalTests
         yield return decimal.MaxValue;
     }
 
-    protected override string GetTypedInvalidValueErrorMessage(decimal invalidValue) => "The value must be within the range [ 1.1 ~ 3.9 ].";
+    protected override string GetTypedInvalidValueErrorMessage(decimal invalidValue)
+        => $"The value {invalidValue} is not within the valid range [1.1 ~ 3.9].";
 
     internal sealed class ValueRangeConstraint : ValueRangeConstraintBase<decimal>
     {
         public ValueRangeConstraint()
-            : base(ValueRange.Create(1.1m, 3.9m))
+            : base(1.1m, 3.9m)
         {
             // Nothing to do
         }
+
+        public ValueRange<decimal> ExposedRange => Range;
     }
 }

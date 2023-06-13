@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using NUnit.Framework;
 using Omnifactotum.Validation.Constraints;
 
@@ -30,5 +29,6 @@ internal sealed class WebUrlConstraintTests : TypedConstraintTestsBase<WebUrlCon
         yield return @"https://";
     }
 
-    protected override string GetTypedInvalidValueErrorMessage(string? invalidValue) => $@"The value {invalidValue.ToUIString()} is not a valid Web URL.";
+    protected override string GetTypedInvalidValueErrorMessage(string? invalidValue)
+        => $@"The value {(invalidValue is null ? "null" : $"\"{invalidValue}\"")} is not a valid Web URL.";
 }

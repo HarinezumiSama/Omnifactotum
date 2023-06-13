@@ -35,7 +35,8 @@ internal sealed class RegexStringConstraintBaseTests : TypedConstraintTestsBase<
 
     [SuppressMessage("ReSharper", "StringLiteralTypo")]
     protected override string GetTypedInvalidValueErrorMessage(string? invalidValue)
-        => $"The value {invalidValue.ToUIString()} does not match the regular expression pattern \"^Foo\" (options: ExplicitCapture, Compiled, Singleline).";
+        => $"The value {(invalidValue is null ? "null" : $"\"{invalidValue}\"")
+        } does not match the regular expression pattern \"^Foo\" (options: ExplicitCapture, Compiled, Singleline).";
 
     internal sealed class RegexStringConstraint : RegexStringConstraintBase
     {

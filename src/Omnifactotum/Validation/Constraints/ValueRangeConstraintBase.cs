@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Runtime.CompilerServices;
 using static Omnifactotum.FormattableStringFactotum;
 
 namespace Omnifactotum.Validation.Constraints;
@@ -15,7 +16,24 @@ public abstract class ValueRangeConstraintBase<T> : TypedMemberConstraintBase<T>
     /// <param name="range">
     ///     The range of valid values.
     /// </param>
+    [MethodImpl(OmnifactotumConstants.MethodOptimizationOptions.Standard)]
     protected ValueRangeConstraintBase(ValueRange<T> range) => Range = range;
+
+    /// <summary>
+    ///     Initializes a new instance of the <see cref="ValueRangeConstraintBase{T}" /> class.
+    /// </summary>
+    /// <param name="lower">
+    ///     The lower boundary of the valid range.
+    /// </param>
+    /// <param name="upper">
+    ///     The upper boundary of the valid range.
+    /// </param>
+    [MethodImpl(OmnifactotumConstants.MethodOptimizationOptions.Standard)]
+    protected ValueRangeConstraintBase(T lower, T upper)
+        : this(ValueRange.Create(lower, upper))
+    {
+        // Nothing to do
+    }
 
     /// <summary>
     ///     Gets the range of valid values.
@@ -28,7 +46,7 @@ public abstract class ValueRangeConstraintBase<T> : TypedMemberConstraintBase<T>
     /// <returns>
     ///     The formatted <see cref="Range"/>.
     /// </returns>
-    protected virtual string FormatRange() => AsInvariant($"[ {Range.Lower} ~ {Range.Upper} ]");
+    protected virtual string FormatRange() => AsInvariant($"[{FormatValue(Range.Lower)} ~ {FormatValue(Range.Upper)}]");
 
     /// <inheritdoc />
     protected sealed override void ValidateTypedValue(
@@ -41,6 +59,6 @@ public abstract class ValueRangeConstraintBase<T> : TypedMemberConstraintBase<T>
             return;
         }
 
-        AddError(validatorContext, memberContext, $"The value must be within the range {FormatRange()}.");
+        AddError(validatorContext, memberContext, $"The value {FormatValue(value)} is not within the valid range {FormatRange()}.");
     }
 }

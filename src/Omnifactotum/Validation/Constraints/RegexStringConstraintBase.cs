@@ -76,7 +76,7 @@ public abstract class RegexStringConstraintBase : TypedMemberConstraintBase<stri
             AddError(
                 validatorContext,
                 memberContext,
-                $"The value {value.ToUIString()} does not match the regular expression pattern {_pattern.ToUIString()} (options: {_regex.Options}).");
+                $"The value {FormatValue(value)} does not match the regular expression pattern {_pattern.ToUIString()} (options: {_regex.Options}).");
         }
     }
 }

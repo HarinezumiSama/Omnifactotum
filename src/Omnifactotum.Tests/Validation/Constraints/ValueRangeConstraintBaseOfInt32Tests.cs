@@ -10,6 +10,14 @@ namespace Omnifactotum.Tests.Validation.Constraints;
 internal sealed class ValueRangeConstraintBaseOfInt32Tests
     : TypedConstraintTestsBase<ValueRangeConstraintBaseOfInt32Tests.ValueRangeConstraint, int>
 {
+    protected override void OnTestConstruction(ValueRangeConstraint testee)
+    {
+        base.OnTestConstruction(testee);
+
+        Assert.That(() => testee.ExposedRange.Lower, Is.EqualTo(-17));
+        Assert.That(() => testee.ExposedRange.Upper, Is.EqualTo(23));
+    }
+
     protected override IEnumerable<int> GetTypedValidValues() => Enumerable.Range(-17, 23);
 
     protected override IEnumerable<int> GetTypedInvalidValues()
@@ -22,7 +30,8 @@ internal sealed class ValueRangeConstraintBaseOfInt32Tests
         yield return int.MaxValue;
     }
 
-    protected override string GetTypedInvalidValueErrorMessage(int invalidValue) => "The value must be within the range ({ <-17> .:. <23> }).";
+    protected override string GetTypedInvalidValueErrorMessage(int invalidValue)
+        => $"The value {invalidValue} is not within the valid range ({{ <-17> .:. <23> }}).";
 
     internal sealed class ValueRangeConstraint : ValueRangeConstraintBase<int>
     {
@@ -31,6 +40,8 @@ internal sealed class ValueRangeConstraintBaseOfInt32Tests
         {
             // Nothing to do
         }
+
+        public ValueRange<int> ExposedRange => Range;
 
         protected override string FormatRange() => AsInvariant($"({{ <{Range.Lower}> .:. <{Range.Upper}> }})");
     }

@@ -26,7 +26,7 @@ public sealed class NullableEnumValueDefinedConstraint<TEnum> : TypedMemberConst
             AddError(
                 validatorContext,
                 memberContext,
-                AsInvariant($@"The value {value:D} is not defined in the enumeration {typeof(TEnum).GetFullName().ToUIString()}."));
+                AsInvariant($@"The value {FormatValue(value.Value)} is not defined in the enumeration {typeof(TEnum).GetFullName().ToUIString()}."));
         }
     }
 }

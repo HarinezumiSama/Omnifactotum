@@ -10,8 +10,15 @@ using Omnifactotum.Validation.Constraints;
 namespace Omnifactotum.Tests.Validation.Constraints;
 
 internal abstract class ConstraintTestsBase<[MeansImplicitUse] TConstraint> : ConstraintTestsBase
-    where TConstraint : IMemberConstraint, new()
+    where TConstraint : class, IMemberConstraint, new()
 {
+    [Test]
+    public void TestConstruction()
+    {
+        var testee = CreateTestee();
+        OnTestConstruction(testee);
+    }
+
     [Test]
     public void TestValidateWhenContextArgumentIsNullThenThrows()
     {
@@ -99,6 +106,8 @@ internal abstract class ConstraintTestsBase<[MeansImplicitUse] TConstraint> : Co
 
     //// ReSharper disable once MemberCanBePrivate.Global
     protected static TConstraint CreateTestee() => new();
+
+    protected virtual void OnTestConstruction(TConstraint testee) => testee.AssertNotNull();
 
     protected abstract IEnumerable<object?> GetValidValues();
 

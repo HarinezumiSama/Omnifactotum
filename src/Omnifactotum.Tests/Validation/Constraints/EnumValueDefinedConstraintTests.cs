@@ -19,5 +19,5 @@ internal sealed class EnumValueDefinedConstraintTests : TypedConstraintTestsBase
     }
 
     protected override string GetTypedInvalidValueErrorMessage(ConsoleColor invalidValue)
-        => AsInvariant($@"The value {invalidValue:D} is not defined in the enumeration ""System.ConsoleColor"".");
+        => AsInvariant($@"The value {(int)invalidValue} is not defined in the enumeration ""System.ConsoleColor"".");
 }

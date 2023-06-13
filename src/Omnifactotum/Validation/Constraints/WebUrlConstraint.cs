@@ -24,7 +24,7 @@ public sealed class WebUrlConstraint : TypedMemberConstraintBase<string?>
     {
         if (!Uri.TryCreate(value, UriKind.Absolute, out var uri) || !AllowedSchemes.Contains(uri.Scheme))
         {
-            AddError(validatorContext, memberContext, $@"The value {value.ToUIString()} is not a valid Web URL.");
+            AddError(validatorContext, memberContext, $@"The value {FormatValue(value)} is not a valid Web URL.");
         }
     }
 }
