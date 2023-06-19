@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Diagnostics.CodeAnalysis;
 using System.Diagnostics.Contracts;
 using System.Runtime.CompilerServices;
 
@@ -9,6 +10,12 @@ namespace Omnifactotum;
 /// </summary>
 public static class ValueRange
 {
+    /// <summary>
+    ///     The default boundary separator. Used in <see cref="ValueRange{T}.ToString()"/>.
+    /// </summary>
+    [SuppressMessage("ReSharper", "ConvertToConstant.Global")]
+    public static readonly string DefaultBoundarySeparator = "\x0020~\x0020";
+
     /// <summary>
     ///     Creates a new instance of the <see cref="ValueRange{T}"/> structure using the specified values.
     /// </summary>

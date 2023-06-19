@@ -1,6 +1,10 @@
 ﻿using NUnit.Framework;
 using Omnifactotum.NUnit;
 
+#if NET7_0_OR_GREATER
+using System.Numerics;
+#endif
+
 namespace Omnifactotum.Tests;
 
 [TestFixture(TestOf = typeof(ValueRange<>))]
@@ -114,15 +118,49 @@ internal sealed class ValueRangeTests
 
         Assert.That(rangeLeft == rangeRight, Is.EqualTo(expectedEqual));
         Assert.That(rangeLeft != rangeRight, Is.EqualTo(!expectedEqual));
+
+#if NET7_0_OR_GREATER
+        ExecuteEqualityOperatorsTestCase(rangeLeft, rangeRight, expectedEqual);
+
+        static void ExecuteEqualityOperatorsTestCase<T>(T left, T right, bool expectedEqualityResult)
+            where T : struct, IEqualityOperators<T, T, bool>
+        {
+            Assert.That(() => left == right, Is.EqualTo(expectedEqualityResult));
+            Assert.That(() => left != right, Is.EqualTo(!expectedEqualityResult));
+        }
+#endif
     }
 
     [Test]
-    [TestCase(default(int), default(int), "[0; 0]")]
-    [TestCase(1, 2, "[1; 2]")]
-    [TestCase(-5, 4, "[-5; 4]")]
-    public void TestToString(int rangeLower, int rangeUpper, string expectedString)
+    [TestCase(default(int), default(int), "[0 ~ 0]")]
+    [TestCase(1, 2, "[1 ~ 2]")]
+    [TestCase(-5, 4, "[-5 ~ 4]")]
+    public void TestToStringWithoutParameters(int rangeLower, int rangeUpper, string expectedString)
     {
         var range = new ValueRange<int>(rangeLower, rangeUpper);
         Assert.That(range.ToString, Is.EqualTo(expectedString));
+    }
+
+    [Test]
+    [TestCase(default(int), default(int), null)]
+    [TestCase(default(int), default(int), "")]
+    [TestCase(1, 2, null)]
+    [TestCase(1, 2, "")]
+    public void TestToStringWhenInvalidBoundarySeparatorThenThrows(int rangeLower, int rangeUpper, string? boundarySeparator)
+    {
+        var range = new ValueRange<int>(rangeLower, rangeUpper);
+        Assert.That(() => range.ToString(boundarySeparator!), Throws.ArgumentException);
+    }
+
+    [Test]
+    [TestCase(default(int), default(int), ";\x0020", "[0; 0]")]
+    [TestCase(3, 7, ";", "[3;7]")]
+    [TestCase(3, 7, ";\x0020", "[3; 7]")]
+    [TestCase(1, 2, ":|:", "[1:|:2]")]
+    [TestCase(-5, 4, "\t*\t", "[-5\t*\t4]")]
+    public void TestToStringWhenValidBoundarySeparatorThenSucceeds(int rangeLower, int rangeUpper, string? boundarySeparator, string expectedString)
+    {
+        var range = new ValueRange<int>(rangeLower, rangeUpper);
+        Assert.That(() => range.ToString(boundarySeparator!), Is.EqualTo(expectedString));
     }
 }

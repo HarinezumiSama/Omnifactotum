@@ -6,6 +6,10 @@ using CanBeNullAttribute = Omnifactotum.Annotations.CanBeNullAttribute;
 using NotNullAttribute = Omnifactotum.Annotations.NotNullAttribute;
 using static Omnifactotum.FormattableStringFactotum;
 
+#if NET7_0_OR_GREATER
+using System.Numerics;
+#endif
+
 //// ReSharper disable RedundantNullnessAttributeWithNullableReferenceTypes
 //// ReSharper disable AnnotationRedundancyInHierarchy
 
@@ -18,7 +22,12 @@ namespace Omnifactotum;
 ///     The type of the values in the range.
 /// </typeparam>
 [Serializable]
-public readonly struct ValueRange<T> : IEquatable<ValueRange<T>>
+public readonly struct ValueRange<T>
+    : IEquatable<ValueRange<T>>
+#if NET7_0_OR_GREATER
+        ,
+        IEqualityOperators<ValueRange<T>, ValueRange<T>, bool>
+#endif
     where T : IComparable
 {
     private static readonly IComparer<T> ValueComparer = Comparer<T>.Default;
@@ -33,6 +42,7 @@ public readonly struct ValueRange<T> : IEquatable<ValueRange<T>>
     /// <param name="upper">
     ///     The upper boundary of the range.
     /// </param>
+    [MethodImpl(OmnifactotumConstants.MethodOptimizationOptions.Standard)]
     public ValueRange(T lower, T upper)
     {
         if (ValueComparer.Compare(lower, upper) > 0)
@@ -90,6 +100,16 @@ public readonly struct ValueRange<T> : IEquatable<ValueRange<T>>
     [MethodImpl(OmnifactotumConstants.MethodOptimizationOptions.Standard)]
     public static bool operator !=(ValueRange<T> left, ValueRange<T> right) => !Equals(left, right);
 
+#if NET7_0_OR_GREATER
+    /// <inheritdoc/>
+    [MethodImpl(OmnifactotumConstants.MethodOptimizationOptions.Standard)]
+    static bool IEqualityOperators<ValueRange<T>, ValueRange<T>, bool>.operator ==(ValueRange<T> left, ValueRange<T> right) => left == right;
+
+    /// <inheritdoc/>
+    [MethodImpl(OmnifactotumConstants.MethodOptimizationOptions.Standard)]
+    static bool IEqualityOperators<ValueRange<T>, ValueRange<T>, bool>.operator !=(ValueRange<T> left, ValueRange<T> right) => left != right;
+#endif
+
     /// <summary>
     ///     Determines whether the specified <see cref="System.Object"/> is equal to this instance.
     /// </summary>
@@ -102,6 +122,7 @@ public readonly struct ValueRange<T> : IEquatable<ValueRange<T>>
     /// </returns>
     [Pure]
     [Omnifactotum.Annotations.Pure]
+    [MethodImpl(OmnifactotumConstants.MethodOptimizationOptions.Standard)]
     public override bool Equals([CanBeNull] object? obj) => obj is ValueRange<T> castObj && Equals(castObj);
 
     /// <summary>
@@ -112,6 +133,7 @@ public readonly struct ValueRange<T> : IEquatable<ValueRange<T>>
     /// </returns>
     [Pure]
     [Omnifactotum.Annotations.Pure]
+    [MethodImpl(OmnifactotumConstants.MethodOptimizationOptions.Standard)]
     public override int GetHashCode() => Lower.CombineHashCodes(Upper);
 
     /// <summary>
@@ -120,10 +142,50 @@ public readonly struct ValueRange<T> : IEquatable<ValueRange<T>>
     /// <returns>
     ///     A <see cref="System.String"/> that represents this <see cref="ValueRange{T}"/>.
     /// </returns>
+    /// <example>
+    ///     <code>
+    /// <![CDATA[
+    ///         Console.WriteLine("Range: {0}", new ValueRange<int>(-2, 3).ToString()); // Output: Range: [-2 ~ 3]
+    /// ]]>
+    ///     </code>
+    /// </example>
     [Pure]
     [Omnifactotum.Annotations.Pure]
+    [MethodImpl(OmnifactotumConstants.MethodOptimizationOptions.Standard)]
     [NotNull]
-    public override string ToString() => AsInvariant($"[{Lower}; {Upper}]");
+    public override string ToString() => ToString(ValueRange.DefaultBoundarySeparator);
+
+    /// <summary>
+    ///     Returns a <see cref="System.String"/> that represents this <see cref="ValueRange{T}"/>, formatted using the specified boundary separator.
+    /// </summary>
+    /// <param name="boundarySeparator">
+    ///     The separator to insert in the resulting string between <see cref="Lower"/> and <see cref="Upper"/>.
+    ///     Cannot be <see langword="null"/> or <see cref="string.Empty"/>.
+    /// </param>
+    /// <returns>
+    ///     A <see cref="System.String"/> that represents this <see cref="ValueRange{T}"/>, formatted using the specified boundary separator.
+    /// </returns>
+    /// <example>
+    ///     <code>
+    /// <![CDATA[
+    ///         Console.WriteLine("Range: {0}", new ValueRange<int>(-2, 3).ToString("/")); // Output: Range: [-2/3]
+    ///         Console.WriteLine("Range: {0}", new ValueRange<int>(-2, 3).ToString(" ... ")); // Output: Range: [-2 ... 3]
+    /// ]]>
+    ///     </code>
+    /// </example>
+    [Pure]
+    [Omnifactotum.Annotations.Pure]
+    [MethodImpl(OmnifactotumConstants.MethodOptimizationOptions.Standard)]
+    [NotNull]
+    public string ToString([NotNull] string boundarySeparator)
+    {
+        if (string.IsNullOrEmpty(boundarySeparator))
+        {
+            throw new ArgumentException(@"The value can be neither empty string nor null.", nameof(boundarySeparator));
+        }
+
+        return AsInvariant($"[{Lower}{boundarySeparator}{Upper}]");
+    }
 
     /// <summary>
     ///     Determines whether the current range contains the specified value.
@@ -136,6 +198,7 @@ public readonly struct ValueRange<T> : IEquatable<ValueRange<T>>
     /// </returns>
     [Pure]
     [Omnifactotum.Annotations.Pure]
+    [MethodImpl(OmnifactotumConstants.MethodOptimizationOptions.Standard)]
     public bool Contains(T value) => ValueComparer.Compare(value, Lower) >= 0 && ValueComparer.Compare(value, Upper) <= 0;
 
     /// <summary>
@@ -150,7 +213,7 @@ public readonly struct ValueRange<T> : IEquatable<ValueRange<T>>
     /// </returns>
     [Pure]
     [Omnifactotum.Annotations.Pure]
-    [MethodImpl(OmnifactotumConstants.MethodOptimizationOptions.Maximum)]
+    [MethodImpl(OmnifactotumConstants.MethodOptimizationOptions.Standard)]
     public bool Contains(ValueRange<T> other) => Contains(in other);
 
     /// <summary>
@@ -166,6 +229,7 @@ public readonly struct ValueRange<T> : IEquatable<ValueRange<T>>
     [Pure]
     [Omnifactotum.Annotations.Pure]
     [CLSCompliant(false)]
+    [MethodImpl(OmnifactotumConstants.MethodOptimizationOptions.Standard)]
     public bool Contains(in ValueRange<T> other) => Contains(other.Lower) && Contains(other.Upper);
 
     /// <summary>
@@ -179,7 +243,7 @@ public readonly struct ValueRange<T> : IEquatable<ValueRange<T>>
     /// </returns>
     [Pure]
     [Omnifactotum.Annotations.Pure]
-    [MethodImpl(OmnifactotumConstants.MethodOptimizationOptions.Maximum)]
+    [MethodImpl(OmnifactotumConstants.MethodOptimizationOptions.Standard)]
     public bool IntersectsWith(ValueRange<T> other) => IntersectsWith(in other);
 
     /// <summary>
@@ -208,11 +272,12 @@ public readonly struct ValueRange<T> : IEquatable<ValueRange<T>>
     /// </returns>
     [Pure]
     [Omnifactotum.Annotations.Pure]
+    [MethodImpl(OmnifactotumConstants.MethodOptimizationOptions.Standard)]
     public bool Equals(ValueRange<T> other) => Equals(this, other);
 
     [Pure]
     [Omnifactotum.Annotations.Pure]
-    [MethodImpl(OmnifactotumConstants.MethodOptimizationOptions.Maximum)]
+    [MethodImpl(OmnifactotumConstants.MethodOptimizationOptions.Standard)]
     private static bool Equals(ValueRange<T> left, ValueRange<T> right)
         => ValueEqualityComparer.Equals(left.Lower, right.Lower) && ValueEqualityComparer.Equals(left.Upper, right.Upper);
 }
