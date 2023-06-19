@@ -3,6 +3,9 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Diagnostics.CodeAnalysis;
 using System.IO;
+using System.Net;
+using System.Reflection;
+using System.Reflection.Emit;
 using NUnit.Framework;
 using static Omnifactotum.FormattableStringFactotum;
 
@@ -85,6 +88,7 @@ internal sealed class OmnifactotumEnumExtensionsTests
     [TestCase(UIntTestFlags.Flag2, "Flag2")]
     [TestCase(ConsoleModifiers.Alt | ConsoleModifiers.Shift | ConsoleModifiers.Control, "Alt, Shift, Control")]
     [TestCase(ConsoleModifiers.Alt | ConsoleModifiers.Shift | ConsoleModifiers.Control | (ConsoleModifiers)1024, "1031")]
+    [TestCase(FileShare.None, "None")]
     [TestCase((ConsoleColor)(-1), "-1")]
     [TestCase((TestEnumeration)0, "0")]
     [TestCase((UIntTestFlags)0, "0")]
@@ -106,6 +110,7 @@ internal sealed class OmnifactotumEnumExtensionsTests
     [TestCase(
         ConsoleModifiers.Alt | ConsoleModifiers.Shift | ConsoleModifiers.Control | (ConsoleModifiers)1024,
         "ConsoleModifiers.1031")]
+    [TestCase(FileShare.None, "FileShare.None")]
     [TestCase((ConsoleColor)(-1), "ConsoleColor.-1")]
     [TestCase((TestEnumeration)0, "TestEnumeration.0")]
     [TestCase((UIntTestFlags)0, "UIntTestFlags.0")]
@@ -127,6 +132,7 @@ internal sealed class OmnifactotumEnumExtensionsTests
     [TestCase(
         ConsoleModifiers.Alt | ConsoleModifiers.Shift | ConsoleModifiers.Control | (ConsoleModifiers)1024,
         "System.ConsoleModifiers.1031")]
+    [TestCase(FileShare.None, "System.IO.FileShare.None")]
     [TestCase((ConsoleColor)(-1), nameof(System) + "." + nameof(ConsoleColor) + "." + "-1")]
     [TestCase(
         (TestEnumeration)0,
@@ -151,9 +157,31 @@ internal sealed class OmnifactotumEnumExtensionsTests
     [TestCase(ConsoleModifiers.Alt | ConsoleModifiers.Control | ConsoleModifiers.Shift, @"""Alt"", ""Shift"", ""Control""")]
     [TestCase((ConsoleModifiers)0, @"""0""")]
     [TestCase(ConsoleModifiers.Alt | (ConsoleModifiers)16_777_216, @"""16777217""")]
+    [TestCase(FileShare.None, @"""None""")]
+    [TestCase(FileOptions.None, @"""None""")]
+    [TestCase(FileOptions.WriteThrough | FileOptions.Encrypted | FileOptions.DeleteOnClose, @"""Encrypted"", ""DeleteOnClose"", ""WriteThrough""")]
+    [TestCase(ULongTestFlags.Flag2 | ULongTestFlags.Flag34, @"""Flag2"", ""Flag34""")]
+    [TestCase(ULongTestFlags.Flag2 | ULongTestFlags.Flag64, @"""Flag2"", ""Flag64""")]
     public void TestToUIString<TEnum>(TEnum enumValue, string expectedResult)
         where TEnum : struct, Enum
         => Assert.That(() => enumValue.ToUIString(), Is.EqualTo(expectedResult));
+
+    [Test]
+    [TestCase(ConsoleColor.Green, "10 (Green)")]
+    [TestCase((ConsoleColor)(-1), "-1")]
+    [TestCase(HttpStatusCode.NotFound, "404 (NotFound)")]
+    [TestCase(HttpStatusCode.Unauthorized, "401 (Unauthorized)")]
+    [TestCase(ConsoleModifiers.Alt | ConsoleModifiers.Control | ConsoleModifiers.Shift, "0x00000007 (Alt, Shift, Control)")]
+    [TestCase((ConsoleModifiers)0, "0x00000000")]
+    [TestCase(ConsoleModifiers.Alt | (ConsoleModifiers)16_777_216, "0x01000001")]
+    [TestCase(FileShare.None, "0x00000000 (None)")]
+    [TestCase(FileOptions.None, "0x00000000 (None)")]
+    [TestCase(FileOptions.WriteThrough | FileOptions.Encrypted | FileOptions.DeleteOnClose, "0x84004000 (Encrypted, DeleteOnClose, WriteThrough)")]
+    [TestCase(ULongTestFlags.Flag2 | ULongTestFlags.Flag34, "0x0000000200000002 (Flag2, Flag34)")]
+    [TestCase(ULongTestFlags.Flag2 | ULongTestFlags.Flag64, "0x8000000000000002 (Flag2, Flag64)")]
+    public void TestGetDescription<TEnum>(TEnum enumValue, string expectedResult)
+        where TEnum : struct, Enum
+        => Assert.That(() => enumValue.GetDescription(), Is.EqualTo(expectedResult));
 
     [Test]
     [TestCase(FileAttributes.Hidden, FileAttributes.Hidden, true)]
@@ -347,6 +375,141 @@ internal sealed class OmnifactotumEnumExtensionsTests
             Is.TypeOf<NotSupportedException>().With.Message.EqualTo(expectedEnumValueContainerErrorMessage));
     }
 
+    [Test]
+    [TestCase((FlagsInt8)1, 1UL)]
+    [TestCase((FlagsUInt8)1, 1UL)]
+    [TestCase((FlagsInt16)1, 1UL)]
+    [TestCase((FlagsUInt16)1, 1UL)]
+    [TestCase((FlagsInt32)1, 1UL)]
+    [TestCase((FlagsUInt32)1, 1UL)]
+    [TestCase((FlagsInt64)1, 1UL)]
+    [TestCase((FlagsUInt64)1, 1UL)]
+    [TestCase(FlagsInt8.Bit7, 0x80UL)]
+    [TestCase(FlagsUInt8.Bit7, 0x80UL)]
+    [TestCase(FlagsInt16.Bit15, 0x8000UL)]
+    [TestCase(FlagsUInt16.Bit15, 0x8000UL)]
+    [TestCase(FlagsInt32.Bit31, 0x80000000UL)]
+    [TestCase(FlagsUInt32.Bit31, 0x80000000UL)]
+    [TestCase(FlagsInt64.Bit63, 0x8000000000000000UL)]
+    [TestCase(FlagsUInt64.Bit63, 0x8000000000000000UL)]
+    [TestCase(System.Diagnostics.Tracing.EventChannel.None, 0UL)]
+    [TestCase(System.Diagnostics.Tracing.EventChannel.Debug, 19UL)]
+    [TestCase(System.Runtime.InteropServices.ComTypes.TYPEFLAGS.TYPEFLAG_FAPPOBJECT, 1UL)]
+    [TestCase(System.Runtime.InteropServices.ComTypes.TYPEFLAGS.TYPEFLAG_FPROXY, 0x4000UL)]
+    [TestCase(FileMode.Append, 6UL)]
+    [TestCase(FileOptions.None, 0UL)]
+    [TestCase(FileOptions.WriteThrough, 0x80000000UL)]
+    [TestCase(System.Diagnostics.Tracing.EventKeywords.None, 0UL)]
+    [TestCase(System.Diagnostics.Tracing.EventKeywords.AuditSuccess, 0x0020000000000000UL)]
+    [TestCase(System.Diagnostics.Tracing.EventKeywords.All, 0xFFFFFFFFFFFFFFFFUL)]
+    public void TestToUInt64<TEnum>(TEnum enumValue, ulong expectedResult)
+        where TEnum : struct, Enum
+        => ExecuteToUInt64TestCase(enumValue, expectedResult);
+
+#if NET6_0_OR_GREATER
+    [Test]
+    public void TestToUInt64WhenBoolBasedEnum()
+    {
+        var assemblyName = $"{nameof(TestToUInt64WhenBoolBasedEnum)}_{Guid.NewGuid():N}";
+        var assemblyBuilder = AssemblyBuilder.DefineDynamicAssembly(new AssemblyName(assemblyName), AssemblyBuilderAccess.RunAndCollect);
+        var moduleBuilder = assemblyBuilder.DefineDynamicModule($"{assemblyName}_Module");
+
+        var enumBuilder = moduleBuilder.DefineEnum("BoolEnum", TypeAttributes.Public, typeof(bool));
+        enumBuilder.DefineLiteral("FalseValue", false);
+        enumBuilder.DefineLiteral("TrueValue", true);
+        var enumType = enumBuilder.CreateType().EnsureNotNull();
+
+        var executeTestCaseMethodDefinition = ((Action<TestEnumeration, ulong>)ExecuteToUInt64TestCase).Method.GetGenericMethodDefinition().EnsureNotNull();
+        var executeTestCaseMethod = executeTestCaseMethodDefinition.MakeGenericMethod(enumType);
+
+        var enumValues = Enum.GetValues(enumType);
+        foreach (var enumValue in enumValues)
+        {
+            executeTestCaseMethod.Invoke(null, new[] { enumValue, (bool)enumValue ? 1UL : 0UL });
+        }
+    }
+
+    [Test]
+    public void TestToUInt64WhenCharBasedEnum()
+    {
+        var assemblyName = $"{nameof(TestToUInt64WhenCharBasedEnum)}_{Guid.NewGuid():N}";
+        var assemblyBuilder = AssemblyBuilder.DefineDynamicAssembly(new AssemblyName(assemblyName), AssemblyBuilderAccess.RunAndCollect);
+        var moduleBuilder = assemblyBuilder.DefineDynamicModule($"{assemblyName}_Module");
+
+        var enumBuilder = moduleBuilder.DefineEnum("CharEnum", TypeAttributes.Public, typeof(char));
+        enumBuilder.DefineLiteral("Nil", '\x0000');
+        enumBuilder.DefineLiteral("Whitespace", '\x0020');
+        enumBuilder.DefineLiteral("Zero", '0');
+        enumBuilder.DefineLiteral("A", 'A');
+        enumBuilder.DefineLiteral("w", 'w');
+        enumBuilder.DefineLiteral("YearInJapanese", '年');
+        enumBuilder.DefineLiteral("CapitalLetterYeInUkrainian", 'Є');
+        var enumType = enumBuilder.CreateType().EnsureNotNull();
+
+        var executeTestCaseMethodDefinition = ((Action<TestEnumeration, ulong>)ExecuteToUInt64TestCase).Method.GetGenericMethodDefinition().EnsureNotNull();
+        var executeTestCaseMethod = executeTestCaseMethodDefinition.MakeGenericMethod(enumType);
+
+        var enumValues = Enum.GetValues(enumType);
+        foreach (var enumValue in enumValues)
+        {
+            executeTestCaseMethod.Invoke(null, new[] { enumValue, (ulong)(char)enumValue });
+        }
+    }
+#endif
+
+    private static void ExecuteToUInt64TestCase<TEnum>(TEnum enumValue, ulong expectedResult)
+        where TEnum : struct, Enum
+        => Assert.That(() => enumValue.ToUInt64(), Is.EqualTo(expectedResult));
+
+    [Flags]
+    private enum FlagsInt8 : sbyte
+    {
+        Bit7 = unchecked((sbyte)(1 << 7))
+    }
+
+    [Flags]
+    private enum FlagsUInt8 : byte
+    {
+        Bit7 = 1 << 7
+    }
+
+    [Flags]
+    private enum FlagsInt16 : short
+    {
+        Bit15 = unchecked((short)(1 << 15))
+    }
+
+    [Flags]
+    private enum FlagsUInt16 : ushort
+    {
+        Bit15 = 1 << 15
+    }
+
+    [Flags]
+    [SuppressMessage("ReSharper", "EnumUnderlyingTypeIsInt")]
+    private enum FlagsInt32 : int
+    {
+        Bit31 = 1 << 31
+    }
+
+    [Flags]
+    private enum FlagsUInt32 : uint
+    {
+        Bit31 = (uint)1 << 31
+    }
+
+    [Flags]
+    private enum FlagsInt64 : long
+    {
+        Bit63 = 1L << 63
+    }
+
+    [Flags]
+    private enum FlagsUInt64 : ulong
+    {
+        Bit63 = 1UL << 63
+    }
+
     [Flags]
     public enum ULongTestFlags : ulong
     {
@@ -354,7 +517,9 @@ internal sealed class OmnifactotumEnumExtensionsTests
         Flag2 = 0b10,
         Flag3 = 0b100,
         Flag4 = 0b1000,
-        Flag5 = 0b10000
+        Flag5 = 0b10000,
+        Flag34 = 0b1000000000000000000000000000000000,
+        Flag64 = 0b1000000000000000000000000000000000000000000000000000000000000000
     }
 
     private enum TestEnumeration

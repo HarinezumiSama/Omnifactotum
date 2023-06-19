@@ -117,16 +117,11 @@ public static class EnumFactotum
 
         const int MaxBitCount = sizeof(ulong) * 8;
 
-        var underlyingType = Enum.GetUnderlyingType(enumType);
-
         var resultList = new List<TEnum>(MaxBitCount);
         var values = GetAllValues<TEnum>();
         foreach (var value in values)
         {
-            var ordinalValue = underlyingType == typeof(ulong)
-                ? Convert.ToUInt64(value)
-                : (ulong)Convert.ToInt64(value);
-
+            var ordinalValue = value.ToUInt64();
             if (ordinalValue == 0)
             {
                 continue;
@@ -145,7 +140,7 @@ public static class EnumFactotum
             }
         }
 
-        var result = resultList.Distinct().OrderBy(Factotum.For<TEnum>.IdentityMethod).ToArray();
+        var result = resultList.Distinct().OrderBy(value => value.ToUInt64()).ToArray();
         return result;
     }
 }

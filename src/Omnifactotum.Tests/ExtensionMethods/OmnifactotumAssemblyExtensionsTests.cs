@@ -32,9 +32,7 @@ internal sealed class OmnifactotumAssemblyExtensionsTests
     [Test]
     [TestCase(OutputKind.DynamicallyLinkedLibrary)]
     [TestCase(OutputKind.ConsoleApplication)]
-    public void TestGetLocalPathWhenInMemoryAssemblyIsPassedThenThrows(
-        OutputKind outputKind
-    )
+    public void TestGetLocalPathWhenInMemoryAssemblyIsPassedThenThrows(OutputKind outputKind)
     {
         const string SourceCode = @"static class Program { static void Main() { } }";
 

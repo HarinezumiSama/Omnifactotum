@@ -122,9 +122,68 @@ public static class OmnifactotumEnumExtensions
     [Omnifactotum.Annotations.Pure]
     public static string ToUIString<TEnum>(this TEnum value)
         where TEnum : struct, Enum
-        => value.GetType().IsDefined(typeof(FlagsAttribute), false)
-            ? value.DecomposeEnumFlags().Select(flag => flag.GetSingleValueName(EnumNameMode.Short).ToUIString()).Join(EnumValueSeparator)
+        => value.GetType().IsDefined(typeof(FlagsAttribute), false) && value.TryDecomposeEnumFlags(out var enumFlags)
+            ? enumFlags.Select(flag => flag.GetSingleValueName(EnumNameMode.Short).ToUIString()).Join(EnumValueSeparator)
             : value.GetSingleValueName(EnumNameMode.Short).ToUIString();
+
+    /// <summary>
+    ///     Gets the string description of the specified enumeration value. (See examples.)
+    /// </summary>
+    /// <param name="value">
+    ///     The enumeration value to gets the string description of.
+    /// </param>
+    /// <typeparam name="TEnum">
+    ///     The type of the enumeration.
+    /// </typeparam>
+    /// <returns>
+    ///     The string description of the specified enumeration value.
+    /// </returns>
+    /// <example>
+    ///     <code>
+    /// <![CDATA[
+    ///         var value1 = ConsoleColor.Green;
+    ///         Console.WriteLine("Value is {0}.", value1.GetDescription()); // Output: Value is 10 (Green).
+    /// ]]>
+    ///     </code>
+    ///     <code>
+    /// <![CDATA[
+    ///         var value2 = (ConsoleColor)(-1);
+    ///         Console.WriteLine("Value is {0}.", value2.GetDescription()); // Output: Value is -1.
+    /// ]]>
+    ///     </code>
+    ///     <code>
+    /// <![CDATA[
+    ///         var value3 = ConsoleModifiers.Alt | ConsoleModifiers.Control | ConsoleModifiers.Shift;
+    ///         Console.WriteLine("Value is {0}.", value3.GetDescription()); // Output: Value is 0x00000007 (Alt, Shift, Control).
+    /// ]]>
+    ///     </code>
+    ///     <code>
+    /// <![CDATA[
+    ///         var value4 = (ConsoleModifiers)0;
+    ///         Console.WriteLine("Value is {0}.", value4.GetDescription()); // Output: Value is 0x00000000.
+    /// ]]>
+    ///     </code>
+    /// </example>
+    [Pure]
+    [Omnifactotum.Annotations.Pure]
+    public static string GetDescription<TEnum>(this TEnum value)
+        where TEnum : struct, Enum
+    {
+        var enumType = typeof(TEnum);
+
+        var (ordinal, details) = enumType.IsDefined(typeof(FlagsAttribute), false)
+            ? ($"0x{value:X}", GetFlagEnumDetails(value))
+            : (value.ToString("D"), GetNonFlagEnumDetails(value));
+
+        return ordinal + details;
+
+        string GetFlagEnumDetails(TEnum enumValue)
+            => enumValue.TryDecomposeEnumFlags(out var enumFlags)
+                ? $"\x0020({enumFlags.Select(flag => flag.GetSingleValueName(EnumNameMode.Short)).Join(EnumValueSeparator)})"
+                : string.Empty;
+
+        string GetNonFlagEnumDetails(TEnum enumValue) => Enum.IsDefined(enumType, enumValue) ? $"\x0020({enumValue:G})" : string.Empty;
+    }
 
     /// <summary>
     ///     Determines whether the specified enumeration value contains all the specified flags set.
@@ -381,50 +440,108 @@ public static class OmnifactotumEnumExtensions
             AsInvariant($@"The operation for the enumeration value {enumerationValue.GetQualifiedName().ToUIString()} is not supported.{details}"));
     }
 
+    /// <summary>
+    ///     Gets the integral numeric value of the specified enumeration value, with the resulting numeric value represented as <see cref="UInt64"/>.
+    /// </summary>
+    /// <typeparam name="TEnum">
+    ///     The type of the enumeration of the value to get the integral numeric value of.
+    /// </typeparam>
+    /// <param name="value">
+    ///     The enumeration value to get the integral numeric value of.
+    /// </param>
+    /// <returns>
+    ///     A <see cref="UInt64"/> value that represents the integral numeric value of the specified enumeration value.
+    /// </returns>
     [Pure]
     [Omnifactotum.Annotations.Pure]
-    private static IEnumerable<TEnum> DecomposeEnumFlags<TEnum>(this TEnum enumValue)
+    [CLSCompliant(false)]
+    [MethodImpl(OmnifactotumConstants.MethodOptimizationOptions.Standard)]
+    public static ulong ToUInt64<TEnum>(this TEnum value)
         where TEnum : struct, Enum
     {
-        var castEnumValue = enumValue.ToUlongInternal();
+        var typeCode = Convert.GetTypeCode(value);
+
+        switch (typeCode)
+        {
+            case TypeCode.Boolean:
+                return Unsafe.As<TEnum, byte>(ref value) == 0 ? 0UL : 1UL;
+
+            case TypeCode.Byte:
+            case TypeCode.SByte:
+                return Unsafe.As<TEnum, byte>(ref value);
+
+            case TypeCode.UInt16:
+            case TypeCode.Int16:
+            case TypeCode.Char:
+                return Unsafe.As<TEnum, ushort>(ref value);
+
+            case TypeCode.UInt32:
+            case TypeCode.Int32:
+                return Unsafe.As<TEnum, uint>(ref value);
+
+            case TypeCode.UInt64:
+            case TypeCode.Int64:
+                return Unsafe.As<TEnum, ulong>(ref value);
+
+            case TypeCode.Empty:
+            case TypeCode.Object:
+            case TypeCode.DBNull:
+            case TypeCode.Single:
+            case TypeCode.Double:
+            case TypeCode.Decimal:
+            case TypeCode.DateTime:
+            case TypeCode.String:
+                throw typeCode.CreateEnumValueNotSupportedException();
+
+            default:
+                throw typeCode.CreateEnumValueNotImplementedException();
+        }
+    }
+
+    [Pure]
+    [Omnifactotum.Annotations.Pure]
+    private static bool TryDecomposeEnumFlags<TEnum>(this TEnum enumValue, out IReadOnlyList<TEnum> enumFlags)
+        where TEnum : struct, Enum
+    {
+        var castEnumValue = enumValue.ToUInt64();
         var enumType = enumValue.GetType();
 
         if (castEnumValue == 0)
         {
-            return new[] { enumValue };
+            enumFlags = new[] { enumValue };
+            return Enum.IsDefined(enumType, enumValue);
         }
 
         var values = EnumFactotum.GetAllFlagValues<TEnum>();
-
-        var result = new List<TEnum>(values.Length);
-
-        //// ReSharper disable once LoopCanBePartlyConvertedToQuery
+        var enumFlagList = new List<TEnum>(values.Length);
         foreach (var value in values)
         {
-            var castValue = value.ToUlongInternal();
+            var castValue = value.ToUInt64();
 
             //// ReSharper disable once InvertIf
             if (castValue != 0 && (castEnumValue & castValue) == castValue)
             {
-                result.Add((TEnum)Enum.ToObject(enumType, castValue));
+                enumFlagList.Add(value);
                 castEnumValue &= ~castValue;
             }
         }
 
-        if (castEnumValue != 0)
+        if (castEnumValue == 0)
         {
-            return new[] { enumValue };
+            enumFlags = enumFlagList;
+            return true;
         }
 
-        return result;
+        enumFlags = new[] { enumValue };
+        return false;
     }
 
     [Pure]
     [Omnifactotum.Annotations.Pure]
     private static string GetName<TEnum>(this TEnum value, EnumNameMode mode)
         where TEnum : struct, Enum
-        => value.GetType().IsDefined(typeof(FlagsAttribute), false)
-            ? value.DecomposeEnumFlags().Select(flag => flag.GetSingleValueName(mode)).Join(EnumValueSeparator)
+        => value.GetType().IsDefined(typeof(FlagsAttribute), false) && value.TryDecomposeEnumFlags(out var enumFlags)
+            ? enumFlags.Select(flag => flag.GetSingleValueName(mode)).Join(EnumValueSeparator)
             : value.GetSingleValueName(mode);
 
     [Pure]
@@ -482,44 +599,6 @@ public static class OmnifactotumEnumExtensions
 #else
         => Enum.IsDefined(enumerationValue.GetType(), enumerationValue);
 #endif
-
-    [Pure]
-    [Omnifactotum.Annotations.Pure]
-    private static ulong ToUlongInternal<TEnum>(this TEnum value)
-        where TEnum : struct, Enum
-    {
-        var typeCode = Convert.GetTypeCode(value);
-
-        switch (typeCode)
-        {
-            case TypeCode.Boolean:
-            case TypeCode.Char:
-            case TypeCode.Byte:
-            case TypeCode.UInt16:
-            case TypeCode.UInt32:
-            case TypeCode.UInt64:
-                return Convert.ToUInt64(value, CultureInfo.InvariantCulture);
-
-            case TypeCode.SByte:
-            case TypeCode.Int16:
-            case TypeCode.Int32:
-            case TypeCode.Int64:
-                return (ulong)Convert.ToInt64(value, CultureInfo.InvariantCulture);
-
-            case TypeCode.Empty:
-            case TypeCode.Object:
-            case TypeCode.DBNull:
-            case TypeCode.Single:
-            case TypeCode.Double:
-            case TypeCode.Decimal:
-            case TypeCode.DateTime:
-            case TypeCode.String:
-                throw typeCode.CreateEnumValueNotSupportedException();
-
-            default:
-                throw typeCode.CreateEnumValueNotImplementedException();
-        }
-    }
 
     private enum EnumNameMode
     {
