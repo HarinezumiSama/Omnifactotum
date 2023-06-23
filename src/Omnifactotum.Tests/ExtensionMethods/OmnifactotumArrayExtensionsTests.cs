@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Globalization;
-using System.Linq;
 using NUnit.Framework;
 using Omnifactotum.Annotations;
 using Omnifactotum.NUnit;
@@ -11,7 +10,6 @@ namespace Omnifactotum.Tests.ExtensionMethods;
 internal sealed class OmnifactotumArrayExtensionsTests
 {
     private static readonly string[]? NullArray = null;
-    private static readonly byte[]? NullByteArray = null;
 
     [Test]
     public void TestCopyNull()
@@ -89,38 +87,6 @@ internal sealed class OmnifactotumArrayExtensionsTests
         var array = new[] { "foo", "bar" }.AssertNotNull();
         var shouldBeSame = array.AvoidNull();
         Assert.That(shouldBeSame, Is.SameAs(array));
-    }
-
-    [Test]
-    [TestCase(false)]
-    [TestCase(true)]
-    public void TestToHexStringWithCaseNegative(bool useUpperCase)
-        => Assert.That(() => NullByteArray!.ToHexString(useUpperCase), Throws.TypeOf<ArgumentNullException>());
-
-    [Test]
-    [TestCase(false, "01c8")]
-    [TestCase(true, "01C8")]
-    public void TestToHexStringWithCase(bool useUpperCase, string expectedValue)
-    {
-        Assert.That(expectedValue.Any(char.IsLetter), Is.True);
-
-        var array = new byte[] { 1, 200 };
-        var hexString = array.ToHexString(useUpperCase);
-        Assert.That(hexString, Is.EqualTo(expectedValue));
-    }
-
-    [Test]
-    public void TestToHexStringNegative() => Assert.That(() => NullByteArray!.ToHexString(), Throws.TypeOf<ArgumentNullException>());
-
-    [Test]
-    public void TestToHexString()
-    {
-        const string ExpectedValue = "01c8";
-        Assert.That(ExpectedValue.Any(char.IsLetter), Is.True);
-
-        var array = new byte[] { 1, 200 };
-        var hexString = array.ToHexString();
-        Assert.That(hexString, Is.EqualTo(ExpectedValue));
     }
 
     private sealed class CopyableObject : ICloneable

@@ -1,5 +1,4 @@
 ﻿using System.Runtime.CompilerServices;
-using System.Text;
 using Omnifactotum;
 using Omnifactotum.Annotations;
 using NotNullIfNotNull = System.Diagnostics.CodeAnalysis.NotNullIfNotNullAttribute;
@@ -149,52 +148,30 @@ public static class OmnifactotumArrayExtensions
     public static T[] AvoidNull<T>([CanBeNull] this T[]? source) => source ?? Array.Empty<T>();
 
     /// <summary>
-    ///     Converts the specified array of bytes to the hexadecimal string.
+    ///     Converts the specified array of bytes to its equivalent string representation that is encoded with hexadecimal characters.
     /// </summary>
-    /// <param name="byteArray">
+    /// <param name="bytes">
     ///     The byte array to convert.
     /// </param>
-    /// <param name="useUpperCase">
-    ///     <see langword="true"/> to use upper case letter in the resulting hexadecimal string;
-    ///     <see langword="false"/> to use lower case letter in the resulting hexadecimal string.
+    /// <param name="separator">
+    ///     An optional separator used to split hexadecimal representation of each byte.
+    /// </param>
+    /// <param name="upperCase">
+    ///     <see langword="true"/> to use upper case letters (<c>A..F</c>) in the resulting hexadecimal string;
+    ///     <see langword="false"/> to use lower case letters (<c>a..f</c>) in the resulting hexadecimal string.
     /// </param>
     /// <returns>
-    ///     A hexadecimal string.
+    ///     A hexadecimal string representation of the specified array of bytes.
     /// </returns>
+    [MethodImpl(OmnifactotumConstants.MethodOptimizationOptions.Standard)]
     [NotNull]
-    public static string ToHexString([NotNull] this byte[] byteArray, bool useUpperCase)
+    public static string ToHexString([NotNull] this byte[] bytes, [CanBeNull] string? separator = null, bool upperCase = false)
     {
-        if (byteArray is null)
+        if (bytes is null)
         {
-            throw new ArgumentNullException(nameof(byteArray));
+            throw new ArgumentNullException(nameof(bytes));
         }
 
-        const string UpperCaseFormat = "X2";
-        const string LowerCaseFormat = "x2";
-
-        var format = useUpperCase ? UpperCaseFormat : LowerCaseFormat;
-        var resultBuilder = new StringBuilder(byteArray.Length * 2);
-
-        // ReSharper disable once ForCanBeConvertedToForeach
-        for (var index = 0; index < byteArray.Length; index++)
-        {
-            var item = byteArray[index].ToString(format);
-            resultBuilder.Append(item);
-        }
-
-        return resultBuilder.ToString();
+        return new ReadOnlySpan<byte>(bytes).ToHexString(separator, upperCase);
     }
-
-    /// <summary>
-    ///     Converts the specified array of bytes to the hexadecimal string (in lower case).
-    /// </summary>
-    /// <param name="byteArray">
-    ///     The byte array to convert.
-    /// </param>
-    /// <returns>
-    ///     A hexadecimal string (in lower case).
-    /// </returns>
-    [MethodImpl(OmnifactotumConstants.MethodOptimizationOptions.Maximum)]
-    [NotNull]
-    public static string ToHexString([NotNull] this byte[] byteArray) => ToHexString(byteArray, false);
 }
