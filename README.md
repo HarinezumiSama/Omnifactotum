@@ -50,6 +50,7 @@
 - [**`Nullable<DateTime>` (`DateTime?`)**](https://docs.microsoft.com/en-us/dotnet/api/system.nullable-1) extension methods
 - [**`Nullable<DateTimeOffset>` (`DateTimeOffset?`)**](https://docs.microsoft.com/en-us/dotnet/api/system.nullable-1) extension methods
 - [**`Nullable<TimeSpan>` (`TimeSpan?`)**](https://docs.microsoft.com/en-us/dotnet/api/system.nullable-1) extension methods
+- [**`ReadOnlySpan<T>`**](https://docs.microsoft.com/en-us/dotnet/api/system.readonlyspan-1) extension methods
 - [**`SecureString`**](https://docs.microsoft.com/en-us/dotnet/api/system.security.securestring) extension methods
 - [**`Stopwatch`**](https://docs.microsoft.com/en-us/dotnet/api/system.diagnostics.stopwatch) extension methods
 - [**`String`**](https://docs.microsoft.com/en-us/dotnet/api/system.string) extension methods
