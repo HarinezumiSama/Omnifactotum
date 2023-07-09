@@ -7,7 +7,8 @@ branches:
   only:
   - master
   - develop
-  - /feature\/.*/
+  - /^feature\/.*/
+  - /^patch\/v\d+\.\d+\.x$/
 image: Visual Studio 2022
 configuration: Release
 platform: Any CPU
@@ -36,7 +37,7 @@ for:
   -
     branches:
       only:
-        - master
+        - /^((master)|(patch\/v\d+\.\d+\.x))$/
     environment:
       CI_ARG_PRERELEASE_SUFFIX: ''
       CI_OUT_ARG_DEPLOY: 'true'
@@ -55,6 +56,7 @@ build_script:
         -PrereleaseSuffix $env:CI_ARG_PRERELEASE_SUFFIX `
         -AppveyorBuild `
         -AppveyorSourceCodeRevisionId $env:APPVEYOR_REPO_COMMIT `
+        -AppveyorSourceCodeBranch $env:APPVEYOR_REPO_BRANCH `
         -AppveyorBuildNumber $env:APPVEYOR_BUILD_NUMBER `
         -AppveyorDeploymentFlagVariableName 'CI_OUT_ARG_DEPLOY' `
         -AppveyorDeploymentVersionVariableName 'CI_OUT_ARG_DEPLOYMENT_VERSION'
@@ -65,7 +67,7 @@ artifacts:
 deploy:
 - provider: GitHub
   on:
-    branch: master
+    branch: /^((master)|(patch\/v\d+\.\d+\.x))$/
     CI_OUT_ARG_DEPLOY: 'true'
   release: '$(CI_OUT_ARG_DEPLOYMENT_VERSION)'
   description: '$(APPVEYOR_PROJECT_NAME) $(CI_OUT_ARG_DEPLOYMENT_VERSION)'
