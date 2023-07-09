@@ -49,6 +49,11 @@ param
     [Parameter()]
     [AllowNull()]
     [AllowEmptyString()]
+    [string] $AppveyorSourceCodeBranch = $null,
+
+    [Parameter()]
+    [AllowNull()]
+    [AllowEmptyString()]
     [string] $AppveyorBuildNumber = $null,
 
     [Parameter()]
@@ -368,6 +373,7 @@ process
             Write-Host -ForegroundColor Green "AppveyorBinariesSubdirectory: ""$AppveyorBinariesSubdirectory"""
             Write-Host -ForegroundColor Green "AppveyorNuGetPackageSubdirectory: ""$AppveyorNuGetPackageSubdirectory"""
             Write-Host -ForegroundColor Green "AppveyorSourceCodeRevisionId: ""$AppveyorSourceCodeRevisionId"""
+            Write-Host -ForegroundColor Green "AppveyorSourceCodeBranch: ""$AppveyorSourceCodeBranch"""
             Write-Host -ForegroundColor Green "AppveyorBuildNumber: ""$AppveyorBuildNumber"""
             Write-Host -ForegroundColor Green "AppveyorOriginalBuildVersion: ""$AppveyorOriginalBuildVersion"""
             Write-Host -ForegroundColor Green "AppveyorDeployFlagVariableName: ""$AppveyorDeploymentFlagVariableName"""
@@ -432,6 +438,12 @@ process
                 throw [ArgumentException]::new(
                     "The specified source code revision ID ""$AppveyorSourceCodeRevisionId"" is invalid.",
                     'AppveyorSourceCodeRevisionId')
+            }
+            if ([string]::IsNullOrWhiteSpace($AppveyorSourceCodeBranch))
+            {
+                throw [ArgumentException]::new(
+                    'The Appveyor source code branch cannot be blank when the AppveyorBuild switch is ON.',
+                    'AppveyorSourceCodeBranch')
             }
             if ([string]::IsNullOrWhiteSpace($AppveyorBuildNumber))
             {
@@ -571,6 +583,7 @@ process
                 -Version "v$($version): $AppveyorOriginalBuildVersion"
 
             Set-AppveyorBuildVariable `
+                -Verbose `
                 -Name $AppveyorDeploymentVersionVariableName `
                 -Value "v$version [build $resolvedBuildNumber] [$dateStamp]"
         }
@@ -591,10 +604,13 @@ process
         Ensure-CleanDirectory -LiteralPath $temporaryDirectoryPath
 
         Write-MajorSeparator
-        [string] $dotNetCliPath = Get-ApplicationPath -Verbose -Name dotnet
+        [ValidateNotNullOrEmpty()] [string] $dotNetCliPath = Get-ApplicationPath -Verbose -Name dotnet
 
         Write-MajorSeparator
         Execute-Command -Title '* DotNet CLI Version' -Command $dotNetCliPath -CommandArguments '--version'
+
+        Write-MajorSeparator
+        Execute-Command -Title '* DotNet SDKs' -Command $dotNetCliPath -CommandArguments '--list-sdks'
 
         function Create-DotNetCliExecuteCommandParameters
         {
@@ -717,40 +733,95 @@ process
                 -ArchiveFilePath $binariesArchiveFilePath `
                 -Items "$binariesDirectoryPath\*.*"
 
-            [string] $packageId = $solutionNameOnly.ToLowerInvariant()
+            Write-MajorSeparator
+
+            [string] $packageId = $solutionNameOnly
 
             [psobject] $publishedPackageInfo = Invoke-RestMethod `
+                -Verbose `
                 -UseBasicParsing `
                 -Method Get `
-                -Uri "https://api.nuget.org/v3/registration5-gz-semver2/$([WebUtility]::UrlEncode($packageId))/index.json"
+                -Uri "https://api.nuget.org/v3/registration5-gz-semver2/$([WebUtility]::UrlEncode($packageId.ToLowerInvariant()))/index.json"
 
-            [version] $latestPublishedPackageVersion = [version]::new(0, 0)
-            foreach ($packageInfoItem in $publishedPackageInfo.items)
+            [bool] $isPatchBranch = $AppveyorSourceCodeBranch -cmatch '^patch\/v(?<major>\d+)\.(?<minor>\d+)\.x$'
+
+            [bool] $shouldCopyPackageToArtifacts = $false
+            if ($isPatchBranch)
             {
-                [ValidateNotNullOrEmpty()] [string] $itemUpperVersionString = $packageInfoItem.upper
-                [version] $itemUpperVersion = [version]::Parse($itemUpperVersionString)
-                if ($latestPublishedPackageVersion -lt $itemUpperVersion)
+                [version] $packagePatchVersionBase = [version]::new([int]$Matches['major'], [int]$Matches['minor'], 0)
+                Write-Host "Patch version base: ""$packagePatchVersionBase""."
+
+                [version] $latestPublishedPatchVersion = $packagePatchVersionBase
+                foreach ($packageInfoItem in $publishedPackageInfo.items)
                 {
-                    $latestPublishedPackageVersion = $itemUpperVersion
+                    foreach ($packageInfoSubitem in $packageInfoItem.items)
+                    {
+                        [ValidateNotNullOrEmpty()] [string] $itemVersionString = $packageInfoSubitem.catalogEntry.version
+                        [version] $itemVersion = [version]::Parse($itemVersionString)
+                        if ($itemVersion.Major -eq $packagePatchVersionBase.Major -and $itemVersion.Minor -eq $packagePatchVersionBase.Minor)
+                        {
+                            if ($latestPublishedPatchVersion -lt $itemVersion)
+                            {
+                                $latestPublishedPatchVersion = $itemVersion
+                            }
+                        }
+                    }
                 }
-            }
 
-            if ($latestPublishedPackageVersion -ge $version)
-            {
-                Write-Warning `
-                    -WarningAction Continue `
-                    -Message ("The current package version is ""$version""" `
-                        + ", but the version ""$latestPublishedPackageVersion"" is already published" `
-                        + ". Skipping to publish the NuGet package ""$packageId"".")
+                Write-Host "The current package version is ""$version""."
+                Write-Host "The latest published PATCH version is ""$latestPublishedPatchVersion""."
 
-                Set-AppveyorBuildVariable -Name $AppveyorDeploymentFlagVariableName -Value 'false'
-                Set-AppveyorBuildVariable -Name $AppveyorDeploymentVersionVariableName -Value ([string]::Empty)
+                if ($latestPublishedPatchVersion -lt $version)
+                {
+                    $shouldCopyPackageToArtifacts = $true
+                }
+                else
+                {
+                    Write-Warning `
+                        -WarningAction Continue `
+                        -Message ("The current package version is ""$version""" `
+                            + ", but the PATCH version ""$latestPublishedPatchVersion"" is already published" `
+                            + ". Skipping to publish the NuGet package ""$packageId"".")
+
+                    Set-AppveyorBuildVariable -Verbose -Name $AppveyorDeploymentFlagVariableName -Value 'false'
+                    Set-AppveyorBuildVariable -Verbose -Name $AppveyorDeploymentVersionVariableName -Value ([string]::Empty)
+                }
             }
             else
             {
+                [version] $latestPublishedPackageVersion = [version]::new(0, 0)
+                foreach ($packageInfoItem in $publishedPackageInfo.items)
+                {
+                    [ValidateNotNullOrEmpty()] [string] $itemVersionString = $packageInfoItem.upper
+                    [version] $itemVersion = [version]::Parse($itemVersionString)
+                    if ($latestPublishedPackageVersion -lt $itemVersion)
+                    {
+                        $latestPublishedPackageVersion = $itemVersion
+                    }
+                }
+
                 Write-Host "The current package version is ""$version""."
                 Write-Host "The latest published package version is ""$latestPublishedPackageVersion""."
 
+                if ($latestPublishedPackageVersion -lt $version)
+                {
+                    $shouldCopyPackageToArtifacts = $true
+                }
+                else
+                {
+                    Write-Warning `
+                        -WarningAction Continue `
+                        -Message ("The current package version is ""$version""" `
+                            + ", but the version ""$latestPublishedPackageVersion"" is already published" `
+                            + ". Skipping to publish the NuGet package ""$packageId"".")
+
+                    Set-AppveyorBuildVariable -Verbose -Name $AppveyorDeploymentFlagVariableName -Value 'false'
+                    Set-AppveyorBuildVariable -Verbose -Name $AppveyorDeploymentVersionVariableName -Value ([string]::Empty)
+                }
+            }
+
+            if ($shouldCopyPackageToArtifacts)
+            {
                 [string] $nuGetPackageDirectoryPath = $AppveyorNuGetPackageSubdirectory | Resolve-WorkspacePath
 
                 Copy-Item `
@@ -799,6 +870,8 @@ process
                 $dotCoverExecutablePath = Get-ApplicationPath -Verbose -Name $dotCoverExecutableName -ErrorAction SilentlyContinue
                 if ([string]::IsNullOrEmpty($dotCoverExecutablePath))
                 {
+                    Write-MajorSeparator
+
                     [string] $chocolateyExecutablePath = Get-ApplicationPath -Verbose -Name 'choco.exe'
                     Execute-Command -Title 'Install dotCover CLI' $chocolateyExecutablePath install --yes --no-progress dotcover-cli
                     $dotCoverExecutablePath = Get-ApplicationPath -Verbose -Name $dotCoverExecutableName
