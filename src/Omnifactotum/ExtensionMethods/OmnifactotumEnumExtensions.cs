@@ -123,8 +123,12 @@ public static class OmnifactotumEnumExtensions
     public static string ToUIString<TEnum>(this TEnum value)
         where TEnum : struct, Enum
         => value.GetType().IsDefined(typeof(FlagsAttribute), false) && value.TryDecomposeEnumFlags(out var enumFlags)
-            ? enumFlags.Select(flag => flag.GetSingleValueName(EnumNameMode.Short).ToUIString()).Join(EnumValueSeparator)
-            : value.GetSingleValueName(EnumNameMode.Short).ToUIString();
+            ? enumFlags
+                .Select(flag => flag.GetSingleValueName(EnumNameMode.Short).ToUIString())
+                .Join(EnumValueSeparator)
+            : value
+                .GetSingleValueName(EnumNameMode.Short)
+                .ToUIString();
 
     /// <summary>
     ///     Gets the string description of the specified enumeration value. (See examples.)

@@ -7,6 +7,7 @@ namespace Omnifactotum.Tests.ExtensionMethods;
 internal sealed class OmnifactotumHttpStatusCodeExtensionsTests
 {
     [Test]
+    [TestCase((HttpStatusCode)int.MinValue, "-2147483648")]
     [TestCase((HttpStatusCode)(-12345), "-12345")]
     [TestCase((HttpStatusCode)(-1), "-1")]
     [TestCase((HttpStatusCode)0, "0")]
