@@ -4,10 +4,13 @@ using System.ComponentModel;
 using System.Diagnostics.CodeAnalysis;
 using System.IO;
 using System.Net;
-using System.Reflection;
-using System.Reflection.Emit;
 using NUnit.Framework;
 using static Omnifactotum.FormattableStringFactotum;
+
+#if NET6_0_OR_GREATER
+using System.Reflection;
+using System.Reflection.Emit;
+#endif
 
 namespace Omnifactotum.Tests.ExtensionMethods;
 

@@ -171,11 +171,9 @@ public static class OmnifactotumEnumExtensions
     {
         var enumType = typeof(TEnum);
 
-        var (ordinal, details) = enumType.IsDefined(typeof(FlagsAttribute), false)
-            ? ($"0x{value:X}", GetFlagEnumDetails(value))
-            : (value.ToString("D"), GetNonFlagEnumDetails(value));
-
-        return ordinal + details;
+        return enumType.IsDefined(typeof(FlagsAttribute), false)
+            ? $"0x{value:X}{GetFlagEnumDetails(value)}"
+            : $"{value:D}{GetNonFlagEnumDetails(value)}";
 
         string GetFlagEnumDetails(TEnum enumValue)
             => enumValue.TryDecomposeEnumFlags(out var enumFlags)
