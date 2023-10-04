@@ -1089,6 +1089,7 @@ resharper_missing_space_highlighting = none
 resharper_missing_title_tag_highlighting = suggestion
 resharper_missing_xml_doc_highlighting = warning
 resharper_more_specific_foreach_variable_type_available_highlighting = suggestion
+resharper_move_local_function_after_jump_statement_highlighting = none
 resharper_move_to_existing_positional_deconstruction_pattern_highlighting = hint
 resharper_multiple_nullable_attributes_usage_highlighting = warning
 resharper_multiple_order_by_highlighting = warning
@@ -1535,6 +1536,9 @@ resharper_wrong_public_modifier_specification_highlighting = suggestion
 [*.{config,cs,csproj,css,DotSettings,js,json,nuspec,ps1,resx,scss,settings,sln,ts,tt,xml}]
 charset = utf-8-bom
 end_of_line = crlf
+
+[CompatibilitySuppressions.xml]
+max_line_length = off
 
 [*.md]
 charset = utf-8-bom
