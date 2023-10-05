@@ -4,7 +4,7 @@ using NUnit.Framework;
 namespace Omnifactotum.Tests.ExtensionMethods;
 
 [TestFixture(TestOf = typeof(OmnifactotumArrayExtensions))]
-internal sealed class OmnifactotumArrayExtensionsToHexStringTests : OmnifactotumCommonArrayAndReadOnlySpanExtensionsTestsBase
+internal sealed class OmnifactotumArrayExtensionsToHexStringTests : OmnifactotumCommonArrayAndSpanExtensionsTestsBase
 {
     [Test]
     public void TestToHexStringWhenInvalidArgumentThenThrows([Values(null, "", ":", "\t|\t")] string? separator, [Values] bool upperCase)

@@ -4,7 +4,7 @@ using NUnit.Framework;
 namespace Omnifactotum.Tests.ExtensionMethods;
 
 [TestFixture]
-internal abstract class OmnifactotumCommonArrayAndReadOnlySpanExtensionsTestsBase
+internal abstract class OmnifactotumCommonArrayAndSpanExtensionsTestsBase
 {
     [Test]
     public void TestToHexStringWhenResultWouldBeTooLongThenThrows([Values] bool upperCase)
