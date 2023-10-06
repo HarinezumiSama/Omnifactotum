@@ -240,7 +240,7 @@ public static class OmnifactotumStringExtensions
     ///         <item>
     ///             <term>not <see langword="null"/></term>
     ///             <description>
-    ///                 An input value enclosed in the double quote characters ("). If the value
+    ///                 An input value enclosed in the double quote characters (<c>"</c>). If the value
     ///                 contains one or more double quote characters, then each of them is
     ///                 duplicated in the result.
     ///             </description>
@@ -364,6 +364,7 @@ public static class OmnifactotumStringExtensions
     /// <returns>
     ///     The string that remains after all occurrences of the characters in the <paramref name="trimChars"/>
     ///     parameter are removed from the start and end of the specified string.
+    ///     If <paramref name="value"/> is <see langword="null"/>, <see cref="string.Empty"/> is returned.
     ///     If <paramref name="trimChars"/> is <see langword="null"/> or an empty array, Unicode white-space characters
     ///     are removed instead.
     /// </returns>
@@ -386,6 +387,7 @@ public static class OmnifactotumStringExtensions
     /// <returns>
     ///     The string that remains after all occurrences of the characters in the <paramref name="trimChars"/>
     ///     parameter are removed from the start of the specified string.
+    ///     If <paramref name="value"/> is <see langword="null"/>, <see cref="string.Empty"/> is returned.
     ///     If <paramref name="trimChars"/> is <see langword="null"/> or an empty array, Unicode white-space characters
     ///     are removed instead.
     /// </returns>
@@ -408,6 +410,7 @@ public static class OmnifactotumStringExtensions
     /// <returns>
     ///     The string that remains after all occurrences of the characters in the <paramref name="trimChars"/>
     ///     parameter are removed from the end of the specified string.
+    ///     If <paramref name="value"/> is <see langword="null"/>, <see cref="string.Empty"/> is returned.
     ///     If <paramref name="trimChars"/> is <see langword="null"/> or an empty array, Unicode white-space characters
     ///     are removed instead.
     /// </returns>
