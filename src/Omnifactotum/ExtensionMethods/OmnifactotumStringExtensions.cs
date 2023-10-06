@@ -418,19 +418,19 @@ public static class OmnifactotumStringExtensions
         => value?.TrimEnd(trimChars) ?? string.Empty;
 
     /// <summary>
-    ///     Removes the postfix from the specified string value.
+    ///     Removes the prefix from the specified string value.
     /// </summary>
     /// <param name="value">
-    ///     The string value to remove the postfix from.
+    ///     The string value to remove the prefix from.
     /// </param>
     /// <param name="prefix">
-    ///     The postfix to remove from <paramref name="value"/>.
+    ///     The prefix to remove from <paramref name="value"/>.
     /// </param>
     /// <param name="comparison">
-    ///     One of the enumeration values that determines how the postfix is searched.
+    ///     One of the enumeration values that determines how the prefix is searched.
     /// </param>
     /// <returns>
-    ///     The specified string value without the specified postfix if it ends with this postfix; otherwise, the original string value.
+    ///     The specified string value without the specified prefix if it ends with this prefix; otherwise, the original string value.
     /// </returns>
     /// <exception cref="ArgumentNullException">
     ///     <para><paramref name="value"/> is <see langword="null"/>.</para>
