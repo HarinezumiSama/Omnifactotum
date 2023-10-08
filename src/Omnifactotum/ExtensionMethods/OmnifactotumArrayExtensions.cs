@@ -2,6 +2,7 @@
 using Omnifactotum;
 using Omnifactotum.Annotations;
 using NotNullIfNotNull = System.Diagnostics.CodeAnalysis.NotNullIfNotNullAttribute;
+using PureAttribute = System.Diagnostics.Contracts.PureAttribute;
 
 //// ReSharper disable RedundantNullnessAttributeWithNullableReferenceTypes
 //// ReSharper disable UseNullableReferenceTypesAnnotationSyntax
@@ -27,8 +28,10 @@ public static class OmnifactotumArrayExtensions
     ///     A shallow copy of the specified array, or <see langword="null"/> if this array is <see langword="null"/>.
     /// </returns>
     [MethodImpl(OmnifactotumConstants.MethodOptimizationOptions.Maximum)]
+    [Pure]
+    [Omnifactotum.Annotations.Pure]
     [CanBeNull]
-    [return: NotNullIfNotNull("array")]
+    [return: NotNullIfNotNull(nameof(array))]
     public static T[]? Copy<T>([CanBeNull] this T[]? array) => (T[]?)array?.Clone();
 
     /// <summary>
@@ -144,6 +147,8 @@ public static class OmnifactotumArrayExtensions
     ///     The source array if it is not <see langword="null"/>; otherwise, an empty array.
     /// </returns>
     [MethodImpl(OmnifactotumConstants.MethodOptimizationOptions.Maximum)]
+    [Pure]
+    [Omnifactotum.Annotations.Pure]
     [NotNull]
     public static T[] AvoidNull<T>([CanBeNull] this T[]? source) => source ?? Array.Empty<T>();
 
@@ -164,6 +169,8 @@ public static class OmnifactotumArrayExtensions
     ///     A hexadecimal string representation of the specified array of bytes.
     /// </returns>
     [MethodImpl(OmnifactotumConstants.MethodOptimizationOptions.Standard)]
+    [Pure]
+    [Omnifactotum.Annotations.Pure]
     [NotNull]
     public static string ToHexString([NotNull] this byte[] bytes, [CanBeNull] string? separator = null, bool upperCase = false)
     {

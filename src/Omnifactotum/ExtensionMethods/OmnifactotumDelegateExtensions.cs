@@ -2,6 +2,7 @@
 using System.Runtime.CompilerServices;
 using Omnifactotum;
 using Omnifactotum.Annotations;
+using PureAttribute = System.Diagnostics.Contracts.PureAttribute;
 
 //// ReSharper disable RedundantNullnessAttributeWithNullableReferenceTypes
 //// ReSharper disable UseNullableReferenceTypesAnnotationSyntax
@@ -51,6 +52,8 @@ public static class OmnifactotumDelegateExtensions
     ///     </code>
     /// </example>
     [MethodImpl(OmnifactotumConstants.MethodOptimizationOptions.Maximum)]
+    [Pure]
+    [Omnifactotum.Annotations.Pure]
     [NotNull]
     public static TDelegate[] GetTypedInvocations<TDelegate>([CanBeNull] this TDelegate? @delegate)
         where TDelegate : Delegate

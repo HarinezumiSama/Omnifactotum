@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Diagnostics.CodeAnalysis;
-using System.Diagnostics.Contracts;
 using System.Runtime.CompilerServices;
+using PureAttribute = System.Diagnostics.Contracts.PureAttribute;
 
 namespace Omnifactotum;
 

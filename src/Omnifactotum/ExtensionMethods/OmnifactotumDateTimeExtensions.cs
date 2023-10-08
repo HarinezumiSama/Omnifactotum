@@ -3,8 +3,8 @@ using System.Globalization;
 using System.Runtime.CompilerServices;
 using Omnifactotum;
 using Omnifactotum.Annotations;
-using static Omnifactotum.FormattableStringFactotum;
 using PureAttribute = System.Diagnostics.Contracts.PureAttribute;
+using static Omnifactotum.FormattableStringFactotum;
 
 //// ReSharper disable RedundantNullnessAttributeWithNullableReferenceTypes
 //// ReSharper disable UseNullableReferenceTypesAnnotationSyntax

@@ -5,6 +5,7 @@ using System.Diagnostics;
 using System.Linq;
 using System.Runtime.CompilerServices;
 using Omnifactotum.Annotations;
+using PureAttribute = System.Diagnostics.Contracts.PureAttribute;
 using static Omnifactotum.FormattableStringFactotum;
 
 //// ReSharper disable RedundantNullnessAttributeWithNullableReferenceTypes
@@ -71,6 +72,8 @@ public abstract class DirectedGraphNodeCollectionBase<T> : ICollection<DirectedG
     }
 
     /// <inheritdoc />
+    [Pure]
+    [Omnifactotum.Annotations.Pure]
     //// ReSharper disable once ConditionIsAlwaysTrueOrFalseAccordingToNullableAPIContract :: Contract validation
     public bool Contains(DirectedGraphNode<T> item) => item is not null && _items.Contains(item);
 

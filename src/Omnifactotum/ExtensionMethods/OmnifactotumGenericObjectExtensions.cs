@@ -5,8 +5,9 @@ using System.Reflection;
 using System.Runtime.CompilerServices;
 using Omnifactotum;
 using Omnifactotum.Annotations;
-using static Omnifactotum.FormattableStringFactotum;
 using NotNullIfNotNull = System.Diagnostics.CodeAnalysis.NotNullIfNotNullAttribute;
+using PureAttribute = System.Diagnostics.Contracts.PureAttribute;
+using static Omnifactotum.FormattableStringFactotum;
 
 //// ReSharper disable RedundantNullnessAttributeWithNullableReferenceTypes
 
@@ -116,6 +117,8 @@ public static class OmnifactotumGenericObjectExtensions
     ///     A <see cref="System.String"/> that represents the specified value.
     /// </returns>
     [MethodImpl(OmnifactotumConstants.MethodOptimizationOptions.Maximum)]
+    [Pure]
+    [Omnifactotum.Annotations.Pure]
     [NotNull]
     [DebuggerStepThrough]
     public static string ToStringSafely<T>(this T value, [CanBeNull] string? fallbackResult)
@@ -142,6 +145,8 @@ public static class OmnifactotumGenericObjectExtensions
     ///     A <see cref="System.String"/> that represents the specified value.
     /// </returns>
     [MethodImpl(OmnifactotumConstants.MethodOptimizationOptions.Maximum)]
+    [Pure]
+    [Omnifactotum.Annotations.Pure]
     [NotNull]
     [DebuggerStepThrough]
     public static string ToStringSafely<T>(this T value) => ToStringSafely(value, null);
@@ -173,6 +178,8 @@ public static class OmnifactotumGenericObjectExtensions
     ///     the <paramref name="fallbackResult"/> parameter if <paramref name="value"/> is <see langword="null"/>.
     /// </returns>
     [MethodImpl(OmnifactotumConstants.MethodOptimizationOptions.Maximum)]
+    [Pure]
+    [Omnifactotum.Annotations.Pure]
     [NotNull]
     [DebuggerStepThrough]
     public static string ToStringSafelyInvariant<T>(this T value, [CanBeNull] string? fallbackResult)
@@ -203,6 +210,8 @@ public static class OmnifactotumGenericObjectExtensions
     ///     otherwise, the empty string.
     /// </returns>
     [MethodImpl(OmnifactotumConstants.MethodOptimizationOptions.Maximum)]
+    [Pure]
+    [Omnifactotum.Annotations.Pure]
     public static string ToStringSafelyInvariant<T>(this T value) => ToStringSafelyInvariant(value, string.Empty);
 
     /// <summary>
@@ -223,6 +232,8 @@ public static class OmnifactotumGenericObjectExtensions
     ///     parameter.
     /// </returns>
     [MethodImpl(OmnifactotumConstants.MethodOptimizationOptions.Maximum)]
+    [Pure]
+    [Omnifactotum.Annotations.Pure]
     public static int GetHashCodeSafely<T>(this T value, int nullValueHashCode)
         => value is null ? nullValueHashCode : value.GetHashCode();
 
@@ -240,6 +251,8 @@ public static class OmnifactotumGenericObjectExtensions
     ///     if it is not <see langword="null"/>; otherwise, <c>0</c>.
     /// </returns>
     [MethodImpl(OmnifactotumConstants.MethodOptimizationOptions.Maximum)]
+    [Pure]
+    [Omnifactotum.Annotations.Pure]
     public static int GetHashCodeSafely<T>(this T value) => GetHashCodeSafely(value, 0);
 
     /// <summary>
@@ -256,6 +269,8 @@ public static class OmnifactotumGenericObjectExtensions
     ///     The actual type of the value if it is not <see langword="null"/>; otherwise, <typeparamref name="T"/>.
     /// </returns>
     [MethodImpl(OmnifactotumConstants.MethodOptimizationOptions.Maximum)]
+    [Pure]
+    [Omnifactotum.Annotations.Pure]
     [NotNull]
     public static Type GetTypeSafely<T>(this T value) => value is null ? typeof(T) : value.GetType();
 
@@ -272,6 +287,8 @@ public static class OmnifactotumGenericObjectExtensions
     ///     An array containing the specified value as its sole element.
     /// </returns>
     [MethodImpl(OmnifactotumConstants.MethodOptimizationOptions.Maximum)]
+    [Pure]
+    [Omnifactotum.Annotations.Pure]
     [NotNull]
     public static T[] AsArray<T>(this T value) => new[] { value };
 
@@ -288,6 +305,8 @@ public static class OmnifactotumGenericObjectExtensions
     ///     A strongly-typed list containing the specified value as its sole element.
     /// </returns>
     [MethodImpl(OmnifactotumConstants.MethodOptimizationOptions.Maximum)]
+    [Pure]
+    [Omnifactotum.Annotations.Pure]
     [NotNull]
     public static List<T> AsList<T>(this T value) => new() { value };
 
@@ -304,6 +323,8 @@ public static class OmnifactotumGenericObjectExtensions
     ///     A strongly-typed collection containing the specified value as its sole element.
     /// </returns>
     [MethodImpl(OmnifactotumConstants.MethodOptimizationOptions.Maximum)]
+    [Pure]
+    [Omnifactotum.Annotations.Pure]
     [NotNull]
     public static IEnumerable<T> AsCollection<T>(this T value)
     {
@@ -323,6 +344,8 @@ public static class OmnifactotumGenericObjectExtensions
     ///     A <see cref="Nullable{T}"/> value that contains <paramref name="value"/>.
     /// </returns>
     [MethodImpl(OmnifactotumConstants.MethodOptimizationOptions.Maximum)]
+    [Pure]
+    [Omnifactotum.Annotations.Pure]
     public static T? AsNullable<T>(this T value)
         where T : struct
         => value;
@@ -348,6 +371,8 @@ public static class OmnifactotumGenericObjectExtensions
     /// <exception cref="ArgumentNullException">
     ///     <paramref name="getFallbackValue"/> is <see langword="null"/>.
     /// </exception>
+    [Pure]
+    [Omnifactotum.Annotations.Pure]
     [NotNull]
     public static T AvoidNull<T>([CanBeNull] this T? source, [NotNull] [InstantHandle] Func<T> getFallbackValue)
         where T : class
@@ -411,6 +436,8 @@ public static class OmnifactotumGenericObjectExtensions
     ///     </code>
     /// </example>
     [MethodImpl(OmnifactotumConstants.MethodOptimizationOptions.Maximum)]
+    [Pure]
+    [Omnifactotum.Annotations.Pure]
     [NotNull]
     public static string ToUIString<T>([CanBeNull] this T? value)
         where T : struct
@@ -458,6 +485,8 @@ public static class OmnifactotumGenericObjectExtensions
     ///     The UI representation of the specified nullable value.
     /// </returns>
     [MethodImpl(OmnifactotumConstants.MethodOptimizationOptions.Maximum)]
+    [Pure]
+    [Omnifactotum.Annotations.Pure]
     [NotNull]
     public static string ToUIString<T>(
         [CanBeNull] this T? value,
@@ -504,6 +533,8 @@ public static class OmnifactotumGenericObjectExtensions
     ///     The UI representation of the specified nullable value.
     /// </returns>
     [MethodImpl(OmnifactotumConstants.MethodOptimizationOptions.Maximum)]
+    [Pure]
+    [Omnifactotum.Annotations.Pure]
     [NotNull]
     public static string ToUIString<T>([CanBeNull] this T? value, [CanBeNull] IFormatProvider? formatProvider)
         where T : struct, IFormattable
@@ -524,6 +555,8 @@ public static class OmnifactotumGenericObjectExtensions
     /// </returns>
     /// <seealso cref="OmnifactotumTypeExtensions.GetFullName"/>
     [MethodImpl(OmnifactotumConstants.MethodOptimizationOptions.Maximum)]
+    [Pure]
+    [Omnifactotum.Annotations.Pure]
     [NotNull]
     public static string GetObjectReferenceDescription<T>(this T? obj)
         where T : class
@@ -544,6 +577,8 @@ public static class OmnifactotumGenericObjectExtensions
     /// </returns>
     /// <seealso cref="OmnifactotumTypeExtensions.GetQualifiedName"/>
     [MethodImpl(OmnifactotumConstants.MethodOptimizationOptions.Maximum)]
+    [Pure]
+    [Omnifactotum.Annotations.Pure]
     [NotNull]
     public static string GetShortObjectReferenceDescription<T>(this T? obj)
         where T : class
@@ -571,8 +606,12 @@ public static class OmnifactotumGenericObjectExtensions
     ///     <see langword="true"/> if the contents of the two specified objects are equal; otherwise, <see langword="false"/>.
     /// </returns>
     [MethodImpl(OmnifactotumConstants.MethodOptimizationOptions.Maximum)]
+    [Pure]
+    [Omnifactotum.Annotations.Pure]
     public static bool IsEqualByContentsTo<T>(this T obj, T other) => AreEqualByContentsInternal(obj, other);
 
+    [Pure]
+    [Omnifactotum.Annotations.Pure]
     private static bool IsSimpleTypeInternal(this Type type)
         => type.IsPrimitive
             || type.IsEnum
@@ -583,9 +622,13 @@ public static class OmnifactotumGenericObjectExtensions
             || type == typeof(DateTime)
             || type == typeof(DateTimeOffset);
 
+    [Pure]
+    [Omnifactotum.Annotations.Pure]
     private static FieldInfo[] GetContentFieldsCacheFields(Type type)
         => type.GetFields(BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic);
 
+    [Pure]
+    [Omnifactotum.Annotations.Pure]
     private static bool AreEqualByContentsInternal(object? valueA, object? valueB)
     {
         var isAssertEqualityByContentObjectsBeingProcessedCreated = false;
@@ -663,10 +706,14 @@ public static class OmnifactotumGenericObjectExtensions
     }
 
     [MethodImpl(OmnifactotumConstants.MethodOptimizationOptions.Maximum)]
+    [Pure]
+    [Omnifactotum.Annotations.Pure]
     private static string? GetEnsureNotNullFailureMessage(string? valueExpression = null)
         => valueExpression is null ? null : AsInvariant($@"The following expression is null: {{ {valueExpression} }}.");
 
     [MethodImpl(OmnifactotumConstants.MethodOptimizationOptions.Maximum)]
+    [Pure]
+    [Omnifactotum.Annotations.Pure]
     private static string GetObjectReferenceDescriptionInternal<T>(T? obj, [InstantHandle] Func<Type, string> formatType)
         where T : class
         => obj is null

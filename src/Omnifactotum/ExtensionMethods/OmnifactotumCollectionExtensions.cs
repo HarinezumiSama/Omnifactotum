@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using Omnifactotum;
 using Omnifactotum.Annotations;
 using NotNullAttribute = Omnifactotum.Annotations.NotNullAttribute;
+using PureAttribute = System.Diagnostics.Contracts.PureAttribute;
 
 #if !NET7_0_OR_GREATER
 using System.Collections.ObjectModel;
@@ -37,6 +38,8 @@ public static class OmnifactotumCollectionExtensions
     ///     The number of elements in the specified collection if it was possible to determine it without
     ///     enumerating collection's elements; otherwise, <see langword="null"/>.
     /// </returns>
+    [Pure]
+    [Omnifactotum.Annotations.Pure]
     public static int? GetFastCount<T>([CanBeNull] [NoEnumeration] this IEnumerable<T>? collection)
         => collection switch
         {
@@ -282,6 +285,8 @@ public static class OmnifactotumCollectionExtensions
     ///     <see langword="true"/> if two specified collections contain identical items in any order or
     ///     they both are <see langword="null"/>; otherwise, <see langword="false"/>.
     /// </returns>
+    [Pure]
+    [Omnifactotum.Annotations.Pure]
     public static bool CollectionsEquivalent<T>(
         [CanBeNull] [InstantHandle] this IEnumerable<T>? collection,
         [CanBeNull] [InstantHandle] IEnumerable<T>? otherCollection,
@@ -331,6 +336,8 @@ public static class OmnifactotumCollectionExtensions
     ///     <see langword="true"/> if two specified collections contain identical items in any order or
     ///     they both are <see langword="null"/>; otherwise, <see langword="false"/>.
     /// </returns>
+    [Pure]
+    [Omnifactotum.Annotations.Pure]
     public static bool CollectionsEquivalent<T>(
         [CanBeNull] [InstantHandle] this IEnumerable<T>? collection,
         [CanBeNull] [InstantHandle] IEnumerable<T>? otherCollection)
@@ -356,6 +363,8 @@ public static class OmnifactotumCollectionExtensions
     ///     <see langword="true"/> if two specified collections contain identical items in the same order or
     ///     they both are <see langword="null"/>; otherwise, <see langword="false"/>.
     /// </returns>
+    [Pure]
+    [Omnifactotum.Annotations.Pure]
     public static bool CollectionsEqual<T>(
         [CanBeNull] this IEnumerable<T>? collection,
         [CanBeNull] IEnumerable<T>? otherCollection,
@@ -402,6 +411,8 @@ public static class OmnifactotumCollectionExtensions
     ///     they both are <see langword="null"/>; otherwise, <see langword="false"/>.
     /// </returns>
     [MethodImpl(OmnifactotumConstants.MethodOptimizationOptions.Standard)]
+    [Pure]
+    [Omnifactotum.Annotations.Pure]
     public static bool CollectionsEqual<T>(
         [CanBeNull] this IEnumerable<T>? collection,
         [CanBeNull] IEnumerable<T>? otherCollection)
@@ -431,6 +442,8 @@ public static class OmnifactotumCollectionExtensions
     ///     A dictionary in which a key is a duplicated key from the source collection keys and a value is
     ///     the list of the corresponding duplicated items from the source collection.
     /// </returns>
+    [Pure]
+    [Omnifactotum.Annotations.Pure]
     [NotNull]
     public static Dictionary<TKey, List<T>> FindDuplicates<T, TKey>(
         [NotNull] [InstantHandle] this IEnumerable<T> collection,
@@ -479,6 +492,8 @@ public static class OmnifactotumCollectionExtensions
     ///     the list of the corresponding duplicated items from the source collection.
     /// </returns>
     [MethodImpl(OmnifactotumConstants.MethodOptimizationOptions.Standard)]
+    [Pure]
+    [Omnifactotum.Annotations.Pure]
     [NotNull]
     public static Dictionary<TKey, List<T>> FindDuplicates<T, TKey>(
         [NotNull] [InstantHandle] this IEnumerable<T> collection,
@@ -552,6 +567,8 @@ public static class OmnifactotumCollectionExtensions
     ///     The source collection if it is not <see langword="null"/>; otherwise, an empty collection.
     /// </returns>
     [MethodImpl(OmnifactotumConstants.MethodOptimizationOptions.Maximum)]
+    [Pure]
+    [Omnifactotum.Annotations.Pure]
     [NotNull]
     public static IEnumerable<T> AvoidNull<T>([CanBeNull] [NoEnumeration] this IEnumerable<T>? source)
         => source is null or ImmutableArray<T> { IsDefault: true } ? Enumerable.Empty<T>() : source;
@@ -571,11 +588,11 @@ public static class OmnifactotumCollectionExtensions
     /// <exception cref="ArgumentNullException">
     ///     <paramref name="source" /> is <see langword="null" />.
     /// </exception>
+    [Pure]
+    [Omnifactotum.Annotations.Pure]
+    [LinqTunnel]
     [NotNull]
     [ItemNotNull]
-    [LinqTunnel]
-    [Pure]
-    [System.Diagnostics.Contracts.Pure]
     public static IEnumerable<T> WhereNotNull<T>([NotNull] [ItemCanBeNull] this IEnumerable<T?> source)
         where T : class
     {
@@ -609,10 +626,10 @@ public static class OmnifactotumCollectionExtensions
     /// <exception cref="ArgumentNullException">
     ///     <paramref name="source" /> is <see langword="null" />.
     /// </exception>
-    [NotNull]
-    [LinqTunnel]
     [Pure]
-    [System.Diagnostics.Contracts.Pure]
+    [Omnifactotum.Annotations.Pure]
+    [LinqTunnel]
+    [NotNull]
     public static IEnumerable<T> WhereNotNull<T>([NotNull] this IEnumerable<T?> source)
         where T : struct
     {
@@ -641,6 +658,8 @@ public static class OmnifactotumCollectionExtensions
     ///     An object that can be used to synchronize access to the specified collection.
     /// </returns>
     [MethodImpl(OmnifactotumConstants.MethodOptimizationOptions.Maximum)]
+    [Pure]
+    [Omnifactotum.Annotations.Pure]
     public static object GetSyncRoot([NotNull] [NoEnumeration] this ICollection collection)
         => collection is null ? throw new ArgumentNullException(nameof(collection)) : collection.SyncRoot;
 
@@ -685,6 +704,8 @@ public static class OmnifactotumCollectionExtensions
     /// ]]>
     ///     </code>
     /// </example>
+    [Pure]
+    [Omnifactotum.Annotations.Pure]
     [NotNull]
     public static string ToUIString([CanBeNull] [InstantHandle] this IEnumerable<string?>? values)
         => values?.Select(value => value.ToUIString()).Join(OmnifactotumRepresentationConstants.CollectionItemSeparator)
@@ -734,6 +755,8 @@ public static class OmnifactotumCollectionExtensions
     /// ]]>
     ///     </code>
     /// </example>
+    [Pure]
+    [Omnifactotum.Annotations.Pure]
     [NotNull]
     public static string ToUIString<T>([CanBeNull] [InstantHandle] this IEnumerable<T?>? values)
         where T : struct
@@ -779,6 +802,8 @@ public static class OmnifactotumCollectionExtensions
     /// <returns>
     ///     The UI representation of the specified collection of nullable values.
     /// </returns>
+    [Pure]
+    [Omnifactotum.Annotations.Pure]
     [NotNull]
     public static string ToUIString<T>(
         [CanBeNull] [InstantHandle] this IEnumerable<T?>? values,
@@ -825,6 +850,8 @@ public static class OmnifactotumCollectionExtensions
     ///     The UI representation of the specified collection of nullable values.
     /// </returns>
     [MethodImpl(OmnifactotumConstants.MethodOptimizationOptions.Maximum)]
+    [Pure]
+    [Omnifactotum.Annotations.Pure]
     [NotNull]
     public static string ToUIString<T>(
         [CanBeNull] [InstantHandle] this IEnumerable<T?>? values,
@@ -846,12 +873,15 @@ public static class OmnifactotumCollectionExtensions
     ///     A read-only wrapper for the specified list.
     /// </returns>
     [MethodImpl(OmnifactotumConstants.MethodOptimizationOptions.Maximum)]
+    [Pure]
+    [Omnifactotum.Annotations.Pure]
     [NotNull]
     public static ReadOnlyCollection<T> AsReadOnly<T>([NotNull] this IList<T> list)
         => list is null ? throw new ArgumentNullException(nameof(list)) : new ReadOnlyCollection<T>(list);
 #endif
 
 #if !NET6_0_OR_GREATER
+
     /// <summary>
     ///     Splits the elements of a sequence into chunks of size at most <paramref name="size"/>.
     /// </summary>
@@ -883,6 +913,8 @@ public static class OmnifactotumCollectionExtensions
     /// <exception cref="ArgumentOutOfRangeException">
     ///     <paramref name="size"/> is less than or equal to 0.
     /// </exception>
+    [Pure]
+    [Omnifactotum.Annotations.Pure]
     public static IEnumerable<TSource[]> Chunk<TSource>([NotNull] this IEnumerable<TSource> source, int size)
     {
         if (source is null)
@@ -898,38 +930,6 @@ public static class OmnifactotumCollectionExtensions
         return CreateChunkIterator(source, size);
     }
 
-    /// <remarks>
-    ///     This code is based on
-    ///     <see cref="!:https://github.com/dotnet/runtime/blob/6fdb82aea93465ee046c7f903a96d5c2027a3ecd/src/libraries/System.Linq/src/System/Linq/Chunk.cs"/>.
-    /// </remarks>
-    private static IEnumerable<TSource[]> CreateChunkIterator<TSource>(IEnumerable<TSource> source, int size)
-    {
-        using var e = source.GetEnumerator();
-
-        while (e.MoveNext())
-        {
-            var chunk = new TSource[size];
-            chunk[0] = e.Current;
-
-            var i = 1;
-            for (; i < chunk.Length && e.MoveNext(); i++)
-            {
-                chunk[i] = e.Current;
-            }
-
-            if (i == chunk.Length)
-            {
-                yield return chunk;
-            }
-            else
-            {
-                Array.Resize(ref chunk, i);
-                yield return chunk;
-
-                yield break;
-            }
-        }
-    }
 #endif
 
     /// <summary>
@@ -946,6 +946,8 @@ public static class OmnifactotumCollectionExtensions
     ///     <paramref name="source"/> is <see langword="null"/>.
     /// </exception>
     [MethodImpl(OmnifactotumConstants.MethodOptimizationOptions.Maximum)]
+    [Pure]
+    [Omnifactotum.Annotations.Pure]
     public static ConfiguredCancelableAsyncEnumerable<T> ConfigureAwaitNoCapturedContext<T>([NotNull] this IAsyncEnumerable<T> source)
         => (source ?? throw new ArgumentNullException(nameof(source))).ConfigureAwait(false);
 
@@ -963,6 +965,8 @@ public static class OmnifactotumCollectionExtensions
     ///     <paramref name="source"/> is <see langword="null"/>.
     /// </exception>
     [MethodImpl(OmnifactotumConstants.MethodOptimizationOptions.Maximum)]
+    [Pure]
+    [Omnifactotum.Annotations.Pure]
     public static ConfiguredCancelableAsyncEnumerable<T> ConfigureAwaitNoCapturedContext<T>(this in ConfiguredCancelableAsyncEnumerable<T> source)
         => source.ConfigureAwait(false);
 
@@ -984,6 +988,8 @@ public static class OmnifactotumCollectionExtensions
     /// <exception cref="ArgumentNullException">
     ///     <paramref name="source"/> is <see langword="null"/>.
     /// </exception>
+    [Pure]
+    [Omnifactotum.Annotations.Pure]
     [NotNull]
     public static async Task<List<T>> EnumerateToListAsync<T>([NotNull] this IAsyncEnumerable<T> source, CancellationToken cancellationToken = default)
     {
@@ -1021,6 +1027,8 @@ public static class OmnifactotumCollectionExtensions
     ///     <paramref name="source"/> is <see langword="null"/>.
     /// </exception>
     [MethodImpl(OmnifactotumConstants.MethodOptimizationOptions.Standard)]
+    [Pure]
+    [Omnifactotum.Annotations.Pure]
     [NotNull]
     public static async Task<T[]> EnumerateToArrayAsync<T>([NotNull] this IAsyncEnumerable<T> source, CancellationToken cancellationToken = default)
         => (await source.EnumerateToListAsync(cancellationToken)).ToArray();
@@ -1038,6 +1046,9 @@ public static class OmnifactotumCollectionExtensions
     ///     An <see cref="IEnumerable{T}"/> whose elements are the result of flattening the specified sequence of sequences into one sequence.
     /// </returns>
     [MethodImpl(OmnifactotumConstants.MethodOptimizationOptions.Standard)]
+    [Pure]
+    [Omnifactotum.Annotations.Pure]
+    [LinqTunnel]
     [NotNull]
     public static IEnumerable<T> Flatten<T>([NotNull] this IEnumerable<IEnumerable<T>> collections)
     {
@@ -1064,6 +1075,8 @@ public static class OmnifactotumCollectionExtensions
     /// <returns>
     ///     The result of the check.
     /// </returns>
+    [Pure]
+    [Omnifactotum.Annotations.Pure]
     private static bool? CheckReferenceAndCountEquality<T>(
         [CanBeNull] [NoEnumeration] IEnumerable<T>? collection,
         [CanBeNull] [NoEnumeration] IEnumerable<T>? otherCollection)
@@ -1091,6 +1104,8 @@ public static class OmnifactotumCollectionExtensions
         return null;
     }
 
+    [Pure]
+    [Omnifactotum.Annotations.Pure]
     private static Dictionary<KeyWrapper<T>, int> CreateCountMap<T>(
         [NotNull] [InstantHandle] IEnumerable<T> collection,
         [CanBeNull] IEqualityComparer<T>? comparer,
@@ -1099,6 +1114,45 @@ public static class OmnifactotumCollectionExtensions
             .GroupBy(item => item, comparer)
             .Select(group => KeyValuePair.Create(new KeyWrapper<T>(group.Key), group.Count()))
             .ToDictionary(item => item.Key, item => item.Value, wrapperComparer);
+
+#if !NET6_0_OR_GREATER
+
+    /// <remarks>
+    ///     This code is based on
+    ///     <see cref="!:https://github.com/dotnet/runtime/blob/6fdb82aea93465ee046c7f903a96d5c2027a3ecd/src/libraries/System.Linq/src/System/Linq/Chunk.cs"/>.
+    /// </remarks>
+    [Pure]
+    [Omnifactotum.Annotations.Pure]
+    private static IEnumerable<TSource[]> CreateChunkIterator<TSource>(IEnumerable<TSource> source, int size)
+    {
+        using var e = source.GetEnumerator();
+
+        while (e.MoveNext())
+        {
+            var chunk = new TSource[size];
+            chunk[0] = e.Current;
+
+            var i = 1;
+            for (; i < chunk.Length && e.MoveNext(); i++)
+            {
+                chunk[i] = e.Current;
+            }
+
+            if (i == chunk.Length)
+            {
+                yield return chunk;
+            }
+            else
+            {
+                Array.Resize(ref chunk, i);
+                yield return chunk;
+
+                yield break;
+            }
+        }
+    }
+
+#endif
 
     private readonly struct KeyWrapper<T>
     {

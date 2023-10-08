@@ -2,6 +2,7 @@
 using System.Runtime.CompilerServices;
 using System.Threading;
 using Omnifactotum;
+using PureAttribute = System.Diagnostics.Contracts.PureAttribute;
 
 //// Namespace is intentionally named so in order to simplify usage of extension methods
 using Omnifactotum.Annotations;
@@ -51,6 +52,8 @@ public static class OmnifactotumExceptionExtensions
     /// </example>
     [DebuggerNonUserCode]
     [MethodImpl(OmnifactotumConstants.MethodOptimizationOptions.Standard)]
+    [Pure]
+    [Omnifactotum.Annotations.Pure]
     public static bool IsFatal([CanBeNull] this Exception? exception)
         => exception is ThreadAbortException or OperationCanceledException or OutOfMemoryException or StackOverflowException;
 
@@ -68,6 +71,8 @@ public static class OmnifactotumExceptionExtensions
     ///     (or its descendant); otherwise, <see langword="false"/>.
     /// </returns>
     [DebuggerNonUserCode]
+    [Pure]
+    [Omnifactotum.Annotations.Pure]
     public static bool IsOriginatedFrom<TOriginatingException>([CanBeNull] this Exception? exception)
         where TOriginatingException : Exception
     {
@@ -99,6 +104,8 @@ public static class OmnifactotumExceptionExtensions
     ///     (or its descendant); otherwise, <see langword="false"/>.
     /// </returns>
     [DebuggerNonUserCode]
+    [Pure]
+    [Omnifactotum.Annotations.Pure]
     public static bool IsOriginatedFrom([CanBeNull] this Exception? exception, [NotNull] Type originatingExceptionType)
     {
         if (originatingExceptionType is null)

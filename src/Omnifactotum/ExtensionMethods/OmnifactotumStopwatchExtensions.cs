@@ -1,6 +1,7 @@
 ﻿using System.Runtime.CompilerServices;
 using Omnifactotum;
 using Omnifactotum.Annotations;
+using PureAttribute = System.Diagnostics.Contracts.PureAttribute;
 
 //// ReSharper disable RedundantNullnessAttributeWithNullableReferenceTypes
 //// ReSharper disable UseNullableReferenceTypesAnnotationSyntax
@@ -23,6 +24,8 @@ public static class OmnifactotumStopwatchExtensions
     ///     The total elapsed time measured by the specified <see cref="Stopwatch"/> that was stopped before measuring.
     /// </returns>
     [MethodImpl(OmnifactotumConstants.MethodOptimizationOptions.Standard)]
+    [Pure]
+    [Omnifactotum.Annotations.Pure]
     public static TimeSpan GetStoppedElapsed([NotNull] this Stopwatch stopwatch)
     {
         if (stopwatch is null)

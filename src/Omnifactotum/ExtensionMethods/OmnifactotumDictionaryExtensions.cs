@@ -2,6 +2,7 @@
 using Omnifactotum;
 using Omnifactotum.Annotations;
 using DisallowNullAttribute = System.Diagnostics.CodeAnalysis.DisallowNullAttribute;
+using PureAttribute = System.Diagnostics.Contracts.PureAttribute;
 
 #if !NET7_0_OR_GREATER
 using System.Collections.ObjectModel;
@@ -117,6 +118,8 @@ public static class OmnifactotumDictionaryExtensions
     ///     A read-only wrapper for the specified dictionary.
     /// </returns>
     [MethodImpl(OmnifactotumConstants.MethodOptimizationOptions.Standard)]
+    [Pure]
+    [Omnifactotum.Annotations.Pure]
     [NotNull]
     public static ReadOnlyDictionary<TKey, TValue> AsReadOnly<TKey, TValue>(
         [NotNull] this IDictionary<TKey, TValue> dictionary)

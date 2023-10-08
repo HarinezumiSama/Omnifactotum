@@ -43,6 +43,7 @@ public static class OmnifactotumCharExtensions
     ///     </code>
     /// </example>
     [Pure]
+    [Omnifactotum.Annotations.Pure]
     [NotNull]
     public static string ToUIString(this char value)
         => string.Concat(

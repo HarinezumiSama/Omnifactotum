@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using Omnifactotum.Annotations;
+using PureAttribute = System.Diagnostics.Contracts.PureAttribute;
 
 //// ReSharper disable RedundantNullnessAttributeWithNullableReferenceTypes
 //// ReSharper disable AnnotationRedundancyInHierarchy
@@ -69,6 +70,8 @@ public sealed class DirectedGraph<T> : DirectedGraphNodeCollectionBase<T>
     /// <returns>
     ///     An array of the nodes sorted topologically.
     /// </returns>
+    [Pure]
+    [Omnifactotum.Annotations.Pure]
     public DirectedGraphNode<T>[] SortTopologically([CanBeNull] Comparison<DirectedGraphNode<T>?>? compareEquipollentNodes = null)
     {
         var internalNodeMap = new Dictionary<DirectedGraphNode<T>, InternalNode<T>>(Count);

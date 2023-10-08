@@ -4,6 +4,7 @@ using System;
 using System.Globalization;
 using System.Runtime.CompilerServices;
 using Omnifactotum.Annotations;
+using PureAttribute = System.Diagnostics.Contracts.PureAttribute;
 
 namespace Omnifactotum;
 
@@ -26,5 +27,7 @@ internal static class FormattableStringFactotum
     /// </exception>
     /// <seealso cref="CultureInfo.InvariantCulture"/>
     [MethodImpl(OmnifactotumConstants.MethodOptimizationOptions.Standard)]
+    [Pure]
+    [Omnifactotum.Annotations.Pure]
     internal static string AsInvariant([NotNull] FormattableString value) => FormattableString.Invariant(value);
 }

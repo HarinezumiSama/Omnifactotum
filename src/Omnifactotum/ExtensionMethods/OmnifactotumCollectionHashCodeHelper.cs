@@ -1,5 +1,6 @@
 ﻿using System.Linq;
 using Omnifactotum.Annotations;
+using PureAttribute = System.Diagnostics.Contracts.PureAttribute;
 
 //// ReSharper disable RedundantNullnessAttributeWithNullableReferenceTypes
 //// ReSharper disable UseNullableReferenceTypesAnnotationSyntax
@@ -29,6 +30,8 @@ public static class OmnifactotumCollectionHashCodeHelper
     ///     A hash code of the specified collection, or <c>0</c> if the specified collection is
     ///     <see langword="null"/> or empty.
     /// </returns>
+    [Pure]
+    [Omnifactotum.Annotations.Pure]
     public static int ComputeCollectionHashCode<T>([CanBeNull] [InstantHandle] this IEnumerable<T>? collection)
     {
         if (collection is null)

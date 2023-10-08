@@ -2,6 +2,7 @@
 using System.Globalization;
 using System.Runtime.CompilerServices;
 using Omnifactotum;
+using PureAttribute = System.Diagnostics.Contracts.PureAttribute;
 using static Omnifactotum.FormattableStringFactotum;
 
 //// ReSharper disable RedundantNullnessAttributeWithNullableReferenceTypes
@@ -45,6 +46,8 @@ public static class OmnifactotumHttpStatusCodeExtensions
     /// ]]>
     ///     </code>
     /// </example>
+    [Pure]
+    [Omnifactotum.Annotations.Pure]
     public static string ToUIString(this HttpStatusCode value)
     {
         var valueAsInt = (int)value;
@@ -71,5 +74,7 @@ public static class OmnifactotumHttpStatusCodeExtensions
     ///     otherwise, <see langword="false"/>.
     /// </returns>
     [MethodImpl(OmnifactotumConstants.MethodOptimizationOptions.Standard)]
+    [Pure]
+    [Omnifactotum.Annotations.Pure]
     public static bool IsSuccessful(this HttpStatusCode value) => (int)value is >= MinSuccessfulHttpStatusCode and <= MaxSuccessfulHttpStatusCode;
 }

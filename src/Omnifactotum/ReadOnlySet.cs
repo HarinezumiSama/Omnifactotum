@@ -2,6 +2,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using Omnifactotum.Annotations;
+using PureAttribute = System.Diagnostics.Contracts.PureAttribute;
 
 //// ReSharper disable RedundantNullnessAttributeWithNullableReferenceTypes
 //// ReSharper disable UseNullableReferenceTypesAnnotationSyntax
@@ -109,6 +110,8 @@ public sealed class ReadOnlySet<T>
     /// <exception cref="System.ArgumentNullException">
     ///     <paramref name="other"/> is <see langword="null"/>.
     /// </exception>
+    [Pure]
+    [Omnifactotum.Annotations.Pure]
     public bool IsProperSubsetOf(IEnumerable<T> other) => _set.IsProperSubsetOf(other);
 
     /// <summary>
@@ -124,6 +127,8 @@ public sealed class ReadOnlySet<T>
     /// <exception cref="System.ArgumentNullException">
     ///     <paramref name="other"/> is <see langword="null"/>.
     /// </exception>
+    [Pure]
+    [Omnifactotum.Annotations.Pure]
     public bool IsProperSupersetOf(IEnumerable<T> other) => _set.IsProperSupersetOf(other);
 
     /// <summary>
@@ -138,6 +143,8 @@ public sealed class ReadOnlySet<T>
     /// <exception cref="System.ArgumentNullException">
     ///     <paramref name="other"/> is <see langword="null"/>.
     /// </exception>
+    [Pure]
+    [Omnifactotum.Annotations.Pure]
     public bool IsSubsetOf(IEnumerable<T> other) => _set.IsSubsetOf(other);
 
     /// <summary>
@@ -152,6 +159,8 @@ public sealed class ReadOnlySet<T>
     /// <exception cref="System.ArgumentNullException">
     ///     <paramref name="other"/> is <see langword="null"/>.
     /// </exception>
+    [Pure]
+    [Omnifactotum.Annotations.Pure]
     public bool IsSupersetOf(IEnumerable<T> other) => _set.IsSupersetOf(other);
 
     /// <summary>
@@ -166,6 +175,8 @@ public sealed class ReadOnlySet<T>
     /// <exception cref="System.ArgumentNullException">
     ///     <paramref name="other"/> is <see langword="null"/>.
     /// </exception>
+    [Pure]
+    [Omnifactotum.Annotations.Pure]
     public bool Overlaps([InstantHandle] IEnumerable<T> other) => _set.Overlaps(other);
 
     /// <summary>
@@ -180,17 +191,31 @@ public sealed class ReadOnlySet<T>
     /// <exception cref="System.ArgumentNullException">
     ///     <paramref name="other"/> is <see langword="null"/>.
     /// </exception>
+    [Pure]
+    [Omnifactotum.Annotations.Pure]
     public bool SetEquals([InstantHandle] IEnumerable<T> other) => _set.SetEquals(other);
 
     /// <summary>
     ///     Gets the number of elements contained in the current set.
     /// </summary>
-    public int Count => _set.Count;
+    [Pure]
+    public int Count
+    {
+        [Pure]
+        [Omnifactotum.Annotations.Pure]
+        get => _set.Count;
+    }
 
     /// <summary>
     ///     Gets a value indicating whether the current set is read-only.
     /// </summary>
-    bool ICollection<T>.IsReadOnly => true;
+    [Pure]
+    bool ICollection<T>.IsReadOnly
+    {
+        [Pure]
+        [Omnifactotum.Annotations.Pure]
+        get => true;
+    }
 
     /// <summary>
     ///     Adds an item to the <see cref="ICollection{T}"/>.
@@ -236,6 +261,8 @@ public sealed class ReadOnlySet<T>
     /// <returns>
     ///     <see langword="true"/> if <paramref name="item"/> is found in the set; otherwise, <see langword="false"/>.
     /// </returns>
+    [Pure]
+    [Omnifactotum.Annotations.Pure]
     public bool Contains(T item) => _set.Contains(item);
 
     /// <summary>

@@ -1,5 +1,6 @@
 ﻿using System;
 using Omnifactotum.Abstractions;
+using PureAttribute = System.Diagnostics.Contracts.PureAttribute;
 
 namespace Omnifactotum;
 
@@ -14,5 +15,7 @@ public sealed class LocalComputerCurrentDateTimeProvider : ICurrentDateTimeProvi
     /// <returns>
     ///     A <see cref="DateTime"/> object that is set to the current <b>UTC</b> date and time on the local computer.
     /// </returns>
+    [Pure]
+    [Omnifactotum.Annotations.Pure]
     public DateTime GetUtcTime() => DateTime.UtcNow;
 }

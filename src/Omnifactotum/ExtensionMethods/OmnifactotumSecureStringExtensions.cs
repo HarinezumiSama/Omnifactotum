@@ -1,6 +1,4 @@
-﻿//// ReSharper disable RedundantNullnessAttributeWithNullableReferenceTypes
-
-using System.Runtime.CompilerServices;
+﻿using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 using System.Security;
 using Omnifactotum;
@@ -9,8 +7,9 @@ using NotNullWhen = System.Diagnostics.CodeAnalysis.NotNullWhenAttribute;
 using NotNullIfNotNull = System.Diagnostics.CodeAnalysis.NotNullIfNotNullAttribute;
 using PureAttribute = System.Diagnostics.Contracts.PureAttribute;
 
-//// ReSharper disable once CheckNamespace :: Namespace is intentionally named so in order to simplify usage of extension methods
+//// ReSharper disable RedundantNullnessAttributeWithNullableReferenceTypes
 
+//// ReSharper disable once CheckNamespace :: Namespace is intentionally named so in order to simplify usage of extension methods
 namespace System;
 
 /// <summary>
@@ -29,8 +28,9 @@ public static class OmnifactotumSecureStringExtensions
     ///     <see langword="true"/> if the specified <see cref="SecureString"/> is <see langword="null"/> or its
     ///     <see cref="SecureString.Length"/> is zero; otherwise, <see langword="false"/>.
     /// </returns>
-    [Pure]
     [ContractAnnotation("null => true", true)]
+    [Pure]
+    [Omnifactotum.Annotations.Pure]
     [MethodImpl(OmnifactotumConstants.MethodOptimizationOptions.Standard)]
     public static bool IsNullOrEmpty([NotNullWhen(false)] [CanBeNull] this SecureString? value)
         => value is null || value.Length == 0;
@@ -46,9 +46,10 @@ public static class OmnifactotumSecureStringExtensions
     ///     instance of <see cref="string"/> that contains the plain text from the specified <see cref="SecureString"/> value.
     /// </returns>
     [ContractAnnotation("null => null; notnull => notnull", true)]
-    [CanBeNull]
     [Pure]
-    [return: NotNullIfNotNull(@"value")]
+    [Omnifactotum.Annotations.Pure]
+    [CanBeNull]
+    [return: NotNullIfNotNull(nameof(value))]
     public static string? ToPlainText([CanBeNull] this SecureString? value)
     {
         switch (value)

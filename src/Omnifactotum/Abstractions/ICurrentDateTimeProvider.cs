@@ -1,4 +1,5 @@
 ﻿using System;
+using PureAttribute = System.Diagnostics.Contracts.PureAttribute;
 
 namespace Omnifactotum.Abstractions;
 
@@ -14,5 +15,7 @@ public interface ICurrentDateTimeProvider
     /// <returns>
     ///     A <see cref="DateTime"/> object that is set to the current <b>UTC</b> date and time.
     /// </returns>
+    [Pure]
+    [Omnifactotum.Annotations.Pure]
     DateTime GetUtcTime();
 }

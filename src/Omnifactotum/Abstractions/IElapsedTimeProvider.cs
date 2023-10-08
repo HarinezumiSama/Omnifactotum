@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Diagnostics;
+using PureAttribute = System.Diagnostics.Contracts.PureAttribute;
 
 namespace Omnifactotum.Abstractions;
 
@@ -16,7 +17,13 @@ public interface IElapsedTimeProvider
     ///     <see langword="true"/> if the <see cref="T:IElapsedTimeProvider"/> instance is currently running and measuring elapsed
     ///     time for an interval; otherwise, <see langword="false"/>.
     /// </returns>
-    bool IsRunning { get; }
+    [Pure]
+    bool IsRunning
+    {
+        [Pure]
+        [Omnifactotum.Annotations.Pure]
+        get;
+    }
 
     /// <summary>
     ///     Gets the total elapsed time measured by the current instance.
@@ -24,7 +31,13 @@ public interface IElapsedTimeProvider
     /// <returns>
     ///     A read-only <see cref="T:System.TimeSpan"/> representing the total elapsed time measured by the current instance.
     /// </returns>
-    TimeSpan Elapsed { get; }
+    [Pure]
+    TimeSpan Elapsed
+    {
+        [Pure]
+        [Omnifactotum.Annotations.Pure]
+        get;
+    }
 
     /// <summary>
     ///     Starts, or resumes, measuring elapsed time for an interval.

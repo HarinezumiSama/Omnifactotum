@@ -1,5 +1,6 @@
 ﻿using System.IO;
 using Omnifactotum.Annotations;
+using PureAttribute = System.Diagnostics.Contracts.PureAttribute;
 using static Omnifactotum.FormattableStringFactotum;
 
 //// ReSharper disable RedundantNullnessAttributeWithNullableReferenceTypes
@@ -28,6 +29,8 @@ public static class OmnifactotumAssemblyExtensions
     /// <exception cref="ArgumentException">
     ///     The specified assembly does not have a local path.
     /// </exception>
+    [Pure]
+    [Omnifactotum.Annotations.Pure]
     [NotNull]
     public static string GetLocalPath([NotNull] this Assembly assembly)
     {

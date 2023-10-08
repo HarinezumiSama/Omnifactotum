@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Runtime.CompilerServices;
 using Omnifactotum.Annotations;
+using PureAttribute = System.Diagnostics.Contracts.PureAttribute;
 
 //// ReSharper disable RedundantNullnessAttributeWithNullableReferenceTypes
 //// ReSharper disable AnnotationRedundancyInHierarchy
@@ -38,6 +39,8 @@ public static class KeyedEqualityComparer
         ///     A created and initialized instance of the <see cref="KeyedEqualityComparer{T,TKey}"/>.
         /// </returns>
         [MethodImpl(OmnifactotumConstants.MethodOptimizationOptions.Standard)]
+        [Pure]
+        [Omnifactotum.Annotations.Pure]
         public static KeyedEqualityComparer<T, TKey> Create<TKey>(
             [NotNull] Func<T, TKey> keySelector,
             [CanBeNull] IEqualityComparer<TKey>? keyComparer = null)

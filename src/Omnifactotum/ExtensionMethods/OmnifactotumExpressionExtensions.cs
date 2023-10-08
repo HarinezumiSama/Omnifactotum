@@ -3,6 +3,7 @@ using System.Runtime.CompilerServices;
 using Omnifactotum;
 using Omnifactotum.Annotations;
 using NotNullIfNotNullAttribute = System.Diagnostics.CodeAnalysis.NotNullIfNotNullAttribute;
+using PureAttribute = System.Diagnostics.Contracts.PureAttribute;
 
 //// ReSharper disable RedundantNullnessAttributeWithNullableReferenceTypes
 //// ReSharper disable UseNullableReferenceTypesAnnotationSyntax
@@ -28,6 +29,8 @@ public static class OmnifactotumExpressionExtensions
     ///     The last called method, or <see langword="null"/> if the last element in the expression is not a method call.
     /// </returns>
     [MethodImpl(OmnifactotumConstants.MethodOptimizationOptions.Standard)]
+    [Pure]
+    [Omnifactotum.Annotations.Pure]
     [CanBeNull]
     public static MethodInfo? GetLastMethod<TDelegate>([NotNull] this Expression<TDelegate> expression)
     {
@@ -62,6 +65,8 @@ public static class OmnifactotumExpressionExtensions
     /// <returns>
     ///     A new lambda expression.
     /// </returns>
+    [Pure]
+    [Omnifactotum.Annotations.Pure]
     [NotNull]
     public static Expression<Func<TInput, TResult>> InjectInto<TInput, TIntermediate, TResult>(
         [NotNull] this Expression<Func<TInput, TIntermediate>> sourceExpression,
@@ -99,6 +104,8 @@ public static class OmnifactotumExpressionExtensions
     /// <returns>
     ///     A new lambda expression.
     /// </returns>
+    [Pure]
+    [Omnifactotum.Annotations.Pure]
     [NotNull]
     public static LambdaExpression InjectInto(
         [NotNull] this LambdaExpression sourceExpression,
@@ -179,7 +186,7 @@ public static class OmnifactotumExpressionExtensions
         ///     The modified expression, if it or any subexpression was modified;
         ///     otherwise, returns the original expression.
         /// </returns>
-        [return: NotNullIfNotNull("node")]
+        [return: NotNullIfNotNull(nameof(node))]
         //// ReSharper disable once ReturnTypeCanBeNotNullable :: No nullability annotations in `ExpressionVisitor` in the older .NET versions
         //// ReSharper disable once AssignNullToNotNullAttribute :: No nullability annotations in `ExpressionVisitor` in the older .NET versions
         public override Expression? Visit(Expression? node) => node == _sourceExpression ? _targetExpression : base.Visit(node);

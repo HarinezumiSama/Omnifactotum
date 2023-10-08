@@ -12,6 +12,7 @@ using System.Security.Cryptography;
 using Omnifactotum.Annotations;
 using DoesNotReturnIfAttribute = System.Diagnostics.CodeAnalysis.DoesNotReturnIfAttribute;
 using NotNullIfNotNullAttribute = System.Diagnostics.CodeAnalysis.NotNullIfNotNullAttribute;
+using PureAttribute = System.Diagnostics.Contracts.PureAttribute;
 using static Omnifactotum.FormattableStringFactotum;
 
 //// ReSharper disable RedundantNullnessAttributeWithNullableReferenceTypes
@@ -193,6 +194,8 @@ public static partial class Factotum
     ///     The larger of the two specified values.
     /// </returns>
     [MethodImpl(OmnifactotumConstants.MethodOptimizationOptions.Standard)]
+    [Pure]
+    [Omnifactotum.Annotations.Pure]
     public static T Max<T>(T x, T y)
         where T : IComparable
         => Comparer<T>.Default.Compare(x, y) > 0 ? x : y;
@@ -213,6 +216,8 @@ public static partial class Factotum
     ///     The smaller of the two specified values.
     /// </returns>
     [MethodImpl(OmnifactotumConstants.MethodOptimizationOptions.Standard)]
+    [Pure]
+    [Omnifactotum.Annotations.Pure]
     public static T Min<T>(T x, T y)
         where T : IComparable
         => Comparer<T>.Default.Compare(x, y) < 0 ? x : y;
@@ -241,6 +246,8 @@ public static partial class Factotum
     /// <exception cref="ArgumentException">
     ///     <paramref name="modes"/> does not specify anything to generate.
     /// </exception>
+    [MustUseReturnValue("The generated result value should be used by a caller.")]
+    [NotNull]
     public static byte[] GenerateId(int size, IdGenerationModes modes)
     {
         var minimumSize = 0;
@@ -331,6 +338,8 @@ public static partial class Factotum
     /// <exception cref="ArgumentException">
     ///     <paramref name="modes"/> does not specify anything to generate.
     /// </exception>
+    [MustUseReturnValue("The generated result value should be used by a caller.")]
+    [NotNull]
     public static string GenerateIdString(int size, IdGenerationModes modes)
     {
         var id = GenerateId(size, modes);
@@ -348,6 +357,9 @@ public static partial class Factotum
     /// <exception cref="InvalidOperationException">
     ///     The entry assembly (or the calling assembly) does not have a local path.
     /// </exception>
+    [Pure]
+    [Omnifactotum.Annotations.Pure]
+    [NotNull]
     [MethodImpl(MethodImplOptions.NoInlining)]
     public static string GetExecutableLocalPath()
     {
@@ -368,6 +380,9 @@ public static partial class Factotum
     /// <exception cref="InvalidOperationException">
     ///     The entry assembly (or the calling assembly) does not have a local path.
     /// </exception>
+    [Pure]
+    [Omnifactotum.Annotations.Pure]
+    [NotNull]
     [MethodImpl(MethodImplOptions.NoInlining)]
     public static string GetExecutableDirectory()
     {
@@ -397,6 +412,8 @@ public static partial class Factotum
     /// <returns>
     ///     The <see cref="MemberInfo"/> containing information about the required field or property.
     /// </returns>
+    [Pure]
+    [Omnifactotum.Annotations.Pure]
     [NotNull]
     [MethodImpl(OmnifactotumConstants.MethodOptimizationOptions.Standard)]
     public static MemberInfo GetFieldOrPropertyInfo<TObject, TMember>([NotNull] Expression<Func<TObject, TMember>> memberGetterExpression)
@@ -417,6 +434,8 @@ public static partial class Factotum
     /// <returns>
     ///     The <see cref="FieldInfo"/> containing information about the required field.
     /// </returns>
+    [Pure]
+    [Omnifactotum.Annotations.Pure]
     [NotNull]
     [MethodImpl(OmnifactotumConstants.MethodOptimizationOptions.Standard)]
     public static FieldInfo GetFieldInfo<TObject, TField>([NotNull] Expression<Func<TObject, TField>> fieldGetterExpression)
@@ -437,6 +456,8 @@ public static partial class Factotum
     /// <returns>
     ///     The name of the field specified by the lambda expression.
     /// </returns>
+    [Pure]
+    [Omnifactotum.Annotations.Pure]
     [NotNull]
     [MethodImpl(OmnifactotumConstants.MethodOptimizationOptions.Standard)]
     public static string GetFieldName<TObject, TField>([NotNull] Expression<Func<TObject, TField>> fieldGetterExpression)
@@ -457,6 +478,8 @@ public static partial class Factotum
     /// <returns>
     ///     The name of the field in the following form: <c>SomeType.Field</c>.
     /// </returns>
+    [Pure]
+    [Omnifactotum.Annotations.Pure]
     [NotNull]
     [MethodImpl(OmnifactotumConstants.MethodOptimizationOptions.Standard)]
     public static string GetQualifiedFieldName<TObject, TField>([NotNull] Expression<Func<TObject, TField>> fieldGetterExpression)
@@ -477,6 +500,8 @@ public static partial class Factotum
     /// <returns>
     ///     The <see cref="PropertyInfo"/> containing information about the required property.
     /// </returns>
+    [Pure]
+    [Omnifactotum.Annotations.Pure]
     [NotNull]
     [MethodImpl(OmnifactotumConstants.MethodOptimizationOptions.Standard)]
     public static PropertyInfo GetPropertyInfo<TObject, TProperty>([NotNull] Expression<Func<TObject, TProperty>> propertyGetterExpression)
@@ -497,6 +522,8 @@ public static partial class Factotum
     /// <returns>
     ///     The name of the property.
     /// </returns>
+    [Pure]
+    [Omnifactotum.Annotations.Pure]
     [NotNull]
     [MethodImpl(OmnifactotumConstants.MethodOptimizationOptions.Standard)]
     public static string GetPropertyName<TObject, TProperty>([NotNull] Expression<Func<TObject, TProperty>> propertyGetterExpression)
@@ -517,6 +544,8 @@ public static partial class Factotum
     /// <returns>
     ///     The name of the property in the following form: <c>SomeType.Property</c>.
     /// </returns>
+    [Pure]
+    [Omnifactotum.Annotations.Pure]
     [NotNull]
     [MethodImpl(OmnifactotumConstants.MethodOptimizationOptions.Standard)]
     public static string GetQualifiedPropertyName<TObject, TProperty>([NotNull] Expression<Func<TObject, TProperty>> propertyGetterExpression)
@@ -534,6 +563,8 @@ public static partial class Factotum
     /// <returns>
     ///     The <see cref="PropertyInfo"/> containing information about the required static property.
     /// </returns>
+    [Pure]
+    [Omnifactotum.Annotations.Pure]
     [NotNull]
     public static PropertyInfo GetPropertyInfo<TProperty>([NotNull] Expression<Func<TProperty>> propertyGetterExpression)
     {
@@ -590,6 +621,8 @@ public static partial class Factotum
     /// <returns>
     ///     The name of the static property.
     /// </returns>
+    [Pure]
+    [Omnifactotum.Annotations.Pure]
     [NotNull]
     [MethodImpl(OmnifactotumConstants.MethodOptimizationOptions.Standard)]
     public static string GetPropertyName<TProperty>([NotNull] Expression<Func<TProperty>> propertyGetterExpression)
@@ -610,6 +643,8 @@ public static partial class Factotum
     /// <returns>
     ///     The type-qualified name of the static property.
     /// </returns>
+    [Pure]
+    [Omnifactotum.Annotations.Pure]
     [NotNull]
     public static string GetQualifiedPropertyName<TProperty>([NotNull] Expression<Func<TProperty>> propertyGetterExpression)
     {

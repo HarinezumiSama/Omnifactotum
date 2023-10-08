@@ -1,4 +1,6 @@
-﻿using Omnifactotum.Annotations;
+﻿using PureAttribute = System.Diagnostics.Contracts.PureAttribute;
+
+using Omnifactotum.Annotations;
 
 //// ReSharper disable RedundantNullnessAttributeWithNullableReferenceTypes
 //// ReSharper disable AnnotationRedundancyInHierarchy
@@ -25,6 +27,8 @@ public static class SyncValueContainer
     /// <returns>
     ///     A created and initialized instance of the <see cref="SyncValueContainer{T}" /> class.
     /// </returns>
+    [Pure]
+    [Omnifactotum.Annotations.Pure]
     public static SyncValueContainer<T> Create<T>(T value, [NotNull] object syncObject) => new(value, syncObject);
 
     /// <summary>
@@ -37,5 +41,7 @@ public static class SyncValueContainer
     /// <returns>
     ///     A created and initialized instance of the <see cref="SyncValueContainer{T}" /> class.
     /// </returns>
+    [Pure]
+    [Omnifactotum.Annotations.Pure]
     public static SyncValueContainer<T> Create<T>(T value) => new(value);
 }

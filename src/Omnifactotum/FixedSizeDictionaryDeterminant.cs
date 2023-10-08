@@ -1,4 +1,5 @@
 ﻿using System;
+using PureAttribute = System.Diagnostics.Contracts.PureAttribute;
 using static Omnifactotum.FormattableStringFactotum;
 
 //// ReSharper disable RedundantNullnessAttributeWithNullableReferenceTypes
@@ -18,8 +19,11 @@ public abstract class FixedSizeDictionaryDeterminant<TKey>
     /// <summary>
     ///     Gets the validated value of <see cref="Size"/>.
     /// </summary>
+    [Pure]
     public int ValidatedSize
     {
+        [Pure]
+        [Omnifactotum.Annotations.Pure]
         get
         {
             var size = Size;
@@ -48,6 +52,8 @@ public abstract class FixedSizeDictionaryDeterminant<TKey>
     /// <returns>
     ///     The internal index corresponding to the specified key.
     /// </returns>
+    [Pure]
+    [Omnifactotum.Annotations.Pure]
     public abstract int GetIndex(TKey key);
 
     /// <summary>
@@ -59,5 +65,7 @@ public abstract class FixedSizeDictionaryDeterminant<TKey>
     /// <returns>
     ///     The key corresponding to the specified internal index.
     /// </returns>
+    [Pure]
+    [Omnifactotum.Annotations.Pure]
     public abstract TKey GetKey(int index);
 }

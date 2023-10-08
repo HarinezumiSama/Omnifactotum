@@ -2,6 +2,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using Omnifactotum.Annotations;
+using PureAttribute = System.Diagnostics.Contracts.PureAttribute;
 using static Omnifactotum.FormattableStringFactotum;
 
 //// ReSharper disable RedundantNullnessAttributeWithNullableReferenceTypes
@@ -30,13 +31,31 @@ public sealed class ReadOnlyItemCollection<T> : ICollection<T>, IReadOnlyCollect
         => _collection = collection ?? throw new ArgumentNullException(nameof(collection));
 
     /// <inheritdoc />
-    public int Count => _collection.Count;
+    [Pure]
+    public int Count
+    {
+        [Pure]
+        [Omnifactotum.Annotations.Pure]
+        get => _collection.Count;
+    }
 
     /// <inheritdoc />
-    int IReadOnlyCollection<T>.Count => _collection.Count;
+    [Pure]
+    int IReadOnlyCollection<T>.Count
+    {
+        [Pure]
+        [Omnifactotum.Annotations.Pure]
+        get => _collection.Count;
+    }
 
     /// <inheritdoc />
-    bool ICollection<T>.IsReadOnly => true;
+    [Pure]
+    bool ICollection<T>.IsReadOnly
+    {
+        [Pure]
+        [Omnifactotum.Annotations.Pure]
+        get => true;
+    }
 
     /// <inheritdoc />
     public IEnumerator<T> GetEnumerator() => _collection.GetEnumerator();
@@ -48,6 +67,8 @@ public sealed class ReadOnlyItemCollection<T> : ICollection<T>, IReadOnlyCollect
     void ICollection<T>.Clear() => throw CreateReadOnlyInstanceException();
 
     /// <inheritdoc />
+    [Pure]
+    [Omnifactotum.Annotations.Pure]
     public bool Contains(T item) => _collection.Contains(item);
 
     /// <inheritdoc />
@@ -59,6 +80,8 @@ public sealed class ReadOnlyItemCollection<T> : ICollection<T>, IReadOnlyCollect
     /// <inheritdoc />
     IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();
 
+    [Pure]
+    [Omnifactotum.Annotations.Pure]
     private NotSupportedException CreateReadOnlyInstanceException()
         => new(AsInvariant($@"The {GetType().GetQualifiedName()} instance cannot be modified because it is read-only."));
 }

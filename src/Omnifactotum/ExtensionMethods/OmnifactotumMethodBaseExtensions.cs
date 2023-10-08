@@ -117,8 +117,10 @@ public static class OmnifactotumMethodBaseExtensions
         return GetSignatureInternal(method, true);
     }
 
-    [CanBeNull]
     [MethodImpl(OmnifactotumConstants.MethodOptimizationOptions.Standard)]
+    [Pure]
+    [Omnifactotum.Annotations.Pure]
+    [CanBeNull]
     //// ReSharper disable once SuggestBaseTypeForParameter
     private static Type? GetMethodContainingType([NotNull] MethodBase method)
         => method.DeclaringType ?? method.ReflectedType;

@@ -2,6 +2,7 @@
 using System.Runtime.CompilerServices;
 using Omnifactotum;
 using Omnifactotum.Annotations;
+using PureAttribute = System.Diagnostics.Contracts.PureAttribute;
 
 //// ReSharper disable RedundantNullnessAttributeWithNullableReferenceTypes
 //// ReSharper disable UseNullableReferenceTypesAnnotationSyntax
@@ -34,6 +35,8 @@ public static class OmnifactotumCustomAttributeProviderExtensions
     /// <exception cref="System.ArgumentNullException">
     ///     <paramref name="provider"/> is <see langword="null"/>.
     /// </exception>
+    [Pure]
+    [Omnifactotum.Annotations.Pure]
     [NotNull]
     public static TAttribute[] GetCustomAttributeArray<TAttribute>(
         [NotNull] this ICustomAttributeProvider provider,
@@ -82,6 +85,8 @@ public static class OmnifactotumCustomAttributeProviderExtensions
     ///     or is applied more than once.
     /// </exception>
     [MethodImpl(OmnifactotumConstants.MethodOptimizationOptions.Maximum)]
+    [Pure]
+    [Omnifactotum.Annotations.Pure]
     [NotNull]
     public static TAttribute GetSingleCustomAttribute<TAttribute>(
         [NotNull] this ICustomAttributeProvider provider,
@@ -113,6 +118,8 @@ public static class OmnifactotumCustomAttributeProviderExtensions
     ///     The specified attribute is applied more than once.
     /// </exception>
     [MethodImpl(OmnifactotumConstants.MethodOptimizationOptions.Maximum)]
+    [Pure]
+    [Omnifactotum.Annotations.Pure]
     [CanBeNull]
     public static TAttribute? GetSingleOrDefaultCustomAttribute<TAttribute>(
         [NotNull] this ICustomAttributeProvider provider,

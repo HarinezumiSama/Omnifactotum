@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using Omnifactotum.Annotations;
+using PureAttribute = System.Diagnostics.Contracts.PureAttribute;
 using static Omnifactotum.FormattableStringFactotum;
 
 #if NET5_0_OR_GREATER
@@ -100,14 +101,28 @@ public class FixedSizeDictionary<TKey, TValue, TDeterminant> : IDictionary<TKey,
     }
 
     /// <inheritdoc />
-    public ICollection<TKey> Keys { get; }
+    [Pure]
+    public ICollection<TKey> Keys
+    {
+        [Pure]
+        [Omnifactotum.Annotations.Pure]
+        get;
+    }
 
     /// <inheritdoc />
-    public ICollection<TValue> Values { get; }
+    [Pure]
+    public ICollection<TValue> Values
+    {
+        [Pure]
+        [Omnifactotum.Annotations.Pure]
+        get;
+    }
 
     /// <inheritdoc cref="IDictionary{TKey,TValue}.this" />
     public TValue this[TKey key]
     {
+        [Pure]
+        [Omnifactotum.Annotations.Pure]
         get
         {
             var found = TryGetValue(key, out var result);
@@ -128,6 +143,8 @@ public class FixedSizeDictionary<TKey, TValue, TDeterminant> : IDictionary<TKey,
     /// </summary>
     public int Count
     {
+        [Pure]
+        [Omnifactotum.Annotations.Pure]
         [DebuggerStepThrough]
         get;
         [DebuggerStepThrough]
@@ -138,13 +155,31 @@ public class FixedSizeDictionary<TKey, TValue, TDeterminant> : IDictionary<TKey,
     ///     Gets a value indicating whether
     ///     the <see cref="FixedSizeDictionary{TKey,TValue,TDeterminant}" /> is read-only.
     /// </summary>
-    public bool IsReadOnly => false;
+    [Pure]
+    public bool IsReadOnly
+    {
+        [Pure]
+        [Omnifactotum.Annotations.Pure]
+        get => false;
+    }
 
     /// <inheritdoc />
-    IEnumerable<TKey> IReadOnlyDictionary<TKey, TValue>.Keys => Keys;
+    [Pure]
+    IEnumerable<TKey> IReadOnlyDictionary<TKey, TValue>.Keys
+    {
+        [Pure]
+        [Omnifactotum.Annotations.Pure]
+        get => Keys;
+    }
 
     /// <inheritdoc />
-    IEnumerable<TValue> IReadOnlyDictionary<TKey, TValue>.Values => Values;
+    [Pure]
+    IEnumerable<TValue> IReadOnlyDictionary<TKey, TValue>.Values
+    {
+        [Pure]
+        [Omnifactotum.Annotations.Pure]
+        get => Values;
+    }
 
     /// <inheritdoc />
     public void Add(TKey key, TValue value)
@@ -153,6 +188,8 @@ public class FixedSizeDictionary<TKey, TValue, TDeterminant> : IDictionary<TKey,
     }
 
     /// <inheritdoc cref="IReadOnlyDictionary{TKey,TValue}.ContainsKey" />
+    [Pure]
+    [Omnifactotum.Annotations.Pure]
     public bool ContainsKey(TKey key)
     {
         if (key is null)
@@ -214,6 +251,8 @@ public class FixedSizeDictionary<TKey, TValue, TDeterminant> : IDictionary<TKey,
     }
 
     /// <inheritdoc />
+    [Pure]
+    [Omnifactotum.Annotations.Pure]
     bool ICollection<KeyValuePair<TKey, TValue>>.Contains(KeyValuePair<TKey, TValue> item)
         => TryGetValue(item.Key, out var value) && EqualityComparer<TValue>.Default.Equals(value, item.Value);
 

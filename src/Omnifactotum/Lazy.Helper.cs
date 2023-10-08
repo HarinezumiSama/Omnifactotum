@@ -1,5 +1,6 @@
 ﻿using System.Threading;
 using Omnifactotum.Annotations;
+using PureAttribute = System.Diagnostics.Contracts.PureAttribute;
 
 //// ReSharper disable RedundantNullnessAttributeWithNullableReferenceTypes
 //// ReSharper disable AnnotationRedundancyInHierarchy
@@ -29,6 +30,8 @@ public static class Lazy
     /// <exception cref="System.ArgumentNullException">
     ///     <paramref name="valueFactory"/> is <see langword="null"/>.
     /// </exception>
+    [Pure]
+    [Omnifactotum.Annotations.Pure]
     public static Lazy<T> Create<T>([NotNull] Func<T> valueFactory) => new(valueFactory);
 
     /// <summary>
@@ -51,6 +54,8 @@ public static class Lazy
     /// <exception cref="System.ArgumentNullException">
     ///     <paramref name="valueFactory"/> is <see langword="null"/>.
     /// </exception>
+    [Pure]
+    [Omnifactotum.Annotations.Pure]
     public static Lazy<T> Create<T>([NotNull] Func<T> valueFactory, bool isThreadSafe) => new(valueFactory, isThreadSafe);
 
     /// <summary>
@@ -75,5 +80,7 @@ public static class Lazy
     /// <exception cref="System.ArgumentOutOfRangeException">
     ///     <paramref name="mode"/> contains an invalid value.
     /// </exception>
+    [Pure]
+    [Omnifactotum.Annotations.Pure]
     public static Lazy<T> Create<T>([NotNull] Func<T> valueFactory, LazyThreadSafetyMode mode) => new(valueFactory, mode);
 }

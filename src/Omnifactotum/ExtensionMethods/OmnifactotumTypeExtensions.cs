@@ -6,6 +6,7 @@ using System.Runtime.CompilerServices;
 using System.Text;
 using Omnifactotum;
 using Omnifactotum.Annotations;
+using PureAttribute = System.Diagnostics.Contracts.PureAttribute;
 
 //// ReSharper disable RedundantNullnessAttributeWithNullableReferenceTypes
 //// ReSharper disable UseNullableReferenceTypesAnnotationSyntax
@@ -138,6 +139,8 @@ public static class OmnifactotumTypeExtensions
     ///     </list>
     /// </example>
     [MethodImpl(OmnifactotumConstants.MethodOptimizationOptions.Standard)]
+    [Pure]
+    [Omnifactotum.Annotations.Pure]
     public static string GetQualifiedName([NotNull] this Type type) => GetNameInternal(type, false);
 
     /// <summary>
@@ -189,6 +192,8 @@ public static class OmnifactotumTypeExtensions
     ///     </list>
     /// </example>
     [MethodImpl(OmnifactotumConstants.MethodOptimizationOptions.Standard)]
+    [Pure]
+    [Omnifactotum.Annotations.Pure]
     public static string GetFullName([NotNull] this Type type) => GetNameInternal(type, true);
 
     /// <summary>
@@ -198,6 +203,8 @@ public static class OmnifactotumTypeExtensions
         $@"""{nameof(OmnifactotumTypeExtensions)}.{nameof(IsNullable)}"" is deprecated and will be removed in a future version"
         + $@". Please use ""{nameof(OmnifactotumTypeExtensions)}.{nameof(IsNullableValueType)}"" instead.",
         false)]
+    [Pure]
+    [Omnifactotum.Annotations.Pure]
     public static bool IsNullable([NotNull] this Type type) => IsNullableValueType(type);
 
     /// <summary>
@@ -210,6 +217,8 @@ public static class OmnifactotumTypeExtensions
     ///     <see langword="true"/> if the specified type is <see cref="Nullable{T}"/> for a certain type T;
     ///     otherwise, <see langword="false"/>.
     /// </returns>
+    [Pure]
+    [Omnifactotum.Annotations.Pure]
     public static bool IsNullableValueType([NotNull] this Type type)
     {
         if (type is null)
@@ -227,6 +236,8 @@ public static class OmnifactotumTypeExtensions
         $@"""{nameof(OmnifactotumTypeExtensions)}.{nameof(GetCollectionElementType)}"" is deprecated and will be removed in a future version"
         + $@". Please use ""{nameof(OmnifactotumTypeExtensions)}.{nameof(GetCollectionElementTypeOrDefault)}"" instead.",
         false)]
+    [Pure]
+    [Omnifactotum.Annotations.Pure]
     [CanBeNull]
     public static Type? GetCollectionElementType([NotNull] this Type type) => GetCollectionElementTypeOrDefault(type);
 
@@ -250,6 +261,8 @@ public static class OmnifactotumTypeExtensions
     /// <returns>
     ///     The type of the elements in the collection represented by the specified type.
     /// </returns>
+    [Pure]
+    [Omnifactotum.Annotations.Pure]
     [CanBeNull]
     public static Type? GetCollectionElementTypeOrDefault([NotNull] this Type type)
     {

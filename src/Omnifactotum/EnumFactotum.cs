@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using Omnifactotum.Annotations;
+using PureAttribute = System.Diagnostics.Contracts.PureAttribute;
 using static Omnifactotum.FormattableStringFactotum;
 
 //// ReSharper disable RedundantNullnessAttributeWithNullableReferenceTypes
@@ -29,6 +30,8 @@ public static class EnumFactotum
     /// <returns>
     ///     A strongly-typed value of the enumeration.
     /// </returns>
+    [Pure]
+    [Omnifactotum.Annotations.Pure]
     public static TEnum GetValue<TEnum>([NotNull] string enumValueName, bool ignoreCase)
         where TEnum : struct, Enum
     {
@@ -68,6 +71,8 @@ public static class EnumFactotum
     /// <returns>
     ///     A strongly-typed value of the enumeration.
     /// </returns>
+    [Pure]
+    [Omnifactotum.Annotations.Pure]
     public static TEnum GetValue<TEnum>([NotNull] string enumValueName)
         where TEnum : struct, Enum
         => GetValue<TEnum>(enumValueName, false);
@@ -81,6 +86,8 @@ public static class EnumFactotum
     /// <returns>
     ///     A collection of the enumeration values.
     /// </returns>
+    [Pure]
+    [Omnifactotum.Annotations.Pure]
     public static TEnum[] GetAllValues<TEnum>()
         where TEnum : struct, Enum
     {
@@ -104,6 +111,8 @@ public static class EnumFactotum
     /// <returns>
     ///     An array of all the flag values defined in the specified enumeration.
     /// </returns>
+    [Pure]
+    [Omnifactotum.Annotations.Pure]
     public static TEnum[] GetAllFlagValues<TEnum>()
         where TEnum : struct, Enum
     {

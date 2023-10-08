@@ -2,6 +2,7 @@
 using Omnifactotum;
 using Omnifactotum.Annotations;
 using NotNullIfNotNull = System.Diagnostics.CodeAnalysis.NotNullIfNotNullAttribute;
+using PureAttribute = System.Diagnostics.Contracts.PureAttribute;
 
 //// ReSharper disable RedundantNullnessAttributeWithNullableReferenceTypes
 //// ReSharper disable UseNullableReferenceTypesAnnotationSyntax
@@ -30,6 +31,8 @@ public static class OmnifactotumReadOnlySpanExtensions
     /// <returns>
     ///     A hexadecimal string representation of the specified span of bytes.
     /// </returns>
+    [Pure]
+    [Omnifactotum.Annotations.Pure]
     [NotNull]
     public static unsafe string ToHexString(this ReadOnlySpan<byte> bytes, [CanBeNull] string? separator = null, bool upperCase = false)
     {

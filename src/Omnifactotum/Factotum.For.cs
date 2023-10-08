@@ -4,6 +4,7 @@ using System.Linq.Expressions;
 using System.Reflection;
 using Omnifactotum.Annotations;
 using NotNullIfNotNullAttribute = System.Diagnostics.CodeAnalysis.NotNullIfNotNullAttribute;
+using PureAttribute = System.Diagnostics.Contracts.PureAttribute;
 
 //// ReSharper disable RedundantNullnessAttributeWithNullableReferenceTypes
 //// ReSharper disable AnnotationRedundancyInHierarchy
@@ -35,7 +36,7 @@ public static partial class Factotum
         /// <returns>
         ///     The instance passed as an argument.
         /// </returns>
-        [return: NotNullIfNotNull("obj")]
+        [return: NotNullIfNotNull(nameof(obj))]
         public static TObject Identity(TObject obj) => obj;
 
         /// <summary>
@@ -50,6 +51,8 @@ public static partial class Factotum
         /// <returns>
         ///     The <see cref="MemberInfo"/> containing information about the required field or property.
         /// </returns>
+        [Pure]
+        [Omnifactotum.Annotations.Pure]
         [NotNull]
         public static MemberInfo GetFieldOrPropertyInfo<TMember>([NotNull] Expression<Func<TObject, TMember>> memberGetterExpression)
             => GetDataMemberInfo(memberGetterExpression);
@@ -66,6 +69,8 @@ public static partial class Factotum
         /// <returns>
         ///     The <see cref="FieldInfo"/> containing information about the required field.
         /// </returns>
+        [Pure]
+        [Omnifactotum.Annotations.Pure]
         [NotNull]
         public static FieldInfo GetFieldInfo<TField>([NotNull] Expression<Func<TObject, TField>> fieldGetterExpression)
         {
@@ -97,6 +102,8 @@ public static partial class Factotum
         /// <returns>
         ///     The name of the field specified by the lambda expression.
         /// </returns>
+        [Pure]
+        [Omnifactotum.Annotations.Pure]
         [NotNull]
         public static string GetFieldName<TField>([NotNull] Expression<Func<TObject, TField>> fieldGetterExpression)
         {
@@ -116,6 +123,8 @@ public static partial class Factotum
         /// <returns>
         ///     The name of the field in the following form: <c>SomeType.Field</c>.
         /// </returns>
+        [Pure]
+        [Omnifactotum.Annotations.Pure]
         [NotNull]
         public static string GetQualifiedFieldName<TField>([NotNull] Expression<Func<TObject, TField>> fieldGetterExpression)
         {
@@ -135,6 +144,8 @@ public static partial class Factotum
         /// <returns>
         ///     The <see cref="PropertyInfo"/> containing information about the required property.
         /// </returns>
+        [Pure]
+        [Omnifactotum.Annotations.Pure]
         [NotNull]
         public static PropertyInfo GetPropertyInfo<TProperty>([NotNull] Expression<Func<TObject, TProperty>> propertyGetterExpression)
         {
@@ -166,6 +177,8 @@ public static partial class Factotum
         /// <returns>
         ///     The name of the property.
         /// </returns>
+        [Pure]
+        [Omnifactotum.Annotations.Pure]
         [NotNull]
         public static string GetPropertyName<TProperty>([NotNull] Expression<Func<TObject, TProperty>> propertyGetterExpression)
         {
@@ -185,6 +198,8 @@ public static partial class Factotum
         /// <returns>
         ///     The name of the property in the following form: <c>SomeType.Property</c>.
         /// </returns>
+        [Pure]
+        [Omnifactotum.Annotations.Pure]
         [NotNull]
         public static string GetQualifiedPropertyName<TProperty>([NotNull] Expression<Func<TObject, TProperty>> propertyGetterExpression)
         {
@@ -192,6 +207,8 @@ public static partial class Factotum
             return typeof(TObject).GetQualifiedName() + Type.Delimiter + propertyInfo.Name;
         }
 
+        [Pure]
+        [Omnifactotum.Annotations.Pure]
         [NotNull]
         private static MemberInfo GetDataMemberInfo<TMember>([NotNull] Expression<Func<TObject, TMember>> memberGetterExpression)
         {

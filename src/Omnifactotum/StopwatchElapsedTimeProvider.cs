@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Diagnostics;
 using Omnifactotum.Abstractions;
+using PureAttribute = System.Diagnostics.Contracts.PureAttribute;
 
 namespace Omnifactotum;
 
@@ -17,10 +18,22 @@ public sealed class StopwatchElapsedTimeProvider : IElapsedTimeProvider
     public StopwatchElapsedTimeProvider() => _stopwatch = new Stopwatch();
 
     /// <inheritdoc />
-    public bool IsRunning => _stopwatch.IsRunning;
+    [Pure]
+    public bool IsRunning
+    {
+        [Pure]
+        [Omnifactotum.Annotations.Pure]
+        get => _stopwatch.IsRunning;
+    }
 
     /// <inheritdoc />
-    public TimeSpan Elapsed => _stopwatch.Elapsed;
+    [Pure]
+    public TimeSpan Elapsed
+    {
+        [Pure]
+        [Omnifactotum.Annotations.Pure]
+        get => _stopwatch.Elapsed;
+    }
 
     /// <inheritdoc />
     public void Start() => _stopwatch.Start();

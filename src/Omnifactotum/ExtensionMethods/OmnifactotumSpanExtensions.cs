@@ -1,6 +1,7 @@
 ﻿using System.Runtime.CompilerServices;
 using Omnifactotum;
 using Omnifactotum.Annotations;
+using PureAttribute = System.Diagnostics.Contracts.PureAttribute;
 
 //// ReSharper disable RedundantNullnessAttributeWithNullableReferenceTypes
 //// ReSharper disable UseNullableReferenceTypesAnnotationSyntax
@@ -30,6 +31,8 @@ public static class OmnifactotumSpanExtensions
     ///     A hexadecimal string representation of the specified span of bytes.
     /// </returns>
     [MethodImpl(OmnifactotumConstants.MethodOptimizationOptions.Standard)]
+    [Pure]
+    [Omnifactotum.Annotations.Pure]
     [NotNull]
     public static string ToHexString(this Span<byte> bytes, [CanBeNull] string? separator = null, bool upperCase = false)
         => ((ReadOnlySpan<byte>)bytes).ToHexString(separator, upperCase);

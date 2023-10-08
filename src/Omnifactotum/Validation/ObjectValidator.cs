@@ -7,6 +7,7 @@ using System.Reflection;
 using Omnifactotum.Annotations;
 using Omnifactotum.Validation.Constraints;
 using DisallowNullAttribute = System.Diagnostics.CodeAnalysis.DisallowNullAttribute;
+using PureAttribute = System.Diagnostics.Contracts.PureAttribute;
 
 #if NET5_0_OR_GREATER
 using System.Runtime.CompilerServices;
@@ -69,6 +70,8 @@ public static class ObjectValidator
     /// <returns>
     ///     An <see cref="ObjectValidationResult"/> representing the validation result.
     /// </returns>
+    [Pure]
+    [Omnifactotum.Annotations.Pure]
     [NotNull]
     public static ObjectValidationResult Validate<T>(
         [DisallowNull] T instance,
@@ -131,9 +134,13 @@ public static class ObjectValidator
         void ProcessItem(MemberData data) => ValidateInternal(instance, parameterExpression, data, objectValidatorContext);
     }
 
+    [Pure]
+    [Omnifactotum.Annotations.Pure]
     private static bool IsReadableProperty([NotNull] MemberInfo info)
         => info is PropertyInfo { CanRead: true } propertyInfo && propertyInfo.GetIndexParameters().Length == 0;
 
+    [Pure]
+    [Omnifactotum.Annotations.Pure]
     private static bool IsSimpleTypeInternal([NotNull] Type type)
         => type.IsPrimitive
             || type.IsEnum
@@ -145,12 +152,16 @@ public static class ObjectValidator
             || type == typeof(DateTimeOffset)
             || type.IsNullableValueType();
 
+    [Pure]
+    [Omnifactotum.Annotations.Pure]
     [CanBeNull]
     private static BaseMemberConstraintAttribute[]? FilterBy<TAttribute>(
         [CanBeNull] this IEnumerable<BaseValidatableMemberAttribute>? attributes)
         where TAttribute : BaseMemberConstraintAttribute
         => attributes?.Where(obj => obj is TAttribute).Cast<BaseMemberConstraintAttribute>().ToArray();
 
+    [Pure]
+    [Omnifactotum.Annotations.Pure]
     [CanBeNull]
     private static object? GetMemberValue([NotNull] object instance, [NotNull] MemberInfo memberInfo)
         => memberInfo switch
@@ -161,6 +172,8 @@ public static class ObjectValidator
                 $@"Invalid type of {nameof(memberInfo).ToUIString()}: {memberInfo.GetType().GetFullName().ToUIString()}")
         };
 
+    [Pure]
+    [Omnifactotum.Annotations.Pure]
     [NotNull]
     private static IEnumerable<MemberData> GetMembers([NotNull] MemberData parentMemberData)
     {

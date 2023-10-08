@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Runtime.CompilerServices;
 using Omnifactotum.Annotations;
+using PureAttribute = System.Diagnostics.Contracts.PureAttribute;
 using static Omnifactotum.FormattableStringFactotum;
 
 //// ReSharper disable RedundantNullnessAttributeWithNullableReferenceTypes
@@ -57,6 +58,8 @@ public sealed class WeakReferenceBasedCache<TKey, TValue>
     [NotNull]
     public IEqualityComparer<TKey> KeyEqualityComparer
     {
+        [Pure]
+        [Omnifactotum.Annotations.Pure]
         [DebuggerNonUserCode]
         [MethodImpl(OmnifactotumConstants.MethodOptimizationOptions.Maximum)]
         get

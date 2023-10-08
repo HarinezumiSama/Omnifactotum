@@ -1,9 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Diagnostics.Contracts;
 using System.Runtime.CompilerServices;
 using CanBeNullAttribute = Omnifactotum.Annotations.CanBeNullAttribute;
 using NotNullAttribute = Omnifactotum.Annotations.NotNullAttribute;
+using PureAttribute = System.Diagnostics.Contracts.PureAttribute;
 using static Omnifactotum.FormattableStringFactotum;
 
 #if NET7_0_OR_GREATER
@@ -57,12 +57,22 @@ public readonly struct ValueRange<T>
     /// <summary>
     ///     Gets the lower boundary of the range.
     /// </summary>
-    public T Lower { get; }
+    public T Lower
+    {
+        [Pure]
+        [Omnifactotum.Annotations.Pure]
+        get;
+    }
 
     /// <summary>
     ///     Gets the upper boundary of the range.
     /// </summary>
-    public T Upper { get; }
+    public T Upper
+    {
+        [Pure]
+        [Omnifactotum.Annotations.Pure]
+        get;
+    }
 
     /// <summary>
     ///     Determines if the two specified <see cref="ValueRange{T}"/> instances are equal.

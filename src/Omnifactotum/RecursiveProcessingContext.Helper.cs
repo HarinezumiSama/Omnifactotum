@@ -4,6 +4,7 @@ using System.Linq.Expressions;
 using System.Reflection;
 using System.Runtime.CompilerServices;
 using Omnifactotum.Annotations;
+using PureAttribute = System.Diagnostics.Contracts.PureAttribute;
 
 //// ReSharper disable RedundantNullnessAttributeWithNullableReferenceTypes
 //// ReSharper disable UseNullableReferenceTypesAnnotationSyntax
@@ -30,6 +31,8 @@ public static class RecursiveProcessingContext
     /// </param>
     /// <seealso cref="ByReferenceEqualityComparer{T}"/>
     [MethodImpl(OmnifactotumConstants.MethodOptimizationOptions.Standard)]
+    [Pure]
+    [Omnifactotum.Annotations.Pure]
     public static RecursiveProcessingContext<T> Create<T>([CanBeNull] IEqualityComparer<T>? equalityComparer = null) => new(equalityComparer);
 
     internal static Func<IEqualityComparer<T>?, HashSet<T>?> GenerateCreateHashSetMethod<T>()

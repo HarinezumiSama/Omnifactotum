@@ -1,4 +1,5 @@
 ﻿using System.Runtime.CompilerServices;
+using PureAttribute = System.Diagnostics.Contracts.PureAttribute;
 
 namespace Omnifactotum;
 
@@ -21,5 +22,7 @@ public static class DirectedGraphNode
     ///     A new instance of the <see cref="DirectedGraphNode{T}"/> class.
     /// </returns>
     [MethodImpl(OmnifactotumConstants.MethodOptimizationOptions.Maximum)]
+    [Pure]
+    [Omnifactotum.Annotations.Pure]
     public static DirectedGraphNode<T> Create<T>(T value) => new(value);
 }

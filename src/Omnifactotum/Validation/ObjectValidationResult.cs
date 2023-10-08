@@ -5,6 +5,7 @@ using System.Diagnostics;
 using System.Linq;
 using Omnifactotum.Annotations;
 using Omnifactotum.Validation.Constraints;
+using PureAttribute = System.Diagnostics.Contracts.PureAttribute;
 
 //// ReSharper disable RedundantNullnessAttributeWithNullableReferenceTypes
 //// ReSharper disable AnnotationRedundancyInHierarchy
@@ -67,6 +68,8 @@ public sealed class ObjectValidationResult
     ///     An <see cref="ObjectValidationException"/> if validation failed;
     ///     or <see langword="null"/> if validation succeeded.
     /// </returns>
+    [Pure]
+    [Omnifactotum.Annotations.Pure]
     [CanBeNull]
     public ObjectValidationException? GetException(
         [NotNull] [InstantHandle] Func<MemberConstraintValidationError, string> getErrorDescription,
@@ -100,6 +103,8 @@ public sealed class ObjectValidationResult
     ///     An <see cref="ObjectValidationException"/> if validation failed;
     ///     or <see langword="null"/> if validation succeeded.
     /// </returns>
+    [Pure]
+    [Omnifactotum.Annotations.Pure]
     [CanBeNull]
     public ObjectValidationException? GetException() => GetException(MemberConstraintValidationError.GetDefaultDescription, Environment.NewLine);
 

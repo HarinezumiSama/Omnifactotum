@@ -1,6 +1,7 @@
 ﻿using System.Runtime.CompilerServices;
 using Omnifactotum;
 using Omnifactotum.Annotations;
+using PureAttribute = System.Diagnostics.Contracts.PureAttribute;
 
 //// ReSharper disable RedundantNullnessAttributeWithNullableReferenceTypes
 //// ReSharper disable UseNullableReferenceTypesAnnotationSyntax
@@ -26,6 +27,8 @@ public static class OmnifactotumSetExtensions
     ///     A read-only wrapper for the specified set.
     /// </returns>
     [MethodImpl(OmnifactotumConstants.MethodOptimizationOptions.Standard)]
+    [Pure]
+    [Omnifactotum.Annotations.Pure]
     [NotNull]
     public static ReadOnlySet<T> AsReadOnly<T>([NotNull] this ISet<T> set)
         => set is null ? throw new ArgumentNullException(nameof(set)) : new ReadOnlySet<T>(set);

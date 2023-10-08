@@ -34,9 +34,10 @@ public static class OmnifactotumNullableBooleanExtensions
     /// <returns>
     ///     The string representation of the specified nullable Boolean value.
     /// </returns>
-    [Pure]
     [SuppressMessage("ReSharper", "ArrangeRedundantParentheses", Justification = "For clarity.")]
     [MethodImpl(OmnifactotumConstants.MethodOptimizationOptions.Standard)]
+    [Pure]
+    [Omnifactotum.Annotations.Pure]
     [CanBeNull]
     public static string? ToString(
         [CanBeNull] this bool? value,
@@ -67,6 +68,8 @@ public static class OmnifactotumNullableBooleanExtensions
     ///     The string representation of the specified nullable Boolean value.
     /// </returns>
     [SuppressMessage("ReSharper", "ArrangeRedundantParentheses", Justification = "For clarity.")]
+    [Pure]
+    [Omnifactotum.Annotations.Pure]
     [CanBeNull]
     public static string? ToString(
         [CanBeNull] this bool? value,

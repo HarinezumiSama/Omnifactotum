@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Diagnostics;
 using Omnifactotum.Annotations;
+using PureAttribute = System.Diagnostics.Contracts.PureAttribute;
 using static Omnifactotum.FormattableStringFactotum;
 
 //// ReSharper disable RedundantNullnessAttributeWithNullableReferenceTypes
@@ -44,6 +45,8 @@ public sealed class VirtualTreeNodeCollection<T> : IList<VirtualTreeNode<T>>
     /// </summary>
     public int Count
     {
+        [Pure]
+        [Omnifactotum.Annotations.Pure]
         [DebuggerStepThrough]
         get => _list.Count;
     }
@@ -56,6 +59,8 @@ public sealed class VirtualTreeNodeCollection<T> : IList<VirtualTreeNode<T>>
     /// </returns>
     public bool IsReadOnly
     {
+        [Pure]
+        [Omnifactotum.Annotations.Pure]
         [DebuggerStepThrough]
         get => false;
     }
@@ -75,6 +80,8 @@ public sealed class VirtualTreeNodeCollection<T> : IList<VirtualTreeNode<T>>
     [NotNull]
     public VirtualTreeNode<T> this[int index]
     {
+        [Pure]
+        [Omnifactotum.Annotations.Pure]
         get => _list[index];
 
         set
@@ -140,6 +147,8 @@ public sealed class VirtualTreeNodeCollection<T> : IList<VirtualTreeNode<T>>
     /// <returns>
     ///     The index of <paramref name="item"/> if found; otherwise, <c>-1</c>.
     /// </returns>
+    [Pure]
+    [Omnifactotum.Annotations.Pure]
     //// ReSharper disable once AnnotationConflictInHierarchy
     public int IndexOf([NotNull] VirtualTreeNode<T> item)
     {
@@ -238,6 +247,8 @@ public sealed class VirtualTreeNodeCollection<T> : IList<VirtualTreeNode<T>>
     ///     <see langword="true"/> if <paramref name="item"/> is found in the <see cref="VirtualTreeNodeCollection{T}"/>;
     ///     otherwise, <see langword="false"/>.
     /// </returns>
+    [Pure]
+    [Omnifactotum.Annotations.Pure]
     //// ReSharper disable once AnnotationConflictInHierarchy
     public bool Contains([NotNull] VirtualTreeNode<T> item)
     {

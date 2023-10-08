@@ -6,6 +6,7 @@ using System.Linq;
 using System.Text;
 using System.Text.RegularExpressions;
 using Omnifactotum.Annotations;
+using PureAttribute = System.Diagnostics.Contracts.PureAttribute;
 
 //// ReSharper disable RedundantNullnessAttributeWithNullableReferenceTypes
 //// ReSharper disable once UseNullableReferenceTypesAnnotationSyntax
@@ -70,15 +71,27 @@ public sealed class TemplatedStringResolver
     ///     <see cref="IEqualityComparer{T}"/> used to compare the names of the template variables.
     /// </summary>
     /// <seealso cref="TemplatedStringResolver(IReadOnlyDictionary{string, string}, IEqualityComparer{string})"/>
+    [Pure]
     [NotNull]
-    public IEqualityComparer<string> TemplateVariableNameComparer { get; }
+    public IEqualityComparer<string> TemplateVariableNameComparer
+    {
+        [Pure]
+        [Omnifactotum.Annotations.Pure]
+        get;
+    }
 
     /// <summary>
     ///     Gets the dictionary having the template variable names as its keys and the corresponding template variable values as its values.
     ///     How the variable names are compared depends on <see cref="TemplateVariableNameComparer"/>.
     /// </summary>
+    [Pure]
     [NotNull]
-    public ImmutableDictionary<string, string> TemplateVariables { get; }
+    public ImmutableDictionary<string, string> TemplateVariables
+    {
+        [Pure]
+        [Omnifactotum.Annotations.Pure]
+        get;
+    }
 
     /// <summary>
     ///     Determines the names of the template variables used in the specified templated string.
@@ -99,6 +112,8 @@ public sealed class TemplatedStringResolver
     /// <exception cref="TemplatedStringResolverException">
     ///     There is an error in the templated string.
     /// </exception>
+    [Pure]
+    [Omnifactotum.Annotations.Pure]
     [NotNull]
     [ItemNotNull]
     public static HashSet<string> GetVariableNames(
@@ -146,6 +161,8 @@ public sealed class TemplatedStringResolver
     /// <exception cref="TemplatedStringResolverException">
     ///     There is an error in the templated string.
     /// </exception>
+    [Pure]
+    [Omnifactotum.Annotations.Pure]
     [NotNull]
     public string Resolve(
         [NotNull] string templatedString,
@@ -167,6 +184,8 @@ public sealed class TemplatedStringResolver
         return resultBuilder.ToString();
     }
 
+    [Pure]
+    [Omnifactotum.Annotations.Pure]
     private static IEqualityComparer<string> ResolveVariableNameComparer([CanBeNull] IEqualityComparer<string>? templateVariableNameComparer)
         => templateVariableNameComparer ?? DefaultTemplateVariableNameComparer;
 
@@ -241,6 +260,7 @@ public sealed class TemplatedStringResolver
                 continue;
             }
 
+            //// ReSharper disable once RedundantCast
             var successfulGroups = ((IEnumerable<Group>)match.Groups).Where(group => group.Success).ToArray();
 
             var successfulGroupsDescription = successfulGroups

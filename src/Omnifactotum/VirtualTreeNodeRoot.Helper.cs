@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using Omnifactotum.Annotations;
+using PureAttribute = System.Diagnostics.Contracts.PureAttribute;
 
 //// ReSharper disable RedundantNullnessAttributeWithNullableReferenceTypes
 //// ReSharper disable AnnotationRedundancyInHierarchy
@@ -23,5 +24,7 @@ public static class VirtualTreeNodeRoot
     /// <returns>
     ///     A new instance of the <see cref="VirtualTreeNodeRoot{T}"/> class containing the specified value.
     /// </returns>
+    [Pure]
+    [Omnifactotum.Annotations.Pure]
     public static VirtualTreeNodeRoot<T> Create<T>([CanBeNull] IReadOnlyCollection<VirtualTreeNode<T>>? children = null) => new(children);
 }

@@ -1,4 +1,6 @@
-﻿namespace Omnifactotum;
+﻿using PureAttribute = System.Diagnostics.Contracts.PureAttribute;
+
+namespace Omnifactotum;
 
 /// <summary>
 ///     Provides helper functionality for creating instances of the <see cref="SmartDisposable{T}"/> type using type inference in a friendly way.
@@ -17,5 +19,7 @@ public static class SmartDisposable
     /// <returns>
     ///     A new <see cref="SmartDisposable{T}"/> instance.
     /// </returns>
+    [Pure]
+    [Omnifactotum.Annotations.Pure]
     public static SmartDisposable<T> Create<T>(T instance) => new(instance);
 }

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.ComponentModel;
+using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using Moq;
 using NUnit.Framework;
@@ -356,6 +357,9 @@ internal sealed class FactotumTests
         // No members
     }
 
+    [SuppressMessage("Performance", "CA1822:Mark members as static")]
+    [SuppressMessage("ReSharper", "PropertyCanBeMadeInitOnly.Local", Justification = "Multiple target frameworks.")]
+    [SuppressMessage("ReSharper", "MemberCanBeMadeStatic.Local")]
     private sealed class SetDefaultValuesTestClass
     {
         public const string DefaultStringValue = "DefaultStringValue";
@@ -370,7 +374,6 @@ internal sealed class FactotumTests
         public string? StringValueWithDefault { get; internal set; }
 
         [DefaultValue(DefaultStringValue)]
-        //// ReSharper disable once MemberCanBeMadeStatic.Local
         public string ReadOnlyStringValueWithDefault => NonDefaultStringValue;
 
         [DefaultValue(DefaultStringValue)]

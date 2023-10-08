@@ -3,6 +3,7 @@ using System.Linq.Expressions;
 using Omnifactotum.Annotations;
 using Omnifactotum.Validation.Constraints;
 using static Omnifactotum.FormattableStringFactotum;
+using PureAttribute = System.Diagnostics.Contracts.PureAttribute;
 
 //// ReSharper disable RedundantNullnessAttributeWithNullableReferenceTypes
 //// ReSharper disable AnnotationRedundancyInHierarchy
@@ -28,6 +29,8 @@ internal static class ValidationFactotum
     /// <returns>
     ///     An original expression, if conversion was not needed; otherwise, a converted expression.
     /// </returns>
+    [Pure]
+    [Omnifactotum.Annotations.Pure]
     public static Expression ConvertTypeAuto([NotNull] Expression expression, [NotNull] Type valueType)
     {
         if (expression is null)
@@ -57,6 +60,8 @@ internal static class ValidationFactotum
     /// <returns>
     ///     An original expression, if conversion was not needed; otherwise, a converted expression.
     /// </returns>
+    [Pure]
+    [Omnifactotum.Annotations.Pure]
     public static Expression ConvertTypeAuto([NotNull] Expression expression, [CanBeNull] object? value)
         => value is null ? expression.EnsureNotNull() : ConvertTypeAuto(expression, value.GetType());
 
@@ -72,6 +77,8 @@ internal static class ValidationFactotum
     /// <exception cref="ArgumentNullException">
     ///     <paramref name="constraintType"/> is <see langword="null"/>.
     /// </exception>
+    [Pure]
+    [Omnifactotum.Annotations.Pure]
     public static bool IsValidMemberConstraintType([NotNull] this Type constraintType)
     {
         if (constraintType is null)

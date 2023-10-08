@@ -1,6 +1,11 @@
 ﻿using System;
 using System.Threading;
 using System.Threading.Tasks;
+using Omnifactotum.Annotations;
+using PureAttribute = System.Diagnostics.Contracts.PureAttribute;
+
+//// ReSharper disable RedundantNullnessAttributeWithNullableReferenceTypes
+//// ReSharper disable UseNullableReferenceTypesAnnotationSyntax
 
 namespace Omnifactotum.Threading;
 
@@ -86,6 +91,9 @@ public sealed class SemaphoreSlimBasedLock : IDisposable
     /// <returns>
     ///     An instance of <see cref="IDisposable"/> that the caller disposes of to release the lock.
     /// </returns>
+    [Pure]
+    [Omnifactotum.Annotations.Pure]
+    [NotNull]
     public IDisposable Acquire(CancellationToken cancellationToken = default)
     {
         UnderlyingSemaphore.Wait(cancellationToken);
@@ -101,6 +109,10 @@ public sealed class SemaphoreSlimBasedLock : IDisposable
     /// <returns>
     ///     An instance of <see cref="IDisposable"/> that the caller disposes of to release the lock.
     /// </returns>
+    [Pure]
+    [Omnifactotum.Annotations.Pure]
+    [NotNull]
+    [ItemNotNull]
     public async Task<IDisposable> AcquireAsync(CancellationToken cancellationToken = default)
     {
         await UnderlyingSemaphore.WaitAsync(cancellationToken).ConfigureAwaitNoCapturedContext();

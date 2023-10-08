@@ -1,9 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Collections.ObjectModel;
 using NUnit.Framework;
 using Omnifactotum.Annotations;
 using Omnifactotum.NUnit;
+
+#if !NET7_0_OR_GREATER
+using System.Collections.ObjectModel;
+#endif
 
 //// ReSharper disable RedundantNullnessAttributeWithNullableReferenceTypes
 //// ReSharper disable UseNullableReferenceTypesAnnotationSyntax

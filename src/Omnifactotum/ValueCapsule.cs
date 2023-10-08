@@ -1,4 +1,6 @@
-﻿namespace Omnifactotum;
+﻿using PureAttribute = System.Diagnostics.Contracts.PureAttribute;
+
+namespace Omnifactotum;
 
 /// <summary>
 ///     Represents the abstract immutable container that encapsulates a strongly-typed value.
@@ -19,5 +21,11 @@ public abstract class ValueCapsule<T>
     /// <summary>
     ///     Gets the contained value.
     /// </summary>
-    public T Value { get; }
+    [Pure]
+    public T Value
+    {
+        [Pure]
+        [Omnifactotum.Annotations.Pure]
+        get;
+    }
 }

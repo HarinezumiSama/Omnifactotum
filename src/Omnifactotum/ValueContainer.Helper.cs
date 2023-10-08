@@ -1,4 +1,6 @@
-﻿namespace Omnifactotum;
+﻿using PureAttribute = System.Diagnostics.Contracts.PureAttribute;
+
+namespace Omnifactotum;
 
 /// <summary>
 ///     Provides helper functionality for creating instances of the <see cref="ValueContainer{T}"/> type
@@ -16,5 +18,7 @@ public static class ValueContainer
     /// <returns>
     ///     A created and initialized instance of the <see cref="ValueContainer{T}" /> class.
     /// </returns>
+    [Pure]
+    [Omnifactotum.Annotations.Pure]
     public static ValueContainer<T> Create<T>(T value) => new(value);
 }

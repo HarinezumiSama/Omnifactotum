@@ -1,4 +1,5 @@
 ﻿using System;
+using PureAttribute = System.Diagnostics.Contracts.PureAttribute;
 
 namespace Omnifactotum.Abstractions;
 
@@ -13,6 +14,8 @@ public static class CurrentDateTimeProviderExtensions
     /// <returns>
     ///     A <see cref="DateTime"/> object that is set to the current <b>local</b> date and time.
     /// </returns>
+    [Pure]
+    [Omnifactotum.Annotations.Pure]
     public static DateTime GetLocalTime(this ICurrentDateTimeProvider currentDateTimeProvider)
     {
         if (currentDateTimeProvider is null)
@@ -23,8 +26,7 @@ public static class CurrentDateTimeProviderExtensions
         var utcTime = currentDateTimeProvider.GetUtcTime();
         if (utcTime.Kind != DateTimeKind.Utc)
         {
-            throw new InvalidOperationException(
-                $@"{currentDateTimeProvider.GetType().GetFullName()} returned the non-UTC {nameof(DateTime)} value.");
+            throw new InvalidOperationException($@"{currentDateTimeProvider.GetType().GetFullName()} returned the non-UTC {nameof(DateTime)} value.");
         }
 
         return utcTime.ToLocalTime();
