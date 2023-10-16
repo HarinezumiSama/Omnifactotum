@@ -4,11 +4,11 @@ using NUnit.Framework;
 namespace Omnifactotum.Tests.ExtensionMethods;
 
 [TestFixture]
-internal abstract class OmnifactotumCommonArrayAndSpanExtensionsTestsBase
+internal abstract class ToHexStringTestsBase
 {
     [Test]
     public void TestToHexStringWhenResultWouldBeTooLongThenThrows([Values] bool upperCase)
-        => Assert.That(() => ExecuteTestee(new byte[46_997], new string('/', 46_021), upperCase), Throws.TypeOf<OverflowException>());
+        => Assert.That(() => ExecuteToHexString(new byte[46_997], new string('/', 46_021), upperCase), Throws.TypeOf<OverflowException>());
 
     [Test]
     [TestCase(new byte[0], "")]
@@ -18,7 +18,7 @@ internal abstract class OmnifactotumCommonArrayAndSpanExtensionsTestsBase
         new byte[] { 0x03, 0x14, 0x25, 0x36, 0x47, 0x58, 0x69, 0x7A, 0x8B, 0x9C, 0xAD, 0xBE, 0xCF, 0xD0, 0xE1, 0xF2 },
         "031425364758697a8b9cadbecfd0e1f2")]
     public void TestToHexStringWhenValidArgumentsAndDefaultOptionalArgumentsThenSucceeds(byte[] bytes, string expectedValue)
-        => Assert.That(() => ExecuteTesteeWithDefaultOptionalParameters(bytes), Is.EqualTo(expectedValue));
+        => Assert.That(() => ExecuteToHexStringWithDefaultOptionalParameters(bytes), Is.EqualTo(expectedValue));
 
     [Test]
     //// No items
@@ -100,9 +100,9 @@ internal abstract class OmnifactotumCommonArrayAndSpanExtensionsTestsBase
         true,
         "03(/!)14(/!)25(/!)36(/!)47(/!)58(/!)69(/!)7A(/!)8B(/!)9C(/!)AD(/!)BE(/!)CF(/!)D0(/!)E1(/!)F2")]
     public void TestToHexStringWhenValidArgumentsThenSucceeds(byte[] bytes, string? separator, bool upperCase, string expectedValue)
-        => Assert.That(() => ExecuteTestee(bytes, separator, upperCase), Is.EqualTo(expectedValue));
+        => Assert.That(() => ExecuteToHexString(bytes, separator, upperCase), Is.EqualTo(expectedValue));
 
-    protected abstract string ExecuteTestee(byte[] bytes, string? separator, bool upperCase);
+    protected abstract string ExecuteToHexString(byte[] bytes, string? separator, bool upperCase);
 
-    protected abstract string ExecuteTesteeWithDefaultOptionalParameters(byte[] bytes);
+    protected abstract string ExecuteToHexStringWithDefaultOptionalParameters(byte[] bytes);
 }
