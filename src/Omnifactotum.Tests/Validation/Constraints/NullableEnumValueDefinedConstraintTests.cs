@@ -14,9 +14,10 @@ internal sealed class NullableEnumValueDefinedConstraintTests : TypedConstraintT
 
     protected override IEnumerable<ConsoleColor?> GetTypedInvalidValues()
     {
-        yield return (ConsoleColor)Enum.ToObject(typeof(ConsoleColor), -1);
-        yield return (ConsoleColor)Enum.ToObject(typeof(ConsoleColor), int.MinValue);
-        yield return (ConsoleColor)Enum.ToObject(typeof(ConsoleColor), int.MaxValue);
+        yield return null;
+        yield return (ConsoleColor)(-1);
+        yield return (ConsoleColor)int.MinValue;
+        yield return (ConsoleColor)int.MaxValue;
     }
 
     protected override string GetTypedInvalidValueErrorMessage(ConsoleColor? invalidValue)

@@ -4,7 +4,8 @@ using static Omnifactotum.FormattableStringFactotum;
 namespace Omnifactotum.Validation.Constraints;
 
 /// <summary>
-///     Specifies that the annotated member of a nullable enumeration type should have a value defined in this nullable enumeration type.
+///     Represents a base constraint specifying that the annotated member of the nullable enumeration type <typeparamref name="TEnum"/>
+///     should not be <see langword="null"/> and should have a value defined in the enumeration type <typeparamref name="TEnum"/>.
 /// </summary>
 /// <typeparam name="TEnum">
 ///     The type of the enumeration value to validate.
