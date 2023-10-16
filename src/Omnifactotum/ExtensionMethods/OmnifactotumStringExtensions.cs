@@ -3,6 +3,7 @@ using System.Globalization;
 using System.Runtime.CompilerServices;
 using System.Security;
 using System.Text;
+using System.Threading;
 using Omnifactotum;
 using Omnifactotum.Annotations;
 using NotNullWhen = System.Diagnostics.CodeAnalysis.NotNullWhenAttribute;
@@ -753,5 +754,44 @@ public static class OmnifactotumStringExtensions
                     return new SecureString(valuePointer, value.Length);
                 }
         }
+    }
+
+    /// <summary>
+    ///     Transforms the multiline string using the specified transformation function for each line.
+    /// </summary>
+    /// <param name="value">
+    ///     The multiline string to transform.
+    /// </param>
+    /// <param name="transformLine">
+    ///     A reference to a method used to transform each line in the multiline string.
+    /// </param>
+    /// <param name="normalizeLineEndings">
+    ///     <see langword="true"/> if all the line endings in <paramref name="value"/> to replace with <see cref="Environment.NewLine"/>
+    ///     in the resulting string; <see langword="false"/> to keep the original line endings.
+    /// </param>
+    /// <param name="cancellationToken">
+    ///     The token to monitor for cancellation requests.
+    /// </param>
+    /// <returns>
+    ///     A transformed multiline string.
+    /// </returns>
+    /// <remarks>
+    ///     See <see cref="OmnifactotumReadOnlySpanExtensions.TransformMultilineString"/> for examples.
+    /// </remarks>
+    [Pure]
+    [Omnifactotum.Annotations.Pure]
+    [NotNull]
+    public static string TransformMultilineString(
+        [NotNull] this string value,
+        [NotNull] Func<string, int, string> transformLine,
+        bool normalizeLineEndings = false,
+        CancellationToken cancellationToken = default)
+    {
+        if (value is null)
+        {
+            throw new ArgumentNullException(nameof(value));
+        }
+
+        return value.AsSpan().TransformMultilineString(transformLine, normalizeLineEndings, cancellationToken);
     }
 }

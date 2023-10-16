@@ -1,4 +1,5 @@
 ﻿using System.Runtime.CompilerServices;
+using System.Threading;
 using Omnifactotum;
 using Omnifactotum.Annotations;
 using PureAttribute = System.Diagnostics.Contracts.PureAttribute;
@@ -36,4 +37,36 @@ public static class OmnifactotumSpanExtensions
     [NotNull]
     public static string ToHexString(this Span<byte> bytes, [CanBeNull] string? separator = null, bool upperCase = false)
         => ((ReadOnlySpan<byte>)bytes).ToHexString(separator, upperCase);
+
+    /// <summary>
+    ///     Transforms the multiline string using the specified transformation function for each line.
+    /// </summary>
+    /// <param name="value">
+    ///     The span of characters representing the multiline string to transform.
+    /// </param>
+    /// <param name="transformLine">
+    ///     A reference to a method used to transform each line in the multiline string.
+    /// </param>
+    /// <param name="normalizeLineEndings">
+    ///     <see langword="true"/> if all the line endings in <paramref name="value"/> to replace with <see cref="Environment.NewLine"/>
+    ///     in the resulting string; <see langword="false"/> to keep the original line endings.
+    /// </param>
+    /// <param name="cancellationToken">
+    ///     The token to monitor for cancellation requests.
+    /// </param>
+    /// <returns>
+    ///     A transformed multiline string.
+    /// </returns>
+    /// <remarks>
+    ///     See <see cref="OmnifactotumReadOnlySpanExtensions.TransformMultilineString"/> for examples.
+    /// </remarks>
+    [Pure]
+    [Omnifactotum.Annotations.Pure]
+    [NotNull]
+    public static string TransformMultilineString(
+        this Span<char> value,
+        [NotNull] Func<string, int, string> transformLine,
+        bool normalizeLineEndings = false,
+        CancellationToken cancellationToken = default)
+        => ((ReadOnlySpan<char>)value).TransformMultilineString(transformLine, normalizeLineEndings, cancellationToken);
 }

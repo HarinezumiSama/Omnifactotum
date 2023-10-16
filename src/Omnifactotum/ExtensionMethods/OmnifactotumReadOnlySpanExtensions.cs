@@ -1,4 +1,6 @@
 ﻿using System.Runtime.CompilerServices;
+using System.Text;
+using System.Threading;
 using Omnifactotum;
 using Omnifactotum.Annotations;
 using NotNullIfNotNull = System.Diagnostics.CodeAnalysis.NotNullIfNotNullAttribute;
@@ -80,5 +82,117 @@ public static class OmnifactotumReadOnlySpanExtensions
             var digit = value & 0x0F;
             return (char)(digit < 10 ? digit + '0' : digit + hexAlphaBase);
         }
+    }
+
+    /// <summary>
+    ///     Transforms the multiline string using the specified transformation function for each line.
+    /// </summary>
+    /// <param name="value">
+    ///     The read-only span of characters representing the multiline string to transform.
+    /// </param>
+    /// <param name="transformLine">
+    ///     A reference to a method used to transform each line in the multiline string.
+    /// </param>
+    /// <param name="normalizeLineEndings">
+    ///     <see langword="true"/> if all the line endings in <paramref name="value"/> to replace with <see cref="Environment.NewLine"/>
+    ///     in the resulting string; <see langword="false"/> to keep the original line endings.
+    /// </param>
+    /// <param name="cancellationToken">
+    ///     The token to monitor for cancellation requests.
+    /// </param>
+    /// <returns>
+    ///     A transformed multiline string.
+    /// </returns>
+    /// <example>
+    ///     <code>
+    /// <![CDATA[
+    ///         var value1 = "A\rB\nC\r\nD".AsSpan();
+    ///         var transformedValue1 = value1.TransformMultilineString((s, i) => $"{i}-{s}", false);
+    ///         // `transformedValue1` is equal to "0-A\r1-B\n2-C\r\n3-D"
+    /// ]]>
+    ///     </code>
+    ///     <code>
+    /// <![CDATA[
+    ///         var value2 = "A\rB\nC\r\nD".AsSpan();
+    ///         var transformedValue2 = value2.TransformMultilineString((s, i) => $"{i}-{s}", true);
+    ///         // On Windows, `transformedValue2` is equal to "0-A\r\n1-B\r\n2-C\r\n3-D"
+    /// ]]>
+    ///     </code>
+    /// </example>
+    [Pure]
+    [Omnifactotum.Annotations.Pure]
+    [NotNull]
+    public static string TransformMultilineString(
+        this ReadOnlySpan<char> value,
+        [NotNull] Func<string, int, string> transformLine,
+        bool normalizeLineEndings = false,
+        CancellationToken cancellationToken = default)
+    {
+        if (transformLine is null)
+        {
+            throw new ArgumentNullException(nameof(transformLine));
+        }
+
+        if (value.Length == 0)
+        {
+            return string.Empty;
+        }
+
+        cancellationToken.ThrowIfCancellationRequested();
+
+        var resultBuilder = new StringBuilder();
+
+        const char CarriageReturn = '\r';
+        const char LineFeed = '\n';
+
+        var newLineSpan = normalizeLineEndings ? Environment.NewLine.AsSpan() : default;
+
+        var position = 0;
+        var index = -1;
+        while (position < value.Length)
+        {
+            cancellationToken.ThrowIfCancellationRequested();
+
+            checked
+            {
+                index++;
+            }
+
+            string line;
+            ReadOnlySpan<char> lineSeparator;
+
+            var remainingValueSpan = value[position..];
+
+            var lineLength = remainingValueSpan.IndexOfAny(CarriageReturn, LineFeed);
+            if (lineLength < 0)
+            {
+                line = new string(remainingValueSpan);
+                lineSeparator = ReadOnlySpan<char>.Empty;
+
+                position += remainingValueSpan.Length;
+            }
+            else
+            {
+                line = new string(remainingValueSpan[..lineLength]);
+
+                var ch = remainingValueSpan[lineLength];
+                position += lineLength + 1;
+
+                var lineSeparatorLength = 1;
+                if (ch == CarriageReturn && position < value.Length && value[position] == LineFeed)
+                {
+                    position++;
+                    lineSeparatorLength++;
+                }
+
+                lineSeparator = normalizeLineEndings ? newLineSpan : remainingValueSpan.Slice(lineLength, lineSeparatorLength);
+            }
+
+            var updatedLine = transformLine(line, index);
+            resultBuilder.Append(updatedLine);
+            resultBuilder.Append(lineSeparator);
+        }
+
+        return resultBuilder.ToString();
     }
 }
