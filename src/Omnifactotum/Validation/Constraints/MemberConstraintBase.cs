@@ -54,9 +54,10 @@ public abstract class MemberConstraintBase : IMemberConstraint
             TimeSpan ts => ts.ToPreciseFixedString(),
             IEnumerable<string?> strings => $"[{strings.ToUIString()}]",
             IFormattable formattable => formattable.ToString(null, CultureInfo.InvariantCulture),
-            _ when typeof(TValue).IsEnum && !typeof(TValue).IsDefined(typeof(FlagsAttribute), false) => Enum.IsDefined(typeof(TValue), value)
-                ? AsInvariant($"{value:D} ({value:G})")
-                : AsInvariant($"{value:D}"),
+            _ when typeof(TValue).IsEnum && !typeof(TValue).IsDefined(typeof(FlagsAttribute), false)
+                => Enum.IsDefined(typeof(TValue), value)
+                    ? AsInvariant($"{value:D} ({value:G})")
+                    : AsInvariant($"{value:D}"),
             _ => value.ToString().AvoidNull()
         };
 

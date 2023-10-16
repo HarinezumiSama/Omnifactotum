@@ -46,7 +46,7 @@ public abstract class ValueRangeConstraintBase<T> : TypedMemberConstraintBase<T>
     /// <returns>
     ///     The formatted <see cref="Range"/>.
     /// </returns>
-    protected virtual string FormatRange() => AsInvariant($"[{FormatValue(Range.Lower)} ~ {FormatValue(Range.Upper)}]");
+    protected virtual string FormatRange() => AsInvariant($"[{FormatValue(Range.Lower)}{ValueRange.DefaultBoundarySeparator}{FormatValue(Range.Upper)}]");
 
     /// <inheritdoc />
     protected sealed override void ValidateTypedValue(
