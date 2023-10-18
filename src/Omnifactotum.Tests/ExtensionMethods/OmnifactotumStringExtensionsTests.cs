@@ -11,6 +11,8 @@ namespace Omnifactotum.Tests.ExtensionMethods;
 [TestFixture(TestOf = typeof(OmnifactotumStringExtensions))]
 internal sealed class OmnifactotumStringExtensionsTests
 {
+    private const string? NullString = null;
+
     [Test]
     [TestCase(null, true)]
     [TestCase("", true)]
@@ -153,6 +155,136 @@ internal sealed class OmnifactotumStringExtensionsTests
             // Note: `ToArray()` call is required to ensure that the compiler generated `IEnumerable<string>` instance actually invokes `WhereNotBlank()`
             Assert.That(() => input.AsEnumerable().WhereNotBlank().ToArray(), Is.EqualTo(expectedResult) & Is.TypeOf<string[]>());
         }
+    }
+
+    [Test]
+    [SuppressMessage("ReSharper", "ArrangeObjectCreationWhenTypeEvident")]
+    public void TestEnsureNotEmpty()
+    {
+#if NET5_0_OR_GREATER
+        const string ExpectedNullStringFailureMessage =
+            $"The following expression is null or an empty string: {{ {nameof(NullString)} }}. (Parameter 'value')";
+#else
+        const string ExpectedNullStringFailureMessage = "The value is null or an empty string. (Parameter 'value')";
+#endif
+
+        Assert.That(
+            () => NullString.EnsureNotEmpty(),
+            Throws.ArgumentException.With.Message.EqualTo(ExpectedNullStringFailureMessage));
+
+#if NET5_0_OR_GREATER
+        const string ExpectedEmptyStringFailureMessage = "The following expression is null or an empty string: { string.Empty }. (Parameter 'value')";
+#else
+        const string ExpectedEmptyStringFailureMessage = "The value is null or an empty string. (Parameter 'value')";
+#endif
+
+        Assert.That(
+            () => string.Empty.EnsureNotEmpty(),
+            Throws.ArgumentException.With.Message.EqualTo(ExpectedEmptyStringFailureMessage));
+
+#if NET5_0_OR_GREATER
+        const string ExpectedExpressionFailureMessage =
+            "The following expression is null or an empty string: { directedGraph.First().Tails.First().Tails.First().Value }. (Parameter 'value')";
+#else
+        const string ExpectedExpressionFailureMessage = "The value is null or an empty string. (Parameter 'value')";
+#endif
+
+        var directedGraph = new DirectedGraph<string?>
+        {
+            new DirectedGraphNode<string?>("A")
+            {
+                Tails =
+                {
+                    new DirectedGraphNode<string?>("B")
+                    {
+                        Tails =
+                        {
+                            new DirectedGraphNode<string?>(string.Empty)
+                        }
+                    }
+                }
+            }
+        };
+
+        Assert.That(
+            () => directedGraph.First().Tails.First().Tails.First().Value.EnsureNotEmpty(),
+            Throws.ArgumentException.With.Message.EqualTo(ExpectedExpressionFailureMessage));
+
+        Assert.That(() => "\x0020".EnsureNotEmpty(), Is.EqualTo("\x0020"));
+        Assert.That(() => "\t".EnsureNotEmpty(), Is.EqualTo("\t"));
+        Assert.That(() => "\r".EnsureNotEmpty(), Is.EqualTo("\r"));
+        Assert.That(() => "\n".EnsureNotEmpty(), Is.EqualTo("\n"));
+        Assert.That(() => "\r\n".EnsureNotEmpty(), Is.EqualTo("\r\n"));
+        Assert.That(() => "\t\r\n\x0020".EnsureNotEmpty(), Is.EqualTo("\t\r\n\x0020"));
+        Assert.That(() => "X".EnsureNotEmpty(), Is.EqualTo("X"));
+        Assert.That(() => "Hello world".EnsureNotEmpty(), Is.EqualTo("Hello world"));
+    }
+
+    [Test]
+    [SuppressMessage("ReSharper", "ArrangeObjectCreationWhenTypeEvident")]
+    public void TestEnsureNotBlank()
+    {
+#if NET5_0_OR_GREATER
+        const string ExpectedNullStringFailureMessage =
+            $"The following expression is null or a blank string: {{ {nameof(NullString)} }}. (Parameter 'value')";
+#else
+        const string ExpectedNullStringFailureMessage = "The value is null or a blank string. (Parameter 'value')";
+#endif
+
+        Assert.That(
+            () => NullString.EnsureNotBlank(),
+            Throws.ArgumentException.With.Message.EqualTo(ExpectedNullStringFailureMessage));
+
+#if NET5_0_OR_GREATER
+        const string ExpectedEmptyStringFailureMessage = "The following expression is null or a blank string: { string.Empty }. (Parameter 'value')";
+#else
+        const string ExpectedEmptyStringFailureMessage = "The value is null or a blank string. (Parameter 'value')";
+#endif
+
+        Assert.That(
+            () => string.Empty.EnsureNotBlank(),
+            Throws.ArgumentException.With.Message.EqualTo(ExpectedEmptyStringFailureMessage));
+
+#if NET5_0_OR_GREATER
+        const string ExpectedBlankStringFailureMessage = "The following expression is null or a blank string: { \"\\t\\r\\n\\x0020\" }. (Parameter 'value')";
+#else
+        const string ExpectedBlankStringFailureMessage = "The value is null or a blank string. (Parameter 'value')";
+#endif
+
+        Assert.That(
+            () => "\t\r\n\x0020".EnsureNotBlank(),
+            Throws.ArgumentException.With.Message.EqualTo(ExpectedBlankStringFailureMessage));
+
+#if NET5_0_OR_GREATER
+        const string ExpectedExpressionFailureMessage =
+            "The following expression is null or a blank string: { directedGraph.First().Tails.First().Tails.First().Value }. (Parameter 'value')";
+#else
+        const string ExpectedExpressionFailureMessage = "The value is null or a blank string. (Parameter 'value')";
+#endif
+
+        var directedGraph = new DirectedGraph<string?>
+        {
+            new DirectedGraphNode<string?>("A")
+            {
+                Tails =
+                {
+                    new DirectedGraphNode<string?>("B")
+                    {
+                        Tails =
+                        {
+                            new DirectedGraphNode<string?>("\t\r\n\x0020")
+                        }
+                    }
+                }
+            }
+        };
+
+        Assert.That(
+            () => directedGraph.First().Tails.First().Tails.First().Value.EnsureNotBlank(),
+            Throws.ArgumentException.With.Message.EqualTo(ExpectedExpressionFailureMessage));
+
+        Assert.That(() => "X".EnsureNotBlank(), Is.EqualTo("X"));
+        Assert.That(() => "Hello world".EnsureNotBlank(), Is.EqualTo("Hello world"));
     }
 
     [Test]

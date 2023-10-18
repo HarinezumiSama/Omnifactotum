@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Diagnostics;
 using System.Globalization;
 using System.Runtime.CompilerServices;
 using System.Security;
@@ -11,6 +12,7 @@ using NotNullIfNotNull = System.Diagnostics.CodeAnalysis.NotNullIfNotNullAttribu
 using PureAttribute = System.Diagnostics.Contracts.PureAttribute;
 using static Omnifactotum.FormattableStringFactotum;
 
+//// ReSharper disable RedundantNullableFlowAttribute
 //// ReSharper disable RedundantNullnessAttributeWithNullableReferenceTypes
 
 //// ReSharper disable once CheckNamespace :: Namespace is intentionally named so in order to simplify usage of extension methods
@@ -216,6 +218,79 @@ public static class OmnifactotumStringExtensions
             }
         }
     }
+
+    /// <summary>
+    ///     Returns the specified string value if it is not <see langword="null"/> and not an empty string (<c>""</c>);
+    ///     otherwise, throws an <see cref="ArgumentException"/>.
+    /// </summary>
+    /// <param name="value">
+    ///     The string value to check.
+    /// </param>
+    /// <param name="valueExpression">
+    ///     <para>A string value representing the expression passed as the value of the <paramref name="value"/> parameter.</para>
+    ///     <para><b>NOTE</b>: Do not pass a value for this parameter as it is automatically injected by the compiler (.NET 5+ and C# 10+).</para>
+    /// </param>
+    /// <returns>
+    ///     The specified value if it is not <see langword="null"/> and not an empty string (<c>""</c>).
+    /// </returns>
+    /// <exception cref="ArgumentException">
+    ///     <paramref name="value"/> is <see langword="null"/> or an empty string (<c>""</c>).
+    /// </exception>
+    [MethodImpl(OmnifactotumConstants.MethodOptimizationOptions.Maximum)]
+    [DebuggerStepThrough]
+    [NotNull]
+    [return: System.Diagnostics.CodeAnalysis.NotNull]
+    public static string EnsureNotEmpty(
+        [CanBeNull] [System.Diagnostics.CodeAnalysis.NotNull] this string? value,
+#if NET5_0_OR_GREATER
+        [CallerArgumentExpression(nameof(value))]
+#endif
+        string? valueExpression = null)
+        => string.IsNullOrEmpty(value)
+            ? throw new ArgumentException(
+                valueExpression is null
+                    ? "The value is null or an empty string."
+                    : $@"The following expression is null or an empty string: {{ {valueExpression} }}.",
+                nameof(value))
+            : value;
+
+    /// <summary>
+    ///     Returns the specified string value if it is not <see langword="null"/> and not a blank string;
+    ///     otherwise, throws an <see cref="ArgumentException"/>.
+    /// </summary>
+    /// <param name="value">
+    ///     The string value to check.
+    /// </param>
+    /// <param name="valueExpression">
+    ///     <para>A string value representing the expression passed as the value of the <paramref name="value"/> parameter.</para>
+    ///     <para><b>NOTE</b>: Do not pass a value for this parameter as it is automatically injected by the compiler (.NET 5+ and C# 10+).</para>
+    /// </param>
+    /// <returns>
+    ///     The specified value if it is not <see langword="null"/> and not a blank string.
+    /// </returns>
+    /// <exception cref="ArgumentException">
+    ///     <paramref name="value"/> is <see langword="null"/> or a blank string.
+    /// </exception>
+    /// <remarks>
+    ///     A blank string is a string that is empty or that consists only of white-space characters.
+    /// </remarks>
+    [MethodImpl(OmnifactotumConstants.MethodOptimizationOptions.Maximum)]
+    [DebuggerStepThrough]
+    [NotNull]
+    [return: System.Diagnostics.CodeAnalysis.NotNull]
+    public static string EnsureNotBlank(
+        [CanBeNull] [System.Diagnostics.CodeAnalysis.NotNull] this string? value,
+#if NET5_0_OR_GREATER
+        [CallerArgumentExpression(nameof(value))]
+#endif
+        string? valueExpression = null)
+        => string.IsNullOrWhiteSpace(value)
+            ? throw new ArgumentException(
+                valueExpression is null
+                    ? "The value is null or a blank string."
+                    : $@"The following expression is null or a blank string: {{ {valueExpression} }}.",
+                nameof(value))
+            : value;
 
     /// <summary>
     ///     Avoids the specified string value being a <see langword="null"/> reference.
