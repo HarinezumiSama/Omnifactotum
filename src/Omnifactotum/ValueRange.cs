@@ -10,8 +10,8 @@ using static Omnifactotum.FormattableStringFactotum;
 using System.Numerics;
 #endif
 
-//// ReSharper disable RedundantNullnessAttributeWithNullableReferenceTypes
 //// ReSharper disable AnnotationRedundancyInHierarchy
+//// ReSharper disable RedundantNullnessAttributeWithNullableReferenceTypes
 
 namespace Omnifactotum;
 
@@ -30,8 +30,8 @@ public readonly struct ValueRange<T>
 #endif
     where T : IComparable
 {
-    private static readonly IComparer<T> ValueComparer = Comparer<T>.Default;
-    private static readonly IEqualityComparer<T> ValueEqualityComparer = EqualityComparer<T>.Default;
+    internal static readonly IComparer<T> ValueComparer = Comparer<T>.Default;
+    internal static readonly IEqualityComparer<T> ValueEqualityComparer = EqualityComparer<T>.Default;
 
     /// <summary>
     ///     Initializes a new instance of the <see cref="ValueRange{T}"/> structure.

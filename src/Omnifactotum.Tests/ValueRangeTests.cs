@@ -24,10 +24,13 @@ internal sealed class ValueRangeTests
     }
 
     [Test]
-    [TestCase(1, 2)]
-    [TestCase(-17, 42)]
     [TestCase(int.MinValue, int.MinValue)]
     [TestCase(int.MinValue, int.MaxValue)]
+    [TestCase(-19, -19)]
+    [TestCase(-17, 42)]
+    [TestCase(0, 0)]
+    [TestCase(1, 2)]
+    [TestCase(13, 13)]
     [TestCase(int.MaxValue, int.MaxValue)]
     public void TestConstruction(int lower, int upper)
     {
