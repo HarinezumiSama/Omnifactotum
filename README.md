@@ -33,6 +33,7 @@
   - [**`Type`**](https://docs.microsoft.com/en-us/dotnet/api/system.type) extension methods
 - Array (**`T[]`**) and collection ([**`IEnumerable<T>`**](https://docs.microsoft.com/en-us/dotnet/api/system.collections.generic.ienumerable-1) and [**`ICollection<T>`**](https://docs.microsoft.com/en-us/dotnet/api/system.collections.generic.icollection-1)) extension methods
 - Arbitrary [**`Object`**](https://docs.microsoft.com/en-us/dotnet/api/system.object) generic extension methods
+- [**`Char`**](https://docs.microsoft.com/en-us/dotnet/api/system.char) extension methods
 - [**`DateTime`**](https://docs.microsoft.com/en-us/dotnet/api/system.datetime) extension methods
 - [**`DateTimeOffset`**](https://docs.microsoft.com/en-us/dotnet/api/system.datetimeoffset) extension methods
 - [**`Delegate`**](https://docs.microsoft.com/en-us/dotnet/api/system.delegate) extension methods
@@ -52,6 +53,7 @@
 - [**`Nullable<TimeSpan>` (`TimeSpan?`)**](https://docs.microsoft.com/en-us/dotnet/api/system.nullable-1) extension methods
 - [**`ReadOnlySpan<T>`**](https://docs.microsoft.com/en-us/dotnet/api/system.readonlyspan-1) extension methods
 - [**`SecureString`**](https://docs.microsoft.com/en-us/dotnet/api/system.security.securestring) extension methods
+- [**`Span<T>`**](https://docs.microsoft.com/en-us/dotnet/api/system.span-1) extension methods
 - [**`Stopwatch`**](https://docs.microsoft.com/en-us/dotnet/api/system.diagnostics.stopwatch) extension methods
 - [**`String`**](https://docs.microsoft.com/en-us/dotnet/api/system.string) extension methods
 - [**`Task`**](https://docs.microsoft.com/en-us/dotnet/api/system.threading.tasks.task) extension methods

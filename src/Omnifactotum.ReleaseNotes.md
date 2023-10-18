@@ -1,4 +1,38 @@
-﻿### Changes in 0.16.0 (since 0.15.0)
+﻿### Changes in 0.17.0 (since 0.16.0)
+
+#### Breaking Changes
+
+#### New features
+
+- Added `OmnifactotumCharExtensions`
+  - `ToUIString(this char value)`
+- Added `OmnifactotumSpanExtensions`
+  - `ToHexString(this Span<byte> bytes, ...)`
+  - `TransformMultilineString(...)`
+- Added `ValueRangeExtensions`
+  - `Enumerate<T>(...)`
+  - `ToArray<T>(...)`
+- `OmnifactotumReadOnlySpanExtensions`
+  - Added `TransformMultilineString(...)`
+- `OmnifactotumStringExtensions`
+  - Added `EnsureNotBlank<T>`
+  - Added `EnsureNotEmpty<T>`
+  - Added `TransformMultilineString(...)`
+- Validation
+  - Added `NullableValueRangeConstraintBase<T>` constraint
+  - Added `OptionalEnumValueDefinedConstraint<T>` constraint
+  - Added `OptionalValueRangeConstraintBase<T>` constraint
+
+#### Minor updates and fixes
+
+- Applied `System.Diagnostics.Contracts.PureAttribute`, `Omnifactotum.Annotations.Pure`, and/or `Omnifactotum.Annotations.MustUseReturnValueAttribute` annotations where reasonable
+- Applied `Omnifactotum.Annotations.NotNullAttribute` where reasonable
+- Fixed/improved XML-documentation in:
+  - `NullableEnumValueDefinedConstraint<TEnum>`
+  - `OmnifactotumStringExtensions`
+- Minor code style fixes/improvements
+
+### Changes in 0.16.0 (since 0.15.0)
 
 #### Breaking Changes
 
@@ -31,7 +65,7 @@
 
 #### Breaking Changes
 
-- `ObjectValidator.Validate()` method: Added `instanceExpression` parameter 
+- `ObjectValidator.Validate()` method: Added `instanceExpression` parameter
   - For .NET 5+ and higher, the `instanceExpression` parameter is marked with the `CallerArgumentExpression` attribute
   - For the older .NET versions, the `instanceExpression` parameter is supplied only for binary compatibility between the different target frameworks
 

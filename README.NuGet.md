@@ -9,31 +9,36 @@
 - [Complete Release Notes](https://github.com/HarinezumiSama/Omnifactotum/blob/master/src/Omnifactotum.ReleaseNotes.md)
 - [ReadMe](https://github.com/HarinezumiSama/Omnifactotum/blob/master/README.md)
 
-### Changes in 0.16.0 (since 0.15.0)
+### Changes in 0.17.0 (since 0.16.0)
 
 #### Breaking Changes
 
-- `OmnifactotumArrayExtensions`: Removed `ToHexString(this byte[], bool)` and `ToHexString(this byte[])` in favor of `ToHexString(this byte[] bytes, string? separator = null, bool upperCase = false)`
-
 #### New features
 
-- `MemberConstraintBase`: Added the static protected method `string FormatValue<TValue>(TValue value)` (used in `EnumValueDefinedConstraint<TEnum>`, `NullableEnumValueDefinedConstraint<TEnum>`, `RegexStringConstraintBase`, `ValueRangeConstraintBase<T>`, and `WebUrlConstraint` to format the invalid value and valid value(s))
-- `OmnifactotumEnumExtensions`
-  - Added the `string GetDescription<TEnum>(this TEnum)` extension method
-  - Added the `ulong ToUInt64<TEnum>(this TEnum)` extension method
-- `OmnifactotumImmutableArrayExtensions`
-  - Added the `AvoidNullOrDefault<T>(this ImmutableArray<T>?)` extension method
-- Added `OmnifactotumReadOnlySpanExtensions` with the `ToHexString(this ReadOnlySpan<byte> bytes, string? separator = null, bool useUpperCase = false)` extension method
-- `ValueRange<T>`
-  - Added the `string ToString(string boundarySeparator)` method
-  - .NET 7+: `ValueRange<T>` implements `IEqualityOperators<ValueRange<T>, ValueRange<T>, bool>`
-- `ValueRangeConstraintBase<T>`: Added constructor `ValueRangeConstraintBase(T lower, T upper)`
+- Added `OmnifactotumCharExtensions`
+  - `ToUIString(this char value)`
+- Added `OmnifactotumSpanExtensions`
+  - `ToHexString(this Span<byte> bytes, ...)`
+  - `TransformMultilineString(...)`
+- Added `ValueRangeExtensions`
+  - `Enumerate<T>(...)`
+  - `ToArray<T>(...)`
+- `OmnifactotumReadOnlySpanExtensions`
+  - Added `TransformMultilineString(...)`
+- `OmnifactotumStringExtensions`
+  - Added `EnsureNotBlank<T>`
+  - Added `EnsureNotEmpty<T>`
+  - Added `TransformMultilineString(...)`
+- Validation
+  - Added `NullableValueRangeConstraintBase<T>` constraint
+  - Added `OptionalEnumValueDefinedConstraint<T>` constraint
+  - Added `OptionalValueRangeConstraintBase<T>` constraint
 
 #### Minor updates and fixes
 
-- `OmnifactotumArrayExtensions`
-  - `ToHexString(this byte[], string?, bool)` is now optimized compared to the older implementation (less heap allocations)
-- `EnumFactotum`: Fix in `GetAllFlagValues<TEnum>()`
-- `ValueRange<T>`
-  - `string ToString()`: Changed the result format from `[Lower; Upper]` to `[Lower ~ Upper]`
-- `ValueRangeConstraintBase<T>`: Included invalid value in the error message
+- Applied `System.Diagnostics.Contracts.PureAttribute`, `Omnifactotum.Annotations.Pure`, and/or `Omnifactotum.Annotations.MustUseReturnValueAttribute` annotations where reasonable
+- Applied `Omnifactotum.Annotations.NotNullAttribute` where reasonable
+- Fixed/improved XML-documentation in:
+  - `NullableEnumValueDefinedConstraint<TEnum>`
+  - `OmnifactotumStringExtensions`
+- Minor code style fixes/improvements
