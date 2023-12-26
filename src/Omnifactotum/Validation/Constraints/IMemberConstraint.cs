@@ -13,10 +13,10 @@ namespace Omnifactotum.Validation.Constraints;
 ///         <b>NOTES</b>:
 ///         <list type="bullet">
 ///             <item>
-///                 Implementation must be stateless in order to be reusable during validation.
+///                 Implementation must be stateless because the instance is reused for different validation calls.
 ///             </item>
 ///             <item>
-///                 Implementation must have public parameterless constructor.
+///                 Implementation must have a parameterless constructor.
 ///             </item>
 ///         </list>
 ///     </para>

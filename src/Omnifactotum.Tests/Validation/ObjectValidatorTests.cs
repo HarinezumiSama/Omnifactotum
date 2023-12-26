@@ -507,6 +507,13 @@ internal sealed class ObjectValidatorTests
 
     private sealed class NotAbcStringConstraint : TypedMemberConstraintBase<string>
     {
+        // Making sure that a public constructor is allowed for a member constraint
+        [UsedImplicitly]
+        public NotAbcStringConstraint()
+        {
+            // Nothing to do
+        }
+
         protected override void ValidateTypedValue(ObjectValidatorContext validatorContext, MemberConstraintValidationContext memberContext, string value)
         {
             if (value == "abc")
@@ -518,7 +525,9 @@ internal sealed class ObjectValidatorTests
 
     private sealed class MapContainerPropertiesPairConstraint : KeyValuePairConstraintBase<string, SimpleContainer<int?>>
     {
-        public MapContainerPropertiesPairConstraint()
+        // Making sure that an internal constructor is allowed for a member constraint
+        [UsedImplicitly]
+        internal MapContainerPropertiesPairConstraint()
             : base(typeof(NotNullOrEmptyStringConstraint), typeof(NotNullConstraint<SimpleContainer<int?>>))
         {
             // Nothing to do
@@ -527,6 +536,13 @@ internal sealed class ObjectValidatorTests
 
     private sealed class UtcDateConstraint : MemberConstraintBase
     {
+        // Making sure that a private constructor is allowed for a member constraint
+        [UsedImplicitly]
+        private UtcDateConstraint()
+        {
+            // Nothing to do
+        }
+
         protected override void ValidateValue(
             ObjectValidatorContext validatorContext,
             MemberConstraintValidationContext memberContext,

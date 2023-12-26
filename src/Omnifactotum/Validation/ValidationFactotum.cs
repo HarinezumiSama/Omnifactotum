@@ -25,7 +25,7 @@ namespace Omnifactotum.Validation;
 /// </summary>
 internal static class ValidationFactotum
 {
-    private static readonly Type CompatibleMemberConstraintType = typeof(IMemberConstraint);
+    private static readonly Dictionary<Type, Func<IMemberConstraint>> MemberConstraintFactoryMap = new();
 
     private static readonly MethodInfo IsDefaultImmutableArrayMethodDefinition =
         ((Expression<Func<ImmutableArray<object>, bool>>)(obj => IsDefaultImmutableArray(obj)))
@@ -82,30 +82,6 @@ internal static class ValidationFactotum
         => value is null ? expression.EnsureNotNull() : ConvertTypeAuto(expression, value.GetType());
 
     /// <summary>
-    ///     Determines whether the specified constraint type is a valid member constraint type.
-    /// </summary>
-    /// <param name="constraintType">
-    ///     The type of the constraint to check.
-    /// </param>
-    /// <returns>
-    ///     <see langword="true"/> if specified constraint type is a valid member constraint type; otherwise, <see langword="false"/>.
-    /// </returns>
-    /// <exception cref="ArgumentNullException">
-    ///     <paramref name="constraintType"/> is <see langword="null"/>.
-    /// </exception>
-    [Pure]
-    [Omnifactotum.Annotations.Pure]
-    public static bool IsValidMemberConstraintType([NotNull] this Type constraintType)
-    {
-        if (constraintType is null)
-        {
-            throw new ArgumentNullException(nameof(constraintType));
-        }
-
-        return !constraintType.IsInterface && CompatibleMemberConstraintType.IsAssignableFrom(constraintType);
-    }
-
-    /// <summary>
     ///     Ensures that the specified constraint type is a valid member constraint type.
     /// </summary>
     /// <param name="constraintType">
@@ -121,18 +97,64 @@ internal static class ValidationFactotum
     ///     The specified constraint type is not a valid member constraint type.
     /// </exception>
     [NotNull]
-    public static Type EnsureValidMemberConstraintType([NotNull] this Type constraintType)
+    public static Type ValidateAndRegisterMemberConstraintType([NotNull] this Type constraintType)
     {
-        if (IsValidMemberConstraintType(constraintType))
+        if (constraintType is null)
         {
-            return constraintType.EnsureNotNull();
+            throw new ArgumentNullException(nameof(constraintType));
         }
 
-        var message = AsInvariant(
-            $@"The specified type {constraintType.GetFullName().ToUIString()} is not a valid constraint type (must implement {
-                CompatibleMemberConstraintType.GetFullName().ToUIString()}).");
+        lock (MemberConstraintFactoryMap)
+        {
+            if (MemberConstraintFactoryMap.ContainsKey(constraintType))
+            {
+                return constraintType;
+            }
 
-        throw new ArgumentException(message, nameof(constraintType));
+            var compatibleType = typeof(IMemberConstraint);
+
+            if (!constraintType.IsClass || constraintType.IsAbstract || constraintType.IsGenericTypeDefinition
+                || !compatibleType.IsAssignableFrom(constraintType))
+            {
+                throw new ArgumentException(
+                    $"{constraintType.GetFullName().ToUIString()} is not a valid constraint type (must be an instantiatable class that implements {
+                        compatibleType.GetFullName().ToUIString()}).",
+                    nameof(constraintType));
+            }
+
+            var constructorInfo = constraintType.GetConstructor(
+                BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic,
+                Type.DefaultBinder,
+                Type.EmptyTypes,
+                Array.Empty<ParameterModifier>());
+
+            if (constructorInfo is null)
+            {
+                throw new ArgumentException(
+                    $"The constraint type {constraintType.GetFullName().ToUIString()} must have a parameterless constructor.",
+                    nameof(constraintType));
+            }
+
+            var createInstanceExpression =
+                (Expression<Func<IMemberConstraint>>)Expression.Lambda(
+                    Expression.Convert(Expression.New(constructorInfo), typeof(IMemberConstraint)));
+
+            var createInstance = createInstanceExpression.Compile();
+            MemberConstraintFactoryMap.Add(constraintType, createInstance);
+        }
+
+        return constraintType;
+    }
+
+    public static IMemberConstraint CreateMemberConstraint([NotNull] Type constraintType)
+    {
+        constraintType.ValidateAndRegisterMemberConstraintType();
+
+        lock (MemberConstraintFactoryMap)
+        {
+            var createInstance = MemberConstraintFactoryMap[constraintType];
+            return createInstance();
+        }
     }
 
     [Pure]

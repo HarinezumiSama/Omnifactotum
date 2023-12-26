@@ -29,8 +29,8 @@ public abstract class KeyValuePairConstraintBase<TKey, TValue> : TypedMemberCons
     /// </param>
     protected KeyValuePairConstraintBase([NotNull] Type keyConstraintType, [NotNull] Type valueConstraintType)
     {
-        KeyConstraintType = keyConstraintType.EnsureValidMemberConstraintType();
-        ValueConstraintType = valueConstraintType.EnsureValidMemberConstraintType();
+        KeyConstraintType = keyConstraintType.ValidateAndRegisterMemberConstraintType();
+        ValueConstraintType = valueConstraintType.ValidateAndRegisterMemberConstraintType();
     }
 
     /// <summary>

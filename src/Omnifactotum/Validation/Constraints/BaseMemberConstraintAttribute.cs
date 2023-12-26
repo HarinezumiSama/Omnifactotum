@@ -22,7 +22,7 @@ public abstract class BaseMemberConstraintAttribute : BaseValidatableMemberAttri
     ///     have parameterless constructor.
     /// </param>
     internal BaseMemberConstraintAttribute([NotNull] Type constraintType)
-        => ConstraintType = constraintType.EnsureValidMemberConstraintType();
+        => ConstraintType = constraintType.ValidateAndRegisterMemberConstraintType();
 
     /// <summary>
     ///     Gets the type, implementing the <see cref="IMemberConstraint"/> interface, used to validate

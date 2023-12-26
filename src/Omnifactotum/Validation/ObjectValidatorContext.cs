@@ -32,7 +32,7 @@ public sealed class ObjectValidatorContext
     }
 
     /// <summary>
-    ///     Gets the collection of errors.
+    ///     Gets the collection of validation errors.
     /// </summary>
     [NotNull]
     public ValidationErrorCollection Errors { get; }
@@ -52,11 +52,11 @@ public sealed class ObjectValidatorContext
     [NotNull]
     public IMemberConstraint ResolveConstraint([NotNull] Type constraintType)
     {
-        constraintType.EnsureValidMemberConstraintType();
+        constraintType.ValidateAndRegisterMemberConstraintType();
 
         lock (_constraintCache)
         {
-            return _constraintCache.GetOrCreateValue(constraintType, obj => (IMemberConstraint)Activator.CreateInstance(obj).EnsureNotNull());
+            return _constraintCache.GetOrCreateValue(constraintType, type => ValidationFactotum.CreateMemberConstraint(type).EnsureNotNull());
         }
     }
 
