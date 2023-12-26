@@ -60,26 +60,6 @@ public sealed class MemberConstraintValidationError
     public string ErrorMessage { get; }
 
     /// <summary>
-    ///     Gets the default description of the specified validation error.
-    /// </summary>
-    /// <param name="error">
-    ///     The validation error to get the default description of.
-    /// </param>
-    /// <returns>
-    ///     The default description of the specified validation error.
-    /// </returns>
-    [NotNull]
-    public static string GetDefaultDescription([NotNull] MemberConstraintValidationError error)
-    {
-        if (error is null)
-        {
-            throw new ArgumentNullException(nameof(error));
-        }
-
-        return AsInvariant($@"[{error.Context.Expression}] {error.ErrorMessage}");
-    }
-
-    /// <summary>
     ///     Returns a <see cref="System.String" /> that represents
     ///     this <see cref="MemberConstraintValidationError"/>.
     /// </summary>
@@ -88,13 +68,4 @@ public sealed class MemberConstraintValidationError
     /// </returns>
     public override string ToString()
         => AsInvariant($@"{{ {GetType().GetQualifiedName()}: Failed {FailedConstraintType.GetQualifiedName().ToUIString()} for [{Context.Expression}] }}");
-
-    /// <summary>
-    ///     Gets the default description of the current validation error.
-    /// </summary>
-    /// <returns>
-    ///     The default description of the current validation error.
-    /// </returns>
-    [NotNull]
-    public string GetDefaultDescription() => GetDefaultDescription(this);
 }

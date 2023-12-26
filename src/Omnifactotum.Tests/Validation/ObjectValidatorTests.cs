@@ -113,6 +113,20 @@ internal sealed class ObjectValidatorTests
         Assert.That(validationException, Is.TypeOf<ObjectValidationException>());
         Assert.That(() => validationException.ValidationResult, Is.SameAs(validationResult));
 
+        const string ExpectedExceptionMessage = $"""
+            [1/8] [{InstanceExpression}.ContainedValue.Data.StartDate] Validation of the constraint "{nameof(ObjectValidatorTests)}.UtcDateConstraint" failed.
+            [2/8] [{InstanceExpression}.ContainedValue.Data.StartDate] Validation of the constraint "{
+                nameof(ObjectValidatorTests)}.UtcDateTypedConstraint" failed.
+            [3/8] [{InstanceExpression}.ContainedValue.Data.Value] The value cannot be null.
+            [4/8] [{InstanceExpression}.ContainedValue.Data.NullableValue] The value cannot be null.
+            [5/8] [Convert({InstanceExpression}.ContainedValue.MultipleDataItems[1], AnotherSimpleData).Value] The value cannot be null.
+            [6/8] [{InstanceExpression}.ContainedValue.NullableImmutableStrings] The value cannot be null.
+            [7/8] [Convert({InstanceExpression}.ContainedValue.SingleBaseData, AnotherSimpleData).Value] The value cannot be null.
+            [8/8] [{InstanceExpression}.ContainedValue.NonEmptyValue] The value must not be null or an empty string.
+            """;
+
+        Assert.That(() => validationException.Message, Is.EqualTo(ExpectedExceptionMessage));
+
         Assert.That(
             () => validationResult.EnsureSucceeded(),
             Throws

@@ -5,6 +5,7 @@ using System.Diagnostics;
 using System.Linq;
 using Omnifactotum.Annotations;
 using Omnifactotum.Validation.Constraints;
+using static Omnifactotum.FormattableStringFactotum;
 using PureAttribute = System.Diagnostics.Contracts.PureAttribute;
 
 //// ReSharper disable RedundantNullnessAttributeWithNullableReferenceTypes
@@ -54,59 +55,29 @@ public sealed class ObjectValidationResult
     public ReadOnlyCollection<MemberConstraintValidationError> Errors { get; }
 
     /// <summary>
-    ///     <para>Gets the validation exception based on the validation result.</para>
-    ///     <para>If validation succeeded, this method returns <see langword="null"/>.</para>
+    ///     Gets the validation exception based on the validation result using the default formatting, or <see langword="null"/> if validation succeeded.
     /// </summary>
-    /// <param name="getErrorDescription">
-    ///     A reference to a method the retrieves the description for a specified validation error.
-    /// </param>
-    /// <param name="errorDescriptionSeparator">
-    ///     The string value that is used to separate a list of validation error descriptions.
-    ///     Can be <see langword="null"/> (in which case an empty string is used).
-    /// </param>
     /// <returns>
-    ///     An <see cref="ObjectValidationException"/> if validation failed;
-    ///     or <see langword="null"/> if validation succeeded.
+    ///     An <see cref="ObjectValidationException"/> if validation failed; or <see langword="null"/> if validation succeeded.
     /// </returns>
     [Pure]
     [Omnifactotum.Annotations.Pure]
     [CanBeNull]
-    public ObjectValidationException? GetException(
-        [NotNull] [InstantHandle] Func<MemberConstraintValidationError, string> getErrorDescription,
-        [CanBeNull] string? errorDescriptionSeparator)
+    public ObjectValidationException? GetException()
     {
-        if (getErrorDescription is null)
-        {
-            throw new ArgumentNullException(nameof(getErrorDescription));
-        }
-
         if (IsObjectValid)
         {
             return null;
         }
 
-        var message = Errors.Select(getErrorDescription).Join(errorDescriptionSeparator);
+        var errorCount = Errors.Count;
+
+        var message = Errors
+            .Select((error, index) => AsInvariant($"[{index + 1:N0}/{errorCount:N0}] [{error.Context.Expression}] {error.ErrorMessage}"))
+            .Join(Environment.NewLine);
+
         return new ObjectValidationException(this, message);
     }
-
-    /// <summary>
-    ///     <para>
-    ///         Gets the validation exception based on the validation result, using the default description
-    ///         (<see cref="MemberConstraintValidationError.GetDefaultDescription(Omnifactotum.Validation.Constraints.MemberConstraintValidationError)"/>)
-    ///         and <see cref="Environment.NewLine"/> separator.
-    ///     </para>
-    ///     <para>
-    ///         If validation succeeded, this method returns <see langword="null"/>.
-    ///     </para>
-    /// </summary>
-    /// <returns>
-    ///     An <see cref="ObjectValidationException"/> if validation failed;
-    ///     or <see langword="null"/> if validation succeeded.
-    /// </returns>
-    [Pure]
-    [Omnifactotum.Annotations.Pure]
-    [CanBeNull]
-    public ObjectValidationException? GetException() => GetException(MemberConstraintValidationError.GetDefaultDescription, Environment.NewLine);
 
     /// <summary>
     ///     Checks if validation succeeded and if it is not, throws an <see cref="ObjectValidationException"/>.
