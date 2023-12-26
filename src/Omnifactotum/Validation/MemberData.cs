@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Diagnostics;
 using System.Linq.Expressions;
 using Omnifactotum.Annotations;
 using Omnifactotum.Validation.Constraints;
@@ -11,6 +12,7 @@ namespace Omnifactotum.Validation;
 /// <summary>
 ///     Represents the member data.
 /// </summary>
+[DebuggerDisplay("{ToDebuggerString(),nq}")]
 internal sealed class MemberData
 {
     /// <summary>
@@ -75,4 +77,9 @@ internal sealed class MemberData
     /// </summary>
     [CanBeNull]
     public BaseMemberConstraintAttribute[]? EffectiveAttributes { get; }
+
+    private static string FormatValue(object? value) => ValidationFactotum.TryFormatSimpleValue(value) ?? $"{{ {value.GetShortObjectReferenceDescription()} }}";
+
+    private string ToDebuggerString()
+        => $"{{ {nameof(Expression)} = {Expression}, {nameof(Value)} = {FormatValue(Value)}, {nameof(Container)} = {FormatValue(Container)} }}";
 }

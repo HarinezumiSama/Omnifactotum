@@ -13,7 +13,7 @@ public sealed class NotNullOrEmptyCollectionConstraint : TypedMemberConstraintBa
         MemberConstraintValidationContext memberContext,
         ICollection? value)
     {
-        if (value is null)
+        if (value is null || ValidationFactotum.IsDefaultImmutableArray(value))
         {
             AddError(validatorContext, memberContext, ValidationMessages.CannotBeNull);
         }

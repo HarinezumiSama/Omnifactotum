@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Globalization;
 using Omnifactotum.Annotations;
 using static Omnifactotum.FormattableStringFactotum;
@@ -44,22 +43,12 @@ public abstract class MemberConstraintBase : IMemberConstraint
     ///     The specified value formatted as a string.
     /// </returns>
     protected static string FormatValue<TValue>(TValue value)
-        => value switch
-        {
-            null => OmnifactotumRepresentationConstants.NullValueRepresentation,
-            string s => s.ToUIString(),
-            Uri uri => uri.ToUIString(),
-            DateTime dt => dt.ToPreciseFixedString(),
-            DateTimeOffset dto => dto.ToPreciseFixedString(),
-            TimeSpan ts => ts.ToPreciseFixedString(),
-            IEnumerable<string?> strings => $"[{strings.ToUIString()}]",
-            IFormattable formattable => formattable.ToString(null, CultureInfo.InvariantCulture),
-            _ when typeof(TValue).IsEnum && !typeof(TValue).IsDefined(typeof(FlagsAttribute), false)
-                => Enum.IsDefined(typeof(TValue), value)
-                    ? AsInvariant($"{value:D} ({value:G})")
-                    : AsInvariant($"{value:D}"),
-            _ => value.ToString().AvoidNull()
-        };
+        => ValidationFactotum.TryFormatSimpleValue(value)
+            ?? value switch
+            {
+                IFormattable formattable => formattable.ToString(null, CultureInfo.InvariantCulture),
+                _ => (value?.ToString()).AvoidNull()
+            };
 
     /// <summary>
     ///     Validates the specified value is scope of the specified memberContext.

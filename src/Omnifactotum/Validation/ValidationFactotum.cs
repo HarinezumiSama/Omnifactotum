@@ -1,9 +1,19 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.Collections.Immutable;
+using System.Linq;
 using System.Linq.Expressions;
+using System.Reflection;
+using System.Runtime.CompilerServices;
 using Omnifactotum.Annotations;
 using Omnifactotum.Validation.Constraints;
 using static Omnifactotum.FormattableStringFactotum;
 using PureAttribute = System.Diagnostics.Contracts.PureAttribute;
+
+#if NET7_0_OR_GREATER
+using System.Globalization;
+using System.Numerics;
+#endif
 
 //// ReSharper disable RedundantNullnessAttributeWithNullableReferenceTypes
 //// ReSharper disable AnnotationRedundancyInHierarchy
@@ -16,6 +26,12 @@ namespace Omnifactotum.Validation;
 internal static class ValidationFactotum
 {
     private static readonly Type CompatibleMemberConstraintType = typeof(IMemberConstraint);
+
+    private static readonly MethodInfo IsDefaultImmutableArrayMethodDefinition =
+        ((Expression<Func<ImmutableArray<object>, bool>>)(obj => IsDefaultImmutableArray(obj)))
+        .GetLastMethod()
+        .EnsureNotNull()
+        .GetGenericMethodDefinition();
 
     /// <summary>
     ///     Converts the type of the expression, if needed.
@@ -118,4 +134,56 @@ internal static class ValidationFactotum
 
         throw new ArgumentException(message, nameof(constraintType));
     }
+
+    [Pure]
+    [Omnifactotum.Annotations.Pure]
+    public static bool IsDefaultImmutableArray([NotNull] object value)
+    {
+        var type = value.GetType();
+
+        var isImmutableArray = type.IsConstructedGenericType && type.GetGenericTypeDefinition() == typeof(ImmutableArray<>);
+        if (!isImmutableArray)
+        {
+            return false;
+        }
+
+        var elementType = type.GetGenericArguments().Single();
+        var method = IsDefaultImmutableArrayMethodDefinition.MakeGenericMethod(elementType);
+
+        var result = (bool)method.Invoke(null, new[] { value }).EnsureNotNull();
+        return result;
+    }
+
+    public static string? TryFormatSimpleValue<TValue>(TValue value)
+    {
+        return value switch
+        {
+            null => OmnifactotumRepresentationConstants.NullValueRepresentation,
+            string s => s.ToUIString(),
+            Uri uri => uri.ToUIString(),
+            DateTime dt => dt.ToPreciseFixedString(),
+            DateTimeOffset dto => dto.ToPreciseFixedString(),
+            TimeSpan ts => ts.ToPreciseFixedString(),
+            IReadOnlyCollection<string?> strings => $"[{strings.ToUIString()}]",
+            ICollection<string?> strings => $"[{strings.ToUIString()}]",
+            _ when value.GetType() is { IsEnum: true } enumType && !enumType.IsDefined(typeof(FlagsAttribute), false)
+                => Enum.IsDefined(enumType, value)
+                    ? AsInvariant($"{value:D} ({value:G})")
+                    : AsInvariant($"{value:D}"),
+#if NET7_0_OR_GREATER
+            IFormattable formattable
+                when value.GetType() is { IsValueType: true } valueType
+                && valueType.GetInterfaces()
+                    .Any(
+                        type => type.IsConstructedGenericType
+                            && type.GetGenericTypeDefinition() == typeof(INumberBase<>)
+                            && type.GetGenericArguments().Single() == valueType)
+                => formattable.ToString(null, CultureInfo.InvariantCulture),
+#endif
+            _ => null
+        };
+    }
+
+    [MethodImpl(OmnifactotumConstants.MethodOptimizationOptions.Standard)]
+    private static bool IsDefaultImmutableArray<T>(ImmutableArray<T> array) => array.IsDefault;
 }

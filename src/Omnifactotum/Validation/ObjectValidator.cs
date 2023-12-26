@@ -158,7 +158,7 @@ public static class ObjectValidator
     private static BaseMemberConstraintAttribute[]? FilterBy<TAttribute>(
         [CanBeNull] this IEnumerable<BaseValidatableMemberAttribute>? attributes)
         where TAttribute : BaseMemberConstraintAttribute
-        => attributes?.Where(obj => obj is TAttribute).Cast<BaseMemberConstraintAttribute>().ToArray();
+        => attributes?.OfType<TAttribute>().ToArray<BaseMemberConstraintAttribute>();
 
     [Pure]
     [Omnifactotum.Annotations.Pure]
@@ -185,7 +185,7 @@ public static class ObjectValidator
         var instance = parentMemberData.Value;
         var instanceType = instance.GetTypeSafely();
 
-        if (instance is null || IsSimpleTypeInternal(instanceType))
+        if (instance is null || IsSimpleTypeInternal(instanceType) || ValidationFactotum.IsDefaultImmutableArray(instance))
         {
             return Enumerable.Empty<MemberData>();
         }
@@ -241,6 +241,7 @@ public static class ObjectValidator
             }
         }
         //////// TODO [HarinezumiSama] Support IEnumerable<T>
+        //////// TODO [HarinezumiSama] Support IList<T>
         ////else if (parentExpression.Type.IsGenericType
         ////    && typeof(IEnumerable<>).IsAssignableFrom(parentExpression.Type.GetGenericTypeDefinition()))
         ////{

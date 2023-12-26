@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Collections.Immutable;
 
 namespace Omnifactotum.Validation.Constraints;
 
@@ -13,7 +14,7 @@ public sealed class NotNullOrEmptyCollectionConstraint<T> : TypedMemberConstrain
         MemberConstraintValidationContext memberContext,
         ICollection<T>? value)
     {
-        if (value is null)
+        if (value is null or ImmutableArray<T> { IsDefault: true })
         {
             AddError(validatorContext, memberContext, ValidationMessages.CannotBeNull);
         }

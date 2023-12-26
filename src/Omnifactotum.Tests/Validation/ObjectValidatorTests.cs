@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections.Immutable;
 using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using NUnit.Framework;
@@ -29,22 +30,30 @@ internal sealed class ObjectValidatorTests
         {
             Data = new SimpleData { StartDate = DateTime.UtcNow, NullableValue = 0, Value = "A" },
             NonEmptyValue = "B",
-            MultipleDataItems = new BaseAnotherSimpleData[] { new AnotherSimpleData { Value = "B" } },
+            MultipleDataItems = new BaseAnotherSimpleData[] { new AnotherSimpleData { Value = "C" } },
+            ImmutableMultipleDataItems = ImmutableArray.Create<BaseAnotherSimpleData>(new AnotherSimpleData { Value = "D" }),
+            ImmutableStrings = ImmutableArray.Create("E"),
+            NullableImmutableStrings = ImmutableArray<string>.Empty,
             SingleBaseData = new AnotherSimpleData { Value = "Q" }
         };
 
         EnsureTestValidationSucceeded(data1);
         EnsureTestValidationSucceeded(data1.AsArray());
+        EnsureTestValidationSucceeded(ImmutableArray.Create(data1));
 
         var data2 = new ComplexData
         {
             Data = new SimpleData { StartDate = DateTime.UtcNow, NullableValue = 0, Value = "A" },
             NonEmptyValue = "B",
-            MultipleDataItems = new BaseAnotherSimpleData[] { new AnotherSimpleData { Value = "B" } }
+            MultipleDataItems = new BaseAnotherSimpleData[] { new AnotherSimpleData { Value = "C" } },
+            ImmutableMultipleDataItems = ImmutableArray.Create<BaseAnotherSimpleData>(new AnotherSimpleData { Value = "D" }),
+            ImmutableStrings = ImmutableArray<string>.Empty,
+            NullableImmutableStrings = ImmutableArray.Create("F")
         };
 
         EnsureTestValidationSucceeded(data2);
         EnsureTestValidationSucceeded(data2.AsArray());
+        EnsureTestValidationSucceeded(ImmutableArray.Create(data2));
     }
 
     [Test]
@@ -57,6 +66,7 @@ internal sealed class ObjectValidatorTests
                 Data = new SimpleData { StartDate = DateTime.Now },
                 NonEmptyValue = string.Empty,
                 MultipleDataItems = new BaseAnotherSimpleData[] { new AnotherSimpleData { Value = "C" }, new AnotherSimpleData() },
+                ImmutableMultipleDataItems = ImmutableArray.Create<BaseAnotherSimpleData>(new AnotherSimpleData { Value = "D" }),
                 SingleBaseData = new AnotherSimpleData()
             }
         };
@@ -77,6 +87,7 @@ internal sealed class ObjectValidatorTests
                 {
                     $"{InstanceExpression}.ContainedValue.Data.Value",
                     $"{InstanceExpression}.ContainedValue.Data.NullableValue",
+                    $"{InstanceExpression}.ContainedValue.NullableImmutableStrings",
                     $"Convert({InstanceExpression}.ContainedValue.MultipleDataItems[1], AnotherSimpleData).Value",
                     $"Convert({InstanceExpression}.ContainedValue.SingleBaseData, AnotherSimpleData).Value"
                 }
@@ -316,16 +327,16 @@ internal sealed class ObjectValidatorTests
     {
         var validationResult1 = ObjectValidator.Validate(data!).AssertNotNull();
 
+        Assert.That(() => validationResult1.GetException(), Is.Null);
         Assert.That(() => validationResult1.Errors.Count, Is.EqualTo(0));
         Assert.That(() => validationResult1.IsObjectValid, Is.True);
-        Assert.That(() => validationResult1.GetException(), Is.Null);
         Assert.That(() => validationResult1.EnsureSucceeded(), Throws.Nothing);
 
         var validationResult2 = ObjectValidator.Validate(data!, "customExpression-5d804913def74aa2b441496a9e92dba6").AssertNotNull();
 
+        Assert.That(() => validationResult2.GetException(), Is.Null);
         Assert.That(() => validationResult2.Errors.Count, Is.EqualTo(0));
         Assert.That(() => validationResult2.IsObjectValid, Is.True);
-        Assert.That(() => validationResult2.GetException(), Is.Null);
         Assert.That(() => validationResult2.EnsureSucceeded(), Throws.Nothing);
     }
 
@@ -403,6 +414,34 @@ internal sealed class ObjectValidatorTests
         [MemberConstraint(typeof(NotNullConstraint))]
         [MemberItemConstraint(typeof(NotNullConstraint))]
         public BaseAnotherSimpleData[]? MultipleDataItems
+        {
+            [UsedImplicitly]
+            get;
+            set;
+        }
+
+        [MemberConstraint(typeof(NotNullOrEmptyCollectionConstraint))]
+        [MemberItemConstraint(typeof(NotNullConstraint))]
+        public ImmutableArray<BaseAnotherSimpleData> ImmutableMultipleDataItems
+        {
+            [UsedImplicitly]
+            get;
+            set;
+        }
+
+        [MemberItemConstraint(typeof(NotNullConstraint))]
+        [MemberItemConstraint(typeof(NotNullConstraint<string>))]
+        public ImmutableArray<string> ImmutableStrings
+        {
+            [UsedImplicitly]
+            get;
+            set;
+        }
+
+        [MemberConstraint(typeof(NotNullConstraint))]
+        [MemberItemConstraint(typeof(NotNullConstraint))]
+        [MemberItemConstraint(typeof(NotNullConstraint<string>))]
+        public ImmutableArray<string>? NullableImmutableStrings
         {
             [UsedImplicitly]
             get;
