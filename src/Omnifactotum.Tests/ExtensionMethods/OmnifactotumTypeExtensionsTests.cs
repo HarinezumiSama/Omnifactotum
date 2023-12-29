@@ -4,7 +4,16 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Diagnostics.CodeAnalysis;
 using System.IO;
+using System.Linq;
+using System.Linq.Expressions;
+using System.Reflection;
+using System.Threading;
 using NUnit.Framework;
+using Omnifactotum.NUnit;
+
+#if NET7_0_OR_GREATER
+using System.Numerics;
+#endif
 
 namespace Omnifactotum.Tests.ExtensionMethods;
 
@@ -116,4 +125,85 @@ internal sealed class OmnifactotumTypeExtensionsTests
         Assert.That(() => input.GetCollectionElementType(), Is.EqualTo(expectedResult));
 #pragma warning restore CS0618
     }
+
+    [Test]
+    public void TestGetInterfaceMethodImplementationWhenInvalidArgumentsThenThrows()
+    {
+        var dummyMethodInfo = new Func<int, string>(DummyMethod).Method;
+
+        Assert.That(
+            () => default(Type)!.GetInterfaceMethodImplementation(dummyMethodInfo),
+            Throws.ArgumentNullException.With.Property(nameof(ArgumentException.ParamName)).EqualTo("implementationType"));
+
+        Assert.That(
+            () => typeof(string).GetInterfaceMethodImplementation(null!),
+            Throws.ArgumentNullException.With.Property(nameof(ArgumentException.ParamName)).EqualTo("interfaceMethod"));
+
+        Assert.That(
+            () => typeof(IEnumerable<int>).GetInterfaceMethodImplementation(dummyMethodInfo),
+            Throws.ArgumentException
+                .With.Property(nameof(ArgumentException.ParamName))
+                .EqualTo("implementationType")
+                .And.Message.StartsWith("""The type "System.Collections.Generic.IEnumerable<System.Int32>" is an interface."""));
+
+        Assert.That(
+            () => typeof(string).GetInterfaceMethodImplementation(
+                ((Expression<Func<string, string>>)(s => s.Insert(0, string.Empty))).GetLastMethod().EnsureNotNull()),
+            Throws.ArgumentException
+                .With.Property(nameof(ArgumentException.ParamName))
+                .EqualTo("interfaceMethod")
+                .And.Message.StartsWith(
+                    """The method { string string.Insert(int, string) } belongs to the type "System.String" which is not an interface."""));
+
+        Assert.That(
+            () => typeof(int).GetInterfaceMethodImplementation(
+                typeof(IDisposable).GetMethod(nameof(IDisposable.Dispose)).EnsureNotNull()),
+            Throws.ArgumentException
+                .With.Property(nameof(ArgumentException.ParamName))
+                .EqualTo("interfaceMethod")
+                .And.Message.StartsWith(
+                    """The method { void IDisposable.Dispose() } belongs to the interface "System.IDisposable" which is not implemented by the type "System.Int32"."""));
+
+        Assert.That(
+            () => typeof(List<>).GetInterfaceMethodImplementation(typeof(ICollection<>).GetMethod(nameof(ICollection<object>.Clear)).EnsureNotNull()),
+            Throws.ArgumentException
+                .With.Property(nameof(ArgumentException.ParamName))
+                .EqualTo("interfaceMethod")
+                .And.Message.StartsWith(
+                    """The method { void ICollection<T>.Clear() } belongs to the interface "System.Collections.Generic.ICollection<T>" which is not implemented by the type "System.Collections.Generic.List<T>"."""));
+    }
+
+    [Test]
+    [TestCase(typeof(List<string>), typeof(ICollection<string>), nameof(ICollection<string>.Clear), false)]
+    [TestCase(typeof(int[]), typeof(IList), nameof(IList.IndexOf), false)]
+    [TestCase(typeof(CancellationTokenSource), typeof(IDisposable), nameof(IDisposable.Dispose), false)]
+#if NET7_0_OR_GREATER
+    [TestCase(typeof(int), typeof(INumber<int>), nameof(INumber<int>.Sign), true)]
+#endif
+    public void TestGetInterfaceMethodImplementationWhenValidArgumentsThenSucceeds(
+        Type implementationType,
+        Type interfaceType,
+        string interfaceMethodName,
+        bool isStatic)
+    {
+        var interfaceMethodInfo = interfaceType
+            .GetMethods(BindingFlags.Public | (isStatic ? BindingFlags.Static : BindingFlags.Instance))
+            .SingleOrDefault(info => info.Name == interfaceMethodName)
+            .AssertNotNull();
+
+        var foundMethodInfo = implementationType.GetInterfaceMethodImplementation(interfaceMethodInfo);
+        Assert.That(foundMethodInfo, Is.Not.Null);
+        Assert.That(foundMethodInfo.DeclaringType, Is.EqualTo(implementationType.IsArray ? typeof(Array) : implementationType));
+        Assert.That(foundMethodInfo.ReflectedType, Is.EqualTo(implementationType));
+
+        var expectedName = foundMethodInfo.IsPrivate ? interfaceType.FullName + Type.Delimiter + interfaceMethodName : interfaceMethodName;
+        Assert.That(foundMethodInfo.Name, Is.EqualTo(expectedName));
+
+        Assert.That(foundMethodInfo.ReturnType, Is.EqualTo(interfaceMethodInfo.ReturnType));
+        Assert.That(GetParameterTypes(foundMethodInfo), Is.EqualTo(GetParameterTypes(interfaceMethodInfo)));
+    }
+
+    private static Type[] GetParameterTypes(MethodBase methodInfo) => methodInfo.GetParameters().Select(info => info.ParameterType).ToArray();
+
+    private static string DummyMethod(int value) => throw new NotSupportedException();
 }

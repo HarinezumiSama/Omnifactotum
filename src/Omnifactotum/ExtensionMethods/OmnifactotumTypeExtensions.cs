@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Reflection;
 using System.Runtime.CompilerServices;
 using System.Text;
 using Omnifactotum;
@@ -291,6 +292,73 @@ public static class OmnifactotumTypeExtensions
         }
 
         return typeof(IEnumerable).IsAssignableFrom(type) ? typeof(object) : null;
+    }
+
+    /// <summary>
+    ///     Gets the <see cref="MethodInfo"/> that implements the specified interface method in the specified type.
+    /// </summary>
+    /// <param name="implementationType">
+    ///     The type to search the interface method implementation in.
+    /// </param>
+    /// <param name="interfaceMethod">
+    ///     The interface method to search for.
+    /// </param>
+    /// <returns>
+    ///     A <see cref="MethodInfo"/> that represents implementation of <paramref name="interfaceMethod"/> in <paramref name="implementationType"/>.
+    /// </returns>
+    [Pure]
+    [Omnifactotum.Annotations.Pure]
+    [NotNull]
+    public static MethodInfo GetInterfaceMethodImplementation(this Type implementationType, MethodInfo interfaceMethod)
+    {
+        if (implementationType is null)
+        {
+            throw new ArgumentNullException(nameof(implementationType));
+        }
+
+        if (interfaceMethod is null)
+        {
+            throw new ArgumentNullException(nameof(interfaceMethod));
+        }
+
+        if (implementationType.IsInterface)
+        {
+            throw new ArgumentException($"The type {implementationType.GetFullName().ToUIString()} is an interface.", nameof(implementationType));
+        }
+
+        var interfaceType = interfaceMethod.DeclaringType;
+        if (interfaceType is null)
+        {
+            throw new ArgumentException($"The method {{ {interfaceMethod.GetSignature()} }} does not belong to a type.", nameof(interfaceMethod));
+        }
+
+        if (!interfaceType.IsInterface)
+        {
+            throw new ArgumentException(
+                $"The method {{ {interfaceMethod.GetSignature()} }} belongs to the type {interfaceType.GetFullName().ToUIString()} which is not an interface.",
+                nameof(interfaceMethod));
+        }
+
+        if (!interfaceType.IsAssignableFrom(implementationType))
+        {
+            throw new ArgumentException(
+                $"The method {{ {interfaceMethod.GetSignature()} }} belongs to the interface {
+                    interfaceType.GetFullName().ToUIString()} which is not implemented by the type {implementationType.GetFullName().ToUIString()}.",
+                nameof(interfaceMethod));
+        }
+
+        var interfaceMapping = implementationType.GetInterfaceMap(interfaceType);
+        Factotum.Assert(interfaceMapping.InterfaceMethods.Length == interfaceMapping.TargetMethods.Length);
+
+        var foundIndex = Array.IndexOf(interfaceMapping.InterfaceMethods, interfaceMethod);
+        if (foundIndex < 0)
+        {
+            throw new InvalidOperationException(
+                $"The method {{ {interfaceMethod.GetSignature()} }} of the interface {
+                    interfaceType.GetFullName().ToUIString()} is not found in the implementing type {implementationType.GetFullName().ToUIString()}.");
+        }
+
+        return interfaceMapping.TargetMethods[foundIndex];
     }
 
     /// <summary>
