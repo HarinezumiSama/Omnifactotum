@@ -9,36 +9,34 @@
 - [Complete Release Notes](https://github.com/HarinezumiSama/Omnifactotum/blob/master/src/Omnifactotum.ReleaseNotes.md)
 - [ReadMe](https://github.com/HarinezumiSama/Omnifactotum/blob/master/README.md)
 
-### Changes in 0.17.0 (since 0.16.0)
+### Changes in 0.18.0 (since 0.17.0)
 
-#### Breaking Changes
+#### Breaking changes
+
+- Object Validation
+  - `NotNullConstraint` is now inherited from `MemberConstraintBase` instead of `NotNullConstraint<object>`
+  - `NotNullConstraint<T>` is now sealed
+  - Removed `Omnifactotum.Validation.ObjectValidationResult.GetException(Func<...>, string?)`
+  - Removed `Omnifactotum.Validation.Constraints.MemberConstraintValidationError.GetDefaultDescription()`
+  - Removed `Omnifactotum.Validation.Constraints.MemberConstraintValidationError.GetDefaultDescription(MemberConstraintValidationError)`
+  - Member constraint's constructor can now be non-public
 
 #### New features
 
-- Added `OmnifactotumCharExtensions`
-  - `ToUIString(this char value)`
-- Added `OmnifactotumSpanExtensions`
-  - `ToHexString(this Span<byte> bytes, ...)`
-  - `TransformMultilineString(...)`
-- Added `ValueRangeExtensions`
-  - `Enumerate<T>(...)`
-  - `ToArray<T>(...)`
-- `OmnifactotumReadOnlySpanExtensions`
-  - Added `TransformMultilineString(...)`
-- `OmnifactotumStringExtensions`
-  - Added `EnsureNotBlank<T>`
-  - Added `EnsureNotEmpty<T>`
-  - Added `TransformMultilineString(...)`
-- Validation
-  - Added `NullableValueRangeConstraintBase<T>` constraint
-  - Added `OptionalEnumValueDefinedConstraint<T>` constraint
-  - Added `OptionalValueRangeConstraintBase<T>` constraint
+- Object Validation
+  - Implemented support for `ImmutableArray<T>` in member constraints:
+    - `NotNullConstraint`
+    - `NotNullConstraint<T>`
+    - `NotNullOrEmptyCollectionConstraint`
+    - `NotNullOrEmptyCollectionConstraint<T>`
+- `OmnifactotumTypeExtensions`
+  - Added `GetInterfaceMethodImplementation(this Type, MethodInfo)`
 
-#### Minor updates and fixes
+#### Updates and fixes
 
-- Applied `System.Diagnostics.Contracts.PureAttribute`, `Omnifactotum.Annotations.Pure`, and/or `Omnifactotum.Annotations.MustUseReturnValueAttribute` annotations where reasonable
-- Applied `Omnifactotum.Annotations.NotNullAttribute` where reasonable
-- Fixed/improved XML-documentation in:
-  - `NullableEnumValueDefinedConstraint<TEnum>`
-  - `OmnifactotumStringExtensions`
-- Minor code style fixes/improvements
+- Object Validation
+  - Improved/added support for `ImmutableArray<T>`, `IReadOnlyList<T>`, `IList<T>`, `IEnumerable<T>`, and `IList`
+  - Improved type casting in expressions
+  - Improved message format of the exception created by `ObjectValidationResult.GetException()`
+  - Validating early that a member constraint has a parameterless constructor
+  - Slightly optimized member constraint creation

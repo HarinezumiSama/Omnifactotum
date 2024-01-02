@@ -13,6 +13,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Common", "Common", "{D7C50C
 		Directory.Build.props = Directory.Build.props
 		..\LICENSE = ..\LICENSE
 		Omnifactotum.ReleaseNotes.md = Omnifactotum.ReleaseNotes.md
+		Omnifactotum.ReleaseNotes.UpTo-v0.6.0.md = Omnifactotum.ReleaseNotes.UpTo-v0.6.0.md
 		Omnifactotum.runsettings = Omnifactotum.runsettings
 		Omnifactotum.sln.DotSettings = Omnifactotum.sln.DotSettings
 		Common\Omnifactotum.snk = Common\Omnifactotum.snk
