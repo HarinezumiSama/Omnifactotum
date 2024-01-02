@@ -5,7 +5,6 @@ using System.Linq;
 using System.Linq.Expressions;
 using System.Reflection;
 using System.Runtime.CompilerServices;
-using Omnifactotum.Annotations;
 using Omnifactotum.Validation.Constraints;
 using static Omnifactotum.FormattableStringFactotum;
 using PureAttribute = System.Diagnostics.Contracts.PureAttribute;
@@ -47,7 +46,7 @@ internal static class ValidationFactotum
     /// </returns>
     [Pure]
     [Omnifactotum.Annotations.Pure]
-    public static Expression ConvertTypeAuto([NotNull] Expression expression, [NotNull] Type valueType)
+    public static Expression ConvertTypeAuto(Expression expression, Type valueType)
     {
         if (expression is null)
         {
@@ -59,9 +58,13 @@ internal static class ValidationFactotum
             throw new ArgumentNullException(nameof(valueType));
         }
 
-        var expressionType = expression.Type.GetCollectionElementTypeOrDefault() ?? expression.Type;
+        var expressionType = expression.Type;
 
-        return expressionType == valueType ? expression : Expression.Convert(expression, valueType);
+        return valueType.IsAssignableFrom(expressionType)
+            ? expression
+            : expressionType.IsNullableValueType()
+                ? Expression.Property(expression, expression.Type, nameof(Nullable<int>.Value))
+                : Expression.Convert(expression, valueType);
     }
 
     /// <summary>
@@ -78,7 +81,7 @@ internal static class ValidationFactotum
     /// </returns>
     [Pure]
     [Omnifactotum.Annotations.Pure]
-    public static Expression ConvertTypeAuto([NotNull] Expression expression, [CanBeNull] object? value)
+    public static Expression ConvertTypeAuto(Expression expression, object? value)
         => value is null ? expression.EnsureNotNull() : ConvertTypeAuto(expression, value.GetType());
 
     /// <summary>
@@ -96,8 +99,7 @@ internal static class ValidationFactotum
     /// <exception cref="System.ArgumentException">
     ///     The specified constraint type is not a valid member constraint type.
     /// </exception>
-    [NotNull]
-    public static Type ValidateAndRegisterMemberConstraintType([NotNull] this Type constraintType)
+    public static Type ValidateAndRegisterMemberConstraintType(this Type constraintType)
     {
         if (constraintType is null)
         {
@@ -146,7 +148,7 @@ internal static class ValidationFactotum
         return constraintType;
     }
 
-    public static IMemberConstraint CreateMemberConstraint([NotNull] Type constraintType)
+    public static IMemberConstraint CreateMemberConstraint(Type constraintType)
     {
         constraintType.ValidateAndRegisterMemberConstraintType();
 
@@ -159,8 +161,13 @@ internal static class ValidationFactotum
 
     [Pure]
     [Omnifactotum.Annotations.Pure]
-    public static bool IsDefaultImmutableArray([NotNull] object value)
+    public static bool IsDefaultImmutableArray(object? value)
     {
+        if (value is null)
+        {
+            return false;
+        }
+
         var type = value.GetType();
 
         var isImmutableArray = type.IsConstructedGenericType && type.GetGenericTypeDefinition() == typeof(ImmutableArray<>);
@@ -186,6 +193,7 @@ internal static class ValidationFactotum
             DateTime dt => dt.ToPreciseFixedString(),
             DateTimeOffset dto => dto.ToPreciseFixedString(),
             TimeSpan ts => ts.ToPreciseFixedString(),
+            _ when IsDefaultImmutableArray(value) => OmnifactotumRepresentationConstants.NullValueRepresentation,
             IReadOnlyCollection<string?> strings => $"[{strings.ToUIString()}]",
             ICollection<string?> strings => $"[{strings.ToUIString()}]",
             _ when value.GetType() is { IsEnum: true } enumType && !enumType.IsDefined(typeof(FlagsAttribute), false)

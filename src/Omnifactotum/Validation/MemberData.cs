@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Diagnostics;
 using System.Linq.Expressions;
-using Omnifactotum.Annotations;
 using Omnifactotum.Validation.Constraints;
 
 //// ReSharper disable RedundantNullnessAttributeWithNullableReferenceTypes
@@ -34,16 +33,17 @@ internal sealed class MemberData
     ///     The effective constraint attributes.
     /// </param>
     internal MemberData(
-        [NotNull] Expression expression,
-        [CanBeNull] object? container,
-        [CanBeNull] object? value,
-        [CanBeNull] BaseValidatableMemberAttribute[]? attributes,
-        [CanBeNull] BaseMemberConstraintAttribute[]? effectiveAttributes)
+        Expression expression,
+        object? container,
+        object? value,
+        BaseValidatableMemberAttribute[]? attributes,
+        BaseMemberConstraintAttribute[]? effectiveAttributes)
     {
         Expression = expression ?? throw new ArgumentNullException(nameof(expression));
 
         Container = container;
         Value = value;
+        ValueType = value?.GetType() ?? expression.Type;
         Attributes = attributes;
         EffectiveAttributes = effectiveAttributes;
     }
@@ -51,34 +51,36 @@ internal sealed class MemberData
     /// <summary>
     ///     Gets the expression.
     /// </summary>
-    [NotNull]
     public Expression Expression { get; }
 
     /// <summary>
     ///     Gets the object containing the value that is being, or was, validated.
     /// </summary>
-    [CanBeNull]
     public object? Container { get; }
 
     /// <summary>
     ///     Gets the value.
     /// </summary>
-    [CanBeNull]
     public object? Value { get; }
+
+    /// <summary>
+    ///     Gets the type of <see cref="Value"/>, or the type of <see cref="Expression"/> if <see cref="Value"/> is <see langword="null"/>.
+    /// </summary>
+    public Type ValueType { get; }
 
     /// <summary>
     ///     Gets the constraint attributes.
     /// </summary>
-    [CanBeNull]
     public BaseValidatableMemberAttribute[]? Attributes { get; }
 
     /// <summary>
     ///     Gets the effective constraint attributes.
     /// </summary>
-    [CanBeNull]
     public BaseMemberConstraintAttribute[]? EffectiveAttributes { get; }
 
-    private static string FormatValue(object? value) => ValidationFactotum.TryFormatSimpleValue(value) ?? $"{{ {value.GetShortObjectReferenceDescription()} }}";
+    private static string FormatValue(object? value)
+        => ValidationFactotum.TryFormatSimpleValue(value)
+            ?? (value?.GetType() is { IsValueType: true } type ? $"{{ {type.GetQualifiedName()} }}" : $"{{ {value.GetShortObjectReferenceDescription()} }}");
 
     private string ToDebuggerString()
         => $"{{ {nameof(Expression)} = {Expression}, {nameof(Value)} = {FormatValue(Value)}, {nameof(Container)} = {FormatValue(Container)} }}";

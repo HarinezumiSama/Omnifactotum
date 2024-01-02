@@ -82,6 +82,7 @@ public sealed class ObjectValidationResult
     /// <summary>
     ///     Checks if validation succeeded and if it is not, throws an <see cref="ObjectValidationException"/>.
     /// </summary>
+    [DebuggerStepThrough]
     public void EnsureSucceeded()
     {
         var exception = GetException();

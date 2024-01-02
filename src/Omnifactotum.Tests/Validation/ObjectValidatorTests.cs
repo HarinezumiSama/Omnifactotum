@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Collections.Immutable;
+using System.Collections.ObjectModel;
 using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using NUnit.Framework;
@@ -12,7 +13,9 @@ using Omnifactotum.Validation.Constraints;
 namespace Omnifactotum.Tests.Validation;
 
 [TestFixture(TestOf = typeof(ObjectValidator))]
-internal sealed class ObjectValidatorTests
+[SuppressMessage("ReSharper", "PropertyCanBeMadeInitOnly.Local")]
+[SuppressMessage("Performance", "CA1822:Mark members as static")]
+internal sealed partial class ObjectValidatorTests
 {
     private const string ValidationResultPropertyName = nameof(ObjectValidationException.ValidationResult);
 
@@ -30,10 +33,20 @@ internal sealed class ObjectValidatorTests
         {
             Data = new SimpleData { StartDate = DateTime.UtcNow, NullableValue = 0, Value = "A" },
             NonEmptyValue = "B",
-            MultipleDataItems = new BaseAnotherSimpleData[] { new AnotherSimpleData { Value = "C" } },
+            MultipleDataItems = new BaseAnotherSimpleData[] { new AnotherSimpleData { Value = "C1" } },
+            AnotherSimpleDataArray = new[] { new AnotherSimpleData { Value = "C2" } },
+            AnotherSimpleDataCollection = new Collection<AnotherSimpleData>(),
+            AnotherSimpleDataCustomEnumerable = new CustomEnumerable(),
+            AnotherSimpleDataCustomGenericEnumerable = new CustomGenericEnumerable<AnotherSimpleData>(),
+            AnotherSimpleDataCustomGenericEnumerableObject = new CustomGenericEnumerable<AnotherSimpleData>(),
+            AnotherSimpleDataCustomGenericList = new CustomGenericList<AnotherSimpleData>(),
+            AnotherSimpleDataCustomList = new CustomList(),
+            AnotherSimpleDataCustomReadOnlyList = new CustomReadOnlyList<AnotherSimpleData>(),
+            AnotherSimpleDataImmutableList = ImmutableList<AnotherSimpleData>.Empty,
             ImmutableMultipleDataItems = ImmutableArray.Create<BaseAnotherSimpleData>(new AnotherSimpleData { Value = "D" }),
             ImmutableStrings = ImmutableArray.Create("E"),
             NullableImmutableStrings = ImmutableArray<string>.Empty,
+            AnotherNullableImmutableStrings = ImmutableArray<string>.Empty,
             SingleBaseData = new AnotherSimpleData { Value = "Q" }
         };
 
@@ -45,10 +58,20 @@ internal sealed class ObjectValidatorTests
         {
             Data = new SimpleData { StartDate = DateTime.UtcNow, NullableValue = 0, Value = "A" },
             NonEmptyValue = "B",
-            MultipleDataItems = new BaseAnotherSimpleData[] { new AnotherSimpleData { Value = "C" } },
+            MultipleDataItems = new BaseAnotherSimpleData[] { new AnotherSimpleData { Value = "C1" } },
+            AnotherSimpleDataArray = new[] { new AnotherSimpleData { Value = "C2" } },
+            AnotherSimpleDataCollection = new Collection<AnotherSimpleData> { new() { Value = "C3" } },
+            AnotherSimpleDataCustomEnumerable = new CustomEnumerable(new AnotherSimpleData { Value = "C4" }),
+            AnotherSimpleDataCustomGenericEnumerable = new CustomGenericEnumerable<AnotherSimpleData>(new AnotherSimpleData { Value = "C5" }),
+            AnotherSimpleDataCustomGenericEnumerableObject = new CustomGenericEnumerable<AnotherSimpleData>(new AnotherSimpleData { Value = "C5" }),
+            AnotherSimpleDataCustomGenericList = new CustomGenericList<AnotherSimpleData>(new AnotherSimpleData { Value = "C6" }),
+            AnotherSimpleDataCustomList = new CustomList(new AnotherSimpleData { Value = "C7" }),
+            AnotherSimpleDataCustomReadOnlyList = new CustomReadOnlyList<AnotherSimpleData>(new AnotherSimpleData { Value = "C8" }),
+            AnotherSimpleDataImmutableList = ImmutableList.Create(new AnotherSimpleData { Value = "C9" }),
             ImmutableMultipleDataItems = ImmutableArray.Create<BaseAnotherSimpleData>(new AnotherSimpleData { Value = "D" }),
             ImmutableStrings = ImmutableArray<string>.Empty,
-            NullableImmutableStrings = ImmutableArray.Create("F")
+            NullableImmutableStrings = ImmutableArray.Create("F1"),
+            AnotherNullableImmutableStrings = ImmutableArray.Create("F2")
         };
 
         EnsureTestValidationSucceeded(data2);
@@ -57,16 +80,62 @@ internal sealed class ObjectValidatorTests
     }
 
     [Test]
+    [SuppressMessage("ReSharper", "ArrangeObjectCreationWhenTypeEvident")]
     public void TestValidateWhenValidationFailed()
     {
         var dataContainer = new SimpleContainer<ComplexData>
         {
             ContainedValue = new ComplexData
             {
-                Data = new SimpleData { StartDate = DateTime.Now },
+                Data = new SimpleData { StartDate = new DateTime(2023, 12, 29, 11, 59, 43).AsKind(DateTimeKind.Local) },
                 NonEmptyValue = string.Empty,
-                MultipleDataItems = new BaseAnotherSimpleData[] { new AnotherSimpleData { Value = "C" }, new AnotherSimpleData() },
+                MultipleDataItems = new BaseAnotherSimpleData[]
+                {
+                    new AnotherSimpleData { Value = "C1" },
+                    new AnotherSimpleData()
+                },
+                AnotherSimpleDataArray = new[]
+                {
+                    new AnotherSimpleData { Value = "C2" },
+                    new AnotherSimpleData()
+                },
+                AnotherSimpleDataCollection = new Collection<AnotherSimpleData>
+                {
+                    new AnotherSimpleData { Value = "C3" },
+                    new AnotherSimpleData()
+                },
+                AnotherSimpleDataCustomEnumerable = new CustomEnumerable(
+                    new AnotherSimpleData(),
+                    new AnotherSimpleData { Value = "C4" }),
+                AnotherSimpleDataCustomGenericEnumerable = new CustomGenericEnumerable<AnotherSimpleData>(
+                    new AnotherSimpleData { Value = "C5" },
+                    new AnotherSimpleData { Value = "C6" },
+                    new AnotherSimpleData()),
+                AnotherSimpleDataCustomGenericEnumerableObject = new CustomGenericEnumerable<AnotherSimpleData>(
+                    new AnotherSimpleData { Value = "C5-O" },
+                    new AnotherSimpleData { Value = "C6-O" },
+                    new AnotherSimpleData()),
+                AnotherSimpleDataCustomGenericList = new CustomGenericList<AnotherSimpleData>(
+                    new AnotherSimpleData { Value = "C7" },
+                    new AnotherSimpleData(),
+                    new AnotherSimpleData()),
+                AnotherSimpleDataCustomList = new CustomList(
+                    new AnotherSimpleData { Value = "C8" },
+                    new AnotherSimpleData(),
+                    new AnotherSimpleData { Value = "C9" },
+                    null,
+                    new AnotherSimpleData()),
+                AnotherSimpleDataCustomReadOnlyList = new CustomReadOnlyList<AnotherSimpleData>(
+                    new AnotherSimpleData { Value = "C10" },
+                    new AnotherSimpleData { Value = "C11" },
+                    new AnotherSimpleData { Value = "C12" },
+                    new AnotherSimpleData()),
+                AnotherSimpleDataImmutableList = ImmutableList.Create(
+                    new AnotherSimpleData { Value = "C13" },
+                    new AnotherSimpleData { Value = "C14" },
+                    new AnotherSimpleData()),
                 ImmutableMultipleDataItems = ImmutableArray.Create<BaseAnotherSimpleData>(new AnotherSimpleData { Value = "D" }),
+                AnotherNullableImmutableStrings = ImmutableArray.Create("E", null!, "F"),
                 SingleBaseData = new AnotherSimpleData()
             }
         };
@@ -88,8 +157,28 @@ internal sealed class ObjectValidatorTests
                     $"{InstanceExpression}.ContainedValue.Data.Value",
                     $"{InstanceExpression}.ContainedValue.Data.NullableValue",
                     $"{InstanceExpression}.ContainedValue.NullableImmutableStrings",
+                    $"{InstanceExpression}.ContainedValue.AnotherNullableImmutableStrings.Value.Item[1]",
                     $"Convert({InstanceExpression}.ContainedValue.MultipleDataItems[1], AnotherSimpleData).Value",
+                    $"{InstanceExpression}.ContainedValue.AnotherSimpleDataArray[1].Value",
+                    $"{InstanceExpression}.ContainedValue.AnotherSimpleDataCollection.Item[1].Value",
+                    $"Convert({InstanceExpression}.ContainedValue.AnotherSimpleDataCustomEnumerable.Cast().First(), AnotherSimpleData).Value",
+                    $"{InstanceExpression}.ContainedValue.AnotherSimpleDataCustomGenericEnumerable.Skip(2).First().Value",
+                    $"Convert({InstanceExpression}.ContainedValue.AnotherSimpleDataCustomGenericEnumerableObject, IEnumerable`1).Skip(2).First().Value",
+                    $"{InstanceExpression}.ContainedValue.AnotherSimpleDataCustomGenericList.Item[1].Value",
+                    $"{InstanceExpression}.ContainedValue.AnotherSimpleDataCustomGenericList.Item[2].Value",
+                    $"Convert({InstanceExpression}.ContainedValue.AnotherSimpleDataCustomList.Item[1], AnotherSimpleData).Value",
+                    $"{InstanceExpression}.ContainedValue.AnotherSimpleDataCustomList.Item[3]",
+                    $"Convert({InstanceExpression}.ContainedValue.AnotherSimpleDataCustomList.Item[4], AnotherSimpleData).Value",
+                    $"{InstanceExpression}.ContainedValue.AnotherSimpleDataCustomReadOnlyList.Item[3].Value",
+                    $"{InstanceExpression}.ContainedValue.AnotherSimpleDataImmutableList.Item[2].Value",
                     $"Convert({InstanceExpression}.ContainedValue.SingleBaseData, AnotherSimpleData).Value"
+                }
+            },
+            {
+                typeof(NotNullConstraint<string>),
+                new[]
+                {
+                    $"{InstanceExpression}.ContainedValue.AnotherNullableImmutableStrings.Value.Item[1]"
                 }
             },
             {
@@ -112,20 +201,6 @@ internal sealed class ObjectValidatorTests
         var validationException = validationResult.GetException().AssertNotNull();
         Assert.That(validationException, Is.TypeOf<ObjectValidationException>());
         Assert.That(() => validationException.ValidationResult, Is.SameAs(validationResult));
-
-        const string ExpectedExceptionMessage = $"""
-            [1/8] [{InstanceExpression}.ContainedValue.Data.StartDate] Validation of the constraint "{nameof(ObjectValidatorTests)}.UtcDateConstraint" failed.
-            [2/8] [{InstanceExpression}.ContainedValue.Data.StartDate] Validation of the constraint "{
-                nameof(ObjectValidatorTests)}.UtcDateTypedConstraint" failed.
-            [3/8] [{InstanceExpression}.ContainedValue.Data.Value] The value cannot be null.
-            [4/8] [{InstanceExpression}.ContainedValue.Data.NullableValue] The value cannot be null.
-            [5/8] [Convert({InstanceExpression}.ContainedValue.MultipleDataItems[1], AnotherSimpleData).Value] The value cannot be null.
-            [6/8] [{InstanceExpression}.ContainedValue.NullableImmutableStrings] The value cannot be null.
-            [7/8] [Convert({InstanceExpression}.ContainedValue.SingleBaseData, AnotherSimpleData).Value] The value cannot be null.
-            [8/8] [{InstanceExpression}.ContainedValue.NonEmptyValue] The value must not be null or an empty string.
-            """;
-
-        Assert.That(() => validationException.Message, Is.EqualTo(ExpectedExceptionMessage));
 
         Assert.That(
             () => validationResult.EnsureSucceeded(),
@@ -159,6 +234,38 @@ internal sealed class ObjectValidatorTests
             .AssertNotNull();
 
         Assert.That(() => utcDateErrorExpression.Compile().Invoke(dataContainer), Is.EqualTo(dataContainer.ContainedValue.Data.StartDate));
+
+        const string ExpectedExceptionMessage =
+            $"""
+            [1/22] [{InstanceExpression}.ContainedValue.AnotherNullableImmutableStrings.Value.Item[1]] The value cannot be null.
+            [2/22] [{InstanceExpression}.ContainedValue.AnotherNullableImmutableStrings.Value.Item[1]] The value cannot be null.
+            [3/22] [{InstanceExpression}.ContainedValue.AnotherSimpleDataArray[1].Value] The value cannot be null.
+            [4/22] [{InstanceExpression}.ContainedValue.AnotherSimpleDataCollection.Item[1].Value] The value cannot be null.
+            [5/22] [Convert({
+                InstanceExpression}.ContainedValue.AnotherSimpleDataCustomEnumerable.Cast().First(), AnotherSimpleData).Value] The value cannot be null.
+            [6/22] [{InstanceExpression}.ContainedValue.AnotherSimpleDataCustomGenericEnumerable.Skip(2).First().Value] The value cannot be null.
+            [7/22] [Convert({InstanceExpression
+            }.ContainedValue.AnotherSimpleDataCustomGenericEnumerableObject, IEnumerable`1).Skip(2).First().Value] The value cannot be null.
+            [8/22] [{InstanceExpression}.ContainedValue.AnotherSimpleDataCustomGenericList.Item[1].Value] The value cannot be null.
+            [9/22] [{InstanceExpression}.ContainedValue.AnotherSimpleDataCustomGenericList.Item[2].Value] The value cannot be null.
+            [10/22] [Convert({InstanceExpression}.ContainedValue.AnotherSimpleDataCustomList.Item[1], AnotherSimpleData).Value] The value cannot be null.
+            [11/22] [{InstanceExpression}.ContainedValue.AnotherSimpleDataCustomList.Item[3]] The value cannot be null.
+            [12/22] [Convert({InstanceExpression}.ContainedValue.AnotherSimpleDataCustomList.Item[4], AnotherSimpleData).Value] The value cannot be null.
+            [13/22] [{InstanceExpression}.ContainedValue.AnotherSimpleDataCustomReadOnlyList.Item[3].Value] The value cannot be null.
+            [14/22] [{InstanceExpression}.ContainedValue.AnotherSimpleDataImmutableList.Item[2].Value] The value cannot be null.
+            [15/22] [{InstanceExpression}.ContainedValue.Data.NullableValue] The value cannot be null.
+            [16/22] [{InstanceExpression}.ContainedValue.Data.StartDate] Validation of the constraint "{
+                nameof(ObjectValidatorTests)}.UtcDateConstraint" failed.
+            [17/22] [{InstanceExpression}.ContainedValue.Data.StartDate] Validation of the constraint "{
+                nameof(ObjectValidatorTests)}.UtcDateTypedConstraint" failed.
+            [18/22] [{InstanceExpression}.ContainedValue.Data.Value] The value cannot be null.
+            [19/22] [Convert({InstanceExpression}.ContainedValue.MultipleDataItems[1], AnotherSimpleData).Value] The value cannot be null.
+            [20/22] [{InstanceExpression}.ContainedValue.NonEmptyValue] The value must not be null or an empty string.
+            [21/22] [{InstanceExpression}.ContainedValue.NullableImmutableStrings] The value cannot be null.
+            [22/22] [Convert({InstanceExpression}.ContainedValue.SingleBaseData, AnotherSimpleData).Value] The value cannot be null.
+            """;
+
+        Assert.That(() => validationException.Message, Is.EqualTo(ExpectedExceptionMessage));
     }
 
     [Test]
@@ -256,7 +363,7 @@ internal sealed class ObjectValidatorTests
     }
 
     [Test]
-    public void TestDictionaryValidation()
+    public void TestValidateDictionaryWhenValidationFailed()
     {
         var mapContainer = new MapContainer
         {
@@ -282,22 +389,22 @@ internal sealed class ObjectValidatorTests
                 typeof(NotNullConstraint),
                 new[]
                 {
-                    $"Convert(Convert({InstanceExpression}.Properties, IEnumerable).Cast().Skip(2).First(), KeyValuePair`2).Value.ContainedValue",
-                    $"Convert(Convert({InstanceExpression}.Properties, IEnumerable).Cast().Skip(2).First(), KeyValuePair`2).Value.ContainedValue"
+                    $"Convert({InstanceExpression}.Properties.Skip(2).First(), KeyValuePair`2).Value.ContainedValue",
+                    $"Convert({InstanceExpression}.Properties.Skip(2).First(), KeyValuePair`2).Value.ContainedValue"
                 }
             },
             {
                 typeof(NotNullOrEmptyStringConstraint),
                 new[]
                 {
-                    $"Convert(Convert({InstanceExpression}.Properties, IEnumerable).Cast().First(), KeyValuePair`2).Key"
+                    $"{InstanceExpression}.Properties.First().Key"
                 }
             },
             {
                 typeof(NotAbcStringConstraint),
                 new[]
                 {
-                    $"Convert(Convert({InstanceExpression}.Properties, IEnumerable).Cast().Skip(1).First(), KeyValuePair`2).Key"
+                    $"{InstanceExpression}.Properties.Skip(1).First().Key"
                 }
             }
         };
@@ -354,132 +461,6 @@ internal sealed class ObjectValidatorTests
         Assert.That(() => validationResult2.EnsureSucceeded(), Throws.Nothing);
     }
 
-    public sealed class SimpleData
-    {
-        [SuppressMessage(
-            "StyleCop.CSharp.MaintainabilityRules",
-            "SA1401:FieldsMustBePrivate",
-            Justification = "OK in the unit test.")]
-        [MemberConstraint(typeof(UtcDateConstraint))]
-        [MemberConstraint(typeof(UtcDateTypedConstraint))]
-        public DateTime StartDate;
-
-        [UsedImplicitly]
-        [MemberConstraint(typeof(NeverCalledConstraint))]
-        public int WriteOnlyValue
-        {
-            // ReSharper disable once ValueParameterNotUsed
-            set
-            {
-                // Nothing to do
-            }
-        }
-
-        [MemberConstraint(typeof(NotNullConstraint))]
-        public string? Value
-        {
-            [UsedImplicitly]
-            private get;
-            set;
-        }
-
-        [MemberConstraint(typeof(NotNullConstraint))]
-        public int? NullableValue
-        {
-            [UsedImplicitly]
-            private get;
-            set;
-        }
-
-        [MemberConstraint(typeof(NeverCalledConstraint))]
-        [UsedImplicitly]
-        public string this[int index] => throw new NotSupportedException();
-    }
-
-    public abstract class BaseAnotherSimpleData
-    {
-        //// No members
-    }
-
-    public sealed class AnotherSimpleData : BaseAnotherSimpleData
-    {
-        [MemberConstraint(typeof(NotNullConstraint))]
-        public string? Value
-        {
-            [UsedImplicitly]
-            get;
-            set;
-        }
-    }
-
-    public sealed class ComplexData
-    {
-        [UsedImplicitly]
-        public string? Value { get; set; }
-
-        [MemberConstraint(typeof(NotNullConstraint))]
-        public SimpleData? Data
-        {
-            [UsedImplicitly]
-            internal get;
-            set;
-        }
-
-        [MemberConstraint(typeof(NotNullConstraint))]
-        [MemberItemConstraint(typeof(NotNullConstraint))]
-        public BaseAnotherSimpleData[]? MultipleDataItems
-        {
-            [UsedImplicitly]
-            get;
-            set;
-        }
-
-        [MemberConstraint(typeof(NotNullOrEmptyCollectionConstraint))]
-        [MemberItemConstraint(typeof(NotNullConstraint))]
-        public ImmutableArray<BaseAnotherSimpleData> ImmutableMultipleDataItems
-        {
-            [UsedImplicitly]
-            get;
-            set;
-        }
-
-        [MemberItemConstraint(typeof(NotNullConstraint))]
-        [MemberItemConstraint(typeof(NotNullConstraint<string>))]
-        public ImmutableArray<string> ImmutableStrings
-        {
-            [UsedImplicitly]
-            get;
-            set;
-        }
-
-        [MemberConstraint(typeof(NotNullConstraint))]
-        [MemberItemConstraint(typeof(NotNullConstraint))]
-        [MemberItemConstraint(typeof(NotNullConstraint<string>))]
-        public ImmutableArray<string>? NullableImmutableStrings
-        {
-            [UsedImplicitly]
-            get;
-            set;
-        }
-
-        [ValidatableMember]
-        public BaseAnotherSimpleData? SingleBaseData
-        {
-            [UsedImplicitly]
-            get;
-            set;
-        }
-
-        [MemberConstraint(typeof(NotNullConstraint))]
-        [MemberConstraint(typeof(NotNullOrEmptyStringConstraint))]
-        public string? NonEmptyValue
-        {
-            [UsedImplicitly]
-            private get;
-            set;
-        }
-    }
-
     public sealed class SimpleContainer<T>
     {
         [MemberConstraint(typeof(NotNullConstraint))]
@@ -502,85 +483,6 @@ internal sealed class ObjectValidatorTests
             [UsedImplicitly]
             get;
             set;
-        }
-    }
-
-    private sealed class NotAbcStringConstraint : TypedMemberConstraintBase<string>
-    {
-        // Making sure that a public constructor is allowed for a member constraint
-        [UsedImplicitly]
-        public NotAbcStringConstraint()
-        {
-            // Nothing to do
-        }
-
-        protected override void ValidateTypedValue(ObjectValidatorContext validatorContext, MemberConstraintValidationContext memberContext, string value)
-        {
-            if (value == "abc")
-            {
-                AddDefaultError(validatorContext, memberContext);
-            }
-        }
-    }
-
-    private sealed class MapContainerPropertiesPairConstraint : KeyValuePairConstraintBase<string, SimpleContainer<int?>>
-    {
-        // Making sure that an internal constructor is allowed for a member constraint
-        [UsedImplicitly]
-        internal MapContainerPropertiesPairConstraint()
-            : base(typeof(NotNullOrEmptyStringConstraint), typeof(NotNullConstraint<SimpleContainer<int?>>))
-        {
-            // Nothing to do
-        }
-    }
-
-    private sealed class UtcDateConstraint : MemberConstraintBase
-    {
-        // Making sure that a private constructor is allowed for a member constraint
-        [UsedImplicitly]
-        private UtcDateConstraint()
-        {
-            // Nothing to do
-        }
-
-        protected override void ValidateValue(
-            ObjectValidatorContext validatorContext,
-            MemberConstraintValidationContext memberContext,
-            object? value)
-        {
-            var dateTime = (DateTime)value.AssertNotNull();
-            if (dateTime.Kind == DateTimeKind.Utc)
-            {
-                return;
-            }
-
-            AddDefaultError(validatorContext, memberContext);
-        }
-    }
-
-    private sealed class UtcDateTypedConstraint : TypedMemberConstraintBase<DateTime>
-    {
-        /// <inheritdoc />
-        protected override void ValidateTypedValue(ObjectValidatorContext validatorContext, MemberConstraintValidationContext memberContext, DateTime value)
-        {
-            if (value.Kind != DateTimeKind.Utc)
-            {
-                AddDefaultError(validatorContext, memberContext);
-            }
-        }
-    }
-
-    private sealed class NeverCalledConstraint : MemberConstraintBase
-    {
-        protected override void ValidateValue(
-            ObjectValidatorContext validatorContext,
-            MemberConstraintValidationContext memberContext,
-            object? value)
-        {
-            const string Message = "This constraint is not supposed to be called ever.";
-
-            Assert.Fail(Message);
-            throw new InvalidOperationException(Message);
         }
     }
 }
