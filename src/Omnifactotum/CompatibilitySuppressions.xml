@@ -4,51 +4,9 @@
 <Suppressions xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
     <Suppression>
         <DiagnosticId>CP0002</DiagnosticId>
-        <Target>M:Omnifactotum.Validation.Constraints.MemberConstraintValidationError.GetDefaultDescription</Target>
-        <Left>lib/net5.0/Omnifactotum.dll</Left>
-        <Right>lib/net5.0/Omnifactotum.dll</Right>
-        <IsBaselineSuppression>true</IsBaselineSuppression>
-    </Suppression>
-    <Suppression>
-        <DiagnosticId>CP0002</DiagnosticId>
-        <Target>M:Omnifactotum.Validation.Constraints.MemberConstraintValidationError.GetDefaultDescription(Omnifactotum.Validation.Constraints.MemberConstraintValidationError)</Target>
-        <Left>lib/net5.0/Omnifactotum.dll</Left>
-        <Right>lib/net5.0/Omnifactotum.dll</Right>
-        <IsBaselineSuppression>true</IsBaselineSuppression>
-    </Suppression>
-    <Suppression>
-        <DiagnosticId>CP0002</DiagnosticId>
-        <Target>M:Omnifactotum.Validation.ObjectValidationResult.GetException(System.Func{Omnifactotum.Validation.Constraints.MemberConstraintValidationError,System.String},System.String)</Target>
-        <Left>lib/net5.0/Omnifactotum.dll</Left>
-        <Right>lib/net5.0/Omnifactotum.dll</Right>
-        <IsBaselineSuppression>true</IsBaselineSuppression>
-    </Suppression>
-    <Suppression>
-        <DiagnosticId>CP0002</DiagnosticId>
         <Target>M:System.Collections.Generic.OmnifactotumCollectionExtensions.Chunk``1(System.Collections.Generic.IEnumerable{``0},System.Int32)</Target>
         <Left>lib/net5.0/Omnifactotum.dll</Left>
         <Right>lib/net6.0/Omnifactotum.dll</Right>
-    </Suppression>
-    <Suppression>
-        <DiagnosticId>CP0002</DiagnosticId>
-        <Target>M:Omnifactotum.Validation.Constraints.MemberConstraintValidationError.GetDefaultDescription</Target>
-        <Left>lib/net6.0/Omnifactotum.dll</Left>
-        <Right>lib/net6.0/Omnifactotum.dll</Right>
-        <IsBaselineSuppression>true</IsBaselineSuppression>
-    </Suppression>
-    <Suppression>
-        <DiagnosticId>CP0002</DiagnosticId>
-        <Target>M:Omnifactotum.Validation.Constraints.MemberConstraintValidationError.GetDefaultDescription(Omnifactotum.Validation.Constraints.MemberConstraintValidationError)</Target>
-        <Left>lib/net6.0/Omnifactotum.dll</Left>
-        <Right>lib/net6.0/Omnifactotum.dll</Right>
-        <IsBaselineSuppression>true</IsBaselineSuppression>
-    </Suppression>
-    <Suppression>
-        <DiagnosticId>CP0002</DiagnosticId>
-        <Target>M:Omnifactotum.Validation.ObjectValidationResult.GetException(System.Func{Omnifactotum.Validation.Constraints.MemberConstraintValidationError,System.String},System.String)</Target>
-        <Left>lib/net6.0/Omnifactotum.dll</Left>
-        <Right>lib/net6.0/Omnifactotum.dll</Right>
-        <IsBaselineSuppression>true</IsBaselineSuppression>
     </Suppression>
     <Suppression>
         <DiagnosticId>CP0002</DiagnosticId>
@@ -61,103 +19,5 @@
         <Target>M:System.Collections.Generic.OmnifactotumDictionaryExtensions.AsReadOnly``2(System.Collections.Generic.IDictionary{``0,``1})</Target>
         <Left>lib/net6.0/Omnifactotum.dll</Left>
         <Right>lib/net7.0/Omnifactotum.dll</Right>
-    </Suppression>
-    <Suppression>
-        <DiagnosticId>CP0002</DiagnosticId>
-        <Target>M:Omnifactotum.Validation.Constraints.MemberConstraintValidationError.GetDefaultDescription</Target>
-        <Left>lib/net7.0/Omnifactotum.dll</Left>
-        <Right>lib/net7.0/Omnifactotum.dll</Right>
-        <IsBaselineSuppression>true</IsBaselineSuppression>
-    </Suppression>
-    <Suppression>
-        <DiagnosticId>CP0002</DiagnosticId>
-        <Target>M:Omnifactotum.Validation.Constraints.MemberConstraintValidationError.GetDefaultDescription(Omnifactotum.Validation.Constraints.MemberConstraintValidationError)</Target>
-        <Left>lib/net7.0/Omnifactotum.dll</Left>
-        <Right>lib/net7.0/Omnifactotum.dll</Right>
-        <IsBaselineSuppression>true</IsBaselineSuppression>
-    </Suppression>
-    <Suppression>
-        <DiagnosticId>CP0002</DiagnosticId>
-        <Target>M:Omnifactotum.Validation.ObjectValidationResult.GetException(System.Func{Omnifactotum.Validation.Constraints.MemberConstraintValidationError,System.String},System.String)</Target>
-        <Left>lib/net7.0/Omnifactotum.dll</Left>
-        <Right>lib/net7.0/Omnifactotum.dll</Right>
-        <IsBaselineSuppression>true</IsBaselineSuppression>
-    </Suppression>
-    <Suppression>
-        <DiagnosticId>CP0002</DiagnosticId>
-        <Target>M:Omnifactotum.Validation.Constraints.MemberConstraintValidationError.GetDefaultDescription</Target>
-        <Left>lib/netstandard2.1/Omnifactotum.dll</Left>
-        <Right>lib/netstandard2.1/Omnifactotum.dll</Right>
-        <IsBaselineSuppression>true</IsBaselineSuppression>
-    </Suppression>
-    <Suppression>
-        <DiagnosticId>CP0002</DiagnosticId>
-        <Target>M:Omnifactotum.Validation.Constraints.MemberConstraintValidationError.GetDefaultDescription(Omnifactotum.Validation.Constraints.MemberConstraintValidationError)</Target>
-        <Left>lib/netstandard2.1/Omnifactotum.dll</Left>
-        <Right>lib/netstandard2.1/Omnifactotum.dll</Right>
-        <IsBaselineSuppression>true</IsBaselineSuppression>
-    </Suppression>
-    <Suppression>
-        <DiagnosticId>CP0002</DiagnosticId>
-        <Target>M:Omnifactotum.Validation.ObjectValidationResult.GetException(System.Func{Omnifactotum.Validation.Constraints.MemberConstraintValidationError,System.String},System.String)</Target>
-        <Left>lib/netstandard2.1/Omnifactotum.dll</Left>
-        <Right>lib/netstandard2.1/Omnifactotum.dll</Right>
-        <IsBaselineSuppression>true</IsBaselineSuppression>
-    </Suppression>
-    <Suppression>
-        <DiagnosticId>CP0007</DiagnosticId>
-        <Target>T:Omnifactotum.Validation.Constraints.NotNullConstraint</Target>
-        <Left>lib/net5.0/Omnifactotum.dll</Left>
-        <Right>lib/net5.0/Omnifactotum.dll</Right>
-        <IsBaselineSuppression>true</IsBaselineSuppression>
-    </Suppression>
-    <Suppression>
-        <DiagnosticId>CP0007</DiagnosticId>
-        <Target>T:Omnifactotum.Validation.Constraints.NotNullConstraint</Target>
-        <Left>lib/net6.0/Omnifactotum.dll</Left>
-        <Right>lib/net6.0/Omnifactotum.dll</Right>
-        <IsBaselineSuppression>true</IsBaselineSuppression>
-    </Suppression>
-    <Suppression>
-        <DiagnosticId>CP0007</DiagnosticId>
-        <Target>T:Omnifactotum.Validation.Constraints.NotNullConstraint</Target>
-        <Left>lib/net7.0/Omnifactotum.dll</Left>
-        <Right>lib/net7.0/Omnifactotum.dll</Right>
-        <IsBaselineSuppression>true</IsBaselineSuppression>
-    </Suppression>
-    <Suppression>
-        <DiagnosticId>CP0007</DiagnosticId>
-        <Target>T:Omnifactotum.Validation.Constraints.NotNullConstraint</Target>
-        <Left>lib/netstandard2.1/Omnifactotum.dll</Left>
-        <Right>lib/netstandard2.1/Omnifactotum.dll</Right>
-        <IsBaselineSuppression>true</IsBaselineSuppression>
-    </Suppression>
-    <Suppression>
-        <DiagnosticId>CP0009</DiagnosticId>
-        <Target>T:Omnifactotum.Validation.Constraints.NotNullConstraint`1</Target>
-        <Left>lib/net5.0/Omnifactotum.dll</Left>
-        <Right>lib/net5.0/Omnifactotum.dll</Right>
-        <IsBaselineSuppression>true</IsBaselineSuppression>
-    </Suppression>
-    <Suppression>
-        <DiagnosticId>CP0009</DiagnosticId>
-        <Target>T:Omnifactotum.Validation.Constraints.NotNullConstraint`1</Target>
-        <Left>lib/net6.0/Omnifactotum.dll</Left>
-        <Right>lib/net6.0/Omnifactotum.dll</Right>
-        <IsBaselineSuppression>true</IsBaselineSuppression>
-    </Suppression>
-    <Suppression>
-        <DiagnosticId>CP0009</DiagnosticId>
-        <Target>T:Omnifactotum.Validation.Constraints.NotNullConstraint`1</Target>
-        <Left>lib/net7.0/Omnifactotum.dll</Left>
-        <Right>lib/net7.0/Omnifactotum.dll</Right>
-        <IsBaselineSuppression>true</IsBaselineSuppression>
-    </Suppression>
-    <Suppression>
-        <DiagnosticId>CP0009</DiagnosticId>
-        <Target>T:Omnifactotum.Validation.Constraints.NotNullConstraint`1</Target>
-        <Left>lib/netstandard2.1/Omnifactotum.dll</Left>
-        <Right>lib/netstandard2.1/Omnifactotum.dll</Right>
-        <IsBaselineSuppression>true</IsBaselineSuppression>
     </Suppression>
 </Suppressions>
