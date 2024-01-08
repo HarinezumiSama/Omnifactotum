@@ -1,4 +1,5 @@
-﻿using System.Collections.Immutable;
+﻿using System;
+using System.Collections.Immutable;
 
 namespace Omnifactotum.Validation.Constraints;
 
@@ -12,6 +13,8 @@ namespace Omnifactotum.Validation.Constraints;
 public sealed class NotNullConstraint<T> : TypedMemberConstraintBase<T?>
     where T : class
 {
+    private static readonly string FailureMessage = $"The '{typeof(T).GetQualifiedName()}' value cannot be null.";
+
     /// <inheritdoc />
     protected override void ValidateTypedValue(
         ObjectValidatorContext validatorContext,
@@ -20,7 +23,7 @@ public sealed class NotNullConstraint<T> : TypedMemberConstraintBase<T?>
     {
         if (value is null or ImmutableArray<T> { IsDefault: true })
         {
-            AddError(validatorContext, memberContext, ValidationMessages.CannotBeNull);
+            AddError(validatorContext, memberContext, FailureMessage);
         }
     }
 }

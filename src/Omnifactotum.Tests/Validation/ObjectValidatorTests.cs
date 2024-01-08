@@ -283,7 +283,7 @@ internal sealed partial class ObjectValidatorTests
             new[]
             {
                 $"[{InstanceExpression}.ContainedValue.AnotherNullableImmutableStrings.Value.Item[1]] The value cannot be null.",
-                $"[{InstanceExpression}.ContainedValue.AnotherNullableImmutableStrings.Value.Item[1]] The value cannot be null.",
+                $"[{InstanceExpression}.ContainedValue.AnotherNullableImmutableStrings.Value.Item[1]] The 'string' value cannot be null.",
                 $"[{InstanceExpression}.ContainedValue.AnotherSimpleDataArray[1].Value] The value cannot be null.",
                 $"[{InstanceExpression}.ContainedValue.AnotherSimpleDataCollection.Item[1].Value] The value cannot be null.",
                 $"[Convert({InstanceExpression
@@ -311,7 +311,7 @@ internal sealed partial class ObjectValidatorTests
             new[]
             {
                 $"[{InstanceExpression}.ContainedValue.GenericMemberConstraintAttributeData] The value cannot be null.",
-                $"[{InstanceExpression}.ContainedValue.GenericMemberConstraintAttributeData] The value cannot be null.",
+                $"[{InstanceExpression}.ContainedValue.GenericMemberConstraintAttributeData] The 'ObjectValidatorTests.SimpleData' value cannot be null.",
                 $"[{InstanceExpression}.ContainedValue.GenericMemberItemConstraintAnotherSimpleDataArray[0]] The value cannot be null.",
             });
 #endif
