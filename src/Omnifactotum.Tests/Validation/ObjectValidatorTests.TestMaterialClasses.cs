@@ -68,6 +68,7 @@ internal sealed partial class ObjectValidatorTests
         }
     }
 
+    [SuppressMessage("ReSharper", "PropertyCanBeMadeInitOnly.Local")]
     private sealed class ComplexData
     {
         [UsedImplicitly]
@@ -81,6 +82,17 @@ internal sealed partial class ObjectValidatorTests
             set;
         }
 
+#if NET7_0_OR_GREATER
+        [MemberConstraint<NotNullConstraint>]
+        [MemberConstraint<NotNullConstraint<SimpleData>>]
+        public SimpleData? GenericMemberConstraintAttributeData
+        {
+            [UsedImplicitly]
+            internal get;
+            set;
+        }
+#endif
+
         [MemberConstraint(typeof(NotNullConstraint))]
         [MemberItemConstraint(typeof(NotNullConstraint))]
         public AnotherSimpleData[]? AnotherSimpleDataArray
@@ -89,6 +101,17 @@ internal sealed partial class ObjectValidatorTests
             get;
             set;
         }
+
+#if NET7_0_OR_GREATER
+        [MemberConstraint<NotNullConstraint>]
+        [MemberItemConstraint<NotNullConstraint>]
+        public AnotherSimpleData[]? GenericMemberItemConstraintAnotherSimpleDataArray
+        {
+            [UsedImplicitly]
+            get;
+            set;
+        }
+#endif
 
         [MemberConstraint(typeof(NotNullConstraint))]
         [MemberItemConstraint(typeof(NotNullConstraint))]

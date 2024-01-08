@@ -20,7 +20,8 @@ using System.Runtime.CompilerServices;
 namespace Omnifactotum.Validation;
 
 /// <summary>
-///     Provides functionality to recursively validate objects annotated with <see cref="MemberConstraintAttribute"/>.
+///     Provides functionality to recursively validate objects annotated with <see cref="MemberConstraintAttribute"/>
+///     and <see cref="MemberItemConstraintAttribute"/>.
 /// </summary>
 public static class ObjectValidator
 {
@@ -123,7 +124,13 @@ public static class ObjectValidator
         }
 
         var parameterExpression = Expression.Parameter(instance.GetType(), instanceExpression);
-        var rootMemberData = new MemberData(parameterExpression, null, instance, null, null);
+
+        var rootMemberData = new MemberData(
+            parameterExpression,
+            null,
+            instance,
+            Array.Empty<IBaseValidatableMemberAttribute>(),
+            Array.Empty<IBaseMemberConstraintAttribute>());
 
         var objectValidatorContext = new ObjectValidatorContext(recursiveProcessingContext);
 
@@ -154,10 +161,10 @@ public static class ObjectValidator
 
     [Pure]
     [Omnifactotum.Annotations.Pure]
-    private static BaseMemberConstraintAttribute[]? FilterBy<TAttribute>(
-        this IEnumerable<BaseValidatableMemberAttribute>? attributes)
-        where TAttribute : BaseMemberConstraintAttribute
-        => attributes?.OfType<TAttribute>().ToArray<BaseMemberConstraintAttribute>();
+    private static IBaseMemberConstraintAttribute[] FilterBy<TAttribute>(
+        this IEnumerable<IBaseValidatableMemberAttribute> attributes)
+        where TAttribute : IBaseMemberConstraintAttribute
+        => attributes.OfType<TAttribute>().Cast<IBaseMemberConstraintAttribute>().ToArray();
 
     [MustUseReturnValue]
     private static object? GetMemberValue(object instance, MemberInfo memberInfo)
@@ -198,7 +205,7 @@ public static class ObjectValidator
                     new
                     {
                         Member = obj,
-                        Attributes = obj.GetCustomAttributeArray<BaseValidatableMemberAttribute>(true)
+                        Attributes = obj.GetCustomAttributeArray<BaseValidatableMemberAttribute>(true).ToArray<IBaseValidatableMemberAttribute>()
                     })
             .Where(static obj => obj.Attributes.Length != 0)
             .OrderBy(static obj => obj.Member.Name, StringComparer.OrdinalIgnoreCase)
@@ -212,7 +219,7 @@ public static class ObjectValidator
                     instance,
                     GetMemberValue(instance, obj.Member),
                     obj.Attributes,
-                    obj.Attributes.FilterBy<MemberConstraintAttribute>()))
+                    obj.Attributes.FilterBy<IMemberConstraintAttribute>()))
             .ToList();
 
         if (instanceType.IsArray && instanceType.GetArrayRank() == 1)
@@ -231,7 +238,7 @@ public static class ObjectValidator
                     instance,
                     item,
                     parentMemberData.Attributes,
-                    parentMemberData.Attributes.FilterBy<MemberItemConstraintAttribute>());
+                    parentMemberData.Attributes.FilterBy<IMemberItemConstraintAttribute>());
 
                 members.Add(itemData);
             }
@@ -312,7 +319,7 @@ public static class ObjectValidator
                     instance,
                     item,
                     parentMemberData.Attributes,
-                    parentMemberData.Attributes.FilterBy<MemberItemConstraintAttribute>());
+                    parentMemberData.Attributes.FilterBy<IMemberItemConstraintAttribute>());
 
                 members.Add(itemData);
 
@@ -416,7 +423,7 @@ public static class ObjectValidator
                 instance,
                 item,
                 parentMemberData.Attributes,
-                parentMemberData.Attributes.FilterBy<MemberItemConstraintAttribute>());
+                parentMemberData.Attributes.FilterBy<IMemberItemConstraintAttribute>());
 
             members.Add(itemData);
         }
@@ -451,7 +458,7 @@ public static class ObjectValidator
                 enumerable,
                 item,
                 parentMemberData.Attributes,
-                parentMemberData.Attributes.FilterBy<MemberItemConstraintAttribute>());
+                parentMemberData.Attributes.FilterBy<IMemberItemConstraintAttribute>());
 
             members.Add(itemData);
 
@@ -471,7 +478,7 @@ public static class ObjectValidator
         objectValidatorContext.EnsureNotNull();
 
         var effectiveAttributes = memberData.EffectiveAttributes;
-        if (effectiveAttributes is null || effectiveAttributes.Length == 0)
+        if (effectiveAttributes.Length == 0)
         {
             return;
         }

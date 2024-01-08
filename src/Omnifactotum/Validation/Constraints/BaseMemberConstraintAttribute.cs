@@ -11,7 +11,7 @@ namespace Omnifactotum.Validation.Constraints;
 ///     The base class for member constraint attributes.
 /// </summary>
 [CLSCompliant(false)]
-public abstract class BaseMemberConstraintAttribute : BaseValidatableMemberAttribute
+public abstract class BaseMemberConstraintAttribute : BaseValidatableMemberAttribute, IBaseMemberConstraintAttribute
 {
     /// <summary>
     ///     Initializes a new instance of the <see cref="BaseMemberConstraintAttribute"/> class.
@@ -21,7 +21,7 @@ public abstract class BaseMemberConstraintAttribute : BaseValidatableMemberAttri
     ///     the member annotated with this <see cref="BaseMemberConstraintAttribute"/> attribute. The type must
     ///     have parameterless constructor.
     /// </param>
-    internal BaseMemberConstraintAttribute([NotNull] Type constraintType)
+    private protected BaseMemberConstraintAttribute([NotNull] Type constraintType)
         => ConstraintType = constraintType.ValidateAndRegisterMemberConstraintType();
 
     /// <summary>
@@ -38,5 +38,5 @@ public abstract class BaseMemberConstraintAttribute : BaseValidatableMemberAttri
     ///     A <see cref="System.String" /> that represents this <see cref="BaseMemberConstraintAttribute"/>.
     /// </returns>
     public override string ToString()
-        => AsInvariant($@"{{ {GetType().GetQualifiedName()}: {nameof(ConstraintType)} = {ConstraintType.GetQualifiedName().ToUIString()} }}");
+        => AsInvariant($"{{ {GetType().GetQualifiedName()}: {nameof(ConstraintType)} = {ConstraintType.GetQualifiedName().ToUIString()} }}");
 }

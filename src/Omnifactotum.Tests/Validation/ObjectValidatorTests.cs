@@ -9,6 +9,7 @@ using Omnifactotum.Annotations;
 using Omnifactotum.NUnit;
 using Omnifactotum.Validation;
 using Omnifactotum.Validation.Constraints;
+using static Omnifactotum.FormattableStringFactotum;
 
 namespace Omnifactotum.Tests.Validation;
 
@@ -31,10 +32,21 @@ internal sealed partial class ObjectValidatorTests
     {
         var data1 = new ComplexData
         {
-            Data = new SimpleData { StartDate = DateTime.UtcNow, NullableValue = 0, Value = "A" },
+            Data = new SimpleData { StartDate = new DateTime(2023, 11, 13, 15, 17, 19, DateTimeKind.Utc), NullableValue = 0, Value = "A" },
+#if NET7_0_OR_GREATER
+            GenericMemberConstraintAttributeData = new SimpleData
+            {
+                StartDate = new DateTime(2023, 11, 13, 15, 17, 23, DateTimeKind.Utc),
+                NullableValue = 0,
+                Value = "A"
+            },
+#endif
             NonEmptyValue = "B",
             MultipleDataItems = new BaseAnotherSimpleData[] { new AnotherSimpleData { Value = "C1" } },
             AnotherSimpleDataArray = new[] { new AnotherSimpleData { Value = "C2" } },
+#if NET7_0_OR_GREATER
+            GenericMemberItemConstraintAnotherSimpleDataArray = Array.Empty<AnotherSimpleData>(),
+#endif
             AnotherSimpleDataCollection = new Collection<AnotherSimpleData>(),
             AnotherSimpleDataCustomEnumerable = new CustomEnumerable(),
             AnotherSimpleDataCustomGenericEnumerable = new CustomGenericEnumerable<AnotherSimpleData>(),
@@ -56,18 +68,29 @@ internal sealed partial class ObjectValidatorTests
 
         var data2 = new ComplexData
         {
-            Data = new SimpleData { StartDate = DateTime.UtcNow, NullableValue = 0, Value = "A" },
+            Data = new SimpleData { StartDate = new DateTime(2023, 7, 13, 15, 17, 19, DateTimeKind.Utc), NullableValue = 0, Value = "A" },
+#if NET7_0_OR_GREATER
+            GenericMemberConstraintAttributeData = new SimpleData
+            {
+                StartDate = new DateTime(2023, 7, 13, 15, 17, 23, DateTimeKind.Utc),
+                NullableValue = 0,
+                Value = "A"
+            },
+#endif
             NonEmptyValue = "B",
             MultipleDataItems = new BaseAnotherSimpleData[] { new AnotherSimpleData { Value = "C1" } },
             AnotherSimpleDataArray = new[] { new AnotherSimpleData { Value = "C2" } },
-            AnotherSimpleDataCollection = new Collection<AnotherSimpleData> { new() { Value = "C3" } },
-            AnotherSimpleDataCustomEnumerable = new CustomEnumerable(new AnotherSimpleData { Value = "C4" }),
-            AnotherSimpleDataCustomGenericEnumerable = new CustomGenericEnumerable<AnotherSimpleData>(new AnotherSimpleData { Value = "C5" }),
-            AnotherSimpleDataCustomGenericEnumerableObject = new CustomGenericEnumerable<AnotherSimpleData>(new AnotherSimpleData { Value = "C5" }),
-            AnotherSimpleDataCustomGenericList = new CustomGenericList<AnotherSimpleData>(new AnotherSimpleData { Value = "C6" }),
-            AnotherSimpleDataCustomList = new CustomList(new AnotherSimpleData { Value = "C7" }),
-            AnotherSimpleDataCustomReadOnlyList = new CustomReadOnlyList<AnotherSimpleData>(new AnotherSimpleData { Value = "C8" }),
-            AnotherSimpleDataImmutableList = ImmutableList.Create(new AnotherSimpleData { Value = "C9" }),
+#if NET7_0_OR_GREATER
+            GenericMemberItemConstraintAnotherSimpleDataArray = new[] { new AnotherSimpleData { Value = "C3" } },
+#endif
+            AnotherSimpleDataCollection = new Collection<AnotherSimpleData> { new() { Value = "C4" } },
+            AnotherSimpleDataCustomEnumerable = new CustomEnumerable(new AnotherSimpleData { Value = "C5" }),
+            AnotherSimpleDataCustomGenericEnumerable = new CustomGenericEnumerable<AnotherSimpleData>(new AnotherSimpleData { Value = "C6" }),
+            AnotherSimpleDataCustomGenericEnumerableObject = new CustomGenericEnumerable<AnotherSimpleData>(new AnotherSimpleData { Value = "C7" }),
+            AnotherSimpleDataCustomGenericList = new CustomGenericList<AnotherSimpleData>(new AnotherSimpleData { Value = "C8" }),
+            AnotherSimpleDataCustomList = new CustomList(new AnotherSimpleData { Value = "C9" }),
+            AnotherSimpleDataCustomReadOnlyList = new CustomReadOnlyList<AnotherSimpleData>(new AnotherSimpleData { Value = "C10" }),
+            AnotherSimpleDataImmutableList = ImmutableList.Create(new AnotherSimpleData { Value = "C11" }),
             ImmutableMultipleDataItems = ImmutableArray.Create<BaseAnotherSimpleData>(new AnotherSimpleData { Value = "D" }),
             ImmutableStrings = ImmutableArray<string>.Empty,
             NullableImmutableStrings = ImmutableArray.Create("F1"),
@@ -88,6 +111,9 @@ internal sealed partial class ObjectValidatorTests
             ContainedValue = new ComplexData
             {
                 Data = new SimpleData { StartDate = new DateTime(2023, 12, 29, 11, 59, 43).AsKind(DateTimeKind.Local) },
+#if NET7_0_OR_GREATER
+                GenericMemberConstraintAttributeData = null,
+#endif
                 NonEmptyValue = string.Empty,
                 MultipleDataItems = new BaseAnotherSimpleData[]
                 {
@@ -99,40 +125,43 @@ internal sealed partial class ObjectValidatorTests
                     new AnotherSimpleData { Value = "C2" },
                     new AnotherSimpleData()
                 },
+#if NET7_0_OR_GREATER
+                GenericMemberItemConstraintAnotherSimpleDataArray = new[] { null!, new AnotherSimpleData { Value = "C3" } },
+#endif
                 AnotherSimpleDataCollection = new Collection<AnotherSimpleData>
                 {
-                    new AnotherSimpleData { Value = "C3" },
+                    new AnotherSimpleData { Value = "C4" },
                     new AnotherSimpleData()
                 },
                 AnotherSimpleDataCustomEnumerable = new CustomEnumerable(
                     new AnotherSimpleData(),
-                    new AnotherSimpleData { Value = "C4" }),
+                    new AnotherSimpleData { Value = "C5" }),
                 AnotherSimpleDataCustomGenericEnumerable = new CustomGenericEnumerable<AnotherSimpleData>(
-                    new AnotherSimpleData { Value = "C5" },
                     new AnotherSimpleData { Value = "C6" },
+                    new AnotherSimpleData { Value = "C7" },
                     new AnotherSimpleData()),
                 AnotherSimpleDataCustomGenericEnumerableObject = new CustomGenericEnumerable<AnotherSimpleData>(
-                    new AnotherSimpleData { Value = "C5-O" },
-                    new AnotherSimpleData { Value = "C6-O" },
+                    new AnotherSimpleData { Value = "C7-O" },
+                    new AnotherSimpleData { Value = "C7-O" },
                     new AnotherSimpleData()),
                 AnotherSimpleDataCustomGenericList = new CustomGenericList<AnotherSimpleData>(
-                    new AnotherSimpleData { Value = "C7" },
+                    new AnotherSimpleData { Value = "C8" },
                     new AnotherSimpleData(),
                     new AnotherSimpleData()),
                 AnotherSimpleDataCustomList = new CustomList(
-                    new AnotherSimpleData { Value = "C8" },
-                    new AnotherSimpleData(),
                     new AnotherSimpleData { Value = "C9" },
+                    new AnotherSimpleData(),
+                    new AnotherSimpleData { Value = "C10" },
                     null,
                     new AnotherSimpleData()),
                 AnotherSimpleDataCustomReadOnlyList = new CustomReadOnlyList<AnotherSimpleData>(
-                    new AnotherSimpleData { Value = "C10" },
                     new AnotherSimpleData { Value = "C11" },
                     new AnotherSimpleData { Value = "C12" },
+                    new AnotherSimpleData { Value = "C13" },
                     new AnotherSimpleData()),
                 AnotherSimpleDataImmutableList = ImmutableList.Create(
-                    new AnotherSimpleData { Value = "C13" },
                     new AnotherSimpleData { Value = "C14" },
+                    new AnotherSimpleData { Value = "C15" },
                     new AnotherSimpleData()),
                 ImmutableMultipleDataItems = ImmutableArray.Create<BaseAnotherSimpleData>(new AnotherSimpleData { Value = "D" }),
                 AnotherNullableImmutableStrings = ImmutableArray.Create("E", null!, "F"),
@@ -156,6 +185,10 @@ internal sealed partial class ObjectValidatorTests
                 {
                     $"{InstanceExpression}.ContainedValue.Data.Value",
                     $"{InstanceExpression}.ContainedValue.Data.NullableValue",
+#if NET7_0_OR_GREATER
+                    $"{InstanceExpression}.ContainedValue.GenericMemberConstraintAttributeData",
+                    $"{InstanceExpression}.ContainedValue.GenericMemberItemConstraintAnotherSimpleDataArray[0]",
+#endif
                     $"{InstanceExpression}.ContainedValue.NullableImmutableStrings",
                     $"{InstanceExpression}.ContainedValue.AnotherNullableImmutableStrings.Value.Item[1]",
                     $"Convert({InstanceExpression}.ContainedValue.MultipleDataItems[1], AnotherSimpleData).Value",
@@ -181,6 +214,15 @@ internal sealed partial class ObjectValidatorTests
                     $"{InstanceExpression}.ContainedValue.AnotherNullableImmutableStrings.Value.Item[1]"
                 }
             },
+#if NET7_0_OR_GREATER
+            {
+                typeof(NotNullConstraint<SimpleData>),
+                new[]
+                {
+                    $"{InstanceExpression}.ContainedValue.GenericMemberConstraintAttributeData"
+                }
+            },
+#endif
             {
                 typeof(NotNullOrEmptyStringConstraint),
                 new[] { $"{InstanceExpression}.ContainedValue.NonEmptyValue" }
@@ -235,37 +277,59 @@ internal sealed partial class ObjectValidatorTests
 
         Assert.That(() => utcDateErrorExpression.Compile().Invoke(dataContainer), Is.EqualTo(dataContainer.ContainedValue.Data.StartDate));
 
-        const string ExpectedExceptionMessage =
-            $"""
-            [1/22] [{InstanceExpression}.ContainedValue.AnotherNullableImmutableStrings.Value.Item[1]] The value cannot be null.
-            [2/22] [{InstanceExpression}.ContainedValue.AnotherNullableImmutableStrings.Value.Item[1]] The value cannot be null.
-            [3/22] [{InstanceExpression}.ContainedValue.AnotherSimpleDataArray[1].Value] The value cannot be null.
-            [4/22] [{InstanceExpression}.ContainedValue.AnotherSimpleDataCollection.Item[1].Value] The value cannot be null.
-            [5/22] [Convert({
-                InstanceExpression}.ContainedValue.AnotherSimpleDataCustomEnumerable.Cast().First(), AnotherSimpleData).Value] The value cannot be null.
-            [6/22] [{InstanceExpression}.ContainedValue.AnotherSimpleDataCustomGenericEnumerable.Skip(2).First().Value] The value cannot be null.
-            [7/22] [Convert({InstanceExpression
-            }.ContainedValue.AnotherSimpleDataCustomGenericEnumerableObject, IEnumerable`1).Skip(2).First().Value] The value cannot be null.
-            [8/22] [{InstanceExpression}.ContainedValue.AnotherSimpleDataCustomGenericList.Item[1].Value] The value cannot be null.
-            [9/22] [{InstanceExpression}.ContainedValue.AnotherSimpleDataCustomGenericList.Item[2].Value] The value cannot be null.
-            [10/22] [Convert({InstanceExpression}.ContainedValue.AnotherSimpleDataCustomList.Item[1], AnotherSimpleData).Value] The value cannot be null.
-            [11/22] [{InstanceExpression}.ContainedValue.AnotherSimpleDataCustomList.Item[3]] The value cannot be null.
-            [12/22] [Convert({InstanceExpression}.ContainedValue.AnotherSimpleDataCustomList.Item[4], AnotherSimpleData).Value] The value cannot be null.
-            [13/22] [{InstanceExpression}.ContainedValue.AnotherSimpleDataCustomReadOnlyList.Item[3].Value] The value cannot be null.
-            [14/22] [{InstanceExpression}.ContainedValue.AnotherSimpleDataImmutableList.Item[2].Value] The value cannot be null.
-            [15/22] [{InstanceExpression}.ContainedValue.Data.NullableValue] The value cannot be null.
-            [16/22] [{InstanceExpression}.ContainedValue.Data.StartDate] Validation of the constraint "{
-                nameof(ObjectValidatorTests)}.UtcDateConstraint" failed.
-            [17/22] [{InstanceExpression}.ContainedValue.Data.StartDate] Validation of the constraint "{
-                nameof(ObjectValidatorTests)}.UtcDateTypedConstraint" failed.
-            [18/22] [{InstanceExpression}.ContainedValue.Data.Value] The value cannot be null.
-            [19/22] [Convert({InstanceExpression}.ContainedValue.MultipleDataItems[1], AnotherSimpleData).Value] The value cannot be null.
-            [20/22] [{InstanceExpression}.ContainedValue.NonEmptyValue] The value must not be null or an empty string.
-            [21/22] [{InstanceExpression}.ContainedValue.NullableImmutableStrings] The value cannot be null.
-            [22/22] [Convert({InstanceExpression}.ContainedValue.SingleBaseData, AnotherSimpleData).Value] The value cannot be null.
-            """;
+        var expectedExceptionMessageItems = new List<string>();
 
-        Assert.That(() => validationException.Message, Is.EqualTo(ExpectedExceptionMessage));
+        expectedExceptionMessageItems.AddRange(
+            new[]
+            {
+                $"[{InstanceExpression}.ContainedValue.AnotherNullableImmutableStrings.Value.Item[1]] The value cannot be null.",
+                $"[{InstanceExpression}.ContainedValue.AnotherNullableImmutableStrings.Value.Item[1]] The value cannot be null.",
+                $"[{InstanceExpression}.ContainedValue.AnotherSimpleDataArray[1].Value] The value cannot be null.",
+                $"[{InstanceExpression}.ContainedValue.AnotherSimpleDataCollection.Item[1].Value] The value cannot be null.",
+                $"[Convert({InstanceExpression
+                }.ContainedValue.AnotherSimpleDataCustomEnumerable.Cast().First(), AnotherSimpleData).Value] The value cannot be null.",
+                $"[{InstanceExpression}.ContainedValue.AnotherSimpleDataCustomGenericEnumerable.Skip(2).First().Value] The value cannot be null.",
+                $"[Convert({InstanceExpression
+                }.ContainedValue.AnotherSimpleDataCustomGenericEnumerableObject, IEnumerable`1).Skip(2).First().Value] The value cannot be null.",
+                $"[{InstanceExpression}.ContainedValue.AnotherSimpleDataCustomGenericList.Item[1].Value] The value cannot be null.",
+                $"[{InstanceExpression}.ContainedValue.AnotherSimpleDataCustomGenericList.Item[2].Value] The value cannot be null.",
+                $"[Convert({InstanceExpression}.ContainedValue.AnotherSimpleDataCustomList.Item[1], AnotherSimpleData).Value] The value cannot be null.",
+                $"[{InstanceExpression}.ContainedValue.AnotherSimpleDataCustomList.Item[3]] The value cannot be null.",
+                $"[Convert({InstanceExpression}.ContainedValue.AnotherSimpleDataCustomList.Item[4], AnotherSimpleData).Value] The value cannot be null.",
+                $"[{InstanceExpression}.ContainedValue.AnotherSimpleDataCustomReadOnlyList.Item[3].Value] The value cannot be null.",
+                $"[{InstanceExpression}.ContainedValue.AnotherSimpleDataImmutableList.Item[2].Value] The value cannot be null.",
+                $"[{InstanceExpression}.ContainedValue.Data.NullableValue] The value cannot be null.",
+                $"[{InstanceExpression}.ContainedValue.Data.StartDate] Validation of the constraint \"{nameof(ObjectValidatorTests)
+                }.UtcDateConstraint\" failed.",
+                $"[{InstanceExpression}.ContainedValue.Data.StartDate] Validation of the constraint \"{nameof(ObjectValidatorTests)
+                }.UtcDateTypedConstraint\" failed.",
+                $"[{InstanceExpression}.ContainedValue.Data.Value] The value cannot be null."
+            });
+
+#if NET7_0_OR_GREATER
+        expectedExceptionMessageItems.AddRange(
+            new[]
+            {
+                $"[{InstanceExpression}.ContainedValue.GenericMemberConstraintAttributeData] The value cannot be null.",
+                $"[{InstanceExpression}.ContainedValue.GenericMemberConstraintAttributeData] The value cannot be null.",
+                $"[{InstanceExpression}.ContainedValue.GenericMemberItemConstraintAnotherSimpleDataArray[0]] The value cannot be null.",
+            });
+#endif
+
+        expectedExceptionMessageItems.AddRange(
+            new[]
+            {
+                $"[Convert({InstanceExpression}.ContainedValue.MultipleDataItems[1], AnotherSimpleData).Value] The value cannot be null.",
+                $"[{InstanceExpression}.ContainedValue.NonEmptyValue] The value must not be null or an empty string.",
+                $"[{InstanceExpression}.ContainedValue.NullableImmutableStrings] The value cannot be null.",
+                $"[Convert({InstanceExpression}.ContainedValue.SingleBaseData, AnotherSimpleData).Value] The value cannot be null.",
+            });
+
+        var expectedExceptionMessage = expectedExceptionMessageItems
+            .Select((s, i) => AsInvariant($"[{i + 1}/{expectedExceptionMessageItems.Count}] {s}"))
+            .Join(Environment.NewLine);
+
+        Assert.That(() => validationException.Message, Is.EqualTo(expectedExceptionMessage));
     }
 
     [Test]

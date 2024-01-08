@@ -6,7 +6,7 @@ namespace Omnifactotum.Validation.Constraints;
 ///     The base class for attributes annotating validatable members.
 /// </summary>
 [CLSCompliant(false)]
-public abstract class BaseValidatableMemberAttribute : Attribute
+public abstract class BaseValidatableMemberAttribute : Attribute, IBaseValidatableMemberAttribute
 {
     /// <summary>
     ///     Initializes a new instance of the <see cref="BaseValidatableMemberAttribute"/> class.

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Diagnostics;
+using System.Linq;
 using System.Linq.Expressions;
 using Omnifactotum.Validation.Constraints;
 
@@ -36,16 +37,21 @@ internal sealed class MemberData
         Expression expression,
         object? container,
         object? value,
-        BaseValidatableMemberAttribute[]? attributes,
-        BaseMemberConstraintAttribute[]? effectiveAttributes)
+        IBaseValidatableMemberAttribute[] attributes,
+        IBaseMemberConstraintAttribute[] effectiveAttributes)
     {
+        if (effectiveAttributes is null)
+        {
+            throw new ArgumentNullException(nameof(effectiveAttributes));
+        }
+
         Expression = expression ?? throw new ArgumentNullException(nameof(expression));
 
         Container = container;
         Value = value;
         ValueType = value?.GetType() ?? expression.Type;
-        Attributes = attributes;
-        EffectiveAttributes = effectiveAttributes;
+        Attributes = attributes ?? throw new ArgumentNullException(nameof(attributes));
+        EffectiveAttributes = effectiveAttributes.OrderBy(attribute => attribute.ConstraintType.GetFullName()).ToArray();
     }
 
     /// <summary>
@@ -71,12 +77,12 @@ internal sealed class MemberData
     /// <summary>
     ///     Gets the constraint attributes.
     /// </summary>
-    public BaseValidatableMemberAttribute[]? Attributes { get; }
+    public IBaseValidatableMemberAttribute[] Attributes { get; }
 
     /// <summary>
     ///     Gets the effective constraint attributes.
     /// </summary>
-    public BaseMemberConstraintAttribute[]? EffectiveAttributes { get; }
+    public IBaseMemberConstraintAttribute[] EffectiveAttributes { get; }
 
     private static string FormatValue(object? value)
         => ValidationFactotum.TryFormatSimpleValue(value)

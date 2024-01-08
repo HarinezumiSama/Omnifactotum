@@ -12,7 +12,7 @@ namespace Omnifactotum.Validation.Constraints;
 /// </summary>
 [AttributeUsage(AttributeTargets.Field | AttributeTargets.Property, AllowMultiple = true, Inherited = true)]
 [CLSCompliant(false)]
-public sealed class MemberItemConstraintAttribute : BaseMemberConstraintAttribute
+public sealed class MemberItemConstraintAttribute : BaseMemberConstraintAttribute, IMemberItemConstraintAttribute
 {
     /// <summary>
     ///     Initializes a new instance of the <see cref="MemberItemConstraintAttribute"/> class.
