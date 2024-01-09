@@ -822,12 +822,10 @@ public static partial class Factotum
 
         if (processingContext.ItemsBeingProcessed is not null)
         {
-            if (processingContext.ItemsBeingProcessed.Contains(instance))
+            if (!processingContext.ItemsBeingProcessed.Add(instance))
             {
                 return true;
             }
-
-            processingContext.ItemsBeingProcessed.Add(instance);
         }
 
         var processingResult = processItem(instance);

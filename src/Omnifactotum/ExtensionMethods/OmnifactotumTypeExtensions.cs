@@ -267,19 +267,16 @@ public static class OmnifactotumTypeExtensions
     [CanBeNull]
     public static Type? GetCollectionElementTypeOrDefault([NotNull] this Type type)
     {
-        if (type is null)
+        switch (type)
         {
-            throw new ArgumentNullException(nameof(type));
-        }
+            case null:
+                throw new ArgumentNullException(nameof(type));
 
-        if (type is { HasElementType: true, IsArray: true } && type.GetElementType() is { } arrayElementType)
-        {
-            return arrayElementType;
-        }
+            case { HasElementType: true, IsArray: true } when type.GetElementType() is { } arrayElementType:
+                return arrayElementType;
 
-        if (type is { IsInterface: true, IsGenericType: true, IsGenericTypeDefinition: false } && type.GetGenericTypeDefinition() == typeof(IEnumerable<>))
-        {
-            return type.GetGenericArguments().Single();
+            case { IsInterface: true, IsGenericType: true, IsGenericTypeDefinition: false } when type.GetGenericTypeDefinition() == typeof(IEnumerable<>):
+                return type.GetGenericArguments().Single();
         }
 
         var enumerableInterfaceType = type

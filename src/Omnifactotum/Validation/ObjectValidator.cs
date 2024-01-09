@@ -136,7 +136,9 @@ public static class ObjectValidator
 
         Factotum.ProcessRecursively(rootMemberData, GetMembers, ProcessItem);
 
-        return new ObjectValidationResult(objectValidatorContext.Errors.Items);
+        return objectValidatorContext.Errors.Items.Count == 0
+            ? ObjectValidationResult.SuccessfulResult
+            : new ObjectValidationResult(objectValidatorContext.Errors.Items);
 
         void ProcessItem(MemberData data) => ValidateInternal(instance, parameterExpression, data, objectValidatorContext);
     }
@@ -303,6 +305,7 @@ public static class ObjectValidator
                 ValidationFactotum.ConvertTypeAuto(parentExpression, typeof(IEnumerable)));
 
             var index = 0;
+            //// ReSharper disable once LoopCanBePartlyConvertedToQuery
             foreach (var item in enumerable)
             {
                 var optionalSkipExpression = index == 0
@@ -442,6 +445,7 @@ public static class ObjectValidator
         var enumerableParentExpression = ValidationFactotum.ConvertTypeAuto(parentExpression, typeof(IEnumerable<T>));
 
         var index = 0;
+        //// ReSharper disable once LoopCanBePartlyConvertedToQuery
         foreach (var item in enumerable)
         {
             var optionalSkipExpression = index == 0

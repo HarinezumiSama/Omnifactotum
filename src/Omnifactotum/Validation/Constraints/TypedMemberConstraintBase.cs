@@ -170,6 +170,7 @@ public abstract class TypedMemberConstraintBase<T> : MemberConstraintBase
             return;
         }
 
+        //// ReSharper disable once LoopCanBePartlyConvertedToQuery
         foreach (var error in memberValidationResult.Errors)
         {
             var funcType = Expression.GetFuncType(valueContext.Root.GetType(), typeof(T));

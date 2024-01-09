@@ -117,7 +117,7 @@ public abstract class DirectedGraphNodeCollectionBase<T> : ICollection<DirectedG
             throw new ArgumentException("The item is already associated with another graph.", nameof(item));
         }
 
-        if (_items.Contains(item))
+        if (!_items.Add(item))
         {
             if (item.Graph is null)
             {
@@ -126,8 +126,6 @@ public abstract class DirectedGraphNodeCollectionBase<T> : ICollection<DirectedG
 
             return;
         }
-
-        _items.Add(item);
 
         var graph = Graph ?? item.Graph;
         if (graph is null)
