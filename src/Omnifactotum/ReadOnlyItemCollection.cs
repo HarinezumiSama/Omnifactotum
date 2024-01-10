@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Diagnostics;
 using Omnifactotum.Annotations;
 using PureAttribute = System.Diagnostics.Contracts.PureAttribute;
 using static Omnifactotum.FormattableStringFactotum;
@@ -17,6 +18,7 @@ namespace Omnifactotum;
 ///     The type of items in the collection.
 /// </typeparam>
 [Serializable]
+[DebuggerDisplay("{ToDebuggerString(),nq}")]
 public sealed class ReadOnlyItemCollection<T> : ICollection<T>, IReadOnlyCollection<T>
 {
     private readonly ICollection<T> _collection;
@@ -79,6 +81,8 @@ public sealed class ReadOnlyItemCollection<T> : ICollection<T>, IReadOnlyCollect
 
     /// <inheritdoc />
     IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();
+
+    internal string ToDebuggerString() => $"{nameof(Count)} = {Count}";
 
     [Pure]
     [Omnifactotum.Annotations.Pure]

@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Diagnostics;
 using Omnifactotum.Annotations;
 using Omnifactotum.Validation.Constraints;
 
@@ -11,6 +12,7 @@ namespace Omnifactotum.Validation;
 /// <summary>
 ///     Represents the collection of validation errors.
 /// </summary>
+[DebuggerDisplay("{ToDebuggerString(),nq}")]
 public sealed class ValidationErrorCollection
 {
     private readonly List<MemberConstraintValidationError> _innerItems;
@@ -24,7 +26,14 @@ public sealed class ValidationErrorCollection
         Items = new ReadOnlyCollection<MemberConstraintValidationError>(_innerItems);
     }
 
+    /// <summary>
+    ///     Gets the number of error items contained in this <see cref="ValidationErrorCollection"/>.
+    /// </summary>
+    internal int Count => _innerItems.Count;
+
     internal ReadOnlyCollection<MemberConstraintValidationError> Items { get; }
+
+    internal string ToDebuggerString() => $"{nameof(Count)} = {Count}";
 
     /// <summary>
     ///     Adds the specified error to the collection.

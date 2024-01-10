@@ -16,6 +16,7 @@ namespace Omnifactotum.Validation;
 /// <summary>
 ///     Represents the result of object validation.
 /// </summary>
+[DebuggerDisplay("{ToDebuggerString(),nq}")]
 public sealed class ObjectValidationResult
 {
     internal static readonly ObjectValidationResult SuccessfulResult = new(Array.Empty<MemberConstraintValidationError>());
@@ -26,7 +27,7 @@ public sealed class ObjectValidationResult
     /// <param name="errors">
     ///     The collection of the validation errors found, if any.
     /// </param>
-    internal ObjectValidationResult([NotNull] IReadOnlyCollection<MemberConstraintValidationError> errors)
+    internal ObjectValidationResult(IReadOnlyCollection<MemberConstraintValidationError> errors)
     {
         if (errors is null)
         {
@@ -36,7 +37,7 @@ public sealed class ObjectValidationResult
         //// ReSharper disable once ConditionIsAlwaysTrueOrFalseAccordingToNullableAPIContract :: Validation
         if (errors.Any(item => item is null))
         {
-            throw new ArgumentException(@"The collection contains a null element.", nameof(errors));
+            throw new ArgumentException("The collection contains a null element.", nameof(errors));
         }
 
         Errors = errors.ToArray().AsReadOnly();
@@ -91,4 +92,12 @@ public sealed class ObjectValidationResult
             throw exception;
         }
     }
+
+    /// <summary>
+    ///     Returns a string that represents the current <see cref="ObjectValidationResult"/>.
+    /// </summary>
+    /// <returns>
+    ///     A string that represents the current <see cref="ObjectValidationResult"/>.
+    /// </returns>
+    internal string ToDebuggerString() => $"{nameof(IsObjectValid)} = {IsObjectValid}, {nameof(Errors)}.{nameof(Errors.Count)} = {Errors.Count}";
 }

@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Diagnostics;
 using Omnifactotum.Annotations;
 using PureAttribute = System.Diagnostics.Contracts.PureAttribute;
 
@@ -16,6 +17,7 @@ namespace Omnifactotum;
 ///     The type of the elements in the set.
 /// </typeparam>
 [Serializable]
+[DebuggerDisplay("{ToDebuggerString(),nq}")]
 public sealed class ReadOnlySet<T>
     : ISet<T>
 #if NET5_0_OR_GREATER
@@ -293,4 +295,6 @@ public sealed class ReadOnlySet<T>
     ///     An <see cref="IEnumerator"/> object that can be used to iterate through the collection.
     /// </returns>
     IEnumerator IEnumerable.GetEnumerator() => _set.GetEnumerator();
+
+    internal string ToDebuggerString() => $"{nameof(Count)} = {Count}";
 }

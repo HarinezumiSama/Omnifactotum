@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Diagnostics;
 using System.Threading;
 using System.Threading.Tasks;
 using Omnifactotum.Annotations;
@@ -34,6 +35,7 @@ namespace Omnifactotum.Threading;
 ///     </code>
 /// </example>
 /// <seealso cref="IDisposable"/>
+[DebuggerDisplay("{ToDebuggerString(),nq}")]
 public sealed class SemaphoreSlimBasedLock : IDisposable
 {
     private const int SingleThreadAccessCount = 1;
@@ -56,7 +58,7 @@ public sealed class SemaphoreSlimBasedLock : IDisposable
     {
         if (count <= 0)
         {
-            throw new ArgumentOutOfRangeException(nameof(count), count, @"The value must be greater than zero.");
+            throw new ArgumentOutOfRangeException(nameof(count), count, "The value must be greater than zero.");
         }
 
         _semaphoreSlim = new SemaphoreSlim(count, count);
@@ -78,6 +80,8 @@ public sealed class SemaphoreSlimBasedLock : IDisposable
     ///     Gets the number of requests that can be granted concurrently.
     /// </summary>
     public int Count { get; }
+
+    internal int? AvailableCount => _semaphoreSlim?.CurrentCount;
 
     private SemaphoreSlim UnderlyingSemaphore => _semaphoreSlim ?? throw new ObjectDisposedException(GetType().FullName);
 
@@ -123,6 +127,8 @@ public sealed class SemaphoreSlimBasedLock : IDisposable
     ///     Disposes of the underlying <see cref="SemaphoreSlim"/>.
     /// </summary>
     public void Dispose() => Interlocked.Exchange(ref _semaphoreSlim, null)?.Dispose();
+
+    internal string ToDebuggerString() => $"{nameof(Count)} = {Count}, {nameof(AvailableCount)} = {AvailableCount.ToUIString()}";
 
     private void Release()
     {

@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Diagnostics;
 using System.Runtime.Serialization;
 using Omnifactotum.Annotations;
 
@@ -11,6 +12,7 @@ namespace Omnifactotum.Validation;
 ///     Represents the object validation exception.
 /// </summary>
 [Serializable]
+[DebuggerDisplay("{ToDebuggerString(),nq}")]
 public sealed class ObjectValidationException : Exception
 {
     private readonly ObjectValidationResult? _validationResult;
@@ -39,4 +41,6 @@ public sealed class ObjectValidationException : Exception
     /// </summary>
     [NotNull]
     public ObjectValidationResult ValidationResult => _validationResult.EnsureNotNull();
+
+    internal string ToDebuggerString() => $"{nameof(ValidationResult)} = {{ {ValidationResult.ToDebuggerString()} }}";
 }

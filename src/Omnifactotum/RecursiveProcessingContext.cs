@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using Omnifactotum.Annotations;
 
 //// ReSharper disable RedundantNullnessAttributeWithNullableReferenceTypes
@@ -14,6 +15,7 @@ namespace Omnifactotum;
 ///     The types of the instances being processed recursively.
 /// </typeparam>
 [PublicAPI]
+[DebuggerDisplay("{ToDebuggerString(),nq}")]
 public sealed class RecursiveProcessingContext<T>
 {
     private static readonly Func<IEqualityComparer<T>?, HashSet<T>?> CreateHashSetMethod = RecursiveProcessingContext.GenerateCreateHashSetMethod<T>();
@@ -32,4 +34,6 @@ public sealed class RecursiveProcessingContext<T>
 
     [CanBeNull]
     internal HashSet<T>? ItemsBeingProcessed { get; }
+
+    internal string ToDebuggerString() => $"{nameof(ItemsBeingProcessed)}.{nameof(ItemsBeingProcessed.Count)} = {(ItemsBeingProcessed?.Count).ToUIString()}";
 }

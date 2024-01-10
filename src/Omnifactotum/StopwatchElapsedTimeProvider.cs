@@ -8,6 +8,7 @@ namespace Omnifactotum;
 /// <summary>
 ///     The <see cref="Stopwatch"/> based implementation of <see cref="IElapsedTimeProvider"/>.
 /// </summary>
+[DebuggerDisplay("{ToDebuggerString(),nq}")]
 public sealed class StopwatchElapsedTimeProvider : IElapsedTimeProvider
 {
     private readonly Stopwatch _stopwatch;
@@ -43,4 +44,6 @@ public sealed class StopwatchElapsedTimeProvider : IElapsedTimeProvider
 
     /// <inheritdoc />
     public void Reset() => _stopwatch.Reset();
+
+    internal string ToDebuggerString() => $"{nameof(IsRunning)} = {IsRunning}";
 }

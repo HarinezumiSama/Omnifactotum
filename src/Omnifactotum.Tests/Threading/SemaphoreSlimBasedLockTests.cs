@@ -8,6 +8,7 @@ using System.Runtime.CompilerServices;
 using System.Threading;
 using System.Threading.Tasks;
 using NUnit.Framework;
+using Omnifactotum.NUnit;
 using Omnifactotum.Tests.Internal;
 using Omnifactotum.Threading;
 
@@ -44,6 +45,13 @@ internal sealed class SemaphoreSlimBasedLockTests
     }
 
     [Test]
+    public void TestPropertyAccess()
+    {
+        NUnitFactotum.For<SemaphoreSlimBasedLock>.AssertReadableWritable(obj => obj.Count, PropertyAccessMode.ReadOnly);
+        NUnitFactotum.For<SemaphoreSlimBasedLock>.AssertReadableWritable(obj => obj.AvailableCount, PropertyAccessMode.ReadOnly, MethodAttributes.Assembly);
+    }
+
+    [Test]
     [TestCase(0)]
     [TestCase(-1)]
     [TestCase(int.MinValue)]
@@ -59,19 +67,34 @@ internal sealed class SemaphoreSlimBasedLockTests
     [Test]
     public void TestConstructionWhenNoArgumentsThenSucceeds()
     {
-        using var testee = CreateTestee();
+        var testee = CreateTestee();
+        try
+        {
+            Assert.That(testee.Count, Is.EqualTo(1));
+            Assert.That(testee.AvailableCount, Is.EqualTo(1));
+            Assert.That(() => testee.ToDebuggerString(), Is.EqualTo("Count = 1, AvailableCount = 1"));
+        }
+        finally
+        {
+            testee.Dispose();
+        }
+
         Assert.That(testee.Count, Is.EqualTo(1));
+        Assert.That(testee.AvailableCount, Is.Null);
+        Assert.That(() => testee.ToDebuggerString(), Is.EqualTo("Count = 1, AvailableCount = null"));
     }
 
     [Test]
-    [TestCase(1)]
-    [TestCase(2)]
-    [TestCase(17)]
-    [TestCase(int.MaxValue)]
-    public void TestConstructionWhenValidArgumentsThenSucceeds(int count)
+    [TestCase(1, "Count = 1", "Count = 1, AvailableCount = 1")]
+    [TestCase(2, "Count = 2", "Count = 2, AvailableCount = 2")]
+    [TestCase(17, "Count = 17", "Count = 17, AvailableCount = 17")]
+    [TestCase(int.MaxValue, "Count = 2147483647", "Count = 2147483647, AvailableCount = 2147483647")]
+    public void TestConstructionWhenValidArgumentsThenSucceeds(int count, string expectedToString, string expectedToDebuggerString)
     {
         using var testee = CreateTestee(count);
         Assert.That(testee.Count, Is.EqualTo(count));
+        Assert.That(testee.AvailableCount, Is.EqualTo(count));
+        Assert.That(() => testee.ToDebuggerString(), Is.EqualTo(expectedToDebuggerString));
     }
 
     [Test]
@@ -109,6 +132,9 @@ internal sealed class SemaphoreSlimBasedLockTests
 
         using (testee.Acquire())
         {
+            Assert.That(testee.AvailableCount, Is.EqualTo(0));
+            Assert.That(() => testee.ToDebuggerString(), Is.EqualTo("Count = 1, AvailableCount = 0"));
+
             thread.Start();
             Thread.Sleep(WaitInterval);
             Assert.That(protectedResource, Is.Zero);
@@ -119,8 +145,14 @@ internal sealed class SemaphoreSlimBasedLockTests
         Assert.That(protectedResource, Is.EqualTo(1));
         Assert.That(threadState, Is.EqualTo(WorkItemState.Finished));
 
+        Assert.That(testee.AvailableCount, Is.EqualTo(1));
+        Assert.That(() => testee.ToDebuggerString(), Is.EqualTo("Count = 1, AvailableCount = 1"));
+
         using (testee.Acquire())
         {
+            Assert.That(testee.AvailableCount, Is.EqualTo(0));
+            Assert.That(() => testee.ToDebuggerString(), Is.EqualTo("Count = 1, AvailableCount = 0"));
+
             Assert.That(protectedResource, Is.EqualTo(1));
         }
     }
@@ -312,9 +344,15 @@ internal sealed class SemaphoreSlimBasedLockTests
             TestContext.WriteLine($"[{nameof(TestAcquireAsyncWhenSingleAllowed)}:{nameof(RunAsync)}] State: {taskState}.");
         }
 
+        Assert.That(testee.AvailableCount, Is.EqualTo(1));
+        Assert.That(() => testee.ToDebuggerString(), Is.EqualTo("Count = 1, AvailableCount = 1"));
+
         Task task;
         using (await testee.AcquireAsync())
         {
+            Assert.That(testee.AvailableCount, Is.EqualTo(0));
+            Assert.That(() => testee.ToDebuggerString(), Is.EqualTo("Count = 1, AvailableCount = 0"));
+
             task = Task.Run(async () => await RunAsync().ConfigureAwait(false));
             await WaitForConditionAsync(() => taskState == WorkItemState.Started);
 
@@ -327,8 +365,14 @@ internal sealed class SemaphoreSlimBasedLockTests
         Assert.That(protectedResource, Is.EqualTo(1));
         Assert.That(task.Status, Is.EqualTo(TaskStatus.RanToCompletion));
 
+        Assert.That(testee.AvailableCount, Is.EqualTo(1));
+        Assert.That(() => testee.ToDebuggerString(), Is.EqualTo("Count = 1, AvailableCount = 1"));
+
         using (await testee.AcquireAsync())
         {
+            Assert.That(testee.AvailableCount, Is.EqualTo(0));
+            Assert.That(() => testee.ToDebuggerString(), Is.EqualTo("Count = 1, AvailableCount = 0"));
+
             Assert.That(protectedResource, Is.EqualTo(1));
         }
     }

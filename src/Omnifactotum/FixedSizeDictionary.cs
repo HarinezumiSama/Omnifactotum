@@ -29,6 +29,7 @@ namespace Omnifactotum;
 /// <typeparam name="TDeterminant">
 ///     The type of the determinant. See <see cref="FixedSizeDictionaryDeterminant{TKey}"/>.
 /// </typeparam>
+[DebuggerDisplay("{ToDebuggerString(),nq}")]
 public class FixedSizeDictionary<TKey, TValue, TDeterminant> : IDictionary<TKey, TValue>, IReadOnlyDictionary<TKey, TValue>
     where TDeterminant : FixedSizeDictionaryDeterminant<TKey>, new()
 {
@@ -308,6 +309,8 @@ public class FixedSizeDictionary<TKey, TValue, TDeterminant> : IDictionary<TKey,
     /// <inheritdoc />
     IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();
 
+    internal string ToDebuggerString() => $"{nameof(Count)} = {Count}";
+
     //// ReSharper disable once ParameterOnlyUsedForPreconditionCheck.Local
     private void SetItemInternal(TKey key, TValue value, bool replaceExisting)
     {
@@ -516,6 +519,7 @@ public class FixedSizeDictionary<TKey, TValue, TDeterminant> : IDictionary<TKey,
         }
     }
 
+    [System.Diagnostics.CodeAnalysis.SuppressMessage("ReSharper", "PropertyCanBeMadeInitOnly.Local")]
     private struct DictionaryValueHolder
     {
         public bool IsSet { get; set; }

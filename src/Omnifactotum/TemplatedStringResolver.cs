@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Collections.Immutable;
+using System.Diagnostics;
 using System.Globalization;
 using System.Linq;
 using System.Text;
@@ -17,6 +18,7 @@ namespace Omnifactotum;
 ///     Represents a resolver of templated strings.
 ///     A templated string is defined in a way similar to C# interpolated string (see <see cref="TemplateVariables"/> and <see cref="Resolve"/>).
 /// </summary>
+[DebuggerDisplay("{ToDebuggerString(),nq}")]
 public sealed class TemplatedStringResolver
 {
     /// <summary>
@@ -183,6 +185,8 @@ public sealed class TemplatedStringResolver
 
         return resultBuilder.ToString();
     }
+
+    internal string ToDebuggerString() => $"{nameof(TemplateVariables)}.{nameof(TemplateVariables.Count)} = {TemplateVariables.Count}";
 
     [Pure]
     [Omnifactotum.Annotations.Pure]

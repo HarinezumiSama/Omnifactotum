@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using Omnifactotum.Annotations;
 using Omnifactotum.Validation.Constraints;
 
@@ -11,6 +12,7 @@ namespace Omnifactotum.Validation;
 /// <summary>
 ///     Represents the context of the <see cref="ObjectValidator"/>.
 /// </summary>
+[DebuggerDisplay("{ToDebuggerString(),nq}")]
 public sealed class ObjectValidatorContext
 {
     private readonly Dictionary<Type, IMemberConstraint> _constraintCache;
@@ -73,4 +75,6 @@ public sealed class ObjectValidatorContext
     public TMemberConstraint ResolveConstraint<TMemberConstraint>()
         where TMemberConstraint : IMemberConstraint
         => (TMemberConstraint)ResolveConstraint(typeof(TMemberConstraint));
+
+    internal string ToDebuggerString() => $"{nameof(Errors)} = {{ {Errors.ToDebuggerString()} }}";
 }

@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Diagnostics;
 using System.Linq.Expressions;
 using Omnifactotum.Annotations;
 
@@ -10,6 +11,7 @@ namespace Omnifactotum.Validation.Constraints;
 /// <summary>
 ///     Represents the context of member constraint validation.
 /// </summary>
+[DebuggerDisplay("{ToDebuggerString(),nq}")]
 public sealed class MemberConstraintValidationContext
 {
     /// <summary>
@@ -147,4 +149,8 @@ public sealed class MemberConstraintValidationContext
     /// </returns>
     [NotNull]
     public Expression<Func<object, object>> CreateLambdaExpression() => CreateLambdaExpression(ObjectValidator.DefaultRootObjectParameterName);
+
+    internal string ToDebuggerString()
+        => $"{nameof(Expression)} = {Expression}, {nameof(Root)} = {{{Root.GetShortObjectReferenceDescription()}}}, {
+            nameof(Container)} = {{{Container.GetShortObjectReferenceDescription()}}}";
 }
