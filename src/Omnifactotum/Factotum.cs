@@ -770,11 +770,11 @@ public static partial class Factotum
     ///     <para>This method is only called if <paramref name="condition"/> is <see langword="false"/>.</para>
     /// </param>
     /// <param name="callerFilePath">
-    ///     <para><b>NOTE</b>: Do not pass a value for this parameter as it is automatically injected by the compiler (.NET 5+ and C# 10+).</para>
+    ///     <para><b>NOTE</b>: Do not pass a value for this parameter as it is automatically injected by the compiler.</para>
     ///     <para>The full path of the source file that contains the caller of the method.</para>
     /// </param>
     /// <param name="callerFileNumber">
-    ///     <para><b>NOTE</b>: Do not pass a value for this parameter as it is automatically injected by the compiler (.NET 5+ and C# 10+).</para>
+    ///     <para><b>NOTE</b>: Do not pass a value for this parameter as it is automatically injected by the compiler.</para>
     ///     <para>The line number in the source file at which the method is called.</para>
     /// </param>
     /// <param name="conditionExpression">

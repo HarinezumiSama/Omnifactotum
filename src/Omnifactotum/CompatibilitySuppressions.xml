@@ -74,6 +74,20 @@
     </Suppression>
     <Suppression>
         <DiagnosticId>CP0002</DiagnosticId>
+        <Target>M:System.OmnifactotumTypeExtensions.GetCollectionElementType(System.Type)</Target>
+        <Left>lib/net5.0/Omnifactotum.dll</Left>
+        <Right>lib/net5.0/Omnifactotum.dll</Right>
+        <IsBaselineSuppression>true</IsBaselineSuppression>
+    </Suppression>
+    <Suppression>
+        <DiagnosticId>CP0002</DiagnosticId>
+        <Target>M:System.OmnifactotumTypeExtensions.IsNullable(System.Type)</Target>
+        <Left>lib/net5.0/Omnifactotum.dll</Left>
+        <Right>lib/net5.0/Omnifactotum.dll</Right>
+        <IsBaselineSuppression>true</IsBaselineSuppression>
+    </Suppression>
+    <Suppression>
+        <DiagnosticId>CP0002</DiagnosticId>
         <Target>M:System.Collections.Generic.OmnifactotumCollectionExtensions.Chunk``1(System.Collections.Generic.IEnumerable{``0},System.Int32)</Target>
         <Left>lib/net5.0/Omnifactotum.dll</Left>
         <Right>lib/net6.0/Omnifactotum.dll</Right>
@@ -116,6 +130,20 @@
     <Suppression>
         <DiagnosticId>CP0002</DiagnosticId>
         <Target>M:Omnifactotum.Validation.ObjectValidatorContext.get_Errors</Target>
+        <Left>lib/net6.0/Omnifactotum.dll</Left>
+        <Right>lib/net6.0/Omnifactotum.dll</Right>
+        <IsBaselineSuppression>true</IsBaselineSuppression>
+    </Suppression>
+    <Suppression>
+        <DiagnosticId>CP0002</DiagnosticId>
+        <Target>M:System.OmnifactotumTypeExtensions.GetCollectionElementType(System.Type)</Target>
+        <Left>lib/net6.0/Omnifactotum.dll</Left>
+        <Right>lib/net6.0/Omnifactotum.dll</Right>
+        <IsBaselineSuppression>true</IsBaselineSuppression>
+    </Suppression>
+    <Suppression>
+        <DiagnosticId>CP0002</DiagnosticId>
+        <Target>M:System.OmnifactotumTypeExtensions.IsNullable(System.Type)</Target>
         <Left>lib/net6.0/Omnifactotum.dll</Left>
         <Right>lib/net6.0/Omnifactotum.dll</Right>
         <IsBaselineSuppression>true</IsBaselineSuppression>
@@ -176,6 +204,20 @@
     </Suppression>
     <Suppression>
         <DiagnosticId>CP0002</DiagnosticId>
+        <Target>M:System.OmnifactotumTypeExtensions.GetCollectionElementType(System.Type)</Target>
+        <Left>lib/net7.0/Omnifactotum.dll</Left>
+        <Right>lib/net7.0/Omnifactotum.dll</Right>
+        <IsBaselineSuppression>true</IsBaselineSuppression>
+    </Suppression>
+    <Suppression>
+        <DiagnosticId>CP0002</DiagnosticId>
+        <Target>M:System.OmnifactotumTypeExtensions.IsNullable(System.Type)</Target>
+        <Left>lib/net7.0/Omnifactotum.dll</Left>
+        <Right>lib/net7.0/Omnifactotum.dll</Right>
+        <IsBaselineSuppression>true</IsBaselineSuppression>
+    </Suppression>
+    <Suppression>
+        <DiagnosticId>CP0002</DiagnosticId>
         <Target>M:Omnifactotum.Validation.Constraints.IMemberConstraint.Validate(Omnifactotum.Validation.ObjectValidatorContext,Omnifactotum.Validation.Constraints.MemberConstraintValidationContext,System.Object)</Target>
         <Left>lib/netstandard2.1/Omnifactotum.dll</Left>
         <Right>lib/netstandard2.1/Omnifactotum.dll</Right>
@@ -212,6 +254,20 @@
     <Suppression>
         <DiagnosticId>CP0002</DiagnosticId>
         <Target>M:Omnifactotum.Validation.ObjectValidatorContext.get_Errors</Target>
+        <Left>lib/netstandard2.1/Omnifactotum.dll</Left>
+        <Right>lib/netstandard2.1/Omnifactotum.dll</Right>
+        <IsBaselineSuppression>true</IsBaselineSuppression>
+    </Suppression>
+    <Suppression>
+        <DiagnosticId>CP0002</DiagnosticId>
+        <Target>M:System.OmnifactotumTypeExtensions.GetCollectionElementType(System.Type)</Target>
+        <Left>lib/netstandard2.1/Omnifactotum.dll</Left>
+        <Right>lib/netstandard2.1/Omnifactotum.dll</Right>
+        <IsBaselineSuppression>true</IsBaselineSuppression>
+    </Suppression>
+    <Suppression>
+        <DiagnosticId>CP0002</DiagnosticId>
+        <Target>M:System.OmnifactotumTypeExtensions.IsNullable(System.Type)</Target>
         <Left>lib/netstandard2.1/Omnifactotum.dll</Left>
         <Right>lib/netstandard2.1/Omnifactotum.dll</Right>
         <IsBaselineSuppression>true</IsBaselineSuppression>

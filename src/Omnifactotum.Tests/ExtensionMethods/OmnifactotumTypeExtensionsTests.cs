@@ -50,13 +50,7 @@ internal sealed class OmnifactotumTypeExtensionsTests
 
     [Test]
     public void TestIsNullableValueTypeWhenNullArgumentIsPassedThenThrows()
-    {
-        Assert.That(() => ((Type?)null)!.IsNullableValueType(), Throws.ArgumentNullException);
-
-#pragma warning disable CS0618
-        Assert.That(() => ((Type?)null)!.IsNullable(), Throws.ArgumentNullException);
-#pragma warning restore CS0618
-    }
+        => Assert.That(() => ((Type?)null)!.IsNullableValueType(), Throws.ArgumentNullException);
 
     [Test]
     [TestCase(typeof(void), false)]
@@ -78,13 +72,7 @@ internal sealed class OmnifactotumTypeExtensionsTests
     [TestCase(typeof(Action), false)]
     [TestCase(typeof(IDisposable), false)]
     public void TestIsNullableValueTypeWhenValidArgumentIsPassedThenSucceeds(Type type, bool expectedResult)
-    {
-        Assert.That(type.IsNullableValueType(), Is.EqualTo(expectedResult));
-
-#pragma warning disable CS0618
-        Assert.That(type.IsNullable(), Is.EqualTo(expectedResult));
-#pragma warning restore CS0618
-    }
+        => Assert.That(type.IsNullableValueType(), Is.EqualTo(expectedResult));
 
     [Test]
     public void TestGetCollectionElementTypeOrDefaultWhenInvalidArgumentThenThrows()
@@ -117,14 +105,9 @@ internal sealed class OmnifactotumTypeExtensionsTests
     [TestCase(typeof(HashSet<Type>), typeof(Type))]
     [TestCase(typeof(ISet<Type>), typeof(Type))]
     [SuppressMessage("ReSharper", "ConvertClosureToMethodGroup")]
-    public void TestGetCollectionElementTypeOrDefaultWhenValidArgumentThenSucceeds(Type input, Type? expectedResult)
-    {
-        Assert.That(() => input.GetCollectionElementTypeOrDefault(), Is.EqualTo(expectedResult));
-
-#pragma warning disable CS0618
-        Assert.That(() => input.GetCollectionElementType(), Is.EqualTo(expectedResult));
-#pragma warning restore CS0618
-    }
+    public void TestGetCollectionElementTypeOrDefaultWhenValidArgumentThenSucceeds(Type input, Type? expectedResult) => Assert.That(
+        () => input.GetCollectionElementTypeOrDefault(),
+        Is.EqualTo(expectedResult));
 
     [Test]
     public void TestGetInterfaceMethodImplementationWhenInvalidArgumentsThenThrows()

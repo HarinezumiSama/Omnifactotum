@@ -198,17 +198,6 @@ public static class OmnifactotumTypeExtensions
     public static string GetFullName([NotNull] this Type type) => GetNameInternal(type, true);
 
     /// <summary>
-    ///     Deprecated. Use <see cref="IsNullableValueType"/> instead.
-    /// </summary>
-    [Obsolete(
-        $@"""{nameof(OmnifactotumTypeExtensions)}.{nameof(IsNullable)}"" is deprecated and will be removed in a future version"
-        + $@". Please use ""{nameof(OmnifactotumTypeExtensions)}.{nameof(IsNullableValueType)}"" instead.",
-        false)]
-    [Pure]
-    [Omnifactotum.Annotations.Pure]
-    public static bool IsNullable([NotNull] this Type type) => IsNullableValueType(type);
-
-    /// <summary>
     ///     Determines whether the specified type is <see cref="Nullable{T}"/> for a certain type T.
     /// </summary>
     /// <param name="type">
@@ -229,18 +218,6 @@ public static class OmnifactotumTypeExtensions
 
         return type is { IsGenericType: true, IsGenericTypeDefinition: false } && type.GetGenericTypeDefinition() == typeof(Nullable<>);
     }
-
-    /// <summary>
-    ///     Deprecated. Use <see cref="GetCollectionElementTypeOrDefault"/> instead.
-    /// </summary>
-    [Obsolete(
-        $@"""{nameof(OmnifactotumTypeExtensions)}.{nameof(GetCollectionElementType)}"" is deprecated and will be removed in a future version"
-        + $@". Please use ""{nameof(OmnifactotumTypeExtensions)}.{nameof(GetCollectionElementTypeOrDefault)}"" instead.",
-        false)]
-    [Pure]
-    [Omnifactotum.Annotations.Pure]
-    [CanBeNull]
-    public static Type? GetCollectionElementType([NotNull] this Type type) => GetCollectionElementTypeOrDefault(type);
 
     /// <summary>
     ///     <para>
