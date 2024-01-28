@@ -17,14 +17,11 @@ public sealed class WebUrlConstraint : TypedMemberConstraintBase<string?>
         };
 
     /// <inheritdoc />
-    protected override void ValidateTypedValue(
-        ObjectValidatorContext validatorContext,
-        MemberConstraintValidationContext memberContext,
-        string? value)
+    protected override void ValidateTypedValue(MemberConstraintValidationContext memberContext, string? value)
     {
         if (!Uri.TryCreate(value, UriKind.Absolute, out var uri) || !AllowedSchemes.Contains(uri.Scheme))
         {
-            AddError(validatorContext, memberContext, $@"The value {FormatValue(value)} is not a valid Web URL.");
+            AddError(memberContext, $"The value {FormatValue(value)} is not a valid Web URL.");
         }
     }
 }

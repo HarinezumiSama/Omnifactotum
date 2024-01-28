@@ -97,7 +97,7 @@ internal sealed class ValidationFactotumTests
 
     private struct ValueTypeMemberConstraint : IMemberConstraint
     {
-        void IMemberConstraint.Validate(ObjectValidatorContext validatorContext, MemberConstraintValidationContext memberContext, object? value)
+        void IMemberConstraint.Validate(MemberConstraintValidationContext memberContext, object? value)
             => throw new NotSupportedException();
     }
 
@@ -114,7 +114,7 @@ internal sealed class ValidationFactotumTests
             // Nothing to do
         }
 
-        void IMemberConstraint.Validate(ObjectValidatorContext validatorContext, MemberConstraintValidationContext memberContext, object? value)
+        void IMemberConstraint.Validate(MemberConstraintValidationContext memberContext, object? value)
             => throw new NotSupportedException();
     }
 

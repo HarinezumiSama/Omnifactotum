@@ -16,12 +16,11 @@ public sealed class EnumValueDefinedConstraint<TEnum> : TypedMemberConstraintBas
     where TEnum : struct, Enum
 {
     /// <inheritdoc />
-    protected override void ValidateTypedValue(ObjectValidatorContext validatorContext, MemberConstraintValidationContext memberContext, TEnum value)
+    protected override void ValidateTypedValue(MemberConstraintValidationContext memberContext, TEnum value)
     {
         if (!value.IsDefined())
         {
             AddError(
-                validatorContext,
                 memberContext,
                 AsInvariant($@"The value {FormatValue(value)} is not defined in the enumeration {typeof(TEnum).GetFullName().ToUIString()}."));
         }

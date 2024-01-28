@@ -52,6 +52,8 @@ internal sealed class MemberData
         ValueType = value?.GetType() ?? expression.Type;
         Attributes = attributes ?? throw new ArgumentNullException(nameof(attributes));
         EffectiveAttributes = effectiveAttributes.OrderBy(attribute => attribute.ConstraintType.GetFullName()).ToArray();
+
+        ExpressionString = expression.ToStringSafely();
     }
 
     /// <summary>
@@ -84,10 +86,15 @@ internal sealed class MemberData
     /// </summary>
     public IBaseMemberConstraintAttribute[] EffectiveAttributes { get; }
 
+    /// <summary>
+    ///     Gets the expression string.
+    /// </summary>
+    internal string ExpressionString { get; }
+
     private static string FormatValue(object? value)
         => ValidationFactotum.TryFormatSimpleValue(value)
             ?? (value?.GetType() is { IsValueType: true } type ? $"{{ {type.GetQualifiedName()} }}" : $"{{ {value.GetShortObjectReferenceDescription()} }}");
 
     private string ToDebuggerString()
-        => $"{{ {nameof(Expression)} = {Expression}, {nameof(Value)} = {FormatValue(Value)}, {nameof(Container)} = {FormatValue(Container)} }}";
+        => $"{{ {nameof(Expression)} = {ExpressionString}, {nameof(Value)} = {FormatValue(Value)}, {nameof(Container)} = {FormatValue(Container)} }}";
 }

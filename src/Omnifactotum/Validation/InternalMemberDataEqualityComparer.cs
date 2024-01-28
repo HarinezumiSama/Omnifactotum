@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using Omnifactotum.Annotations;
 
 //// ReSharper disable RedundantNullnessAttributeWithNullableReferenceTypes
@@ -44,7 +45,7 @@ internal sealed class InternalMemberDataEqualityComparer : IEqualityComparer<Mem
             return false;
         }
 
-        return EqualityComparer.Equals(left.Value, right.Value);
+        return string.Equals(left.ExpressionString, right.ExpressionString, StringComparison.Ordinal) && EqualityComparer.Equals(left.Value, right.Value);
     }
 
     /// <summary>

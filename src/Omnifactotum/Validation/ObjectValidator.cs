@@ -84,7 +84,7 @@ public static class ObjectValidator
     {
         if (instanceExpression is not null && string.IsNullOrWhiteSpace(instanceExpression))
         {
-            throw new ArgumentException(@"The value cannot be a blank string (but can be null).", nameof(instanceExpression));
+            throw new ArgumentException("The value cannot be a blank string (but can be null).", nameof(instanceExpression));
         }
 
         return Validate(instance, instanceExpression ?? DefaultRootObjectParameterName, null);
@@ -120,7 +120,7 @@ public static class ObjectValidator
 
         if (string.IsNullOrWhiteSpace(instanceExpression))
         {
-            throw new ArgumentException(@"The value cannot be null or a blank string.", nameof(instanceExpression));
+            throw new ArgumentException("The value cannot be null or a blank string.", nameof(instanceExpression));
         }
 
         var parameterExpression = Expression.Parameter(instance.GetType(), instanceExpression);
@@ -133,14 +133,35 @@ public static class ObjectValidator
             Array.Empty<IBaseMemberConstraintAttribute>());
 
         var objectValidatorContext = new ObjectValidatorContext(recursiveProcessingContext);
+        Factotum.ProcessRecursively(rootMemberData, GetMembers, ProcessMember, objectValidatorContext.RecursiveProcessingContext);
+        objectValidatorContext.OnCompleteValidation();
 
-        Factotum.ProcessRecursively(rootMemberData, GetMembers, ProcessItem);
-
-        return objectValidatorContext.Errors.Items.Count == 0
+        return objectValidatorContext.Errors.Count == 0
             ? ObjectValidationResult.SuccessfulResult
-            : new ObjectValidationResult(objectValidatorContext.Errors.Items);
+            : new ObjectValidationResult(objectValidatorContext.Errors);
 
-        void ProcessItem(MemberData data) => ValidateInternal(instance, parameterExpression, data, objectValidatorContext);
+        void ProcessMember(MemberData data)
+        {
+            var effectiveAttributes = data.EffectiveAttributes;
+            if (effectiveAttributes.Length == 0)
+            {
+                return;
+            }
+
+            var context = new MemberConstraintValidationContext(
+                objectValidatorContext,
+                instance,
+                data.Container.EnsureNotNull(),
+                data.Expression,
+                parameterExpression);
+
+            // ReSharper disable once LoopCanBePartlyConvertedToQuery
+            foreach (var constraintAttribute in effectiveAttributes)
+            {
+                var constraint = objectValidatorContext.ResolveConstraint(constraintAttribute.ConstraintType);
+                constraint.Validate(context, data.Value);
+            }
+        }
     }
 
     [Pure]
@@ -175,7 +196,7 @@ public static class ObjectValidator
             FieldInfo field => field.GetValue(instance),
             PropertyInfo property => property.GetValue(instance, null),
             _ => throw new InvalidOperationException(
-                $@"Invalid type of {nameof(memberInfo).ToUIString()}: {memberInfo.GetType().GetFullName().ToUIString()}")
+                $"Invalid type of {nameof(memberInfo).ToUIString()}: {memberInfo.GetType().GetFullName().ToUIString()}")
         };
 
     [MustUseReturnValue]
@@ -467,35 +488,6 @@ public static class ObjectValidator
             members.Add(itemData);
 
             index++;
-        }
-    }
-
-    private static void ValidateInternal(
-        object root,
-        ParameterExpression parameterExpression,
-        MemberData memberData,
-        ObjectValidatorContext objectValidatorContext)
-    {
-        root.EnsureNotNull();
-        parameterExpression.EnsureNotNull();
-        memberData.EnsureNotNull();
-        objectValidatorContext.EnsureNotNull();
-
-        var effectiveAttributes = memberData.EffectiveAttributes;
-        if (effectiveAttributes.Length == 0)
-        {
-            return;
-        }
-
-        var memberDataContainer = memberData.Container.EnsureNotNull();
-        var memberDataExpression = memberData.Expression;
-
-        foreach (var constraintAttribute in effectiveAttributes)
-        {
-            var constraint = objectValidatorContext.ResolveConstraint(constraintAttribute.ConstraintType);
-
-            var context = new MemberConstraintValidationContext(root, memberDataContainer, memberDataExpression, parameterExpression);
-            constraint.Validate(objectValidatorContext, context, memberData.Value);
         }
     }
 }

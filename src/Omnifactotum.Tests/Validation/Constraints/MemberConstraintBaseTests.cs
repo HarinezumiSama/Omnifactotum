@@ -1,7 +1,6 @@
 ﻿using System;
 using NUnit.Framework;
 using Omnifactotum.Annotations;
-using Omnifactotum.Validation;
 using Omnifactotum.Validation.Constraints;
 
 //// ReSharper disable RedundantNullnessAttributeWithNullableReferenceTypes
@@ -15,16 +14,10 @@ internal sealed class MemberConstraintBaseTests : ConstraintTestsBase
     [Test]
     public void TestValidateWhenInvalidContextArgumentThenThrows()
     {
-        var objectValidatorContext = CreateObjectValidatorContext();
-        var memberContext = CreateMemberConstraintValidationContext();
         var testee = CreateTestee();
 
         Assert.That(
-            () => testee.Validate(null!, memberContext, this),
-            Throws.TypeOf<ArgumentNullException>());
-
-        Assert.That(
-            () => testee.Validate(objectValidatorContext, null!, this),
+            () => testee.Validate(null!, this),
             Throws.TypeOf<ArgumentNullException>());
     }
 
@@ -67,7 +60,6 @@ internal sealed class MemberConstraintBaseTests : ConstraintTestsBase
         public TTarget CallCastTo<TTarget>([CanBeNull] object? value) => CastTo<TTarget>(value);
 
         protected override void ValidateValue(
-            ObjectValidatorContext validatorContext,
             MemberConstraintValidationContext memberContext,
             object? value)
             => throw new NotImplementedException();

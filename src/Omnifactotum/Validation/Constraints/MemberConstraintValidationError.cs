@@ -37,7 +37,7 @@ public sealed class MemberConstraintValidationError
         }
 
         Context = context ?? throw new ArgumentNullException(nameof(context));
-        FailedConstraintType = failedConstraintType ?? throw new ArgumentNullException(nameof(failedConstraintType));
+        FailedConstraintType = failedConstraintType.ValidateConstraintType();
         ErrorMessage = errorMessage;
     }
 

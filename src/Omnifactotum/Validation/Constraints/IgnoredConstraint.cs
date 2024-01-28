@@ -9,10 +9,7 @@ namespace Omnifactotum.Validation.Constraints;
 public sealed class IgnoredConstraint<T> : TypedMemberConstraintBase<T>
 {
     /// <inheritdoc />
-    protected override void ValidateTypedValue(
-        ObjectValidatorContext validatorContext,
-        MemberConstraintValidationContext memberContext,
-        T value)
+    protected override void ValidateTypedValue(MemberConstraintValidationContext memberContext, T value)
     {
         // Nothing to do
     }

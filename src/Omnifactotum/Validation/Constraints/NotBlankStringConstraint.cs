@@ -10,14 +10,11 @@ namespace Omnifactotum.Validation.Constraints;
 public sealed class NotBlankStringConstraint : TypedMemberConstraintBase<string?>
 {
     /// <inheritdoc />
-    protected override void ValidateTypedValue(
-        ObjectValidatorContext validatorContext,
-        MemberConstraintValidationContext memberContext,
-        string? value)
+    protected override void ValidateTypedValue(MemberConstraintValidationContext memberContext, string? value)
     {
         if (string.IsNullOrWhiteSpace(value))
         {
-            AddError(validatorContext, memberContext, ValidationMessages.StringCannotBeNullOrBlank);
+            AddError(memberContext, ValidationMessages.StringCannotBeNullOrBlank);
         }
     }
 }

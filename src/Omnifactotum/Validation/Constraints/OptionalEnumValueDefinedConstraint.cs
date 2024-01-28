@@ -14,7 +14,7 @@ public sealed class OptionalEnumValueDefinedConstraint<TEnum> : TypedMemberConst
     where TEnum : struct, Enum
 {
     /// <inheritdoc />
-    protected override void ValidateTypedValue(ObjectValidatorContext validatorContext, MemberConstraintValidationContext memberContext, TEnum? value)
+    protected override void ValidateTypedValue(MemberConstraintValidationContext memberContext, TEnum? value)
     {
         if (value is null)
         {
@@ -24,9 +24,8 @@ public sealed class OptionalEnumValueDefinedConstraint<TEnum> : TypedMemberConst
         if (!value.Value.IsDefined())
         {
             AddError(
-                validatorContext,
                 memberContext,
-                AsInvariant($@"The value {FormatValue(value.Value)} is not defined in the enumeration {typeof(TEnum).GetFullName().ToUIString()}."));
+                AsInvariant($"The value {FormatValue(value.Value)} is not defined in the enumeration {typeof(TEnum).GetFullName().ToUIString()}."));
         }
     }
 }

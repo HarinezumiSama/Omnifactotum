@@ -26,17 +26,11 @@ public interface IMemberConstraint
     /// <summary>
     ///     Validates the specified value in scope of the specified context.
     /// </summary>
-    /// <param name="validatorContext">
-    ///     The context of the <see cref="ObjectValidator"/>.
-    /// </param>
     /// <param name="memberContext">
     ///     The context of validation.
     /// </param>
     /// <param name="value">
     ///     The value to validate.
     /// </param>
-    void Validate(
-        [NotNull] ObjectValidatorContext validatorContext,
-        [NotNull] MemberConstraintValidationContext memberContext,
-        [CanBeNull] object? value);
+    void Validate([NotNull] MemberConstraintValidationContext memberContext, [CanBeNull] object? value);
 }

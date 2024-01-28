@@ -21,30 +21,23 @@ public abstract class TypedMemberConstraintBase<T> : MemberConstraintBase
 {
     /// <inheritdoc />
     protected sealed override void ValidateValue(
-        ObjectValidatorContext validatorContext,
         MemberConstraintValidationContext memberContext,
         object? value)
     {
         var typedValue = CastTo<T>(value);
-        ValidateTypedValue(validatorContext, memberContext, typedValue);
+        ValidateTypedValue(memberContext, typedValue);
     }
 
     /// <summary>
     ///     Validates the specified strongly-typed value is scope of the specified memberContext.
     /// </summary>
-    /// <param name="validatorContext">
-    ///     The context of the <see cref="ObjectValidator"/>.
-    /// </param>
     /// <param name="memberContext">
     ///     The context of the validated member.
     /// </param>
     /// <param name="value">
     ///     The value to validate.
     /// </param>
-    protected abstract void ValidateTypedValue(
-        [NotNull] ObjectValidatorContext validatorContext,
-        [NotNull] MemberConstraintValidationContext memberContext,
-        T value);
+    protected abstract void ValidateTypedValue([NotNull] MemberConstraintValidationContext memberContext, T value);
 
     /// <summary>
     ///     Creates a new <see cref="MemberConstraintValidationContext"/> for the member specified
@@ -93,6 +86,7 @@ public abstract class TypedMemberConstraintBase<T> : MemberConstraintBase
             memberInfo);
 
         var result = new MemberConstraintValidationContext(
+            valueContext.ValidatorContext,
             valueContext.Root,
             value,
             memberExpression,
@@ -107,9 +101,6 @@ public abstract class TypedMemberConstraintBase<T> : MemberConstraintBase
     /// <typeparam name="TMember">
     ///     The type of the member.
     /// </typeparam>
-    /// <param name="validatorContext">
-    ///     The object validator memberContext.
-    /// </param>
     /// <param name="valueContext">
     ///     The memberContext of the value.
     /// </param>
@@ -123,7 +114,6 @@ public abstract class TypedMemberConstraintBase<T> : MemberConstraintBase
     ///     The type of the constraint.
     /// </param>
     protected void ValidateMember<TMember>(
-        [NotNull] ObjectValidatorContext validatorContext,
         [NotNull] MemberConstraintValidationContext valueContext,
         T value,
         [NotNull] Expression<Func<T, TMember>> memberGetterExpression,
@@ -149,11 +139,12 @@ public abstract class TypedMemberConstraintBase<T> : MemberConstraintBase
             throw new ArgumentNullException(nameof(constraintType));
         }
 
+        var objectValidatorContext = valueContext.ValidatorContext;
         var memberContext = CreateMemberContext(valueContext, value, memberGetterExpression);
-        var constraint = validatorContext.ResolveConstraint(constraintType);
+        var constraint = objectValidatorContext.ResolveConstraint(constraintType);
         var memberValue = memberGetterExpression.Compile().Invoke(value);
 
-        constraint.Validate(validatorContext, memberContext, memberValue);
+        constraint.Validate(memberContext, memberValue);
 
         if (memberValue is null)
         {
@@ -163,7 +154,7 @@ public abstract class TypedMemberConstraintBase<T> : MemberConstraintBase
         var memberValidationResult = ObjectValidator.Validate(
             memberValue,
             ObjectValidator.DefaultRootObjectParameterName,
-            validatorContext.RecursiveProcessingContext);
+            objectValidatorContext.RecursiveProcessingContext);
 
         if (memberValidationResult.IsObjectValid)
         {
@@ -185,6 +176,7 @@ public abstract class TypedMemberConstraintBase<T> : MemberConstraintBase
                 .InjectInto(error.Context.LambdaExpression);
 
             var newContext = new MemberConstraintValidationContext(
+                objectValidatorContext,
                 valueContext.Root,
                 error.Context.Container,
                 combinedExpressions.Body,
@@ -195,7 +187,7 @@ public abstract class TypedMemberConstraintBase<T> : MemberConstraintBase
                 error.FailedConstraintType,
                 error.ErrorMessage);
 
-            validatorContext.Errors.Add(newError);
+            objectValidatorContext.AddError(newError);
         }
     }
 }

@@ -50,9 +50,7 @@ public abstract class RegexStringConstraintBase : TypedMemberConstraintBase<stri
 #if NET7_0_OR_GREATER
         [StringSyntax(StringSyntaxAttribute.Regex)]
 #endif
-        [NotNull]
-        [RegexPattern]
-        string pattern,
+        [NotNull] [RegexPattern] string pattern,
         RegexOptions options = DefaultRegexOptions,
         TimeSpan? timeout = null)
     {
@@ -66,15 +64,11 @@ public abstract class RegexStringConstraintBase : TypedMemberConstraintBase<stri
     }
 
     /// <inheritdoc />
-    protected sealed override void ValidateTypedValue(
-        ObjectValidatorContext validatorContext,
-        MemberConstraintValidationContext memberContext,
-        string? value)
+    protected sealed override void ValidateTypedValue(MemberConstraintValidationContext memberContext, string? value)
     {
         if (value is null || !_regex.IsMatch(value))
         {
             AddError(
-                validatorContext,
                 memberContext,
                 $"The value {FormatValue(value)} does not match the regular expression pattern {_pattern.ToUIString()} (options: {_regex.Options}).");
         }

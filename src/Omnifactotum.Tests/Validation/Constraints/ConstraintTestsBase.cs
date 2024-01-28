@@ -13,13 +13,8 @@ internal abstract class ConstraintTestsBase
     [UsedImplicitly]
     protected object? DummyProperty { get; set; }
 
-    [NotNull]
-    protected static ObjectValidatorContext CreateObjectValidatorContext(
-        [CanBeNull] RecursiveProcessingContext<MemberData>? recursiveProcessingContext = null)
-        => new(recursiveProcessingContext);
-
-    [NotNull]
-    protected MemberConstraintValidationContext CreateMemberConstraintValidationContext()
+    protected MemberConstraintValidationContext CreateMemberConstraintValidationContext(
+        RecursiveProcessingContext<MemberData>? recursiveProcessingContext = null)
     {
         var parameterExpression = Expression.Parameter(GetType(), ObjectValidator.DefaultRootObjectParameterName);
 
@@ -27,6 +22,6 @@ internal abstract class ConstraintTestsBase
             parameterExpression,
             Factotum.For<ConstraintTestsBase>.GetPropertyInfo(obj => obj.DummyProperty));
 
-        return new MemberConstraintValidationContext(this, this, expression, parameterExpression);
+        return new MemberConstraintValidationContext(new ObjectValidatorContext(recursiveProcessingContext), this, this, expression, parameterExpression);
     }
 }

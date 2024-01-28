@@ -48,21 +48,15 @@ public abstract class KeyValuePairConstraintBase<TKey, TValue> : TypedMemberCons
     /// <summary>
     ///     Validates the specified strongly-typed value is scope of the specified context.
     /// </summary>
-    /// <param name="validatorContext">
-    ///     The context of the <see cref="ObjectValidator"/>.
-    /// </param>
     /// <param name="memberContext">
     ///     The context of validation.
     /// </param>
     /// <param name="value">
     ///     The value to validate.
     /// </param>
-    protected sealed override void ValidateTypedValue(
-        ObjectValidatorContext validatorContext,
-        MemberConstraintValidationContext memberContext,
-        KeyValuePair<TKey, TValue> value)
+    protected sealed override void ValidateTypedValue(MemberConstraintValidationContext memberContext, KeyValuePair<TKey, TValue> value)
     {
-        ValidateMember(validatorContext, memberContext, value, pair => pair.Key, KeyConstraintType);
-        ValidateMember(validatorContext, memberContext, value, pair => pair.Value, ValueConstraintType);
+        ValidateMember(memberContext, value, pair => pair.Key, KeyConstraintType);
+        ValidateMember(memberContext, value, pair => pair.Value, ValueConstraintType);
     }
 }

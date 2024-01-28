@@ -22,28 +22,21 @@ internal abstract class ConstraintTestsBase<[MeansImplicitUse] TConstraint> : Co
     [Test]
     public void TestValidateWhenContextArgumentIsNullThenThrows()
     {
-        var objectValidatorContext = CreateObjectValidatorContext();
-        var memberContext = CreateMemberConstraintValidationContext();
         var testee = CreateTestee();
 
         Assert.That(
-            () => testee.Validate(null!, memberContext, new UnknownClass()),
-            Throws.TypeOf<ArgumentNullException>());
-
-        Assert.That(
-            () => testee.Validate(objectValidatorContext, null!, new UnknownClass()),
+            () => testee.Validate(null!, new UnknownClass()),
             Throws.TypeOf<ArgumentNullException>());
     }
 
     [Test]
     public virtual void TestValidateWhenIncorrectValueTypeThenThrows()
     {
-        var objectValidatorContext = CreateObjectValidatorContext();
         var testee = CreateTestee();
-        var validationContext = CreateMemberConstraintValidationContext();
+        var memberContext = CreateMemberConstraintValidationContext();
 
         Assert.That(
-            () => testee.Validate(objectValidatorContext, validationContext, new UnknownClass()),
+            () => testee.Validate(memberContext, new UnknownClass()),
             Throws.TypeOf<InvalidOperationException>());
     }
 
@@ -59,11 +52,10 @@ internal abstract class ConstraintTestsBase<[MeansImplicitUse] TConstraint> : Co
 
             var testCaseDetails = $"Test case value: {FormatTestCaseValue(validValue)}";
 
-            var objectValidatorContext = CreateObjectValidatorContext();
             var testee = CreateTestee();
             var memberContext = CreateMemberConstraintValidationContext();
-            testee.Validate(objectValidatorContext, memberContext, validValue);
-            var validationErrors = objectValidatorContext.Errors.Items;
+            testee.Validate(memberContext, validValue);
+            var validationErrors = memberContext.ValidatorContext.Errors;
 
             Assert.That(validationErrors, Is.Not.Null & Is.Empty, testCaseDetails);
         }
@@ -85,19 +77,18 @@ internal abstract class ConstraintTestsBase<[MeansImplicitUse] TConstraint> : Co
 
             var expectedErrorMessage = GetInvalidValueErrorMessage(invalidValue).AssertNotNull();
 
-            var objectValidatorContext = CreateObjectValidatorContext();
             var testee = CreateTestee();
-            var validationContext = CreateMemberConstraintValidationContext();
+            var memberContext = CreateMemberConstraintValidationContext();
 
-            testee.Validate(objectValidatorContext, validationContext, invalidValue);
+            testee.Validate(memberContext, invalidValue);
 
-            var validationErrors = objectValidatorContext.Errors.Items;
+            var validationErrors = memberContext.ValidatorContext.Errors;
             Assert.That(validationErrors, Is.Not.Null & Has.Count.EqualTo(1), testCaseDetails);
 
             var validationError = validationErrors.Single();
             Assert.That(validationError, Is.Not.Null, testCaseDetails);
             Assert.That(validationError.FailedConstraintType, Is.EqualTo(testee.GetType()), testCaseDetails);
-            Assert.That(validationError.Context, Is.SameAs(validationContext), testCaseDetails);
+            Assert.That(validationError.Context, Is.SameAs(memberContext), testCaseDetails);
             Assert.That(validationError.ErrorMessage, Is.EqualTo(expectedErrorMessage), testCaseDetails);
         }
 

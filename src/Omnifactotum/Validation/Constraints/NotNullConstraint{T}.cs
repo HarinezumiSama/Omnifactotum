@@ -16,14 +16,11 @@ public sealed class NotNullConstraint<T> : TypedMemberConstraintBase<T?>
     private static readonly string FailureMessage = $"The '{typeof(T).GetQualifiedName()}' value cannot be null.";
 
     /// <inheritdoc />
-    protected override void ValidateTypedValue(
-        ObjectValidatorContext validatorContext,
-        MemberConstraintValidationContext memberContext,
-        T? value)
+    protected override void ValidateTypedValue(MemberConstraintValidationContext memberContext, T? value)
     {
         if (value is null or ImmutableArray<T> { IsDefault: true })
         {
-            AddError(validatorContext, memberContext, FailureMessage);
+            AddError(memberContext, FailureMessage);
         }
     }
 }

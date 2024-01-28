@@ -4,8 +4,8 @@ using System.Collections.Immutable;
 using System.Collections.ObjectModel;
 using System.Diagnostics.CodeAnalysis;
 using System.Linq;
+using System.Linq.Expressions;
 using NUnit.Framework;
-using Omnifactotum.Annotations;
 using Omnifactotum.NUnit;
 using Omnifactotum.Validation;
 using Omnifactotum.Validation.Constraints;
@@ -19,6 +19,12 @@ namespace Omnifactotum.Tests.Validation;
 internal sealed partial class ObjectValidatorTests
 {
     private const string ValidationResultPropertyName = nameof(ObjectValidationException.ValidationResult);
+
+    [SetUp]
+    public void SetUp() => ClearLastMemberContexts();
+
+    [TearDown]
+    public void TearDown() => ClearLastMemberContexts();
 
     [Test]
     public void TestValidateWhenArgumentIsNull()
@@ -299,10 +305,10 @@ internal sealed partial class ObjectValidatorTests
                 $"[{InstanceExpression}.ContainedValue.AnotherSimpleDataCustomReadOnlyList.Item[3].Value] The value cannot be null.",
                 $"[{InstanceExpression}.ContainedValue.AnotherSimpleDataImmutableList.Item[2].Value] The value cannot be null.",
                 $"[{InstanceExpression}.ContainedValue.Data.NullableValue] The value cannot be null.",
-                $"[{InstanceExpression}.ContainedValue.Data.StartDate] Validation of the constraint \"{nameof(ObjectValidatorTests)
-                }.UtcDateConstraint\" failed.",
-                $"[{InstanceExpression}.ContainedValue.Data.StartDate] Validation of the constraint \"{nameof(ObjectValidatorTests)
-                }.UtcDateTypedConstraint\" failed.",
+                $"[{InstanceExpression
+                }.ContainedValue.Data.StartDate] Validation of the constraint \"Omnifactotum.Tests.Validation.ObjectValidatorTests.UtcDateConstraint\" failed.",
+                $"[{InstanceExpression
+                }.ContainedValue.Data.StartDate] Validation of the constraint \"Omnifactotum.Tests.Validation.ObjectValidatorTests.UtcDateTypedConstraint\" failed.",
                 $"[{InstanceExpression}.ContainedValue.Data.Value] The value cannot be null."
             });
 
@@ -330,6 +336,8 @@ internal sealed partial class ObjectValidatorTests
             .Join(Environment.NewLine);
 
         Assert.That(() => validationException.Message, Is.EqualTo(expectedExceptionMessage));
+
+        AssertLastMemberContexts();
     }
 
     [Test]
@@ -453,7 +461,6 @@ internal sealed partial class ObjectValidatorTests
                 typeof(NotNullConstraint),
                 new[]
                 {
-                    $"Convert({InstanceExpression}.Properties.Skip(2).First(), KeyValuePair`2).Value.ContainedValue",
                     $"Convert({InstanceExpression}.Properties.Skip(2).First(), KeyValuePair`2).Value.ContainedValue"
                 }
             },
@@ -466,6 +473,13 @@ internal sealed partial class ObjectValidatorTests
             },
             {
                 typeof(NotAbcStringConstraint),
+                new[]
+                {
+                    $"{InstanceExpression}.Properties.Skip(1).First().Key"
+                }
+            },
+            {
+                typeof(CustomNotAbcStringConstraint),
                 new[]
                 {
                     $"{InstanceExpression}.Properties.Skip(1).First().Key"
@@ -506,47 +520,98 @@ internal sealed partial class ObjectValidatorTests
 
         var notAbcStringError = validationResult.Errors.Single(obj => obj.FailedConstraintType == typeof(NotAbcStringConstraint));
         Assert.That(() => (string?)notAbcStringError.Context.CreateLambdaExpression("value").Compile().Invoke(mapContainer), Is.EqualTo("abc"));
+
+        AssertLastMemberContexts();
+    }
+
+    private static void ClearLastMemberContexts()
+    {
+#if NET7_0_OR_GREATER
+        ClearLastMemberContext<NotAbcStringConstraint>();
+        ClearLastMemberContext<CustomNotAbcStringConstraint>();
+        ClearLastMemberContext<UtcDateConstraint>();
+        ClearLastMemberContext<UtcDateTypedConstraint>();
+#else
+        NotAbcStringConstraint.LastMemberContext = null;
+        CustomNotAbcStringConstraint.LastMemberContext = null;
+        UtcDateConstraint.LastMemberContext = null;
+        UtcDateTypedConstraint.LastMemberContext = null;
+#endif
+    }
+
+    private static void AssertLastMemberContexts()
+    {
+#if NET7_0_OR_GREATER
+        AssertLastMemberContext<NotAbcStringConstraint>();
+        AssertLastMemberContext<CustomNotAbcStringConstraint>();
+        AssertLastMemberContext<UtcDateConstraint>();
+        AssertLastMemberContext<UtcDateTypedConstraint>();
+#else
+        AssertLastMemberContext(NotAbcStringConstraint.LastMemberContext);
+        AssertLastMemberContext(CustomNotAbcStringConstraint.LastMemberContext);
+        AssertLastMemberContext(UtcDateConstraint.LastMemberContext);
+        AssertLastMemberContext(UtcDateTypedConstraint.LastMemberContext);
+#endif
+    }
+
+#if NET7_0_OR_GREATER
+    private static void ClearLastMemberContext<T>()
+        where T : class, ILastMemberContextProvider
+        => T.LastMemberContext = null;
+
+    private static void AssertLastMemberContext<T>()
+        where T : class, ILastMemberContextProvider
+        => AssertLastMemberContext(T.LastMemberContext);
+#endif
+
+    private static void AssertLastMemberContext(MemberConstraintValidationContext? lastMemberContext)
+    {
+        if (lastMemberContext is null)
+        {
+            return;
+        }
+
+        var validatorContext = lastMemberContext.ValidatorContext.AssertNotNull();
+
+        Assert.That(() => validatorContext.IsValidationComplete, Is.True);
+        Assert.That(() => validatorContext.RecursiveProcessingContext.ItemsBeingProcessed?.Count, Is.Zero);
+
+        var errorCount = validatorContext.Errors.Count;
+
+        Assert.That(
+            () => validatorContext.AddError(
+                new MemberConstraintValidationError(
+                    new MemberConstraintValidationContext(
+                        validatorContext,
+                        lastMemberContext.Root,
+                        lastMemberContext.Container,
+                        Expression.Constant(null),
+                        lastMemberContext.RootParameterExpression),
+                    typeof(NotNullConstraint),
+                    "Some valid message.")),
+            Throws.InvalidOperationException.With.Message.EqualTo("Object validation is already completed."));
+
+        Assert.That(() => validatorContext.Errors.Count, Is.EqualTo(errorCount));
     }
 
     private static void EnsureTestValidationSucceeded<T>(T data)
     {
+        ClearLastMemberContexts();
         var validationResult1 = ObjectValidator.Validate(data!).AssertNotNull();
 
         Assert.That(() => validationResult1.GetException(), Is.Null);
         Assert.That(() => validationResult1.Errors.Count, Is.EqualTo(0));
         Assert.That(() => validationResult1.IsObjectValid, Is.True);
         Assert.That(() => validationResult1.EnsureSucceeded(), Throws.Nothing);
+        AssertLastMemberContexts();
 
+        ClearLastMemberContexts();
         var validationResult2 = ObjectValidator.Validate(data!, "customExpression-5d804913def74aa2b441496a9e92dba6").AssertNotNull();
 
         Assert.That(() => validationResult2.GetException(), Is.Null);
         Assert.That(() => validationResult2.Errors.Count, Is.EqualTo(0));
         Assert.That(() => validationResult2.IsObjectValid, Is.True);
         Assert.That(() => validationResult2.EnsureSucceeded(), Throws.Nothing);
-    }
-
-    public sealed class SimpleContainer<T>
-    {
-        [MemberConstraint(typeof(NotNullConstraint))]
-        public T? ContainedValue
-        {
-            [UsedImplicitly]
-            get;
-            set;
-        }
-    }
-
-    private sealed class MapContainer
-    {
-        [MemberConstraint(typeof(NotNullConstraint))]
-        [MemberItemConstraint(typeof(MapContainerPropertiesPairConstraint))]
-        [MemberItemConstraint(
-            typeof(KeyValuePairConstraint<string, SimpleContainer<int?>?, NotAbcStringConstraint, NotNullConstraint<SimpleContainer<int?>>>))]
-        public IEnumerable<KeyValuePair<string, SimpleContainer<int?>>>? Properties
-        {
-            [UsedImplicitly]
-            get;
-            set;
-        }
+        AssertLastMemberContexts();
     }
 }

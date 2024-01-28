@@ -99,6 +99,42 @@ internal static class ValidationFactotum
     /// <exception cref="System.ArgumentException">
     ///     The specified constraint type is not a valid member constraint type.
     /// </exception>
+    public static Type ValidateConstraintType([System.Diagnostics.CodeAnalysis.NotNull] this Type? constraintType)
+    {
+        if (constraintType is null)
+        {
+            throw new ArgumentNullException(nameof(constraintType));
+        }
+
+        var compatibleType = typeof(IMemberConstraint);
+
+        if (!constraintType.IsClass || constraintType.IsAbstract || constraintType.IsGenericTypeDefinition
+            || !compatibleType.IsAssignableFrom(constraintType))
+        {
+            throw new ArgumentException(
+                $"{constraintType.GetFullName().ToUIString()} is not a valid constraint type (must be an instantiatable class that implements {
+                    compatibleType.GetFullName().ToUIString()}).",
+                nameof(constraintType));
+        }
+
+        return constraintType;
+    }
+
+    /// <summary>
+    ///     Ensures that the specified constraint type is a valid member constraint type.
+    /// </summary>
+    /// <param name="constraintType">
+    ///     The type of the constraint to check.
+    /// </param>
+    /// <returns>
+    ///     The input constraint type, if it is a valid member constraint type.
+    /// </returns>
+    /// <exception cref="ArgumentNullException">
+    ///     <paramref name="constraintType"/> is <see langword="null"/>.
+    /// </exception>
+    /// <exception cref="System.ArgumentException">
+    ///     The specified constraint type is not a valid member constraint type.
+    /// </exception>
     public static Type ValidateAndRegisterMemberConstraintType(this Type constraintType)
     {
         if (constraintType is null)
@@ -113,16 +149,7 @@ internal static class ValidationFactotum
                 return constraintType;
             }
 
-            var compatibleType = typeof(IMemberConstraint);
-
-            if (!constraintType.IsClass || constraintType.IsAbstract || constraintType.IsGenericTypeDefinition
-                || !compatibleType.IsAssignableFrom(constraintType))
-            {
-                throw new ArgumentException(
-                    $"{constraintType.GetFullName().ToUIString()} is not a valid constraint type (must be an instantiatable class that implements {
-                        compatibleType.GetFullName().ToUIString()}).",
-                    nameof(constraintType));
-            }
+            constraintType.ValidateConstraintType();
 
             var constructorInfo = constraintType.GetConstructor(
                 BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic,

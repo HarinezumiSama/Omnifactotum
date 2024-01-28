@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Collections.Immutable;
 using System.Collections.ObjectModel;
 using System.Diagnostics.CodeAnalysis;
@@ -9,6 +10,32 @@ namespace Omnifactotum.Tests.Validation;
 
 internal sealed partial class ObjectValidatorTests
 {
+    public sealed class SimpleContainer<T>
+    {
+        [MemberConstraint(typeof(NotNullConstraint))]
+        public T? ContainedValue
+        {
+            [UsedImplicitly]
+            get;
+            set;
+        }
+    }
+
+    private sealed class MapContainer
+    {
+        [MemberConstraint(typeof(NotNullConstraint))]
+        [MemberItemConstraint(typeof(MapContainerPropertiesPairConstraint))]
+        [MemberItemConstraint(typeof(CustomNotAbcStringMapKeyConstraint))]
+        [MemberItemConstraint(
+            typeof(KeyValuePairConstraint<string, SimpleContainer<int?>?, NotAbcStringConstraint, NotNullConstraint<SimpleContainer<int?>>>))]
+        public IEnumerable<KeyValuePair<string, SimpleContainer<int?>>>? Properties
+        {
+            [UsedImplicitly]
+            get;
+            set;
+        }
+    }
+
     private sealed class SimpleData
     {
         [SuppressMessage(
@@ -49,6 +76,7 @@ internal sealed partial class ObjectValidatorTests
         [MemberConstraint(typeof(NeverCalledConstraint))]
         [MemberItemConstraint(typeof(NeverCalledConstraint))]
         [UsedImplicitly]
+        //// ReSharper disable once UnusedParameter.Local
         public string this[int index] => throw new NotSupportedException();
     }
 

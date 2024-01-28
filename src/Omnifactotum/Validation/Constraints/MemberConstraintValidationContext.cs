@@ -17,6 +17,9 @@ public sealed class MemberConstraintValidationContext
     /// <summary>
     ///     Initializes a new instance of the <see cref="MemberConstraintValidationContext"/> class.
     /// </summary>
+    /// <param name="validatorContext">
+    ///     The parent <see cref="ObjectValidatorContext"/> that this <see cref="MemberConstraintValidationContext"/> belongs to.
+    /// </param>
     /// <param name="root">
     ///     The root object that is being, or was, validated.
     /// </param>
@@ -30,11 +33,13 @@ public sealed class MemberConstraintValidationContext
     ///     The root parameter expression.
     /// </param>
     internal MemberConstraintValidationContext(
-        [NotNull] object root,
-        [NotNull] object container,
-        [NotNull] Expression expression,
-        [NotNull] ParameterExpression rootParameterExpression)
+        ObjectValidatorContext validatorContext,
+        object root,
+        object container,
+        Expression expression,
+        ParameterExpression rootParameterExpression)
     {
+        ValidatorContext = validatorContext ?? throw new ArgumentNullException(nameof(validatorContext));
         Root = root ?? throw new ArgumentNullException(nameof(root));
         Container = container ?? throw new ArgumentNullException(nameof(container));
         Expression = expression ?? throw new ArgumentNullException(nameof(expression));
@@ -42,6 +47,12 @@ public sealed class MemberConstraintValidationContext
 
         LambdaExpression = Expression.Lambda(expression, rootParameterExpression);
     }
+
+    /// <summary>
+    ///     Gets the parent <see cref="ObjectValidatorContext"/> that this <see cref="MemberConstraintValidationContext"/> belongs to.
+    /// </summary>
+    [NotNull]
+    public ObjectValidatorContext ValidatorContext { get; }
 
     /// <summary>
     ///     Gets the root object that is being, or was, checked.

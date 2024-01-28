@@ -49,16 +49,13 @@ public abstract class ValueRangeConstraintBase<T> : TypedMemberConstraintBase<T>
     protected virtual string FormatRange() => AsInvariant($"[{FormatValue(Range.Lower)}{ValueRange.DefaultBoundarySeparator}{FormatValue(Range.Upper)}]");
 
     /// <inheritdoc />
-    protected sealed override void ValidateTypedValue(
-        ObjectValidatorContext validatorContext,
-        MemberConstraintValidationContext memberContext,
-        T value)
+    protected sealed override void ValidateTypedValue(MemberConstraintValidationContext memberContext, T value)
     {
         if (Range.Contains(value))
         {
             return;
         }
 
-        AddError(validatorContext, memberContext, $"The value {FormatValue(value)} is not within the valid range {FormatRange()}.");
+        AddError(memberContext, $"The value {FormatValue(value)} is not within the valid range {FormatRange()}.");
     }
 }

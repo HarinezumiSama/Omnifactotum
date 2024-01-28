@@ -8,18 +8,15 @@ namespace Omnifactotum.Validation.Constraints;
 public sealed class NotNullOrEmptyCollectionConstraint : TypedMemberConstraintBase<ICollection?>
 {
     /// <inheritdoc />
-    protected override void ValidateTypedValue(
-        ObjectValidatorContext validatorContext,
-        MemberConstraintValidationContext memberContext,
-        ICollection? value)
+    protected override void ValidateTypedValue(MemberConstraintValidationContext memberContext, ICollection? value)
     {
         if (value is null || ValidationFactotum.IsDefaultImmutableArray(value))
         {
-            AddError(validatorContext, memberContext, ValidationMessages.CannotBeNull);
+            AddError(memberContext, ValidationMessages.CannotBeNull);
         }
         else if (value.Count == 0)
         {
-            AddError(validatorContext, memberContext, ValidationMessages.CollectionCannotBeEmpty);
+            AddError(memberContext, ValidationMessages.CollectionCannotBeEmpty);
         }
     }
 }

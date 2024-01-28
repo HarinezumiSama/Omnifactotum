@@ -6,14 +6,11 @@
 public sealed class NotNullConstraint : MemberConstraintBase
 {
     /// <inheritdoc />
-    protected override void ValidateValue(
-        ObjectValidatorContext validatorContext,
-        MemberConstraintValidationContext memberContext,
-        object? value)
+    protected override void ValidateValue(MemberConstraintValidationContext memberContext, object? value)
     {
         if (value is null || ValidationFactotum.IsDefaultImmutableArray(value))
         {
-            AddError(validatorContext, memberContext, ValidationMessages.CannotBeNull);
+            AddError(memberContext, ValidationMessages.CannotBeNull);
         }
     }
 }

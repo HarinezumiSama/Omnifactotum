@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Diagnostics;
 using Omnifactotum.Annotations;
 using Omnifactotum.Validation.Constraints;
@@ -16,6 +17,8 @@ namespace Omnifactotum.Validation;
 public sealed class ObjectValidatorContext
 {
     private readonly Dictionary<Type, IMemberConstraint> _constraintCache;
+    private readonly List<MemberConstraintValidationError> _innerErrors;
+    private readonly bool _ownsRecursiveProcessingContext;
 
     /// <summary>
     ///     Initializes a new instance of the <see cref="ObjectValidatorContext"/> class.
@@ -23,13 +26,16 @@ public sealed class ObjectValidatorContext
     /// <param name="recursiveProcessingContext">
     ///     The context of the recursive processing, or <see langword="null"/> to use a new context.
     /// </param>
-    internal ObjectValidatorContext([CanBeNull] RecursiveProcessingContext<MemberData>? recursiveProcessingContext)
+    internal ObjectValidatorContext(RecursiveProcessingContext<MemberData>? recursiveProcessingContext)
     {
         var actualRecursiveProcessingContext = recursiveProcessingContext
             ?? Omnifactotum.RecursiveProcessingContext.Create(InternalMemberDataEqualityComparer.Instance);
 
         _constraintCache = new Dictionary<Type, IMemberConstraint>();
-        Errors = new ValidationErrorCollection();
+        _innerErrors = new List<MemberConstraintValidationError>();
+        _ownsRecursiveProcessingContext = recursiveProcessingContext is null;
+
+        Errors = _innerErrors.AsReadOnly();
         RecursiveProcessingContext = actualRecursiveProcessingContext;
     }
 
@@ -37,10 +43,12 @@ public sealed class ObjectValidatorContext
     ///     Gets the collection of validation errors.
     /// </summary>
     [NotNull]
-    public ValidationErrorCollection Errors { get; }
+    internal ReadOnlyCollection<MemberConstraintValidationError> Errors { get; }
 
     [NotNull]
     internal RecursiveProcessingContext<MemberData> RecursiveProcessingContext { get; }
+
+    internal bool IsValidationComplete { get; private set; }
 
     /// <summary>
     ///     Resolves the constraint with the specified type.
@@ -76,5 +84,38 @@ public sealed class ObjectValidatorContext
         where TMemberConstraint : IMemberConstraint
         => (TMemberConstraint)ResolveConstraint(typeof(TMemberConstraint));
 
-    internal string ToDebuggerString() => $"{nameof(Errors)} = {{ {Errors.ToDebuggerString()} }}";
+    internal string ToDebuggerString()
+        => $"{nameof(Errors)} = {{ {nameof(Errors.Count)} = {Errors.Count}, {nameof(IsValidationComplete)} = {IsValidationComplete} }}";
+
+    internal void AddError(MemberConstraintValidationError error)
+    {
+        if (error is null)
+        {
+            throw new ArgumentNullException(nameof(error));
+        }
+
+        if (IsValidationComplete)
+        {
+            throw new InvalidOperationException("Object validation is already completed.");
+        }
+
+        _innerErrors.Add(error);
+    }
+
+    internal void OnCompleteValidation()
+    {
+        Factotum.Assert(!IsValidationComplete);
+
+        if (_ownsRecursiveProcessingContext)
+        {
+            RecursiveProcessingContext.ItemsBeingProcessed?.Clear();
+        }
+
+        lock (_constraintCache)
+        {
+            _constraintCache.Clear();
+        }
+
+        IsValidationComplete = true;
+    }
 }

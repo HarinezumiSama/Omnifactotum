@@ -15,19 +15,14 @@ namespace Omnifactotum.Validation.Constraints;
 public abstract class MemberConstraintBase : IMemberConstraint
 {
     /// <inheritdoc />
-    public void Validate(ObjectValidatorContext validatorContext, MemberConstraintValidationContext memberContext, object? value)
+    public void Validate(MemberConstraintValidationContext memberContext, object? value)
     {
-        if (validatorContext is null)
-        {
-            throw new ArgumentNullException(nameof(validatorContext));
-        }
-
         if (memberContext is null)
         {
             throw new ArgumentNullException(nameof(memberContext));
         }
 
-        ValidateValue(validatorContext, memberContext, value);
+        ValidateValue(memberContext, value);
     }
 
     /// <summary>
@@ -53,19 +48,13 @@ public abstract class MemberConstraintBase : IMemberConstraint
     /// <summary>
     ///     Validates the specified value is scope of the specified memberContext.
     /// </summary>
-    /// <param name="validatorContext">
-    ///     The context of the <see cref="ObjectValidator"/>.
-    /// </param>
     /// <param name="memberContext">
     ///     The context of the validated member.
     /// </param>
     /// <param name="value">
     ///     The value to validate.
     /// </param>
-    protected abstract void ValidateValue(
-        [NotNull] ObjectValidatorContext validatorContext,
-        [NotNull] MemberConstraintValidationContext memberContext,
-        [CanBeNull] object? value);
+    protected abstract void ValidateValue([NotNull] MemberConstraintValidationContext memberContext, [CanBeNull] object? value);
 
     /// <summary>
     ///     Tries to cast the specified value to the specified target type and
@@ -106,6 +95,22 @@ public abstract class MemberConstraintBase : IMemberConstraint
     ///     Creates a new <see cref="MemberConstraintValidationError"/> instance using the specified member context
     ///     and failure message and then adds the created error to the validator context.
     /// </summary>
+    /// <param name="memberContext">
+    ///     The context of the validated member to create an error for.
+    /// </param>
+    /// <param name="failureMessage">
+    ///     The message describing the validation error, or <see langword="null"/> to use a default message.
+    /// </param>
+    protected void AddError([NotNull] MemberConstraintValidationContext memberContext, [CanBeNull] string? failureMessage)
+    {
+        //// ReSharper disable once InvokeAsExtensionMethod :: JIC, to avoid ambiguity between instance and extension method
+        MemberConstraintExtensions.AddError(this, memberContext, failureMessage);
+    }
+
+    /// <summary>
+    ///     Creates a new <see cref="MemberConstraintValidationError"/> instance using the specified member context
+    ///     and failure message and then adds the created error to the validator context.
+    /// </summary>
     /// <param name="validatorContext">
     ///     The context of the <see cref="ObjectValidator"/>.
     /// </param>
@@ -115,25 +120,17 @@ public abstract class MemberConstraintBase : IMemberConstraint
     /// <param name="failureMessage">
     ///     The message describing the validation error.
     /// </param>
+    [Obsolete($"Use `{nameof(AddError)}({nameof(MemberConstraintValidationContext)}, {nameof(String)}?)` instead.")]
+    [System.Diagnostics.CodeAnalysis.ExcludeFromCodeCoverage]
     protected void AddError(
         [NotNull] ObjectValidatorContext validatorContext,
         [NotNull] MemberConstraintValidationContext memberContext,
         [NotNull] string failureMessage)
     {
-        if (memberContext is null)
-        {
-            throw new ArgumentNullException(nameof(memberContext));
-        }
+        //// ReSharper disable once ConditionIsAlwaysTrueOrFalseAccordingToNullableAPIContract
+        Factotum.Assert(validatorContext is not null && ReferenceEquals(validatorContext, memberContext.ValidatorContext));
 
-        if (string.IsNullOrWhiteSpace(failureMessage))
-        {
-            throw new ArgumentException(
-                @"The value can be neither empty nor whitespace-only string nor null.",
-                nameof(failureMessage));
-        }
-
-        var error = new MemberConstraintValidationError(memberContext, GetType(), failureMessage);
-        validatorContext.Errors.Add(error);
+        AddError(memberContext, failureMessage);
     }
 
     /// <summary>
@@ -146,16 +143,15 @@ public abstract class MemberConstraintBase : IMemberConstraint
     /// <param name="memberContext">
     ///     The context of the validated member to create an error for.
     /// </param>
+    [Obsolete($"Use `{nameof(AddError)}({nameof(MemberConstraintValidationContext)}, {nameof(String)}?)` instead.")]
+    [System.Diagnostics.CodeAnalysis.ExcludeFromCodeCoverage]
     protected void AddDefaultError(
         [NotNull] ObjectValidatorContext validatorContext,
         [NotNull] MemberConstraintValidationContext memberContext)
     {
-        if (memberContext is null)
-        {
-            throw new ArgumentNullException(nameof(memberContext));
-        }
+        //// ReSharper disable once ConditionIsAlwaysTrueOrFalseAccordingToNullableAPIContract
+        Factotum.Assert(validatorContext is not null && ReferenceEquals(validatorContext, memberContext.ValidatorContext));
 
-        var failureMessage = AsInvariant($@"Validation of the constraint {GetType().GetQualifiedName().ToUIString()} failed.");
-        AddError(validatorContext, memberContext, failureMessage);
+        AddError(memberContext, null);
     }
 }

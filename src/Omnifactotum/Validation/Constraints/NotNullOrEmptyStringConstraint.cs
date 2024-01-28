@@ -8,14 +8,11 @@ namespace Omnifactotum.Validation.Constraints;
 public sealed class NotNullOrEmptyStringConstraint : TypedMemberConstraintBase<string?>
 {
     /// <inheritdoc />
-    protected override void ValidateTypedValue(
-        ObjectValidatorContext validatorContext,
-        MemberConstraintValidationContext memberContext,
-        string? value)
+    protected override void ValidateTypedValue(MemberConstraintValidationContext memberContext, string? value)
     {
         if (string.IsNullOrEmpty(value))
         {
-            AddError(validatorContext, memberContext, ValidationMessages.StringCannotBeNullOrEmpty);
+            AddError(memberContext, ValidationMessages.StringCannotBeNullOrEmpty);
         }
     }
 }
