@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Diagnostics;
 using System.Linq;
+using System.Threading;
 using Omnifactotum.Annotations;
 using Omnifactotum.Validation.Constraints;
 using static Omnifactotum.FormattableStringFactotum;
@@ -20,6 +21,8 @@ namespace Omnifactotum.Validation;
 public sealed class ObjectValidationResult
 {
     internal static readonly ObjectValidationResult SuccessfulResult = new(Array.Empty<MemberConstraintValidationError>());
+
+    private readonly Lazy<string?> _failureMessageLazy;
 
     /// <summary>
     ///     Initializes a new instance of the <see cref="ObjectValidationResult"/> class.
@@ -40,6 +43,7 @@ public sealed class ObjectValidationResult
             throw new ArgumentException("The collection contains a null element.", nameof(errors));
         }
 
+        _failureMessageLazy = Lazy.Create(CreateFailureMessage, LazyThreadSafetyMode.PublicationOnly);
         Errors = errors.ToArray().AsReadOnly();
     }
 
@@ -56,7 +60,21 @@ public sealed class ObjectValidationResult
     public ReadOnlyCollection<MemberConstraintValidationError> Errors { get; }
 
     /// <summary>
-    ///     Gets the validation exception based on the validation result using the default formatting, or <see langword="null"/> if validation succeeded.
+    ///     Gets the validation failure message based on the validation result, or <see langword="null"/> if validation succeeded.
+    /// </summary>
+    /// <value>
+    ///     The validation failure message if validation failed; or <see langword="null"/> if validation succeeded.
+    /// </value>
+    [Pure]
+    [CanBeNull]
+    public string? FailureMessage
+    {
+        [Omnifactotum.Annotations.Pure]
+        get => _failureMessageLazy.Value;
+    }
+
+    /// <summary>
+    ///     Gets the validation exception based on the validation result, or <see langword="null"/> if validation succeeded.
     /// </summary>
     /// <returns>
     ///     An <see cref="ObjectValidationException"/> if validation failed; or <see langword="null"/> if validation succeeded.
@@ -64,21 +82,7 @@ public sealed class ObjectValidationResult
     [Pure]
     [Omnifactotum.Annotations.Pure]
     [CanBeNull]
-    public ObjectValidationException? GetException()
-    {
-        if (IsObjectValid)
-        {
-            return null;
-        }
-
-        var errorCount = Errors.Count;
-
-        var message = Errors
-            .Select((error, index) => AsInvariant($"[{index + 1:N0}/{errorCount:N0}] [{error.Context.Expression}] {error.ErrorMessage}"))
-            .Join(Environment.NewLine);
-
-        return new ObjectValidationException(this, message);
-    }
+    public ObjectValidationException? GetException() => FailureMessage is { } message ? new ObjectValidationException(this, message) : null;
 
     /// <summary>
     ///     Checks if validation succeeded and if it is not, throws an <see cref="ObjectValidationException"/>.
@@ -93,11 +97,21 @@ public sealed class ObjectValidationResult
         }
     }
 
-    /// <summary>
-    ///     Returns a string that represents the current <see cref="ObjectValidationResult"/>.
-    /// </summary>
-    /// <returns>
-    ///     A string that represents the current <see cref="ObjectValidationResult"/>.
-    /// </returns>
     internal string ToDebuggerString() => $"{nameof(IsObjectValid)} = {IsObjectValid}, {nameof(Errors)}.{nameof(Errors.Count)} = {Errors.Count}";
+
+    private string? CreateFailureMessage()
+    {
+        if (IsObjectValid)
+        {
+            return null;
+        }
+
+        var errorCount = Errors.Count;
+
+        var result = Errors
+            .Select((error, index) => AsInvariant($"[{index + 1}/{errorCount}] [{error.Context.Expression}] {error.ErrorMessage}"))
+            .Join(Environment.NewLine);
+
+        return result;
+    }
 }

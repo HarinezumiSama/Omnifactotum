@@ -249,6 +249,7 @@ internal sealed partial class ObjectValidatorTests
         var validationException = validationResult.GetException().AssertNotNull();
         Assert.That(validationException, Is.TypeOf<ObjectValidationException>());
         Assert.That(() => validationException.ValidationResult, Is.SameAs(validationResult));
+        Assert.That(() => validationException.Message, Is.EqualTo(validationResult.FailureMessage));
 
         Assert.That(
             () => validationResult.EnsureSucceeded(),
@@ -399,6 +400,7 @@ internal sealed partial class ObjectValidatorTests
         var validationException = validationResult.GetException().AssertNotNull();
         Assert.That(validationException, Is.TypeOf<ObjectValidationException>());
         Assert.That(() => validationException.ValidationResult, Is.SameAs(validationResult));
+        Assert.That(() => validationException.Message, Is.EqualTo(validationResult.FailureMessage));
 
         Assert.That(
             () => validationResult.EnsureSucceeded(),
@@ -493,6 +495,7 @@ internal sealed partial class ObjectValidatorTests
         var validationException = validationResult.GetException().AssertNotNull();
         Assert.That(validationException, Is.TypeOf<ObjectValidationException>());
         Assert.That(() => validationException.ValidationResult, Is.SameAs(validationResult));
+        Assert.That(() => validationException.Message, Is.EqualTo(validationResult.FailureMessage));
 
         Assert.That(
             () => validationResult.EnsureSucceeded(),
@@ -600,6 +603,7 @@ internal sealed partial class ObjectValidatorTests
         var validationResult1 = ObjectValidator.Validate(data!).AssertNotNull();
 
         Assert.That(() => validationResult1.GetException(), Is.Null);
+        Assert.That(() => validationResult1.FailureMessage, Is.Null);
         Assert.That(() => validationResult1.Errors.Count, Is.EqualTo(0));
         Assert.That(() => validationResult1.IsObjectValid, Is.True);
         Assert.That(() => validationResult1.EnsureSucceeded(), Throws.Nothing);
@@ -609,6 +613,7 @@ internal sealed partial class ObjectValidatorTests
         var validationResult2 = ObjectValidator.Validate(data!, "customExpression-5d804913def74aa2b441496a9e92dba6").AssertNotNull();
 
         Assert.That(() => validationResult2.GetException(), Is.Null);
+        Assert.That(() => validationResult2.FailureMessage, Is.Null);
         Assert.That(() => validationResult2.Errors.Count, Is.EqualTo(0));
         Assert.That(() => validationResult2.IsObjectValid, Is.True);
         Assert.That(() => validationResult2.EnsureSucceeded(), Throws.Nothing);
