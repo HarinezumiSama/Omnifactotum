@@ -2,10 +2,10 @@
 using Omnifactotum;
 using Omnifactotum.Annotations;
 using DisallowNullAttribute = System.Diagnostics.CodeAnalysis.DisallowNullAttribute;
-using PureAttribute = System.Diagnostics.Contracts.PureAttribute;
 
 #if !NET7_0_OR_GREATER
 using System.Collections.ObjectModel;
+using PureAttribute = System.Diagnostics.Contracts.PureAttribute;
 #endif
 
 //// ReSharper disable RedundantNullnessAttributeWithNullableReferenceTypes

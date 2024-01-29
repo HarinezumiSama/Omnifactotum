@@ -255,6 +255,25 @@ internal sealed class OmnifactotumCollectionExtensionsTests
         Assert.That(actualResult, Is.EqualTo(expectedResult));
     }
 
+    [Test]
+    public void TestToUIStringForStringKeyValuePairCollection()
+    {
+        Assert.That(() => default(IEnumerable<KeyValuePair<string, string?>>).ToUIString(), Is.EqualTo("<null>"));
+        Assert.That(() => default(IEnumerable<KeyValuePair<string, string>>)!.ToUIString(), Is.EqualTo("<null>"));
+
+        Assert.That(
+            () => new Dictionary<string, string?>().ToUIString(),
+            Is.EqualTo("[]"));
+
+        Assert.That(
+            () => new Dictionary<string, string>()!.ToUIString(),
+            Is.EqualTo("[]"));
+
+        Assert.That(
+            () => new Dictionary<string, string?> { { "Qwe", null }, { "asD", "zXc" }, { "uiOp", string.Empty } }.ToUIString(),
+            Is.EqualTo("""[{ "Qwe": null }, { "asD": "zXc" }, { "uiOp": "" }]"""));
+    }
+
 #if !NET7_0_OR_GREATER
     [Test]
     public void TestAsReadOnlyNegative()

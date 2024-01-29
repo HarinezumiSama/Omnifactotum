@@ -1,6 +1,7 @@
 ﻿using System.Collections.Immutable;
 using System.Linq;
 using System.Runtime.CompilerServices;
+using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using Omnifactotum;
@@ -694,13 +695,14 @@ public static class OmnifactotumCollectionExtensions
     /// <example>
     ///     <code>
     /// <![CDATA[
-    ///         string[] values;
-    ///
-    ///         values = null;
-    ///         Console.WriteLine("Values are {0}.", values.ToUIString()); // Output: Values are <null>.
-    ///
-    ///         values = new string[] { null, string.Empty, "Hello", "Class 'MyClass' is found in project \"MyProject\"." };
-    ///         Console.WriteLine("Values are {0}.", values.ToUIString()); // Output: Values are null, "", "Hello", "Class 'MyClass' is found in project ""MyProject"".".
+    ///         string[] values1 = null;
+    ///         Console.WriteLine("Values are {0}.", values1.ToUIString()); // Output: Values are <null>.
+    /// ]]>
+    ///     </code>
+    ///     <code>
+    /// <![CDATA[
+    ///         var values2 = new string[] { null, string.Empty, "Hello", "Class 'MyClass' is found in project \"MyProject\"." };
+    ///         Console.WriteLine("Values are {0}.", values2.ToUIString()); // Output: Values are null, "", "Hello", "Class 'MyClass' is found in project ""MyProject"".".
     /// ]]>
     ///     </code>
     /// </example>
@@ -859,7 +861,86 @@ public static class OmnifactotumCollectionExtensions
         where T : struct, IFormattable
         => values.ToUIString(null, formatProvider);
 
+    /// <summary>
+    ///     <para>
+    ///         Converts the specified collection of string key/value pairs to its UI representation.
+    ///     </para>
+    ///     <list type="table">
+    ///         <listheader>
+    ///             <term>The input value</term>
+    ///             <description>The result of the method</description>
+    ///         </listheader>
+    ///         <item>
+    ///             <term><see langword="null"/></term>
+    ///             <description>The literal: <b>&lt;null&gt;</b></description>
+    ///         </item>
+    ///         <item>
+    ///             <term>not <see langword="null"/></term>
+    ///             <description>
+    ///                 A string value containing UI representations of each key/value pair in the
+    ///                 collection separated with comma and whitespace. (See <see cref="OmnifactotumStringExtensions.ToUIString"/>.)
+    ///             </description>
+    ///         </item>
+    ///     </list>
+    /// </summary>
+    /// <param name="pairs">
+    ///     The collection of string key/value pairs to convert.
+    /// </param>
+    /// <returns>
+    ///     The UI representation of the specified collection of string key/value pairs.
+    /// </returns>
+    /// <example>
+    ///     <code>
+    /// <![CDATA[
+    ///         Dictionary<string, string?> nullDictionary = null;
+    ///         Console.WriteLine("Values - {0}", nullDictionary.ToUIString()); // Output: Values - <null>
+    /// ]]>
+    ///     </code>
+    ///     <code>
+    /// <![CDATA[
+    ///         var dictionary = new Dictionary<string, string?> { { "Qwe", null }, { "asD", "zXc" }, { "uiOp", string.Empty } };
+    ///         Console.WriteLine("Values - {0}", dictionary.ToUIString()); // Output: Values - [{ "Qwe": null }, { "asD": "zXc" }, { "uiOp": "" }]
+    /// ]]>
+    ///     </code>
+    /// </example>
+    [Pure]
+    [Omnifactotum.Annotations.Pure]
+    [NotNull]
+    public static string ToUIString(this IEnumerable<KeyValuePair<string, string?>>? pairs)
+    {
+        if (pairs is null)
+        {
+            return OmnifactotumRepresentationConstants.NullCollectionRepresentation;
+        }
+
+        var resultBuilder = new StringBuilder()
+            .Append('[');
+
+        var addSeparator = false;
+        foreach (var pair in pairs)
+        {
+            if (addSeparator)
+            {
+                resultBuilder.Append(OmnifactotumRepresentationConstants.CollectionItemSeparator);
+            }
+
+            resultBuilder
+                .Append("{\x0020")
+                .Append(pair.Key.ToUIString())
+                .Append(":\x0020")
+                .Append(pair.Value.ToUIString())
+                .Append("\x0020}");
+
+            addSeparator = true;
+        }
+
+        resultBuilder.Append(']');
+
+        return resultBuilder.ToString();
+    }
+
 #if !NET7_0_OR_GREATER
+
     /// <summary>
     ///     Creates a read-only wrapper for the specified list.
     /// </summary>
@@ -878,6 +959,7 @@ public static class OmnifactotumCollectionExtensions
     [NotNull]
     public static ReadOnlyCollection<T> AsReadOnly<T>([NotNull] this IList<T> list)
         => list is null ? throw new ArgumentNullException(nameof(list)) : new ReadOnlyCollection<T>(list);
+
 #endif
 
 #if !NET6_0_OR_GREATER

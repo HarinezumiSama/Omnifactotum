@@ -8,12 +8,12 @@ public static class OmnifactotumRepresentationConstants
     /// <summary>
     ///     The UI representation of the <see langword="null"/> value.
     /// </summary>
-    public const string NullValueRepresentation = @"null";
+    public const string NullValueRepresentation = "null";
 
     /// <summary>
     ///     The UI representation of the <see langword="null"/> collection.
     /// </summary>
-    internal const string NullCollectionRepresentation = @"<" + NullValueRepresentation + @">";
+    internal const string NullCollectionRepresentation = $"<{NullValueRepresentation}>";
 
     /// <summary>
     ///     The string value used to separate items in the collection in its UI representation.
