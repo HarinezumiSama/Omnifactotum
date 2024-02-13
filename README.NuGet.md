@@ -9,34 +9,47 @@
 - [Complete Release Notes](https://github.com/HarinezumiSama/Omnifactotum/blob/master/src/Omnifactotum.ReleaseNotes.md)
 - [ReadMe](https://github.com/HarinezumiSama/Omnifactotum/blob/master/README.md)
 
-### Changes in 0.18.0 (since 0.17.0)
+### Changes in 0.19.0 (since 0.18.0)
 
 #### Breaking changes
 
-- Object Validation
-  - `NotNullConstraint` is now inherited from `MemberConstraintBase` instead of `NotNullConstraint<object>`
-  - `NotNullConstraint<T>` is now sealed
-  - Removed `Omnifactotum.Validation.ObjectValidationResult.GetException(Func<...>, string?)`
-  - Removed `Omnifactotum.Validation.Constraints.MemberConstraintValidationError.GetDefaultDescription()`
-  - Removed `Omnifactotum.Validation.Constraints.MemberConstraintValidationError.GetDefaultDescription(MemberConstraintValidationError)`
-  - Member constraint's constructor can now be non-public
+- Object validation:
+  - Removed `ValidationErrorCollection`
+  - `ObjectValidatorContext`: Removed the `Errors` property from public API
+  - Removed deprecated methods in `OmnifactotumTypeExtensions`:
+    - `IsNullable()` (`IsNullableValueType()` to be used instead)
+    - `GetCollectionElementType()` (`GetCollectionElementTypeOrDefault()` to be used instead)
+  - `IMemberConstraint`: Replaced `Validate(ObjectValidatorContext, MemberConstraintValidationContext, object?)` with `Validate(MemberConstraintValidationContext, object?)` since `MemberConstraintValidationContext` now has a reference to `ObjectValidatorContext`
+  - `MemberConstraintBase`:
+    - Replaced `ValidateValue(ObjectValidatorContext, MemberConstraintValidationContext, object?)` with `ValidateValue(MemberConstraintValidationContext, object?)`
+  - `TypedMemberConstraintBase<T>`:
+    - Replaced `ValidateTypedValue(ObjectValidatorContext, MemberConstraintValidationContext, T value)` with `ValidateTypedValue(MemberConstraintValidationContext, T value)`
+    - Replaced `ValidateMember<TMember>(ObjectValidatorContext, MemberConstraintValidationContext, T, Expression<Func<T, TMember>>, Type)` with `ValidateMember<TMember>(MemberConstraintValidationContext, T, Expression<Func<T, TMember>>, Type)`
 
 #### New features
 
-- Object Validation
-  - Implemented support for `ImmutableArray<T>` in member constraints:
-    - `NotNullConstraint`
-    - `NotNullConstraint<T>`
-    - `NotNullOrEmptyCollectionConstraint`
-    - `NotNullOrEmptyCollectionConstraint<T>`
-- `OmnifactotumTypeExtensions`
-  - Added `GetInterfaceMethodImplementation(this Type, MethodInfo)`
+- Object validation:
+  - Added generic `MemberConstraintAttribute<TMemberConstraint>` and `MemberItemConstraintAttribute<TMemberConstraint>` (.NET 7+)
+  - `ObjectValidationResult`: Added the `FailureMessage` property (and used it in `GetException()`)
+- `OmnifactotumCollectionExtensions`: Added `ToUIString()` for `IEnumerable<KeyValuePair<string, string?>>?`
 
 #### Updates and fixes
 
-- Object Validation
-  - Improved/added support for `ImmutableArray<T>`, `IReadOnlyList<T>`, `IList<T>`, `IEnumerable<T>`, and `IList`
-  - Improved type casting in expressions
-  - Improved message format of the exception created by `ObjectValidationResult.GetException()`
-  - Validating early that a member constraint has a parameterless constructor
-  - Slightly optimized member constraint creation
+- Object validation:
+  - Improved the failure message in `NotNullConstraint<T>` (included the `T` type name)
+  - `MemberConstraintValidationContext`: Added a reference to `ObjectValidatorContext`
+- `OmnifactotumCollectionExtensions` and `OmnifactotumStringExtensions`: Implemented safe processing of collections w.r.t. `ImmutableArray<T>`
+- Applied `DebuggerDisplay` annotation:
+  - `FixedSizeDictionary<TKey, TValue, TDeterminant>`
+  - `ReadOnlyItemCollection<T>`
+  - `ReadOnlySet<T>`
+  - `RecursiveProcessingContext`
+  - `SemaphoreSlimBasedLock`
+  - `StopwatchElapsedTimeProvider`
+  - `TemplatedStringResolver`
+  - Validation:
+    - `MemberConstraintValidationContext`
+    - `ObjectValidationException`
+    - `ObjectValidationResult`
+    - `ObjectValidatorContext`
+    - `ValidationErrorCollection`
