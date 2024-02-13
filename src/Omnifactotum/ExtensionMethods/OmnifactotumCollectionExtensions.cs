@@ -6,8 +6,9 @@ using System.Threading;
 using System.Threading.Tasks;
 using Omnifactotum;
 using Omnifactotum.Annotations;
-using NotNullAttribute = Omnifactotum.Annotations.NotNullAttribute;
+using ExcludeFromCodeCoverageAttribute = System.Diagnostics.CodeAnalysis.ExcludeFromCodeCoverageAttribute;
 using PureAttribute = System.Diagnostics.Contracts.PureAttribute;
+using NotNullAttribute = Omnifactotum.Annotations.NotNullAttribute;
 
 #if !NET7_0_OR_GREATER
 using System.Collections.ObjectModel;
@@ -45,6 +46,8 @@ public static class OmnifactotumCollectionExtensions
         => collection switch
         {
             null => 0,
+            ImmutableArray<T> { IsDefault: true } => 0,
+            ////var enumerable => enumerable.TryGetNonEnumeratedCount(...),
             ICollection<T> castCollection => castCollection.Count,
             ICollection castCollection => castCollection.Count,
             _ => null
@@ -81,6 +84,11 @@ public static class OmnifactotumCollectionExtensions
         if (action is null)
         {
             throw new ArgumentNullException(nameof(action));
+        }
+
+        if (collection.IsDefaultImmutableArray())
+        {
+            return;
         }
 
         foreach (var item in collection)
@@ -121,6 +129,11 @@ public static class OmnifactotumCollectionExtensions
         if (action is null)
         {
             throw new ArgumentNullException(nameof(action));
+        }
+
+        if (collection.IsDefaultImmutableArray())
+        {
+            return;
         }
 
         var index = 0;
@@ -171,6 +184,11 @@ public static class OmnifactotumCollectionExtensions
 
         cancellationToken.ThrowIfCancellationRequested();
 
+        if (collection.IsDefaultImmutableArray())
+        {
+            return;
+        }
+
         foreach (var item in collection)
         {
             cancellationToken.ThrowIfCancellationRequested();
@@ -218,6 +236,11 @@ public static class OmnifactotumCollectionExtensions
         }
 
         cancellationToken.ThrowIfCancellationRequested();
+
+        if (collection.IsDefaultImmutableArray())
+        {
+            return;
+        }
 
         var index = 0;
         foreach (var item in collection)
@@ -379,8 +402,8 @@ public static class OmnifactotumCollectionExtensions
 
         var actualComparer = comparer ?? EqualityComparer<T>.Default;
 
-        using var enumerator = collection!.GetEnumerator();
-        using var otherEnumerator = otherCollection!.GetEnumerator();
+        using var enumerator = collection!.AvoidDefaultImmutableArray().GetEnumerator();
+        using var otherEnumerator = otherCollection!.AvoidDefaultImmutableArray().GetEnumerator();
 
         while (enumerator.MoveNext())
         {
@@ -465,6 +488,7 @@ public static class OmnifactotumCollectionExtensions
         var actualComparer = comparer ?? EqualityComparer<TKey>.Default;
 
         return collection
+            .AvoidDefaultImmutableArray()
             .GroupBy(keySelector, actualComparer)
             .Where(group => group.Count() > 1)
             .Select(group => KeyValuePair.Create(group.Key, group.ToList()))
@@ -514,10 +538,10 @@ public static class OmnifactotumCollectionExtensions
     /// </param>
     /// <seealso cref="OmnifactotumDisposableExtensions.DisposeSafely{T}(T)"/>
     public static void DisposeCollectionItemsSafely<TDisposable>(
-        [CanBeNull] [InstantHandle] this IEnumerable<TDisposable?>? collection)
+        [CanBeNull] [ItemCanBeNull] [InstantHandle] this IEnumerable<TDisposable?>? collection)
         where TDisposable : class, IDisposable
     {
-        if (collection is null)
+        if (collection is null || collection.IsDefaultImmutableArray())
         {
             return;
         }
@@ -540,10 +564,10 @@ public static class OmnifactotumCollectionExtensions
     /// </param>
     /// <seealso cref="OmnifactotumDisposableExtensions.DisposeSafely{T}(System.Nullable{T})"/>
     public static void DisposeCollectionItemsSafely<TDisposable>(
-        [CanBeNull] [InstantHandle] this IEnumerable<TDisposable?>? collection)
+        [CanBeNull] [ItemCanBeNull] [InstantHandle] this IEnumerable<TDisposable?>? collection)
         where TDisposable : struct, IDisposable
     {
-        if (collection is null)
+        if (collection is null || collection.IsDefaultImmutableArray())
         {
             return;
         }
@@ -572,7 +596,7 @@ public static class OmnifactotumCollectionExtensions
     [Omnifactotum.Annotations.Pure]
     [NotNull]
     public static IEnumerable<T> AvoidNull<T>([CanBeNull] [NoEnumeration] this IEnumerable<T>? source)
-        => source is null or ImmutableArray<T> { IsDefault: true } ? Enumerable.Empty<T>() : source;
+        => source is null || source.IsDefaultImmutableArray() ? Enumerable.Empty<T>() : source;
 
     /// <summary>
     ///     Filters a sequence of nullable reference type elements and returns only those elements that are not <see langword="null"/>.
@@ -603,7 +627,7 @@ public static class OmnifactotumCollectionExtensions
         }
 
         //// ReSharper disable once LoopCanBePartlyConvertedToQuery
-        foreach (var item in source)
+        foreach (var item in source.AvoidDefaultImmutableArray())
         {
             if (item is not null)
             {
@@ -640,7 +664,7 @@ public static class OmnifactotumCollectionExtensions
         }
 
         //// ReSharper disable once LoopCanBePartlyConvertedToQuery
-        foreach (var item in source)
+        foreach (var item in source.AvoidDefaultImmutableArray())
         {
             if (item is { } itemValue)
             {
@@ -710,7 +734,7 @@ public static class OmnifactotumCollectionExtensions
     [Omnifactotum.Annotations.Pure]
     [NotNull]
     public static string ToUIString([CanBeNull] [InstantHandle] this IEnumerable<string?>? values)
-        => values?.Select(value => value.ToUIString()).Join(OmnifactotumRepresentationConstants.CollectionItemSeparator)
+        => values?.AvoidDefaultImmutableArray().Select(value => value.ToUIString()).Join(OmnifactotumRepresentationConstants.CollectionItemSeparator)
             ?? OmnifactotumRepresentationConstants.NullCollectionRepresentation;
 
     /// <summary>
@@ -762,7 +786,7 @@ public static class OmnifactotumCollectionExtensions
     [NotNull]
     public static string ToUIString<T>([CanBeNull] [InstantHandle] this IEnumerable<T?>? values)
         where T : struct
-        => values?.Select(value => value.ToUIString()).Join(OmnifactotumRepresentationConstants.CollectionItemSeparator)
+        => values?.AvoidDefaultImmutableArray().Select(value => value.ToUIString()).Join(OmnifactotumRepresentationConstants.CollectionItemSeparator)
             ?? OmnifactotumRepresentationConstants.NullCollectionRepresentation;
 
     /// <summary>
@@ -812,7 +836,10 @@ public static class OmnifactotumCollectionExtensions
         [CanBeNull] string? format,
         [CanBeNull] IFormatProvider? formatProvider)
         where T : struct, IFormattable
-        => values?.Select(value => value.ToUIString(format, formatProvider)).Join(OmnifactotumRepresentationConstants.CollectionItemSeparator)
+        => values?
+                .AvoidDefaultImmutableArray()
+                .Select(value => value.ToUIString(format, formatProvider))
+                .Join(OmnifactotumRepresentationConstants.CollectionItemSeparator)
             ?? OmnifactotumRepresentationConstants.NullCollectionRepresentation;
 
     /// <summary>
@@ -917,7 +944,7 @@ public static class OmnifactotumCollectionExtensions
             .Append('[');
 
         var addSeparator = false;
-        foreach (var pair in pairs)
+        foreach (var pair in pairs.AvoidDefaultImmutableArray())
         {
             if (addSeparator)
             {
@@ -958,7 +985,9 @@ public static class OmnifactotumCollectionExtensions
     [Omnifactotum.Annotations.Pure]
     [NotNull]
     public static ReadOnlyCollection<T> AsReadOnly<T>([NotNull] this IList<T> list)
-        => list is null ? throw new ArgumentNullException(nameof(list)) : new ReadOnlyCollection<T>(list);
+        => list is null
+            ? throw new ArgumentNullException(nameof(list))
+            : new ReadOnlyCollection<T>(list.IsDefaultImmutableArray() ? Array.Empty<T>() : list);
 
 #endif
 
@@ -1006,7 +1035,7 @@ public static class OmnifactotumCollectionExtensions
 
         if (size <= 0)
         {
-            throw new ArgumentOutOfRangeException(nameof(size), size, @"The value must be greater than zero.");
+            throw new ArgumentOutOfRangeException(nameof(size), size, "The value must be greater than zero.");
         }
 
         return CreateChunkIterator(source, size);
@@ -1139,7 +1168,7 @@ public static class OmnifactotumCollectionExtensions
             throw new ArgumentNullException(nameof(collections));
         }
 
-        return collections.SelectMany(Factotum.For<IEnumerable<T>>.IdentityMethod);
+        return collections.AvoidDefaultImmutableArray().SelectMany(enumerable => enumerable.AvoidDefaultImmutableArray());
     }
 
     /// <summary>
@@ -1173,12 +1202,7 @@ public static class OmnifactotumCollectionExtensions
             return false;
         }
 
-        var collectionFastCount = GetFastCount(collection);
-        var otherCollectionFastCount = GetFastCount(otherCollection);
-
-        if (collectionFastCount.HasValue
-            && otherCollectionFastCount.HasValue
-            && collectionFastCount.Value != otherCollectionFastCount.Value)
+        if (GetFastCount(collection) is { } count && GetFastCount(otherCollection) is { } otherCount && count != otherCount)
         {
             return false;
         }
@@ -1193,6 +1217,7 @@ public static class OmnifactotumCollectionExtensions
         [CanBeNull] IEqualityComparer<T>? comparer,
         [NotNull] IEqualityComparer<KeyWrapper<T>> wrapperComparer)
         => collection
+            .AvoidDefaultImmutableArray()
             .GroupBy(item => item, comparer)
             .Select(group => KeyValuePair.Create(new KeyWrapper<T>(group.Key), group.Count()))
             .ToDictionary(item => item.Key, item => item.Value, wrapperComparer);
@@ -1207,7 +1232,7 @@ public static class OmnifactotumCollectionExtensions
     [Omnifactotum.Annotations.Pure]
     private static IEnumerable<TSource[]> CreateChunkIterator<TSource>(IEnumerable<TSource> source, int size)
     {
-        using var e = source.GetEnumerator();
+        using var e = source.AvoidDefaultImmutableArray().GetEnumerator();
 
         while (e.MoveNext())
         {
@@ -1236,14 +1261,23 @@ public static class OmnifactotumCollectionExtensions
 
 #endif
 
+    [MethodImpl(OmnifactotumConstants.MethodOptimizationOptions.Maximum)]
+    internal static bool IsDefaultImmutableArray<T>([NoEnumeration] this IEnumerable<T> collection) => collection is ImmutableArray<T> { IsDefault: true };
+
+    [MethodImpl(OmnifactotumConstants.MethodOptimizationOptions.Maximum)]
+    internal static IEnumerable<T> AvoidDefaultImmutableArray<T>([NoEnumeration] this IEnumerable<T> collection)
+        => collection is ImmutableArray<T> { IsDefault: true } ? Enumerable.Empty<T>() : collection;
+
     private readonly struct KeyWrapper<T>
     {
         public KeyWrapper(T value) => Value = value;
 
         public T Value { get; }
 
+        [ExcludeFromCodeCoverage]
         public override bool Equals(object? obj) => throw new NotSupportedException();
 
+        [ExcludeFromCodeCoverage]
         public override int GetHashCode() => throw new NotSupportedException();
     }
 

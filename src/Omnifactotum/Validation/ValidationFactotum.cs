@@ -186,6 +186,10 @@ internal static class ValidationFactotum
         }
     }
 
+    // [Pure]
+    // [Omnifactotum.Annotations.Pure]
+    // public static bool IsDefaultImmutableArray(object? value) => default(ImmutableArray<object>).Equals(value);
+
     [Pure]
     [Omnifactotum.Annotations.Pure]
     public static bool IsDefaultImmutableArray(object? value)

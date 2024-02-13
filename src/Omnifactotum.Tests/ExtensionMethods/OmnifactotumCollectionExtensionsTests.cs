@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Collections.Immutable;
 using System.Collections.ObjectModel;
@@ -19,6 +20,40 @@ namespace Omnifactotum.Tests.ExtensionMethods;
 internal sealed class OmnifactotumCollectionExtensionsTests
 {
     [Test]
+    [SuppressMessage("ReSharper", "UseArrayEmptyMethod")]
+    [SuppressMessage("Performance", "CA1825:Avoid zero-length array allocations")]
+    public void TestGetFastCount()
+    {
+        Assert.That(() => default(string[]).GetFastCount(), Is.Zero);
+        Assert.That(() => default(ImmutableArray<Guid>).GetFastCount(), Is.Zero);
+        Assert.That(() => default(HashSet<Version>).GetFastCount(), Is.Zero);
+        Assert.That(() => default(NonGenericCollection<Exception>).GetFastCount(), Is.Zero);
+        Assert.That(() => default(IEnumerable<int>).GetFastCount(), Is.Zero);
+
+        Assert.That(() => new string[0].GetFastCount(), Is.Zero);
+        Assert.That(() => ImmutableArray<Guid>.Empty.GetFastCount(), Is.Zero);
+        Assert.That(() => new HashSet<Version>().GetFastCount(), Is.Zero);
+        Assert.That(() => new NonGenericCollection<Exception>(0).GetFastCount(), Is.Zero);
+
+        Assert.That(() => new[] { "C#", "C++", "Fortran", "Pascal" }.GetFastCount(), Is.EqualTo(4));
+        Assert.That(() => ImmutableArray.Create(Guid.Empty).GetFastCount(), Is.EqualTo(1));
+        Assert.That(() => new HashSet<Version> { new(1, 2), new(3, 17) }.GetFastCount(), Is.EqualTo(2));
+        Assert.That(() => new NonGenericCollection<Exception>(17).GetFastCount(), Is.EqualTo(17));
+
+        Assert.That(() => CreateEnumerable(13, -17, 42).GetFastCount(), Is.Null);
+        Assert.That(() => new[] { 13, -17, 42 }.Where(i => i > 0).GetFastCount(), Is.Null);
+        Assert.That(() => Enumerable.Range(1, 10).GetFastCount(), Is.Null);
+
+        static IEnumerable<T> CreateEnumerable<T>(params T[] items)
+        {
+            foreach (var item in items)
+            {
+                yield return item;
+            }
+        }
+    }
+
+    [Test]
     public void TestDoForEachWhenInvalidArgumentsThenThrows()
     {
         const int[]? NullArray = null;
@@ -30,11 +65,19 @@ internal sealed class OmnifactotumCollectionExtensionsTests
     [Test]
     public void TestDoForEachWhenValidArgumentsThenSucceeds()
     {
-        var stringBuilder = new StringBuilder();
+        ExecuteTestCase<string, string[]>(Array.Empty<string>(), string.Empty);
+        ExecuteTestCase<char, char[]>(new[] { 'A', '/', 'z' }, "A./.z.");
+        ExecuteTestCase<int, ImmutableArray<int>>(ImmutableArray.Create(13, 42, 19), "13.42.19.");
+        ExecuteTestCase<string, ImmutableArray<string>>(ImmutableArray<string>.Empty, string.Empty);
+        ExecuteTestCase<string, ImmutableArray<string>>(default, string.Empty);
 
-        new[] { 'A', '/', 'z' }.DoForEach(c => stringBuilder.Append(c).Append('.'));
-
-        Assert.That(stringBuilder.ToString(), Is.EqualTo("A./.z."));
+        static void ExecuteTestCase<T, TEnumerable>(TEnumerable collection, string expectedResult)
+            where TEnumerable : IEnumerable<T>
+        {
+            var stringBuilder = new StringBuilder();
+            collection.DoForEach(value => stringBuilder.Append(value.ToStringSafelyInvariant()).Append('.'));
+            Assert.That(stringBuilder.ToString(), Is.EqualTo(expectedResult));
+        }
     }
 
     [Test]
@@ -49,11 +92,19 @@ internal sealed class OmnifactotumCollectionExtensionsTests
     [Test]
     public void TestDoForEachWithIndexWhenValidArgumentsThenSucceeds()
     {
-        var stringBuilder = new StringBuilder();
+        ExecuteTestCase<string, string[]>(Array.Empty<string>(), string.Empty);
+        ExecuteTestCase<char, char[]>(new[] { 'A', '/', 'z' }, "A:0./:1.z:2.");
+        ExecuteTestCase<int, ImmutableArray<int>>(ImmutableArray.Create(13, 42, 19), "13:0.42:1.19:2.");
+        ExecuteTestCase<string, ImmutableArray<string>>(ImmutableArray<string>.Empty, string.Empty);
+        ExecuteTestCase<string, ImmutableArray<string>>(default, string.Empty);
 
-        new[] { 'A', '/', 'z' }.DoForEach((c, i) => stringBuilder.Append(c).Append(':').Append(i).Append('.'));
-
-        Assert.That(stringBuilder.ToString(), Is.EqualTo("A:0./:1.z:2."));
+        static void ExecuteTestCase<T, TEnumerable>(TEnumerable collection, string expectedResult)
+            where TEnumerable : IEnumerable<T>
+        {
+            var stringBuilder = new StringBuilder();
+            collection.DoForEach((value, index) => stringBuilder.Append(value).Append(':').Append(index).Append('.'));
+            Assert.That(stringBuilder.ToString(), Is.EqualTo(expectedResult));
+        }
     }
 
     [Test]
@@ -71,16 +122,26 @@ internal sealed class OmnifactotumCollectionExtensionsTests
     [Test]
     public async Task TestDoForEachAsyncWhenValidArgumentsThenSucceedsAsync()
     {
-        var stringBuilder = new StringBuilder();
+        await ExecuteTestCaseAsync<string, string[]>(Array.Empty<string>(), string.Empty);
+        await ExecuteTestCaseAsync<char, char[]>(new[] { 'A', '/', 'z' }, "A./.z.");
+        await ExecuteTestCaseAsync<int, ImmutableArray<int>>(ImmutableArray.Create(13, 42, 19), "13.42.19.");
+        await ExecuteTestCaseAsync<string, ImmutableArray<string>>(ImmutableArray<string>.Empty, string.Empty);
+        await ExecuteTestCaseAsync<string, ImmutableArray<string>>(default, string.Empty);
 
-        await new[] { 'a', '/', 'Z' }.DoForEachAsync(
-            async (item, token) =>
-            {
-                await Task.Delay(0, token);
-                stringBuilder.Append(item).Append('.');
-            });
+        static async Task ExecuteTestCaseAsync<T, TEnumerable>(TEnumerable collection, string expectedResult)
+            where TEnumerable : IEnumerable<T>
+        {
+            var stringBuilder = new StringBuilder();
 
-        Assert.That(stringBuilder.ToString(), Is.EqualTo("a./.Z."));
+            await collection.DoForEachAsync(
+                async (item, token) =>
+                {
+                    await Task.Delay(0, token);
+                    stringBuilder.Append(item).Append('.');
+                });
+
+            Assert.That(stringBuilder.ToString(), Is.EqualTo(expectedResult));
+        }
     }
 
     [Test]
@@ -146,16 +207,26 @@ internal sealed class OmnifactotumCollectionExtensionsTests
     [Test]
     public async Task TestDoForEachAsyncWithIndexWhenValidArgumentsThenSucceedsAsync()
     {
-        var stringBuilder = new StringBuilder();
+        await ExecuteTestCaseAsync<string, string[]>(Array.Empty<string>(), string.Empty);
+        await ExecuteTestCaseAsync<char, char[]>(new[] { 'A', '/', 'z' }, "A:0./:1.z:2.");
+        await ExecuteTestCaseAsync<int, ImmutableArray<int>>(ImmutableArray.Create(13, 42, 19), "13:0.42:1.19:2.");
+        await ExecuteTestCaseAsync<string, ImmutableArray<string>>(ImmutableArray<string>.Empty, string.Empty);
+        await ExecuteTestCaseAsync<string, ImmutableArray<string>>(default, string.Empty);
 
-        await new[] { 'a', '/', 'Z' }.DoForEachAsync(
-            async (item, index, token) =>
-            {
-                await Task.Delay(0, token);
-                stringBuilder.Append(item).Append(':').Append(index).Append('.');
-            });
+        static async Task ExecuteTestCaseAsync<T, TEnumerable>(TEnumerable collection, string expectedResult)
+            where TEnumerable : IEnumerable<T>
+        {
+            var stringBuilder = new StringBuilder();
 
-        Assert.That(stringBuilder.ToString(), Is.EqualTo("a:0./:1.Z:2."));
+            await collection.DoForEachAsync(
+                async (item, index, token) =>
+                {
+                    await Task.Delay(0, token);
+                    stringBuilder.Append(item).Append(':').Append(index).Append('.');
+                });
+
+            Assert.That(stringBuilder.ToString(), Is.EqualTo(expectedResult));
+        }
     }
 
     [Test]
@@ -207,12 +278,14 @@ internal sealed class OmnifactotumCollectionExtensionsTests
     }
 
     [Test]
+    [SuppressMessage("ReSharper", "UseArrayEmptyMethod")]
     public void TestSetItemsWhenInvalidArgumentThenThrows()
     {
-        List<string>? nullList = null;
+        Assert.That(() => default(List<string>)!.SetItems(new[] { string.Empty }), Throws.ArgumentNullException);
+        Assert.That(() => new List<string>().SetItems(default(List<string>)!), Throws.ArgumentNullException);
 
-        Assert.That(() => nullList!.SetItems(new[] { string.Empty }), Throws.ArgumentNullException);
-        Assert.That(() => new List<string>().SetItems(nullList!), Throws.ArgumentNullException);
+        Assert.That(() => new string[0].SetItems(new[] { string.Empty }), Throws.TypeOf<NotSupportedException>());
+        Assert.That(() => new ReadOnlyCollection<string>(new List<string>()).SetItems(new[] { string.Empty }), Throws.TypeOf<NotSupportedException>());
     }
 
     [Test]
@@ -237,19 +310,394 @@ internal sealed class OmnifactotumCollectionExtensionsTests
             => new[] { KeyValuePair.Create(-13, "minus thirteen"), KeyValuePair.Create(0, "zero"), KeyValuePair.Create(int.MaxValue, "wow") };
 
         InvokeTestSetItems<KeyValuePair<int, string>, Dictionary<int, string>>(CreateKeyValuePairItems1, CreateKeyValuePairItems2);
+
+        static void InvokeTestSetItems<T, TCollection>(Func<T[]> createItems1, Func<T[]> createItems2)
+            where TCollection : ICollection<T>, new()
+        {
+            var collection = new TCollection();
+
+            Assert.That(collection, Is.Not.Null);
+            Assert.That(createItems1, Is.Not.Null);
+            Assert.That(createItems2, Is.Not.Null);
+
+            var items1 = createItems1().AssertNotNull();
+            var items2 = createItems2().AssertNotNull();
+
+            collection.SetItems(items1);
+            Assert.That(collection, Is.EqualTo(items1));
+
+            collection.SetItems(items2);
+            Assert.That(collection, Is.EqualTo(items2));
+
+            collection.SetItems(Array.Empty<T>());
+            Assert.That(collection, Is.Empty);
+        }
+    }
+
+    [Test]
+    [SuppressMessage("ReSharper", "UseArrayEmptyMethod")]
+    [SuppressMessage("Performance", "CA1825:Avoid zero-length array allocations")]
+    [SuppressMessage("ReSharper", "ReturnTypeCanBeEnumerable.Local")]
+    [SuppressMessage("ReSharper", "ArrangeDefaultValueWhenTypeNotEvident")]
+    public void TestCollectionsEquivalent()
+    {
+        const int Value1 = 13;
+        const int Value2 = 42;
+        const int NegativeValue2 = -Value2;
+
+        Assert.That(new[] { Value1, Value2, NegativeValue2 }, Is.Unique);
+        Assert.That(Math.Abs(NegativeValue2), Is.EqualTo(Value2));
+
+        ExecuteTestCase(default, default, true);
+        ExecuteTestCase(new int[0], new int[0], true);
+
+        ExecuteTestCase(Array.Empty<int>(), default, false);
+
+        ExecuteTestCase(new[] { Value1, Value2 }, new[] { Value1 }, false);
+        ExecuteTestCase(new[] { Value1, Value1 }, new[] { Value1 }, false);
+        ExecuteTestCase(new[] { Value1, Value2 }, new[] { Value2 }, false);
+        ExecuteTestCase(new[] { Value1 }, new[] { Value1, Value2 }, false);
+        ExecuteTestCase(new[] { Value1 }, new[] { Value2, Value2 }, false);
+        ExecuteTestCase(new[] { Value1 }, new[] { Value2, Value2 }, false);
+        ExecuteTestCase(new[] { Value1, Value1, Value2 }, new[] { Value1, Value2, Value2 }, false);
+        ExecuteTestCase(new[] { Value1, Value2, Value1 }, new[] { Value2, Value1, Value2 }, false);
+
+        ExecuteTestCase(new[] { Value1, Value2 }, new[] { Value1, Value2 }, true);
+        ExecuteTestCase(new[] { Value1, Value2 }, new[] { Value2, Value1 }, true);
+        ExecuteTestCase(new[] { Value2, Value1, NegativeValue2 }, new[] { NegativeValue2, Value1, Value2 }, true);
+
+        ExecuteTestCase(new[] { Value1, Value2 }, new[] { Value1, NegativeValue2 }, false, true);
+        ExecuteTestCase(new[] { Value1, Value2 }, new[] { NegativeValue2, Value1 }, false, true);
+
+        static void ExecuteTestCase(
+            int[]? collection,
+            int[]? otherCollection,
+            bool expectedDefaultResult,
+            bool? expectedCustomResult = null)
+        {
+            InternalExecuteTestCase(collection, otherCollection, expectedDefaultResult, expectedCustomResult);
+
+            InternalExecuteTestCase(ViaImmutableArray(collection), otherCollection, expectedDefaultResult, expectedCustomResult);
+            InternalExecuteTestCase(ViaImmutableArrayWithDefault(collection), otherCollection, expectedDefaultResult, expectedCustomResult);
+
+            InternalExecuteTestCase(collection, ViaImmutableArray(otherCollection), expectedDefaultResult, expectedCustomResult);
+            InternalExecuteTestCase(collection, ViaImmutableArrayWithDefault(otherCollection), expectedDefaultResult, expectedCustomResult);
+
+            InternalExecuteTestCase(ViaImmutableArray(collection), ViaImmutableArray(otherCollection), expectedDefaultResult, expectedCustomResult);
+            InternalExecuteTestCase(ViaImmutableArrayWithDefault(collection), ViaImmutableArray(otherCollection), expectedDefaultResult, expectedCustomResult);
+            InternalExecuteTestCase(ViaImmutableArray(collection), ViaImmutableArrayWithDefault(otherCollection), expectedDefaultResult, expectedCustomResult);
+
+            InternalExecuteTestCase(
+                ViaImmutableArrayWithDefault(collection),
+                ViaImmutableArrayWithDefault(otherCollection),
+                expectedDefaultResult,
+                expectedCustomResult);
+
+            InternalExecuteTestCase(ViaList(collection), otherCollection, expectedDefaultResult, expectedCustomResult);
+            InternalExecuteTestCase(collection, ViaList(otherCollection), expectedDefaultResult, expectedCustomResult);
+            InternalExecuteTestCase(ViaList(collection), ViaList(otherCollection), expectedDefaultResult, expectedCustomResult);
+
+            InternalExecuteTestCase(ViaImmutableArray(collection), ViaList(otherCollection), expectedDefaultResult, expectedCustomResult);
+            InternalExecuteTestCase(ViaImmutableArrayWithDefault(collection), ViaList(otherCollection), expectedDefaultResult, expectedCustomResult);
+
+            InternalExecuteTestCase(ViaList(collection), ViaImmutableArray(otherCollection), expectedDefaultResult, expectedCustomResult);
+            InternalExecuteTestCase(ViaList(collection), ViaImmutableArrayWithDefault(otherCollection), expectedDefaultResult, expectedCustomResult);
+
+            static ImmutableArray<int>? ViaImmutableArray(int[]? value)
+                => value is null
+                    ? null
+                    : ImmutableArray.Create(value);
+
+            static ImmutableArray<int>? ViaImmutableArrayWithDefault(int[]? value)
+                => value is null
+                    ? null
+                    : value.Length == 0
+                        ? default(ImmutableArray<int>)
+                        : ImmutableArray.Create(value);
+
+            static List<int>? ViaList(int[]? value) => value is null ? null : new List<int>(value);
+        }
+
+        static void InternalExecuteTestCase(
+            IEnumerable<int>? collection,
+            IEnumerable<int>? otherCollection,
+            bool expectedDefaultResult,
+            bool? expectedCustomResult)
+        {
+            Assert.That(() => collection.CollectionsEquivalent(otherCollection), Is.EqualTo(expectedDefaultResult));
+            Assert.That(() => otherCollection.CollectionsEquivalent(collection), Is.EqualTo(expectedDefaultResult));
+
+            Assert.That(() => collection.CollectionsEquivalent(otherCollection, null), Is.EqualTo(expectedDefaultResult));
+            Assert.That(() => otherCollection.CollectionsEquivalent(collection, null), Is.EqualTo(expectedDefaultResult));
+
+            Assert.That(
+                () => collection.CollectionsEquivalent(otherCollection, AbsValueEqualityComparer.Instance),
+                Is.EqualTo(expectedCustomResult ?? expectedDefaultResult));
+
+            Assert.That(
+                () => otherCollection.CollectionsEquivalent(collection, AbsValueEqualityComparer.Instance),
+                Is.EqualTo(expectedCustomResult ?? expectedDefaultResult));
+        }
+    }
+
+    [Test]
+    [SuppressMessage("ReSharper", "UseArrayEmptyMethod")]
+    [SuppressMessage("Performance", "CA1825:Avoid zero-length array allocations")]
+    [SuppressMessage("ReSharper", "ReturnTypeCanBeEnumerable.Local")]
+    [SuppressMessage("ReSharper", "ArrangeDefaultValueWhenTypeNotEvident")]
+    public void TestCollectionsEqual()
+    {
+        const int Value1 = 13;
+        const int Value2 = 42;
+        const int NegativeValue2 = -Value2;
+
+        Assert.That(new[] { Value1, Value2, NegativeValue2 }, Is.Unique);
+        Assert.That(Math.Abs(NegativeValue2), Is.EqualTo(Value2));
+
+        ExecuteTestCase(default, default, true);
+        ExecuteTestCase(new int[0], new int[0], true);
+
+        ExecuteTestCase(Array.Empty<int>(), default, false);
+
+        ExecuteTestCase(new[] { Value1, Value2 }, new[] { Value1 }, false);
+        ExecuteTestCase(new[] { Value1, Value1 }, new[] { Value1 }, false);
+        ExecuteTestCase(new[] { Value1, Value2 }, new[] { Value2 }, false);
+        ExecuteTestCase(new[] { Value1 }, new[] { Value1, Value2 }, false);
+        ExecuteTestCase(new[] { Value1 }, new[] { Value2, Value2 }, false);
+        ExecuteTestCase(new[] { Value1 }, new[] { Value2, Value2 }, false);
+        ExecuteTestCase(new[] { Value1, Value1, Value2 }, new[] { Value1, Value2, Value2 }, false);
+        ExecuteTestCase(new[] { Value1, Value2, Value1 }, new[] { Value2, Value1, Value2 }, false);
+
+        ExecuteTestCase(new[] { Value1, Value2 }, new[] { Value1, Value2 }, true);
+        ExecuteTestCase(new[] { Value1, Value2 }, new[] { Value2, Value1 }, false);
+        ExecuteTestCase(new[] { Value2, Value1, NegativeValue2 }, new[] { NegativeValue2, Value1, Value2 }, false, true);
+
+        ExecuteTestCase(new[] { Value1, Value2 }, new[] { Value1, NegativeValue2 }, false, true);
+        ExecuteTestCase(new[] { Value1, Value2 }, new[] { NegativeValue2, Value1 }, false, false);
+
+        static void ExecuteTestCase(
+            int[]? collection,
+            int[]? otherCollection,
+            bool expectedDefaultResult,
+            bool? expectedCustomResult = null)
+        {
+            InternalExecuteTestCase(collection, otherCollection, expectedDefaultResult, expectedCustomResult);
+
+            InternalExecuteTestCase(ViaImmutableArray(collection), otherCollection, expectedDefaultResult, expectedCustomResult);
+            InternalExecuteTestCase(ViaImmutableArrayWithDefault(collection), otherCollection, expectedDefaultResult, expectedCustomResult);
+
+            InternalExecuteTestCase(collection, ViaImmutableArray(otherCollection), expectedDefaultResult, expectedCustomResult);
+            InternalExecuteTestCase(collection, ViaImmutableArrayWithDefault(otherCollection), expectedDefaultResult, expectedCustomResult);
+
+            InternalExecuteTestCase(ViaImmutableArray(collection), ViaImmutableArray(otherCollection), expectedDefaultResult, expectedCustomResult);
+            InternalExecuteTestCase(ViaImmutableArrayWithDefault(collection), ViaImmutableArray(otherCollection), expectedDefaultResult, expectedCustomResult);
+            InternalExecuteTestCase(ViaImmutableArray(collection), ViaImmutableArrayWithDefault(otherCollection), expectedDefaultResult, expectedCustomResult);
+
+            InternalExecuteTestCase(
+                ViaImmutableArrayWithDefault(collection),
+                ViaImmutableArrayWithDefault(otherCollection),
+                expectedDefaultResult,
+                expectedCustomResult);
+
+            InternalExecuteTestCase(ViaList(collection), otherCollection, expectedDefaultResult, expectedCustomResult);
+            InternalExecuteTestCase(collection, ViaList(otherCollection), expectedDefaultResult, expectedCustomResult);
+            InternalExecuteTestCase(ViaList(collection), ViaList(otherCollection), expectedDefaultResult, expectedCustomResult);
+
+            InternalExecuteTestCase(ViaImmutableArray(collection), ViaList(otherCollection), expectedDefaultResult, expectedCustomResult);
+            InternalExecuteTestCase(ViaImmutableArrayWithDefault(collection), ViaList(otherCollection), expectedDefaultResult, expectedCustomResult);
+
+            InternalExecuteTestCase(ViaList(collection), ViaImmutableArray(otherCollection), expectedDefaultResult, expectedCustomResult);
+            InternalExecuteTestCase(ViaList(collection), ViaImmutableArrayWithDefault(otherCollection), expectedDefaultResult, expectedCustomResult);
+
+            static ImmutableArray<int>? ViaImmutableArray(int[]? value)
+                => value is null
+                    ? null
+                    : ImmutableArray.Create(value);
+
+            static ImmutableArray<int>? ViaImmutableArrayWithDefault(int[]? value)
+                => value is null
+                    ? null
+                    : value.Length == 0
+                        ? default(ImmutableArray<int>)
+                        : ImmutableArray.Create(value);
+
+            static List<int>? ViaList(int[]? value) => value is null ? null : new List<int>(value);
+        }
+
+        static void InternalExecuteTestCase(
+            IEnumerable<int>? collection,
+            IEnumerable<int>? otherCollection,
+            bool expectedDefaultResult,
+            bool? expectedCustomResult)
+        {
+            Assert.That(() => collection.CollectionsEqual(otherCollection), Is.EqualTo(expectedDefaultResult));
+            Assert.That(() => otherCollection.CollectionsEqual(collection), Is.EqualTo(expectedDefaultResult));
+
+            Assert.That(() => collection.CollectionsEqual(otherCollection, null), Is.EqualTo(expectedDefaultResult));
+            Assert.That(() => otherCollection.CollectionsEqual(collection, null), Is.EqualTo(expectedDefaultResult));
+
+            Assert.That(
+                () => collection.CollectionsEqual(otherCollection, AbsValueEqualityComparer.Instance),
+                Is.EqualTo(expectedCustomResult ?? expectedDefaultResult));
+
+            Assert.That(
+                () => otherCollection.CollectionsEqual(collection, AbsValueEqualityComparer.Instance),
+                Is.EqualTo(expectedCustomResult ?? expectedDefaultResult));
+        }
+    }
+
+    [Test]
+    [SuppressMessage("ReSharper", "RedundantCast")]
+    public void TestFindDuplicatesWhenInvalidArgumentsThenThrows()
+    {
+        Assert.That(
+            () => default(string[])!.FindDuplicates(Factotum.For<string>.IdentityMethod),
+            Throws.ArgumentNullException.With.Property(nameof(ArgumentException.ParamName)).EqualTo("collection"));
+
+        Assert.That(
+            () => default(string[])!.FindDuplicates(Factotum.For<string>.IdentityMethod, null),
+            Throws.ArgumentNullException.With.Property(nameof(ArgumentException.ParamName)).EqualTo("collection"));
+
+        Assert.That(
+            () => default(string[])!.FindDuplicates(Factotum.For<string>.IdentityMethod, StringComparer.Ordinal),
+            Throws.ArgumentNullException.With.Property(nameof(ArgumentException.ParamName)).EqualTo("collection"));
+
+        Assert.That(
+            () => Array.Empty<string>().FindDuplicates((Func<string, string>)null!),
+            Throws.ArgumentNullException.With.Property(nameof(ArgumentException.ParamName)).EqualTo("keySelector"));
+
+        Assert.That(
+            () => Array.Empty<string>().FindDuplicates((Func<string, string>)null!, null),
+            Throws.ArgumentNullException.With.Property(nameof(ArgumentException.ParamName)).EqualTo("keySelector"));
+
+        Assert.That(
+            () => Array.Empty<string>().FindDuplicates((Func<string, string>)null!, StringComparer.Ordinal),
+            Throws.ArgumentNullException.With.Property(nameof(ArgumentException.ParamName)).EqualTo("keySelector"));
+    }
+
+    [Test]
+    [SuppressMessage("ReSharper", "ConvertClosureToMethodGroup")]
+    public void TestFindDuplicatesWhenValidArgumentsThenSucceeds()
+    {
+        Assert.That(() => Array.Empty<Version>().FindDuplicates(Factotum.For<Version>.IdentityMethod), Is.Not.Null.And.Empty);
+        Assert.That(() => ImmutableArray<Version>.Empty.FindDuplicates(Factotum.For<Version>.IdentityMethod), Is.Not.Null.And.Empty);
+        Assert.That(() => default(ImmutableArray<Version>).FindDuplicates(Factotum.For<Version>.IdentityMethod), Is.Not.Null.And.Empty);
+
+        {
+            var duplicates = new[] { 1, 2, 1, 3, -7, -1, -7, 19, -7 }.FindDuplicates(Factotum.For<int>.IdentityMethod);
+            Assert.That(duplicates, Is.Not.Null);
+            Assert.That(duplicates.Count, Is.EqualTo(2));
+            Assert.That(duplicates.ContainsKey(1), Is.True);
+            Assert.That(duplicates[1], Is.EquivalentTo(Enumerable.Repeat(1, 2)));
+            Assert.That(duplicates.ContainsKey(-7), Is.True);
+            Assert.That(duplicates[-7], Is.EquivalentTo(Enumerable.Repeat(-7, 3)));
+        }
+
+        {
+            var duplicates = ImmutableArray.Create(new Version(1, 3), new Version(2, 2), new Version(1, 2)).FindDuplicates(v => v.Major);
+            Assert.That(duplicates, Is.Not.Null);
+            Assert.That(duplicates.Count, Is.EqualTo(1));
+            Assert.That(duplicates.ContainsKey(1), Is.True);
+            Assert.That(duplicates[1], Is.EquivalentTo(new[] { new Version(1, 2), new Version(1, 3) }));
+        }
+
+        {
+            var duplicates = new[] { "Help", "Hi", "HELPER", "human", "Hello", "high" }.FindDuplicates(
+                s => s.Substring(0, 2),
+                StringComparer.OrdinalIgnoreCase);
+
+            Assert.That(duplicates, Is.Not.Null);
+            Assert.That(duplicates.Count, Is.EqualTo(2));
+            Assert.That(duplicates.ContainsKey("he"), Is.True);
+            Assert.That(duplicates["he"], Is.EquivalentTo(new[] { "HELPER", "Help", "Hello" }));
+            Assert.That(duplicates.ContainsKey("hi"), Is.True);
+            Assert.That(duplicates["hi"], Is.EquivalentTo(new[] { "high", "Hi" }));
+        }
+    }
+
+    [Test]
+    [SuppressMessage("ReSharper", "UseArrayEmptyMethod")]
+    [SuppressMessage("Performance", "CA1825:Avoid zero-length array allocations")]
+    [SuppressMessage("ReSharper", "ConvertClosureToMethodGroup")]
+    public void TestDisposeCollectionItemsSafelyForReferenceTypeItems()
+    {
+        Assert.That(() => default(IEnumerable<ReferenceTypeDisposable>).DisposeCollectionItemsSafely(), Throws.Nothing);
+        Assert.That(() => default(ReferenceTypeDisposable?[]).DisposeCollectionItemsSafely(), Throws.Nothing);
+        Assert.That(() => default(ImmutableArray<ReferenceTypeDisposable>).DisposeCollectionItemsSafely(), Throws.Nothing);
+
+        Assert.That(() => Enumerable.Empty<ReferenceTypeDisposable>().DisposeCollectionItemsSafely(), Throws.Nothing);
+        Assert.That(() => new ReferenceTypeDisposable?[0].DisposeCollectionItemsSafely(), Throws.Nothing);
+        Assert.That(() => ImmutableArray<ReferenceTypeDisposable>.Empty.DisposeCollectionItemsSafely(), Throws.Nothing);
+
+        ExecuteTestCase((i1, i2, i3) => Enumerable.Repeat(i1, 1).Append(i2).Append(i3));
+        ExecuteTestCase((i1, i2, i3) => new[] { i1, i2, i3 });
+        ExecuteTestCase((i1, i2, i3) => ImmutableArray.Create(i1, i2, i3));
+
+        static void ExecuteTestCase<TEnumerable>(
+            Func<ReferenceTypeDisposable?, ReferenceTypeDisposable?, ReferenceTypeDisposable?, TEnumerable> createCollection)
+            where TEnumerable : IEnumerable<ReferenceTypeDisposable?>
+        {
+            var item1 = new ReferenceTypeDisposable();
+            var item2 = new ReferenceTypeDisposable();
+            var collection = createCollection(item1, null, item2);
+
+            Assert.That(item1.DisposeCallCount, Is.EqualTo(0));
+            Assert.That(item2.DisposeCallCount, Is.EqualTo(0));
+
+            Assert.That(() => collection.DisposeCollectionItemsSafely(), Throws.Nothing);
+
+            Assert.That(item1.DisposeCallCount, Is.EqualTo(1));
+            Assert.That(item2.DisposeCallCount, Is.EqualTo(1));
+        }
+    }
+
+    [Test]
+    [SuppressMessage("ReSharper", "UseArrayEmptyMethod")]
+    [SuppressMessage("Performance", "CA1825:Avoid zero-length array allocations")]
+    [SuppressMessage("ReSharper", "ConvertClosureToMethodGroup")]
+    public void TestDisposeCollectionItemsSafelyForValueTypeItems()
+    {
+        Assert.That(() => default(IEnumerable<ValueTypeDisposable?>).DisposeCollectionItemsSafely(), Throws.Nothing);
+        Assert.That(() => default(ValueTypeDisposable?[]).DisposeCollectionItemsSafely(), Throws.Nothing);
+        Assert.That(() => default(ImmutableArray<ValueTypeDisposable?>).DisposeCollectionItemsSafely(), Throws.Nothing);
+
+        Assert.That(() => Enumerable.Empty<ValueTypeDisposable?>().DisposeCollectionItemsSafely(), Throws.Nothing);
+        Assert.That(() => new ValueTypeDisposable?[0].DisposeCollectionItemsSafely(), Throws.Nothing);
+        Assert.That(() => ImmutableArray<ValueTypeDisposable?>.Empty.DisposeCollectionItemsSafely(), Throws.Nothing);
+
+        ExecuteTestCase((i1, i2, i3) => Enumerable.Repeat(i1, 1).Append(i2).Append(i3));
+        ExecuteTestCase((i1, i2, i3) => new[] { i1, i2, i3 });
+        ExecuteTestCase((i1, i2, i3) => ImmutableArray.Create(i1, i2, i3));
+
+        static void ExecuteTestCase<TEnumerable>(
+            Func<ValueTypeDisposable?, ValueTypeDisposable?, ValueTypeDisposable?, TEnumerable> createCollection)
+            where TEnumerable : IEnumerable<ValueTypeDisposable?>
+        {
+            var item1 = new ValueTypeDisposable(new ReferenceTypeDisposable());
+            var item2 = new ValueTypeDisposable(new ReferenceTypeDisposable());
+            var collection = createCollection(item1, null, item2);
+
+            Assert.That(item1.DisposeCallCount, Is.EqualTo(0));
+            Assert.That(item2.DisposeCallCount, Is.EqualTo(0));
+
+            Assert.That(() => collection.DisposeCollectionItemsSafely(), Throws.Nothing);
+
+            Assert.That(item1.DisposeCallCount, Is.EqualTo(1));
+            Assert.That(item2.DisposeCallCount, Is.EqualTo(1));
+        }
     }
 
     [Test]
     [TestCaseSource(typeof(ToUIStringForStringCollectionTestCases))]
-    public void TestToUIStringForStringCollection(string?[] values, string expectedResult)
+    public void TestToUIStringForStringCollection(IEnumerable<string?>? values, string expectedResult)
     {
         var actualResult = values.ToUIString();
         Assert.That(actualResult, Is.EqualTo(expectedResult));
     }
 
     [Test]
-    [TestCaseSource(typeof(ToUIStringForNullableCollectionTestCases))]
-    public void TestToUIStringForNullableCollection(int?[] values, string expectedResult)
+    [TestCaseSource(typeof(ToUIStringForNullableValueTypeCollectionTestCases))]
+    public void TestToUIStringForNullableValueTypeCollection(IEnumerable<int?>? values, string expectedResult)
     {
         var actualResult = values.ToUIString();
         Assert.That(actualResult, Is.EqualTo(expectedResult));
@@ -261,13 +709,11 @@ internal sealed class OmnifactotumCollectionExtensionsTests
         Assert.That(() => default(IEnumerable<KeyValuePair<string, string?>>).ToUIString(), Is.EqualTo("<null>"));
         Assert.That(() => default(IEnumerable<KeyValuePair<string, string>>)!.ToUIString(), Is.EqualTo("<null>"));
 
-        Assert.That(
-            () => new Dictionary<string, string?>().ToUIString(),
-            Is.EqualTo("[]"));
+        Assert.That(() => default(ImmutableArray<KeyValuePair<string, string?>>).ToUIString(), Is.EqualTo("[]"));
+        Assert.That(() => default(ImmutableArray<KeyValuePair<string, string>>).ToUIString(), Is.EqualTo("[]"));
 
-        Assert.That(
-            () => new Dictionary<string, string>()!.ToUIString(),
-            Is.EqualTo("[]"));
+        Assert.That(() => new Dictionary<string, string?>().ToUIString(), Is.EqualTo("[]"));
+        Assert.That(() => new Dictionary<string, string>()!.ToUIString(), Is.EqualTo("[]"));
 
         Assert.That(
             () => new Dictionary<string, string?> { { "Qwe", null }, { "asD", "zXc" }, { "uiOp", string.Empty } }.ToUIString(),
@@ -275,6 +721,7 @@ internal sealed class OmnifactotumCollectionExtensionsTests
     }
 
 #if !NET7_0_OR_GREATER
+
     [Test]
     public void TestAsReadOnlyNegative()
         => Assert.That(() => default(IList<string>)!.AsReadOnly(), Throws.TypeOf<ArgumentNullException>());
@@ -282,6 +729,9 @@ internal sealed class OmnifactotumCollectionExtensionsTests
     [Test]
     public void TestAsReadOnly()
     {
+        Assert.That(() => default(ImmutableArray<int>).AsReadOnly(), Is.Empty);
+        Assert.That(() => ImmutableArray<int>.Empty.AsReadOnly(), Is.Empty);
+
         var initialValues = new[] { "foo", "bar" };
 
         IList<string> list = new List<string>(initialValues);
@@ -315,9 +765,11 @@ internal sealed class OmnifactotumCollectionExtensionsTests
         list.Add("double bar");
         Assert.That(readOnly, Is.EqualTo(list));
     }
+
 #endif
 
 #if !NET6_0_OR_GREATER
+
     [Test]
     public void TestChunkWhenInvalidArgumentThenThrows()
     {
@@ -332,6 +784,9 @@ internal sealed class OmnifactotumCollectionExtensionsTests
     {
         var chunks0By3 = Array.Empty<int>().Chunk(3).ToArray();
         Assert.That(chunks0By3, Is.Empty);
+
+        Assert.That(default(ImmutableArray<int>).Chunk(3), Is.Empty);
+        Assert.That(ImmutableArray<int>.Empty.Chunk(3), Is.Empty);
 
         var chunks10By3 = Enumerable.Range(1, 10).Chunk(3).ToArray();
         Assert.That(chunks10By3.Length, Is.EqualTo(4));
@@ -423,6 +878,8 @@ internal sealed class OmnifactotumCollectionExtensionsTests
     [Test]
     public void TestWhereNotNullWhenValidArgumentAndReferenceTypeElementThenSucceeds()
     {
+        ExecuteTestCase(ImmutableArray<string?>.Empty, Array.Empty<string>());
+        ExecuteTestCase(default(ImmutableArray<string?>), Array.Empty<string>());
         ExecuteTestCase(Array.Empty<string?>(), Array.Empty<string>());
         ExecuteTestCase(new string?[] { null }, Array.Empty<string>());
         ExecuteTestCase(new string?[] { null, null }, Array.Empty<string>());
@@ -443,7 +900,7 @@ internal sealed class OmnifactotumCollectionExtensionsTests
             new[] { new[] { 1, 2, 3 }, new[] { 42, -42, 17 }, new[] { -13 }, new[] { 11 }, new[] { 7 } });
 
         //// ReSharper disable once SuggestBaseTypeForParameter
-        static void ExecuteTestCase<T>(T?[] input, T[] expectedResult)
+        static void ExecuteTestCase<T>(IEnumerable<T?> input, T[] expectedResult)
             where T : class
         {
             // Note: `ToArray()` call is required to ensure that the compiler generated `IEnumerable<T>` instance actually invokes `WhereNotNull()`
@@ -466,20 +923,22 @@ internal sealed class OmnifactotumCollectionExtensionsTests
     [SuppressMessage("ReSharper", "UseArrayEmptyMethod")]
     public void TestWhereNotNullWhenValidArgumentAndValueTypeElementThenSucceeds()
     {
-        ExecuteTestCase(new int?[0], new int[0]);
-        ExecuteTestCase(new int?[] { null }, new int[0]);
-        ExecuteTestCase(new int?[] { null, null }, new int[0]);
+        ExecuteTestCase(ImmutableArray<int?>.Empty, Array.Empty<int>());
+        ExecuteTestCase(default(ImmutableArray<int?>), Array.Empty<int>());
+        ExecuteTestCase(new int?[0], Array.Empty<int>());
+        ExecuteTestCase(new int?[] { null }, Array.Empty<int>());
+        ExecuteTestCase(new int?[] { null, null }, Array.Empty<int>());
         ExecuteTestCase(new int?[] { null, 42, null }, new[] { 42 });
         ExecuteTestCase(new int?[] { 42, null, 17, -11, null, 13, 7 }, new[] { 42, 17, -11, 13, 7 });
 
-        ExecuteTestCase(new char?[0], new char[0]);
-        ExecuteTestCase(new char?[] { null }, new char[0]);
-        ExecuteTestCase(new char?[] { null, null }, new char[0]);
+        ExecuteTestCase(new char?[0], Array.Empty<char>());
+        ExecuteTestCase(new char?[] { null }, Array.Empty<char>());
+        ExecuteTestCase(new char?[] { null, null }, Array.Empty<char>());
         ExecuteTestCase(new char?[] { null, 'q', null }, new[] { 'q' });
         ExecuteTestCase(new char?[] { 'w', null, 'z', '•', null, 'é', 'ò' }, new[] { 'w', 'z', '•', 'é', 'ò' });
 
         //// ReSharper disable once SuggestBaseTypeForParameter
-        static void ExecuteTestCase<T>(T?[] input, T[] expectedResult)
+        static void ExecuteTestCase<T>(IEnumerable<T?> input, T[] expectedResult)
             where T : struct
         {
             // Note: `ToArray()` call is required to ensure that the compiler generated `IEnumerable<T>` instance actually invokes `WhereNotNull()`
@@ -645,59 +1104,169 @@ internal sealed class OmnifactotumCollectionExtensionsTests
     [Test]
     public void TestFlattenWhenValidArgumentThenSucceeds()
     {
+        // int
+
+        Assert.That(() => default(ImmutableArray<IEnumerable<int>>).Flatten(), Is.EqualTo(Enumerable.Empty<int>()));
+        Assert.That(() => ImmutableArray<int[]>.Empty.Flatten(), Is.EqualTo(Enumerable.Empty<int>()));
+
+        Assert.That(() => Array.Empty<int[]>().Flatten(), Is.EqualTo(Enumerable.Empty<int>()));
+
+        Assert.That(
+            () => new[] { Array.Empty<int>(), Array.Empty<int>(), Array.Empty<int>() }.Flatten(),
+            Is.EqualTo(Enumerable.Empty<int>()));
+
+        Assert.That(
+            () => new IEnumerable<int>[] { ImmutableArray<int>.Empty, default(ImmutableArray<int>) }.Flatten(),
+            Is.EqualTo(Enumerable.Empty<int>()));
+
+        Assert.That(
+            () => ImmutableArray.Create<IEnumerable<int>>(ImmutableArray<int>.Empty, default(ImmutableArray<int>)).Flatten(),
+            Is.EqualTo(Enumerable.Empty<int>()));
+
+        Assert.That(
+            () => new[] { Array.Empty<int>(), Array.Empty<int>(), Array.Empty<int>() }.Flatten(),
+            Is.EqualTo(Enumerable.Empty<int>()));
+
         Assert.That(
             () => new[] { new[] { 1, 2, 3 }, new[] { 6, 5, 4 }, new[] { 13, 19, -7 } }.Flatten(),
             Is.EqualTo(new[] { 1, 2, 3, 6, 5, 4, 13, 19, -7 }));
+
+        // string
+
+        Assert.That(() => default(ImmutableArray<IEnumerable<string>>).Flatten(), Is.EqualTo(Enumerable.Empty<string>()));
+        Assert.That(() => ImmutableArray<string[]>.Empty.Flatten(), Is.EqualTo(Enumerable.Empty<string>()));
+
+        Assert.That(() => Array.Empty<string[]>().Flatten(), Is.EqualTo(Enumerable.Empty<string>()));
+
+        Assert.That(
+            () => new[] { Array.Empty<string>(), Array.Empty<string>(), Array.Empty<string>() }.Flatten(),
+            Is.EqualTo(Enumerable.Empty<string>()));
+
+        Assert.That(
+            () => new IEnumerable<string>[] { ImmutableArray<string>.Empty, default(ImmutableArray<string>) }.Flatten(),
+            Is.EqualTo(Enumerable.Empty<string>()));
+
+        Assert.That(
+            () => ImmutableArray.Create<IEnumerable<string>>(ImmutableArray<string>.Empty, default(ImmutableArray<string>)).Flatten(),
+            Is.EqualTo(Enumerable.Empty<string>()));
+
+        Assert.That(
+            () => new[] { Array.Empty<string>(), Array.Empty<string>(), Array.Empty<string>() }.Flatten(),
+            Is.EqualTo(Enumerable.Empty<string>()));
 
         Assert.That(
             () => new[] { new[] { 'a', 'c', '?' }, new[] { 'w', 'b', '4' }, new[] { '3', 'X', '!' } }.Flatten(),
             Is.EqualTo(new[] { 'a', 'c', '?', 'w', 'b', '4', '3', 'X', '!' }));
     }
 
-    private static void InvokeTestSetItems<T, TCollection>(Func<T[]> createItems1, Func<T[]> createItems2)
-        where TCollection : ICollection<T>, new()
-    {
-        var collection = new TCollection();
-
-        Assert.That(collection, Is.Not.Null);
-        Assert.That(createItems1, Is.Not.Null);
-        Assert.That(createItems2, Is.Not.Null);
-
-        var items1 = createItems1().AssertNotNull();
-        var items2 = createItems2().AssertNotNull();
-
-        collection.SetItems(items1);
-        Assert.That(collection, Is.EqualTo(items1));
-
-        collection.SetItems(items2);
-        Assert.That(collection, Is.EqualTo(items2));
-
-        collection.SetItems(Array.Empty<T>());
-        Assert.That(collection, Is.Empty);
-    }
-
     private sealed class ToUIStringForStringCollectionTestCases : TestCasesBase
     {
         protected override IEnumerable<TestCaseData> GetCases()
         {
-            yield return new TestCaseData(null, "<null>").SetDescription("Null collection of strings");
+            yield return CreateTestCase(null, "<null>").SetDescription("Null collection of strings");
 
-            yield return new TestCaseData(
+            yield return CreateTestCase(ImmutableArray<string>.Empty, string.Empty).SetDescription("Empty immutable array");
+            yield return CreateTestCase(default(ImmutableArray<string>), string.Empty).SetDescription("Default immutable array");
+
+            yield return CreateTestCase(
                     new[] { null, "", "Hello", "Class \"MyClass\"" },
-                    @"null, """", ""Hello"", ""Class """"MyClass""""""")
+                    "null, \"\", \"Hello\", \"Class \"\"MyClass\"\"\"")
                 .SetDescription("Collection containing various string values");
+
+            static TestCaseData CreateTestCase(
+                IEnumerable<string?>? values,
+                string expectedResult,
+                [CallerArgumentExpression(nameof(values))] string? valuesExpression = null)
+            {
+                var result = new TestCaseData(values, expectedResult);
+                if (!string.IsNullOrEmpty(valuesExpression))
+                {
+                    result.SetArgDisplayNames($"{{ {valuesExpression} }}", $"{{ {expectedResult} }}");
+                }
+
+                return result;
+            }
         }
     }
 
-    private sealed class ToUIStringForNullableCollectionTestCases : TestCasesBase
+    private sealed class ToUIStringForNullableValueTypeCollectionTestCases : TestCasesBase
     {
         protected override IEnumerable<TestCaseData> GetCases()
         {
-            yield return new TestCaseData(null, "<null>").SetDescription("Null collection of nullable integers");
+            yield return CreateTestCase(null, "<null>").SetDescription("Null collection of nullable integers");
 
-            yield return
-                new TestCaseData(new int?[] { null, 42 }, @"null, 42")
-                    .SetDescription("Collection of nullable integers containing various values");
+            yield return CreateTestCase(ImmutableArray<int?>.Empty, string.Empty).SetDescription("Empty immutable array");
+            yield return CreateTestCase(default(ImmutableArray<int?>), string.Empty).SetDescription("Default immutable array");
+
+            yield return CreateTestCase(new int?[] { null, 42 }, "null, 42").SetDescription("Collection of nullable integers containing various values");
+
+            static TestCaseData CreateTestCase(
+                IEnumerable<int?>? values,
+                string expectedResult,
+                [CallerArgumentExpression(nameof(values))] string? valuesExpression = null)
+            {
+                var result = new TestCaseData(values, expectedResult);
+                if (!string.IsNullOrEmpty(valuesExpression))
+                {
+                    result.SetArgDisplayNames($"{{ {valuesExpression} }}", $"{{ {expectedResult} }}");
+                }
+
+                return result;
+            }
         }
+    }
+
+    private sealed class AbsValueEqualityComparer : IEqualityComparer<int>
+    {
+        internal static IEqualityComparer<int> Instance { get; } = new AbsValueEqualityComparer();
+
+        public bool Equals(int x, int y) => Math.Abs(x) == Math.Abs(y);
+
+        public int GetHashCode(int obj) => Math.Abs(obj).GetHashCode();
+    }
+
+    private sealed class NonGenericCollection<T> : IEnumerable<T>, ICollection
+    {
+        public NonGenericCollection(int count)
+        {
+            Factotum.Assert(count >= 0);
+            Count = count;
+        }
+
+        public int Count { get; }
+
+        public bool IsSynchronized => throw new NotSupportedException();
+
+        public object SyncRoot => throw new NotSupportedException();
+
+        IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();
+
+        public IEnumerator<T> GetEnumerator() => throw new NotSupportedException();
+
+        public void CopyTo(Array array, int index) => throw new NotSupportedException();
+    }
+
+    private sealed class ReferenceTypeDisposable : IDisposable
+    {
+        internal int DisposeCallCount { get; private set; }
+
+        public void Dispose()
+        {
+            checked
+            {
+                DisposeCallCount++;
+            }
+        }
+    }
+
+    private readonly struct ValueTypeDisposable : IDisposable
+    {
+        private readonly ReferenceTypeDisposable _innerDisposable;
+
+        public ValueTypeDisposable(ReferenceTypeDisposable innerDisposable) => _innerDisposable = innerDisposable.AssertNotNull();
+
+        internal int DisposeCallCount => _innerDisposable.AssertNotNull().DisposeCallCount;
+
+        public void Dispose() => _innerDisposable.AssertNotNull().Dispose();
     }
 }

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections.Immutable;
 using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using System.Net;
@@ -83,17 +84,25 @@ internal sealed class OmnifactotumStringExtensionsTests
     }
 
     [Test]
-    [TestCase(new[] { "foo", "bar" }, ",", "foo,bar")]
-    [TestCase(new[] { "foo", "bar" }, ",\u0020", "foo, bar")]
-    [TestCase(new[] { "foo", "bar" }, "\u0020", "foo bar")]
-    [TestCase(new[] { "\u0020foo\u0020", "\u0020bar\u0020" }, "\u0020", " foo   bar ")]
-    [TestCase(new[] { "foo;", "bar;" }, ";", "foo;;bar;")]
-    [TestCase(new[] { "bar" }, ",\u0020", "bar")]
-    [TestCase(new string[0], ",\u0020", "")]
-    [TestCase(new[] { "foo", "bar" }, null, "foobar")]
-    [TestCase(new[] { "foo", "bar" }, "", "foobar")]
-    public void TestJoinWhenValidArgumentsThenSucceeds(string?[] values, string? separator, string expectedResult)
-        => Assert.That(() => values.Join(separator), Is.EqualTo(expectedResult));
+    [SuppressMessage("ReSharper", "UseArrayEmptyMethod")]
+    public void TestJoinWhenValidArgumentsThenSucceeds()
+    {
+        ExecuteTestCase(default(ImmutableArray<string?>), "|", string.Empty);
+        ExecuteTestCase(ImmutableArray<string?>.Empty, "|", string.Empty);
+        ExecuteTestCase(new string[0], ",\u0020", string.Empty);
+        ExecuteTestCase(new[] { "foo", "bar" }, ",", "foo,bar");
+        ExecuteTestCase(new[] { "foo", "bar" }, ",\u0020", "foo, bar");
+        ExecuteTestCase(new[] { "foo", "bar" }, "\u0020", "foo bar");
+        ExecuteTestCase(new[] { "\u0020foo\u0020", "\u0020bar\u0020" }, "\u0020", "\u0020foo\u0020\u0020\u0020bar\u0020");
+        ExecuteTestCase(new[] { "foo;", "bar;" }, ";", "foo;;bar;");
+        ExecuteTestCase(new[] { "bar" }, ",\u0020", "bar");
+        ExecuteTestCase(new[] { "foo", "bar" }, null, "foobar");
+        ExecuteTestCase(new[] { "foo", "bar" }, "", "foobar");
+
+        static void ExecuteTestCase<TEnumerable>(TEnumerable values, string? separator, string expectedResult)
+            where TEnumerable : IEnumerable<string?>
+            => Assert.That(() => values.Join(separator), Is.EqualTo(expectedResult));
+    }
 
     [Test]
     public void TestWhereNotEmptyWhenInvalidArgumentsThenThrows()
@@ -118,11 +127,15 @@ internal sealed class OmnifactotumStringExtensionsTests
             new[] { "Hello\x0020world", "?", null, string.Empty, "\t\x0020\r\n", null, "Bye!" },
             new[] { "Hello\x0020world", "?", "\t\x0020\r\n", "Bye!" });
 
+        // Note: `ToArray()` call is required to ensure that the compiler generated `IEnumerable<string>` instance actually invokes `WhereNotEmpty()`
+        Assert.That(() => default(ImmutableArray<string>).WhereNotEmpty().ToArray(), Is.TypeOf<string[]>() & Is.Empty);
+        Assert.That(() => ImmutableArray<string>.Empty.WhereNotEmpty().ToArray(), Is.TypeOf<string[]>() & Is.Empty);
+
         //// ReSharper disable once SuggestBaseTypeForParameter
         static void ExecuteTestCase(string?[] input, string[] expectedResult)
         {
             // Note: `ToArray()` call is required to ensure that the compiler generated `IEnumerable<string>` instance actually invokes `WhereNotEmpty()`
-            Assert.That(() => input.AsEnumerable().WhereNotEmpty().ToArray(), Is.EqualTo(expectedResult) & Is.TypeOf<string[]>());
+            Assert.That(() => input.AsEnumerable().WhereNotEmpty().ToArray(), Is.TypeOf<string[]>() & Is.EqualTo(expectedResult));
         }
     }
 
@@ -148,6 +161,10 @@ internal sealed class OmnifactotumStringExtensionsTests
         ExecuteTestCase(
             new[] { "Hello\x0020world", "?", null, string.Empty, "\t\x0020\r\n", null, "Bye!" },
             new[] { "Hello\x0020world", "?", "Bye!" });
+
+        // Note: `ToArray()` call is required to ensure that the compiler generated `IEnumerable<string>` instance actually invokes `WhereNotEmpty()`
+        Assert.That(() => default(ImmutableArray<string>).WhereNotBlank().ToArray(), Is.TypeOf<string[]>() & Is.Empty);
+        Assert.That(() => ImmutableArray<string>.Empty.WhereNotBlank().ToArray(), Is.TypeOf<string[]>() & Is.Empty);
 
         //// ReSharper disable once SuggestBaseTypeForParameter
         static void ExecuteTestCase(string?[] input, string[] expectedResult)

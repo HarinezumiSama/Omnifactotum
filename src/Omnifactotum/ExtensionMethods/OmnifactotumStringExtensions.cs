@@ -117,7 +117,7 @@ public static class OmnifactotumStringExtensions
         if (!proxyResult.HasValue)
         {
             throw new ArgumentException(
-                AsInvariant($@"The specified value cannot be converted to {nameof(Boolean)}."),
+                AsInvariant($"The specified value cannot be converted to {nameof(Boolean)}."),
                 nameof(value));
         }
 
@@ -146,7 +146,7 @@ public static class OmnifactotumStringExtensions
     public static string Join(
         [NotNull] [ItemCanBeNull] [InstantHandle] this IEnumerable<string?> values,
         [CanBeNull] string? separator)
-        => string.Join(separator, values ?? throw new ArgumentNullException(nameof(values)));
+        => string.Join(separator, (values ?? throw new ArgumentNullException(nameof(values))).AvoidDefaultImmutableArray());
 
     /// <summary>
     ///     Filters a sequence of string elements and returns only those that are not <see langword="null"/> and not an <see cref="string.Empty"/> string.
@@ -174,7 +174,7 @@ public static class OmnifactotumStringExtensions
         }
 
         //// ReSharper disable once LoopCanBePartlyConvertedToQuery
-        foreach (var item in source)
+        foreach (var item in source.AvoidDefaultImmutableArray())
         {
             if (!item.IsNullOrEmpty())
             {
@@ -210,7 +210,7 @@ public static class OmnifactotumStringExtensions
         }
 
         //// ReSharper disable once LoopCanBePartlyConvertedToQuery
-        foreach (var item in source)
+        foreach (var item in source.AvoidDefaultImmutableArray())
         {
             if (!item.IsNullOrWhiteSpace())
             {
@@ -250,7 +250,7 @@ public static class OmnifactotumStringExtensions
             ? throw new ArgumentException(
                 valueExpression is null
                     ? "The value is null or an empty string."
-                    : $@"The following expression is null or an empty string: {{ {valueExpression} }}.",
+                    : $"The following expression is null or an empty string: {{ {valueExpression} }}.",
                 nameof(value))
             : value;
 
@@ -288,7 +288,7 @@ public static class OmnifactotumStringExtensions
             ? throw new ArgumentException(
                 valueExpression is null
                     ? "The value is null or a blank string."
-                    : $@"The following expression is null or a blank string: {{ {valueExpression} }}.",
+                    : $"The following expression is null or a blank string: {{ {valueExpression} }}.",
                 nameof(value))
             : value;
 
@@ -415,12 +415,12 @@ public static class OmnifactotumStringExtensions
     {
         if (loggedPartLength <= 0)
         {
-            throw new ArgumentOutOfRangeException(nameof(loggedPartLength), loggedPartLength, @"The value must be greater than zero.");
+            throw new ArgumentOutOfRangeException(nameof(loggedPartLength), loggedPartLength, "The value must be greater than zero.");
         }
 
         if (minimumSecuredPartLength <= 0)
         {
-            throw new ArgumentOutOfRangeException(nameof(minimumSecuredPartLength), minimumSecuredPartLength, @"The value must be greater than zero.");
+            throw new ArgumentOutOfRangeException(nameof(minimumSecuredPartLength), minimumSecuredPartLength, "The value must be greater than zero.");
         }
 
         var minimumLoggedValueLength = checked(loggedPartLength * 2 + minimumSecuredPartLength);
@@ -431,8 +431,8 @@ public static class OmnifactotumStringExtensions
         }
 
         var result = value.Length >= minimumLoggedValueLength
-            ? ToUIString($@"{value.Substring(0, loggedPartLength)}...{value.Substring(value.Length - loggedPartLength)}")
-            : $@"{{ {nameof(string.Length)} = {value.Length} }}";
+            ? ToUIString($"{value.Substring(0, loggedPartLength)}...{value.Substring(value.Length - loggedPartLength)}")
+            : $"{{ {nameof(string.Length)} = {value.Length} }}";
 
         return result;
     }
