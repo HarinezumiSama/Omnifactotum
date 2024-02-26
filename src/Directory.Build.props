@@ -2,31 +2,40 @@
 
 <Project>
     <PropertyGroup>
-        <Version>0.19.0</Version>
-        <PackageValidationBaselineVersion>0.18.0</PackageValidationBaselineVersion>
+        <Version>0.20.0</Version>
+        <PackageValidationBaselineVersion>0.19.0</PackageValidationBaselineVersion>
     </PropertyGroup>
 
     <PropertyGroup>
         <VersionSuffix>-debug</VersionSuffix>
         <BuildDateYear>$([System.String]::Format("{0:yyyy}", $([System.DateTime]::UtcNow)))</BuildDateYear>
-        <ReleaseNotesFilePath>$(SolutionDir)$(SolutionName).ReleaseNotes.md</ReleaseNotesFilePath>
         <PackageReleaseNotes>N/A</PackageReleaseNotes>
         <IsAppveyorBuild>false</IsAppveyorBuild>
     </PropertyGroup>
 
+    <PropertyGroup>
+        <ReleaseNotesFilePath/>
+        <RunSettingsFilePath/>
+    </PropertyGroup>
+
+    <PropertyGroup Condition="'$(SolutionDir)' != '' And '$(SolutionName)' != ''">
+        <ReleaseNotesFilePath>$(SolutionDir)$(SolutionName).ReleaseNotes.md</ReleaseNotesFilePath>
+        <RunSettingsFilePath>$(SolutionDir)$(SolutionName).runsettings</RunSettingsFilePath>
+    </PropertyGroup>
+
     <Target Name="CheckBuildPropertiesBeforeBuild" BeforeTargets="Clean;Build;Restore">
         <Message
-                Text="[$(MSBuildProjectName):$(TargetFramework):$(Configuration):$(Platform)] NETCoreSdkVersion = &quot;$(NETCoreSdkVersion)&quot;, SolutionDir = &quot;$(SolutionDir)&quot;, SolutionName = &quot;$(SolutionName)&quot;"
-                Importance="high" />
+            Text="[$(MSBuildProjectName):$(TargetFramework):$(Configuration):$(Platform)] NETCoreSdkVersion = &quot;$(NETCoreSdkVersion)&quot;, SolutionDir = &quot;$(SolutionDir)&quot;, SolutionName = &quot;$(SolutionName)&quot;"
+            Importance="high"/>
 
         <Error Condition="'$(SolutionDir)' == '' Or '$(SolutionName)' == '' Or '$(SolutionDir)' == '*Undefined*' Or '$(SolutionName)' == '*Undefined*'"
-                Text="[$(MSBuildProjectName):$(TargetFramework):$(Configuration):$(Platform)] Individual projects cannot be built. Please build the entire solution." />
+               Text="[$(MSBuildProjectName):$(TargetFramework):$(Configuration):$(Platform)] Individual projects cannot be built. Please build the entire solution."/>
     </Target>
 
     <Target Name="PrintBuildPropertiesBeforeBuild" BeforeTargets="Build">
         <Message
-                Text="[$(MSBuildProjectName):$(TargetFramework)] AssemblyVersion = &quot;$(AssemblyVersion)&quot;, PackageVersion = &quot;$(PackageVersion)&quot;, InformationalVersion = &quot;$(InformationalVersion)&quot;"
-                Importance="high" />
+            Text="[$(MSBuildProjectName):$(TargetFramework)] AssemblyVersion = &quot;$(AssemblyVersion)&quot;, PackageVersion = &quot;$(PackageVersion)&quot;, InformationalVersion = &quot;$(InformationalVersion)&quot;"
+            Importance="high"/>
     </Target>
 
     <PropertyGroup>
@@ -38,8 +47,7 @@
         <LangVersion>11.0</LangVersion>
         <Nullable>enable</Nullable>
         <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
-        <WarningsAsErrors />
-        <RunSettingsFilePath>$(SolutionDir)$(SolutionName).runsettings</RunSettingsFilePath>
+        <WarningsAsErrors/>
         <CheckEolTargetFramework>false</CheckEolTargetFramework>
     </PropertyGroup>
 
@@ -61,7 +69,7 @@
         <PackageProjectUrl>$(RepositoryUrl)</PackageProjectUrl>
         <PackageRequireLicenseAcceptance>false</PackageRequireLicenseAcceptance>
         <PackageLicenseExpression>MIT</PackageLicenseExpression>
-        <PackageReleaseNotes>$([System.IO.File]::ReadAllText($(ReleaseNotesFilePath)))</PackageReleaseNotes>
+        <PackageReleaseNotes Condition="'$(ReleaseNotesFilePath)' != ''">$([System.IO.File]::ReadAllText($(ReleaseNotesFilePath)))</PackageReleaseNotes>
         <PackageTags>C#;CSharp;omnifactotum;omni;factotum;aid;assistant;extension;extensions;helper;helpers;common;typical</PackageTags>
         <IncludeSymbols>true</IncludeSymbols>
         <IncludeSource>true</IncludeSource>
@@ -72,7 +80,7 @@
         <EnableStrictModeForCompatibleFrameworksInPackage>false</EnableStrictModeForCompatibleFrameworksInPackage>
     </PropertyGroup>
 
-    <PropertyGroup>
+    <PropertyGroup Condition="'$(SolutionDir)' != '' And '$(SolutionName)' != ''">
         <__TestResultsSubdirectory>TestResults</__TestResultsSubdirectory>
         <__RootSolutionOutputPathBase>$(SolutionDir)\.out</__RootSolutionOutputPathBase>
         <__RootSolutionOutputPath>$([System.IO.Path]::GetFullPath($(__RootSolutionOutputPathBase)))</__RootSolutionOutputPath>
@@ -83,7 +91,7 @@
     </PropertyGroup>
 
     <Target Name="CleanTestResults" AfterTargets="Clean">
-        <RemoveDir Directories="$(VSTestResultsDirectory)" Condition="Exists($(VSTestResultsDirectory))" ContinueOnError="true" />
+        <RemoveDir Directories="$(VSTestResultsDirectory)" Condition="Exists($(VSTestResultsDirectory))" ContinueOnError="true"/>
     </Target>
 
     <PropertyGroup>
