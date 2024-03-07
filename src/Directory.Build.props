@@ -84,7 +84,8 @@
         <__TestResultsSubdirectory>TestResults</__TestResultsSubdirectory>
         <__RootSolutionOutputPathBase>$(SolutionDir)\.out</__RootSolutionOutputPathBase>
         <__RootSolutionOutputPath>$([System.IO.Path]::GetFullPath($(__RootSolutionOutputPathBase)))</__RootSolutionOutputPath>
-        <OutputPath>$(__RootSolutionOutputPath)\bin\$(Platform)\$(Configuration)\$(MSBuildProjectName)\</OutputPath>
+        <__RootProjectsOutputPath>$(__RootSolutionOutputPath)\bin\$(Platform)\$(Configuration)\</__RootProjectsOutputPath>
+        <OutputPath>$(__RootProjectsOutputPath)\$(MSBuildProjectName)\</OutputPath>
         <BaseIntermediateOutputPath>$(__RootSolutionOutputPath)\obj\$(MSBuildProjectName)\</BaseIntermediateOutputPath>
         <PackageOutputPath>$(__RootSolutionOutputPath)\NuGet\</PackageOutputPath>
         <VSTestResultsDirectory>$(OutputPath)$(__TestResultsSubdirectory)</VSTestResultsDirectory>
