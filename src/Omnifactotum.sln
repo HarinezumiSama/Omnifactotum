@@ -18,14 +18,21 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Common", "Common", "{D7C50C
 		Omnifactotum.sln.DotSettings = Omnifactotum.sln.DotSettings
 		Common\Omnifactotum.snk = Common\Omnifactotum.snk
 		..\README.md = ..\README.md
-    	..\README.NuGet.md = ..\README.NuGet.md
+		..\README.NuGet.md = ..\README.NuGet.md
 		Settings.StyleCop = Settings.StyleCop
 		global.json = global.json
 	EndProjectSection
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Omnifactotum", "Omnifactotum\Omnifactotum.csproj", "{1054B8A0-40D7-4FBC-A658-9AC9179035F8}"
+	ProjectSection(ProjectDependencies) = postProject
+		{7478AAD2-D287-4B31-AB03-8E11F8B7746E} = {7478AAD2-D287-4B31-AB03-8E11F8B7746E}
+	EndProjectSection
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Omnifactotum.Tests", "Omnifactotum.Tests\Omnifactotum.Tests.csproj", "{05122CCE-3608-4CB5-A20B-CD31A0059BE7}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Omnifactotum.SourceGenerators", "Omnifactotum.SourceGenerators\Omnifactotum.SourceGenerators.csproj", "{7478AAD2-D287-4B31-AB03-8E11F8B7746E}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Omnifactotum.SourceGenerators.Playground", "Omnifactotum.SourceGenerators.Playground\Omnifactotum.SourceGenerators.Playground.csproj", "{412D342E-54F2-4091-84FE-B24664FA0B61}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -41,6 +48,14 @@ Global
 		{05122CCE-3608-4CB5-A20B-CD31A0059BE7}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{05122CCE-3608-4CB5-A20B-CD31A0059BE7}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{05122CCE-3608-4CB5-A20B-CD31A0059BE7}.Release|Any CPU.Build.0 = Release|Any CPU
+		{7478AAD2-D287-4B31-AB03-8E11F8B7746E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{7478AAD2-D287-4B31-AB03-8E11F8B7746E}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{7478AAD2-D287-4B31-AB03-8E11F8B7746E}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{7478AAD2-D287-4B31-AB03-8E11F8B7746E}.Release|Any CPU.Build.0 = Release|Any CPU
+		{412D342E-54F2-4091-84FE-B24664FA0B61}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{412D342E-54F2-4091-84FE-B24664FA0B61}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{412D342E-54F2-4091-84FE-B24664FA0B61}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{412D342E-54F2-4091-84FE-B24664FA0B61}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

@@ -42,7 +42,12 @@
     </ItemGroup>
 
     <ItemGroup>
-        <None Include="$(SolutionDir)\..\README.NuGet.md" Pack="true" PackagePath="\" />
+        <None Include="$(SolutionDir)\..\README.NuGet.md" Pack="true" PackagePath="/" />
+
+        <None Include="$(__RootProjectsOutputPath)\$(MSBuildProjectName).SourceGenerators\netstandard2.0\$(MSBuildProjectName).SourceGenerators.dll"
+              Pack="true"
+              PackagePath="analyzers/dotnet/cs"
+              Visible="false" />
     </ItemGroup>
     <PropertyGroup>
         <PackageReadmeFile>README.NuGet.md</PackageReadmeFile>
