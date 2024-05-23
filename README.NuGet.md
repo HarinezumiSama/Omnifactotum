@@ -9,47 +9,54 @@
 - [Complete Release Notes](https://github.com/HarinezumiSama/Omnifactotum/blob/master/src/Omnifactotum.ReleaseNotes.md)
 - [ReadMe](https://github.com/HarinezumiSama/Omnifactotum/blob/master/README.md)
 
-### Changes in 0.19.0 (since 0.18.0)
+### Changes in 0.20.0 (since 0.19.0)
 
 #### Breaking changes
 
-- Object validation:
-  - Removed `ValidationErrorCollection`
-  - `ObjectValidatorContext`: Removed the `Errors` property from public API
-  - Removed deprecated methods in `OmnifactotumTypeExtensions`:
-    - `IsNullable()` (`IsNullableValueType()` to be used instead)
-    - `GetCollectionElementType()` (`GetCollectionElementTypeOrDefault()` to be used instead)
-  - `IMemberConstraint`: Replaced `Validate(ObjectValidatorContext, MemberConstraintValidationContext, object?)` with `Validate(MemberConstraintValidationContext, object?)` since `MemberConstraintValidationContext` now has a reference to `ObjectValidatorContext`
-  - `MemberConstraintBase`:
-    - Replaced `ValidateValue(ObjectValidatorContext, MemberConstraintValidationContext, object?)` with `ValidateValue(MemberConstraintValidationContext, object?)`
-  - `TypedMemberConstraintBase<T>`:
-    - Replaced `ValidateTypedValue(ObjectValidatorContext, MemberConstraintValidationContext, T value)` with `ValidateTypedValue(MemberConstraintValidationContext, T value)`
-    - Replaced `ValidateMember<TMember>(ObjectValidatorContext, MemberConstraintValidationContext, T, Expression<Func<T, TMember>>, Type)` with `ValidateMember<TMember>(MemberConstraintValidationContext, T, Expression<Func<T, TMember>>, Type)`
+- Object validation
+  - Moved validation attributes from the namespace `Omnifactotum.Validation.Constraints` to `Omnifactotum.Validation.Annotations`
+    - `BaseMemberConstraintAttribute`
+    - `BaseValidatableMemberAttribute`
+    - `MemberConstraintAttribute`
+    - `MemberConstraintAttribute<T>` (.NET 7+)
+    - `MemberItemConstraintAttribute`
+    - `MemberItemConstraintAttribute<T>` (.NET 7+)
+    - `ValidatableMemberAttribute`
+  - `MemberConstraintExtensions`
+    - `AddError(this IMemberConstraint, MemberConstraintValidationContext, string?)` -> `AddError(this IMemberConstraint, MemberConstraintValidationContext, ValidationErrorDetails?)`
+  - `MemberConstraintBase`
+    - `AddError(MemberConstraintValidationContext, string?)` -> `AddError(MemberConstraintValidationContext, ValidationErrorDetails?)`
+    - Removed obsolete method `AddError(ObjectValidatorContext, MemberConstraintValidationContext, string)`
+    - Removed obsolete method `AddDefaultError(ObjectValidatorContext, MemberConstraintValidationContext)`
 
 #### New features
 
-- Object validation:
-  - Added generic `MemberConstraintAttribute<TMemberConstraint>` and `MemberItemConstraintAttribute<TMemberConstraint>` (.NET 7+)
-  - `ObjectValidationResult`: Added the `FailureMessage` property (and used it in `GetException()`)
-- `OmnifactotumCollectionExtensions`: Added `ToUIString()` for `IEnumerable<KeyValuePair<string, string?>>?`
+- Object validation
+  - Added `ValidationErrorDetails` with the `Text` and `Description` properties (used in `MemberConstraintBase.AddError()` and `MemberConstraintExtensions.AddError()`)
+    - A `string` value can be implicitly converted to `ValidationErrorDetails`
+  - Object validation: Added constraints
+    - `NotNullAndNotBlankStringConstraint` (replaces `NotBlankStringConstraint`)
+    - `NotNullAndNotEmptyCollectionConstraint` (replaces `NotNullOrEmptyCollectionConstraint`)
+    - `NotNullAndNotEmptyCollectionConstraint<T>` (replaces `NotNullOrEmptyCollectionConstraint<T>`)
+    - `NotNullAndNotEmptyStringConstraint` (replaces `NotNullOrEmptyStringConstraint`)
+    - `NotNullRegexStringConstraintBase` (replaces `RegexStringConstraintBase`)
+    - `NotNullWebUrlConstraint` (replaces `WebUrlConstraint`)
+    - `OptionalNotBlankStringConstraint`
+    - `OptionalNotEmptyCollectionConstraint`
+    - `OptionalNotEmptyCollectionConstraint<T>`
+    - `OptionalNotEmptyStringConstraint`
+    - `OptionalRegexStringConstraintBase`
+    - `OptionalWebUrlConstraint`
 
-#### Updates and fixes
+#### Deprecations
 
-- Object validation:
-  - Improved the failure message in `NotNullConstraint<T>` (included the `T` type name)
-  - `MemberConstraintValidationContext`: Added a reference to `ObjectValidatorContext`
-- `OmnifactotumCollectionExtensions` and `OmnifactotumStringExtensions`: Implemented safe processing of collections w.r.t. `ImmutableArray<T>`
-- Applied `DebuggerDisplay` annotation:
-  - `FixedSizeDictionary<TKey, TValue, TDeterminant>`
-  - `ReadOnlyItemCollection<T>`
-  - `ReadOnlySet<T>`
-  - `RecursiveProcessingContext`
-  - `SemaphoreSlimBasedLock`
-  - `StopwatchElapsedTimeProvider`
-  - `TemplatedStringResolver`
-  - Validation:
-    - `MemberConstraintValidationContext`
-    - `ObjectValidationException`
-    - `ObjectValidationResult`
-    - `ObjectValidatorContext`
-    - `ValidationErrorCollection`
+- Object validation
+  - `MemberConstraintValidationError`
+    - The `ErrorMessage` property is deprecated in favor of the `Details` property of type `ValidationErrorDetails` (`ErrorMessage` is equivalent to `Details.Text`)
+  - Deprecated constraints
+    - `NotBlankStringConstraint` in favor of `NotNullAndNotBlankStringConstraint`
+    - `NotNullOrEmptyCollectionConstraint` in favor of `NotNullAndNotEmptyCollectionConstraint`
+    - `NotNullOrEmptyCollectionConstraint<T>` in favor of `NotNullAndNotEmptyCollectionConstraint<T>`
+    - `NotNullOrEmptyStringConstraint` in favor of `NotNullAndNotEmptyStringConstraint`
+    - `RegexStringConstraintBase` in favor of `NotNullRegexStringConstraintBase`
+    - `WebUrlConstraint` in favor of `NotNullWebUrlConstraint`
