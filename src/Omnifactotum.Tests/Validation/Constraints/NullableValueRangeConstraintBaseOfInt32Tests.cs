@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using NUnit.Framework;
+using Omnifactotum.Validation;
 using Omnifactotum.Validation.Constraints;
 using static Omnifactotum.FormattableStringFactotum;
 
@@ -32,7 +33,7 @@ internal sealed class NullableValueRangeConstraintBaseOfInt32Tests
         yield return int.MaxValue;
     }
 
-    protected override string GetTypedInvalidValueErrorMessage(int? invalidValue)
+    protected override ValidationErrorDetails GetTypedInvalidValueErrorDetails(int? invalidValue)
         => invalidValue is null
             ? "The value cannot be null."
             : AsInvariant($"The value {invalidValue.Value} is not within the valid range ({{ <-17> .:. <23> }}).");

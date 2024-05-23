@@ -1,5 +1,6 @@
-﻿using System;
-using System.Collections.Immutable;
+﻿using System.Collections.Immutable;
+using System.Diagnostics.CodeAnalysis;
+using static Omnifactotum.FormattableStringFactotum;
 
 namespace Omnifactotum.Validation.Constraints;
 
@@ -13,7 +14,8 @@ namespace Omnifactotum.Validation.Constraints;
 public sealed class NotNullConstraint<T> : TypedMemberConstraintBase<T?>
     where T : class
 {
-    private static readonly string FailureMessage = $"The '{typeof(T).GetQualifiedName()}' value cannot be null.";
+    [SuppressMessage("ReSharper", "StaticMemberInGenericType", Justification = "False detection.")]
+    private static readonly ValidationErrorDetails FailureMessage = AsInvariant($"The '{ValueTypeQualifiedName}' value cannot be null.");
 
     /// <inheritdoc />
     protected override void ValidateTypedValue(MemberConstraintValidationContext memberContext, T? value)

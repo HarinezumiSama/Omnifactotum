@@ -1,6 +1,7 @@
 ﻿using System;
+using Omnifactotum.Validation.Constraints;
 
-namespace Omnifactotum.Validation.Constraints;
+namespace Omnifactotum.Validation.Annotations;
 
 internal interface IBaseMemberConstraintAttribute : IBaseValidatableMemberAttribute
 {

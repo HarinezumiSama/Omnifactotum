@@ -3,12 +3,15 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Collections.Immutable;
 using NUnit.Framework;
+using Omnifactotum.Validation;
 using Omnifactotum.Validation.Constraints;
 
 namespace Omnifactotum.Tests.Validation.Constraints;
 
+#pragma warning disable CS0618 // Type or member is obsolete
 [TestFixture(TestOf = typeof(NotNullOrEmptyCollectionConstraint))]
 internal sealed class NotNullOrEmptyCollectionConstraintTests : TypedConstraintTestsBase<NotNullOrEmptyCollectionConstraint, ICollection?>
+#pragma warning restore CS0618 // Type or member is obsolete
 {
     protected override IEnumerable<ICollection?> GetTypedValidValues()
     {
@@ -39,7 +42,7 @@ internal sealed class NotNullOrEmptyCollectionConstraintTests : TypedConstraintT
         yield return ImmutableArray<int?>.Empty;
     }
 
-    protected override string GetTypedInvalidValueErrorMessage(ICollection? invalidValue)
+    protected override ValidationErrorDetails GetTypedInvalidValueErrorDetails(ICollection? invalidValue)
         => invalidValue is null or ImmutableArray<object?> { IsDefault: true } or ImmutableArray<string> { IsDefault: true }
             or ImmutableArray<int> { IsDefault: true } or ImmutableArray<int?> { IsDefault: true }
             ? "The value cannot be null."

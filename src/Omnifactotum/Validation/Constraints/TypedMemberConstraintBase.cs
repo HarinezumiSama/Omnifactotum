@@ -2,6 +2,7 @@
 using System.Linq;
 using System.Linq.Expressions;
 using Omnifactotum.Annotations;
+using SuppressMessageAttribute = System.Diagnostics.CodeAnalysis.SuppressMessageAttribute;
 
 //// ReSharper disable RedundantNullnessAttributeWithNullableReferenceTypes
 //// ReSharper disable AnnotationRedundancyInHierarchy
@@ -19,6 +20,58 @@ namespace Omnifactotum.Validation.Constraints;
 /// </typeparam>
 public abstract class TypedMemberConstraintBase<T> : MemberConstraintBase
 {
+    private const string StaticMemberInGenericTypeFalseDetectionMessage = "In fact, this field depends on the generic type argument.";
+
+    /// <summary>
+    ///     The type of the value that this constraint can validate.
+    /// </summary>
+    protected static readonly Type ValueType = typeof(T);
+
+    /// <summary>
+    ///     The non-nullable type of the value that this constraint can validate.
+    ///     It is equal to <see cref="ValueType"/> when <typeparamref name="T"/> is a reference type or non-nullable value type;
+    ///     otherwise, it is the underlying type of the nullable value type.
+    /// </summary>
+    /// <seealso cref="ValueType"/>
+    [SuppressMessage("ReSharper", "StaticMemberInGenericType", Justification = StaticMemberInGenericTypeFalseDetectionMessage)]
+    protected static readonly Type NonNullableValueType = Nullable.GetUnderlyingType(ValueType) ?? ValueType;
+
+    /// <summary>
+    ///     The full name of the type of the value that this constraint can validate.
+    /// </summary>
+    /// <seealso cref="ValueType"/>
+    /// <seealso cref="OmnifactotumTypeExtensions.GetFullName"/>
+    [SuppressMessage("ReSharper", "StaticMemberInGenericType", Justification = StaticMemberInGenericTypeFalseDetectionMessage)]
+    protected static readonly string ValueTypeFullName = ValueType.GetFullName();
+
+    /// <summary>
+    ///     The full name of the non-nullable type of the value that this constraint can validate.
+    ///     It is equal to <see cref="ValueTypeFullName"/> when <typeparamref name="T"/> is a reference type or non-nullable value type;
+    ///     otherwise, it is the full name of the underlying type of the nullable value type.
+    /// </summary>
+    /// <seealso cref="NonNullableValueType"/>
+    /// <seealso cref="OmnifactotumTypeExtensions.GetFullName"/>
+    [SuppressMessage("ReSharper", "StaticMemberInGenericType", Justification = StaticMemberInGenericTypeFalseDetectionMessage)]
+    protected static readonly string NonNullableValueTypeFullName = NonNullableValueType.GetFullName();
+
+    /// <summary>
+    ///     The qualified name of the type of the value that this constraint can validate.
+    /// </summary>
+    /// <seealso cref="ValueType"/>
+    /// <seealso cref="OmnifactotumTypeExtensions.GetQualifiedName"/>
+    [SuppressMessage("ReSharper", "StaticMemberInGenericType", Justification = StaticMemberInGenericTypeFalseDetectionMessage)]
+    protected static readonly string ValueTypeQualifiedName = ValueType.GetQualifiedName();
+
+    /// <summary>
+    ///     The qualified name of the non-nullable type of the value that this constraint can validate.
+    ///     It is equal to <see cref="ValueTypeQualifiedName"/> when <typeparamref name="T"/> is a reference type or non-nullable value type;
+    ///     otherwise, it is the qualified name of the underlying type of the nullable value type.
+    /// </summary>
+    /// <seealso cref="NonNullableValueType"/>
+    /// <seealso cref="OmnifactotumTypeExtensions.GetQualifiedName"/>
+    [SuppressMessage("ReSharper", "StaticMemberInGenericType", Justification = StaticMemberInGenericTypeFalseDetectionMessage)]
+    protected static readonly string NonNullableValueTypeQualifiedName = NonNullableValueType.GetQualifiedName();
+
     /// <inheritdoc />
     protected sealed override void ValidateValue(
         MemberConstraintValidationContext memberContext,
@@ -185,9 +238,12 @@ public abstract class TypedMemberConstraintBase<T> : MemberConstraintBase
             var newError = new MemberConstraintValidationError(
                 newContext,
                 error.FailedConstraintType,
-                error.ErrorMessage);
+                error.Details);
 
             objectValidatorContext.AddError(newError);
         }
     }
+
+    internal void InternalValidateTypedValue(MemberConstraintValidationContext memberContext, T value)
+        => ValidateTypedValue(memberContext, value);
 }

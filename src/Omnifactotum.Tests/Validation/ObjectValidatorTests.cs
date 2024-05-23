@@ -230,7 +230,7 @@ internal sealed partial class ObjectValidatorTests
             },
 #endif
             {
-                typeof(NotNullOrEmptyStringConstraint),
+                typeof(NotNullAndNotEmptyStringConstraint),
                 new[] { $"{InstanceExpression}.ContainedValue.NonEmptyValue" }
             },
             {
@@ -467,7 +467,7 @@ internal sealed partial class ObjectValidatorTests
                 }
             },
             {
-                typeof(NotNullOrEmptyStringConstraint),
+                typeof(NotNullAndNotEmptyStringConstraint),
                 new[]
                 {
                     $"{InstanceExpression}.Properties.First().Key"

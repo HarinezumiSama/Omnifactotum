@@ -4,6 +4,7 @@ using System.Globalization;
 using System.Linq;
 using NUnit.Framework;
 using Omnifactotum.Annotations;
+using Omnifactotum.Validation;
 using Omnifactotum.Validation.Constraints;
 
 namespace Omnifactotum.Tests.Validation.Constraints;
@@ -15,23 +16,23 @@ internal abstract class TypedConstraintTestsBase<[MeansImplicitUse] TConstraint,
 
     protected abstract IEnumerable<T> GetTypedInvalidValues();
 
-    protected abstract string GetTypedInvalidValueErrorMessage(T invalidValue);
+    protected abstract ValidationErrorDetails GetTypedInvalidValueErrorDetails(T invalidValue);
 
     protected sealed override IEnumerable<object?> GetValidValues() => GetTypedValidValues().Cast<object?>();
 
     protected sealed override IEnumerable<object?> GetInvalidValues() => GetTypedInvalidValues().Cast<object?>();
 
-    protected override string GetInvalidValueErrorMessage(object? invalidValue)
+    protected override ValidationErrorDetails GetInvalidValueErrorDetails(object? invalidValue)
     {
         var valueType = typeof(T);
 
         switch (invalidValue)
         {
             case null when valueType.IsClass || valueType.IsInterface || valueType.IsNullableValueType():
-                return GetTypedInvalidValueErrorMessage(default!);
+                return GetTypedInvalidValueErrorDetails(default!);
 
             case T castValue:
-                return GetTypedInvalidValueErrorMessage(castValue);
+                return GetTypedInvalidValueErrorDetails(castValue);
         }
 
         var errorMessage = $"Unexpected value or value type: {FormatValue(invalidValue)}. Expected value type: {valueType.GetFullName().ToUIString()}.";

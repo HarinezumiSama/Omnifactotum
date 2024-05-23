@@ -1,4 +1,4 @@
-namespace Omnifactotum.Validation.Constraints;
+namespace Omnifactotum.Validation.Annotations;
 
 internal interface IBaseValidatableMemberAttribute
 {

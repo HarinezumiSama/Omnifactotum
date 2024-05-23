@@ -3,11 +3,14 @@ using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using System.Text.RegularExpressions;
 using NUnit.Framework;
+using Omnifactotum.Validation;
 using Omnifactotum.Validation.Constraints;
 
 namespace Omnifactotum.Tests.Validation.Constraints;
 
+#pragma warning disable CS0618 // Type or member is obsolete
 [TestFixture(TestOf = typeof(RegexStringConstraintBase))]
+#pragma warning restore CS0618 // Type or member is obsolete
 internal sealed class RegexStringConstraintBaseWithIgnoreCaseOptionTests
     : TypedConstraintTestsBase<RegexStringConstraintBaseWithIgnoreCaseOptionTests.RegexStringConstraint, string?>
 {
@@ -37,17 +40,23 @@ internal sealed class RegexStringConstraintBaseWithIgnoreCaseOptionTests
     }
 
     [SuppressMessage("ReSharper", "StringLiteralTypo")]
-    protected override string GetTypedInvalidValueErrorMessage(string? invalidValue)
-        => $"The value {(invalidValue is null ? "null" : $"\"{invalidValue}\"")
-        } does not match the regular expression pattern \"^Foo\" (options: IgnoreCase, ExplicitCapture, Compiled, Singleline).";
+    protected override ValidationErrorDetails GetTypedInvalidValueErrorDetails(string? invalidValue)
+        => new(
+            $"The value {(invalidValue is null ? "null" : $"\"{invalidValue}\"")} does not meet the validation pattern.",
+            $"The value {(invalidValue is null ? "null" : $"\"{invalidValue}\"")
+            } does not match the regular expression pattern \"^Foo\" (options: IgnoreCase, ExplicitCapture, Compiled, Singleline).");
 
+#pragma warning disable CS0618 // Type or member is obsolete
     internal sealed class RegexStringConstraint : RegexStringConstraintBase
+#pragma warning restore CS0618 // Type or member is obsolete
     {
+        public const string Pattern = "^Foo";
+        public const RegexOptions Options = RegexOptions.Compiled | RegexOptions.Singleline | RegexOptions.ExplicitCapture | RegexOptions.IgnoreCase;
+
+        public static readonly TimeSpan Timeout = TimeSpan.FromMilliseconds(73);
+
         public RegexStringConstraint()
-            : base(
-                "^Foo",
-                RegexOptions.Compiled | RegexOptions.Singleline | RegexOptions.ExplicitCapture | RegexOptions.IgnoreCase,
-                TimeSpan.FromMilliseconds(73))
+            : base(Pattern, Options, Timeout)
         {
             // Nothing to do
         }

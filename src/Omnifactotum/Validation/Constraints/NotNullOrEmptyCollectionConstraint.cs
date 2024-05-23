@@ -1,22 +1,18 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 
 namespace Omnifactotum.Validation.Constraints;
 
-/// <summary>
-///     Specifies that the annotated member of type <see cref="ICollection"/> should not be <see langword="null"/> or empty.
-/// </summary>
-public sealed class NotNullOrEmptyCollectionConstraint : TypedMemberConstraintBase<ICollection?>
+/// <inheritdoc cref="NotNullAndNotEmptyCollectionConstraint"/>
+[Obsolete($"Use '{nameof(NotNullAndNotEmptyCollectionConstraint)}' instead.")]
+public sealed class NotNullOrEmptyCollectionConstraint : LegacyTypedMemberConstraintBase<ICollection?, NotNullAndNotEmptyCollectionConstraint>
 {
-    /// <inheritdoc />
-    protected override void ValidateTypedValue(MemberConstraintValidationContext memberContext, ICollection? value)
+    /// <summary>
+    ///     Initializes a new instance of the <see cref="NotNullOrEmptyCollectionConstraint"/> class.
+    /// </summary>
+    public NotNullOrEmptyCollectionConstraint()
+        : base(new NotNullAndNotEmptyCollectionConstraint())
     {
-        if (value is null || ValidationFactotum.IsDefaultImmutableArray(value))
-        {
-            AddError(memberContext, ValidationMessages.CannotBeNull);
-        }
-        else if (value.Count == 0)
-        {
-            AddError(memberContext, ValidationMessages.CollectionCannotBeEmpty);
-        }
+        // Nothing to do
     }
 }

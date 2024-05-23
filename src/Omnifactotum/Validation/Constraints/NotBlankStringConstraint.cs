@@ -2,19 +2,16 @@
 
 namespace Omnifactotum.Validation.Constraints;
 
-/// <summary>
-///     Specifies that the annotated member of the <see cref="String"/> type should not be blank. The string value is considered
-///     blank if it is <see langword="null"/>, <see cref="string.Empty"/>, or consists only of white-space characters.
-/// </summary>
-/// <seealso cref="string.IsNullOrWhiteSpace"/>
-public sealed class NotBlankStringConstraint : TypedMemberConstraintBase<string?>
+/// <inheritdoc cref="NotNullAndNotBlankStringConstraint"/>
+[Obsolete($"Use '{nameof(NotNullAndNotBlankStringConstraint)}' instead.")]
+public sealed class NotBlankStringConstraint : LegacyTypedMemberConstraintBase<string?, NotNullAndNotBlankStringConstraint>
 {
-    /// <inheritdoc />
-    protected override void ValidateTypedValue(MemberConstraintValidationContext memberContext, string? value)
+    /// <summary>
+    ///     Initializes a new instance of the <see cref="NotBlankStringConstraint"/> class.
+    /// </summary>
+    public NotBlankStringConstraint()
+        : base(new NotNullAndNotBlankStringConstraint())
     {
-        if (string.IsNullOrWhiteSpace(value))
-        {
-            AddError(memberContext, ValidationMessages.StringCannotBeNullOrBlank);
-        }
+        // Nothing to do
     }
 }

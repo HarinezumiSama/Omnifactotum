@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using NUnit.Framework;
+using Omnifactotum.Validation;
 using Omnifactotum.Validation.Constraints;
 using static Omnifactotum.FormattableStringFactotum;
 
@@ -30,7 +31,7 @@ internal sealed class ValueRangeConstraintBaseOfInt32Tests
         yield return int.MaxValue;
     }
 
-    protected override string GetTypedInvalidValueErrorMessage(int invalidValue)
+    protected override ValidationErrorDetails GetTypedInvalidValueErrorDetails(int invalidValue)
         => $"The value {invalidValue} is not within the valid range ({{ <-17> .:. <23> }}).";
 
     internal sealed class ValueRangeConstraint : ValueRangeConstraintBase<int>

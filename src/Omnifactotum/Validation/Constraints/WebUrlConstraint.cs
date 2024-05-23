@@ -1,27 +1,18 @@
 ﻿using System;
-using System.Collections.Generic;
 
 namespace Omnifactotum.Validation.Constraints;
 
-/// <summary>
-///     Specifies that the annotated member of the <see cref="String"/> type should be an absolute URI using
-///     the <see cref="Uri.UriSchemeHttp"/> or <see cref="Uri.UriSchemeHttps"/> scheme.
-/// </summary>
-public sealed class WebUrlConstraint : TypedMemberConstraintBase<string?>
+/// <inheritdoc cref="NotNullWebUrlConstraint"/>
+/// <seealso cref="NotNullWebUrlConstraint"/>
+[Obsolete($"Use '{nameof(NotNullWebUrlConstraint)}' instead.")]
+public sealed class WebUrlConstraint : LegacyTypedMemberConstraintBase<string?, NotNullWebUrlConstraint>
 {
-    private static readonly HashSet<string> AllowedSchemes =
-        new(StringComparer.OrdinalIgnoreCase)
-        {
-            Uri.UriSchemeHttp,
-            Uri.UriSchemeHttps
-        };
-
-    /// <inheritdoc />
-    protected override void ValidateTypedValue(MemberConstraintValidationContext memberContext, string? value)
+    /// <summary>
+    ///     Initializes a new instance of the <see cref="WebUrlConstraint" /> class.
+    /// </summary>
+    public WebUrlConstraint()
+        : base(new NotNullWebUrlConstraint())
     {
-        if (!Uri.TryCreate(value, UriKind.Absolute, out var uri) || !AllowedSchemes.Contains(uri.Scheme))
-        {
-            AddError(memberContext, $"The value {FormatValue(value)} is not a valid Web URL.");
-        }
+        // Nothing to do
     }
 }

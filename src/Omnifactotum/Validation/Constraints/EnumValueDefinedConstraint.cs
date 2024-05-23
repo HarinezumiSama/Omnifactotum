@@ -22,7 +22,7 @@ public sealed class EnumValueDefinedConstraint<TEnum> : TypedMemberConstraintBas
         {
             AddError(
                 memberContext,
-                AsInvariant($@"The value {FormatValue(value)} is not defined in the enumeration {typeof(TEnum).GetFullName().ToUIString()}."));
+                AsInvariant($"The value {FormatValue(value)} is not defined in the enumeration '{NonNullableValueTypeQualifiedName}'."));
         }
     }
 }

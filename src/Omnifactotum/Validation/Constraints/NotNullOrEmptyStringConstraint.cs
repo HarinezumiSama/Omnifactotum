@@ -2,17 +2,16 @@
 
 namespace Omnifactotum.Validation.Constraints;
 
-/// <summary>
-///     Specifies that the annotated member of the <see cref="String"/> type should not be <see langword="null"/> or empty.
-/// </summary>
-public sealed class NotNullOrEmptyStringConstraint : TypedMemberConstraintBase<string?>
+/// <inheritdoc cref="NotNullAndNotEmptyStringConstraint"/>
+[Obsolete($"Use '{nameof(NotNullAndNotEmptyStringConstraint)}' instead.")]
+public sealed class NotNullOrEmptyStringConstraint : LegacyTypedMemberConstraintBase<string?, NotNullAndNotEmptyStringConstraint>
 {
-    /// <inheritdoc />
-    protected override void ValidateTypedValue(MemberConstraintValidationContext memberContext, string? value)
+    /// <summary>
+    ///     Initializes a new instance of the <see cref="NotNullOrEmptyStringConstraint"/> class.
+    /// </summary>
+    public NotNullOrEmptyStringConstraint()
+        : base(new NotNullAndNotEmptyStringConstraint())
     {
-        if (string.IsNullOrEmpty(value))
-        {
-            AddError(memberContext, ValidationMessages.StringCannotBeNullOrEmpty);
-        }
+        // Nothing to do
     }
 }

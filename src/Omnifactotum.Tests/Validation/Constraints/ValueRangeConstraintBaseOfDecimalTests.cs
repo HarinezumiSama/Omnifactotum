@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using NUnit.Framework;
+using Omnifactotum.Validation;
 using Omnifactotum.Validation.Constraints;
 
 namespace Omnifactotum.Tests.Validation.Constraints;
@@ -35,7 +36,7 @@ internal sealed class ValueRangeConstraintBaseOfDecimalTests
         yield return decimal.MaxValue;
     }
 
-    protected override string GetTypedInvalidValueErrorMessage(decimal invalidValue)
+    protected override ValidationErrorDetails GetTypedInvalidValueErrorDetails(decimal invalidValue)
         => $"The value {invalidValue} is not within the valid range [1.1 ~ 3.9].";
 
     internal sealed class ValueRangeConstraint : ValueRangeConstraintBase<decimal>

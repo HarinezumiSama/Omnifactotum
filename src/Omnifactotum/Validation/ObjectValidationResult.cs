@@ -60,7 +60,7 @@ public sealed class ObjectValidationResult
     public ReadOnlyCollection<MemberConstraintValidationError> Errors { get; }
 
     /// <summary>
-    ///     Gets the validation failure message based on the validation result, or <see langword="null"/> if validation succeeded.
+    ///     Gets the validation failure message if validation failed, or <see langword="null"/> if validation succeeded.
     /// </summary>
     /// <value>
     ///     The validation failure message if validation failed; or <see langword="null"/> if validation succeeded.
@@ -74,7 +74,7 @@ public sealed class ObjectValidationResult
     }
 
     /// <summary>
-    ///     Gets the validation exception based on the validation result, or <see langword="null"/> if validation succeeded.
+    ///     Gets the validation exception based on the validation result.
     /// </summary>
     /// <returns>
     ///     An <see cref="ObjectValidationException"/> if validation failed; or <see langword="null"/> if validation succeeded.
@@ -97,6 +97,14 @@ public sealed class ObjectValidationResult
         }
     }
 
+    /// <summary>
+    ///     Returns a string that represents this <see cref="ObjectValidationResult"/>.
+    /// </summary>
+    /// <returns>
+    ///     A string that represents this <see cref="ObjectValidationResult"/>.
+    /// </returns>
+    public override string ToString() => ToDebuggerString();
+
     internal string ToDebuggerString() => $"{nameof(IsObjectValid)} = {IsObjectValid}, {nameof(Errors)}.{nameof(Errors.Count)} = {Errors.Count}";
 
     private string? CreateFailureMessage()
@@ -109,7 +117,7 @@ public sealed class ObjectValidationResult
         var errorCount = Errors.Count;
 
         var result = Errors
-            .Select((error, index) => AsInvariant($"[{index + 1}/{errorCount}] [{error.Context.Expression}] {error.ErrorMessage}"))
+            .Select((error, index) => AsInvariant($"[{index + 1}/{errorCount}] [{error.Context.Expression}] {error.Details.Text}"))
             .Join(Environment.NewLine);
 
         return result;

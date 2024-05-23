@@ -4,6 +4,7 @@ using System.Collections.Immutable;
 using System.Collections.ObjectModel;
 using System.Diagnostics.CodeAnalysis;
 using Omnifactotum.Annotations;
+using Omnifactotum.Validation.Annotations;
 using Omnifactotum.Validation.Constraints;
 
 namespace Omnifactotum.Tests.Validation;
@@ -222,7 +223,7 @@ internal sealed partial class ObjectValidatorTests
             set;
         }
 
-        [MemberConstraint(typeof(NotNullOrEmptyCollectionConstraint))]
+        [MemberConstraint(typeof(NotNullAndNotEmptyCollectionConstraint))]
         [MemberItemConstraint(typeof(NotNullConstraint))]
         public ImmutableArray<BaseAnotherSimpleData> ImmutableMultipleDataItems
         {
@@ -269,7 +270,7 @@ internal sealed partial class ObjectValidatorTests
         }
 
         [MemberConstraint(typeof(NotNullConstraint))]
-        [MemberConstraint(typeof(NotNullOrEmptyStringConstraint))]
+        [MemberConstraint(typeof(NotNullAndNotEmptyStringConstraint))]
         public string? NonEmptyValue
         {
             [UsedImplicitly]

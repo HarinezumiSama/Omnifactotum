@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using NUnit.Framework;
+using Omnifactotum.Validation;
 using Omnifactotum.Validation.Constraints;
 using static Omnifactotum.FormattableStringFactotum;
 
@@ -20,8 +21,8 @@ internal sealed class NullableEnumValueDefinedConstraintTests : TypedConstraintT
         yield return (ConsoleColor)int.MaxValue;
     }
 
-    protected override string GetTypedInvalidValueErrorMessage(ConsoleColor? invalidValue)
+    protected override ValidationErrorDetails GetTypedInvalidValueErrorDetails(ConsoleColor? invalidValue)
         => invalidValue is null
             ? "The value cannot be null."
-            : AsInvariant($@"The value {(int)invalidValue} is not defined in the enumeration ""System.ConsoleColor"".");
+            : AsInvariant($"The value {(int)invalidValue} is not defined in the enumeration 'ConsoleColor'.");
 }

@@ -21,24 +21,17 @@ public sealed class MemberConstraintValidationError
     /// <param name="failedConstraintType">
     ///     The type of the constraint that the value failed against.
     /// </param>
-    /// <param name="errorMessage">
-    ///     The error message.
+    /// <param name="details">
+    ///     The validation error details.
     /// </param>
     internal MemberConstraintValidationError(
         [NotNull] MemberConstraintValidationContext context,
         [NotNull] Type failedConstraintType,
-        [NotNull] string errorMessage)
+        [NotNull] ValidationErrorDetails details)
     {
-        if (string.IsNullOrWhiteSpace(errorMessage))
-        {
-            throw new ArgumentException(
-                @"The value can be neither empty nor whitespace-only string nor null.",
-                nameof(errorMessage));
-        }
-
         Context = context ?? throw new ArgumentNullException(nameof(context));
         FailedConstraintType = failedConstraintType.ValidateConstraintType();
-        ErrorMessage = errorMessage;
+        Details = details ?? throw new ArgumentNullException(nameof(details));
     }
 
     /// <summary>
@@ -57,7 +50,14 @@ public sealed class MemberConstraintValidationError
     ///     Gets the error message.
     /// </summary>
     [NotNull]
-    public string ErrorMessage { get; }
+    [Obsolete($"Use the '{nameof(Details)}.{nameof(ValidationErrorDetails.Text)}' property instead.")]
+    public string ErrorMessage => Details.Text;
+
+    /// <summary>
+    ///     Gets the error text.
+    /// </summary>
+    [NotNull]
+    public ValidationErrorDetails Details { get; }
 
     /// <summary>
     ///     Returns a <see cref="System.String" /> that represents
@@ -67,5 +67,5 @@ public sealed class MemberConstraintValidationError
     ///     A <see cref="System.String" /> that represents this <see cref="MemberConstraintValidationError"/>.
     /// </returns>
     public override string ToString()
-        => AsInvariant($@"{{ {GetType().GetQualifiedName()}: Failed {FailedConstraintType.GetQualifiedName().ToUIString()} for [{Context.Expression}] }}");
+        => AsInvariant($"{{ {GetType().GetQualifiedName()}: {FailedConstraintType.GetQualifiedName().ToUIString()} failed for [{Context.Expression}] }}");
 }

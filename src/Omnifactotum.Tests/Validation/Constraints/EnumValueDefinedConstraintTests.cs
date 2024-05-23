@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using NUnit.Framework;
+using Omnifactotum.Validation;
 using Omnifactotum.Validation.Constraints;
 using static Omnifactotum.FormattableStringFactotum;
 
@@ -18,6 +19,6 @@ internal sealed class EnumValueDefinedConstraintTests : TypedConstraintTestsBase
         yield return (ConsoleColor)Enum.ToObject(typeof(ConsoleColor), int.MaxValue);
     }
 
-    protected override string GetTypedInvalidValueErrorMessage(ConsoleColor invalidValue)
-        => AsInvariant($@"The value {(int)invalidValue} is not defined in the enumeration ""System.ConsoleColor"".");
+    protected override ValidationErrorDetails GetTypedInvalidValueErrorDetails(ConsoleColor invalidValue)
+        => AsInvariant($"The value {(int)invalidValue} is not defined in the enumeration 'ConsoleColor'.");
 }

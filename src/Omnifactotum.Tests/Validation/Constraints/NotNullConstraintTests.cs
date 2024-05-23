@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Collections.Immutable;
 using NUnit.Framework;
+using Omnifactotum.Validation;
 using Omnifactotum.Validation.Constraints;
 
 namespace Omnifactotum.Tests.Validation.Constraints;
@@ -39,5 +40,5 @@ internal sealed class NotNullConstraintTests : ConstraintTestsBase<NotNullConstr
         yield return default(ImmutableArray<int?>);
     }
 
-    protected override string GetInvalidValueErrorMessage(object? invalidValue) => "The value cannot be null.";
+    protected override ValidationErrorDetails GetInvalidValueErrorDetails(object? invalidValue) => "The value cannot be null.";
 }

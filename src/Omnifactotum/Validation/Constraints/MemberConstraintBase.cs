@@ -98,60 +98,12 @@ public abstract class MemberConstraintBase : IMemberConstraint
     /// <param name="memberContext">
     ///     The context of the validated member to create an error for.
     /// </param>
-    /// <param name="failureMessage">
-    ///     The message describing the validation error, or <see langword="null"/> to use a default message.
+    /// <param name="details">
+    ///     The validation error details, or <see langword="null"/> to use the default error details.
     /// </param>
-    protected void AddError([NotNull] MemberConstraintValidationContext memberContext, [CanBeNull] string? failureMessage)
+    protected void AddError([NotNull] MemberConstraintValidationContext memberContext, [CanBeNull] ValidationErrorDetails? details)
     {
         //// ReSharper disable once InvokeAsExtensionMethod :: JIC, to avoid ambiguity between instance and extension method
-        MemberConstraintExtensions.AddError(this, memberContext, failureMessage);
-    }
-
-    /// <summary>
-    ///     Creates a new <see cref="MemberConstraintValidationError"/> instance using the specified member context
-    ///     and failure message and then adds the created error to the validator context.
-    /// </summary>
-    /// <param name="validatorContext">
-    ///     The context of the <see cref="ObjectValidator"/>.
-    /// </param>
-    /// <param name="memberContext">
-    ///     The context of the validated member to create an error for.
-    /// </param>
-    /// <param name="failureMessage">
-    ///     The message describing the validation error.
-    /// </param>
-    [Obsolete($"Use `{nameof(AddError)}({nameof(MemberConstraintValidationContext)}, {nameof(String)}?)` instead.")]
-    [System.Diagnostics.CodeAnalysis.ExcludeFromCodeCoverage]
-    protected void AddError(
-        [NotNull] ObjectValidatorContext validatorContext,
-        [NotNull] MemberConstraintValidationContext memberContext,
-        [NotNull] string failureMessage)
-    {
-        //// ReSharper disable once ConditionIsAlwaysTrueOrFalseAccordingToNullableAPIContract
-        Factotum.Assert(validatorContext is not null && ReferenceEquals(validatorContext, memberContext.ValidatorContext));
-
-        AddError(memberContext, failureMessage);
-    }
-
-    /// <summary>
-    ///     Creates a new <see cref="MemberConstraintValidationError"/> instance using the specified member context
-    ///     and default failure message and then adds the created error to the validator context.
-    /// </summary>
-    /// <param name="validatorContext">
-    ///     The context of the <see cref="ObjectValidator"/>.
-    /// </param>
-    /// <param name="memberContext">
-    ///     The context of the validated member to create an error for.
-    /// </param>
-    [Obsolete($"Use `{nameof(AddError)}({nameof(MemberConstraintValidationContext)}, {nameof(String)}?)` instead.")]
-    [System.Diagnostics.CodeAnalysis.ExcludeFromCodeCoverage]
-    protected void AddDefaultError(
-        [NotNull] ObjectValidatorContext validatorContext,
-        [NotNull] MemberConstraintValidationContext memberContext)
-    {
-        //// ReSharper disable once ConditionIsAlwaysTrueOrFalseAccordingToNullableAPIContract
-        Factotum.Assert(validatorContext is not null && ReferenceEquals(validatorContext, memberContext.ValidatorContext));
-
-        AddError(memberContext, null);
+        MemberConstraintExtensions.AddError(this, memberContext, details);
     }
 }

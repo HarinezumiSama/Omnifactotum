@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using NUnit.Framework;
 using Omnifactotum.NUnit;
+using Omnifactotum.Validation;
 using Omnifactotum.Validation.Constraints;
 using static Omnifactotum.FormattableStringFactotum;
 
@@ -21,6 +22,6 @@ internal sealed class OptionalEnumValueDefinedConstraintTests : TypedConstraintT
         yield return (ConsoleColor)int.MaxValue;
     }
 
-    protected override string GetTypedInvalidValueErrorMessage(ConsoleColor? invalidValue)
-        => AsInvariant($@"The value {(int)invalidValue.AssertNotNull()} is not defined in the enumeration ""System.ConsoleColor"".");
+    protected override ValidationErrorDetails GetTypedInvalidValueErrorDetails(ConsoleColor? invalidValue)
+        => AsInvariant($"The value {(int)invalidValue.AssertNotNull()} is not defined in the enumeration 'ConsoleColor'.");
 }

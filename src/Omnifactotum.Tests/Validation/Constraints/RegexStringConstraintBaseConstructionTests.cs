@@ -7,7 +7,9 @@ using Omnifactotum.Validation.Constraints;
 
 namespace Omnifactotum.Tests.Validation.Constraints;
 
+#pragma warning disable CS0618 // Type or member is obsolete
 [TestFixture(TestOf = typeof(RegexStringConstraintBase))]
+#pragma warning restore CS0618 // Type or member is obsolete
 internal sealed class RegexStringConstraintBaseConstructionTests
 {
     [Test]
@@ -42,7 +44,9 @@ internal sealed class RegexStringConstraintBaseConstructionTests
             Throws.TypeOf<ArgumentOutOfRangeException>());
     }
 
+#pragma warning disable CS0618 // Type or member is obsolete
     private sealed class CustomArgumentsConstraint : RegexStringConstraintBase
+#pragma warning restore CS0618 // Type or member is obsolete
     {
         public CustomArgumentsConstraint(string pattern, RegexOptions options, TimeSpan? timeout)
             : base(pattern, options, timeout)

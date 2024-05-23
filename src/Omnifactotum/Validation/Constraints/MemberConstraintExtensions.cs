@@ -1,9 +1,10 @@
 ﻿using System;
+using System.Collections.Generic;
 using Omnifactotum.Annotations;
 using static Omnifactotum.FormattableStringFactotum;
 
-//// ReSharper disable RedundantNullnessAttributeWithNullableReferenceTypes
 //// ReSharper disable AnnotationRedundancyInHierarchy
+//// ReSharper disable RedundantNullnessAttributeWithNullableReferenceTypes
 
 namespace Omnifactotum.Validation.Constraints;
 
@@ -12,6 +13,8 @@ namespace Omnifactotum.Validation.Constraints;
 /// </summary>
 public static class MemberConstraintExtensions
 {
+    private static readonly Dictionary<Type, ValidationErrorDetails> ConstraintTypeToDefaultErrorDetailsMap = new();
+
     /// <summary>
     ///     Creates a new <see cref="MemberConstraintValidationError"/> instance using the specified member context
     ///     and failure message and then adds the created error to the validator context.
@@ -22,13 +25,13 @@ public static class MemberConstraintExtensions
     /// <param name="memberContext">
     ///     The context of the validated member to create an error for.
     /// </param>
-    /// <param name="failureMessage">
-    ///     The message describing the validation error, or <see langword="null"/> to use a default message.
+    /// <param name="details">
+    ///     The validation error details, or <see langword="null"/> to use the default error details.
     /// </param>
     public static void AddError(
         [NotNull] this IMemberConstraint constraint,
         [NotNull] MemberConstraintValidationContext memberContext,
-        [CanBeNull] string? failureMessage)
+        [CanBeNull] ValidationErrorDetails? details)
     {
         if (constraint is null)
         {
@@ -41,12 +44,19 @@ public static class MemberConstraintExtensions
         }
 
         var failedConstraintType = constraint.GetType();
+        var resolvedErrorText = details ?? GetDefaultErrorDetails(failedConstraintType);
 
-        var resolvedFailureMessage = failureMessage.IsNullOrWhiteSpace()
-            ? AsInvariant($"Validation of the constraint {failedConstraintType.GetFullName().ToUIString()} failed.")
-            : failureMessage;
-
-        var error = new MemberConstraintValidationError(memberContext, failedConstraintType, resolvedFailureMessage);
+        var error = new MemberConstraintValidationError(memberContext, failedConstraintType, resolvedErrorText);
         memberContext.ValidatorContext.AddError(error);
+    }
+
+    private static ValidationErrorDetails GetDefaultErrorDetails(this Type constraintType)
+    {
+        lock (ConstraintTypeToDefaultErrorDetailsMap)
+        {
+            return ConstraintTypeToDefaultErrorDetailsMap.GetOrCreateValue(constraintType, CreateValue);
+        }
+
+        static ValidationErrorDetails CreateValue(Type type) => AsInvariant($"Validation of the constraint {type.GetFullName().ToUIString()} failed.");
     }
 }

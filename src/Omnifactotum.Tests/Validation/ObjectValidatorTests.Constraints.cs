@@ -65,7 +65,7 @@ internal sealed partial class ObjectValidatorTests
         // Making sure that an internal constructor is allowed for a member constraint
         [UsedImplicitly]
         internal MapContainerPropertiesPairConstraint()
-            : base(typeof(NotNullOrEmptyStringConstraint), typeof(NotNullConstraint<SimpleContainer<int?>>))
+            : base(typeof(NotNullAndNotEmptyStringConstraint), typeof(NotNullConstraint<SimpleContainer<int?>>))
         {
             // Nothing to do
         }
@@ -74,7 +74,7 @@ internal sealed partial class ObjectValidatorTests
     // ReSharper disable once ClassCanBeSealed.Local
     private class CustomNotAbcStringMapKeyConstraint : KeyValuePairConstraintBase<string, SimpleContainer<int?>>
     {
-        // Making sure that an protected internal constructor is allowed for a member constraint
+        // Making sure that a protected internal constructor is allowed for a member constraint
         [UsedImplicitly]
         protected internal CustomNotAbcStringMapKeyConstraint()
             : base(typeof(CustomNotAbcStringConstraint), typeof(IgnoredConstraint<SimpleContainer<int?>>))

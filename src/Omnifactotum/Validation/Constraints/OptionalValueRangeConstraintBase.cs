@@ -6,7 +6,7 @@ namespace Omnifactotum.Validation.Constraints;
 
 /// <summary>
 ///     Represents a base constraint specifying that the annotated member of the nullable type <typeparamref name="T"/>
-///     should be either <see langword="null"/> or a value within the specified range.
+///     may be <see langword="null"/>, but otherwise should be within the specified range.
 /// </summary>
 public abstract class OptionalValueRangeConstraintBase<T> : TypedMemberConstraintBase<T?>
     where T : struct, IComparable

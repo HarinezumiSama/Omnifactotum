@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using NUnit.Framework;
+using Omnifactotum.Validation;
 using Omnifactotum.Validation.Constraints;
 using static Omnifactotum.FormattableStringFactotum;
 
@@ -37,7 +38,7 @@ internal sealed class NullableValueRangeConstraintBaseOfDecimalTests
         yield return decimal.MaxValue;
     }
 
-    protected override string GetTypedInvalidValueErrorMessage(decimal? invalidValue)
+    protected override ValidationErrorDetails GetTypedInvalidValueErrorDetails(decimal? invalidValue)
         => invalidValue is null
             ? "The value cannot be null."
             : AsInvariant($"The value {invalidValue.Value} is not within the valid range [1.1 ~ 3.9].");

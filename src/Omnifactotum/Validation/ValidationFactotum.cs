@@ -182,7 +182,7 @@ internal static class ValidationFactotum
         lock (MemberConstraintFactoryMap)
         {
             var createInstance = MemberConstraintFactoryMap[constraintType];
-            return createInstance();
+            return createInstance().EnsureNotNull();
         }
     }
 

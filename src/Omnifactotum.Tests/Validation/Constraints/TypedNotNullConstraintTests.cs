@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using NUnit.Framework;
+using Omnifactotum.Validation;
 using Omnifactotum.Validation.Constraints;
 
 namespace Omnifactotum.Tests.Validation.Constraints;
@@ -18,5 +19,5 @@ internal sealed class TypedNotNullConstraintTests : TypedConstraintTestsBase<Not
         yield return null;
     }
 
-    protected override string GetTypedInvalidValueErrorMessage(string? invalidValue) => "The 'string' value cannot be null.";
+    protected override ValidationErrorDetails GetTypedInvalidValueErrorDetails(string? invalidValue) => "The 'string' value cannot be null.";
 }

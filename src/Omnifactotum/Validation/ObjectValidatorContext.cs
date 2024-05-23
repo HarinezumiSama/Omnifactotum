@@ -66,7 +66,7 @@ public sealed class ObjectValidatorContext
 
         lock (_constraintCache)
         {
-            return _constraintCache.GetOrCreateValue(constraintType, type => ValidationFactotum.CreateMemberConstraint(type).EnsureNotNull());
+            return _constraintCache.GetOrCreateValue(constraintType, ValidationFactotum.CreateMemberConstraint);
         }
     }
 

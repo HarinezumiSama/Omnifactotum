@@ -1,11 +1,12 @@
 ﻿#if NET7_0_OR_GREATER
 using System;
+using Omnifactotum.Validation.Constraints;
 
 //// ReSharper disable RedundantNullnessAttributeWithNullableReferenceTypes
 //// ReSharper disable AnnotationRedundancyInHierarchy
 //// ReSharper disable RedundantAttributeUsageProperty
 
-namespace Omnifactotum.Validation.Constraints;
+namespace Omnifactotum.Validation.Annotations;
 
 /// <summary>
 ///     Specifies how the annotated member item is validated.

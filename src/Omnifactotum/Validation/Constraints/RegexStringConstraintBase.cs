@@ -11,30 +11,26 @@ using StringSyntaxAttribute = System.Diagnostics.CodeAnalysis.StringSyntaxAttrib
 
 namespace Omnifactotum.Validation.Constraints;
 
-/// <summary>
-///     Specifies that the annotated member of the <see cref="String"/> type should match the specified regular expression pattern.
-/// </summary>
-/// <seealso cref="Regex"/>
-/// <seealso cref="RegexOptions"/>
-public abstract class RegexStringConstraintBase : TypedMemberConstraintBase<string?>
+/// <inheritdoc cref="NotNullRegexStringConstraintBase"/>
+/// <seealso cref="NotNullRegexStringConstraintBase"/>
+[Obsolete($"Use '{nameof(NotNullRegexStringConstraintBase)}' instead.")]
+public abstract class RegexStringConstraintBase : LegacyTypedMemberConstraintBase<string?, NotNullRegexStringConstraintBase>
 {
     /// <summary>
     ///     The default <see cref="RegexOptions"/> used in the <see cref="RegexStringConstraintBase"/> constructor.
     /// </summary>
     [PublicAPI]
-    public const RegexOptions DefaultRegexOptions = RegexOptions.Singleline | RegexOptions.Compiled;
+    public const RegexOptions DefaultRegexOptions = NotNullRegexStringConstraintBase.DefaultRegexOptions;
 
     /// <summary>
     ///     The default regular expression match evaluation timeout.
     /// </summary>
     [PublicAPI]
-    public static readonly TimeSpan DefaultRegexTimeout = TimeSpan.FromMilliseconds(100);
-
-    private readonly string _pattern;
-    private readonly Regex _regex;
+    public static readonly TimeSpan DefaultRegexTimeout = NotNullRegexStringConstraintBase.DefaultRegexTimeout;
 
     /// <summary>
-    ///     Initializes a new instance of the <see cref="RegexStringConstraintBase" /> class using the specified pattern, options, and timeout.
+    ///     Initializes a new instance of the <see cref="RegexStringConstraintBase" /> class
+    ///     using the specified regular expression pattern, options, and timeout.
     /// </summary>
     /// <param name="pattern">
     ///     The regular expression pattern that the annotated member should satisfy.
@@ -45,6 +41,7 @@ public abstract class RegexStringConstraintBase : TypedMemberConstraintBase<stri
     /// <param name="timeout">
     ///     The regular expression match evaluation timeout, or <see langword="null"/> to use <see cref="DefaultRegexTimeout"/>.
     /// </param>
+    /// <seealso cref="DefaultRegexOptions"/>
     /// <seealso cref="DefaultRegexTimeout"/>
     protected RegexStringConstraintBase(
 #if NET7_0_OR_GREATER
@@ -53,24 +50,22 @@ public abstract class RegexStringConstraintBase : TypedMemberConstraintBase<stri
         [NotNull] [RegexPattern] string pattern,
         RegexOptions options = DefaultRegexOptions,
         TimeSpan? timeout = null)
+        : base(new NotNullRegexStringConstraint(pattern, options, timeout))
     {
-        if (timeout.HasValue && timeout <= TimeSpan.Zero)
-        {
-            throw new ArgumentOutOfRangeException(nameof(timeout), timeout, @"The value, when not null, must be greater than zero.");
-        }
-
-        _pattern = pattern ?? throw new ArgumentNullException(nameof(pattern));
-        _regex = new Regex(pattern, options, timeout ?? DefaultRegexTimeout);
+        // Nothing to do
     }
 
-    /// <inheritdoc />
-    protected sealed override void ValidateTypedValue(MemberConstraintValidationContext memberContext, string? value)
+    private protected override Type ActualConstraintType => typeof(NotNullRegexStringConstraint);
+
+    private sealed class NotNullRegexStringConstraint : NotNullRegexStringConstraintBase
     {
-        if (value is null || !_regex.IsMatch(value))
+        public NotNullRegexStringConstraint(
+            string pattern,
+            RegexOptions options = DefaultRegexOptions,
+            TimeSpan? timeout = null)
+            : base(pattern, options, timeout)
         {
-            AddError(
-                memberContext,
-                $"The value {FormatValue(value)} does not match the regular expression pattern {_pattern.ToUIString()} (options: {_regex.Options}).");
+            // Nothing to do
         }
     }
 }
