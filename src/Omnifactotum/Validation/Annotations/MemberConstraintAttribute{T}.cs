@@ -1,5 +1,6 @@
 ﻿#if NET7_0_OR_GREATER
 using System;
+using Omnifactotum.Annotations;
 using Omnifactotum.Validation.Constraints;
 
 //// ReSharper disable RedundantNullnessAttributeWithNullableReferenceTypes
@@ -13,7 +14,7 @@ namespace Omnifactotum.Validation.Annotations;
 /// </summary>
 [AttributeUsage(AttributeTargets.Field | AttributeTargets.Property, AllowMultiple = true, Inherited = true)]
 [CLSCompliant(false)]
-public sealed class MemberConstraintAttribute<TMemberConstraint> : BaseMemberConstraintAttribute, IMemberConstraintAttribute
+public sealed class MemberConstraintAttribute<[MeansImplicitUse] TMemberConstraint> : BaseMemberConstraintAttribute, IMemberConstraintAttribute
     where TMemberConstraint : IMemberConstraint
 {
     /// <summary>
