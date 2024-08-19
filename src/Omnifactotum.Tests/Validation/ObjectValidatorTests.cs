@@ -339,6 +339,20 @@ internal sealed partial class ObjectValidatorTests
         Assert.That(() => validationException.Message, Is.EqualTo(expectedExceptionMessage));
 
         AssertLastMemberContexts();
+
+        ClearLastMemberContexts();
+
+        Assert.That(
+            () => ObjectValidator.EnsureValid(dataContainer),
+            Throws
+                .TypeOf<ObjectValidationException>()
+                .With
+                .Property(ValidationResultPropertyName)
+                .With
+                .Property(nameof(ObjectValidationResult.FailureMessage))
+                .EqualTo(expectedExceptionMessage));
+
+        AssertLastMemberContexts();
     }
 
     [Test]
@@ -434,6 +448,16 @@ internal sealed partial class ObjectValidatorTests
             .AssertNotNull();
 
         Assert.That(() => utcDateErrorExpression.Compile().Invoke(dataContainer), Is.EqualTo(dataContainer.ContainedValue.StartDate));
+
+        Assert.That(
+            () => ObjectValidator.EnsureValid(dataContainer, explicitInstanceExpression),
+            Throws
+                .TypeOf<ObjectValidationException>()
+                .With
+                .Property(ValidationResultPropertyName)
+                .With
+                .Property(nameof(ObjectValidationResult.FailureMessage))
+                .EqualTo(validationResult.FailureMessage));
     }
 
     [Test]
@@ -525,6 +549,20 @@ internal sealed partial class ObjectValidatorTests
         Assert.That(() => (string?)notAbcStringError.Context.CreateLambdaExpression("value").Compile().Invoke(mapContainer), Is.EqualTo("abc"));
 
         AssertLastMemberContexts();
+
+        ClearLastMemberContexts();
+
+        Assert.That(
+            () => ObjectValidator.EnsureValid(mapContainer),
+            Throws
+                .TypeOf<ObjectValidationException>()
+                .With
+                .Property(ValidationResultPropertyName)
+                .With
+                .Property(nameof(ObjectValidationResult.FailureMessage))
+                .EqualTo(validationResult.FailureMessage));
+
+        AssertLastMemberContexts();
     }
 
     private static void ClearLastMemberContexts()
@@ -610,6 +648,10 @@ internal sealed partial class ObjectValidatorTests
         AssertLastMemberContexts();
 
         ClearLastMemberContexts();
+        ObjectValidator.EnsureValid(data!);
+        AssertLastMemberContexts();
+
+        ClearLastMemberContexts();
         var validationResult2 = ObjectValidator.Validate(data!, "customExpression-5d804913def74aa2b441496a9e92dba6").AssertNotNull();
 
         Assert.That(() => validationResult2.GetException(), Is.Null);
@@ -617,6 +659,10 @@ internal sealed partial class ObjectValidatorTests
         Assert.That(() => validationResult2.Errors.Count, Is.EqualTo(0));
         Assert.That(() => validationResult2.IsObjectValid, Is.True);
         Assert.That(() => validationResult2.EnsureSucceeded(), Throws.Nothing);
+        AssertLastMemberContexts();
+
+        ClearLastMemberContexts();
+        ObjectValidator.EnsureValid(data!, "customExpression-5ccb64b2000d4da2be33aCca8e2e42f3");
         AssertLastMemberContexts();
     }
 }

@@ -92,6 +92,33 @@ public static class ObjectValidator
     }
 
     /// <summary>
+    ///     Validates the specified instance and if validation failed, throws an <see cref="ObjectValidationException"/>.
+    /// </summary>
+    /// <typeparam name="T">
+    ///     The type of the instance to validate.
+    /// </typeparam>
+    /// <param name="instance">
+    ///     The instance to validate.
+    /// </param>
+    /// <param name="instanceExpression">
+    ///     <para>
+    ///         A string value representing the expression passed as the value of the <paramref name="instance"/> parameter.
+    ///         It's later used in the error validation message to display the path to properties that failed validation.
+    ///     </para>
+    ///     <para>
+    ///         <b>NOTE</b>: By default, the value for this parameter is automatically injected by the compiler (.NET 5+ and C# 10+).
+    ///         Pass the value explicitly only if you wish to override it.
+    ///     </para>
+    /// </param>
+    public static void EnsureValid<T>(
+        [DisallowNull] T instance,
+#if NET5_0_OR_GREATER
+        [CallerArgumentExpression(nameof(instance))]
+#endif
+        string? instanceExpression = null)
+        => Validate(instance, instanceExpression).EnsureSucceeded();
+
+    /// <summary>
     ///     Validates the specified instance.
     /// </summary>
     /// <typeparam name="T">
@@ -109,6 +136,8 @@ public static class ObjectValidator
     /// <returns>
     ///     An <see cref="ObjectValidationResult"/> representing the validation result.
     /// </returns>
+    [Pure]
+    [Omnifactotum.Annotations.Pure]
     internal static ObjectValidationResult Validate<T>(
         [DisallowNull] T instance,
         string instanceExpression,
