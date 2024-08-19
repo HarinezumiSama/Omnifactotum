@@ -14,6 +14,9 @@ internal sealed class OmnifactotumStringExtensionsTests
 {
     private const string? NullString = null;
 
+    private const int DefaultMinimumSecuredPartLength = OmnifactotumStringExtensions.DefaultMinimumSecuredPartLength;
+    private const int DefaultLoggedPartLength = OmnifactotumStringExtensions.DefaultLoggedPartLength;
+
     [Test]
     [TestCase(null, true)]
     [TestCase("", true)]
@@ -316,13 +319,14 @@ internal sealed class OmnifactotumStringExtensionsTests
     [Test]
     [TestCase(null, "null")]
     [TestCase("", @"""""")]
-    [TestCase(@" A ""B"" 'C'", @""" A """"B"""" 'C'""")]
+    [TestCase("6a079154-32c9-40da-A0AE-b64691f327fd", @"""6a079154-32c9-40da-A0AE-b64691f327fd""")]
+    [TestCase(@" A ""B"" 'C'-`d`/«3»", @""" A """"B"""" 'C'-`d`/«3»""")]
     public void TestToUIString(string? value, string expectedResult) => Assert.That(value.ToUIString, Is.EqualTo(expectedResult));
 
     [Test]
     [TestCase(null, "null")]
-    [TestCase("", @"{ Length = 0 }")]
-    [TestCase("b054ab0a11eb9889c8aB693", @"{ Length = 23 }")]
+    [TestCase("", "{ Length = 0 }")]
+    [TestCase("b054ab0a11eb9889c8aB693", "{ Length = 23 }")]
     [TestCase("4C15538a053f4b89a1961A5e", @"""4C15...1A5e""")]
     [TestCase("a9251868d527450384d88c3a39de1958", @"""a925...1958""")]
     [SuppressMessage("ReSharper", "ArgumentsStyleNamedExpression")]
@@ -332,26 +336,26 @@ internal sealed class OmnifactotumStringExtensionsTests
 
         Assert.That(
             () => value.ToSecuredUIString(
-                loggedPartLength: OmnifactotumStringExtensions.DefaultLoggedPartLength,
-                minimumSecuredPartLength: OmnifactotumStringExtensions.DefaultMinimumSecuredPartLength),
+                loggedPartLength: DefaultLoggedPartLength,
+                minimumSecuredPartLength: DefaultMinimumSecuredPartLength),
             Is.EqualTo(expectedResult));
     }
 
     [Test]
     [TestCase(null, 1, 1, "null")]
-    [TestCase("", 1, 1, @"{ Length = 0 }")]
+    [TestCase("", 1, 1, "{ Length = 0 }")]
     [TestCase("bQ3", 1, 1, @"""b...3""")]
-    [TestCase("bQ3", 2, 1, @"{ Length = 3 }")]
-    [TestCase("bQ3", 1, 2, @"{ Length = 3 }")]
+    [TestCase("bQ3", 2, 1, "{ Length = 3 }")]
+    [TestCase("bQ3", 1, 2, "{ Length = 3 }")]
     [TestCase(@"4C""5538a053f4b""9a1961A5e", 1, 1, @"""4...e""")]
     [TestCase(@"4C""5538a053f4b""9a1961A5e", 2, 1, @"""4C...5e""")]
     [TestCase(@"4C""5538a053f4b""9a1961A5e", 3, 1, @"""4C""""...A5e""")]
     [TestCase(@"4C""5538a053f4b""9a1961A5e", 4, 1, @"""4C""""5...1A5e""")]
     [TestCase(@"4C""5538a053f4b""9a1961A5e", 11, 1, @"""4C""""5538a053...b""""9a1961A5e""")]
     [TestCase(@"4C""5538a053f4b""9a1961A5e", 11, 2, @"""4C""""5538a053...b""""9a1961A5e""")]
-    [TestCase(@"4C""5538a053f4b""9a1961A5e", 12, 1, @"{ Length = 24 }")]
+    [TestCase(@"4C""5538a053f4b""9a1961A5e", 12, 1, "{ Length = 24 }")]
     [TestCase(@"4C""5538a053f4b""9a1961A5e", 3, 18, @"""4C""""...A5e""")]
-    [TestCase(@"4C""5538a053f4b""9a1961A5e", 3, 19, @"{ Length = 24 }")]
+    [TestCase(@"4C""5538a053f4b""9a1961A5e", 3, 19, "{ Length = 24 }")]
     [TestCase("a9251868d527450384d88c3a39de1958", 1, 1, @"""a...8""")]
     [SuppressMessage("ReSharper", "ArgumentsStyleNamedExpression")]
     public void TestToSecuredUIStringWhenValidSpecifiedOptionalParametersThenSucceeds(
@@ -364,26 +368,26 @@ internal sealed class OmnifactotumStringExtensionsTests
             Is.EqualTo(expectedResult));
 
     [Test]
-    [TestCase(null, 0, OmnifactotumStringExtensions.DefaultMinimumSecuredPartLength, "loggedPartLength")]
-    [TestCase(null, -1, OmnifactotumStringExtensions.DefaultMinimumSecuredPartLength, "loggedPartLength")]
-    [TestCase(null, int.MinValue, OmnifactotumStringExtensions.DefaultMinimumSecuredPartLength, "loggedPartLength")]
-    [TestCase("", 0, OmnifactotumStringExtensions.DefaultMinimumSecuredPartLength, "loggedPartLength")]
-    [TestCase("", -1, OmnifactotumStringExtensions.DefaultMinimumSecuredPartLength, "loggedPartLength")]
-    [TestCase("", int.MinValue, OmnifactotumStringExtensions.DefaultMinimumSecuredPartLength, "loggedPartLength")]
-    [TestCase("Value1", 0, OmnifactotumStringExtensions.DefaultMinimumSecuredPartLength, "loggedPartLength")]
-    [TestCase("Value1", -1, OmnifactotumStringExtensions.DefaultMinimumSecuredPartLength, "loggedPartLength")]
-    [TestCase("Value1", int.MinValue, OmnifactotumStringExtensions.DefaultMinimumSecuredPartLength, "loggedPartLength")]
-    [TestCase(null, OmnifactotumStringExtensions.DefaultLoggedPartLength, 0, "minimumSecuredPartLength")]
-    [TestCase(null, OmnifactotumStringExtensions.DefaultLoggedPartLength, -1, "minimumSecuredPartLength")]
-    [TestCase(null, OmnifactotumStringExtensions.DefaultLoggedPartLength, int.MinValue, "minimumSecuredPartLength")]
-    [TestCase("", OmnifactotumStringExtensions.DefaultLoggedPartLength, 0, "minimumSecuredPartLength")]
-    [TestCase("", OmnifactotumStringExtensions.DefaultLoggedPartLength, -1, "minimumSecuredPartLength")]
-    [TestCase("", OmnifactotumStringExtensions.DefaultLoggedPartLength, int.MinValue, "minimumSecuredPartLength")]
-    [TestCase("Value2", OmnifactotumStringExtensions.DefaultLoggedPartLength, 0, "minimumSecuredPartLength")]
-    [TestCase("Value2", OmnifactotumStringExtensions.DefaultLoggedPartLength, -1, "minimumSecuredPartLength")]
-    [TestCase("Value2", OmnifactotumStringExtensions.DefaultLoggedPartLength, int.MinValue, "minimumSecuredPartLength")]
+    [TestCase(null, 0, DefaultMinimumSecuredPartLength, "loggedPartLength")]
+    [TestCase(null, -1, DefaultMinimumSecuredPartLength, "loggedPartLength")]
+    [TestCase(null, int.MinValue, DefaultMinimumSecuredPartLength, "loggedPartLength")]
+    [TestCase("", 0, DefaultMinimumSecuredPartLength, "loggedPartLength")]
+    [TestCase("", -1, DefaultMinimumSecuredPartLength, "loggedPartLength")]
+    [TestCase("", int.MinValue, DefaultMinimumSecuredPartLength, "loggedPartLength")]
+    [TestCase("Value1", 0, DefaultMinimumSecuredPartLength, "loggedPartLength")]
+    [TestCase("Value1", -1, DefaultMinimumSecuredPartLength, "loggedPartLength")]
+    [TestCase("Value1", int.MinValue, DefaultMinimumSecuredPartLength, "loggedPartLength")]
+    [TestCase(null, DefaultLoggedPartLength, 0, "minimumSecuredPartLength")]
+    [TestCase(null, DefaultLoggedPartLength, -1, "minimumSecuredPartLength")]
+    [TestCase(null, DefaultLoggedPartLength, int.MinValue, "minimumSecuredPartLength")]
+    [TestCase("", DefaultLoggedPartLength, 0, "minimumSecuredPartLength")]
+    [TestCase("", DefaultLoggedPartLength, -1, "minimumSecuredPartLength")]
+    [TestCase("", DefaultLoggedPartLength, int.MinValue, "minimumSecuredPartLength")]
+    [TestCase("Value2", DefaultLoggedPartLength, 0, "minimumSecuredPartLength")]
+    [TestCase("Value2", DefaultLoggedPartLength, -1, "minimumSecuredPartLength")]
+    [TestCase("Value2", DefaultLoggedPartLength, int.MinValue, "minimumSecuredPartLength")]
     [SuppressMessage("ReSharper", "ArgumentsStyleNamedExpression")]
-    public void TestToSecuredUIStringWhenInvalidSpecifiedOptionalParametersThenSucceeds(
+    public void TestToSecuredUIStringWhenInvalidSpecifiedOptionalParametersThenThrows(
         string? value,
         int loggedPartLength,
         int minimumSecuredPartLength,
@@ -673,7 +677,7 @@ internal sealed class OmnifactotumStringExtensionsTests
     [TestCase("\t")]
     [TestCase("\r")]
     [TestCase("\n")]
-    [TestCase(@"breaKFAst/завтрак/朝ごはん/petiT-DÉjeuner/早餐/")]
+    [TestCase("breaKFAst/завтрак/朝ごはん/petiT-DÉjeuner/早餐/")]
     [SuppressMessage("ReSharper", "StringLiteralTypo")]
     public void TestToSecureString(string? plainText)
     {

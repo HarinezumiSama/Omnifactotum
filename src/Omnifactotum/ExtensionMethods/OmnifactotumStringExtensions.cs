@@ -310,7 +310,7 @@ public static class OmnifactotumStringExtensions
 
     /// <summary>
     ///     <para>
-    ///         Converts the specified string to its UI representation.
+    ///         Converts the specified string value to its UI representation.
     ///     </para>
     ///     <list type="table">
     ///         <listheader>
@@ -337,6 +337,7 @@ public static class OmnifactotumStringExtensions
     /// <returns>
     ///     The UI representation of the specified string.
     /// </returns>
+    /// <seealso cref="OmnifactotumStringBuilderExtensions.AppendUIString"/>
     /// <example>
     ///     <code>
     /// <![CDATA[
@@ -376,7 +377,7 @@ public static class OmnifactotumStringExtensions
 
     /// <summary>
     ///     <para>
-    ///         Converts the specified string to its secured UI representation.
+    ///         Converts the specified string value to its secured UI representation.
     ///     </para>
     ///     <para>
     ///         Depending on the input string and the <paramref name="loggedPartLength"/> and <paramref name="minimumSecuredPartLength"/> parameters,
@@ -405,11 +406,12 @@ public static class OmnifactotumStringExtensions
     /// <returns>
     ///     The secured UI representation of the specified string.
     /// </returns>
+    /// <seealso cref="OmnifactotumStringBuilderExtensions.AppendSecuredUIString"/>
     [Pure]
     [Omnifactotum.Annotations.Pure]
     [NotNull]
     public static string ToSecuredUIString(
-        this string? value,
+        [CanBeNull] this string? value,
         int loggedPartLength = DefaultLoggedPartLength,
         int minimumSecuredPartLength = DefaultMinimumSecuredPartLength)
     {
@@ -423,16 +425,16 @@ public static class OmnifactotumStringExtensions
             throw new ArgumentOutOfRangeException(nameof(minimumSecuredPartLength), minimumSecuredPartLength, "The value must be greater than zero.");
         }
 
-        var minimumLoggedValueLength = checked(loggedPartLength * 2 + minimumSecuredPartLength);
-
         if (value is null)
         {
             return OmnifactotumRepresentationConstants.NullValueRepresentation;
         }
 
+        var minimumLoggedValueLength = checked(loggedPartLength * 2 + minimumSecuredPartLength);
+
         var result = value.Length >= minimumLoggedValueLength
             ? ToUIString($"{value.Substring(0, loggedPartLength)}...{value.Substring(value.Length - loggedPartLength)}")
-            : $"{{ {nameof(string.Length)} = {value.Length} }}";
+            : $"{{ {nameof(value.Length)} = {value.Length} }}";
 
         return result;
     }
