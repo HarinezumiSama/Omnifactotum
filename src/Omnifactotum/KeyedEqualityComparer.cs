@@ -27,7 +27,7 @@ public sealed class KeyedEqualityComparer<T, TKey> : IEqualityComparer<T>, IEqua
     ///     A reference to a method that provides a key for an object being compared.
     /// </param>
     /// <param name="keyComparer">
-    ///     The equality comparer to use when comparing objects' keys; or <see langword="null"/> to use the default
+    ///     The equality comparer used for comparing object keys; or <see langword="null"/> to use the default
     ///     equality comparer for type <typeparamref name="TKey"/>.
     /// </param>
     public KeyedEqualityComparer(
@@ -45,41 +45,60 @@ public sealed class KeyedEqualityComparer<T, TKey> : IEqualityComparer<T>, IEqua
     public Func<T, TKey> KeySelector { get; }
 
     /// <summary>
-    ///     Gets the equality comparer to use when comparing objects' keys.
+    ///     Gets the equality comparer used for comparing object keys.
     /// </summary>
     [NotNull]
     public IEqualityComparer<TKey> KeyComparer { get; }
 
-    /// <inheritdoc />
-    public bool Equals([CanBeNull] T? x, [CanBeNull] T? y)
+    /// <summary>
+    ///     Determines whether the specified objects are equal.
+    /// </summary>
+    /// <param name="left">
+    ///     The first object of type <typeparamref name="T"/> to compare.
+    /// </param>
+    /// <param name="right">
+    ///     The second object of type <typeparamref name="T"/> to compare.
+    /// </param>
+    /// <returns>
+    ///     <see langword="true"/> if the specified objects are equal; otherwise, <see langword="false"/>.
+    /// </returns>
+    public bool Equals([CanBeNull] T? left, [CanBeNull] T? right)
     {
         if (typeof(T).IsValueType)
         {
-            if (x is null || y is null)
+            if (left is null || right is null)
             {
-                return x is null && y is null;
+                return left is null && right is null;
             }
         }
         else
         {
-            if (ReferenceEquals(x, y))
+            if (ReferenceEquals(left, right))
             {
                 return true;
             }
 
-            if (x is null || y is null)
+            if (left is null || right is null)
             {
                 return false;
             }
         }
 
-        var keyX = KeySelector(x);
-        var keyY = KeySelector(y);
+        var leftKey = KeySelector(left);
+        var rightKey = KeySelector(right);
 
-        return KeyComparer.Equals(keyX, keyY);
+        return KeyComparer.Equals(leftKey, rightKey);
     }
 
-    /// <inheritdoc />
+    /// <summary>
+    ///     Returns a hash code for the specified object of type <typeparamref name="T"/>.
+    /// </summary>
+    /// <param name="obj">
+    ///     The object of type <typeparamref name="T"/> for which a hash code is to be returned.
+    /// </param>
+    /// <returns>
+    ///     A hash code for the specified object of type <typeparamref name="T"/>.
+    /// </returns>
     public int GetHashCode([CanBeNull] T? obj)
     {
         if (obj is null)

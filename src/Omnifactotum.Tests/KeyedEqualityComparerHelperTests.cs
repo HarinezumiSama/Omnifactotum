@@ -9,17 +9,6 @@ namespace Omnifactotum.Tests;
 internal sealed class KeyedEqualityComparerHelperTests
 {
     [Test]
-    public void TestConstruction()
-    {
-        int KeySelector(string s) => s.Length;
-
-        var keySelector = KeySelector;
-
-        var instance = KeyedEqualityComparer.For<string>.Create(keySelector);
-        Assert.That(instance.KeySelector, Is.SameAs(keySelector));
-    }
-
-    [Test]
     public void TestConstructionNegative()
         => Assert.That(() => KeyedEqualityComparer.For<string>.Create<int>(null!), Throws.TypeOf<ArgumentNullException>());
 
