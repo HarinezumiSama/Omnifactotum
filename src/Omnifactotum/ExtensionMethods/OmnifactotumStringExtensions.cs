@@ -871,4 +871,94 @@ public static class OmnifactotumStringExtensions
 
         return value.AsSpan().TransformMultilineString(transformLine, normalizeLineEndings, cancellationToken);
     }
+
+    /// <summary>
+    ///     Converts the specified <see cref="string"/> to title case (except for words that are entirely in upper case, which are considered to be acronyms).
+    /// </summary>
+    /// <param name="value">
+    ///     The string to convert to title case.
+    /// </param>
+    /// <param name="cultureInfo">
+    ///     A <see cref="CultureInfo"/> to use for conversion, or <see langword="null"/> to use <see cref="CultureInfo.CurrentCulture"/>.
+    /// </param>
+    /// <returns>
+    ///     The specified string converted to title case.
+    /// </returns>
+    /// <seealso cref="ToTitleCaseForced"/>
+    /// <seealso cref="ToTitleCaseInvariant"/>
+    /// <seealso cref="ToTitleCaseInvariantForced"/>
+    [ContractAnnotation("value:null => null; value:notnull => notnull", true)]
+    [Pure]
+    [Omnifactotum.Annotations.Pure]
+    [MethodImpl(OmnifactotumConstants.MethodOptimizationOptions.Standard)]
+    [CanBeNull]
+    [return: NotNullIfNotNull(nameof(value))]
+    public static string? ToTitleCase([CanBeNull] this string? value, [CanBeNull] CultureInfo? cultureInfo = null)
+        => value is null ? null : (cultureInfo ?? CultureInfo.CurrentCulture).TextInfo.ToTitleCase(value);
+
+    /// <summary>
+    ///     Converts the specified <see cref="string"/> to title case (including words that are entirely in upper case).
+    /// </summary>
+    /// <param name="value">
+    ///     The string to convert to title case.
+    /// </param>
+    /// <param name="cultureInfo">
+    ///     A <see cref="CultureInfo"/> to use for conversion, or <see langword="null"/> to use <see cref="CultureInfo.CurrentCulture"/>.
+    /// </param>
+    /// <returns>
+    ///     The specified string converted to title case.
+    /// </returns>
+    /// <seealso cref="ToTitleCase"/>
+    /// <seealso cref="ToTitleCaseInvariant"/>
+    /// <seealso cref="ToTitleCaseInvariantForced"/>
+    [ContractAnnotation("value:null => null; value:notnull => notnull", true)]
+    [Pure]
+    [Omnifactotum.Annotations.Pure]
+    [MethodImpl(OmnifactotumConstants.MethodOptimizationOptions.Standard)]
+    [CanBeNull]
+    [return: NotNullIfNotNull(nameof(value))]
+    public static string? ToTitleCaseForced([CanBeNull] this string? value, [CanBeNull] CultureInfo? cultureInfo = null)
+        => value?.ToLower(cultureInfo).ToTitleCase(cultureInfo);
+
+    /// <summary>
+    ///     Converts the specified <see cref="string"/> to title case using <see cref="CultureInfo.InvariantCulture"/>
+    ///     (except for words that are entirely in upper case, which are considered to be acronyms).
+    /// </summary>
+    /// <param name="value">
+    ///     The string to convert to title case.
+    /// </param>
+    /// <returns>
+    ///     The specified string converted to title case.
+    /// </returns>
+    /// <seealso cref="ToTitleCase"/>
+    /// <seealso cref="ToTitleCaseForced"/>
+    /// <seealso cref="ToTitleCaseInvariantForced"/>
+    [ContractAnnotation("value:null => null; value:notnull => notnull", true)]
+    [Pure]
+    [Omnifactotum.Annotations.Pure]
+    [MethodImpl(OmnifactotumConstants.MethodOptimizationOptions.Standard)]
+    [CanBeNull]
+    [return: NotNullIfNotNull(nameof(value))]
+    public static string? ToTitleCaseInvariant([CanBeNull] this string? value) => value.ToTitleCase(CultureInfo.InvariantCulture);
+
+    /// <summary>
+    ///     Converts the specified <see cref="string"/> to title case using <see cref="CultureInfo.InvariantCulture"/>
+    ///     (including words that are entirely in upper case).
+    /// </summary>
+    /// <param name="value">
+    ///     The string to convert to title case.
+    /// </param>
+    /// <returns>
+    ///     The specified string converted to title case.
+    /// </returns>
+    /// <seealso cref="ToTitleCase"/>
+    /// <seealso cref="ToTitleCaseForced"/>
+    /// <seealso cref="ToTitleCaseInvariant"/>
+    [ContractAnnotation("value:null => null; value:notnull => notnull", true)]
+    [Pure]
+    [Omnifactotum.Annotations.Pure]
+    [MethodImpl(OmnifactotumConstants.MethodOptimizationOptions.Standard)]
+    [CanBeNull]
+    [return: NotNullIfNotNull(nameof(value))]
+    public static string? ToTitleCaseInvariantForced([CanBeNull] this string? value) => value.ToTitleCaseForced(CultureInfo.InvariantCulture);
 }

@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Collections.Immutable;
 using System.Diagnostics.CodeAnalysis;
+using System.Globalization;
 using System.Linq;
 using System.Net;
 using NUnit.Framework;
@@ -118,6 +119,7 @@ internal sealed class OmnifactotumStringExtensionsTests
     }
 
     [Test]
+    [SuppressMessage("ReSharper", "VariableLengthStringHexEscapeSequence")]
     public void TestWhereNotEmptyWhenValidArgumentThenSucceeds()
     {
         ExecuteTestCase(Array.Empty<string?>(), Array.Empty<string>());
@@ -153,6 +155,7 @@ internal sealed class OmnifactotumStringExtensionsTests
     }
 
     [Test]
+    [SuppressMessage("ReSharper", "VariableLengthStringHexEscapeSequence")]
     public void TestWhereNotBlankWhenValidArgumentThenSucceeds()
     {
         ExecuteTestCase(Array.Empty<string?>(), Array.Empty<string>());
@@ -692,4 +695,81 @@ internal sealed class OmnifactotumStringExtensionsTests
         var actualResult = new NetworkCredential(string.Empty, secureString).Password;
         Assert.That(actualResult, Is.EqualTo(plainText));
     }
+
+    [SetCulture("uk-UA")]
+    [Test]
+    [TestCase(null, null, null)]
+    [TestCase(null, null, null)]
+    [TestCase(null, "", null)]
+    [TestCase(null, "en-US", null)]
+    [TestCase(null, "fr-FR", null)]
+    [TestCase("", null, "")]
+    [TestCase("", "", "")]
+    [TestCase("", "en-US", "")]
+    [TestCase("", "fr-FR", "")]
+    [TestCase(
+        "THE mErry wIves of wIndsor. DIE lUstigen wEiber vOn wIndsor. LES jOyeuses cOmmeres dE wIndsor. ВЕСЕЛІ дРужини вІндзора.",
+        null,
+        "THE Merry Wives Of Windsor. DIE Lustigen Weiber Von Windsor. LES Joyeuses Commeres De Windsor. ВЕСЕЛІ Дружини Віндзора.")]
+    [TestCase(
+        "THE mErry wIves of wIndsor. DIE lUstigen wEiber vOn wIndsor. LES jOyeuses cOmmeres dE wIndsor. ВЕСЕЛІ дРужини вІндзора.",
+        "",
+        "THE Merry Wives Of Windsor. DIE Lustigen Weiber Von Windsor. LES Joyeuses Commeres De Windsor. ВЕСЕЛІ Дружини Віндзора.")]
+    [TestCase(
+        "THE mErry wIves of wIndsor. DIE lUstigen wEiber vOn wIndsor. LES jOyeuses cOmmeres dE wIndsor. ВЕСЕЛІ дРужини вІндзора.",
+        "en-US",
+        "THE Merry Wives Of Windsor. DIE Lustigen Weiber Von Windsor. LES Joyeuses Commeres De Windsor. ВЕСЕЛІ Дружини Віндзора.")]
+    [TestCase(
+        "THE mErry wIves of wIndsor. DIE lUstigen wEiber vOn wIndsor. LES jOyeuses cOmmeres dE wIndsor. ВЕСЕЛІ дРужини вІндзора.",
+        "fr-FR",
+        "THE Merry Wives Of Windsor. DIE Lustigen Weiber Von Windsor. LES Joyeuses Commeres De Windsor. ВЕСЕЛІ Дружини Віндзора.")]
+    public void TestToTitleCase(string? value, string? cultureName, string? expectedResult)
+        => Assert.That(() => value.ToTitleCase(cultureName is null ? null : new CultureInfo(cultureName)), Is.EqualTo(expectedResult));
+
+    [SetCulture("uk-UA")]
+    [Test]
+    [TestCase(null, null, null)]
+    [TestCase(null, null, null)]
+    [TestCase(null, "", null)]
+    [TestCase(null, "en-US", null)]
+    [TestCase(null, "fr-FR", null)]
+    [TestCase("", null, "")]
+    [TestCase("", "", "")]
+    [TestCase("", "en-US", "")]
+    [TestCase("", "fr-FR", "")]
+    [TestCase(
+        "THE mErry wIves of wIndsor. DIE lUstigen wEiber vOn wIndsor. LES jOyeuses cOmmeres dE wIndsor. ВЕСЕЛІ дРужини вІндзора.",
+        null,
+        "The Merry Wives Of Windsor. Die Lustigen Weiber Von Windsor. Les Joyeuses Commeres De Windsor. Веселі Дружини Віндзора.")]
+    [TestCase(
+        "THE mErry wIves of wIndsor. DIE lUstigen wEiber vOn wIndsor. LES jOyeuses cOmmeres dE wIndsor. ВЕСЕЛІ дРужини вІндзора.",
+        "",
+        "The Merry Wives Of Windsor. Die Lustigen Weiber Von Windsor. Les Joyeuses Commeres De Windsor. Веселі Дружини Віндзора.")]
+    [TestCase(
+        "THE mErry wIves of wIndsor. DIE lUstigen wEiber vOn wIndsor. LES jOyeuses cOmmeres dE wIndsor. ВЕСЕЛІ дРужини вІндзора.",
+        "en-US",
+        "The Merry Wives Of Windsor. Die Lustigen Weiber Von Windsor. Les Joyeuses Commeres De Windsor. Веселі Дружини Віндзора.")]
+    [TestCase(
+        "THE mErry wIves of wIndsor. DIE lUstigen wEiber vOn wIndsor. LES jOyeuses cOmmeres dE wIndsor. ВЕСЕЛІ дРужини вІндзора.",
+        "fr-FR",
+        "The Merry Wives Of Windsor. Die Lustigen Weiber Von Windsor. Les Joyeuses Commeres De Windsor. Веселі Дружини Віндзора.")]
+    public void TestToTitleCaseForced(string? value, string? cultureName, string? expectedResult)
+        => Assert.That(() => value.ToTitleCaseForced(cultureName is null ? null : new CultureInfo(cultureName)), Is.EqualTo(expectedResult));
+
+    [Test]
+    [TestCase(null, null)]
+    [TestCase("", "")]
+    [TestCase(
+        "THE mErry wIves of wIndsor. DIE lUstigen wEiber vOn wIndsor. LES jOyeuses cOmmeres dE wIndsor. ВЕСЕЛІ дРужини вІндзора.",
+        "THE Merry Wives Of Windsor. DIE Lustigen Weiber Von Windsor. LES Joyeuses Commeres De Windsor. ВЕСЕЛІ Дружини Віндзора.")]
+    public void TestToTitleCaseInvariant(string? value, string? expectedResult) => Assert.That(value.ToTitleCaseInvariant, Is.EqualTo(expectedResult));
+
+    [Test]
+    [TestCase(null, null)]
+    [TestCase("", "")]
+    [TestCase(
+        "THE mErry wIves of wIndsor. DIE lUstigen wEiber vOn wIndsor. LES jOyeuses cOmmeres dE wIndsor. ВЕСЕЛІ дРужини вІндзора.",
+        "The Merry Wives Of Windsor. Die Lustigen Weiber Von Windsor. Les Joyeuses Commeres De Windsor. Веселі Дружини Віндзора.")]
+    public void TestToTitleCaseInvariantForced(string? value, string? expectedResult)
+        => Assert.That(value.ToTitleCaseInvariantForced, Is.EqualTo(expectedResult));
 }
