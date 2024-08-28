@@ -1,4 +1,5 @@
-﻿using Omnifactotum;
+﻿using System.Runtime.CompilerServices;
+using Omnifactotum;
 using Omnifactotum.Annotations;
 using PureAttribute = System.Diagnostics.Contracts.PureAttribute;
 
@@ -12,15 +13,18 @@ namespace System;
 /// </summary>
 public static class OmnifactotumCharExtensions
 {
+    private static readonly string SingleQuoteCharUIString = new(OmnifactotumConstants.SingleQuoteChar, 4);
+
     /// <summary>
-    ///     Converts the specified character to its UI representation.
+    ///     Converts the specified character to its UI representation as follows.
+    ///     The result is the input value enclosed in the single quotes (<c>'</c>).
+    ///     If the value is the single quote character, then it is duplicated in the result.
     /// </summary>
     /// <param name="value">
     ///     The character value to convert.
     /// </param>
     /// <returns>
-    ///     An input value enclosed in the single quote characters (<c>'</c>). If the value
-    ///     is the single quote character, then it is duplicated in the result.
+    ///     A UI string representation of the specified character.
     /// </returns>
     /// <example>
     ///     <code>
@@ -44,10 +48,10 @@ public static class OmnifactotumCharExtensions
     /// </example>
     [Pure]
     [Omnifactotum.Annotations.Pure]
+    [MethodImpl(OmnifactotumConstants.MethodOptimizationOptions.Standard)]
     [NotNull]
     public static string ToUIString(this char value)
-        => string.Concat(
-            OmnifactotumConstants.SingleQuote,
-            value == OmnifactotumConstants.SingleQuoteChar ? OmnifactotumConstants.DoubleSingleQuote : value.ToString(),
-            OmnifactotumConstants.SingleQuote);
+        => value == OmnifactotumConstants.SingleQuoteChar
+            ? SingleQuoteCharUIString
+            : new string(stackalloc[] { OmnifactotumConstants.SingleQuoteChar, value, OmnifactotumConstants.SingleQuoteChar });
 }
