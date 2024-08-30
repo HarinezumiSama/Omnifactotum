@@ -9,54 +9,25 @@
 - [Complete Release Notes](https://github.com/HarinezumiSama/Omnifactotum/blob/master/src/Omnifactotum.ReleaseNotes.md)
 - [ReadMe](https://github.com/HarinezumiSama/Omnifactotum/blob/master/README.md)
 
-### Changes in 0.20.0 (since 0.19.0)
+---
 
-#### Breaking changes
-
-- Object validation
-  - Moved validation attributes from the namespace `Omnifactotum.Validation.Constraints` to `Omnifactotum.Validation.Annotations`
-    - `BaseMemberConstraintAttribute`
-    - `BaseValidatableMemberAttribute`
-    - `MemberConstraintAttribute`
-    - `MemberConstraintAttribute<T>` (.NET 7+)
-    - `MemberItemConstraintAttribute`
-    - `MemberItemConstraintAttribute<T>` (.NET 7+)
-    - `ValidatableMemberAttribute`
-  - `MemberConstraintExtensions`
-    - `AddError(this IMemberConstraint, MemberConstraintValidationContext, string?)` -> `AddError(this IMemberConstraint, MemberConstraintValidationContext, ValidationErrorDetails?)`
-  - `MemberConstraintBase`
-    - `AddError(MemberConstraintValidationContext, string?)` -> `AddError(MemberConstraintValidationContext, ValidationErrorDetails?)`
-    - Removed obsolete method `AddError(ObjectValidatorContext, MemberConstraintValidationContext, string)`
-    - Removed obsolete method `AddDefaultError(ObjectValidatorContext, MemberConstraintValidationContext)`
+### Changes in 0.21.0 (since 0.20.0)
 
 #### New features
 
-- Object validation
-  - Added `ValidationErrorDetails` with the `Text` and `Description` properties (used in `MemberConstraintBase.AddError()` and `MemberConstraintExtensions.AddError()`)
-    - A `string` value can be implicitly converted to `ValidationErrorDetails`
-  - Object validation: Added constraints
-    - `NotNullAndNotBlankStringConstraint` (replaces `NotBlankStringConstraint`)
-    - `NotNullAndNotEmptyCollectionConstraint` (replaces `NotNullOrEmptyCollectionConstraint`)
-    - `NotNullAndNotEmptyCollectionConstraint<T>` (replaces `NotNullOrEmptyCollectionConstraint<T>`)
-    - `NotNullAndNotEmptyStringConstraint` (replaces `NotNullOrEmptyStringConstraint`)
-    - `NotNullRegexStringConstraintBase` (replaces `RegexStringConstraintBase`)
-    - `NotNullWebUrlConstraint` (replaces `WebUrlConstraint`)
-    - `OptionalNotBlankStringConstraint`
-    - `OptionalNotEmptyCollectionConstraint`
-    - `OptionalNotEmptyCollectionConstraint<T>`
-    - `OptionalNotEmptyStringConstraint`
-    - `OptionalRegexStringConstraintBase`
-    - `OptionalWebUrlConstraint`
+- Added `OmnifactotumStringBuilderExtensions` with `StringBuilder AppendUIString(this StringBuilder, string?)` and `StringBuilder AppendSecuredUIString(this StringBuilder, string?, int, int)`
+- `ObjectValidator`: Added `EnsureValid<T>(...)` method (shortcut for `ObjectValidator.Validate(...).EnsureSucceeded()`)
+- Added `KeyedComparer<T, TKey>` (implements `IComparer<T>` and `IComparer`)
+- Added `OmnifactotumNullableCharExtensions` with `ToUIString(this char? value)` method
+- `OmnifactotumStringExtensions`: Added
+  - `ToTitleCase(this string?, CultureInfo?)`
+  - `ToTitleCaseForced(this string?, CultureInfo?)`
+  - `ToTitleCaseInvariant(this string?)`
+  - `ToTitleCaseInvariantForced(this string?)`
+- `OmnifactotumExceptionExtensions`: Added `EnumerateRecursively(this Exception?)` extension method
 
-#### Deprecations
+#### Updates and fixes
 
-- Object validation
-  - `MemberConstraintValidationError`
-    - The `ErrorMessage` property is deprecated in favor of the `Details` property of type `ValidationErrorDetails` (`ErrorMessage` is equivalent to `Details.Text`)
-  - Deprecated constraints
-    - `NotBlankStringConstraint` in favor of `NotNullAndNotBlankStringConstraint`
-    - `NotNullOrEmptyCollectionConstraint` in favor of `NotNullAndNotEmptyCollectionConstraint`
-    - `NotNullOrEmptyCollectionConstraint<T>` in favor of `NotNullAndNotEmptyCollectionConstraint<T>`
-    - `NotNullOrEmptyStringConstraint` in favor of `NotNullAndNotEmptyStringConstraint`
-    - `RegexStringConstraintBase` in favor of `NotNullRegexStringConstraintBase`
-    - `WebUrlConstraint` in favor of `NotNullWebUrlConstraint`
+- Applied `MeansImplicitUse` annotation to `TMemberConstraint` in `MemberConstraintAttribute<TMemberConstraint>`
+- Optimized `OmnifactotumCharExtensions.ToUIString(this char)`
+- `IsOriginatedFrom<TOriginatingException>(this Exception?)` and `IsOriginatedFrom(this Exception?, Type)` are now using `OmnifactotumExceptionExtensions.EnumerateRecursively(this Exception?)`

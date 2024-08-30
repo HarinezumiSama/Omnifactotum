@@ -16,13 +16,14 @@
 
 ### Statistics
 
-- [![NuGet package version](https://img.shields.io/nuget/v/Omnifactotum.svg) ![NuGet package downloads](https://img.shields.io/nuget/dt/Omnifactotum.svg)](https://www.nuget.org/packages/Omnifactotum/) [![Omnifactotum on fuget.org](https://www.fuget.org/packages/Omnifactotum/badge.svg)](https://www.fuget.org/packages/Omnifactotum) ![Libraries.io SourceRank](https://img.shields.io/librariesio/sourcerank/nuget/Omnifactotum) ![Dependents (via libraries.io)](https://img.shields.io/librariesio/dependents/nuget/Omnifactotum)
+- NuGet package
+  - [![NuGet package version](https://img.shields.io/nuget/v/Omnifactotum.svg) ![NuGet package downloads](https://img.shields.io/nuget/dt/Omnifactotum.svg)](https://www.nuget.org/packages/Omnifactotum/) ![Libraries.io SourceRank](https://img.shields.io/librariesio/sourcerank/nuget/Omnifactotum) ![Dependents (via libraries.io)](https://img.shields.io/librariesio/dependents/nuget/Omnifactotum)
 
-- ![GitHub commits since latest release (by SemVer)](https://img.shields.io/github/commits-since/HarinezumiSama/Omnifactotum/latest)
-
-- [![GitHub](https://img.shields.io/github/license/HarinezumiSama/Omnifactotum)](https://github.com/HarinezumiSama/Omnifactotum/blob/master/LICENSE) ![Total lines of code](https://img.shields.io/tokei/lines/github/HarinezumiSama/Omnifactotum) ![GitHub code size in bytes](https://img.shields.io/github/languages/code-size/HarinezumiSama/Omnifactotum) ![GitHub language count](https://img.shields.io/github/languages/count/HarinezumiSama/Omnifactotum) ![GitHub top language](https://img.shields.io/github/languages/top/HarinezumiSama/Omnifactotum) ![GitHub repo size](https://img.shields.io/github/repo-size/HarinezumiSama/Omnifactotum)
-
-- [![GitHub open issues](https://img.shields.io/github/issues-raw/HarinezumiSama/Omnifactotum)](https://github.com/HarinezumiSama/Omnifactotum/issues?q=is%3Aissue+is%3Aopen) [![GitHub open pull requests](https://img.shields.io/github/issues-pr-raw/HarinezumiSama/Omnifactotum)](https://github.com/HarinezumiSama/Omnifactotum/pulls?q=is%3Apr+is%3Aopen)
+- GitHub
+  - ![GitHub Release](https://img.shields.io/github/v/release/HarinezumiSama/Omnifactotum)
+     ![GitHub commits since latest release (by SemVer)](https://img.shields.io/github/commits-since/HarinezumiSama/Omnifactotum/latest) ![GitHub Downloads (all assets, all releases)](https://img.shields.io/github/downloads/HarinezumiSama/Omnifactotum/total)
+  - [![GitHub](https://img.shields.io/github/license/HarinezumiSama/Omnifactotum)](https://github.com/HarinezumiSama/Omnifactotum/blob/master/LICENSE) ![GitHub code size in bytes](https://img.shields.io/github/languages/code-size/HarinezumiSama/Omnifactotum) ![GitHub language count](https://img.shields.io/github/languages/count/HarinezumiSama/Omnifactotum) ![GitHub top language](https://img.shields.io/github/languages/top/HarinezumiSama/Omnifactotum) ![GitHub repo size](https://img.shields.io/github/repo-size/HarinezumiSama/Omnifactotum)
+  - [![GitHub open issues](https://img.shields.io/github/issues-raw/HarinezumiSama/Omnifactotum)](https://github.com/HarinezumiSama/Omnifactotum/issues?q=is%3Aissue+is%3Aopen) [![GitHub open pull requests](https://img.shields.io/github/issues-pr-raw/HarinezumiSama/Omnifactotum)](https://github.com/HarinezumiSama/Omnifactotum/pulls?q=is%3Apr+is%3Aopen)
 
 ### The *non-exhaustive* list of .NET classes covered
 
@@ -33,9 +34,13 @@
   - [**`Type`**](https://docs.microsoft.com/en-us/dotnet/api/system.type) extension methods
 - Array (**`T[]`**) and collection ([**`IEnumerable<T>`**](https://docs.microsoft.com/en-us/dotnet/api/system.collections.generic.ienumerable-1) and [**`ICollection<T>`**](https://docs.microsoft.com/en-us/dotnet/api/system.collections.generic.icollection-1)) extension methods
 - Arbitrary [**`Object`**](https://docs.microsoft.com/en-us/dotnet/api/system.object) generic extension methods
+- [**`Boolean?`**](https://docs.microsoft.com/en-us/dotnet/api/system.boolean) ([`Nullable<Boolean>`](https://docs.microsoft.com/en-us/dotnet/api/system.nullable-1)) extension methods
 - [**`Char`**](https://docs.microsoft.com/en-us/dotnet/api/system.char) extension methods
+- [**`Char?`**](https://docs.microsoft.com/en-us/dotnet/api/system.char) ([`Nullable<Char>`](https://docs.microsoft.com/en-us/dotnet/api/system.nullable-1)) extension methods
 - [**`DateTime`**](https://docs.microsoft.com/en-us/dotnet/api/system.datetime) extension methods
+- [**`DateTime?`**](https://docs.microsoft.com/en-us/dotnet/api/system.datetime) ([`Nullable<DateTime>`](https://docs.microsoft.com/en-us/dotnet/api/system.nullable-1)) extension methods
 - [**`DateTimeOffset`**](https://docs.microsoft.com/en-us/dotnet/api/system.datetimeoffset) extension methods
+- [**`DateTimeOffset?`**](https://docs.microsoft.com/en-us/dotnet/api/system.datetimeoffset) ([`Nullable<DateTimeOffset>`](https://docs.microsoft.com/en-us/dotnet/api/system.nullable-1)) extension methods
 - [**`Delegate`**](https://docs.microsoft.com/en-us/dotnet/api/system.delegate) extension methods
 - [**`Enum`**](https://docs.microsoft.com/en-us/dotnet/api/system.enum) extension methods
 - [**`Exception`**](https://docs.microsoft.com/en-us/dotnet/api/system.exception) extension methods
@@ -47,18 +52,16 @@
 - [**`ImmutableArray<T>`**](https://learn.microsoft.com/en-us/dotnet/api/system.collections.immutable.immutablearray-1) extension methods
 - [**`ISet<T>`**](https://docs.microsoft.com/en-us/dotnet/api/system.collections.generic.iset-1) extension methods
 - Math extension methods for numeric types
-- [**`Nullable<Boolean>` (`bool?`)**](https://docs.microsoft.com/en-us/dotnet/api/system.nullable-1) extension methods
-- [**`Nullable<DateTime>` (`DateTime?`)**](https://docs.microsoft.com/en-us/dotnet/api/system.nullable-1) extension methods
-- [**`Nullable<DateTimeOffset>` (`DateTimeOffset?`)**](https://docs.microsoft.com/en-us/dotnet/api/system.nullable-1) extension methods
-- [**`Nullable<TimeSpan>` (`TimeSpan?`)**](https://docs.microsoft.com/en-us/dotnet/api/system.nullable-1) extension methods
 - [**`ReadOnlySpan<T>`**](https://docs.microsoft.com/en-us/dotnet/api/system.readonlyspan-1) extension methods
 - [**`SecureString`**](https://docs.microsoft.com/en-us/dotnet/api/system.security.securestring) extension methods
 - [**`Span<T>`**](https://docs.microsoft.com/en-us/dotnet/api/system.span-1) extension methods
 - [**`Stopwatch`**](https://docs.microsoft.com/en-us/dotnet/api/system.diagnostics.stopwatch) extension methods
 - [**`String`**](https://docs.microsoft.com/en-us/dotnet/api/system.string) extension methods
+- [**`StringBuilder`**](https://docs.microsoft.com/en-us/dotnet/api/system.text.stringbuilder) extension methods
 - [**`Task`**](https://docs.microsoft.com/en-us/dotnet/api/system.threading.tasks.task) extension methods
 - [**`Task<TResult>`**](https://docs.microsoft.com/en-us/dotnet/api/system.threading.tasks.task-1) extension methods
 - [**`TimeSpan`**](https://docs.microsoft.com/en-us/dotnet/api/system.timespan) extension methods
+- [**`TimeSpan?`**](https://docs.microsoft.com/en-us/dotnet/api/system.timespan) ([`Nullable<TimeSpan>`](https://docs.microsoft.com/en-us/dotnet/api/system.nullable-1)) extension methods
 - [**`Uri`**](https://docs.microsoft.com/en-us/dotnet/api/system.uri) extension methods
 - [**`ValueTask`**](https://docs.microsoft.com/en-us/dotnet/api/system.threading.tasks.valuetask) extension methods
 - [**`ValueTask<TResult>`**](https://docs.microsoft.com/en-us/dotnet/api/system.threading.tasks.valuetask-1) extension methods
@@ -76,6 +79,7 @@
 - `DirectedGraph<T>` and `DirectedGraphNode<T>`
 - `EnumFixedSizeDictionary<TKey, TValue>`
 - `FixedSizeDictionary<TKey, TValue>`
+- `KeyedComparer<T, TKey>`
 - `KeyedEqualityComparer<T, TKey>`
 - `LocalComputerCurrentDateTimeProvider` (implements `ICurrentDateTimeProvider`)
 - `ObjectValidator`

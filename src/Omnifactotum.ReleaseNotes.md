@@ -1,4 +1,27 @@
-﻿### Changes in 0.20.0 (since 0.19.0)
+﻿### Changes in 0.21.0 (since 0.20.0)
+
+#### New features
+
+- Added `OmnifactotumStringBuilderExtensions` with `StringBuilder AppendUIString(this StringBuilder, string?)` and `StringBuilder AppendSecuredUIString(this StringBuilder, string?, int, int)`
+- `ObjectValidator`: Added `EnsureValid<T>(...)` method (shortcut for `ObjectValidator.Validate(...).EnsureSucceeded()`)
+- Added `KeyedComparer<T, TKey>` (implements `IComparer<T>` and `IComparer`)
+- Added `OmnifactotumNullableCharExtensions` with `ToUIString(this char? value)` method
+- `OmnifactotumStringExtensions`: Added
+  - `ToTitleCase(this string?, CultureInfo?)`
+  - `ToTitleCaseForced(this string?, CultureInfo?)`
+  - `ToTitleCaseInvariant(this string?)`
+  - `ToTitleCaseInvariantForced(this string?)`
+- `OmnifactotumExceptionExtensions`: Added `EnumerateRecursively(this Exception?)` extension method
+
+#### Updates and fixes
+
+- Applied `MeansImplicitUse` annotation to `TMemberConstraint` in `MemberConstraintAttribute<TMemberConstraint>`
+- Optimized `OmnifactotumCharExtensions.ToUIString(this char)`
+- `IsOriginatedFrom<TOriginatingException>(this Exception?)` and `IsOriginatedFrom(this Exception?, Type)` are now using `OmnifactotumExceptionExtensions.EnumerateRecursively(this Exception?)`
+
+---
+
+### Changes in 0.20.0 (since 0.19.0)
 
 #### Breaking changes
 
