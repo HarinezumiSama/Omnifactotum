@@ -1,5 +1,6 @@
 ﻿using System;
 using System.IO;
+using System.Linq;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using NUnit.Framework;
@@ -54,40 +55,48 @@ internal sealed class OmnifactotumExceptionExtensionsTests
             Is.False);
 
         Assert.That(
-            () => new TaskCanceledException(Message, new IOException()).IsOriginatedFrom<TimeoutException>(),
+            () => new TaskCanceledException(Message, new IOException(Message)).IsOriginatedFrom<TimeoutException>(),
             Is.False);
 
         Assert.That(
-            () => new TaskCanceledException(Message, new TimeoutException()).IsOriginatedFrom<TimeoutException>(),
+            () => new TaskCanceledException(Message, new TimeoutException(Message)).IsOriginatedFrom<TimeoutException>(),
             Is.True);
 
         Assert.That(
-            () => new TaskCanceledException(Message, new RegexMatchTimeoutException()).IsOriginatedFrom<TimeoutException>(),
+            () => new TaskCanceledException(Message, new RegexMatchTimeoutException(Message)).IsOriginatedFrom<TimeoutException>(),
             Is.True);
 
         Assert.That(
-            () => new TaskCanceledException(Message, new TimeoutException()).IsOriginatedFrom<RegexMatchTimeoutException>(),
+            () => new TaskCanceledException(Message, new TimeoutException(Message)).IsOriginatedFrom<RegexMatchTimeoutException>(),
             Is.False);
 
         Assert.That(
-            () => new TaskCanceledException(Message, new IOException(Message, new TimeoutException())).IsOriginatedFrom<TimeoutException>(),
+            () => new TaskCanceledException(Message, new IOException(Message, new TimeoutException(Message))).IsOriginatedFrom<TimeoutException>(),
             Is.True);
 
         Assert.That(
-            () => new TaskCanceledException(Message, new IOException(Message, new RegexMatchTimeoutException())).IsOriginatedFrom<TimeoutException>(),
+            () => new TaskCanceledException(Message, new IOException(Message, new RegexMatchTimeoutException(Message))).IsOriginatedFrom<TimeoutException>(),
             Is.True);
 
         Assert.That(
-            () => new TaskCanceledException(Message, new TimeoutException(Message, new IOException())).IsOriginatedFrom<TimeoutException>(),
+            () => new TaskCanceledException(Message, new TimeoutException(Message, new IOException(Message))).IsOriginatedFrom<TimeoutException>(),
             Is.True);
 
         Assert.That(
-            () => new TaskCanceledException(Message, new RegexMatchTimeoutException(Message, new IOException())).IsOriginatedFrom<TimeoutException>(),
+            () => new TaskCanceledException(Message, new RegexMatchTimeoutException(Message, new IOException(Message))).IsOriginatedFrom<TimeoutException>(),
             Is.True);
 
         Assert.That(
-            () => new TaskCanceledException(Message, new IOException(Message, new SystemException())).IsOriginatedFrom<TimeoutException>(),
+            () => new TaskCanceledException(Message, new IOException(Message, new SystemException(Message))).IsOriginatedFrom<TimeoutException>(),
             Is.False);
+
+        Assert.That(
+            () => new AggregateException(
+                    Message,
+                    new TaskCanceledException(Message, new TimeoutException(Message)),
+                    new AggregateException(Message, new InvalidOperationException(Message), new IOException(Message)))
+                .IsOriginatedFrom<IOException>(),
+            Is.True);
     }
 
     [Test]
@@ -102,8 +111,10 @@ internal sealed class OmnifactotumExceptionExtensionsTests
         Assert.That(
             () => new Exception().IsOriginatedFrom(typeof(string)),
             Throws.ArgumentException
-                .With.Property(nameof(ArgumentException.ParamName)).EqualTo("originatingExceptionType")
-                .With.Property(nameof(Exception.Message)).StartsWith(@"Invalid exception type ""System.String""."));
+                .With.Property(nameof(ArgumentException.ParamName))
+                .EqualTo("originatingExceptionType")
+                .With.Property(nameof(Exception.Message))
+                .StartsWith(@"Invalid exception type ""System.String""."));
 
         Assert.That(() => new Exception().IsOriginatedFrom(typeof(Exception)), Is.True);
 
@@ -119,39 +130,75 @@ internal sealed class OmnifactotumExceptionExtensionsTests
             Is.False);
 
         Assert.That(
-            () => new TaskCanceledException(Message, new IOException()).IsOriginatedFrom(typeof(TimeoutException)),
+            () => new TaskCanceledException(Message, new IOException(Message)).IsOriginatedFrom(typeof(TimeoutException)),
             Is.False);
 
         Assert.That(
-            () => new TaskCanceledException(Message, new TimeoutException()).IsOriginatedFrom(typeof(TimeoutException)),
+            () => new TaskCanceledException(Message, new TimeoutException(Message)).IsOriginatedFrom(typeof(TimeoutException)),
             Is.True);
 
         Assert.That(
-            () => new TaskCanceledException(Message, new RegexMatchTimeoutException()).IsOriginatedFrom(typeof(TimeoutException)),
+            () => new TaskCanceledException(Message, new RegexMatchTimeoutException(Message)).IsOriginatedFrom(typeof(TimeoutException)),
             Is.True);
 
         Assert.That(
-            () => new TaskCanceledException(Message, new TimeoutException()).IsOriginatedFrom(typeof(RegexMatchTimeoutException)),
+            () => new TaskCanceledException(Message, new TimeoutException(Message)).IsOriginatedFrom(typeof(RegexMatchTimeoutException)),
             Is.False);
 
         Assert.That(
-            () => new TaskCanceledException(Message, new IOException(Message, new TimeoutException())).IsOriginatedFrom(typeof(TimeoutException)),
+            () => new TaskCanceledException(Message, new IOException(Message, new TimeoutException(Message))).IsOriginatedFrom(typeof(TimeoutException)),
             Is.True);
 
         Assert.That(
-            () => new TaskCanceledException(Message, new IOException(Message, new RegexMatchTimeoutException())).IsOriginatedFrom(typeof(TimeoutException)),
+            () => new TaskCanceledException(Message, new IOException(Message, new RegexMatchTimeoutException(Message))).IsOriginatedFrom(
+                typeof(TimeoutException)),
             Is.True);
 
         Assert.That(
-            () => new TaskCanceledException(Message, new TimeoutException(Message, new IOException())).IsOriginatedFrom(typeof(TimeoutException)),
+            () => new TaskCanceledException(Message, new TimeoutException(Message, new IOException(Message))).IsOriginatedFrom(typeof(TimeoutException)),
             Is.True);
 
         Assert.That(
-            () => new TaskCanceledException(Message, new RegexMatchTimeoutException(Message, new IOException())).IsOriginatedFrom(typeof(TimeoutException)),
+            () => new TaskCanceledException(Message, new RegexMatchTimeoutException(Message, new IOException(Message)))
+                .IsOriginatedFrom(typeof(TimeoutException)),
             Is.True);
 
         Assert.That(
-            () => new TaskCanceledException(Message, new IOException(Message, new SystemException())).IsOriginatedFrom(typeof(TimeoutException)),
+            () => new TaskCanceledException(Message, new IOException(Message, new SystemException(Message))).IsOriginatedFrom(typeof(TimeoutException)),
             Is.False);
+
+        Assert.That(
+            () => new AggregateException(
+                    Message,
+                    new TaskCanceledException(Message, new TimeoutException(Message)),
+                    new AggregateException(Message, new InvalidOperationException(Message), new IOException(Message)))
+                .IsOriginatedFrom(typeof(IOException)),
+            Is.True);
+    }
+
+    [Test]
+    public void TestEnumerateRecursively()
+    {
+        Assert.That(() => default(Exception).EnumerateRecursively(), Is.Empty);
+
+        const string Message = "9bddb3d89fe74535b8ba64cad0ec650d";
+
+        var timeoutException = new TimeoutException(Message);
+        var taskCanceledException = new TaskCanceledException(Message, timeoutException);
+
+        var invalidOperationException = new InvalidOperationException(Message);
+        var ioException = new IOException(Message);
+        var aggregateException = new AggregateException(Message, invalidOperationException, ioException);
+
+        var rootException = new AggregateException(Message, taskCanceledException, aggregateException);
+
+        var hierarchicalExceptions = rootException.EnumerateRecursively().ToArray();
+        Assert.That(hierarchicalExceptions.Length, Is.EqualTo(6));
+        Assert.That(hierarchicalExceptions[0], Is.SameAs(rootException));
+        Assert.That(hierarchicalExceptions[1], Is.SameAs(taskCanceledException));
+        Assert.That(hierarchicalExceptions[2], Is.SameAs(timeoutException));
+        Assert.That(hierarchicalExceptions[3], Is.SameAs(aggregateException));
+        Assert.That(hierarchicalExceptions[4], Is.SameAs(invalidOperationException));
+        Assert.That(hierarchicalExceptions[5], Is.SameAs(ioException));
     }
 }

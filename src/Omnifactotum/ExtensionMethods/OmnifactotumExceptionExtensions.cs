@@ -1,4 +1,6 @@
-﻿using System.Diagnostics;
+﻿using System.Collections.Generic;
+using System.Diagnostics;
+using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Threading;
 using Omnifactotum;
@@ -75,20 +77,7 @@ public static class OmnifactotumExceptionExtensions
     [Omnifactotum.Annotations.Pure]
     public static bool IsOriginatedFrom<TOriginatingException>([CanBeNull] this Exception? exception)
         where TOriginatingException : Exception
-    {
-        var currentException = exception;
-        while (currentException is not null)
-        {
-            if (currentException is TOriginatingException)
-            {
-                return true;
-            }
-
-            currentException = currentException.InnerException;
-        }
-
-        return false;
-    }
+        => exception.EnumerateRecursively().Any(ex => ex is TOriginatingException);
 
     /// <summary>
     ///     Determines whether the specified exception or any of its inner exceptions is of the specified type (or its descendant).
@@ -118,17 +107,50 @@ public static class OmnifactotumExceptionExtensions
             throw new ArgumentException($"Invalid exception type {originatingExceptionType.GetFullName().ToUIString()}.", nameof(originatingExceptionType));
         }
 
+        return exception.EnumerateRecursively().Any(originatingExceptionType.IsInstanceOfType);
+    }
+
+    /// <summary>
+    ///     Generates a sequence that contains the specified exception and all its inner exceptions (recursively).
+    ///     If <paramref name="exception"/> is <see langword="null"/>, then the resulting sequence is empty.
+    /// </summary>
+    /// <param name="exception">
+    ///     The exception to enumerate recursively.
+    /// </param>
+    /// <returns>
+    ///     A sequence that contains the specified exception and all its inner exceptions (recursively).
+    /// </returns>
+    /// <remarks>
+    ///     <para>
+    ///         Breadth first traversal is performed
+    ///         (thus, if <paramref name="exception"/> is not <see langword="null"/>, it comes first in the resulting sequence).
+    ///     </para>
+    ///     <para>
+    ///         Both <see cref="Exception.InnerException"/> and <see cref="AggregateException.InnerExceptions"/> are considered when the sequence is generated.
+    ///     </para>
+    /// </remarks>
+    [Pure]
+    [Omnifactotum.Annotations.Pure]
+    [NotNull]
+    [ItemNotNull]
+    public static IEnumerable<Exception> EnumerateRecursively([CanBeNull] this Exception? exception)
+    {
         var currentException = exception;
         while (currentException is not null)
         {
-            if (originatingExceptionType.IsInstanceOfType(currentException))
+            yield return currentException;
+
+            if (currentException is AggregateException aggregateException)
             {
-                return true;
+                foreach (var innerException in aggregateException.InnerExceptions.SelectMany(innerException => innerException.EnumerateRecursively()))
+                {
+                    yield return innerException;
+                }
+
+                break;
             }
 
             currentException = currentException.InnerException;
         }
-
-        return false;
     }
 }
