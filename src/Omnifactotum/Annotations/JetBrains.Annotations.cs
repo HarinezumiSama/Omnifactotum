@@ -1254,7 +1254,7 @@ public enum CollectionAccessType
 ///     that a particular condition halts the execution of the method. In other words, it is the <see cref="AssertionConditionAttribute"/> that
 ///     has been made obsolete and needs to be replaced with a contract annotation (see <see cref="ContractAnnotationAttribute"/>).
 /// </remarks>
-/// <seealso cref="!:https://blog.jetbrains.com/dotnet/2012/08/15/contract-annotations-in-resharper-7/"/>
+/// <seealso href="https://blog.jetbrains.com/dotnet/2012/08/15/contract-annotations-in-resharper-7/"/>
 [AttributeUsage(AttributeTargets.Method)]
 [ExcludeFromCodeCoverage]
 public sealed class AssertionMethodAttribute : Attribute
@@ -1272,7 +1272,7 @@ public sealed class AssertionMethodAttribute : Attribute
 ///     that a particular condition halts the execution of the method. In other words, it is the <see cref="AssertionConditionAttribute"/> that
 ///     has been made obsolete and needs to be replaced with a contract annotation (see <see cref="ContractAnnotationAttribute"/>).
 /// </remarks>
-/// <seealso cref="!:https://blog.jetbrains.com/dotnet/2012/08/15/contract-annotations-in-resharper-7/"/>
+/// <seealso href="https://blog.jetbrains.com/dotnet/2012/08/15/contract-annotations-in-resharper-7/"/>
 [AttributeUsage(AttributeTargets.Parameter)]
 [ExcludeFromCodeCoverage]
 public sealed class AssertionConditionAttribute : Attribute

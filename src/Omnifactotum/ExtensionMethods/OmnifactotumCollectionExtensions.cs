@@ -1003,7 +1003,7 @@ public static class OmnifactotumCollectionExtensions
     ///     </para>
     ///     <para>
     ///         This code is based on
-    ///         <see cref="!:https://github.com/dotnet/runtime/blob/6fdb82aea93465ee046c7f903a96d5c2027a3ecd/src/libraries/System.Linq/src/System/Linq/Chunk.cs"/>.
+    ///         <see href="https://github.com/dotnet/runtime/blob/6fdb82aea93465ee046c7f903a96d5c2027a3ecd/src/libraries/System.Linq/src/System/Linq/Chunk.cs"/>.
     ///     </para>
     /// </remarks>
     /// <param name="source">
@@ -1226,7 +1226,7 @@ public static class OmnifactotumCollectionExtensions
 
     /// <remarks>
     ///     This code is based on
-    ///     <see cref="!:https://github.com/dotnet/runtime/blob/6fdb82aea93465ee046c7f903a96d5c2027a3ecd/src/libraries/System.Linq/src/System/Linq/Chunk.cs"/>.
+    ///     <see href="https://github.com/dotnet/runtime/blob/6fdb82aea93465ee046c7f903a96d5c2027a3ecd/src/libraries/System.Linq/src/System/Linq/Chunk.cs"/>.
     /// </remarks>
     [Pure]
     [Omnifactotum.Annotations.Pure]
