@@ -14,11 +14,12 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Common", "Common", "{D7C50C
 		..\LICENSE = ..\LICENSE
 		Omnifactotum.ReleaseNotes.md = Omnifactotum.ReleaseNotes.md
 		Omnifactotum.ReleaseNotes.UpTo-v0.6.0.md = Omnifactotum.ReleaseNotes.UpTo-v0.6.0.md
+		Omnifactotum.ReleaseNotes.UpTo-v0.12.0.md = Omnifactotum.ReleaseNotes.UpTo-v0.12.0.md
 		Omnifactotum.runsettings = Omnifactotum.runsettings
 		Omnifactotum.sln.DotSettings = Omnifactotum.sln.DotSettings
 		Common\Omnifactotum.snk = Common\Omnifactotum.snk
 		..\README.md = ..\README.md
-    	..\README.NuGet.md = ..\README.NuGet.md
+		..\README.NuGet.md = ..\README.NuGet.md
 		Settings.StyleCop = Settings.StyleCop
 		global.json = global.json
 	EndProjectSection
