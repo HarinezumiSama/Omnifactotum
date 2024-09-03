@@ -8,7 +8,7 @@ using NotNullIfNotNull = System.Diagnostics.CodeAnalysis.NotNullIfNotNullAttribu
 //// ReSharper disable RedundantNullnessAttributeWithNullableReferenceTypes
 
 //// ReSharper disable once CheckNamespace :: Namespace is intentionally named so in order to simplify usage of extension methods
-namespace System;
+namespace System.Text;
 
 /// <summary>
 ///     Contains extension methods for the <see cref="string"/> class.
