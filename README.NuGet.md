@@ -11,6 +11,14 @@
 
 ---
 
+### Changes in 0.22.0 (since 0.21.0)
+
+#### Breaking changes
+
+- `OmnifactotumStringBuilderExtensions`: Fixed namespace: `System` -> `System.Text`
+
+---
+
 ### Changes in 0.21.0 (since 0.20.0)
 
 #### New features
