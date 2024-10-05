@@ -12,6 +12,9 @@ using System.Reflection;
 using System.Reflection.Emit;
 #endif
 
+//// ReSharper disable UseRawString
+//// ReSharper disable VariableLengthStringHexEscapeSequence
+
 namespace Omnifactotum.Tests.ExtensionMethods;
 
 [TestFixture(TestOf = typeof(OmnifactotumEnumExtensions))]
@@ -21,7 +24,8 @@ internal sealed class OmnifactotumEnumExtensionsTests
     [TestCase(FileAccess.Read)]
     [TestCase(ConsoleModifiers.Alt)]
     [TestCase(ConsoleColor.Green)]
-    [TestCase(TestEnumeration.NoZeroValue)]
+    [TestCase(NoZeroValueEnumeration.NonZeroValue)]
+    [TestCase(NoZeroValueFlags.NonZeroFlag)]
     [TestCase(UIntTestFlags.Flag2)]
     public void TestEnsureDefinedWhenDefinedEnumerationValueArgumentIsPassedThenSucceeds<TEnum>(TEnum enumValue)
         where TEnum : struct, Enum
@@ -32,8 +36,11 @@ internal sealed class OmnifactotumEnumExtensionsTests
         (ConsoleColor)(-1),
         @"The value -1 is not defined in the enumeration ""System.ConsoleColor"".")]
     [TestCase(
-        (TestEnumeration)0,
-        @"The value 0 is not defined in the enumeration ""Omnifactotum.Tests.ExtensionMethods.OmnifactotumEnumExtensionsTests.TestEnumeration"".")]
+        (NoZeroValueEnumeration)0,
+        @"The value 0 is not defined in the enumeration ""Omnifactotum.Tests.ExtensionMethods.OmnifactotumEnumExtensionsTests.NoZeroValueEnumeration"".")]
+    [TestCase(
+        (NoZeroValueFlags)0,
+        @"The value 0 is not defined in the enumeration ""Omnifactotum.Tests.ExtensionMethods.OmnifactotumEnumExtensionsTests.NoZeroValueFlags"".")]
     [TestCase(
         UIntTestFlags.Flag1 | UIntTestFlags.Flag2,
         @"The value 3 is not defined in the enumeration ""Omnifactotum.Tests.ExtensionMethods.OmnifactotumEnumExtensionsTests.UIntTestFlags"".")]
@@ -72,11 +79,13 @@ internal sealed class OmnifactotumEnumExtensionsTests
     [TestCase(FileAccess.Read, true)]
     [TestCase(ConsoleModifiers.Alt, true)]
     [TestCase(ConsoleColor.Green, true)]
-    [TestCase(TestEnumeration.NoZeroValue, true)]
+    [TestCase(NoZeroValueEnumeration.NonZeroValue, true)]
+    [TestCase(NoZeroValueFlags.NonZeroFlag, true)]
     [TestCase(UIntTestFlags.Flag2, true)]
     [TestCase(ConsoleModifiers.Alt | ConsoleModifiers.Shift | ConsoleModifiers.Control, false)]
     [TestCase((ConsoleColor)(-1), false)]
-    [TestCase((TestEnumeration)0, false)]
+    [TestCase((NoZeroValueEnumeration)0, false)]
+    [TestCase((NoZeroValueFlags)0, false)]
     [TestCase(UIntTestFlags.Flag1 | UIntTestFlags.Flag2, false)]
     [TestCase((UIntTestFlags)1024, false)]
     public void TestIsDefinedWhenEnumerationValueArgumentIsPassedThenSucceeds<TEnum>(TEnum enumValue, bool expectedResult)
@@ -87,13 +96,14 @@ internal sealed class OmnifactotumEnumExtensionsTests
     [TestCase(FileAccess.Read, "Read")]
     [TestCase(ConsoleModifiers.Alt, "Alt")]
     [TestCase(ConsoleColor.Green, "Green")]
-    [TestCase(TestEnumeration.NoZeroValue, "NoZeroValue")]
+    [TestCase(NoZeroValueEnumeration.NonZeroValue, "NonZeroValue")]
+    [TestCase(NoZeroValueFlags.NonZeroFlag, "NonZeroFlag")]
     [TestCase(UIntTestFlags.Flag2, "Flag2")]
     [TestCase(ConsoleModifiers.Alt | ConsoleModifiers.Shift | ConsoleModifiers.Control, "Alt, Shift, Control")]
     [TestCase(ConsoleModifiers.Alt | ConsoleModifiers.Shift | ConsoleModifiers.Control | (ConsoleModifiers)1024, "1031")]
     [TestCase(FileShare.None, "None")]
     [TestCase((ConsoleColor)(-1), "-1")]
-    [TestCase((TestEnumeration)0, "0")]
+    [TestCase((NoZeroValueEnumeration)0, "0")]
     [TestCase((UIntTestFlags)0, "0")]
     [TestCase(UIntTestFlags.Flag1 | UIntTestFlags.Flag2, "Flag1, Flag2")]
     [TestCase((UIntTestFlags)1024, "1024")]
@@ -105,7 +115,8 @@ internal sealed class OmnifactotumEnumExtensionsTests
     [TestCase(FileAccess.Read, "FileAccess.Read")]
     [TestCase(ConsoleModifiers.Alt, "ConsoleModifiers.Alt")]
     [TestCase(ConsoleColor.Green, "ConsoleColor.Green")]
-    [TestCase(TestEnumeration.NoZeroValue, "TestEnumeration.NoZeroValue")]
+    [TestCase(NoZeroValueEnumeration.NonZeroValue, "NoZeroValueEnumeration.NonZeroValue")]
+    [TestCase(NoZeroValueFlags.NonZeroFlag, "NoZeroValueFlags.NonZeroFlag")]
     [TestCase(UIntTestFlags.Flag2, "UIntTestFlags.Flag2")]
     [TestCase(
         ConsoleModifiers.Alt | ConsoleModifiers.Shift | ConsoleModifiers.Control,
@@ -115,7 +126,8 @@ internal sealed class OmnifactotumEnumExtensionsTests
         "ConsoleModifiers.1031")]
     [TestCase(FileShare.None, "FileShare.None")]
     [TestCase((ConsoleColor)(-1), "ConsoleColor.-1")]
-    [TestCase((TestEnumeration)0, "TestEnumeration.0")]
+    [TestCase((NoZeroValueEnumeration)0, "NoZeroValueEnumeration.0")]
+    [TestCase((NoZeroValueFlags)0, "NoZeroValueFlags.0")]
     [TestCase((UIntTestFlags)0, "UIntTestFlags.0")]
     [TestCase(UIntTestFlags.Flag1 | UIntTestFlags.Flag2, "UIntTestFlags.Flag1, UIntTestFlags.Flag2")]
     [TestCase((UIntTestFlags)1024, "UIntTestFlags.1024")]
@@ -127,7 +139,8 @@ internal sealed class OmnifactotumEnumExtensionsTests
     [TestCase(FileAccess.Read, "System.IO.FileAccess.Read")]
     [TestCase(ConsoleModifiers.Alt, "System.ConsoleModifiers.Alt")]
     [TestCase(ConsoleColor.Green, "System.ConsoleColor.Green")]
-    [TestCase(TestEnumeration.NoZeroValue, "Omnifactotum.Tests.ExtensionMethods.OmnifactotumEnumExtensionsTests.TestEnumeration.NoZeroValue")]
+    [TestCase(NoZeroValueEnumeration.NonZeroValue, "Omnifactotum.Tests.ExtensionMethods.OmnifactotumEnumExtensionsTests.NoZeroValueEnumeration.NonZeroValue")]
+    [TestCase(NoZeroValueFlags.NonZeroFlag, "Omnifactotum.Tests.ExtensionMethods.OmnifactotumEnumExtensionsTests.NoZeroValueFlags.NonZeroFlag")]
     [TestCase(UIntTestFlags.Flag2, "Omnifactotum.Tests.ExtensionMethods.OmnifactotumEnumExtensionsTests.UIntTestFlags.Flag2")]
     [TestCase(
         ConsoleModifiers.Alt | ConsoleModifiers.Shift | ConsoleModifiers.Control,
@@ -138,8 +151,11 @@ internal sealed class OmnifactotumEnumExtensionsTests
     [TestCase(FileShare.None, "System.IO.FileShare.None")]
     [TestCase((ConsoleColor)(-1), nameof(System) + "." + nameof(ConsoleColor) + "." + "-1")]
     [TestCase(
-        (TestEnumeration)0,
-        "Omnifactotum.Tests.ExtensionMethods.OmnifactotumEnumExtensionsTests.TestEnumeration.0")]
+        (NoZeroValueEnumeration)0,
+        "Omnifactotum.Tests.ExtensionMethods.OmnifactotumEnumExtensionsTests.NoZeroValueEnumeration.0")]
+    [TestCase(
+        (NoZeroValueFlags)0,
+        "Omnifactotum.Tests.ExtensionMethods.OmnifactotumEnumExtensionsTests.NoZeroValueFlags.0")]
     [TestCase(
         (UIntTestFlags)0,
         "Omnifactotum.Tests.ExtensionMethods.OmnifactotumEnumExtensionsTests.UIntTestFlags.0")]
@@ -158,11 +174,20 @@ internal sealed class OmnifactotumEnumExtensionsTests
     [TestCase(ConsoleColor.Green, @"""Green""")]
     [TestCase((ConsoleColor)(-1), @"""-1""")]
     [TestCase(ConsoleModifiers.Alt | ConsoleModifiers.Control | ConsoleModifiers.Shift, @"""Alt"", ""Shift"", ""Control""")]
+#if NET8_0_OR_GREATER
+    [TestCase(ConsoleModifiers.None, @"""None""")]
+#else
     [TestCase((ConsoleModifiers)0, @"""0""")]
+#endif
     [TestCase(ConsoleModifiers.Alt | (ConsoleModifiers)16_777_216, @"""16777217""")]
     [TestCase(FileShare.None, @"""None""")]
     [TestCase(FileOptions.None, @"""None""")]
     [TestCase(FileOptions.WriteThrough | FileOptions.Encrypted | FileOptions.DeleteOnClose, @"""Encrypted"", ""DeleteOnClose"", ""WriteThrough""")]
+    [TestCase((NoZeroValueEnumeration)0, @"""0""")]
+    [TestCase(NoZeroValueEnumeration.NonZeroValue, @"""NonZeroValue""")]
+    [TestCase((NoZeroValueFlags)0, @"""0""")]
+    [TestCase(NoZeroValueFlags.NonZeroFlag, @"""NonZeroFlag""")]
+    [TestCase((ULongTestFlags)0, @"""0""")]
     [TestCase(ULongTestFlags.Flag2 | ULongTestFlags.Flag34, @"""Flag2"", ""Flag34""")]
     [TestCase(ULongTestFlags.Flag2 | ULongTestFlags.Flag64, @"""Flag2"", ""Flag64""")]
     public void TestToUIString<TEnum>(TEnum enumValue, string expectedResult)
@@ -175,11 +200,19 @@ internal sealed class OmnifactotumEnumExtensionsTests
     [TestCase(HttpStatusCode.NotFound, "404 (NotFound)")]
     [TestCase(HttpStatusCode.Unauthorized, "401 (Unauthorized)")]
     [TestCase(ConsoleModifiers.Alt | ConsoleModifiers.Control | ConsoleModifiers.Shift, "0x00000007 (Alt, Shift, Control)")]
+#if NET8_0_OR_GREATER
+    [TestCase(ConsoleModifiers.None, "0x00000000 (None)")]
+#else
     [TestCase((ConsoleModifiers)0, "0x00000000")]
+#endif
     [TestCase(ConsoleModifiers.Alt | (ConsoleModifiers)16_777_216, "0x01000001")]
     [TestCase(FileShare.None, "0x00000000 (None)")]
     [TestCase(FileOptions.None, "0x00000000 (None)")]
     [TestCase(FileOptions.WriteThrough | FileOptions.Encrypted | FileOptions.DeleteOnClose, "0x84004000 (Encrypted, DeleteOnClose, WriteThrough)")]
+    [TestCase((NoZeroValueEnumeration)0, "0")]
+    [TestCase((NoZeroValueFlags)0, "0x00000000")]
+    [TestCase((UIntTestFlags)0, "0x00000000")]
+    [TestCase((ULongTestFlags)0, "0x0000000000000000")]
     [TestCase(ULongTestFlags.Flag2 | ULongTestFlags.Flag34, "0x0000000200000002 (Flag2, Flag34)")]
     [TestCase(ULongTestFlags.Flag2 | ULongTestFlags.Flag64, "0x8000000000000002 (Flag2, Flag64)")]
     public void TestGetDescription<TEnum>(TEnum enumValue, string expectedResult)
@@ -410,6 +443,11 @@ internal sealed class OmnifactotumEnumExtensionsTests
         => ExecuteToUInt64TestCase(enumValue, expectedResult);
 
 #if NET6_0_OR_GREATER
+
+//// `Boolean` as underlying `Enum` type is not supported as of .NET 8:
+//// - https://github.com/dotnet/runtime/issues/79224
+//// - https://github.com/dotnet/runtime/issues/79962
+#if !NET8_0_OR_GREATER
     [Test]
     public void TestToUInt64WhenBoolBasedEnum()
     {
@@ -422,7 +460,9 @@ internal sealed class OmnifactotumEnumExtensionsTests
         enumBuilder.DefineLiteral("TrueValue", true);
         var enumType = enumBuilder.CreateType().EnsureNotNull();
 
-        var executeTestCaseMethodDefinition = ((Action<TestEnumeration, ulong>)ExecuteToUInt64TestCase).Method.GetGenericMethodDefinition().EnsureNotNull();
+        var executeTestCaseMethodDefinition =
+            ((Action<NoZeroValueEnumeration, ulong>)ExecuteToUInt64TestCase).Method.GetGenericMethodDefinition().EnsureNotNull();
+
         var executeTestCaseMethod = executeTestCaseMethodDefinition.MakeGenericMethod(enumType);
 
         var enumValues = Enum.GetValues(enumType);
@@ -431,6 +471,7 @@ internal sealed class OmnifactotumEnumExtensionsTests
             executeTestCaseMethod.Invoke(null, new[] { enumValue, (bool)enumValue ? 1UL : 0UL });
         }
     }
+#endif
 
     [Test]
     public void TestToUInt64WhenCharBasedEnum()
@@ -449,7 +490,7 @@ internal sealed class OmnifactotumEnumExtensionsTests
         enumBuilder.DefineLiteral("CapitalLetterYeInUkrainian", 'Є');
         var enumType = enumBuilder.CreateType().EnsureNotNull();
 
-        var executeTestCaseMethodDefinition = ((Action<TestEnumeration, ulong>)ExecuteToUInt64TestCase).Method.GetGenericMethodDefinition().EnsureNotNull();
+        var executeTestCaseMethodDefinition = ((Action<NoZeroValueEnumeration, ulong>)ExecuteToUInt64TestCase).Method.GetGenericMethodDefinition().EnsureNotNull();
         var executeTestCaseMethod = executeTestCaseMethodDefinition.MakeGenericMethod(enumType);
 
         var enumValues = Enum.GetValues(enumType);
@@ -458,6 +499,7 @@ internal sealed class OmnifactotumEnumExtensionsTests
             executeTestCaseMethod.Invoke(null, new[] { enumValue, (ulong)(char)enumValue });
         }
     }
+
 #endif
 
     private static void ExecuteToUInt64TestCase<TEnum>(TEnum enumValue, ulong expectedResult)
@@ -525,9 +567,15 @@ internal sealed class OmnifactotumEnumExtensionsTests
         Flag64 = 0b1000000000000000000000000000000000000000000000000000000000000000
     }
 
-    private enum TestEnumeration
+    private enum NoZeroValueEnumeration
     {
-        NoZeroValue = 1
+        NonZeroValue = 1
+    }
+
+    [Flags]
+    private enum NoZeroValueFlags
+    {
+        NonZeroFlag = 0x1
     }
 
     [Flags]

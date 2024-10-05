@@ -42,7 +42,15 @@ internal sealed class OmnifactotumCollectionExtensionsTests
 
         Assert.That(() => CreateEnumerable(13, -17, 42).GetFastCount(), Is.Null);
         Assert.That(() => new[] { 13, -17, 42 }.Where(i => i > 0).GetFastCount(), Is.Null);
-        Assert.That(() => Enumerable.Range(1, 10).GetFastCount(), Is.Null);
+
+        Assert.That(
+            () => Enumerable.Range(1, 10).GetFastCount(),
+#if NET8_0_OR_GREATER
+            Is.EqualTo(10)
+#else
+            Is.Null
+#endif
+        );
 
         static IEnumerable<T> CreateEnumerable<T>(params T[] items)
         {
