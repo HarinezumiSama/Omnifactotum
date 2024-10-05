@@ -985,7 +985,7 @@ process
 
         if ($AppveyorBuild)
         {
-            [string] $testResultsSubdirectory = $buildPropsFileXmlData.GetProjectPropertyText('__TestResultsSubdirectory')
+            [string] $testResultsSubdirectory = $buildPropsFileXmlData.GetProjectPropertyText('__X_TestResultsSubdirectory')
 
             [string] $binariesDirectoryPath = $AppveyorBinariesSubdirectory | Resolve-WorkspacePath
             [string] $testResultsDirectoryPath = [Path]::Combine($binariesDirectoryPath, $projectPlatform, $BuildConfiguration, $testProjectFileNameOnly, $testResultsSubdirectory)

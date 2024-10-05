@@ -42,7 +42,7 @@
     </ItemGroup>
 
     <ItemGroup>
-        <None Include="$(SolutionDir)\..\README.NuGet.md" Pack="true" PackagePath="\" />
+        <None Include="$(__X_SolutionDir)\..\README.NuGet.md" Pack="true" PackagePath="\" />
     </ItemGroup>
     <PropertyGroup>
         <PackageReadmeFile>README.NuGet.md</PackageReadmeFile>
