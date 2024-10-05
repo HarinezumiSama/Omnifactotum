@@ -30,11 +30,13 @@ public sealed class ObjectValidationException : Exception
         : base(message)
         => _validationResult = validationResult ?? throw new ArgumentNullException(nameof(validationResult));
 
+#if !NET8_0_OR_GREATER
     private ObjectValidationException(SerializationInfo info, StreamingContext context)
         : base(info, context)
     {
         // Nothing to do
     }
+#endif
 
     /// <summary>
     ///     Gets the validation result caused this exception.

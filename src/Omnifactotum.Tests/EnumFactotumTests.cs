@@ -78,7 +78,13 @@ internal sealed class EnumFactotumTests
 
         Assert.That(
             EnumFactotum.GetAllFlagValues<FileAttributes>,
-            Is.EquivalentTo(Enum.GetValues(typeof(FileAttributes))));
+            Is.EquivalentTo(
+                Enum.GetValues(typeof(FileAttributes))
+#if NET8_0_OR_GREATER
+                    .Cast<FileAttributes>()
+                    .Except([FileAttributes.None])
+#endif
+            ));
 
         Assert.That(
             EnumFactotum.GetAllFlagValues<FileOptions>,
