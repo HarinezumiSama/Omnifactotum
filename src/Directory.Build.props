@@ -1,6 +1,6 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 
-<Project>
+<Project InitialTargets="__X_Initialize">
     <PropertyGroup>
         <Version>0.23.0</Version>
         <PackageValidationBaselineVersion>0.22.0</PackageValidationBaselineVersion>
@@ -14,33 +14,28 @@
     </PropertyGroup>
 
     <PropertyGroup>
-        <ReleaseNotesFilePath/>
-        <RunSettingsFilePath/>
-    </PropertyGroup>
-
-    <PropertyGroup Condition="'$(SolutionDir)' != '' And '$(SolutionName)' != ''">
-        <ReleaseNotesFilePath>$(SolutionDir)$(SolutionName).ReleaseNotes.md</ReleaseNotesFilePath>
-        <RunSettingsFilePath>$(SolutionDir)$(SolutionName).runsettings</RunSettingsFilePath>
-    </PropertyGroup>
-
-    <Target Name="CheckBuildPropertiesBeforeBuild" BeforeTargets="Clean;Build;Restore">
-        <Message
-            Text="[$(MSBuildProjectName):$(TargetFramework):$(Configuration):$(Platform)] NETCoreSdkVersion = &quot;$(NETCoreSdkVersion)&quot;, SolutionDir = &quot;$(SolutionDir)&quot;, SolutionName = &quot;$(SolutionName)&quot;"
-            Importance="high"/>
-
-        <Error Condition="'$(SolutionDir)' == '' Or '$(SolutionName)' == '' Or '$(SolutionDir)' == '*Undefined*' Or '$(SolutionName)' == '*Undefined*'"
-               Text="[$(MSBuildProjectName):$(TargetFramework):$(Configuration):$(Platform)] Individual projects cannot be built. Please build the entire solution."/>
-    </Target>
-
-    <Target Name="PrintBuildPropertiesBeforeBuild" BeforeTargets="Build">
-        <Message
-            Text="[$(MSBuildProjectName):$(TargetFramework)] AssemblyVersion = &quot;$(AssemblyVersion)&quot;, PackageVersion = &quot;$(PackageVersion)&quot;, InformationalVersion = &quot;$(InformationalVersion)&quot;"
-            Importance="high"/>
-    </Target>
-
-    <PropertyGroup>
         <RestoreProjectStyle>PackageReference</RestoreProjectStyle>
         <CopyLocalLockFileAssemblies>true</CopyLocalLockFileAssemblies>
+    </PropertyGroup>
+
+    <PropertyGroup>
+        <__X_LogCustomProperties>true</__X_LogCustomProperties>
+        <__X_LogStandardProperties>true</__X_LogStandardProperties>
+    </PropertyGroup>
+
+    <PropertyGroup>
+        <__X_SolutionDir>$([MSBuild]::NormalizeDirectory('$(MSBuildThisFileDirectory)'))</__X_SolutionDir>
+        <__X_RootSolutionOutputPath>$([MSBuild]::NormalizeDirectory('$(__X_SolutionDir)', '.out'))</__X_RootSolutionOutputPath>
+        <__X_TestResultsSubdirectory>TestResults</__X_TestResultsSubdirectory>
+        <__X_BenchmarkResultsSubdirectory>benchmarks</__X_BenchmarkResultsSubdirectory>
+    </PropertyGroup>
+
+    <PropertyGroup>
+        <OutputPath>$([MSBuild]::NormalizeDirectory('$(__X_RootSolutionOutputPath)', 'bin', '$(Platform)', '$(Configuration)', '$(MSBuildProjectName)'))</OutputPath>
+        <BaseIntermediateOutputPath>$([MSBuild]::NormalizeDirectory('$(__X_RootSolutionOutputPath)', 'obj', '$(MSBuildProjectName)'))</BaseIntermediateOutputPath>
+        <PackageOutputPath>$([MSBuild]::NormalizeDirectory('$(__X_RootSolutionOutputPath)', 'NuGet'))</PackageOutputPath>
+        <VSTestResultsDirectory>$([MSBuild]::NormalizeDirectory('$(OutputPath)', '$(__X_TestResultsSubdirectory)'))</VSTestResultsDirectory>
+        <RunSettingsFilePath/>
     </PropertyGroup>
 
     <PropertyGroup>
@@ -56,20 +51,17 @@
         <DebugType>portable</DebugType>
         <EmbedAllSources>true</EmbedAllSources>
         <Deterministic>true</Deterministic>
+        <SignAssembly>true</SignAssembly>
+        <DelaySign>false</DelaySign>
     </PropertyGroup>
 
     <PropertyGroup>
         <Authors>Vitalii Maklai</Authors>
         <Company>$(Authors)</Company>
-        <Product>$(SolutionName)</Product>
-        <Description>$(Product) is the ultimate solution for .NET developers who want to streamline their development process. It provides its own helper and functional classes and interfaces as well as the extension methods for the standard .NET types. $(Product) is compatible with the older and newer .NET versions. It's the perfect way to reduce errors and save time, allowing developers to focus on creating quality code.</Description>
         <Copyright>Copyright © $(Authors) 2004-$(BuildDateYear)</Copyright>
-        <RepositoryUrl>https://github.com/HarinezumiSama/$(SolutionName)</RepositoryUrl>
         <RepositoryType>git</RepositoryType>
-        <PackageProjectUrl>$(RepositoryUrl)</PackageProjectUrl>
         <PackageRequireLicenseAcceptance>false</PackageRequireLicenseAcceptance>
         <PackageLicenseExpression>MIT</PackageLicenseExpression>
-        <PackageReleaseNotes Condition="'$(ReleaseNotesFilePath)' != ''">$([System.IO.File]::ReadAllText($(ReleaseNotesFilePath)))</PackageReleaseNotes>
         <PackageTags>C#;CSharp;omnifactotum;omni;factotum;aid;assistant;extension;extensions;helper;helpers;common;typical</PackageTags>
         <IncludeSymbols>true</IncludeSymbols>
         <IncludeSource>true</IncludeSource>
@@ -80,18 +72,12 @@
         <EnableStrictModeForCompatibleFrameworksInPackage>false</EnableStrictModeForCompatibleFrameworksInPackage>
     </PropertyGroup>
 
-    <PropertyGroup Condition="'$(SolutionDir)' != '' And '$(SolutionName)' != ''">
-        <__TestResultsSubdirectory>TestResults</__TestResultsSubdirectory>
-        <__RootSolutionOutputPathBase>$(SolutionDir)\.out</__RootSolutionOutputPathBase>
-        <__RootSolutionOutputPath>$([System.IO.Path]::GetFullPath($(__RootSolutionOutputPathBase)))</__RootSolutionOutputPath>
-        <OutputPath>$(__RootSolutionOutputPath)\bin\$(Platform)\$(Configuration)\$(MSBuildProjectName)\</OutputPath>
-        <BaseIntermediateOutputPath>$(__RootSolutionOutputPath)\obj\$(MSBuildProjectName)\</BaseIntermediateOutputPath>
-        <PackageOutputPath>$(__RootSolutionOutputPath)\NuGet\</PackageOutputPath>
-        <VSTestResultsDirectory>$(OutputPath)$(__TestResultsSubdirectory)</VSTestResultsDirectory>
-    </PropertyGroup>
-
     <Target Name="CleanTestResults" AfterTargets="Clean">
         <RemoveDir Directories="$(VSTestResultsDirectory)" Condition="Exists($(VSTestResultsDirectory))" ContinueOnError="true"/>
+    </Target>
+
+    <Target Name="CleanBenchmarkResults" AfterTargets="Clean">
+        <RemoveDir Directories="$(__X_BenchmarkResultsSubdirectory)" Condition="Exists($(__X_BenchmarkResultsSubdirectory))" ContinueOnError="true"/>
     </Target>
 
     <PropertyGroup>
@@ -101,9 +87,134 @@
         <InformationalVersion>$(Version)$(VersionSuffix)</InformationalVersion>
     </PropertyGroup>
 
-    <PropertyGroup Condition="'$(SolutionDir)' != '' And '$(SolutionName)' != ''">
-        <SignAssembly>true</SignAssembly>
-        <DelaySign>false</DelaySign>
-        <AssemblyOriginatorKeyFile>$(SolutionDir)\Common\$(SolutionName).snk</AssemblyOriginatorKeyFile>
-    </PropertyGroup>
+    <Target Name="__X_Initialize">
+        <PropertyGroup>
+            <__X_MessagePrefix>$(MSBuildProjectName):$(TargetFramework):$(Configuration):$(Platform)</__X_MessagePrefix>
+        </PropertyGroup>
+
+        <Message Importance="high" Text="[$(__X_MessagePrefix)] Target '__X_Initialize' is being executed." />
+
+        <ItemGroup>
+            <__X_SolutionFiles Include="$(__X_SolutionDir)\*.sln" />
+        </ItemGroup>
+
+        <PropertyGroup>
+            <__X_SolutionName>@(__X_SolutionFiles->'%(Filename)')</__X_SolutionName>
+            <__X_ReleaseNotesFilePath>$([MSBuild]::NormalizePath('$(__X_SolutionDir)', '$(__X_SolutionName).ReleaseNotes.md'))</__X_ReleaseNotesFilePath>
+        </PropertyGroup>
+
+        <!-- Log internal properties -->
+        <Message
+            Importance="high"
+            Condition="'$(__X_LogCustomProperties)' == 'true'"
+            Text="[$(__X_MessagePrefix)] __X_SolutionDir = &quot;$(__X_SolutionDir)&quot;" />
+        <Message
+            Importance="high"
+            Condition="'$(__X_LogCustomProperties)' == 'true'"
+            Text="[$(__X_MessagePrefix)] __X_SolutionName = &quot;$(__X_SolutionName)&quot;" />
+        <Message
+            Importance="high"
+            Condition="'$(__X_LogCustomProperties)' == 'true'"
+            Text="[$(__X_MessagePrefix)] __X_SolutionFiles.Count = @(__X_SolutionFiles->Count())" />
+        <Message
+            Importance="high"
+            Condition="'$(__X_LogCustomProperties)' == 'true'"
+            Text="[$(__X_MessagePrefix)] __X_SolutionFiles = [&quot;@(__X_SolutionFiles, '&quot;, &quot;')&quot;]" />
+        <Message
+            Importance="high"
+            Condition="'$(__X_LogCustomProperties)' == 'true'"
+            Text="[$(__X_MessagePrefix)] __X_ReleaseNotesFilePath = &quot;$(__X_ReleaseNotesFilePath)&quot;" />
+
+        <Error
+            Condition="'@(__X_SolutionFiles->Count())' != '1'"
+            Text="[$(__X_MessagePrefix)] Exactly 1 solution file must be present in &quot;$(__X_SolutionDir)&quot;. Found: @(__X_SolutionFiles->Count())." />
+
+        <Error
+            Condition="'$(__X_SolutionName)' == ''"
+            Text="[$(__X_MessagePrefix)] The solution name could not be determined. Check configuration."/>
+
+        <Error
+            Condition="!$([System.IO.File]::Exists('$(__X_ReleaseNotesFilePath)'))"
+            Text="[$(__X_MessagePrefix)] Release Notes file &quot;$(__X_ReleaseNotesFilePath)&quot; is not found."/>
+
+        <PropertyGroup>
+            <AssemblyOriginatorKeyFile>$([MSBuild]::NormalizePath('$(__X_SolutionDir)', 'Common', '$(__X_SolutionName).snk'))</AssemblyOriginatorKeyFile>
+            <RunSettingsFilePath>$([MSBuild]::NormalizePath('$(__X_SolutionDir)', '$(__X_SolutionName).runsettings'))</RunSettingsFilePath>
+
+            <Product>$(__X_SolutionName)</Product>
+            <Description>$(Product) is the ultimate solution for .NET developers who want to streamline their development process. It provides its own helper and functional classes and interfaces as well as the extension methods for the standard .NET types. $(Product) is compatible with the older and newer .NET versions. It's the perfect way to reduce errors and save time, allowing developers to focus on creating quality code.</Description>
+            <RepositoryUrl>https://github.com/HarinezumiSama/$(__X_SolutionName)</RepositoryUrl>
+            <PackageProjectUrl>$(RepositoryUrl)</PackageProjectUrl>
+            <PackageReleaseNotes>$([System.IO.File]::ReadAllText('$(__X_ReleaseNotesFilePath)'))</PackageReleaseNotes>
+        </PropertyGroup>
+
+        <Error
+            Condition="!$([System.IO.File]::Exists('$(AssemblyOriginatorKeyFile)'))"
+            Text="[$(__X_MessagePrefix)] Assembly signing key file &quot;$(AssemblyOriginatorKeyFile)&quot; is not found."/>
+        <Error
+            Condition="!$([System.IO.File]::Exists('$(RunSettingsFilePath)'))"
+            Text="[$(__X_MessagePrefix)] Test run settings file &quot;$(RunSettingsFilePath)&quot; is not found."/>
+
+        <!-- Log standard properties -->
+        <Message
+            Importance="high"
+            Condition="'$(__X_LogStandardProperties)' == 'true'"
+            Text="[$(__X_MessagePrefix)] NETCoreSdkVersion = &quot;$(NETCoreSdkVersion)&quot;" />
+        <Message
+            Importance="high"
+            Condition="'$(__X_LogStandardProperties)' == 'true'"
+            Text="[$(__X_MessagePrefix)] AssemblyOriginatorKeyFile = &quot;$(AssemblyOriginatorKeyFile)&quot;" />
+        <Message
+            Importance="high"
+            Condition="'$(__X_LogStandardProperties)' == 'true'"
+            Text="[$(__X_MessagePrefix)] RunSettingsFilePath = &quot;$(RunSettingsFilePath)&quot;" />
+        <Message
+            Importance="high"
+            Condition="'$(__X_LogStandardProperties)' == 'true'"
+            Text="[$(__X_MessagePrefix)] BaseIntermediateOutputPath = &quot;$(BaseIntermediateOutputPath)&quot;" />
+        <Message
+            Importance="high"
+            Condition="'$(__X_LogStandardProperties)' == 'true'"
+            Text="[$(__X_MessagePrefix)] OutputPath = &quot;$(OutputPath)&quot;" />
+        <Message
+            Importance="high"
+            Condition="'$(__X_LogStandardProperties)' == 'true'"
+            Text="[$(__X_MessagePrefix)] PackageOutputPath = &quot;$(PackageOutputPath)&quot;" />
+        <Message
+            Importance="high"
+            Condition="'$(__X_LogStandardProperties)' == 'true'"
+            Text="[$(__X_MessagePrefix)] VSTestResultsDirectory = &quot;$(VSTestResultsDirectory)&quot;" />
+        <Message
+            Importance="high"
+            Condition="'$(__X_LogStandardProperties)' == 'true'"
+            Text="[$(__X_MessagePrefix)] Product = &quot;$(Product)&quot;" />
+        <Message
+            Importance="high"
+            Condition="'$(__X_LogStandardProperties)' == 'true'"
+            Text="[$(__X_MessagePrefix)] Description = &quot;$(Description)&quot;" />
+        <Message
+            Importance="high"
+            Condition="'$(__X_LogStandardProperties)' == 'true'"
+            Text="[$(__X_MessagePrefix)] RepositoryUrl = &quot;$(RepositoryUrl)&quot;" />
+        <Message
+            Importance="high"
+            Condition="'$(__X_LogStandardProperties)' == 'true'"
+            Text="[$(__X_MessagePrefix)] PackageProjectUrl = &quot;$(PackageProjectUrl)&quot;" />
+        <Message
+            Importance="high"
+            Condition="'$(__X_LogStandardProperties)' == 'true'"
+            Text="[$(__X_MessagePrefix)] PackageReleaseNotes.Length = $(PackageReleaseNotes.Length)" />
+        <Message
+            Importance="high"
+            Condition="'$(__X_LogStandardProperties)' == 'true'"
+            Text="[$(__X_MessagePrefix)] AssemblyVersion = &quot;$(AssemblyVersion)&quot;" />
+        <Message
+            Importance="high"
+            Condition="'$(__X_LogStandardProperties)' == 'true'"
+            Text="[$(__X_MessagePrefix)] PackageVersion = &quot;$(PackageVersion)&quot;" />
+        <Message
+            Importance="high"
+            Condition="'$(__X_LogStandardProperties)' == 'true'"
+            Text="[$(__X_MessagePrefix)] InformationalVersion = &quot;$(InformationalVersion)&quot;" />
+    </Target>
 </Project>

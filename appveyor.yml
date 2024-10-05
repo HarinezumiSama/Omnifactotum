@@ -18,6 +18,8 @@ nuget:
 matrix:
   fast_finish: true
 environment:
+  DOTNET_CLI_TELEMETRY_OPTOUT: 'true'
+  DOTNET_NOLOGO: 'true'
   CI_ARG_PRERELEASE_SUFFIX: '-internal'
   CI_OUT_ARG_DEPLOYMENT_VERSION: ''
   CI_OUT_ARG_DEPLOY: 'false'
@@ -46,6 +48,13 @@ build_script:
     $Script:ErrorActionPreference = [System.Management.Automation.ActionPreference]::Stop;
 
     Microsoft.PowerShell.Core\Set-StrictMode -Version 1;
+
+    $ProgressPreference = [System.Management.Automation.ActionPreference]::SilentlyContinue;
+
+
+    # Reason: AppVeyor build image 'Visual Studio 2022' doesn't contain .NET 5.0 SDK anymore
+
+    choco install --yes --no-progress 'dotnet-5.0-sdk-4xx';
 
 
     & .\build.ps1 `
