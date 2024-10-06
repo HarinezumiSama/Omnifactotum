@@ -53,4 +53,9 @@
     <ItemGroup>
         <EmbeddedResource Include="ExtensionMethods\OmnifactotumTypeExtensionsTests.TestResource.txt" />
     </ItemGroup>
+
+    <Target Name="CleanTestResults" AfterTargets="Clean">
+        <Message Importance="high" Text="[$(__X_MessagePrefix)] Cleaning test results directory &quot;$(VSTestResultsDirectory)&quot;." />
+        <RemoveDir Directories="$(VSTestResultsDirectory)" Condition="Exists($(VSTestResultsDirectory))" ContinueOnError="true"/>
+    </Target>
 </Project>

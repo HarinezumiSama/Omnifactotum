@@ -1,0 +1,42 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+    <PropertyGroup>
+        <!-- CS1591: Missing XML comment for publicly visible type or member: https://learn.microsoft.com/en-us/dotnet/csharp/language-reference/compiler-messages/cs1591 -->
+        <NoWarn>$(NoWarn);CS1591</NoWarn>
+    </PropertyGroup>
+
+    <PropertyGroup>
+        <OutputType>Exe</OutputType>
+        <TargetFrameworks>netcoreapp3.1;net5.0;net6.0;net7.0;net8.0</TargetFrameworks>
+    </PropertyGroup>
+
+    <ItemGroup>
+        <PackageReference Include="BenchmarkDotNet" Version="0.14.0"/>
+    </ItemGroup>
+
+    <ItemGroup>
+        <ProjectReference Include="..\Omnifactotum\Omnifactotum.csproj"/>
+    </ItemGroup>
+
+    <PropertyGroup>
+        <EnableDefaultItems>false</EnableDefaultItems>
+    </PropertyGroup>
+
+    <ItemGroup>
+        <Compile Include="**/*.cs" Exclude="**/obj/**" />
+
+        <Compile Include="..\Common\AssemblyInfo.Common.cs">
+            <Link>Properties\AssemblyInfo.Common.cs</Link>
+        </Compile>
+
+        <None Include="**/*.md" />
+
+        <None Include="..\Common\Omnifactotum.snk">
+            <Link>Properties\Omnifactotum.snk</Link>
+        </None>
+    </ItemGroup>
+
+    <Target Name="CleanBenchmarkResults" AfterTargets="Clean">
+        <Message Importance="high" Text="[$(__X_MessagePrefix)] Cleaning benchmark results directory &quot;$(__X_BenchmarkResultsDirectory)&quot;." />
+        <RemoveDir Directories="$(__X_BenchmarkResultsDirectory)" Condition="Exists($(__X_BenchmarkResultsDirectory))" ContinueOnError="true"/>
+    </Target>
+</Project>

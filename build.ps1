@@ -25,6 +25,9 @@ param
     [switch] $EnableDotCover,
 
     [Parameter()]
+    [switch] $ExecuteBenchmarks,
+
+    [Parameter()]
     [AllowNull()]
     [AllowEmptyString()]
     [string] $PrereleaseSuffix = '-debug',
@@ -1010,6 +1013,31 @@ process
 
                 Write-MajorSeparator
             }
+        }
+
+        if ($ExecuteBenchmarks)
+        {
+            #[string] $benchmarkResultsSubdirectory = $buildPropsFileXmlData.GetProjectPropertyText('__X_BenchmarkResultsDirectory')
+
+            [ValidateNotNullOrEmpty()] [string] $benchmarkProjectFileNameOnly = "$($solutionNameOnly).Benchmarks"
+
+            [string] $benchmarkExecutablePath = [Path]::Combine(
+                $solutionDirectoryPath,
+                '.out', # TODO: Compute
+                'bin', # TODO: Compute
+                $projectPlatform,
+                $BuildConfiguration,
+                $benchmarkProjectFileNameOnly,
+                'net8.0', # TODO: Compute
+                "$($benchmarkProjectFileNameOnly).exe")
+
+            Execute-Command `
+                -Verbose `
+                -Title '* Execute benchmarks' `
+                -Command $benchmarkExecutablePath `
+                -CommandArguments @()
+
+            #throw 'Executing benchmarks is not implemented yet.'
         }
     }
     catch

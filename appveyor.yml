@@ -60,6 +60,7 @@ build_script:
         -BuildConfiguration $env:Configuration `
         -BuildPlatform $env:Platform `
         -EnableDotCover `
+        -ExecuteBenchmarks `
         -PrereleaseSuffix $env:CI_ARG_PRERELEASE_SUFFIX `
         -AppveyorBuild `
         -AppveyorSourceCodeRevisionId $env:APPVEYOR_REPO_COMMIT `
