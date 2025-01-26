@@ -321,9 +321,11 @@ internal sealed class OmnifactotumStringExtensionsTests
 
     [Test]
     [TestCase(null, "null")]
-    [TestCase("", @"""""")]
-    [TestCase("6a079154-32c9-40da-A0AE-b64691f327fd", @"""6a079154-32c9-40da-A0AE-b64691f327fd""")]
-    [TestCase(@" A ""B"" 'C'-`d`/«3»", @""" A """"B"""" 'C'-`d`/«3»""")]
+    [TestCase("", "\"\"")]
+    [TestCase("Q", "\"Q\"")]
+    [TestCase("\"", "\"\"\"\"")]
+    [TestCase("6a079154-32c9-40da-A0AE-b64691f327fd", "\"6a079154-32c9-40da-A0AE-b64691f327fd\"")]
+    [TestCase(" A \"B\" 'C'-`d`/«3»", "\" A \"\"B\"\" 'C'-`d`/«3»\"")]
     public void TestToUIString(string? value, string expectedResult) => Assert.That(value.ToUIString, Is.EqualTo(expectedResult));
 
     [Test]
