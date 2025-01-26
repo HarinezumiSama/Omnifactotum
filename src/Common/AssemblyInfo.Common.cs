@@ -29,3 +29,7 @@
 #if NET8_0 && (!NETCOREAPP1_0_OR_GREATER || !NETCOREAPP2_0_OR_GREATER || !NETCOREAPP3_0_OR_GREATER || !NETCOREAPP3_1_OR_GREATER || !NET5_0_OR_GREATER || !NET6_0_OR_GREATER || !NET7_0_OR_GREATER || !NET8_0_OR_GREATER)
 #error [NET8_0] The compiler does not support `NET*_OR_GREATER` preprocessor symbols required to compile this project.
 #endif
+
+#if NET9_0 && (!NETCOREAPP1_0_OR_GREATER || !NETCOREAPP2_0_OR_GREATER || !NETCOREAPP3_0_OR_GREATER || !NETCOREAPP3_1_OR_GREATER || !NET5_0_OR_GREATER || !NET6_0_OR_GREATER || !NET7_0_OR_GREATER || !NET8_0_OR_GREATER || !NET9_0_OR_GREATER)
+#error [NET9_0] The compiler does not support `NET*_OR_GREATER` preprocessor symbols required to compile this project.
+#endif
