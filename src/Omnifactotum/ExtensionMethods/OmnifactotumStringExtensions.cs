@@ -524,7 +524,7 @@ public static class OmnifactotumStringExtensions
     ///     One of the enumeration values that determines how the prefix is searched.
     /// </param>
     /// <returns>
-    ///     The specified string value without the specified prefix if it ends with this prefix; otherwise, the original string value.
+    ///     The specified string value without the specified prefix if it starts with this prefix; otherwise, the original string value.
     /// </returns>
     /// <exception cref="ArgumentNullException">
     ///     <para><paramref name="value"/> is <see langword="null"/>.</para>
