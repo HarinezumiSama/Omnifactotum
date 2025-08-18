@@ -1,5 +1,4 @@
-﻿using System.Text;
-using Omnifactotum;
+﻿using Omnifactotum;
 using Omnifactotum.Annotations;
 using NotNullWhen = System.Diagnostics.CodeAnalysis.NotNullWhenAttribute;
 using NotNullIfNotNull = System.Diagnostics.CodeAnalysis.NotNullIfNotNullAttribute;
@@ -92,12 +91,7 @@ public static class OmnifactotumStringBuilderExtensions
             throw new ArgumentNullException(nameof(stringBuilder));
         }
 
-        return value is null
-            ? stringBuilder.Append(OmnifactotumRepresentationConstants.NullValueRepresentation)
-            : stringBuilder
-                .Append(OmnifactotumConstants.DoubleQuote)
-                .Append(value.Replace(OmnifactotumConstants.DoubleQuote, OmnifactotumConstants.DoubleDoubleQuote))
-                .Append(OmnifactotumConstants.DoubleQuote);
+        return stringBuilder.Append(value.ToUIString());
     }
 
     /// <summary>
@@ -129,7 +123,7 @@ public static class OmnifactotumStringBuilderExtensions
     ///     The minimum length of the part of the input string that should be hidden from the resulting UI representation.
     /// </param>
     /// <param name="loggedPartLength">
-    ///     The length of the part in the beginning and the part in the end of the input string that are displayed in the resulting UI representation.
+    ///     The length of the part in the beginning and the part at the end of the input string that are displayed in the resulting UI representation.
     /// </param>
     /// <returns>
     ///     A reference passed in the <paramref name="stringBuilder"/> parameter.
