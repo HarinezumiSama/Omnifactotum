@@ -873,7 +873,7 @@ process
                     Write-MajorSeparator
 
                     [string] $chocolateyExecutablePath = Get-ApplicationPath -Verbose -Name 'choco.exe'
-                    Execute-Command -Title 'Install dotCover CLI' $chocolateyExecutablePath install --yes --no-progress dotcover-cli
+                    Execute-Command -Title 'Install dotCover CLI' $chocolateyExecutablePath install --yes --no-progress --version=2025.1.5 dotcover-cli
                     $dotCoverExecutablePath = Get-ApplicationPath -Verbose -Name $dotCoverExecutableName
                 }
 
