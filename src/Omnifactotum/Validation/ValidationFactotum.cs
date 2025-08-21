@@ -27,7 +27,7 @@ internal static class ValidationFactotum
     private static readonly Dictionary<Type, Func<IMemberConstraint>> MemberConstraintFactoryMap = new();
 
     private static readonly MethodInfo IsDefaultImmutableArrayMethodDefinition =
-        ((Expression<Func<ImmutableArray<object>, bool>>)(obj => IsDefaultImmutableArray(obj)))
+        ((Expression<Func<ImmutableArray<object>, bool>>)(static obj => IsDefaultImmutableArray(obj)))
         .GetLastMethod()
         .EnsureNotNull()
         .GetGenericMethodDefinition();
@@ -155,7 +155,7 @@ internal static class ValidationFactotum
                 BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic,
                 Type.DefaultBinder,
                 Type.EmptyTypes,
-                Array.Empty<ParameterModifier>());
+                []);
 
             if (constructorInfo is null)
             {
@@ -210,7 +210,7 @@ internal static class ValidationFactotum
         var elementType = type.GetGenericArguments().Single();
         var method = IsDefaultImmutableArrayMethodDefinition.MakeGenericMethod(elementType);
 
-        var result = (bool)method.Invoke(null, new[] { value }).EnsureNotNull();
+        var result = (bool)method.Invoke(null, [value]).EnsureNotNull();
         return result;
     }
 
@@ -229,7 +229,7 @@ internal static class ValidationFactotum
             ICollection<string?> strings => $"[{strings.ToUIString()}]",
             _ when value.GetType() is { IsEnum: true } enumType && !enumType.IsDefined(typeof(FlagsAttribute), false)
                 => Enum.IsDefined(enumType, value)
-                    ? AsInvariant($"{value:D} ({value:G})")
+                    ? AsInvariant($"{value:G} ({value:D})")
                     : AsInvariant($"{value:D}"),
 #if NET7_0_OR_GREATER
             IFormattable formattable
