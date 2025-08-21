@@ -47,13 +47,6 @@ public sealed class MemberConstraintValidationError
     public Type FailedConstraintType { get; }
 
     /// <summary>
-    ///     Gets the error message.
-    /// </summary>
-    [NotNull]
-    [Obsolete($"Use the '{nameof(Details)}.{nameof(ValidationErrorDetails.Text)}' property instead.")]
-    public string ErrorMessage => Details.Text;
-
-    /// <summary>
     ///     Gets the error text.
     /// </summary>
     [NotNull]

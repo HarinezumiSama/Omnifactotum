@@ -15,7 +15,7 @@ namespace Omnifactotum.Validation.Constraints;
 public abstract class CommonRegexStringConstraintBase : TypedMemberConstraintBase<string?>
 {
     /// <summary>
-    ///     The default <see cref="RegexOptions"/> used in the <see cref="RegexStringConstraintBase"/> constructor.
+    ///     The default <see cref="RegexOptions"/> used in the <see cref="CommonRegexStringConstraintBase"/> constructor.
     /// </summary>
     private protected const RegexOptions CommonDefaultRegexOptions = RegexOptions.Singleline | RegexOptions.Compiled;
 

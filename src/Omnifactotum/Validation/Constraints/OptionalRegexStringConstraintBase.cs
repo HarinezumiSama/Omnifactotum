@@ -17,7 +17,7 @@ namespace Omnifactotum.Validation.Constraints;
 /// </summary>
 /// <seealso cref="Regex"/>
 /// <seealso cref="RegexOptions"/>
-/// <seealso cref="RegexStringConstraintBase"/>
+/// <seealso cref="NotNullRegexStringConstraintBase"/>
 public abstract class OptionalRegexStringConstraintBase : CommonRegexStringConstraintBase
 {
     /// <summary>

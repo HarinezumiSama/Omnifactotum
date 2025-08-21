@@ -89,9 +89,7 @@ internal abstract class ConstraintTestsBase<[MeansImplicitUse] TConstraint> : Co
             Assert.That(validationErrors, Is.Not.Null, testCaseDetails);
             Assert.That(validationErrors, Has.Count.EqualTo(1), $"{testCaseDetails} There must be exactly one error");
 
-            var expectedFailedConstraintType = testee is ILegacyTypedMemberConstraint legacyTypedMemberConstraint
-                ? legacyTypedMemberConstraint.ActualConstraintType
-                : testee.GetType();
+            var expectedFailedConstraintType = testee.GetType();
 
             var validationError = validationErrors.Single();
             Assert.That(validationError, Is.Not.Null, testCaseDetails);
@@ -99,11 +97,6 @@ internal abstract class ConstraintTestsBase<[MeansImplicitUse] TConstraint> : Co
             Assert.That(validationError.Context, Is.SameAs(memberContext), testCaseDetails);
             Assert.That(validationError.Details.Text, Is.EqualTo(expectedErrorDetails.Text), testCaseDetails);
             Assert.That(validationError.Details.Description, Is.EqualTo(expectedErrorDetails.Description), testCaseDetails);
-
-#pragma warning disable CS0618 // Type or member is obsolete
-            //// Legacy
-            Assert.That(validationError.ErrorMessage, Is.EqualTo(expectedErrorDetails.Text), testCaseDetails);
-#pragma warning restore CS0618 // Type or member is obsolete
         }
 
         Assert.That(atLeastOneValue, Is.True);

@@ -21,7 +21,7 @@ namespace Omnifactotum.Validation.Constraints;
 public abstract class NotNullRegexStringConstraintBase : CommonRegexStringConstraintBase
 {
     /// <summary>
-    ///     The default <see cref="RegexOptions"/> used in the <see cref="RegexStringConstraintBase"/> constructor.
+    ///     The default <see cref="RegexOptions"/> used in the <see cref="NotNullRegexStringConstraintBase"/> constructor.
     /// </summary>
     [PublicAPI]
     public const RegexOptions DefaultRegexOptions = CommonDefaultRegexOptions;
