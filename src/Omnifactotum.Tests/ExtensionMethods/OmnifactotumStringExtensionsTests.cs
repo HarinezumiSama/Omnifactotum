@@ -21,7 +21,7 @@ internal sealed class OmnifactotumStringExtensionsTests
     [Test]
     [TestCase(null, true)]
     [TestCase("", true)]
-    [TestCase("\u0000", false)]
+    [TestCase("\0", false)]
     [TestCase("\u0020", false)]
     [TestCase("\t", false)]
     [TestCase("\r", false)]
@@ -35,7 +35,7 @@ internal sealed class OmnifactotumStringExtensionsTests
     [Test]
     [TestCase(null, true)]
     [TestCase("", true)]
-    [TestCase("\u0000", false)]
+    [TestCase("\0", false)]
     [TestCase("\u0020", true)]
     [TestCase("\t", true)]
     [TestCase("\r", true)]
@@ -65,10 +65,7 @@ internal sealed class OmnifactotumStringExtensionsTests
     {
         Assert.That(value.ToNullableBoolean, Is.EqualTo(expectedResult));
 
-        var constraint = expectedResult.HasValue
-            ? (IResolveConstraint)Is.EqualTo(expectedResult.Value)
-            : Throws.ArgumentException;
-
+        IResolveConstraint? constraint = expectedResult.HasValue ? Is.EqualTo(expectedResult.Value) : Throws.ArgumentException;
         Assert.That(value!.ToBoolean, constraint);
     }
 
@@ -122,21 +119,22 @@ internal sealed class OmnifactotumStringExtensionsTests
     [SuppressMessage("ReSharper", "VariableLengthStringHexEscapeSequence")]
     public void TestWhereNotEmptyWhenValidArgumentThenSucceeds()
     {
-        ExecuteTestCase(Array.Empty<string?>(), Array.Empty<string>());
-        ExecuteTestCase(new string?[] { null }, Array.Empty<string>());
-        ExecuteTestCase(new string?[] { null, null }, Array.Empty<string>());
-        ExecuteTestCase(new[] { null, string.Empty, "\x0020\t\r\n\x0020", null }, new[] { "\x0020\t\r\n\x0020" });
-        ExecuteTestCase(new[] { null, "q", null }, new[] { "q" });
+        ExecuteTestCase([], []);
+        ExecuteTestCase([null], []);
+        ExecuteTestCase([null, null], []);
+        ExecuteTestCase([null, string.Empty, "\x0020\t\r\n\x0020", null], ["\x0020\t\r\n\x0020"]);
+        ExecuteTestCase([null, "q", null], ["q"]);
 
         ExecuteTestCase(
-            new[] { "Hello\x0020world", "?", null, string.Empty, "\t\x0020\r\n", null, "Bye!" },
-            new[] { "Hello\x0020world", "?", "\t\x0020\r\n", "Bye!" });
+            ["Hello\x0020world", "?", null, string.Empty, "\t\x0020\r\n", null, "Bye!"],
+            ["Hello\x0020world", "?", "\t\x0020\r\n", "Bye!"]);
 
         // Note: `ToArray()` call is required to ensure that the compiler generated `IEnumerable<string>` instance actually invokes `WhereNotEmpty()`
         Assert.That(() => default(ImmutableArray<string>).WhereNotEmpty().ToArray(), Is.TypeOf<string[]>() & Is.Empty);
         Assert.That(() => ImmutableArray<string>.Empty.WhereNotEmpty().ToArray(), Is.TypeOf<string[]>() & Is.Empty);
 
-        //// ReSharper disable once SuggestBaseTypeForParameter
+        [SuppressMessage("ReSharper", "ParameterTypeCanBeEnumerable.Local")]
+        [SuppressMessage("ReSharper", "SuggestBaseTypeForParameter")]
         static void ExecuteTestCase(string?[] input, string[] expectedResult)
         {
             // Note: `ToArray()` call is required to ensure that the compiler generated `IEnumerable<string>` instance actually invokes `WhereNotEmpty()`
@@ -158,21 +156,22 @@ internal sealed class OmnifactotumStringExtensionsTests
     [SuppressMessage("ReSharper", "VariableLengthStringHexEscapeSequence")]
     public void TestWhereNotBlankWhenValidArgumentThenSucceeds()
     {
-        ExecuteTestCase(Array.Empty<string?>(), Array.Empty<string>());
-        ExecuteTestCase(new string?[] { null }, Array.Empty<string>());
-        ExecuteTestCase(new string?[] { null, null }, Array.Empty<string>());
-        ExecuteTestCase(new[] { null, string.Empty, "\x0020\t\r\n\x0020", null }, Array.Empty<string>());
-        ExecuteTestCase(new[] { null, "q", null }, new[] { "q" });
+        ExecuteTestCase([], []);
+        ExecuteTestCase([null], []);
+        ExecuteTestCase([null, null], []);
+        ExecuteTestCase([null, string.Empty, "\x0020\t\r\n\x0020", null], []);
+        ExecuteTestCase([null, "q", null], ["q"]);
 
         ExecuteTestCase(
-            new[] { "Hello\x0020world", "?", null, string.Empty, "\t\x0020\r\n", null, "Bye!" },
-            new[] { "Hello\x0020world", "?", "Bye!" });
+            ["Hello\x0020world", "?", null, string.Empty, "\t\x0020\r\n", null, "Bye!"],
+            ["Hello\x0020world", "?", "Bye!"]);
 
         // Note: `ToArray()` call is required to ensure that the compiler generated `IEnumerable<string>` instance actually invokes `WhereNotEmpty()`
         Assert.That(() => default(ImmutableArray<string>).WhereNotBlank().ToArray(), Is.TypeOf<string[]>() & Is.Empty);
         Assert.That(() => ImmutableArray<string>.Empty.WhereNotBlank().ToArray(), Is.TypeOf<string[]>() & Is.Empty);
 
-        //// ReSharper disable once SuggestBaseTypeForParameter
+        [SuppressMessage("ReSharper", "ParameterTypeCanBeEnumerable.Local")]
+        [SuppressMessage("ReSharper", "SuggestBaseTypeForParameter")]
         static void ExecuteTestCase(string?[] input, string[] expectedResult)
         {
             // Note: `ToArray()` call is required to ensure that the compiler generated `IEnumerable<string>` instance actually invokes `WhereNotBlank()`

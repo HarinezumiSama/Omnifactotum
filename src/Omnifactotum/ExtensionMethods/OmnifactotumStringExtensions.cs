@@ -359,8 +359,8 @@ public static class OmnifactotumStringExtensions
     ///     </code>
     ///     <code>
     /// <![CDATA[
-    ///         string value4 = "Class 'MyClass' is found in project \"MyProject\".";
-    ///         Console.WriteLine("Value is {0}.", value4.ToUIString()); // Output: Value is "Class 'MyClass' is found in project ""MyProject"".".
+    ///         string value4 = "Class 'MyClass' is found in the project \"MyProject\".";
+    ///         Console.WriteLine("Value is {0}.", value4.ToUIString()); // Output: Value is "Class 'MyClass' is found in the project ""MyProject"".".
     /// ]]>
     ///     </code>
     /// </example>
@@ -368,85 +368,7 @@ public static class OmnifactotumStringExtensions
     [Omnifactotum.Annotations.Pure]
     [NotNull]
     public static string ToUIString([CanBeNull] this string? value)
-    {
-        switch (value)
-        {
-            case null:
-                return OmnifactotumRepresentationConstants.NullValueRepresentation;
-
-            case { Length: 0 }:
-                return OmnifactotumConstants.DoubleDoubleQuote;
-
-            case [OmnifactotumConstants.DoubleQuoteChar]:
-                return "\"\"\"\"";
-
-            case [var ch]:
-                return string.Create(
-                    3,
-                    ch,
-                    static (span, ch) =>
-                    {
-                        span[0] = OmnifactotumConstants.DoubleQuoteChar;
-                        span[1] = ch;
-                        span[2] = OmnifactotumConstants.DoubleQuoteChar;
-                    });
-        }
-
-        const int MaxStackBufferLength = 1024 / sizeof(char);
-
-        var valueSpan = value.AsSpan();
-
-        var firstDoubleQuoteCharIndex = valueSpan.IndexOf(OmnifactotumConstants.DoubleQuoteChar);
-        if (firstDoubleQuoteCharIndex < 0)
-        {
-            var resultValueLength = value.Length + 2;
-
-            return string.Create(
-                resultValueLength,
-#if NET9_0_OR_GREATER
-                value.AsSpan(),
-#else
-                value,
-#endif
-                static (span, state) =>
-                {
-                    span[0] = OmnifactotumConstants.DoubleQuoteChar;
-#if NET6_0_OR_GREATER
-                    state.CopyTo(span.Slice(1));
-#else
-                    state.AsSpan().CopyTo(span.Slice(1));
-#endif
-                    span[^1] = OmnifactotumConstants.DoubleQuoteChar;
-                });
-        }
-
-        var requiredBufferLength = value.Length * 2 + 2;
-        var resultBuffer = requiredBufferLength > MaxStackBufferLength ? new char[requiredBufferLength] : stackalloc char[requiredBufferLength];
-
-        var resultLength = 0;
-        resultBuffer[resultLength++] = OmnifactotumConstants.DoubleQuoteChar;
-
-        var copiedSpan = valueSpan[..(firstDoubleQuoteCharIndex + 1)];
-        copiedSpan.CopyTo(resultBuffer[resultLength..]);
-        resultLength += copiedSpan.Length;
-
-        resultBuffer[resultLength++] = OmnifactotumConstants.DoubleQuoteChar;
-
-        for (var index = firstDoubleQuoteCharIndex + 1; index < valueSpan.Length; index++)
-        {
-            var ch = valueSpan[index];
-
-            resultBuffer[resultLength++] = ch;
-            if (ch == OmnifactotumConstants.DoubleQuoteChar)
-            {
-                resultBuffer[resultLength++] = OmnifactotumConstants.DoubleQuoteChar;
-            }
-        }
-
-        resultBuffer[resultLength++] = OmnifactotumConstants.DoubleQuoteChar;
-
-        return new string(resultBuffer[..resultLength]);
-    }
+        => value is null ? OmnifactotumRepresentationConstants.NullValueRepresentation : value.AsSpan().ToUIString();
 
     /// <summary>
     ///     <para>

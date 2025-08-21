@@ -195,4 +195,145 @@ public static class OmnifactotumReadOnlySpanExtensions
 
         return resultBuilder.ToString();
     }
+
+    /// <summary>
+    ///     <para>
+    ///         Converts the specified span of characters to its UI representation.
+    ///     </para>
+    ///     <list type="table">
+    ///         <listheader>
+    ///             <term>The input value</term>
+    ///             <description>The result of the method</description>
+    ///         </listheader>
+    ///         <item>
+    ///             <term><see langword="null"/></term>
+    ///             <description>The literal "<b>null</b>".</description>
+    ///         </item>
+    ///         <item>
+    ///             <term>not <see langword="null"/></term>
+    ///             <description>
+    ///                 An input value enclosed in the double quote characters (<c>"</c>). If the value
+    ///                 contains one or more double quote characters, then each of them is
+    ///                 duplicated in the result.
+    ///             </description>
+    ///         </item>
+    ///     </list>
+    /// </summary>
+    /// <param name="value">
+    ///     The span of characters to convert.
+    /// </param>
+    /// <returns>
+    ///     The UI representation of the specified span of characters.
+    /// </returns>
+    /// <seealso cref="OmnifactotumStringExtensions.ToUIString"/>
+    ///// <example>
+    /////     <code>
+    ///// <![CDATA[
+    /////         ReadOnlySpan<char> value1 = string.Empty;
+    /////         Console.WriteLine("Value is {0}.", value1.ToUIString()); // Output: Value is "".
+    ///// ]]>
+    /////     </code>
+    /////     <code>
+    ///// <![CDATA[
+    /////         ReadOnlySpan<char> value2 = "Hello";
+    /////         Console.WriteLine("Value is {0}.", value2.ToUIString()); // Output: Value is "Hello".
+    ///// ]]>
+    /////     </code>
+    /////     <code>
+    ///// <![CDATA[
+    /////         ReadOnlySpan<char> value3 = "Class 'MyClass' is found in the project \"MyProject\".";
+    /////         Console.WriteLine("Value is {0}.", value3.ToUIString()); // Output: Value is "Class 'MyClass' is found in the project ""MyProject"".".
+    ///// ]]>
+    /////     </code>
+    ///// </example>
+    [Pure]
+    [Omnifactotum.Annotations.Pure]
+    [NotNull]
+    public static string ToUIString(this ReadOnlySpan<char> value)
+    {
+        switch (value)
+        {
+            case { Length: 0 }:
+                return OmnifactotumConstants.DoubleDoubleQuote;
+
+            case [OmnifactotumConstants.DoubleQuoteChar]:
+                return "\"\"\"\"";
+
+            case [var ch]:
+                return string.Create(
+                    3,
+                    ch,
+                    static (span, ch) =>
+                    {
+                        span[0] = OmnifactotumConstants.DoubleQuoteChar;
+                        span[1] = ch;
+                        span[2] = OmnifactotumConstants.DoubleQuoteChar;
+                    });
+        }
+
+        const int MaxStackBufferLength = 1024 / sizeof(char);
+
+        var firstDoubleQuoteCharIndex = value.IndexOf(OmnifactotumConstants.DoubleQuoteChar);
+        if (firstDoubleQuoteCharIndex < 0)
+        {
+            var resultValueLength = value.Length + 2;
+
+#if NET9_0_OR_GREATER
+            return string.Create(
+                resultValueLength,
+                value,
+                static (resultStringSpan, sourceValueSpan) =>
+                {
+                    resultStringSpan[0] = OmnifactotumConstants.DoubleQuoteChar;
+                    sourceValueSpan.CopyTo(resultStringSpan[1..]);
+                    resultStringSpan[^1] = OmnifactotumConstants.DoubleQuoteChar;
+                });
+#else
+            unsafe
+            {
+                fixed (char* valuePointer = &value.GetPinnableReference())
+                {
+                    return string.Create(
+                        resultValueLength,
+                        (DataPointer: (IntPtr)valuePointer, DataLength: value.Length),
+                        static (resultStringSpan, state) =>
+                        {
+                            var sourceValueSpan = new ReadOnlySpan<char>((char*)state.DataPointer, state.DataLength);
+
+                            resultStringSpan[0] = OmnifactotumConstants.DoubleQuoteChar;
+                            sourceValueSpan.CopyTo(resultStringSpan[1..]);
+                            resultStringSpan[^1] = OmnifactotumConstants.DoubleQuoteChar;
+                        });
+                }
+            }
+#endif
+        }
+
+        var requiredBufferLength = value.Length * 2 + 2;
+        var resultBuffer = requiredBufferLength > MaxStackBufferLength ? new char[requiredBufferLength] : stackalloc char[requiredBufferLength];
+
+        var resultLength = 0;
+        resultBuffer[resultLength++] = OmnifactotumConstants.DoubleQuoteChar;
+
+        var copiedSpan = value[..(firstDoubleQuoteCharIndex + 1)];
+        copiedSpan.CopyTo(resultBuffer[resultLength..]);
+        resultLength += copiedSpan.Length;
+
+        resultBuffer[resultLength++] = OmnifactotumConstants.DoubleQuoteChar;
+
+        for (var index = firstDoubleQuoteCharIndex + 1; index < value.Length; index++)
+        {
+            var ch = value[index];
+
+            resultBuffer[resultLength++] = ch;
+            if (ch == OmnifactotumConstants.DoubleQuoteChar)
+            {
+                resultBuffer[resultLength++] = OmnifactotumConstants.DoubleQuoteChar;
+            }
+        }
+
+        resultBuffer[resultLength++] = OmnifactotumConstants.DoubleQuoteChar;
+
+        return new string(resultBuffer[..resultLength]);
+    }
 }
