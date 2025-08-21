@@ -1,4 +1,5 @@
 ﻿using System.Collections.Immutable;
+using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Text;
@@ -460,7 +461,7 @@ public static class OmnifactotumCollectionExtensions
     ///     are determined.
     /// </param>
     /// <param name="comparer">
-    ///     A equality comparer used to compare keys.
+    ///     An equality comparer used to compare keys.
     /// </param>
     /// <returns>
     ///     A dictionary in which a key is a duplicated key from the source collection keys and a value is
@@ -485,14 +486,14 @@ public static class OmnifactotumCollectionExtensions
             throw new ArgumentNullException(nameof(keySelector));
         }
 
-        var actualComparer = comparer ?? EqualityComparer<TKey>.Default;
+        var resolvedComparer = comparer ?? EqualityComparer<TKey>.Default;
 
         return collection
             .AvoidDefaultImmutableArray()
-            .GroupBy(keySelector, actualComparer)
-            .Where(group => group.Count() > 1)
-            .Select(group => KeyValuePair.Create(group.Key, group.ToList()))
-            .ToDictionary(item => item.Key, item => item.Value, actualComparer);
+            .GroupBy(keySelector, resolvedComparer)
+            .Select(static group => KeyValuePair.Create(group.Key, group.ToList()))
+            .Where(static group => group.Value.Count > 1)
+            .ToDictionary(static item => item.Key, static item => item.Value, resolvedComparer);
     }
 
     /// <summary>

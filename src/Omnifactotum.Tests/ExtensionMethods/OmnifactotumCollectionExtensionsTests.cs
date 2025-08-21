@@ -73,8 +73,8 @@ internal sealed class OmnifactotumCollectionExtensionsTests
     [Test]
     public void TestDoForEachWhenValidArgumentsThenSucceeds()
     {
-        ExecuteTestCase<string, string[]>(Array.Empty<string>(), string.Empty);
-        ExecuteTestCase<char, char[]>(new[] { 'A', '/', 'z' }, "A./.z.");
+        ExecuteTestCase<string, string[]>([], string.Empty);
+        ExecuteTestCase<char, char[]>(['A', '/', 'z'], "A./.z.");
         ExecuteTestCase<int, ImmutableArray<int>>(ImmutableArray.Create(13, 42, 19), "13.42.19.");
         ExecuteTestCase<string, ImmutableArray<string>>(ImmutableArray<string>.Empty, string.Empty);
         ExecuteTestCase<string, ImmutableArray<string>>(default, string.Empty);
@@ -100,8 +100,8 @@ internal sealed class OmnifactotumCollectionExtensionsTests
     [Test]
     public void TestDoForEachWithIndexWhenValidArgumentsThenSucceeds()
     {
-        ExecuteTestCase<string, string[]>(Array.Empty<string>(), string.Empty);
-        ExecuteTestCase<char, char[]>(new[] { 'A', '/', 'z' }, "A:0./:1.z:2.");
+        ExecuteTestCase<string, string[]>([], string.Empty);
+        ExecuteTestCase<char, char[]>(['A', '/', 'z'], "A:0./:1.z:2.");
         ExecuteTestCase<int, ImmutableArray<int>>(ImmutableArray.Create(13, 42, 19), "13:0.42:1.19:2.");
         ExecuteTestCase<string, ImmutableArray<string>>(ImmutableArray<string>.Empty, string.Empty);
         ExecuteTestCase<string, ImmutableArray<string>>(default, string.Empty);
@@ -130,8 +130,8 @@ internal sealed class OmnifactotumCollectionExtensionsTests
     [Test]
     public async Task TestDoForEachAsyncWhenValidArgumentsThenSucceedsAsync()
     {
-        await ExecuteTestCaseAsync<string, string[]>(Array.Empty<string>(), string.Empty);
-        await ExecuteTestCaseAsync<char, char[]>(new[] { 'A', '/', 'z' }, "A./.z.");
+        await ExecuteTestCaseAsync<string, string[]>([], string.Empty);
+        await ExecuteTestCaseAsync<char, char[]>(['A', '/', 'z'], "A./.z.");
         await ExecuteTestCaseAsync<int, ImmutableArray<int>>(ImmutableArray.Create(13, 42, 19), "13.42.19.");
         await ExecuteTestCaseAsync<string, ImmutableArray<string>>(ImmutableArray<string>.Empty, string.Empty);
         await ExecuteTestCaseAsync<string, ImmutableArray<string>>(default, string.Empty);
@@ -215,8 +215,8 @@ internal sealed class OmnifactotumCollectionExtensionsTests
     [Test]
     public async Task TestDoForEachAsyncWithIndexWhenValidArgumentsThenSucceedsAsync()
     {
-        await ExecuteTestCaseAsync<string, string[]>(Array.Empty<string>(), string.Empty);
-        await ExecuteTestCaseAsync<char, char[]>(new[] { 'A', '/', 'z' }, "A:0./:1.z:2.");
+        await ExecuteTestCaseAsync<string, string[]>([], string.Empty);
+        await ExecuteTestCaseAsync<char, char[]>(['A', '/', 'z'], "A:0./:1.z:2.");
         await ExecuteTestCaseAsync<int, ImmutableArray<int>>(ImmutableArray.Create(13, 42, 19), "13:0.42:1.19:2.");
         await ExecuteTestCaseAsync<string, ImmutableArray<string>>(ImmutableArray<string>.Empty, string.Empty);
         await ExecuteTestCaseAsync<string, ImmutableArray<string>>(default, string.Empty);
@@ -289,33 +289,33 @@ internal sealed class OmnifactotumCollectionExtensionsTests
     [SuppressMessage("ReSharper", "UseArrayEmptyMethod")]
     public void TestSetItemsWhenInvalidArgumentThenThrows()
     {
-        Assert.That(() => default(List<string>)!.SetItems(new[] { string.Empty }), Throws.ArgumentNullException);
-        Assert.That(() => new List<string>().SetItems(default(List<string>)!), Throws.ArgumentNullException);
+        Assert.That(() => default(List<string>)!.SetItems([string.Empty]), Throws.ArgumentNullException);
+        Assert.That(() => new List<string>().SetItems(null!), Throws.ArgumentNullException);
 
-        Assert.That(() => new string[0].SetItems(new[] { string.Empty }), Throws.TypeOf<NotSupportedException>());
-        Assert.That(() => new ReadOnlyCollection<string>(new List<string>()).SetItems(new[] { string.Empty }), Throws.TypeOf<NotSupportedException>());
+        Assert.That(() => new string[0].SetItems([string.Empty]), Throws.TypeOf<NotSupportedException>());
+        Assert.That(() => new ReadOnlyCollection<string>(new List<string>()).SetItems([string.Empty]), Throws.TypeOf<NotSupportedException>());
     }
 
     [Test]
     public void TestSetItemsValidArgumentsThenSucceeds()
     {
-        static int[] CreateIntItems1() => new[] { 17, 42, -19 };
-        static int[] CreateIntItems2() => new[] { 19, -37, 17, 0 };
+        static int[] CreateIntItems1() => [17, 42, -19];
+        static int[] CreateIntItems2() => [19, -37, 17, 0];
 
         InvokeTestSetItems<int, Collection<int>>(CreateIntItems1, CreateIntItems2);
         InvokeTestSetItems<int, List<int>>(CreateIntItems1, CreateIntItems2);
 
-        static string[] CreateStringItems1() => new[] { "az", "zA", "qwerty" };
-        static string[] CreateStringItems2() => new[] { nameof(TestSetItemsValidArgumentsThenSucceeds), string.Empty };
+        static string[] CreateStringItems1() => ["az", "zA", "qwerty"];
+        static string[] CreateStringItems2() => [nameof(TestSetItemsValidArgumentsThenSucceeds), string.Empty];
 
         InvokeTestSetItems<string, Collection<string>>(CreateStringItems1, CreateStringItems2);
         InvokeTestSetItems<string, List<string>>(CreateStringItems1, CreateStringItems2);
 
         static KeyValuePair<int, string>[] CreateKeyValuePairItems1()
-            => new[] { KeyValuePair.Create(17, "seventeen"), KeyValuePair.Create(-1, "minus one") };
+            => [KeyValuePair.Create(17, "seventeen"), KeyValuePair.Create(-1, "minus one")];
 
         static KeyValuePair<int, string>[] CreateKeyValuePairItems2()
-            => new[] { KeyValuePair.Create(-13, "minus thirteen"), KeyValuePair.Create(0, "zero"), KeyValuePair.Create(int.MaxValue, "wow") };
+            => [KeyValuePair.Create(-13, "minus thirteen"), KeyValuePair.Create(0, "zero"), KeyValuePair.Create(int.MaxValue, "wow")];
 
         InvokeTestSetItems<KeyValuePair<int, string>, Dictionary<int, string>>(CreateKeyValuePairItems1, CreateKeyValuePairItems2);
 
@@ -337,7 +337,7 @@ internal sealed class OmnifactotumCollectionExtensionsTests
             collection.SetItems(items2);
             Assert.That(collection, Is.EqualTo(items2));
 
-            collection.SetItems(Array.Empty<T>());
+            collection.SetItems([]);
             Assert.That(collection, Is.Empty);
         }
     }
@@ -356,26 +356,26 @@ internal sealed class OmnifactotumCollectionExtensionsTests
         Assert.That(new[] { Value1, Value2, NegativeValue2 }, Is.Unique);
         Assert.That(Math.Abs(NegativeValue2), Is.EqualTo(Value2));
 
-        ExecuteTestCase(default, default, true);
-        ExecuteTestCase(new int[0], new int[0], true);
+        ExecuteTestCase(null, null, true);
+        ExecuteTestCase([], [], true);
 
-        ExecuteTestCase(Array.Empty<int>(), default, false);
+        ExecuteTestCase([], null, false);
 
-        ExecuteTestCase(new[] { Value1, Value2 }, new[] { Value1 }, false);
-        ExecuteTestCase(new[] { Value1, Value1 }, new[] { Value1 }, false);
-        ExecuteTestCase(new[] { Value1, Value2 }, new[] { Value2 }, false);
-        ExecuteTestCase(new[] { Value1 }, new[] { Value1, Value2 }, false);
-        ExecuteTestCase(new[] { Value1 }, new[] { Value2, Value2 }, false);
-        ExecuteTestCase(new[] { Value1 }, new[] { Value2, Value2 }, false);
-        ExecuteTestCase(new[] { Value1, Value1, Value2 }, new[] { Value1, Value2, Value2 }, false);
-        ExecuteTestCase(new[] { Value1, Value2, Value1 }, new[] { Value2, Value1, Value2 }, false);
+        ExecuteTestCase([Value1, Value2], [Value1], false);
+        ExecuteTestCase([Value1, Value1], [Value1], false);
+        ExecuteTestCase([Value1, Value2], [Value2], false);
+        ExecuteTestCase([Value1], [Value1, Value2], false);
+        ExecuteTestCase([Value1], [Value2, Value2], false);
+        ExecuteTestCase([Value1], [Value2, Value2], false);
+        ExecuteTestCase([Value1, Value1, Value2], [Value1, Value2, Value2], false);
+        ExecuteTestCase([Value1, Value2, Value1], [Value2, Value1, Value2], false);
 
-        ExecuteTestCase(new[] { Value1, Value2 }, new[] { Value1, Value2 }, true);
-        ExecuteTestCase(new[] { Value1, Value2 }, new[] { Value2, Value1 }, true);
-        ExecuteTestCase(new[] { Value2, Value1, NegativeValue2 }, new[] { NegativeValue2, Value1, Value2 }, true);
+        ExecuteTestCase([Value1, Value2], [Value1, Value2], true);
+        ExecuteTestCase([Value1, Value2], [Value2, Value1], true);
+        ExecuteTestCase([Value2, Value1, NegativeValue2], [NegativeValue2, Value1, Value2], true);
 
-        ExecuteTestCase(new[] { Value1, Value2 }, new[] { Value1, NegativeValue2 }, false, true);
-        ExecuteTestCase(new[] { Value1, Value2 }, new[] { NegativeValue2, Value1 }, false, true);
+        ExecuteTestCase([Value1, Value2], [Value1, NegativeValue2], false, true);
+        ExecuteTestCase([Value1, Value2], [NegativeValue2, Value1], false, true);
 
         static void ExecuteTestCase(
             int[]? collection,
@@ -423,7 +423,7 @@ internal sealed class OmnifactotumCollectionExtensionsTests
                         ? default(ImmutableArray<int>)
                         : ImmutableArray.Create(value);
 
-            static List<int>? ViaList(int[]? value) => value is null ? null : new List<int>(value);
+            static List<int>? ViaList(int[]? value) => value is null ? null : [..value];
         }
 
         static void InternalExecuteTestCase(
@@ -462,26 +462,26 @@ internal sealed class OmnifactotumCollectionExtensionsTests
         Assert.That(new[] { Value1, Value2, NegativeValue2 }, Is.Unique);
         Assert.That(Math.Abs(NegativeValue2), Is.EqualTo(Value2));
 
-        ExecuteTestCase(default, default, true);
-        ExecuteTestCase(new int[0], new int[0], true);
+        ExecuteTestCase(null, null, true);
+        ExecuteTestCase([], [], true);
 
-        ExecuteTestCase(Array.Empty<int>(), default, false);
+        ExecuteTestCase([], null, false);
 
-        ExecuteTestCase(new[] { Value1, Value2 }, new[] { Value1 }, false);
-        ExecuteTestCase(new[] { Value1, Value1 }, new[] { Value1 }, false);
-        ExecuteTestCase(new[] { Value1, Value2 }, new[] { Value2 }, false);
-        ExecuteTestCase(new[] { Value1 }, new[] { Value1, Value2 }, false);
-        ExecuteTestCase(new[] { Value1 }, new[] { Value2, Value2 }, false);
-        ExecuteTestCase(new[] { Value1 }, new[] { Value2, Value2 }, false);
-        ExecuteTestCase(new[] { Value1, Value1, Value2 }, new[] { Value1, Value2, Value2 }, false);
-        ExecuteTestCase(new[] { Value1, Value2, Value1 }, new[] { Value2, Value1, Value2 }, false);
+        ExecuteTestCase([Value1, Value2], [Value1], false);
+        ExecuteTestCase([Value1, Value1], [Value1], false);
+        ExecuteTestCase([Value1, Value2], [Value2], false);
+        ExecuteTestCase([Value1], [Value1, Value2], false);
+        ExecuteTestCase([Value1], [Value2, Value2], false);
+        ExecuteTestCase([Value1], [Value2, Value2], false);
+        ExecuteTestCase([Value1, Value1, Value2], [Value1, Value2, Value2], false);
+        ExecuteTestCase([Value1, Value2, Value1], [Value2, Value1, Value2], false);
 
-        ExecuteTestCase(new[] { Value1, Value2 }, new[] { Value1, Value2 }, true);
-        ExecuteTestCase(new[] { Value1, Value2 }, new[] { Value2, Value1 }, false);
-        ExecuteTestCase(new[] { Value2, Value1, NegativeValue2 }, new[] { NegativeValue2, Value1, Value2 }, false, true);
+        ExecuteTestCase([Value1, Value2], [Value1, Value2], true);
+        ExecuteTestCase([Value1, Value2], [Value2, Value1], false);
+        ExecuteTestCase([Value2, Value1, NegativeValue2], [NegativeValue2, Value1, Value2], false, true);
 
-        ExecuteTestCase(new[] { Value1, Value2 }, new[] { Value1, NegativeValue2 }, false, true);
-        ExecuteTestCase(new[] { Value1, Value2 }, new[] { NegativeValue2, Value1 }, false, false);
+        ExecuteTestCase([Value1, Value2], [Value1, NegativeValue2], false, true);
+        ExecuteTestCase([Value1, Value2], [NegativeValue2, Value1], false, false);
 
         static void ExecuteTestCase(
             int[]? collection,
@@ -529,7 +529,7 @@ internal sealed class OmnifactotumCollectionExtensionsTests
                         ? default(ImmutableArray<int>)
                         : ImmutableArray.Create(value);
 
-            static List<int>? ViaList(int[]? value) => value is null ? null : new List<int>(value);
+            static List<int>? ViaList(int[]? value) => value is null ? null : [..value];
         }
 
         static void InternalExecuteTestCase(
@@ -571,15 +571,15 @@ internal sealed class OmnifactotumCollectionExtensionsTests
             Throws.ArgumentNullException.With.Property(nameof(ArgumentException.ParamName)).EqualTo("collection"));
 
         Assert.That(
-            () => Array.Empty<string>().FindDuplicates((Func<string, string>)null!),
+            () => Array.Empty<string>().FindDuplicates<string, string>(null!),
             Throws.ArgumentNullException.With.Property(nameof(ArgumentException.ParamName)).EqualTo("keySelector"));
 
         Assert.That(
-            () => Array.Empty<string>().FindDuplicates((Func<string, string>)null!, null),
+            () => Array.Empty<string>().FindDuplicates<string, string>(null!, null),
             Throws.ArgumentNullException.With.Property(nameof(ArgumentException.ParamName)).EqualTo("keySelector"));
 
         Assert.That(
-            () => Array.Empty<string>().FindDuplicates((Func<string, string>)null!, StringComparer.Ordinal),
+            () => Array.Empty<string>().FindDuplicates<string, string>(null!, StringComparer.Ordinal),
             Throws.ArgumentNullException.With.Property(nameof(ArgumentException.ParamName)).EqualTo("keySelector"));
     }
 
@@ -837,20 +837,20 @@ internal sealed class OmnifactotumCollectionExtensionsTests
     [Test]
     public void TestAvoidNullWhenArgumentIsNotNullNorItsEquivalentThenSucceeds()
     {
-        ExecuteTestCase(17.AsArray().Concat(23.AsArray()), new[] { 17, 23 });
-        ExecuteTestCase("Hello".AsArray().Concat("world".AsArray()), new[] { "Hello", "world" });
+        ExecuteTestCase(17.AsArray().Concat(23.AsArray()), [17, 23]);
+        ExecuteTestCase("Hello".AsArray().Concat("world".AsArray()), ["Hello", "world"]);
 
-        ExecuteTestCase(new[] { 19, 29 }, new[] { 19, 29 });
-        ExecuteTestCase(new[] { "Bye", "all" }, new[] { "Bye", "all" });
+        ExecuteTestCase(new[] { 19, 29 }, [19, 29]);
+        ExecuteTestCase(new[] { "Bye", "all" }, ["Bye", "all"]);
 
-        ExecuteTestCase(new List<int> { 23, 31 }, new[] { 23, 31 });
-        ExecuteTestCase(new List<string> { "Hello", "all" }, new[] { "Hello", "all" });
+        ExecuteTestCase(new List<int> { 23, 31 }, [23, 31]);
+        ExecuteTestCase(new List<string> { "Hello", "all" }, ["Hello", "all"]);
 
-        ExecuteTestCase(ImmutableList.Create(3, -7), new[] { 3, -7 });
-        ExecuteTestCase(ImmutableList.Create("Hello", "people"), new[] { "Hello", "people" });
+        ExecuteTestCase(ImmutableList.Create(3, -7), [3, -7]);
+        ExecuteTestCase(ImmutableList.Create("Hello", "people"), ["Hello", "people"]);
 
-        ExecuteTestCase(ImmutableArray.Create(-3, 7), new[] { -3, 7 });
-        ExecuteTestCase(ImmutableArray.Create("Bye", "people"), new[] { "Bye", "people" });
+        ExecuteTestCase(ImmutableArray.Create(-3, 7), [-3, 7]);
+        ExecuteTestCase(ImmutableArray.Create("Bye", "people"), ["Bye", "people"]);
 
         [SuppressMessage("ReSharper", "ConvertClosureToMethodGroup")]
         [SuppressMessage("ReSharper", "SuggestBaseTypeForParameter")]
@@ -886,34 +886,32 @@ internal sealed class OmnifactotumCollectionExtensionsTests
     [Test]
     public void TestWhereNotNullWhenValidArgumentAndReferenceTypeElementThenSucceeds()
     {
-        ExecuteTestCase(ImmutableArray<string?>.Empty, Array.Empty<string>());
-        ExecuteTestCase(default(ImmutableArray<string?>), Array.Empty<string>());
-        ExecuteTestCase(Array.Empty<string?>(), Array.Empty<string>());
-        ExecuteTestCase(new string?[] { null }, Array.Empty<string>());
-        ExecuteTestCase(new string?[] { null, null }, Array.Empty<string>());
-        ExecuteTestCase(new[] { null, string.Empty, "\x0020\t\r\n\x0020", null }, new[] { string.Empty, "\x0020\t\r\n\x0020" });
-        ExecuteTestCase(new[] { null, "q", null }, new[] { "q" });
+        ExecuteTestCase(ImmutableArray<string?>.Empty, []);
+        ExecuteTestCase(default(ImmutableArray<string?>), []);
+        ExecuteTestCase<string>([], []);
+        ExecuteTestCase<string>([null], []);
+        ExecuteTestCase<string>([null, null], []);
+        ExecuteTestCase([null, string.Empty, "\x0020\t\r\n\x0020", null], [string.Empty, "\x0020\t\r\n\x0020"]);
+        ExecuteTestCase([null, "q", null], ["q"]);
 
         ExecuteTestCase(
-            new[] { "Hello\x0020world", "?", null, string.Empty, "\t\x0020\r\n", null, "Bye!" },
-            new[] { "Hello\x0020world", "?", string.Empty, "\t\x0020\r\n", "Bye!" });
+            ["Hello\x0020world", "?", null, string.Empty, "\t\x0020\r\n", null, "Bye!"],
+            ["Hello\x0020world", "?", string.Empty, "\t\x0020\r\n", "Bye!"]);
 
-        ExecuteTestCase(Array.Empty<int[]?>(), Array.Empty<int[]>());
-        ExecuteTestCase(new int[]?[] { null, null }, Array.Empty<int[]>());
-        ExecuteTestCase(new int[]?[] { null, null }, Array.Empty<int[]>());
-        ExecuteTestCase(new[] { null, new[] { 42 }, null }, new[] { new[] { 42 } });
+        ExecuteTestCase<int[]>([], []);
+        ExecuteTestCase<int[]>([null, null], []);
+        ExecuteTestCase<int[]>([null, null], []);
+        ExecuteTestCase([null, [42], null], [new[] { 42 }]);
 
         ExecuteTestCase(
-            new[] { new[] { 1, 2, 3 }, null, new[] { 42, -42, 17 }, new[] { -13 }, null, new[] { 11 }, new[] { 7 } },
-            new[] { new[] { 1, 2, 3 }, new[] { 42, -42, 17 }, new[] { -13 }, new[] { 11 }, new[] { 7 } });
+            [[1, 2, 3], null, [42, -42, 17], [-13], null, [11], [7]],
+            [[1, 2, 3], [42, -42, 17], [-13], [11], new[] { 7 }]);
 
-        //// ReSharper disable once SuggestBaseTypeForParameter
+        // Note: `ToArray()` call is required to ensure that the compiler generated `IEnumerable<T>` instance actually invokes `WhereNotNull()`
+        [SuppressMessage("ReSharper", "SuggestBaseTypeForParameter")]
         static void ExecuteTestCase<T>(IEnumerable<T?> input, T[] expectedResult)
             where T : class
-        {
-            // Note: `ToArray()` call is required to ensure that the compiler generated `IEnumerable<T>` instance actually invokes `WhereNotNull()`
-            Assert.That(() => input.AsEnumerable().WhereNotNull().ToArray(), Is.EqualTo(expectedResult) & Is.TypeOf<T[]>());
-        }
+            => Assert.That(() => input.AsEnumerable().WhereNotNull().ToArray(), Is.EqualTo(expectedResult) & Is.TypeOf<T[]>());
     }
 
     [Test]
@@ -931,25 +929,25 @@ internal sealed class OmnifactotumCollectionExtensionsTests
     [SuppressMessage("ReSharper", "UseArrayEmptyMethod")]
     public void TestWhereNotNullWhenValidArgumentAndValueTypeElementThenSucceeds()
     {
-        ExecuteTestCase(ImmutableArray<int?>.Empty, Array.Empty<int>());
-        ExecuteTestCase(default(ImmutableArray<int?>), Array.Empty<int>());
-        ExecuteTestCase(new int?[0], Array.Empty<int>());
-        ExecuteTestCase(new int?[] { null }, Array.Empty<int>());
-        ExecuteTestCase(new int?[] { null, null }, Array.Empty<int>());
-        ExecuteTestCase(new int?[] { null, 42, null }, new[] { 42 });
-        ExecuteTestCase(new int?[] { 42, null, 17, -11, null, 13, 7 }, new[] { 42, 17, -11, 13, 7 });
+        ExecuteTestCase(ImmutableArray<int?>.Empty, []);
+        ExecuteTestCase(default(ImmutableArray<int?>), []);
+        ExecuteTestCase(new int?[0], []);
+        ExecuteTestCase<int>([null], []);
+        ExecuteTestCase<int>([null, null], []);
+        ExecuteTestCase([null, 42, null], [42]);
+        ExecuteTestCase([42, null, 17, -11, null, 13, 7], [42, 17, -11, 13, 7]);
 
-        ExecuteTestCase(new char?[0], Array.Empty<char>());
-        ExecuteTestCase(new char?[] { null }, Array.Empty<char>());
-        ExecuteTestCase(new char?[] { null, null }, Array.Empty<char>());
-        ExecuteTestCase(new char?[] { null, 'q', null }, new[] { 'q' });
-        ExecuteTestCase(new char?[] { 'w', null, 'z', '•', null, 'é', 'ò' }, new[] { 'w', 'z', '•', 'é', 'ò' });
+        ExecuteTestCase(new char?[0], []);
+        ExecuteTestCase<char>([null], []);
+        ExecuteTestCase<char>([null, null], []);
+        ExecuteTestCase([null, 'q', null], ['q']);
+        ExecuteTestCase(['w', null, 'z', '•', null, 'é', 'ò'], ['w', 'z', '•', 'é', 'ò']);
 
-        //// ReSharper disable once SuggestBaseTypeForParameter
+        // Note: `ToArray()` call is required to ensure that the compiler generated `IEnumerable<T>` instance actually invokes `WhereNotNull()`
+        [SuppressMessage("ReSharper", "SuggestBaseTypeForParameter")]
         static void ExecuteTestCase<T>(IEnumerable<T?> input, T[] expectedResult)
             where T : struct
         {
-            // Note: `ToArray()` call is required to ensure that the compiler generated `IEnumerable<T>` instance actually invokes `WhereNotNull()`
             Assert.That(() => input.AsEnumerable().WhereNotNull().ToArray(), Is.EqualTo(expectedResult) & Is.TypeOf<T[]>());
         }
     }
@@ -984,7 +982,7 @@ internal sealed class OmnifactotumCollectionExtensionsTests
 
         await ExecuteRegularTestCaseAsync(
             CreateInputAsync(shouldCheckCancellationTokenValue),
-            new List<int> { Value1, Value2, Value3 },
+            [Value1, Value2, Value3],
             cancellationTokenSource1.Token);
 
         using var cancellationTokenSource2 = new CancellationTokenSource();
@@ -1056,7 +1054,7 @@ internal sealed class OmnifactotumCollectionExtensionsTests
 
         await ExecuteRegularTestCaseAsync(
             CreateInputAsync(shouldCheckCancellationTokenValue),
-            new[] { Value1, Value2, Value3 },
+            [Value1, Value2, Value3],
             cancellationTokenSource1.Token);
 
         using var cancellationTokenSource2 = new CancellationTokenSource();
@@ -1177,7 +1175,7 @@ internal sealed class OmnifactotumCollectionExtensionsTests
             yield return CreateTestCase(default(ImmutableArray<string>), string.Empty).SetDescription("Default immutable array");
 
             yield return CreateTestCase(
-                    new[] { null, "", "Hello", "Class \"MyClass\"" },
+                    [null, "", "Hello", "Class \"MyClass\""],
                     "null, \"\", \"Hello\", \"Class \"\"MyClass\"\"\"")
                 .SetDescription("Collection containing various string values");
 
@@ -1206,7 +1204,7 @@ internal sealed class OmnifactotumCollectionExtensionsTests
             yield return CreateTestCase(ImmutableArray<int?>.Empty, string.Empty).SetDescription("Empty immutable array");
             yield return CreateTestCase(default(ImmutableArray<int?>), string.Empty).SetDescription("Default immutable array");
 
-            yield return CreateTestCase(new int?[] { null, 42 }, "null, 42").SetDescription("Collection of nullable integers containing various values");
+            yield return CreateTestCase([null, 42], "null, 42").SetDescription("Collection of nullable integers containing various values");
 
             static TestCaseData CreateTestCase(
                 IEnumerable<int?>? values,
