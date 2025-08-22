@@ -7,6 +7,7 @@ namespace Omnifactotum;
 /// <summary>
 ///     Represents the case-insensitive string key.
 /// </summary>
+[Obsolete($"Use '{nameof(CaseInsensitiveString)}' instead of '{nameof(CaseInsensitiveStringKey)}'.")]
 public readonly struct CaseInsensitiveStringKey : IEquatable<CaseInsensitiveStringKey>
 {
     /// <summary>

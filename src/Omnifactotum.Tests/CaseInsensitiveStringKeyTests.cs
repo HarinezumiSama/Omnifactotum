@@ -1,6 +1,8 @@
 ﻿using NUnit.Framework;
 using Omnifactotum.NUnit;
 
+#pragma warning disable CS0618 // Type or member is obsolete
+
 namespace Omnifactotum.Tests;
 
 [TestFixture(TestOf = typeof(CaseInsensitiveStringKey))]
