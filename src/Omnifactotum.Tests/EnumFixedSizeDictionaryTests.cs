@@ -1,5 +1,4 @@
-﻿using System;
-using System.IO;
+﻿using System.IO;
 using System.Linq;
 using NUnit.Framework;
 
@@ -12,7 +11,7 @@ internal sealed class EnumFixedSizeDictionaryTests
     public void TestBasicScenario([Values] FileMode fileMode)
     {
         //// ReSharper disable once StringLiteralTypo :: Test value
-        const string Value = @"V.alue";
+        const string Value = "V.alue";
 
         var dictionary = new EnumFixedSizeDictionary<FileMode, string>();
         Assert.That(() => dictionary.Count, Is.EqualTo(0));
@@ -20,7 +19,7 @@ internal sealed class EnumFixedSizeDictionaryTests
         dictionary.Add(fileMode, Value);
         Assert.That(() => dictionary.Count, Is.EqualTo(1));
         Assert.That(() => dictionary.ContainsKey(fileMode), Is.True);
-        Assert.That(() => dictionary.Keys.ToArray(), Is.EquivalentTo(fileMode.AsArray()));
-        Assert.That(() => dictionary.Values.ToArray(), Is.EquivalentTo(Value.AsArray()));
+        Assert.That(() => dictionary.Keys.ToArray(), Is.EquivalentTo(new[] { fileMode }));
+        Assert.That(() => dictionary.Values.ToArray(), Is.EquivalentTo(new[] { Value }));
     }
 }

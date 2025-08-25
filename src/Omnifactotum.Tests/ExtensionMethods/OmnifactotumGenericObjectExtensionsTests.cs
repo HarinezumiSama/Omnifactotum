@@ -190,6 +190,7 @@ internal sealed class OmnifactotumGenericObjectExtensionsTests
         Assert.That(() => obj3.GetShortObjectReferenceDescription(), Is.EqualTo($@"string:0x{hashCode3:X8}"));
     }
 
+#pragma warning disable CS0618 // Type or member is obsolete
     [Test]
     public void TestAsArraySucceeds()
     {
@@ -203,7 +204,9 @@ internal sealed class OmnifactotumGenericObjectExtensionsTests
         Assert.That(() => NullString.AsArray(), Is.TypeOf<string[]>().And.EqualTo(new[] { NullString }));
         Assert.That(() => NullObject.AsArray(), Is.TypeOf<object[]>().And.EqualTo(new[] { NullObject }));
     }
+#pragma warning restore CS0618 // Type or member is obsolete
 
+#pragma warning disable CS0618 // Type or member is obsolete
     [Test]
     public void TestAsListSucceeds()
     {
@@ -217,7 +220,9 @@ internal sealed class OmnifactotumGenericObjectExtensionsTests
         Assert.That(() => NullString.AsList(), Is.TypeOf<List<string>>().And.EqualTo(new[] { NullString }));
         Assert.That(() => NullObject.AsList(), Is.TypeOf<List<object>>().And.EqualTo(new[] { NullObject }));
     }
+#pragma warning restore CS0618 // Type or member is obsolete
 
+#pragma warning disable CS0618 // Type or member is obsolete
     [Test]
     public void TestAsCollectionSucceeds()
     {
@@ -243,6 +248,7 @@ internal sealed class OmnifactotumGenericObjectExtensionsTests
             () => NullObject.AsCollection(),
             Is.InstanceOf<IEnumerable<object>>().And.EqualTo(new[] { NullObject }));
     }
+#pragma warning restore CS0618 // Type or member is obsolete
 
     [Test]
     [TestCase(int.MinValue)]

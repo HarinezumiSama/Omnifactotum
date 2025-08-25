@@ -215,14 +215,14 @@ internal static class NUnitFactotum
 
         if (equalityOperatorMethod is not null)
         {
-            Assert.That(() => equalityOperatorMethod.Invoke(null, new object?[] { value1, value2 }), Is.EqualTo(equals));
-            Assert.That(() => equalityOperatorMethod.Invoke(null, new object?[] { value2, value1 }), Is.EqualTo(equals));
+            Assert.That(() => equalityOperatorMethod.Invoke(null, [value1, value2]), Is.EqualTo(equals));
+            Assert.That(() => equalityOperatorMethod.Invoke(null, [value2, value1]), Is.EqualTo(equals));
         }
 
         if (inequalityOperatorMethod is not null)
         {
-            Assert.That(() => inequalityOperatorMethod.Invoke(null, new object?[] { value1, value2 }), Is.EqualTo(!equals));
-            Assert.That(() => inequalityOperatorMethod.Invoke(null, new object?[] { value2, value1 }), Is.EqualTo(!equals));
+            Assert.That(() => inequalityOperatorMethod.Invoke(null, [value1, value2]), Is.EqualTo(!equals));
+            Assert.That(() => inequalityOperatorMethod.Invoke(null, [value2, value1]), Is.EqualTo(!equals));
         }
     }
 
@@ -249,7 +249,7 @@ internal static class NUnitFactotum
 
         //// ReSharper disable once ArrangeRedundantParentheses :: For clarity
         var normalizedArguments = arguments
-            .Select(item => item is string ? item.AsCollection() : (item as IEnumerable ?? item.AsCollection()))
+            .Select(item => item is string ? new[] { item } : (item as IEnumerable ?? new[] { item }))
             .Select(item => item.Cast<object>().ToArray())
             .ToArray();
 
@@ -333,8 +333,7 @@ internal static class NUnitFactotum
     [return: System.Diagnostics.CodeAnalysis.NotNull]
     public static T AssertNotNull<T>(
         [CanBeNull] [System.Diagnostics.CodeAnalysis.NotNull] this T? value,
-        [CallerArgumentExpression(nameof(value))]
-        string? valueExpression = null)
+        [CallerArgumentExpression(nameof(value))] string? valueExpression = null)
         where T : class
     {
         Assert.That(value, Is.Not.Null, GetAssertNotNullFailureMessage(valueExpression));
@@ -367,8 +366,7 @@ internal static class NUnitFactotum
     [DebuggerStepThrough]
     public static T AssertNotNull<T>(
         [CanBeNull] [System.Diagnostics.CodeAnalysis.NotNull] this T? value,
-        [CallerArgumentExpression(nameof(value))]
-        string? valueExpression = null)
+        [CallerArgumentExpression(nameof(value))] string? valueExpression = null)
         where T : struct
     {
         Assert.That(value.HasValue, Is.True, GetAssertNotNullFailureMessage(valueExpression));
@@ -424,7 +422,7 @@ internal static class NUnitFactotum
         => valueExpression is null ? null : AsInvariant($@"The following expression is null: {{ {valueExpression} }}.");
 
     /// <summary>
-    ///     Provides a convenient access to helper methods for the specified type.
+    ///     Provides convenient access to helper methods for the specified type.
     /// </summary>
     /// <typeparam name="TObject">
     ///     The type that the helper methods are provided for.

@@ -6,8 +6,7 @@ using Omnifactotum.NUnit;
 
 namespace Omnifactotum.Tests;
 
-// TODO: Temporarily commented out due to the issue in RIDER: https://youtrack.jetbrains.com/issue/RIDER-77015
-//// [TestFixture(TestOf = typeof(OmnifactotumSetExtensions))]
+[TestFixture(TestOf = typeof(OmnifactotumSetExtensions))]
 [TestFixture(TestOf = typeof(ReadOnlySet<>))]
 internal sealed class ReadOnlySetTests
 {
@@ -113,25 +112,25 @@ internal sealed class ReadOnlySetTests
         AssertNoChanges();
 
         Assert.That(
-            () => ((ISet<int>)readOnlySet).ExceptWith(Value1.AsCollection()),
+            () => ((ISet<int>)readOnlySet).ExceptWith([Value1]),
             Throws.TypeOf<NotSupportedException>());
 
         AssertNoChanges();
 
         Assert.That(
-            () => ((ISet<int>)readOnlySet).IntersectWith(Value1.AsCollection()),
+            () => ((ISet<int>)readOnlySet).IntersectWith([Value1]),
             Throws.TypeOf<NotSupportedException>());
 
         AssertNoChanges();
 
         Assert.That(
-            () => ((ISet<int>)readOnlySet).SymmetricExceptWith(Value1.AsCollection()),
+            () => ((ISet<int>)readOnlySet).SymmetricExceptWith([Value1]),
             Throws.TypeOf<NotSupportedException>());
 
         AssertNoChanges();
 
         Assert.That(
-            () => ((ISet<int>)readOnlySet).UnionWith(ValueExtra.AsCollection()),
+            () => ((ISet<int>)readOnlySet).UnionWith([ValueExtra]),
             Throws.TypeOf<NotSupportedException>());
 
         AssertNoChanges();
@@ -222,11 +221,11 @@ internal sealed class ReadOnlySetTests
         var readOnlySet = new ReadOnlySet<int>(set);
 
         Assert.That(
-            readOnlySet.IsProperSubsetOf(new[] { Value1, Value2, Value3, Value17, ValueExtra }),
+            readOnlySet.IsProperSubsetOf([Value1, Value2, Value3, Value17, ValueExtra]),
             Is.True);
 
         Assert.That(
-            readOnlySet.IsProperSubsetOf(new[] { Value1, Value2, Value17, ValueExtra }),
+            readOnlySet.IsProperSubsetOf([Value1, Value2, Value17, ValueExtra]),
             Is.False);
 
         Assert.That(
@@ -242,11 +241,11 @@ internal sealed class ReadOnlySetTests
         var readOnlySet = new ReadOnlySet<int>(set);
 
         Assert.That(
-            readOnlySet.IsProperSupersetOf(new[] { Value1, Value2, Value3 }),
+            readOnlySet.IsProperSupersetOf([Value1, Value2, Value3]),
             Is.True);
 
         Assert.That(
-            readOnlySet.IsProperSupersetOf(new[] { Value1, Value2, Value3, ValueExtra }),
+            readOnlySet.IsProperSupersetOf([Value1, Value2, Value3, ValueExtra]),
             Is.False);
 
         Assert.That(
@@ -262,11 +261,11 @@ internal sealed class ReadOnlySetTests
         var readOnlySet = new ReadOnlySet<int>(set);
 
         Assert.That(
-            readOnlySet.IsSubsetOf(new[] { Value1, Value2, Value3, Value17, ValueExtra }),
+            readOnlySet.IsSubsetOf([Value1, Value2, Value3, Value17, ValueExtra]),
             Is.True);
 
         Assert.That(
-            readOnlySet.IsSubsetOf(new[] { Value1, Value2, Value17, ValueExtra }),
+            readOnlySet.IsSubsetOf([Value1, Value2, Value17, ValueExtra]),
             Is.False);
 
         Assert.That(
@@ -282,11 +281,11 @@ internal sealed class ReadOnlySetTests
         var readOnlySet = new ReadOnlySet<int>(set);
 
         Assert.That(
-            readOnlySet.IsSupersetOf(new[] { Value1, Value2, Value3 }),
+            readOnlySet.IsSupersetOf([Value1, Value2, Value3]),
             Is.True);
 
         Assert.That(
-            readOnlySet.IsSupersetOf(new[] { Value1, Value2, Value3, ValueExtra }),
+            readOnlySet.IsSupersetOf([Value1, Value2, Value3, ValueExtra]),
             Is.False);
 
         Assert.That(
@@ -301,11 +300,11 @@ internal sealed class ReadOnlySetTests
 
         var readOnlySet = new ReadOnlySet<int>(set);
 
-        Assert.That(readOnlySet.Overlaps(new[] { Value1 }), Is.True);
-        Assert.That(readOnlySet.Overlaps(new[] { Value17, Value1 }), Is.True);
-        Assert.That(readOnlySet.Overlaps(new[] { Value3, ValueExtra }), Is.True);
+        Assert.That(readOnlySet.Overlaps([Value1]), Is.True);
+        Assert.That(readOnlySet.Overlaps([Value17, Value1]), Is.True);
+        Assert.That(readOnlySet.Overlaps([Value3, ValueExtra]), Is.True);
 
-        Assert.That(readOnlySet.Overlaps(new[] { ValueExtra }), Is.False);
+        Assert.That(readOnlySet.Overlaps([ValueExtra]), Is.False);
     }
 
     [Test]
@@ -316,19 +315,19 @@ internal sealed class ReadOnlySetTests
         var readOnlySet = new ReadOnlySet<int>(set);
 
         Assert.That(readOnlySet.SetEquals(set.ToArray()), Is.True);
-        Assert.That(readOnlySet.SetEquals(set.ToArray().Concat(ValueExtra.AsCollection())), Is.False);
+        Assert.That(readOnlySet.SetEquals(set.ToArray().Append(ValueExtra)), Is.False);
     }
 
-    private static HashSet<int> CreateSet() => new() { Value1, Value2, Value3, Value17 };
+    private static HashSet<int> CreateSet() => [Value1, Value2, Value3, Value17];
 
     private sealed class ConstructionCases : TestCasesBase
     {
         protected override IEnumerable<TestCaseData> GetCases()
         {
-            yield return new TestCaseData(new Func<ISet<int>, ReadOnlySet<int>>(obj => obj.AsReadOnly()))
+            yield return new TestCaseData(new Func<ISet<int>, ReadOnlySet<int>>(static obj => obj.AsReadOnly()))
                 .SetDescription("Implicit creation");
 
-            yield return new TestCaseData(new Func<ISet<int>, ReadOnlySet<int>>(obj => new ReadOnlySet<int>(obj)))
+            yield return new TestCaseData(new Func<ISet<int>, ReadOnlySet<int>>(static obj => new ReadOnlySet<int>(obj)))
                 .SetDescription("Explicit creation");
         }
     }

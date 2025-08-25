@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Collections.Immutable;
-using System.Collections.ObjectModel;
 using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using System.Linq.Expressions;
@@ -48,16 +47,16 @@ internal sealed partial class ObjectValidatorTests
             },
 #endif
             NonEmptyValue = "B",
-            MultipleDataItems = new BaseAnotherSimpleData[] { new AnotherSimpleData { Value = "C1" } },
-            AnotherSimpleDataArray = new[] { new AnotherSimpleData { Value = "C2" } },
+            MultipleDataItems = [new AnotherSimpleData { Value = "C1" }],
+            AnotherSimpleDataArray = [new AnotherSimpleData { Value = "C2" }],
 #if NET7_0_OR_GREATER
-            GenericMemberItemConstraintAnotherSimpleDataArray = Array.Empty<AnotherSimpleData>(),
+            GenericMemberItemConstraintAnotherSimpleDataArray = [],
 #endif
-            AnotherSimpleDataCollection = new Collection<AnotherSimpleData>(),
+            AnotherSimpleDataCollection = [],
             AnotherSimpleDataCustomEnumerable = new CustomEnumerable(),
             AnotherSimpleDataCustomGenericEnumerable = new CustomGenericEnumerable<AnotherSimpleData>(),
             AnotherSimpleDataCustomGenericEnumerableObject = new CustomGenericEnumerable<AnotherSimpleData>(),
-            AnotherSimpleDataCustomGenericList = new CustomGenericList<AnotherSimpleData>(),
+            AnotherSimpleDataCustomGenericList = [],
             AnotherSimpleDataCustomList = new CustomList(),
             AnotherSimpleDataCustomReadOnlyList = new CustomReadOnlyList<AnotherSimpleData>(),
             AnotherSimpleDataImmutableList = ImmutableList<AnotherSimpleData>.Empty,
@@ -69,7 +68,7 @@ internal sealed partial class ObjectValidatorTests
         };
 
         EnsureTestValidationSucceeded(data1);
-        EnsureTestValidationSucceeded(data1.AsArray());
+        EnsureTestValidationSucceeded(new[] { data1 });
         EnsureTestValidationSucceeded(ImmutableArray.Create(data1));
 
         var data2 = new ComplexData
@@ -84,12 +83,12 @@ internal sealed partial class ObjectValidatorTests
             },
 #endif
             NonEmptyValue = "B",
-            MultipleDataItems = new BaseAnotherSimpleData[] { new AnotherSimpleData { Value = "C1" } },
-            AnotherSimpleDataArray = new[] { new AnotherSimpleData { Value = "C2" } },
+            MultipleDataItems = [new AnotherSimpleData { Value = "C1" }],
+            AnotherSimpleDataArray = [new AnotherSimpleData { Value = "C2" }],
 #if NET7_0_OR_GREATER
-            GenericMemberItemConstraintAnotherSimpleDataArray = new[] { new AnotherSimpleData { Value = "C3" } },
+            GenericMemberItemConstraintAnotherSimpleDataArray = [new AnotherSimpleData { Value = "C3" }],
 #endif
-            AnotherSimpleDataCollection = new Collection<AnotherSimpleData> { new() { Value = "C4" } },
+            AnotherSimpleDataCollection = [new AnotherSimpleData { Value = "C4" }],
             AnotherSimpleDataCustomEnumerable = new CustomEnumerable(new AnotherSimpleData { Value = "C5" }),
             AnotherSimpleDataCustomGenericEnumerable = new CustomGenericEnumerable<AnotherSimpleData>(new AnotherSimpleData { Value = "C6" }),
             AnotherSimpleDataCustomGenericEnumerableObject = new CustomGenericEnumerable<AnotherSimpleData>(new AnotherSimpleData { Value = "C7" }),
@@ -104,7 +103,7 @@ internal sealed partial class ObjectValidatorTests
         };
 
         EnsureTestValidationSucceeded(data2);
-        EnsureTestValidationSucceeded(data2.AsArray());
+        EnsureTestValidationSucceeded(new[] { data2 });
         EnsureTestValidationSucceeded(ImmutableArray.Create(data2));
     }
 
@@ -121,24 +120,24 @@ internal sealed partial class ObjectValidatorTests
                 GenericMemberConstraintAttributeData = null,
 #endif
                 NonEmptyValue = string.Empty,
-                MultipleDataItems = new BaseAnotherSimpleData[]
-                {
+                MultipleDataItems =
+                [
                     new AnotherSimpleData { Value = "C1" },
                     new AnotherSimpleData()
-                },
-                AnotherSimpleDataArray = new[]
-                {
+                ],
+                AnotherSimpleDataArray =
+                [
                     new AnotherSimpleData { Value = "C2" },
                     new AnotherSimpleData()
-                },
+                ],
 #if NET7_0_OR_GREATER
-                GenericMemberItemConstraintAnotherSimpleDataArray = new[] { null!, new AnotherSimpleData { Value = "C3" } },
+                GenericMemberItemConstraintAnotherSimpleDataArray = [null!, new AnotherSimpleData { Value = "C3" }],
 #endif
-                AnotherSimpleDataCollection = new Collection<AnotherSimpleData>
-                {
+                AnotherSimpleDataCollection =
+                [
                     new AnotherSimpleData { Value = "C4" },
                     new AnotherSimpleData()
-                },
+                ],
                 AnotherSimpleDataCustomEnumerable = new CustomEnumerable(
                     new AnotherSimpleData(),
                     new AnotherSimpleData { Value = "C5" }),
@@ -215,31 +214,29 @@ internal sealed partial class ObjectValidatorTests
             },
             {
                 typeof(NotNullConstraint<string>),
-                new[]
-                {
+                [
                     $"{InstanceExpression}.ContainedValue.AnotherNullableImmutableStrings.Value.Item[1]"
-                }
+                ]
             },
 #if NET7_0_OR_GREATER
             {
                 typeof(NotNullConstraint<SimpleData>),
-                new[]
-                {
+                [
                     $"{InstanceExpression}.ContainedValue.GenericMemberConstraintAttributeData"
-                }
+                ]
             },
 #endif
             {
                 typeof(NotNullAndNotEmptyStringConstraint),
-                new[] { $"{InstanceExpression}.ContainedValue.NonEmptyValue" }
+                [$"{InstanceExpression}.ContainedValue.NonEmptyValue"]
             },
             {
                 typeof(UtcDateConstraint),
-                new[] { $"{InstanceExpression}.ContainedValue.Data.StartDate" }
+                [$"{InstanceExpression}.ContainedValue.Data.StartDate"]
             },
             {
                 typeof(UtcDateTypedConstraint),
-                new[] { $"{InstanceExpression}.ContainedValue.Data.StartDate" }
+                [$"{InstanceExpression}.ContainedValue.Data.StartDate"]
             }
         };
 
@@ -287,50 +284,47 @@ internal sealed partial class ObjectValidatorTests
         var expectedExceptionMessageItems = new List<string>();
 
         expectedExceptionMessageItems.AddRange(
-            new[]
-            {
-                $"[{InstanceExpression}.ContainedValue.AnotherNullableImmutableStrings.Value.Item[1]] The value cannot be null.",
-                $"[{InstanceExpression}.ContainedValue.AnotherNullableImmutableStrings.Value.Item[1]] The 'string' value cannot be null.",
-                $"[{InstanceExpression}.ContainedValue.AnotherSimpleDataArray[1].Value] The value cannot be null.",
-                $"[{InstanceExpression}.ContainedValue.AnotherSimpleDataCollection.Item[1].Value] The value cannot be null.",
-                $"[Convert({InstanceExpression
-                }.ContainedValue.AnotherSimpleDataCustomEnumerable.Cast().First(), AnotherSimpleData).Value] The value cannot be null.",
-                $"[{InstanceExpression}.ContainedValue.AnotherSimpleDataCustomGenericEnumerable.Skip(2).First().Value] The value cannot be null.",
-                $"[Convert({InstanceExpression
-                }.ContainedValue.AnotherSimpleDataCustomGenericEnumerableObject, IEnumerable`1).Skip(2).First().Value] The value cannot be null.",
-                $"[{InstanceExpression}.ContainedValue.AnotherSimpleDataCustomGenericList.Item[1].Value] The value cannot be null.",
-                $"[{InstanceExpression}.ContainedValue.AnotherSimpleDataCustomGenericList.Item[2].Value] The value cannot be null.",
-                $"[Convert({InstanceExpression}.ContainedValue.AnotherSimpleDataCustomList.Item[1], AnotherSimpleData).Value] The value cannot be null.",
-                $"[{InstanceExpression}.ContainedValue.AnotherSimpleDataCustomList.Item[3]] The value cannot be null.",
-                $"[Convert({InstanceExpression}.ContainedValue.AnotherSimpleDataCustomList.Item[4], AnotherSimpleData).Value] The value cannot be null.",
-                $"[{InstanceExpression}.ContainedValue.AnotherSimpleDataCustomReadOnlyList.Item[3].Value] The value cannot be null.",
-                $"[{InstanceExpression}.ContainedValue.AnotherSimpleDataImmutableList.Item[2].Value] The value cannot be null.",
-                $"[{InstanceExpression}.ContainedValue.Data.NullableValue] The value cannot be null.",
-                $"[{InstanceExpression
-                }.ContainedValue.Data.StartDate] Validation of the constraint \"Omnifactotum.Tests.Validation.ObjectValidatorTests.UtcDateConstraint\" failed.",
-                $"[{InstanceExpression
-                }.ContainedValue.Data.StartDate] Validation of the constraint \"Omnifactotum.Tests.Validation.ObjectValidatorTests.UtcDateTypedConstraint\" failed.",
-                $"[{InstanceExpression}.ContainedValue.Data.Value] The value cannot be null."
-            });
+        [
+            $"[{InstanceExpression}.ContainedValue.AnotherNullableImmutableStrings.Value.Item[1]] The value cannot be null.",
+            $"[{InstanceExpression}.ContainedValue.AnotherNullableImmutableStrings.Value.Item[1]] The 'string' value cannot be null.",
+            $"[{InstanceExpression}.ContainedValue.AnotherSimpleDataArray[1].Value] The value cannot be null.",
+            $"[{InstanceExpression}.ContainedValue.AnotherSimpleDataCollection.Item[1].Value] The value cannot be null.",
+            $"[Convert({InstanceExpression
+            }.ContainedValue.AnotherSimpleDataCustomEnumerable.Cast().First(), AnotherSimpleData).Value] The value cannot be null.",
+            $"[{InstanceExpression}.ContainedValue.AnotherSimpleDataCustomGenericEnumerable.Skip(2).First().Value] The value cannot be null.",
+            $"[Convert({InstanceExpression
+            }.ContainedValue.AnotherSimpleDataCustomGenericEnumerableObject, IEnumerable`1).Skip(2).First().Value] The value cannot be null.",
+            $"[{InstanceExpression}.ContainedValue.AnotherSimpleDataCustomGenericList.Item[1].Value] The value cannot be null.",
+            $"[{InstanceExpression}.ContainedValue.AnotherSimpleDataCustomGenericList.Item[2].Value] The value cannot be null.",
+            $"[Convert({InstanceExpression}.ContainedValue.AnotherSimpleDataCustomList.Item[1], AnotherSimpleData).Value] The value cannot be null.",
+            $"[{InstanceExpression}.ContainedValue.AnotherSimpleDataCustomList.Item[3]] The value cannot be null.",
+            $"[Convert({InstanceExpression}.ContainedValue.AnotherSimpleDataCustomList.Item[4], AnotherSimpleData).Value] The value cannot be null.",
+            $"[{InstanceExpression}.ContainedValue.AnotherSimpleDataCustomReadOnlyList.Item[3].Value] The value cannot be null.",
+            $"[{InstanceExpression}.ContainedValue.AnotherSimpleDataImmutableList.Item[2].Value] The value cannot be null.",
+            $"[{InstanceExpression}.ContainedValue.Data.NullableValue] The value cannot be null.",
+            $"[{InstanceExpression
+            }.ContainedValue.Data.StartDate] Validation of the constraint \"Omnifactotum.Tests.Validation.ObjectValidatorTests.UtcDateConstraint\" failed.",
+            $"[{InstanceExpression
+            }.ContainedValue.Data.StartDate] Validation of the constraint \"Omnifactotum.Tests.Validation.ObjectValidatorTests.UtcDateTypedConstraint\" failed.",
+            $"[{InstanceExpression}.ContainedValue.Data.Value] The value cannot be null."
+        ]);
 
 #if NET7_0_OR_GREATER
         expectedExceptionMessageItems.AddRange(
-            new[]
-            {
-                $"[{InstanceExpression}.ContainedValue.GenericMemberConstraintAttributeData] The value cannot be null.",
-                $"[{InstanceExpression}.ContainedValue.GenericMemberConstraintAttributeData] The 'ObjectValidatorTests.SimpleData' value cannot be null.",
-                $"[{InstanceExpression}.ContainedValue.GenericMemberItemConstraintAnotherSimpleDataArray[0]] The value cannot be null.",
-            });
+        [
+            $"[{InstanceExpression}.ContainedValue.GenericMemberConstraintAttributeData] The value cannot be null.",
+            $"[{InstanceExpression}.ContainedValue.GenericMemberConstraintAttributeData] The 'ObjectValidatorTests.SimpleData' value cannot be null.",
+            $"[{InstanceExpression}.ContainedValue.GenericMemberItemConstraintAnotherSimpleDataArray[0]] The value cannot be null."
+        ]);
 #endif
 
         expectedExceptionMessageItems.AddRange(
-            new[]
-            {
-                $"[Convert({InstanceExpression}.ContainedValue.MultipleDataItems[1], AnotherSimpleData).Value] The value cannot be null.",
-                $"[{InstanceExpression}.ContainedValue.NonEmptyValue] The value must not be null or an empty string.",
-                $"[{InstanceExpression}.ContainedValue.NullableImmutableStrings] The value cannot be null.",
-                $"[Convert({InstanceExpression}.ContainedValue.SingleBaseData, AnotherSimpleData).Value] The value cannot be null.",
-            });
+        [
+            $"[Convert({InstanceExpression}.ContainedValue.MultipleDataItems[1], AnotherSimpleData).Value] The value cannot be null.",
+            $"[{InstanceExpression}.ContainedValue.NonEmptyValue] The value must not be null or an empty string.",
+            $"[{InstanceExpression}.ContainedValue.NullableImmutableStrings] The value cannot be null.",
+            $"[Convert({InstanceExpression}.ContainedValue.SingleBaseData, AnotherSimpleData).Value] The value cannot be null."
+        ]);
 
         var expectedExceptionMessage = expectedExceptionMessageItems
             .Select((s, i) => AsInvariant($"[{i + 1}/{expectedExceptionMessageItems.Count}] {s}"))
@@ -355,6 +349,7 @@ internal sealed partial class ObjectValidatorTests
         AssertLastMemberContexts();
     }
 
+    [SuppressMessage("ReSharper", "VariableLengthStringHexEscapeSequence")]
     [Test]
     [TestCase("")]
     [TestCase("\x0020")]
@@ -392,19 +387,18 @@ internal sealed partial class ObjectValidatorTests
         {
             {
                 typeof(NotNullConstraint),
-                new[]
-                {
+                [
                     $"{expectedInstanceExpression}.ContainedValue.Value",
                     $"{expectedInstanceExpression}.ContainedValue.NullableValue"
-                }
+                ]
             },
             {
                 typeof(UtcDateConstraint),
-                new[] { $"{expectedInstanceExpression}.ContainedValue.StartDate" }
+                [$"{expectedInstanceExpression}.ContainedValue.StartDate"]
             },
             {
                 typeof(UtcDateTypedConstraint),
-                new[] { $"{expectedInstanceExpression}.ContainedValue.StartDate" }
+                [$"{expectedInstanceExpression}.ContainedValue.StartDate"]
             }
         };
 
@@ -485,31 +479,27 @@ internal sealed partial class ObjectValidatorTests
         {
             {
                 typeof(NotNullConstraint),
-                new[]
-                {
+                [
                     $"Convert({InstanceExpression}.Properties.Skip(2).First(), KeyValuePair`2).Value.ContainedValue"
-                }
+                ]
             },
             {
                 typeof(NotNullAndNotEmptyStringConstraint),
-                new[]
-                {
+                [
                     $"{InstanceExpression}.Properties.First().Key"
-                }
+                ]
             },
             {
                 typeof(NotAbcStringConstraint),
-                new[]
-                {
+                [
                     $"{InstanceExpression}.Properties.Skip(1).First().Key"
-                }
+                ]
             },
             {
                 typeof(CustomNotAbcStringConstraint),
-                new[]
-                {
+                [
                     $"{InstanceExpression}.Properties.Skip(1).First().Key"
-                }
+                ]
             }
         };
 

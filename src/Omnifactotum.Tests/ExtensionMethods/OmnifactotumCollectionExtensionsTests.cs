@@ -897,8 +897,8 @@ internal sealed class OmnifactotumCollectionExtensionsTests
     [Test]
     public void TestEmptyIfNullWhenArgumentIsNotNullNorItsEquivalentThenSucceeds()
     {
-        ExecuteTestCase(17.AsArray().Concat(23.AsArray()), [17, 23]);
-        ExecuteTestCase("Hello".AsArray().Concat("world".AsArray()), ["Hello", "world"]);
+        ExecuteTestCase(new[] { 17 }.Append(23), [17, 23]);
+        ExecuteTestCase(new[] { "Hello" }.Append("world"), ["Hello", "world"]);
 
         ExecuteTestCase(new[] { 19, 29 }, [19, 29]);
         ExecuteTestCase(new[] { "Bye", "all" }, ["Bye", "all"]);
@@ -944,6 +944,7 @@ internal sealed class OmnifactotumCollectionExtensionsTests
     }
 
     [Test]
+    [SuppressMessage("ReSharper", "VariableLengthStringHexEscapeSequence")]
     public void TestWhereNotNullWhenValidArgumentAndReferenceTypeElementThenSucceeds()
     {
         ExecuteTestCase(ImmutableArray<string?>.Empty, []);

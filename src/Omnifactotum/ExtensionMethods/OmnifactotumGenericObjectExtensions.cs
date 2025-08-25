@@ -290,6 +290,7 @@ public static class OmnifactotumGenericObjectExtensions
     [Pure]
     [Omnifactotum.Annotations.Pure]
     [NotNull]
+    [Obsolete("This method has been deprecated and will be removed in a future release.")]
     public static T[] AsArray<T>(this T value) => new[] { value };
 
     /// <summary>
@@ -308,6 +309,7 @@ public static class OmnifactotumGenericObjectExtensions
     [Pure]
     [Omnifactotum.Annotations.Pure]
     [NotNull]
+    [Obsolete("This method has been deprecated and will be removed in a future release.")]
     public static List<T> AsList<T>(this T value) => new() { value };
 
     /// <summary>
@@ -326,6 +328,7 @@ public static class OmnifactotumGenericObjectExtensions
     [Pure]
     [Omnifactotum.Annotations.Pure]
     [NotNull]
+    [Obsolete("This method has been deprecated and will be removed in a future release.")]
     public static IEnumerable<T> AsCollection<T>(this T value)
     {
         yield return value;
