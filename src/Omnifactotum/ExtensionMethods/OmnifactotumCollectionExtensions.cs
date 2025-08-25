@@ -592,11 +592,34 @@ public static class OmnifactotumCollectionExtensions
     /// <returns>
     ///     The source collection if it is not <see langword="null"/>; otherwise, an empty collection.
     /// </returns>
+    [Obsolete($"Use '{nameof(OmnifactotumCollectionExtensions)}.{nameof(EmptyIfNull)}()' instead.")]
     [MethodImpl(OmnifactotumConstants.MethodOptimizationOptions.Maximum)]
     [Pure]
     [Omnifactotum.Annotations.Pure]
     [NotNull]
-    public static IEnumerable<T> AvoidNull<T>([CanBeNull] [NoEnumeration] this IEnumerable<T>? source)
+    public static IEnumerable<T> AvoidNull<T>([CanBeNull] [NoEnumeration] this IEnumerable<T>? source) => EmptyIfNull(source);
+
+    /// <summary>
+    ///     Returns an empty collection if the specified source collection is <see langword="null"/> or an uninitialized <see cref="ImmutableArray{T}"/>;
+    ///     otherwise, returns the specified source collection.
+    /// </summary>
+    /// <typeparam name="T">
+    ///     The type of elements in the collection.
+    /// </typeparam>
+    /// <param name="source">
+    ///     The source collection to handle.
+    /// </param>
+    /// <returns>
+    ///     An empty collection if the specified source collection is <see langword="null"/> or an uninitialized <see cref="ImmutableArray{T}"/>;
+    ///     otherwise, returns the specified source collection.
+    /// </returns>
+    /// <seealso cref="ImmutableArray{T}.IsDefault"/>
+    [MethodImpl(OmnifactotumConstants.MethodOptimizationOptions.Maximum)]
+    [Pure]
+    [Omnifactotum.Annotations.Pure]
+    [NotNull]
+    [SuppressMessage("ReSharper", "UseCollectionExpression")]
+    public static IEnumerable<T> EmptyIfNull<T>([CanBeNull] [NoEnumeration] this IEnumerable<T>? source)
         => source is null || source.IsDefaultImmutableArray() ? Enumerable.Empty<T>() : source;
 
     /// <summary>

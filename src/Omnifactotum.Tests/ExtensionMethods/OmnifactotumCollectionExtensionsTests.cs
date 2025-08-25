@@ -812,6 +812,7 @@ internal sealed class OmnifactotumCollectionExtensionsTests
 
 #endif
 
+#pragma warning disable CS0618 // Type or member is obsolete
     [Test]
     public void TestAvoidNullWhenArgumentIsNullOrItsEquivalentThenSucceeds()
     {
@@ -866,6 +867,65 @@ internal sealed class OmnifactotumCollectionExtensionsTests
             }
 
             Assert.That(() => input.AvoidNull(), constraint);
+            Assert.That(() => input!.ToArray(), Is.EqualTo(expectedResult));
+        }
+    }
+#pragma warning restore CS0618 // Type or member is obsolete
+
+    [Test]
+    public void TestEmptyIfNullWhenArgumentIsNullOrItsEquivalentThenSucceeds()
+    {
+        ExecuteTestCase(default(IEnumerable<int>));
+        ExecuteTestCase(default(IEnumerable<string>));
+
+        ExecuteTestCase(default(int[]));
+        ExecuteTestCase(default(string[]));
+
+        ExecuteTestCase(default(List<int>));
+        ExecuteTestCase(default(List<string>));
+
+        ExecuteTestCase(default(ImmutableList<int>));
+        ExecuteTestCase(default(ImmutableList<string>));
+
+        ExecuteTestCase(default(ImmutableArray<int>));
+        ExecuteTestCase(default(ImmutableArray<string>));
+
+        [SuppressMessage("ReSharper", "ConvertClosureToMethodGroup")]
+        static void ExecuteTestCase<T>(IEnumerable<T>? input) => Assert.That(() => input.EmptyIfNull(), Is.EqualTo(Enumerable.Empty<T>()));
+    }
+
+    [Test]
+    public void TestEmptyIfNullWhenArgumentIsNotNullNorItsEquivalentThenSucceeds()
+    {
+        ExecuteTestCase(17.AsArray().Concat(23.AsArray()), [17, 23]);
+        ExecuteTestCase("Hello".AsArray().Concat("world".AsArray()), ["Hello", "world"]);
+
+        ExecuteTestCase(new[] { 19, 29 }, [19, 29]);
+        ExecuteTestCase(new[] { "Bye", "all" }, ["Bye", "all"]);
+
+        ExecuteTestCase(new List<int> { 23, 31 }, [23, 31]);
+        ExecuteTestCase(new List<string> { "Hello", "all" }, ["Hello", "all"]);
+
+        ExecuteTestCase(ImmutableList.Create(3, -7), [3, -7]);
+        ExecuteTestCase(ImmutableList.Create("Hello", "people"), ["Hello", "people"]);
+
+        ExecuteTestCase(ImmutableArray.Create(-3, 7), [-3, 7]);
+        ExecuteTestCase(ImmutableArray.Create("Bye", "people"), ["Bye", "people"]);
+
+        [SuppressMessage("ReSharper", "ConvertClosureToMethodGroup")]
+        [SuppressMessage("ReSharper", "SuggestBaseTypeForParameter")]
+        static void ExecuteTestCase<TEnumerable, TElement>(TEnumerable input, TElement[] expectedResult)
+            where TEnumerable : IEnumerable<TElement>?
+        {
+            expectedResult.AssertNotNull();
+
+            Constraint constraint = Is.EqualTo(expectedResult);
+            if (!typeof(TEnumerable).IsValueType)
+            {
+                constraint &= Is.SameAs(input);
+            }
+
+            Assert.That(() => input.EmptyIfNull(), constraint);
             Assert.That(() => input!.ToArray(), Is.EqualTo(expectedResult));
         }
     }
