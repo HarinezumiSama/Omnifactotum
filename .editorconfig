@@ -9,47 +9,27 @@ insert_final_newline = false
 trim_trailing_whitespace = true
 max_line_length = 160
 
-# .NET
+# Code analyser diagnostics
+
+# CA1510: Use ArgumentNullException throw helper
+# https://learn.microsoft.com/en-us/dotnet/fundamentals/code-analysis/quality-rules/ca1510
+# Reason: Multi-target project
+dotnet_diagnostic.ca1510.severity = none
+
+# IDE diagnostics
+
+# Use expression body for methods (IDE0022)
+# https://learn.microsoft.com/en-us/dotnet/fundamentals/code-analysis/style-rules/ide0022
 dotnet_diagnostic.ide0022.severity = none
+
+# Use switch expression (IDE0066)
+# https://learn.microsoft.com/en-us/dotnet/fundamentals/code-analysis/style-rules/ide0066
 dotnet_diagnostic.ide0066.severity = none
+
+# Remove unnecessary suppression (IDE0079)
+# https://learn.microsoft.com/en-us/dotnet/fundamentals/code-analysis/style-rules/ide0079
 dotnet_diagnostic.ide0079.severity = none
 
-# Microsoft .NET properties
-csharp_indent_switch_labels = true
-csharp_new_line_before_catch = true
-csharp_new_line_before_else = true
-csharp_new_line_before_finally = true
-csharp_new_line_before_members_in_object_initializers = false
-csharp_new_line_before_open_brace = all
-csharp_new_line_between_query_expression_clauses = true
-csharp_preferred_modifier_order = public, private, protected, internal, new, sealed, abstract, virtual, override, static, readonly, extern, unsafe, volatile, async:warning
-csharp_prefer_braces = true:none
-csharp_preserve_single_line_blocks = true
-csharp_space_after_cast = false
-csharp_space_after_colon_in_inheritance_clause = true
-csharp_space_after_comma = true
-csharp_space_after_dot = false
-csharp_space_after_keywords_in_control_flow_statements = true
-csharp_space_after_semicolon_in_for_statement = true
-csharp_space_around_binary_operators = before_and_after
-csharp_space_before_colon_in_inheritance_clause = true
-csharp_space_before_comma = false
-csharp_space_before_dot = false
-csharp_space_before_open_square_brackets = false
-csharp_space_before_semicolon_in_for_statement = false
-csharp_space_between_empty_square_brackets = false
-csharp_space_between_method_call_empty_parameter_list_parentheses = false
-csharp_space_between_method_call_name_and_opening_parenthesis = false
-csharp_space_between_method_call_parameter_list_parentheses = false
-csharp_space_between_method_declaration_empty_parameter_list_parentheses = false
-csharp_space_between_method_declaration_name_and_open_parenthesis = false
-csharp_space_between_method_declaration_parameter_list_parentheses = false
-csharp_space_between_parentheses = false
-csharp_space_between_square_brackets = false
-csharp_style_var_elsewhere = true:suggestion
-csharp_style_var_for_built_in_types = true:suggestion
-csharp_style_var_when_type_is_apparent = true:suggestion
-csharp_using_directive_placement = outside_namespace:silent
 dotnet_diagnostic.cs0067.severity = warning
 dotnet_diagnostic.cs0078.severity = warning
 dotnet_diagnostic.cs0108.severity = warning
@@ -184,6 +164,44 @@ dotnet_diagnostic.cs8860.severity = warning
 dotnet_diagnostic.cs8892.severity = warning
 dotnet_diagnostic.cs8907.severity = warning
 dotnet_diagnostic.wme006.severity = warning
+
+# Microsoft .NET properties
+csharp_indent_switch_labels = true
+csharp_new_line_before_catch = true
+csharp_new_line_before_else = true
+csharp_new_line_before_finally = true
+csharp_new_line_before_members_in_object_initializers = false
+csharp_new_line_before_open_brace = all
+csharp_new_line_between_query_expression_clauses = true
+csharp_preferred_modifier_order = public, private, protected, internal, new, sealed, abstract, virtual, override, static, readonly, extern, unsafe, volatile, async:warning
+csharp_prefer_braces = true:none
+csharp_preserve_single_line_blocks = true
+csharp_space_after_cast = false
+csharp_space_after_colon_in_inheritance_clause = true
+csharp_space_after_comma = true
+csharp_space_after_dot = false
+csharp_space_after_keywords_in_control_flow_statements = true
+csharp_space_after_semicolon_in_for_statement = true
+csharp_space_around_binary_operators = before_and_after
+csharp_space_before_colon_in_inheritance_clause = true
+csharp_space_before_comma = false
+csharp_space_before_dot = false
+csharp_space_before_open_square_brackets = false
+csharp_space_before_semicolon_in_for_statement = false
+csharp_space_between_empty_square_brackets = false
+csharp_space_between_method_call_empty_parameter_list_parentheses = false
+csharp_space_between_method_call_name_and_opening_parenthesis = false
+csharp_space_between_method_call_parameter_list_parentheses = false
+csharp_space_between_method_declaration_empty_parameter_list_parentheses = false
+csharp_space_between_method_declaration_name_and_open_parenthesis = false
+csharp_space_between_method_declaration_parameter_list_parentheses = false
+csharp_space_between_parentheses = false
+csharp_space_between_square_brackets = false
+csharp_style_expression_bodied_methods = true
+csharp_style_var_elsewhere = true:suggestion
+csharp_style_var_for_built_in_types = true:suggestion
+csharp_style_var_when_type_is_apparent = true:suggestion
+csharp_using_directive_placement = outside_namespace:silent
 dotnet_naming_rule.constants_rule.import_to_resharper = as_predefined
 dotnet_naming_rule.constants_rule.severity = warning
 dotnet_naming_rule.constants_rule.style = upper_camel_case_style
@@ -955,6 +973,7 @@ resharper_convert_to_lambda_expression_highlighting = suggestion
 resharper_convert_to_lambda_expression_when_possible_highlighting = suggestion
 resharper_convert_to_local_function_highlighting = suggestion
 resharper_convert_to_null_coalescing_compound_assignment_highlighting = suggestion
+resharper_convert_to_primary_constructor_highlighting = hint
 resharper_convert_to_static_class_highlighting = suggestion
 resharper_convert_to_using_declaration_highlighting = suggestion
 resharper_convert_to_vb_auto_property_highlighting = suggestion
