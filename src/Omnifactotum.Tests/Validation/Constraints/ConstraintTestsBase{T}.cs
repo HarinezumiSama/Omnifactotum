@@ -123,7 +123,7 @@ internal abstract class ConstraintTestsBase<[MeansImplicitUse] TConstraint> : Co
             _ when ValidationFactotum.IsDefaultImmutableArray(value) => OmnifactotumRepresentationConstants.NullValueRepresentation,
             ICollection collection => $"{{ {collection.GetType().GetQualifiedName()} : {nameof(collection.Count)} = {collection.Count} }}",
             IFormattable formattable => formattable.ToString(null, CultureInfo.InvariantCulture),
-            _ => value.ToString().AvoidNull()
+            _ => value.ToString() ?? string.Empty
         };
 
     protected sealed class PureReadOnlyCollection<T> : IReadOnlyCollection<T>

@@ -302,11 +302,27 @@ public static class OmnifactotumStringExtensions
     /// <returns>
     ///     The source string value if it is not <see langword="null"/>; otherwise, <see cref="string.Empty"/>.
     /// </returns>
+    [Obsolete($"Use '{nameof(OmnifactotumStringExtensions)}.{nameof(EmptyIfNull)}()' instead.")]
     [Pure]
     [Omnifactotum.Annotations.Pure]
     [MethodImpl(OmnifactotumConstants.MethodOptimizationOptions.Standard)]
     [NotNull]
-    public static string AvoidNull([CanBeNull] this string? source) => source ?? string.Empty;
+    public static string AvoidNull([CanBeNull] this string? source) => EmptyIfNull(source);
+
+    /// <summary>
+    ///     Returns <see cref="string.Empty"/> if the specified string value is <see langword="null"/>; otherwise, returns the original string value.
+    /// </summary>
+    /// <param name="value">
+    ///     The string value to handle.
+    /// </param>
+    /// <returns>
+    ///     <see cref="string.Empty"/> if the specified string value is <see langword="null"/>; otherwise, returns the original string value.
+    /// </returns>
+    [Pure]
+    [Omnifactotum.Annotations.Pure]
+    [MethodImpl(OmnifactotumConstants.MethodOptimizationOptions.Maximum)]
+    [NotNull]
+    public static string EmptyIfNull([CanBeNull] this string? value) => value ?? string.Empty;
 
     /// <summary>
     ///     <para>

@@ -42,7 +42,7 @@ public abstract class MemberConstraintBase : IMemberConstraint
             ?? value switch
             {
                 IFormattable formattable => formattable.ToString(null, CultureInfo.InvariantCulture),
-                _ => (value?.ToString()).AvoidNull()
+                _ => (value?.ToString()).EmptyIfNull()
             };
 
     /// <summary>

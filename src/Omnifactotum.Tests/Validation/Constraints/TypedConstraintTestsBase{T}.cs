@@ -46,7 +46,7 @@ internal abstract class TypedConstraintTestsBase<[MeansImplicitUse] TConstraint,
                 null => OmnifactotumRepresentationConstants.NullValueRepresentation,
                 string s => s.ToUIString(),
                 IFormattable formattable => formattable.ToString(null, CultureInfo.InvariantCulture),
-                _ => value.ToString().AvoidNull()
+                _ => value.ToString() ?? string.Empty
             };
 
             var typePart = value?.GetType() switch

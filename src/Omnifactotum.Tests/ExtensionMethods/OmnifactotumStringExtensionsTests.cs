@@ -309,6 +309,7 @@ internal sealed class OmnifactotumStringExtensionsTests
         Assert.That(() => "Hello world".EnsureNotBlank(), Is.EqualTo("Hello world"));
     }
 
+#pragma warning disable CS0618 // Type or member is obsolete
     [Test]
     [TestCase(null)]
     [TestCase("")]
@@ -317,6 +318,16 @@ internal sealed class OmnifactotumStringExtensionsTests
     [TestCase("\u0020foo bar\u0020")]
     public void TestAvoidNull(string? value)
         => Assert.That(value.AvoidNull, value is null ? Is.EqualTo(string.Empty) : Is.SameAs(value));
+#pragma warning restore CS0618 // Type or member is obsolete
+
+    [Test]
+    [TestCase(null)]
+    [TestCase("")]
+    [TestCase("\u0020")]
+    [TestCase("foo bar")]
+    [TestCase("\u0020foo bar\u0020")]
+    public void TestEmptyIfNull(string? value)
+        => Assert.That(value.EmptyIfNull, value is null ? Is.EqualTo(string.Empty) : Is.SameAs(value));
 
     [Test]
     [TestCase(null, "null")]
