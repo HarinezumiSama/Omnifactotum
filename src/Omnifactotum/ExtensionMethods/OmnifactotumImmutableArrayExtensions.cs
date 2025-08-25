@@ -30,10 +30,36 @@ public static class OmnifactotumImmutableArrayExtensions
     ///     otherwise, <see cref="ImmutableArray{T}.Empty"/>.
     /// </returns>
     /// <seealso cref="ImmutableArray{T}.IsDefault"/>
+    /// <seealso cref="EmptyIfDefault{T}"/>
+    [Obsolete($"Use '{nameof(OmnifactotumImmutableArrayExtensions)}.{nameof(EmptyIfDefault)}()' instead.")]
     [Pure]
     [Omnifactotum.Annotations.Pure]
     [MethodImpl(OmnifactotumConstants.MethodOptimizationOptions.Maximum)]
-    public static ImmutableArray<T> AvoidDefault<T>([NoEnumeration] this ImmutableArray<T> source)
+    public static ImmutableArray<T> AvoidDefault<T>([NoEnumeration] this ImmutableArray<T> source) => EmptyIfDefault(source);
+
+    /// <summary>
+    ///     Returns the specified <see cref="ImmutableArray{T}"/> if it is initialized
+    ///     (that is, if <see cref="ImmutableArray{T}.IsDefault"/> is <see langword="false"/>);
+    ///     otherwise (that is, if <see cref="ImmutableArray{T}.IsDefault"/> is <see langword="true"/>),
+    ///     returns <see cref="ImmutableArray{T}.Empty"/>.
+    /// </summary>
+    /// <typeparam name="T">
+    ///     The type of elements in the immutable array.
+    /// </typeparam>
+    /// <param name="source">
+    ///     The immutable array to handle.
+    /// </param>
+    /// <returns>
+    ///     The specified <see cref="ImmutableArray{T}"/> if it is initialized
+    ///     (that is, if <see cref="ImmutableArray{T}.IsDefault"/> is <see langword="false"/>);
+    ///     otherwise (that is, if <see cref="ImmutableArray{T}.IsDefault"/> is <see langword="true"/>),
+    ///     returns <see cref="ImmutableArray{T}.Empty"/>.
+    /// </returns>
+    /// <seealso cref="ImmutableArray{T}.IsDefault"/>
+    [Pure]
+    [Omnifactotum.Annotations.Pure]
+    [MethodImpl(OmnifactotumConstants.MethodOptimizationOptions.Maximum)]
+    public static ImmutableArray<T> EmptyIfDefault<T>([NoEnumeration] this ImmutableArray<T> source)
         => source is { IsDefault: true } ? ImmutableArray<T>.Empty : source;
 
     /// <summary>
@@ -52,9 +78,31 @@ public static class OmnifactotumImmutableArrayExtensions
     ///     (that is, <see cref="ImmutableArray{T}.IsDefault"/> is <see langword="false"/>); otherwise, <see cref="ImmutableArray{T}.Empty"/>.
     /// </returns>
     /// <seealso cref="ImmutableArray{T}.IsDefault"/>
+    /// <seealso cref="EmptyIfNullOrDefault{T}"/>
+    [Obsolete($"Use '{nameof(OmnifactotumImmutableArrayExtensions)}.{nameof(EmptyIfNullOrDefault)}()' instead.")]
     [Pure]
     [Omnifactotum.Annotations.Pure]
     [MethodImpl(OmnifactotumConstants.MethodOptimizationOptions.Maximum)]
-    public static ImmutableArray<T> AvoidNullOrDefault<T>([CanBeNull] [NoEnumeration] this ImmutableArray<T>? source)
+    public static ImmutableArray<T> AvoidNullOrDefault<T>([CanBeNull] [NoEnumeration] this ImmutableArray<T>? source) => EmptyIfNullOrDefault(source);
+
+    /// <summary>
+    ///     Returns the specified <see cref="ImmutableArray{T}"/> if it is not <see langword="null"/> and is initialized
+    ///     (that is, <see cref="ImmutableArray{T}.IsDefault"/> is <see langword="false"/>); otherwise, returns <see cref="ImmutableArray{T}.Empty"/>.
+    /// </summary>
+    /// <typeparam name="T">
+    ///     The type of elements in the immutable array.
+    /// </typeparam>
+    /// <param name="source">
+    ///     The nullable immutable array to handle.
+    /// </param>
+    /// <returns>
+    ///     The specified <see cref="ImmutableArray{T}"/> if it is not <see langword="null"/> and is initialized
+    ///     (that is, <see cref="ImmutableArray{T}.IsDefault"/> is <see langword="false"/>); otherwise, returns <see cref="ImmutableArray{T}.Empty"/>.
+    /// </returns>
+    /// <seealso cref="ImmutableArray{T}.IsDefault"/>
+    [Pure]
+    [Omnifactotum.Annotations.Pure]
+    [MethodImpl(OmnifactotumConstants.MethodOptimizationOptions.Maximum)]
+    public static ImmutableArray<T> EmptyIfNullOrDefault<T>([CanBeNull] [NoEnumeration] this ImmutableArray<T>? source)
         => source is { IsDefault: false } array ? array : ImmutableArray<T>.Empty;
 }
