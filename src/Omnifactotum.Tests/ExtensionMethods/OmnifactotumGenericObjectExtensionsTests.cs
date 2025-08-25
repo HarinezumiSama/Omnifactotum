@@ -263,6 +263,7 @@ internal sealed class OmnifactotumGenericObjectExtensionsTests
         Assert.That(nullableIntValue, Is.EqualTo(value));
     }
 
+#pragma warning disable CS0618 // Type or member is obsolete
     [Test]
     [SuppressMessage("ReSharper", "AssignNullToNotNullAttribute")]
     public void TestAvoidNullWhenDefaultValueProviderIsNullThenThrows()
@@ -286,6 +287,7 @@ internal sealed class OmnifactotumGenericObjectExtensionsTests
         var output = new TestClass();
         Assert.That(() => ((TestClass?)null).AvoidNull(() => output), Is.SameAs(output));
     }
+#pragma warning restore CS0618 // Type or member is obsolete
 
     [Test]
     public void TestGetHashCodeSafelyWithDefaultNullValueHashCodeSucceeds()

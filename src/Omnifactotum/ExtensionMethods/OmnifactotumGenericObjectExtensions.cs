@@ -374,6 +374,7 @@ public static class OmnifactotumGenericObjectExtensions
     [Pure]
     [Omnifactotum.Annotations.Pure]
     [NotNull]
+    [Obsolete("This method has been deprecated and will be removed in a future release.")]
     public static T AvoidNull<T>([CanBeNull] this T? source, [NotNull] [InstantHandle] Func<T> getFallbackValue)
         where T : class
     {
