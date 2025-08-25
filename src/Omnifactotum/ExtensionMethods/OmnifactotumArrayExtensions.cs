@@ -3,6 +3,7 @@ using Omnifactotum;
 using Omnifactotum.Annotations;
 using NotNullIfNotNull = System.Diagnostics.CodeAnalysis.NotNullIfNotNullAttribute;
 using PureAttribute = System.Diagnostics.Contracts.PureAttribute;
+using SuppressMessageAttribute = System.Diagnostics.CodeAnalysis.SuppressMessageAttribute;
 
 //// ReSharper disable RedundantNullnessAttributeWithNullableReferenceTypes
 //// ReSharper disable UseNullableReferenceTypesAnnotationSyntax
@@ -146,11 +147,31 @@ public static class OmnifactotumArrayExtensions
     /// <returns>
     ///     The source array if it is not <see langword="null"/>; otherwise, an empty array.
     /// </returns>
+    [Obsolete($"Use '{nameof(OmnifactotumArrayExtensions)}.{nameof(EmptyIfNull)}()' instead.")]
     [MethodImpl(OmnifactotumConstants.MethodOptimizationOptions.Maximum)]
     [Pure]
     [Omnifactotum.Annotations.Pure]
     [NotNull]
-    public static T[] AvoidNull<T>([CanBeNull] this T[]? source) => source ?? Array.Empty<T>();
+    public static T[] AvoidNull<T>([CanBeNull] this T[]? source) => EmptyIfNull(source);
+
+    /// <summary>
+    ///     Returns an empty array if the specified source array is <see langword="null"/>; otherwise, returns the source array.
+    /// </summary>
+    /// <typeparam name="T">
+    ///     The type of elements in the array.
+    /// </typeparam>
+    /// <param name="source">
+    ///     The source array to handle.
+    /// </param>
+    /// <returns>
+    ///     An empty array if the specified source array is <see langword="null"/>; otherwise, returns the source array.
+    /// </returns>
+    [MethodImpl(OmnifactotumConstants.MethodOptimizationOptions.Maximum)]
+    [Pure]
+    [Omnifactotum.Annotations.Pure]
+    [NotNull]
+    [SuppressMessage("ReSharper", "UseCollectionExpression")]
+    public static T[] EmptyIfNull<T>([CanBeNull] this T[]? source) => source ?? Array.Empty<T>();
 
     /// <summary>
     ///     Converts the specified array of bytes to its equivalent string representation that is encoded with hexadecimal characters.

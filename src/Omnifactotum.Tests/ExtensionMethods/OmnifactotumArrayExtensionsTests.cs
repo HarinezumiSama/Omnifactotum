@@ -77,6 +77,7 @@ internal sealed class OmnifactotumArrayExtensionsTests
         Assert.That(array[1], Is.EqualTo("2"));
     }
 
+#pragma warning disable CS0618 // Type or member is obsolete
     [Test]
     public void TestAvoidNull()
     {
@@ -86,6 +87,19 @@ internal sealed class OmnifactotumArrayExtensionsTests
 
         var array = new[] { "foo", "bar" }.AssertNotNull();
         var shouldBeSame = array.AvoidNull();
+        Assert.That(shouldBeSame, Is.SameAs(array));
+    }
+#pragma warning restore CS0618 // Type or member is obsolete
+
+    [Test]
+    public void TestEmptyIfNull()
+    {
+        var avoided = NullArray.EmptyIfNull();
+        Assert.That(avoided, Is.Not.Null);
+        Assert.That(avoided.Length, Is.EqualTo(0));
+
+        var array = new[] { "foo", "bar" }.AssertNotNull();
+        var shouldBeSame = array.EmptyIfNull();
         Assert.That(shouldBeSame, Is.SameAs(array));
     }
 

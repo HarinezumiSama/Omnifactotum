@@ -57,5 +57,5 @@ public static class OmnifactotumDelegateExtensions
     [NotNull]
     public static TDelegate[] GetTypedInvocations<TDelegate>([CanBeNull] this TDelegate? @delegate)
         where TDelegate : Delegate
-        => (@delegate?.GetInvocationList().Cast<TDelegate>().ToArray()).AvoidNull();
+        => (@delegate?.GetInvocationList().Cast<TDelegate>().ToArray()).EmptyIfNull();
 }
