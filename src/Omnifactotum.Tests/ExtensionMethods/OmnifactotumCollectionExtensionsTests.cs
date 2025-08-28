@@ -285,15 +285,12 @@ internal sealed class OmnifactotumCollectionExtensionsTests
         Assert.That(stringBuilder.ToString(), Is.EqualTo("a:0./:1."));
     }
 
+#pragma warning disable CS0618 // Type or member is obsolete
     [Test]
-    [SuppressMessage("ReSharper", "UseArrayEmptyMethod")]
     public void TestSetItemsWhenInvalidArgumentThenThrows()
     {
         Assert.That(() => default(List<string>)!.SetItems([string.Empty]), Throws.ArgumentNullException);
         Assert.That(() => new List<string>().SetItems(null!), Throws.ArgumentNullException);
-
-        Assert.That(() => new string[0].SetItems([string.Empty]), Throws.TypeOf<NotSupportedException>());
-        Assert.That(() => new ReadOnlyCollection<string>(new List<string>()).SetItems([string.Empty]), Throws.TypeOf<NotSupportedException>());
     }
 
     [Test]
@@ -339,6 +336,63 @@ internal sealed class OmnifactotumCollectionExtensionsTests
 
             collection.SetItems([]);
             Assert.That(collection, Is.Empty);
+        }
+    }
+#pragma warning restore CS0618 // Type or member is obsolete
+
+    [Test]
+    public void TestReplaceItemsWhenInvalidArgumentThenThrows()
+    {
+        Assert.That(() => default(List<string>)!.ReplaceItems([string.Empty]), Throws.ArgumentNullException);
+        Assert.That(() => new List<string>().ReplaceItems(default(IEnumerable<string>)!), Throws.ArgumentNullException);
+    }
+
+    [Test]
+    public void TestReplaceItemsValidArgumentsThenSucceeds()
+    {
+        static int[] CreateIntItems1() => [17, 42, -19];
+        static int[] CreateIntItems2() => [19, -37, 17, 0];
+
+        InvokeTestReplaceItems<int, Collection<int>>(CreateIntItems1, CreateIntItems2);
+        InvokeTestReplaceItems<int, List<int>>(CreateIntItems1, CreateIntItems2);
+
+        static string[] CreateStringItems1() => ["az", "zA", "qwerty"];
+        static string[] CreateStringItems2() => [nameof(TestSetItemsValidArgumentsThenSucceeds), string.Empty];
+
+        InvokeTestReplaceItems<string, Collection<string>>(CreateStringItems1, CreateStringItems2);
+        InvokeTestReplaceItems<string, List<string>>(CreateStringItems1, CreateStringItems2);
+
+        static KeyValuePair<int, string>[] CreateKeyValuePairItems1()
+            => [KeyValuePair.Create(17, "seventeen"), KeyValuePair.Create(-1, "minus one")];
+
+        static KeyValuePair<int, string>[] CreateKeyValuePairItems2()
+            => [KeyValuePair.Create(-13, "minus thirteen"), KeyValuePair.Create(0, "zero"), KeyValuePair.Create(int.MaxValue, "wow")];
+
+        InvokeTestReplaceItems<KeyValuePair<int, string>, Dictionary<int, string>>(CreateKeyValuePairItems1, CreateKeyValuePairItems2);
+
+        static void InvokeTestReplaceItems<T, TCollection>(Func<T[]> createItems1, Func<T[]> createItems2)
+            where TCollection : ICollection<T>, new()
+        {
+            var collection = new TCollection();
+
+            Assert.That(collection, Is.Not.Null);
+            Assert.That(createItems1, Is.Not.Null);
+            Assert.That(createItems2, Is.Not.Null);
+
+            var items1 = createItems1().AssertNotNull();
+            var items2 = createItems2().AssertNotNull();
+
+            var replaceItems1 = collection.ReplaceItems(items1);
+            Assert.That(collection, Is.EqualTo(items1));
+            Assert.That(replaceItems1, Is.SameAs(collection));
+
+            var replaceItems2 = collection.ReplaceItems(items2);
+            Assert.That(collection, Is.EqualTo(items2));
+            Assert.That(replaceItems2, Is.SameAs(collection));
+
+            var replaceItems3 = collection.ReplaceItems(Array.Empty<T>());
+            Assert.That(collection, Is.Empty);
+            Assert.That(replaceItems3, Is.SameAs(collection));
         }
     }
 

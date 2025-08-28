@@ -253,7 +253,7 @@ public static class OmnifactotumCollectionExtensions
     }
 
     /// <summary>
-    ///     Sets the items in the specified collection to the specified items.
+    ///     [OBSOLETE] Sets the items in the specified collection to the specified items.
     ///     The previously contained items are removed from the collection.
     /// </summary>
     /// <typeparam name="T">
@@ -265,29 +265,74 @@ public static class OmnifactotumCollectionExtensions
     /// <param name="items">
     ///     The items to put to the collection.
     /// </param>
+    [Obsolete($"Use '{nameof(OmnifactotumCollectionExtensions)}.{nameof(ReplaceItems)}' instead.")]
+    [MethodImpl(OmnifactotumConstants.MethodOptimizationOptions.Maximum)]
     public static void SetItems<T>(
         [NotNull] this ICollection<T> collection,
         [NotNull] [InstantHandle] IEnumerable<T> items)
+        => collection.ReplaceItems(items);
+
+    /// <summary>
+    ///     Replaces the items in the collection with the specified items.
+    /// </summary>
+    /// <typeparam name="TCollection">
+    ///     The type of the collection to replace the items in.
+    /// </typeparam>
+    /// <typeparam name="T">
+    ///     The type of the elements in the collection.
+    /// </typeparam>
+    /// <param name="collection">
+    ///     The collection to replace the items in.
+    /// </param>
+    /// <param name="newItems">
+    ///     The items to put to the collection.
+    /// </param>
+    /// <returns>
+    ///     The original collection (the same reference as the <paramref name="collection"/> parameter).
+    /// </returns>
+    /// <remarks>
+    ///     The previously contained items are removed from the collection, and the new items are added to it.
+    /// </remarks>
+    /// <example>
+    ///     <code>
+    /// <![CDATA[
+    ///         var list = new List<int>() { 1, 2, 3 };
+    ///         // `list` contains 1, 2, and 3.
+    ///
+    ///         list.ReplaceItems(new [] { 6, 5, 4 });
+    ///         // `list` contains 6, 5, and 4.
+    /// ]]>
+    ///     </code>
+    /// </example>
+    public static TCollection ReplaceItems<TCollection, T>(
+        [NotNull] this TCollection collection,
+        [NotNull] [InstantHandle] IEnumerable<T> newItems)
+        where TCollection : ICollection<T>
     {
         if (collection is null)
         {
             throw new ArgumentNullException(nameof(collection));
         }
 
-        if (items is null)
+        if (newItems is null)
         {
-            throw new ArgumentNullException(nameof(items));
+            throw new ArgumentNullException(nameof(newItems));
         }
 
         collection.Clear();
 
-        if (collection is List<T> list)
+        switch (collection)
         {
-            list.AddRange(items);
-            return;
+            case List<T> list:
+                list.AddRange(newItems);
+                break;
+
+            default:
+                newItems.DoForEach(collection.Add);
+                break;
         }
 
-        items.DoForEach(collection.Add);
+        return collection;
     }
 
     /// <summary>
