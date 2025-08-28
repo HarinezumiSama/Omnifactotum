@@ -1,5 +1,8 @@
-﻿using System.Runtime.CompilerServices;
+﻿using System.Diagnostics;
+using System.Runtime.CompilerServices;
 using Omnifactotum;
+using ItemNotNullAttribute = Omnifactotum.Annotations.ItemNotNullAttribute;
+using static Omnifactotum.ExtensionMethods.InternalExtensionFactotum;
 
 //// ReSharper disable RedundantNullnessAttributeWithNullableReferenceTypes
 
@@ -46,4 +49,61 @@ public static class OmnifactotumValueTaskExtensions
     [MethodImpl(OmnifactotumConstants.MethodOptimizationOptions.Maximum)]
     public static ConfiguredValueTaskAwaitable<TResult> ConfigureAwaitNoCapturedContext<TResult>(this in ValueTask<TResult> task)
         => task.ConfigureAwait(false);
+
+#if NET5_0_OR_GREATER
+    /// <summary>
+    ///     Returns a <see cref="ValueTask{TResult}"/> that produces the result of the specified task if this result is not <see langword="null"/>;
+    ///     otherwise, throws an exception.
+    /// </summary>
+    /// <param name="resultTask">
+    ///     The <see cref="ValueTask{TResult}"/> whose result to return while checking it for <see langword="null"/>.
+    /// </param>
+    /// <param name="resultTaskExpression">
+    ///     <para>A string value representing the expression passed as the value of the <paramref name="resultTask"/> parameter.</para>
+    ///     <para><b>NOTE</b>: Do not pass a value for this parameter as it is automatically injected by the compiler (.NET 5+ and C# 10+).</para>
+    /// </param>
+    /// <typeparam name="T">
+    ///     The type of the result produced by the task.
+    /// </typeparam>
+    /// <returns>
+    ///     A <see cref="ValueTask{TResult}"/> that produces the result of the specified task if this result is not <see langword="null"/>;
+    ///     otherwise, throws an exception.
+    /// </returns>
+    /// <seealso cref="M:OmnifactotumGenericObjectExtensions.EnsureNotNull{T}(T?,string?)"/>
+    [MethodImpl(OmnifactotumConstants.MethodOptimizationOptions.Maximum)]
+    [DebuggerStepThrough]
+    [ItemNotNull]
+    public static async ValueTask<T> EnsureNotNullAsync<T>(
+        this ValueTask<T?> resultTask,
+        [CallerArgumentExpression(nameof(resultTask))] string? resultTaskExpression = null)
+        where T : class
+        => (await resultTask).EnsureNotNull(GetEnsureNotNullAsyncExpressionForEnsureNotNull(resultTaskExpression));
+
+    /// <summary>
+    ///     Returns a <see cref="ValueTask{TResult}"/> that produces the result of the specified task if this result is not <see langword="null"/>;
+    ///     otherwise, throws an exception.
+    /// </summary>
+    /// <param name="resultTask">
+    ///     The <see cref="ValueTask{TResult}"/> whose result to return while checking it for <see langword="null"/>.
+    /// </param>
+    /// <param name="resultTaskExpression">
+    ///     <para>A string value representing the expression passed as the value of the <paramref name="resultTask"/> parameter.</para>
+    ///     <para><b>NOTE</b>: Do not pass a value for this parameter as it is automatically injected by the compiler (.NET 5+ and C# 10+).</para>
+    /// </param>
+    /// <typeparam name="T">
+    ///     The type of the result produced by the task.
+    /// </typeparam>
+    /// <returns>
+    ///     A <see cref="ValueTask{TResult}"/> that produces the result of the specified task if this result is not <see langword="null"/>;
+    ///     otherwise, throws an exception.
+    /// </returns>
+    /// <seealso cref="M:OmnifactotumGenericObjectExtensions.EnsureNotNull{T}(T?,string?)"/>
+    [MethodImpl(OmnifactotumConstants.MethodOptimizationOptions.Maximum)]
+    [DebuggerStepThrough]
+    public static async ValueTask<T> EnsureNotNullAsync<T>(
+        this ValueTask<T?> resultTask,
+        [CallerArgumentExpression(nameof(resultTask))] string? resultTaskExpression = null)
+        where T : struct
+        => (await resultTask).EnsureNotNull(GetEnsureNotNullAsyncExpressionForEnsureNotNull(resultTaskExpression));
+#endif
 }

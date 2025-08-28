@@ -55,6 +55,48 @@ internal sealed class OmnifactotumTaskExtensionsTests : GenericTaskExtensionsTes
         Assert.That(actualResult, Is.EqualTo(Enumerable.Range(0, count).Select(i => -i)));
     }
 
+#if NET5_0_OR_GREATER
+    [Test]
+    public void TestEnsureNotNullAsyncForReferenceType()
+    {
+        const string ExpectedValue = "320434148ba94220927556f406b3acc0";
+
+        Assert.That(
+            async () => await default(Task<string?>)!.EnsureNotNullAsync(),
+            Throws.ArgumentNullException.With.Message.EqualTo(
+                "The following expression is null: { default(Task<string?>) }. (Parameter 'resultTask')"));
+
+        Assert.That(
+            async () => await Task.FromResult<string?>(null).EnsureNotNullAsync(),
+            Throws.ArgumentNullException.With.Message.EqualTo(
+                "The following expression is null: { await Task.FromResult<string?>(null) }. (Parameter 'value')"));
+
+        Assert.That(
+            async () => await Task.FromResult<string?>(ExpectedValue).EnsureNotNullAsync(),
+            Is.EqualTo(ExpectedValue));
+    }
+
+    [Test]
+    public void TestEnsureNotNullAsyncForValueType()
+    {
+        const int ExpectedValue = 17;
+
+        Assert.That(
+            async () => await default(Task<int?>)!.EnsureNotNullAsync(),
+            Throws.ArgumentNullException.With.Message.EqualTo(
+                "The following expression is null: { default(Task<int?>) }. (Parameter 'resultTask')"));
+
+        Assert.That(
+            async () => await Task.FromResult<int?>(null).EnsureNotNullAsync(),
+            Throws.ArgumentNullException.With.Message.EqualTo(
+                "The following expression is null: { await Task.FromResult<int?>(null) }. (Parameter 'value')"));
+
+        Assert.That(
+            async () => await Task.FromResult<int?>(ExpectedValue).EnsureNotNullAsync(),
+            Is.EqualTo(ExpectedValue));
+    }
+#endif
+
     protected override Task OnRunTestCaseForVoidTaskAsync(ConfigureAwaitMode mode, ValueContainer<int> container)
     {
         async Task IncrementAsync()

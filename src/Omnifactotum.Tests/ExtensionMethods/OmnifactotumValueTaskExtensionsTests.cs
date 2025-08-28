@@ -8,6 +8,38 @@ namespace Omnifactotum.Tests.ExtensionMethods;
 [NonParallelizable]
 internal sealed class OmnifactotumValueTaskExtensionsTests : GenericTaskExtensionsTestsBase
 {
+#if NET5_0_OR_GREATER
+    [Test]
+    public void TestEnsureNotNullAsyncForReferenceType()
+    {
+        const string ExpectedValue = "99ee00e562ea47669d01f3580262d811";
+
+        Assert.That(
+            async () => await ValueTask.FromResult<string?>(null).EnsureNotNullAsync(),
+            Throws.ArgumentNullException.With.Message.EqualTo(
+                "The following expression is null: { await ValueTask.FromResult<string?>(null) }. (Parameter 'value')"));
+
+        Assert.That(
+            async () => await ValueTask.FromResult<string?>(ExpectedValue).EnsureNotNullAsync(),
+            Is.EqualTo(ExpectedValue));
+    }
+
+    [Test]
+    public void TestEnsureNotNullAsyncForValueType()
+    {
+        const int ExpectedValue = -17;
+
+        Assert.That(
+            async () => await ValueTask.FromResult<int?>(null).EnsureNotNullAsync(),
+            Throws.ArgumentNullException.With.Message.EqualTo(
+                "The following expression is null: { await ValueTask.FromResult<int?>(null) }. (Parameter 'value')"));
+
+        Assert.That(
+            async () => await ValueTask.FromResult<int?>(ExpectedValue).EnsureNotNullAsync(),
+            Is.EqualTo(ExpectedValue));
+    }
+#endif
+
     protected override Task OnRunTestCaseForVoidTaskAsync(ConfigureAwaitMode mode, ValueContainer<int> container)
     {
         async ValueTask IncrementAsync()
