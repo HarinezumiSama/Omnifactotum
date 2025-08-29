@@ -25,7 +25,7 @@
   - [![GitHub](https://img.shields.io/github/license/HarinezumiSama/Omnifactotum)](https://github.com/HarinezumiSama/Omnifactotum/blob/master/LICENSE) ![GitHub code size in bytes](https://img.shields.io/github/languages/code-size/HarinezumiSama/Omnifactotum) ![GitHub language count](https://img.shields.io/github/languages/count/HarinezumiSama/Omnifactotum) ![GitHub top language](https://img.shields.io/github/languages/top/HarinezumiSama/Omnifactotum) ![GitHub repo size](https://img.shields.io/github/repo-size/HarinezumiSama/Omnifactotum)
   - [![GitHub open issues](https://img.shields.io/github/issues-raw/HarinezumiSama/Omnifactotum)](https://github.com/HarinezumiSama/Omnifactotum/issues?q=is%3Aissue+is%3Aopen) [![GitHub open pull requests](https://img.shields.io/github/issues-pr-raw/HarinezumiSama/Omnifactotum)](https://github.com/HarinezumiSama/Omnifactotum/pulls?q=is%3Apr+is%3Aopen)
 
-### The *non-exhaustive* list of .NET classes covered
+### The *non-exhaustive* list of the .NET classes covered
 
 - Reflection
   - [**`Assembly`**](https://docs.microsoft.com/en-us/dotnet/api/system.reflection.assembly) extension methods
@@ -51,6 +51,7 @@
 - [**`IEqualityComparer<T>`**](https://docs.microsoft.com/en-us/dotnet/api/system.collections.generic.iequalitycomparer-1) extension methods
 - [**`ImmutableArray<T>`**](https://learn.microsoft.com/en-us/dotnet/api/system.collections.immutable.immutablearray-1) extension methods
 - [**`ISet<T>`**](https://docs.microsoft.com/en-us/dotnet/api/system.collections.generic.iset-1) extension methods
+- [**`KeyValuePair<TKey, TValue>`**](https://learn.microsoft.com/en-us/dotnet/api/system.collections.generic.keyvaluepair-2) extension methods
 - Math extension methods for numeric types
 - [**`ReadOnlySpan<T>`**](https://docs.microsoft.com/en-us/dotnet/api/system.readonlyspan-1) extension methods
 - [**`SecureString`**](https://docs.microsoft.com/en-us/dotnet/api/system.security.securestring) extension methods
@@ -65,6 +66,7 @@
 - [**`Uri`**](https://docs.microsoft.com/en-us/dotnet/api/system.uri) extension methods
 - [**`ValueTask`**](https://docs.microsoft.com/en-us/dotnet/api/system.threading.tasks.valuetask) extension methods
 - [**`ValueTask<TResult>`**](https://docs.microsoft.com/en-us/dotnet/api/system.threading.tasks.valuetask-1) extension methods
+- Value tuple extension methods
 
 ### The *non-exhaustive* list of own helper classes
 
@@ -74,7 +76,8 @@
 ### The *non-exhaustive* list of own functional classes
 
 - `ByReferenceEqualityComparer<T>`
-- `CaseInsensitiveStringKey`
+- `CaseInsensitiveStringKey` (deprecated in favor of `CaseInsensitiveString`)
+- `CaseInsensitiveString`
 - `ColoredConsoleTraceListener`
 - `DirectedGraph<T>` and `DirectedGraphNode<T>`
 - `EnumFixedSizeDictionary<TKey, TValue>`
@@ -88,7 +91,7 @@
 - `SemaphoreSlimBasedLock`
 - `StopwatchElapsedTimeProvider` (implements `IElapsedTimeProvider`)
 - `SyncValueContainer<T>` (implements `IValueContainer<T>`)
-- `TemplatedStringResolver`
+- `TemplatedStringResolver` (provides functionality similar to C# interpolated strings)
 - `ValueContainer<T>` (implements `IValueContainer<T>`)
 - `ValueRange<T>`
 - `VirtualTreeNode<T>` and `VirtualTreeNodeRoot<T>`
