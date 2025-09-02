@@ -7,6 +7,14 @@
     </PropertyGroup>
 
     <PropertyGroup>
+        <!-- AD0001: Analyzer exception -->
+        <WarningsAsErrors>$(WarningsAsErrors);AD0001</WarningsAsErrors>
+
+        <!-- RS1041: Compiler extensions should be implemented in assemblies targeting netstandard2.0: https://github.com/dotnet/roslyn-analyzers/blob/main/docs/rules/RS1041.md -->
+        <WarningsAsErrors>$(WarningsAsErrors);RS1041</WarningsAsErrors>
+    </PropertyGroup>
+
+    <PropertyGroup>
         <VersionSuffix>-debug</VersionSuffix>
         <BuildDateYear>$([System.String]::Format("{0:yyyy}", $([System.DateTime]::UtcNow)))</BuildDateYear>
         <PackageReleaseNotes>N/A</PackageReleaseNotes>
