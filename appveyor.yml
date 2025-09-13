@@ -44,18 +44,14 @@ for:
       CI_ARG_PRERELEASE_SUFFIX: ''
       CI_OUT_ARG_DEPLOY: 'true'
 build_script:
-- ps: >-
+- ps: |
     $Script:ErrorActionPreference = [System.Management.Automation.ActionPreference]::Stop;
-
     Microsoft.PowerShell.Core\Set-StrictMode -Version 1;
-
     $ProgressPreference = [System.Management.Automation.ActionPreference]::SilentlyContinue;
 
-
-    # Reason: AppVeyor build image 'Visual Studio 2022' doesn't contain .NET 5.0 SDK anymore
-
-    choco install --yes --no-progress 'dotnet-5.0-sdk-4xx';
-
+    # Reason: AppVeyor build image 'Visual Studio 2022' doesn't contain .NET 3.1 and 5.0 SDKs anymore
+    choco install --yes --no-progress 'dotnetcore-3.1-sdk-4xx'
+    choco install --yes --no-progress 'dotnet-5.0-sdk-4xx'
 
     & .\build.ps1 `
         -Verbose `
