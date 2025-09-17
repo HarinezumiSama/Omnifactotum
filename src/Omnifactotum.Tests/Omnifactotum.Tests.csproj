@@ -3,6 +3,7 @@
 <Project Sdk="Microsoft.NET.Sdk">
     <PropertyGroup>
         <TargetFrameworks>netcoreapp3.1;net5.0;net6.0;net7.0;net8.0;net9.0</TargetFrameworks>
+        <OutputType>Library</OutputType>
     </PropertyGroup>
 
     <PropertyGroup>
@@ -13,23 +14,28 @@
     </PropertyGroup>
 
     <ItemGroup>
-        <PackageReference Include="Appveyor.TestLogger" Version="2.0.0" Condition="$(IsAppveyorBuild)" />
-        <PackageReference Include="Microsoft.CodeAnalysis.CSharp" Version="4.1.0" />
-        <PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.3.2" />
-        <PackageReference Include="Moq" Version="4.17.2" />
-        <PackageReference Include="NUnit" Version="3.13.3" />
-        <PackageReference Include="NUnit3TestAdapter" Version="4.3.0" />
-        <PackageReference Include="System.Reflection.Emit" Version="4.7.0" />
-        <PackageReference Include="System.Runtime.Loader" Version="4.3.0" />
+        <PackageReference Include="Appveyor.TestLogger" Version="2.0.0" Condition="$(IsAppveyorBuild)"/>
+        <PackageReference Include="Microsoft.CodeAnalysis.CSharp" Version="4.7.0"/>
+        <PackageReference Include="Microsoft.CodeAnalysis.CSharp.Analyzer.Testing.NUnit" Version="1.1.1"/>
+        <PackageReference Include="Microsoft.CodeAnalysis.CSharp.CodeFix.Testing.NUnit" Version="1.1.1"/>
+        <PackageReference Include="Microsoft.CodeAnalysis.CSharp.SourceGenerators.Testing.NUnit" Version="1.1.1"/>
+        <PackageReference Include="Microsoft.NET.Test.Sdk" Version="[17.13.0]"/>
+        <PackageReference Include="Moq" Version="4.20.72"/>
+        <PackageReference Include="NUnit" Version="3.14.0"/>
+        <PackageReference Include="NUnit3TestAdapter" Version="4.6.0"/>
+        <PackageReference Include="PolySharp" Version="1.15.0"/>
+        <PackageReference Include="System.Reflection.Emit" Version="4.7.0"/>
+        <PackageReference Include="System.Runtime.Loader" Version="4.3.0"/>
     </ItemGroup>
 
     <ItemGroup>
-        <ProjectReference Include="..\Omnifactotum\Omnifactotum.csproj" />
+        <ProjectReference Include="..\Omnifactotum\Omnifactotum.csproj"/>
+        <ProjectReference Include="..\Omnifactotum.CompilerServices\Omnifactotum.CompilerServices.csproj"/>
     </ItemGroup>
 
     <ItemGroup>
         <!-- {508349b6-6b84-4df5-91f0-309beebad82d} is for T4 Templates -->
-        <Service Include="{508349b6-6b84-4df5-91f0-309beebad82d}" />
+        <Service Include="{508349b6-6b84-4df5-91f0-309beebad82d}"/>
     </ItemGroup>
 
     <PropertyGroup>
@@ -37,13 +43,13 @@
     </PropertyGroup>
 
     <ItemGroup>
-        <Compile Include="**/*.cs" Exclude="**/obj/**" />
+        <Compile Include="**/*.cs" Exclude="**/obj/**"/>
 
         <Compile Include="..\Common\AssemblyInfo.Common.cs">
             <Link>Properties\AssemblyInfo.Common.cs</Link>
         </Compile>
 
-        <None Include="**/*.md" />
+        <None Include="**/*.md"/>
 
         <None Include="..\Common\Omnifactotum.snk">
             <Link>Properties\Omnifactotum.snk</Link>
@@ -51,6 +57,6 @@
     </ItemGroup>
 
     <ItemGroup>
-        <EmbeddedResource Include="ExtensionMethods\OmnifactotumTypeExtensionsTests.TestResource.txt" />
+        <EmbeddedResource Include="ExtensionMethods\OmnifactotumTypeExtensionsTests.TestResource.txt"/>
     </ItemGroup>
 </Project>

@@ -29,6 +29,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Omnifactotum", "Omnifactotu
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Omnifactotum.Tests", "Omnifactotum.Tests\Omnifactotum.Tests.csproj", "{05122CCE-3608-4CB5-A20B-CD31A0059BE7}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Omnifactotum.CompilerServices", "Omnifactotum.CompilerServices\Omnifactotum.CompilerServices.csproj", "{2E721563-085E-47AD-B0DA-7B82822AA047}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -43,6 +45,10 @@ Global
 		{05122CCE-3608-4CB5-A20B-CD31A0059BE7}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{05122CCE-3608-4CB5-A20B-CD31A0059BE7}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{05122CCE-3608-4CB5-A20B-CD31A0059BE7}.Release|Any CPU.Build.0 = Release|Any CPU
+		{2E721563-085E-47AD-B0DA-7B82822AA047}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{2E721563-085E-47AD-B0DA-7B82822AA047}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{2E721563-085E-47AD-B0DA-7B82822AA047}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{2E721563-085E-47AD-B0DA-7B82822AA047}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

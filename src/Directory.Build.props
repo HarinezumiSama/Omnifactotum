@@ -7,6 +7,17 @@
     </PropertyGroup>
 
     <PropertyGroup>
+        <!-- AD0001: Analyzer exception -->
+        <WarningsAsErrors>$(WarningsAsErrors);AD0001</WarningsAsErrors>
+
+        <!-- RS1041: Compiler extensions should be implemented in assemblies targeting netstandard2.0: https://github.com/dotnet/roslyn-analyzers/blob/main/docs/rules/RS1041.md -->
+        <WarningsAsErrors>$(WarningsAsErrors);RS1041</WarningsAsErrors>
+
+        <!-- RS2008: Enable analyzer release tracking for the analyzer project containing rule '...' -->
+        <NoWarn>$(NoWarn);RS2008</NoWarn>
+    </PropertyGroup>
+
+    <PropertyGroup>
         <VersionSuffix>-debug</VersionSuffix>
         <BuildDateYear>$([System.String]::Format("{0:yyyy}", $([System.DateTime]::UtcNow)))</BuildDateYear>
         <PackageReleaseNotes>N/A</PackageReleaseNotes>
@@ -87,15 +98,19 @@
         <InformationalVersion>$(Version)$(VersionSuffix)</InformationalVersion>
     </PropertyGroup>
 
+    <PropertyGroup>
+        <PublicKey>0024000004800000940000000602000000240000525341310004000001000100c18c17a450bec4ea1d697b35548ccc0f46aab066e0a64399ad09cc24061b1a7af34d77199308630917670d31bf0898238ac4382e94d23ccdb1094c7f428a074efe56a320f030118c61d62cbf6af9a36ede5b95ce2799ed32876bace35a4b81bb31e82916945a7f9f9a75b2e581054cecd4af62af50a563babe5baf00a854f49f</PublicKey>
+    </PropertyGroup>
+
     <Target Name="__X_Initialize">
         <PropertyGroup>
             <__X_MessagePrefix>$(MSBuildProjectName):$(TargetFramework):$(Configuration):$(Platform)</__X_MessagePrefix>
         </PropertyGroup>
 
-        <Message Importance="high" Text="[$(__X_MessagePrefix)] Target '__X_Initialize' is being executed." />
+        <Message Importance="high" Text="[$(__X_MessagePrefix)] Target '__X_Initialize' is being executed."/>
 
         <ItemGroup>
-            <__X_SolutionFiles Include="$(__X_SolutionDir)\*.sln" />
+            <__X_SolutionFiles Include="$(__X_SolutionDir)\*.sln"/>
         </ItemGroup>
 
         <PropertyGroup>
@@ -107,27 +122,27 @@
         <Message
             Importance="high"
             Condition="'$(__X_LogCustomProperties)' == 'true'"
-            Text="[$(__X_MessagePrefix)] __X_SolutionDir = &quot;$(__X_SolutionDir)&quot;" />
+            Text="[$(__X_MessagePrefix)] __X_SolutionDir = &quot;$(__X_SolutionDir)&quot;"/>
         <Message
             Importance="high"
             Condition="'$(__X_LogCustomProperties)' == 'true'"
-            Text="[$(__X_MessagePrefix)] __X_SolutionName = &quot;$(__X_SolutionName)&quot;" />
+            Text="[$(__X_MessagePrefix)] __X_SolutionName = &quot;$(__X_SolutionName)&quot;"/>
         <Message
             Importance="high"
             Condition="'$(__X_LogCustomProperties)' == 'true'"
-            Text="[$(__X_MessagePrefix)] __X_SolutionFiles.Count = @(__X_SolutionFiles->Count())" />
+            Text="[$(__X_MessagePrefix)] __X_SolutionFiles.Count = @(__X_SolutionFiles->Count())"/>
         <Message
             Importance="high"
             Condition="'$(__X_LogCustomProperties)' == 'true'"
-            Text="[$(__X_MessagePrefix)] __X_SolutionFiles = [&quot;@(__X_SolutionFiles, '&quot;, &quot;')&quot;]" />
+            Text="[$(__X_MessagePrefix)] __X_SolutionFiles = [&quot;@(__X_SolutionFiles, '&quot;, &quot;')&quot;]"/>
         <Message
             Importance="high"
             Condition="'$(__X_LogCustomProperties)' == 'true'"
-            Text="[$(__X_MessagePrefix)] __X_ReleaseNotesFilePath = &quot;$(__X_ReleaseNotesFilePath)&quot;" />
+            Text="[$(__X_MessagePrefix)] __X_ReleaseNotesFilePath = &quot;$(__X_ReleaseNotesFilePath)&quot;"/>
 
         <Error
             Condition="'@(__X_SolutionFiles->Count())' != '1'"
-            Text="[$(__X_MessagePrefix)] Exactly 1 solution file must be present in &quot;$(__X_SolutionDir)&quot;. Found: @(__X_SolutionFiles->Count())." />
+            Text="[$(__X_MessagePrefix)] Exactly 1 solution file must be present in &quot;$(__X_SolutionDir)&quot;. Found: @(__X_SolutionFiles->Count())."/>
 
         <Error
             Condition="'$(__X_SolutionName)' == ''"
@@ -159,62 +174,62 @@
         <Message
             Importance="high"
             Condition="'$(__X_LogStandardProperties)' == 'true'"
-            Text="[$(__X_MessagePrefix)] NETCoreSdkVersion = &quot;$(NETCoreSdkVersion)&quot;" />
+            Text="[$(__X_MessagePrefix)] NETCoreSdkVersion = &quot;$(NETCoreSdkVersion)&quot;"/>
         <Message
             Importance="high"
             Condition="'$(__X_LogStandardProperties)' == 'true'"
-            Text="[$(__X_MessagePrefix)] AssemblyOriginatorKeyFile = &quot;$(AssemblyOriginatorKeyFile)&quot;" />
+            Text="[$(__X_MessagePrefix)] AssemblyOriginatorKeyFile = &quot;$(AssemblyOriginatorKeyFile)&quot;"/>
         <Message
             Importance="high"
             Condition="'$(__X_LogStandardProperties)' == 'true'"
-            Text="[$(__X_MessagePrefix)] RunSettingsFilePath = &quot;$(RunSettingsFilePath)&quot;" />
+            Text="[$(__X_MessagePrefix)] RunSettingsFilePath = &quot;$(RunSettingsFilePath)&quot;"/>
         <Message
             Importance="high"
             Condition="'$(__X_LogStandardProperties)' == 'true'"
-            Text="[$(__X_MessagePrefix)] BaseIntermediateOutputPath = &quot;$(BaseIntermediateOutputPath)&quot;" />
+            Text="[$(__X_MessagePrefix)] BaseIntermediateOutputPath = &quot;$(BaseIntermediateOutputPath)&quot;"/>
         <Message
             Importance="high"
             Condition="'$(__X_LogStandardProperties)' == 'true'"
-            Text="[$(__X_MessagePrefix)] OutputPath = &quot;$(OutputPath)&quot;" />
+            Text="[$(__X_MessagePrefix)] OutputPath = &quot;$(OutputPath)&quot;"/>
         <Message
             Importance="high"
             Condition="'$(__X_LogStandardProperties)' == 'true'"
-            Text="[$(__X_MessagePrefix)] PackageOutputPath = &quot;$(PackageOutputPath)&quot;" />
+            Text="[$(__X_MessagePrefix)] PackageOutputPath = &quot;$(PackageOutputPath)&quot;"/>
         <Message
             Importance="high"
             Condition="'$(__X_LogStandardProperties)' == 'true'"
-            Text="[$(__X_MessagePrefix)] VSTestResultsDirectory = &quot;$(VSTestResultsDirectory)&quot;" />
+            Text="[$(__X_MessagePrefix)] VSTestResultsDirectory = &quot;$(VSTestResultsDirectory)&quot;"/>
         <Message
             Importance="high"
             Condition="'$(__X_LogStandardProperties)' == 'true'"
-            Text="[$(__X_MessagePrefix)] Product = &quot;$(Product)&quot;" />
+            Text="[$(__X_MessagePrefix)] Product = &quot;$(Product)&quot;"/>
         <Message
             Importance="high"
             Condition="'$(__X_LogStandardProperties)' == 'true'"
-            Text="[$(__X_MessagePrefix)] Description = &quot;$(Description)&quot;" />
+            Text="[$(__X_MessagePrefix)] Description = &quot;$(Description)&quot;"/>
         <Message
             Importance="high"
             Condition="'$(__X_LogStandardProperties)' == 'true'"
-            Text="[$(__X_MessagePrefix)] RepositoryUrl = &quot;$(RepositoryUrl)&quot;" />
+            Text="[$(__X_MessagePrefix)] RepositoryUrl = &quot;$(RepositoryUrl)&quot;"/>
         <Message
             Importance="high"
             Condition="'$(__X_LogStandardProperties)' == 'true'"
-            Text="[$(__X_MessagePrefix)] PackageProjectUrl = &quot;$(PackageProjectUrl)&quot;" />
+            Text="[$(__X_MessagePrefix)] PackageProjectUrl = &quot;$(PackageProjectUrl)&quot;"/>
         <Message
             Importance="high"
             Condition="'$(__X_LogStandardProperties)' == 'true'"
-            Text="[$(__X_MessagePrefix)] PackageReleaseNotes.Length = $(PackageReleaseNotes.Length)" />
+            Text="[$(__X_MessagePrefix)] PackageReleaseNotes.Length = $(PackageReleaseNotes.Length)"/>
         <Message
             Importance="high"
             Condition="'$(__X_LogStandardProperties)' == 'true'"
-            Text="[$(__X_MessagePrefix)] AssemblyVersion = &quot;$(AssemblyVersion)&quot;" />
+            Text="[$(__X_MessagePrefix)] AssemblyVersion = &quot;$(AssemblyVersion)&quot;"/>
         <Message
             Importance="high"
             Condition="'$(__X_LogStandardProperties)' == 'true'"
-            Text="[$(__X_MessagePrefix)] PackageVersion = &quot;$(PackageVersion)&quot;" />
+            Text="[$(__X_MessagePrefix)] PackageVersion = &quot;$(PackageVersion)&quot;"/>
         <Message
             Importance="high"
             Condition="'$(__X_LogStandardProperties)' == 'true'"
-            Text="[$(__X_MessagePrefix)] InformationalVersion = &quot;$(InformationalVersion)&quot;" />
+            Text="[$(__X_MessagePrefix)] InformationalVersion = &quot;$(InformationalVersion)&quot;"/>
     </Target>
 </Project>

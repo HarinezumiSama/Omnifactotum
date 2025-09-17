@@ -3,6 +3,7 @@
 <Project Sdk="Microsoft.NET.Sdk">
     <PropertyGroup>
         <TargetFrameworks>netstandard2.1;net5.0;net6.0;net7.0;net8.0;net9.0</TargetFrameworks>
+        <OutputType>Library</OutputType>
     </PropertyGroup>
 
     <PropertyGroup>
@@ -17,8 +18,20 @@
         <GenerateCompatibilitySuppressionFile>false</GenerateCompatibilitySuppressionFile>
     </PropertyGroup>
 
+    <ItemGroup>
+        <InternalsVisibleTo Include="Omnifactotum.Tests"/>
+    </ItemGroup>
+
     <ItemGroup Condition="'$(TargetFramework)'=='netstandard2.1'">
-        <PackageReference Include="System.Collections.Immutable" Version="5.0.0" />
+        <PackageReference Include="System.Collections.Immutable" Version="5.0.0"/>
+    </ItemGroup>
+
+    <ItemGroup>
+        <!-- Using `OutputItemType="Analyzer"` to consume own analyzer. Can be temporarily removed during development while needed -->
+        <ProjectReference
+            Include="..\Omnifactotum.CompilerServices\Omnifactotum.CompilerServices.csproj"
+            OutputItemType="Analyzer"
+            ReferenceOutputAssembly="false"/>
     </ItemGroup>
 
     <PropertyGroup>
@@ -26,24 +39,31 @@
     </PropertyGroup>
 
     <ItemGroup>
-        <Compile Include="**/*.cs" Exclude="**/obj/**" />
+        <Compile Include="**/*.cs" Exclude="**/obj/**"/>
 
         <Compile Include="..\Common\AssemblyInfo.Common.cs">
             <Link>Properties\AssemblyInfo.Common.cs</Link>
         </Compile>
 
-        <None Include="**/*.md" />
+        <None Include="**/*.md"/>
 
         <None Include="..\Common\Omnifactotum.snk">
             <Link>Properties\Omnifactotum.snk</Link>
         </None>
 
-        <None Include="CompatibilitySuppressions.xml" />
+        <None Include="CompatibilitySuppressions.xml"/>
     </ItemGroup>
 
     <ItemGroup>
-        <None Include="$(__X_SolutionDir)\..\README.NuGet.md" Pack="true" PackagePath="\" />
+        <None Include="$(__X_SolutionDir)\..\README.NuGet.md" Pack="true" PackagePath="/"/>
+
+        <None
+            Include="$(__X_RootSolutionOutputPath)\bin\$(Platform)\$(Configuration)\$(MSBuildProjectName).CompilerServices\netstandard2.0\$(MSBuildProjectName).CompilerServices.dll"
+            Pack="true"
+            PackagePath="analyzers/dotnet/cs"
+            Visible="false"/>
     </ItemGroup>
+
     <PropertyGroup>
         <PackageReadmeFile>README.NuGet.md</PackageReadmeFile>
     </PropertyGroup>

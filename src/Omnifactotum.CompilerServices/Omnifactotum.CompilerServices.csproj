@@ -1,0 +1,36 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+
+<Project Sdk="Microsoft.NET.Sdk">
+    <PropertyGroup>
+        <!-- ❗ IMPORTANT ❗: Currently, MUST be .NET Standard 2.0 -->
+        <!-- https://github.com/dotnet/roslyn-analyzers/blob/main/docs/rules/RS1041.md -->
+        <TargetFramework>netstandard2.0</TargetFramework>
+
+        <OutputType>Library</OutputType>
+        <IsPackable>false</IsPackable>
+        <GeneratePackageOnBuild>false</GeneratePackageOnBuild>
+    </PropertyGroup>
+
+    <PropertyGroup>
+        <GenerateDocumentationFile>false</GenerateDocumentationFile>
+    </PropertyGroup>
+
+    <PropertyGroup>
+        <EnforceExtendedAnalyzerRules>true</EnforceExtendedAnalyzerRules>
+        <IsRoslynComponent>true</IsRoslynComponent>
+        <DevelopmentDependency>true</DevelopmentDependency>
+    </PropertyGroup>
+
+    <ItemGroup>
+        <InternalsVisibleTo Include="Omnifactotum.Tests"/>
+    </ItemGroup>
+
+    <ItemGroup>
+        <PackageReference Include="Microsoft.CodeAnalysis.Analyzers" Version="3.3.4">
+            <PrivateAssets>all</PrivateAssets>
+            <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+        </PackageReference>
+        <PackageReference Include="Microsoft.CodeAnalysis.CSharp" Version="4.7.0"/>
+        <PackageReference Include="Microsoft.CodeAnalysis.CSharp.Workspaces" Version="4.7.0"/>
+    </ItemGroup>
+</Project>
