@@ -52,8 +52,8 @@ internal static class NUnitFactotum
         PropertyAccessMode expectedAccessMode,
         MethodAttributes accessorVisibilityAttributes = MethodAttributes.Public)
     {
-        Assert.That(propertyGetterExpression, Is.Not.Null, @"The property expression cannot be null.");
-        Assert.That(Enum.IsDefined(typeof(PropertyAccessMode), expectedAccessMode), Is.True, @"Invalid expected access mode.");
+        Assert.That(propertyGetterExpression, Is.Not.Null, "The property expression cannot be null.");
+        Assert.That(Enum.IsDefined(typeof(PropertyAccessMode), expectedAccessMode), Is.True, "Invalid expected access mode.");
 
         Assert.That(
             (int)(accessorVisibilityAttributes & ~MethodAttributes.MemberAccessMask),
@@ -66,7 +66,7 @@ internal static class NUnitFactotum
         Assert.That(propertyInfo, Is.Not.Null);
 
         string GetFullPropertyNameUIString()
-            => AsInvariant($@"{propertyInfo.DeclaringType.EnsureNotNull().GetFullName()}{Type.Delimiter}{propertyInfo.Name}")
+            => AsInvariant($"{propertyInfo.DeclaringType.EnsureNotNull().GetFullName()}{Type.Delimiter}{propertyInfo.Name}")
                 .ToUIString();
 
         var expectedReadability = expectedAccessMode != PropertyAccessMode.WriteOnly;
@@ -78,7 +78,7 @@ internal static class NUnitFactotum
             actualReadability,
             Is.EqualTo(expectedReadability),
             () => AsInvariant(
-                $@"The property {GetFullPropertyNameUIString()} MUST {
+                $"The property {GetFullPropertyNameUIString()} MUST {
                     (expectedReadability ? string.Empty : "NOT ")}be readable (visibility: {
                         GetVisibilityName()})."));
 
@@ -91,7 +91,7 @@ internal static class NUnitFactotum
             actualWritability,
             Is.EqualTo(expectedWritability),
             () => AsInvariant(
-                $@"The property {GetFullPropertyNameUIString()} MUST {
+                $"The property {GetFullPropertyNameUIString()} MUST {
                     (expectedWritability ? string.Empty : "NOT ")}be writable (visibility: {
                         Enum.GetName(accessorVisibilityAttributes.GetType(), accessorVisibilityAttributes)})."));
 
@@ -123,14 +123,16 @@ internal static class NUnitFactotum
         AssertEqualityExpectation equalityExpectation,
         AssertEqualityOperatorExpectation operatorExpectation = AssertEqualityOperatorExpectation.MayDefine)
     {
+        var nonNullableType = typeof(T).IsNullableValueType() ? Nullable.GetUnderlyingType(typeof(T)).EnsureNotNull() : typeof(T);
+
         if (value1 is not null)
         {
-            Assert.That(value1, Is.TypeOf<T>());
+            Assert.That(value1, Is.TypeOf(nonNullableType));
         }
 
         if (value2 is not null)
         {
-            Assert.That(value2, Is.TypeOf<T>());
+            Assert.That(value2, Is.TypeOf(nonNullableType));
         }
 
         if (value1 is not null && value2 is not null && equalityExpectation != AssertEqualityExpectation.EqualAndMayBeSame)
@@ -170,13 +172,13 @@ internal static class NUnitFactotum
             Assert.That(
                 value2.GetHashCode,
                 Is.EqualTo(value1.GetHashCode()),
-                @"When the values are equal, their hash codes must also be equal.");
+                "When the values are equal, their hash codes must also be equal.");
         }
 
         var type = typeof(T);
 
-        var equalityOperatorMethod = type.GetMethod(EqualityOperatorMethodName, OperatorBindingFlags);
-        var inequalityOperatorMethod = type.GetMethod(InequalityOperatorMethodName, OperatorBindingFlags);
+        var equalityOperatorMethod = nonNullableType.GetMethod(EqualityOperatorMethodName, OperatorBindingFlags, null, [type, type], null);
+        var inequalityOperatorMethod = nonNullableType.GetMethod(InequalityOperatorMethodName, OperatorBindingFlags, null, [type, type], null);
 
         Func<IResolveConstraint>? createOperatorConstraint;
         string? verb;
@@ -188,11 +190,11 @@ internal static class NUnitFactotum
                 break;
             case AssertEqualityOperatorExpectation.MustNotDefine:
                 createOperatorConstraint = () => Is.Null;
-                verb = @"must not";
+                verb = "must not";
                 break;
             case AssertEqualityOperatorExpectation.MustDefine:
                 createOperatorConstraint = () => Is.Not.Null;
-                verb = @"must";
+                verb = "must";
                 break;
             default:
                 throw operatorExpectation.CreateEnumValueNotImplementedException();
@@ -205,12 +207,12 @@ internal static class NUnitFactotum
             Assert.That(
                 equalityOperatorMethod,
                 createOperatorConstraint(),
-                AsInvariant($@"Equality operator (==) {verb} be defined for the type {type.GetFullName().ToUIString()}."));
+                AsInvariant($"Equality operator (==) {verb} be defined for the type {type.GetFullName().ToUIString()}."));
 
             Assert.That(
                 inequalityOperatorMethod,
                 createOperatorConstraint(),
-                AsInvariant($@"Inequality operator (!=) {verb} be defined for the type {type.GetFullName().ToUIString()}."));
+                AsInvariant($"Inequality operator (!=) {verb} be defined for the type {type.GetFullName().ToUIString()}."));
         }
 
         if (equalityOperatorMethod is not null)
@@ -419,7 +421,7 @@ internal static class NUnitFactotum
 
     [MethodImpl(OmnifactotumConstants.MethodOptimizationOptions.Maximum)]
     private static string? GetAssertNotNullFailureMessage(string? valueExpression = null)
-        => valueExpression is null ? null : AsInvariant($@"The following expression is null: {{ {valueExpression} }}.");
+        => valueExpression is null ? null : AsInvariant($"The following expression is null: {{ {valueExpression} }}.");
 
     /// <summary>
     ///     Provides convenient access to helper methods for the specified type.
