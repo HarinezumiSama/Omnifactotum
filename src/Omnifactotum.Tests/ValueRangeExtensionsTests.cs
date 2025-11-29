@@ -85,4 +85,17 @@ internal sealed class ValueRangeExtensionsTests
             Is.EqualTo(new[] { 17, 18, 19, 20, 21, 22, 23 }).And.TypeOf<int[]>());
     }
 #endif
+
+    [Test]
+    [TestCase('a', 'z')]
+    [TestCase(17, 29)]
+    [TestCase("qaz", "wsx")]
+    public void TestToValueTuple<T>(T lower, T upper)
+        where T : IComparable
+    {
+        var range = ValueRange.Create(lower, upper);
+        var tuple = range.ToValueTuple();
+        Assert.That(tuple.Item1, Is.EqualTo(lower));
+        Assert.That(tuple.Item2, Is.EqualTo(upper));
+    }
 }

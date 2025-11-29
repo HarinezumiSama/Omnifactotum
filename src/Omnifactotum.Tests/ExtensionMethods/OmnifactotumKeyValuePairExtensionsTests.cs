@@ -10,7 +10,7 @@ internal sealed class OmnifactotumKeyValuePairExtensionsTests
     [Test]
     [TestCase(19, "value1")]
     [TestCase("value2", -13)]
-    public void TestToKeyValuePair<TKey, TValue>(TKey key, TValue value)
+    public void TestToValueTuple<TKey, TValue>(TKey key, TValue value)
     {
         var pair = KeyValuePair.Create(key, value).ToValueTuple();
         Assert.That(pair.Item1, Is.EqualTo(key));

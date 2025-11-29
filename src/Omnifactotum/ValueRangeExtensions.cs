@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Runtime.CompilerServices;
 using Omnifactotum.Annotations;
 using static Omnifactotum.FormattableStringFactotum;
 
@@ -24,7 +25,7 @@ public static class ValueRangeExtensions
     ///     The range to enumerate.
     /// </param>
     /// <param name="getNext">
-    ///     A reference to a method that returns a next value in the collection given the current value.
+    ///     A reference to a method that returns the next value in the collection given the current value.
     /// </param>
     /// <typeparam name="T">
     ///     The type of the values in the range.
@@ -142,4 +143,24 @@ public static class ValueRangeExtensions
         return result;
     }
 #endif
+
+    /// <summary>
+    ///     Converts the specified <see cref="ValueRange{T}"/> to <see cref="ValueTuple{T,T}"/>.
+    /// </summary>
+    /// <param name="range">
+    ///     The range to convert.
+    /// </param>
+    /// <typeparam name="T">
+    ///     The type of the values in the range.
+    /// </typeparam>
+    /// <returns>
+    ///     A <see cref="ValueTuple{T,T}"/> created from <see cref="ValueRange{T}"/>,
+    ///     where the first tuple component is <see cref="ValueRange{T}.Lower"/> and the second tuple component is <see cref="ValueRange{T}.Upper"/>.
+    /// </returns>
+    [System.Diagnostics.Contracts.PureAttribute]
+    [Pure]
+    [MethodImpl(OmnifactotumConstants.MethodOptimizationOptions.Maximum)]
+    public static ValueTuple<T, T> ToValueTuple<T>(this ValueRange<T> range)
+        where T : IComparable
+        => new(range.Lower, range.Upper);
 }
