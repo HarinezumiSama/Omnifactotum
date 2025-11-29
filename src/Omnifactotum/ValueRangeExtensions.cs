@@ -163,4 +163,35 @@ public static class ValueRangeExtensions
     public static ValueTuple<T, T> ToValueTuple<T>(this ValueRange<T> range)
         where T : IComparable
         => new(range.Lower, range.Upper);
+
+#if NET7_0_OR_GREATER
+    /// <summary>
+    ///     Gets the midpoint, or the center, of the specified value range
+    ///     (that is, a value which is equidistant from both <see cref="ValueRange{T}.Lower"/> and <see cref="ValueRange{T}.Upper"/>).
+    /// </summary>
+    /// <param name="range">
+    ///     The value range to get the midpoint of.
+    /// </param>
+    /// <typeparam name="T">
+    ///     The type of the values in the range.
+    /// </typeparam>
+    /// <returns>
+    ///     The midpoint of the specified value range.
+    /// </returns>
+    /// <seealso href="https://en.wikipedia.org/wiki/Midpoint"/>
+    [System.Diagnostics.Contracts.PureAttribute]
+    [Pure]
+    [MethodImpl(OmnifactotumConstants.MethodOptimizationOptions.Maximum)]
+    public static T GetMidpoint<T>(this ValueRange<T> range)
+        where T : IComparable, IFloatingPoint<T>
+        => checked((range.Lower + range.Upper) / TwoValueHolder<T>.Two);
+#endif
+
+#if NET7_0_OR_GREATER
+    private static class TwoValueHolder<T>
+        where T : INumberBase<T>
+    {
+        public static readonly T Two = T.One + T.One;
+    }
+#endif
 }
