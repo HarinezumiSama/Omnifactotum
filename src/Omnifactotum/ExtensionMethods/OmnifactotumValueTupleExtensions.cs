@@ -52,4 +52,24 @@ public static class OmnifactotumValueTupleExtensions
     public static DictionaryEntry ToDictionaryEntry<TKey, TValue>(this ValueTuple<TKey, TValue> tuple)
         where TKey : notnull
         => new(tuple.Item1, tuple.Item2);
+
+    /// <summary>
+    ///     Converts the specified <see cref="ValueTuple{T,T}"/> to <see cref="ValueRange{T}"/>.
+    /// </summary>
+    /// <param name="tuple">
+    ///     The value tuple to convert.
+    /// </param>
+    /// <typeparam name="T">
+    ///     The type of the values in the value tuple and in the resulting value range.
+    /// </typeparam>
+    /// <returns>
+    ///     A <see cref="ValueRange{T}"/> created from <see cref="ValueTuple{T,T}"/>,
+    ///     where <see cref="ValueRange{T}.Lower"/> is the first tuple component and <see cref="ValueRange{T}.Upper"/> is the second tuple component.
+    /// </returns>
+    [Pure]
+    [Omnifactotum.Annotations.Pure]
+    [MethodImpl(OmnifactotumConstants.MethodOptimizationOptions.Maximum)]
+    public static ValueRange<T> ToValueRange<T>(this ValueTuple<T, T> tuple)
+        where T : IComparable
+        => new(tuple.Item1, tuple.Item2);
 }
