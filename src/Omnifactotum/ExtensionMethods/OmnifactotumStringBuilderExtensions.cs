@@ -1,4 +1,5 @@
-﻿using Omnifactotum;
+﻿using System.Runtime.CompilerServices;
+using Omnifactotum;
 using Omnifactotum.Annotations;
 using NotNullWhen = System.Diagnostics.CodeAnalysis.NotNullWhenAttribute;
 using NotNullIfNotNull = System.Diagnostics.CodeAnalysis.NotNullIfNotNullAttribute;
@@ -56,6 +57,9 @@ public static class OmnifactotumStringBuilderExtensions
     /// <returns>
     ///     A reference passed in the <paramref name="stringBuilder"/> parameter.
     /// </returns>
+    /// <exception cref="ArgumentNullException">
+    ///     <paramref name="stringBuilder"/> is <see langword="null"/>.
+    /// </exception>
     /// <seealso cref="OmnifactotumStringExtensions.ToUIString"/>
     /// <example>
     ///     <code>
@@ -128,6 +132,9 @@ public static class OmnifactotumStringBuilderExtensions
     /// <returns>
     ///     A reference passed in the <paramref name="stringBuilder"/> parameter.
     /// </returns>
+    /// <exception cref="ArgumentNullException">
+    ///     <paramref name="stringBuilder"/> is <see langword="null"/>.
+    /// </exception>
     /// <seealso cref="OmnifactotumStringExtensions.ToSecuredUIString"/>
     [NotNull]
     public static StringBuilder AppendSecuredUIString(
@@ -161,5 +168,56 @@ public static class OmnifactotumStringBuilderExtensions
         return value.Length >= minimumLoggedValueLength
             ? stringBuilder.AppendUIString($"{value.Substring(0, loggedPartLength)}...{value.Substring(value.Length - loggedPartLength)}")
             : stringBuilder.Append($"{{ {nameof(value.Length)} = {value.Length} }}");
+    }
+
+    /// <summary>
+    ///     Appends the whitespace character to the end of the specified <see cref="StringBuilder"/>.
+    /// </summary>
+    /// <param name="stringBuilder">
+    ///     The <see cref="StringBuilder"/> to append the whitespace character to.
+    /// </param>
+    /// <returns>
+    ///     A reference passed in the <paramref name="stringBuilder"/> parameter.
+    /// </returns>
+    /// <exception cref="ArgumentNullException">
+    ///     <paramref name="stringBuilder"/> is <see langword="null"/>.
+    /// </exception>
+    [NotNull]
+    [MethodImpl(OmnifactotumConstants.MethodOptimizationOptions.Maximum)]
+    public static StringBuilder AppendWhiteSpace([NotNull] this StringBuilder stringBuilder) => stringBuilder.AppendWhiteSpaces(1);
+
+    /// <summary>
+    ///     Appends the specified number of whitespace characters to the end of the specified <see cref="StringBuilder"/>.
+    /// </summary>
+    /// <param name="stringBuilder">
+    ///     The <see cref="StringBuilder"/> to append the whitespace character to.
+    /// </param>
+    /// <param name="repeatCount">
+    ///     The number of whitespace characters to append to the specified <see cref="StringBuilder"/>.
+    /// </param>
+    /// <returns>
+    ///     A reference passed in the <paramref name="stringBuilder"/> parameter.
+    /// </returns>
+    /// <exception cref="ArgumentNullException">
+    ///     <paramref name="stringBuilder"/> is <see langword="null"/>.
+    /// </exception>
+    /// <exception cref="ArgumentOutOfRangeException">
+    ///     <paramref name="repeatCount"/> is less than zero.
+    /// </exception>
+    [NotNull]
+    [MethodImpl(OmnifactotumConstants.MethodOptimizationOptions.Maximum)]
+    public static StringBuilder AppendWhiteSpaces([NotNull] this StringBuilder stringBuilder, int repeatCount)
+    {
+        if (stringBuilder is null)
+        {
+            throw new ArgumentNullException(nameof(stringBuilder));
+        }
+
+        if (repeatCount < 0)
+        {
+            throw new ArgumentOutOfRangeException(nameof(repeatCount), repeatCount, "The value cannot be less than zero.");
+        }
+
+        return stringBuilder.Append('\x0020', repeatCount);
     }
 }

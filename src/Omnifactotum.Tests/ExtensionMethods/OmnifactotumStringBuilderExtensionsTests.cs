@@ -146,6 +146,22 @@ internal sealed class OmnifactotumStringBuilderExtensionsTests
             Throws.TypeOf<ArgumentOutOfRangeException>().With.Property(nameof(ArgumentException.ParamName)).EqualTo(erroneousParameterName));
     }
 
+    [Test]
+    public void TestAppendWhiteSpaceWithoutRepeatCount() => ExecuteTestCase(static builder => builder.AppendWhiteSpace(), "\x0020");
+
+    [Test]
+    [TestCase(0)]
+    [TestCase(1)]
+    [TestCase((int)ushort.MaxValue)]
+    public void TestAppendWhiteSpacesWhenValidArgumentThenSucceeds(int repeatCount)
+        => ExecuteTestCase(builder => builder.AppendWhiteSpaces(repeatCount), new string('\x0020', repeatCount));
+
+    [Test]
+    [TestCase(-1)]
+    [TestCase(int.MinValue)]
+    public void TestAppendWhiteSpacesWhenInvalidArgumentThenThrows(int repeatCount)
+        => Assert.That(() => new StringBuilder().AppendWhiteSpaces(repeatCount), Throws.TypeOf<ArgumentOutOfRangeException>());
+
     private static void ExecuteTestCase(Action<StringBuilder> action, string expectedResult)
     {
         const string ExistingData = "672d6d2b6dd44b7280fddcc64ece92cd";
