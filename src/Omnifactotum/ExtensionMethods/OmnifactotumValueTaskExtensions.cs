@@ -1,4 +1,5 @@
 ﻿using System.Diagnostics;
+using System.Diagnostics.CodeAnalysis;
 using System.Runtime.CompilerServices;
 using Omnifactotum;
 using ItemNotNullAttribute = Omnifactotum.Annotations.ItemNotNullAttribute;
@@ -56,7 +57,7 @@ public static class OmnifactotumValueTaskExtensions
     ///     otherwise, throws an exception.
     /// </summary>
     /// <param name="resultTask">
-    ///     The <see cref="ValueTask{TResult}"/> whose result to return while checking it for <see langword="null"/>.
+    ///     The <see cref="ValueTask{TResult}"/> whose result to return after checking it for <see langword="null"/>.
     /// </param>
     /// <param name="resultTaskExpression">
     ///     <para>A string value representing the expression passed as the value of the <paramref name="resultTask"/> parameter.</para>
@@ -73,6 +74,7 @@ public static class OmnifactotumValueTaskExtensions
     [MethodImpl(OmnifactotumConstants.MethodOptimizationOptions.Maximum)]
     [DebuggerStepThrough]
     [ItemNotNull]
+    [SuppressMessage("Design", "OFCA0003", Justification = "Not applicable.")]
     public static async ValueTask<T> EnsureNotNullAsync<T>(
         this ValueTask<T?> resultTask,
         [CallerArgumentExpression(nameof(resultTask))] string? resultTaskExpression = null)
@@ -84,7 +86,7 @@ public static class OmnifactotumValueTaskExtensions
     ///     otherwise, throws an exception.
     /// </summary>
     /// <param name="resultTask">
-    ///     The <see cref="ValueTask{TResult}"/> whose result to return while checking it for <see langword="null"/>.
+    ///     The <see cref="ValueTask{TResult}"/> whose result to return after checking it for <see langword="null"/>.
     /// </param>
     /// <param name="resultTaskExpression">
     ///     <para>A string value representing the expression passed as the value of the <paramref name="resultTask"/> parameter.</para>
@@ -100,6 +102,7 @@ public static class OmnifactotumValueTaskExtensions
     /// <seealso cref="M:OmnifactotumGenericObjectExtensions.EnsureNotNull{T}(T?,string?)"/>
     [MethodImpl(OmnifactotumConstants.MethodOptimizationOptions.Maximum)]
     [DebuggerStepThrough]
+    [SuppressMessage("Design", "OFCA0003", Justification = "Not applicable.")]
     public static async ValueTask<T> EnsureNotNullAsync<T>(
         this ValueTask<T?> resultTask,
         [CallerArgumentExpression(nameof(resultTask))] string? resultTaskExpression = null)

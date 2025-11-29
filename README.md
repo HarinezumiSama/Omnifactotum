@@ -4,9 +4,8 @@
 
 `Factotum` is a Latin word literally meaning "*do everything*", that is, a *handyman* or *Jack-of-all-trades*.
 
-### Release Notes
-
 - [Release Notes](./src/Omnifactotum.ReleaseNotes.md)
+- [Omnifactotum Analyzers](./doc/Analyzers/README.md)
 
 ### Build Status
 | Branch    | Status                                                                                                                                                                                        |

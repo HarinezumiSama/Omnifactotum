@@ -66,7 +66,12 @@ public static class OmnifactotumTaskExtensions
     /// <returns>
     ///     A task that represents the completion of all the supplied tasks.
     /// </returns>
+    /// <remarks>
+    ///     This method is essentially a convenient proxy to
+    ///     <see cref="M:System.Threading.Tasks.Task.WhenAll(System.Collections.Generic.IEnumerable{System.Threading.Tasks.Task})"/>.
+    /// </remarks>
     [MethodImpl(OmnifactotumConstants.MethodOptimizationOptions.Maximum)]
+    [SuppressMessage("Design", "OFCA0003", Justification = "Not applicable. Proxy to 'Task.WhenAll'")]
     public static async Task AwaitAllAsync([NotNull] this IEnumerable<Task> tasks)
         => await Task.WhenAll(tasks).ConfigureAwaitNoCapturedContext();
 
@@ -83,7 +88,12 @@ public static class OmnifactotumTaskExtensions
     /// <returns>
     ///     A task that represents the completion of all the supplied tasks.
     /// </returns>
+    /// <remarks>
+    ///     This method is essentially a convenient proxy to
+    ///     <see cref="M:System.Threading.Tasks.Task.WhenAll``1(System.Collections.Generic.IEnumerable{System.Threading.Tasks.Task{``0}})"/>.
+    /// </remarks>
     [MethodImpl(OmnifactotumConstants.MethodOptimizationOptions.Maximum)]
+    [SuppressMessage("Design", "OFCA0003", Justification = "Not applicable. Proxy to 'Task.WhenAll'")]
     public static async Task<TResult[]> AwaitAllAsync<TResult>([NotNull] this IEnumerable<Task<TResult>> tasks)
         => await Task.WhenAll(tasks).ConfigureAwaitNoCapturedContext();
 
@@ -93,7 +103,7 @@ public static class OmnifactotumTaskExtensions
     ///     otherwise, throws an exception.
     /// </summary>
     /// <param name="resultTask">
-    ///     The <see cref="Task{TResult}"/> whose result to return while checking it for <see langword="null"/>.
+    ///     The <see cref="Task{TResult}"/> whose result to return after checking it for <see langword="null"/>.
     /// </param>
     /// <param name="resultTaskExpression">
     ///     <para>A string value representing the expression passed as the value of the <paramref name="resultTask"/> parameter.</para>
@@ -111,6 +121,7 @@ public static class OmnifactotumTaskExtensions
     [DebuggerStepThrough]
     [NotNull]
     [ItemNotNull]
+    [SuppressMessage("Design", "OFCA0003", Justification = "Not applicable.")]
     public static async Task<T> EnsureNotNullAsync<T>(
         [NotNull] this Task<T?> resultTask,
         [CallerArgumentExpression(nameof(resultTask))] string? resultTaskExpression = null)
@@ -124,7 +135,7 @@ public static class OmnifactotumTaskExtensions
     ///     otherwise, throws an exception.
     /// </summary>
     /// <param name="resultTask">
-    ///     The <see cref="Task{TResult}"/> whose result to return while checking it for <see langword="null"/>.
+    ///     The <see cref="Task{TResult}"/> whose result to return after checking it for <see langword="null"/>.
     /// </param>
     /// <param name="resultTaskExpression">
     ///     <para>A string value representing the expression passed as the value of the <paramref name="resultTask"/> parameter.</para>
@@ -140,6 +151,7 @@ public static class OmnifactotumTaskExtensions
     /// <seealso cref="M:OmnifactotumGenericObjectExtensions.EnsureNotNull{T}(T?,string?)"/>
     [MethodImpl(OmnifactotumConstants.MethodOptimizationOptions.Maximum)]
     [DebuggerStepThrough]
+    [SuppressMessage("Design", "OFCA0003", Justification = "Not applicable.")]
     public static async Task<T> EnsureNotNullAsync<T>(
         [NotNull] this Task<T?> resultTask,
         [CallerArgumentExpression(nameof(resultTask))] string? resultTaskExpression = null)
