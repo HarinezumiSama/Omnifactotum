@@ -276,7 +276,7 @@ public sealed class ReadOnlySet<T>
     ///     copied from the current ser. The <see cref="System.Array"/> must have zero-based indexing.
     /// </param>
     /// <param name="arrayIndex">
-    ///     The zero-based index in array at which copying begins.
+    ///     The zero-based index in the array at which copying begins.
     /// </param>
     public void CopyTo(T[] array, int arrayIndex) => _set.CopyTo(array, arrayIndex);
 

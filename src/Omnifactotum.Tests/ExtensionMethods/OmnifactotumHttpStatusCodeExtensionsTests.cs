@@ -52,8 +52,10 @@ internal sealed class OmnifactotumHttpStatusCodeExtensionsTests
     [TestCase(HttpStatusCode.MethodNotAllowed, false)]
     [TestCase(HttpStatusCode.Conflict, false)]
     [TestCase(HttpStatusCode.Gone, false)]
+#if NET5_0_OR_GREATER
     [TestCase(HttpStatusCode.UnprocessableEntity, false)]
     [TestCase(HttpStatusCode.TooManyRequests, false)]
+#endif
     [TestCase(HttpStatusCode.InternalServerError, false)]
     [TestCase(HttpStatusCode.NotImplemented, false)]
     [TestCase(HttpStatusCode.BadGateway, false)]

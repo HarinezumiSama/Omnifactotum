@@ -112,7 +112,7 @@ public sealed class WeakReferenceBasedCache<TKey, TValue>
             lock (_dictionary)
             {
                 //// ReSharper disable once InvokeAsExtensionMethod :: Avoiding multi-target issues
-                var valueReference = _dictionary.GetValueOrDefault(key);
+                var valueReference = OmnifactotumDictionaryExtensions.GetValueOrDefault(_dictionary, key);
                 if (valueReference is null)
                 {
                     result = CreateValue(key);

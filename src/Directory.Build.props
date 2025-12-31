@@ -35,21 +35,6 @@
     </PropertyGroup>
 
     <PropertyGroup>
-        <__X_SolutionDir>$([MSBuild]::NormalizeDirectory('$(MSBuildThisFileDirectory)'))</__X_SolutionDir>
-        <__X_RootSolutionOutputPath>$([MSBuild]::NormalizeDirectory('$(__X_SolutionDir)', '.out'))</__X_RootSolutionOutputPath>
-        <__X_TestResultsSubdirectory>TestResults</__X_TestResultsSubdirectory>
-        <__X_BenchmarkResultsSubdirectory>benchmarks</__X_BenchmarkResultsSubdirectory>
-    </PropertyGroup>
-
-    <PropertyGroup>
-        <OutputPath>$([MSBuild]::NormalizeDirectory('$(__X_RootSolutionOutputPath)', 'bin', '$(Platform)', '$(Configuration)', '$(MSBuildProjectName)'))</OutputPath>
-        <BaseIntermediateOutputPath>$([MSBuild]::NormalizeDirectory('$(__X_RootSolutionOutputPath)', 'obj', '$(MSBuildProjectName)'))</BaseIntermediateOutputPath>
-        <PackageOutputPath>$([MSBuild]::NormalizeDirectory('$(__X_RootSolutionOutputPath)', 'NuGet'))</PackageOutputPath>
-        <VSTestResultsDirectory>$([MSBuild]::NormalizeDirectory('$(OutputPath)', '$(__X_TestResultsSubdirectory)'))</VSTestResultsDirectory>
-        <RunSettingsFilePath/>
-    </PropertyGroup>
-
-    <PropertyGroup>
         <LangVersion>13.0</LangVersion>
         <Nullable>enable</Nullable>
         <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
@@ -58,12 +43,33 @@
     </PropertyGroup>
 
     <PropertyGroup>
+        <Platform>AnyCPU</Platform>
         <DebugSymbols>true</DebugSymbols>
         <DebugType>portable</DebugType>
         <EmbedAllSources>true</EmbedAllSources>
         <Deterministic>true</Deterministic>
         <SignAssembly>true</SignAssembly>
         <DelaySign>false</DelaySign>
+    </PropertyGroup>
+
+    <PropertyGroup>
+        <__X_SolutionDir>$([MSBuild]::NormalizeDirectory('$(MSBuildThisFileDirectory)'))</__X_SolutionDir>
+        <__X_RootSolutionOutputPath>$([MSBuild]::NormalizeDirectory('$(__X_SolutionDir)', '.out'))</__X_RootSolutionOutputPath>
+        <__X_BaseBinPath>$([MSBuild]::NormalizeDirectory('$(__X_RootSolutionOutputPath)', 'bin'))</__X_BaseBinPath>
+        <!--<__X_BaseOutputPath>$([MSBuild]::NormalizeDirectory('$(__X_BaseBinPath)', '$(Platform)', '$(Configuration)'))</__X_BaseOutputPath>-->
+        <__X_BaseOutputPath>$([MSBuild]::NormalizeDirectory('$(__X_BaseBinPath)', '$(Configuration)'))</__X_BaseOutputPath>
+        <__X_SourceCodeBranch/>
+        <__X_SourceCodeRevisionId/>
+    </PropertyGroup>
+
+    <PropertyGroup>
+        <OutputPath>$([MSBuild]::NormalizeDirectory('$(__X_BaseOutputPath)', '$(MSBuildProjectName)'))</OutputPath>
+        <BaseIntermediateOutputPath>$([MSBuild]::NormalizeDirectory('$(__X_RootSolutionOutputPath)', 'obj', '$(MSBuildProjectName)'))</BaseIntermediateOutputPath>
+        <PackageOutputPath>$([MSBuild]::NormalizeDirectory('$(__X_RootSolutionOutputPath)', 'NuGet'))</PackageOutputPath>
+        <VSTestResultsDirectory>$([MSBuild]::NormalizeDirectory('$(OutputPath)', 'TestResults'))</VSTestResultsDirectory>
+        <__X_TestResultsDirectory>$([MSBuild]::NormalizeDirectory('$(__X_RootSolutionOutputPath)', 'TestResults'))</__X_TestResultsDirectory>
+        <__X_CoverageResultsDirectory>$([MSBuild]::NormalizeDirectory('$(__X_RootSolutionOutputPath)', 'CoverageResults'))</__X_CoverageResultsDirectory>
+        <RunSettingsFilePath/>
     </PropertyGroup>
 
     <PropertyGroup>
@@ -83,12 +89,11 @@
         <EnableStrictModeForCompatibleFrameworksInPackage>false</EnableStrictModeForCompatibleFrameworksInPackage>
     </PropertyGroup>
 
-    <Target Name="CleanTestResults" AfterTargets="Clean">
+    <Target Name="CleanExtraArtifacts" AfterTargets="Clean">
+        <RemoveDir Directories="$(PackageOutputPath)" Condition="Exists($(PackageOutputPath))" ContinueOnError="true"/>
         <RemoveDir Directories="$(VSTestResultsDirectory)" Condition="Exists($(VSTestResultsDirectory))" ContinueOnError="true"/>
-    </Target>
-
-    <Target Name="CleanBenchmarkResults" AfterTargets="Clean">
-        <RemoveDir Directories="$(__X_BenchmarkResultsSubdirectory)" Condition="Exists($(__X_BenchmarkResultsSubdirectory))" ContinueOnError="true"/>
+        <RemoveDir Directories="$(__X_TestResultsDirectory)" Condition="Exists($(__X_TestResultsDirectory))" ContinueOnError="true"/>
+        <RemoveDir Directories="$(__X_CoverageResultsDirectory)" Condition="Exists($(__X_CoverageResultsDirectory))" ContinueOnError="true"/>
     </Target>
 
     <PropertyGroup>
@@ -101,6 +106,11 @@
     <PropertyGroup>
         <PublicKey>0024000004800000940000000602000000240000525341310004000001000100c18c17a450bec4ea1d697b35548ccc0f46aab066e0a64399ad09cc24061b1a7af34d77199308630917670d31bf0898238ac4382e94d23ccdb1094c7f428a074efe56a320f030118c61d62cbf6af9a36ede5b95ce2799ed32876bace35a4b81bb31e82916945a7f9f9a75b2e581054cecd4af62af50a563babe5baf00a854f49f</PublicKey>
     </PropertyGroup>
+
+    <ItemGroup>
+        <AssemblyMetadata Include="SourceCodeBranch" Value="$(__X_SourceCodeBranch)" Condition="'$(__X_SourceCodeBranch)' != ''"/>
+        <AssemblyMetadata Include="SourceCodeRevisionId" Value="$(__X_SourceCodeRevisionId)" Condition="'$(__X_SourceCodeRevisionId)' != ''"/>
+    </ItemGroup>
 
     <Target Name="__X_Initialize">
         <PropertyGroup>
@@ -115,6 +125,7 @@
 
         <PropertyGroup>
             <__X_SolutionName>@(__X_SolutionFiles->'%(Filename)')</__X_SolutionName>
+            <__X_Product>$(__X_SolutionName)</__X_Product>
             <__X_ReleaseNotesFilePath>$([MSBuild]::NormalizePath('$(__X_SolutionDir)', '$(__X_SolutionName).ReleaseNotes.md'))</__X_ReleaseNotesFilePath>
         </PropertyGroup>
 
@@ -156,8 +167,8 @@
             <AssemblyOriginatorKeyFile>$([MSBuild]::NormalizePath('$(__X_SolutionDir)', 'Common', '$(__X_SolutionName).snk'))</AssemblyOriginatorKeyFile>
             <RunSettingsFilePath>$([MSBuild]::NormalizePath('$(__X_SolutionDir)', '$(__X_SolutionName).runsettings'))</RunSettingsFilePath>
 
-            <Product>$(__X_SolutionName)</Product>
-            <Description>$(Product) is the ultimate solution for .NET developers who want to streamline their development process. It provides its own helper and functional classes and interfaces as well as the extension methods for the standard .NET types. $(Product) is compatible with the older and newer .NET versions. It's the perfect way to reduce errors and save time, allowing developers to focus on creating quality code.</Description>
+            <Product>$(__X_Product) [$(TargetFramework)]</Product>
+            <Description>$(__X_Product) is the ultimate solution for .NET developers who want to streamline their development process. It provides its own helper and functional classes and interfaces as well as the extension methods for the standard .NET types. $(__X_Product) is compatible with the older and newer .NET versions. It's the perfect way to reduce errors and save time, allowing developers to focus on creating quality code.</Description>
             <RepositoryUrl>https://github.com/HarinezumiSama/$(__X_SolutionName)</RepositoryUrl>
             <PackageProjectUrl>$(RepositoryUrl)</PackageProjectUrl>
             <PackageReleaseNotes>$([System.IO.File]::ReadAllText('$(__X_ReleaseNotesFilePath)'))</PackageReleaseNotes>

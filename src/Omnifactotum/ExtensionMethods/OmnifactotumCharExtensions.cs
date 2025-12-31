@@ -51,7 +51,29 @@ public static class OmnifactotumCharExtensions
     [MethodImpl(OmnifactotumConstants.MethodOptimizationOptions.Standard)]
     [NotNull]
     public static string ToUIString(this char value)
+#if NETSTANDARD2_1_OR_GREATER || NET5_0_OR_GREATER
         => value == OmnifactotumConstants.SingleQuoteChar
             ? SingleQuoteCharUIString
             : new string(stackalloc[] { OmnifactotumConstants.SingleQuoteChar, value, OmnifactotumConstants.SingleQuoteChar });
+#else
+    {
+        if (value == OmnifactotumConstants.SingleQuoteChar)
+        {
+            return SingleQuoteCharUIString;
+        }
+
+        unsafe
+        {
+            const int Length = 3;
+            fixed (char* chars = stackalloc char[Length])
+            {
+                chars[0] = OmnifactotumConstants.SingleQuoteChar;
+                chars[1] = value;
+                chars[2] = OmnifactotumConstants.SingleQuoteChar;
+
+                return new string(chars, 0, Length);
+            }
+        }
+    }
+#endif
 }

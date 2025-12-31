@@ -246,7 +246,7 @@ public static class OmnifactotumStringExtensions
         [CallerArgumentExpression(nameof(value))]
 #endif
         string? valueExpression = null)
-        => string.IsNullOrEmpty(value)
+        => value.IsNullOrEmpty()
             ? throw new ArgumentException(
                 valueExpression is null
                     ? "The value is null or an empty string."
@@ -284,7 +284,7 @@ public static class OmnifactotumStringExtensions
         [CallerArgumentExpression(nameof(value))]
 #endif
         string? valueExpression = null)
-        => string.IsNullOrWhiteSpace(value)
+        => value.IsNullOrWhiteSpace()
             ? throw new ArgumentException(
                 valueExpression is null
                     ? "The value is null or a blank string."
@@ -412,7 +412,7 @@ public static class OmnifactotumStringExtensions
     ///     The minimum length of the part of the input string that should be hidden from the resulting UI representation.
     /// </param>
     /// <param name="loggedPartLength">
-    ///     The length of the part in the beginning and the part in the end of the input string that are displayed in the resulting UI representation.
+    ///     The length of the part in the beginning and the part at the end of the input string that are displayed in the resulting UI representation.
     /// </param>
     /// <returns>
     ///     The secured UI representation of the specified string.
@@ -887,13 +887,13 @@ public static class OmnifactotumStringExtensions
     ///     Converts the specified <see cref="string"/> to title case (except for words that are entirely in upper case, which are considered to be acronyms).
     /// </summary>
     /// <param name="value">
-    ///     The string to convert to title case.
+    ///     The string to convert to the title case.
     /// </param>
     /// <param name="cultureInfo">
     ///     A <see cref="CultureInfo"/> to use for conversion, or <see langword="null"/> to use <see cref="CultureInfo.CurrentCulture"/>.
     /// </param>
     /// <returns>
-    ///     The specified string converted to title case.
+    ///     The specified string converted to the title case.
     /// </returns>
     /// <seealso cref="ToTitleCaseForced"/>
     /// <seealso cref="ToTitleCaseInvariant"/>
@@ -911,13 +911,13 @@ public static class OmnifactotumStringExtensions
     ///     Converts the specified <see cref="string"/> to title case (including words that are entirely in upper case).
     /// </summary>
     /// <param name="value">
-    ///     The string to convert to title case.
+    ///     The string to convert to the title case.
     /// </param>
     /// <param name="cultureInfo">
     ///     A <see cref="CultureInfo"/> to use for conversion, or <see langword="null"/> to use <see cref="CultureInfo.CurrentCulture"/>.
     /// </param>
     /// <returns>
-    ///     The specified string converted to title case.
+    ///     The specified string converted to the title case.
     /// </returns>
     /// <seealso cref="ToTitleCase"/>
     /// <seealso cref="ToTitleCaseInvariant"/>
@@ -929,17 +929,17 @@ public static class OmnifactotumStringExtensions
     [CanBeNull]
     [return: NotNullIfNotNull(nameof(value))]
     public static string? ToTitleCaseForced([CanBeNull] this string? value, [CanBeNull] CultureInfo? cultureInfo = null)
-        => value?.ToLower(cultureInfo).ToTitleCase(cultureInfo);
+        => value?.ToLower(cultureInfo ?? CultureInfo.CurrentCulture).ToTitleCase(cultureInfo);
 
     /// <summary>
     ///     Converts the specified <see cref="string"/> to title case using <see cref="CultureInfo.InvariantCulture"/>
     ///     (except for words that are entirely in upper case, which are considered to be acronyms).
     /// </summary>
     /// <param name="value">
-    ///     The string to convert to title case.
+    ///     The string to convert to the title case.
     /// </param>
     /// <returns>
-    ///     The specified string converted to title case.
+    ///     The specified string converted to the title case.
     /// </returns>
     /// <seealso cref="ToTitleCase"/>
     /// <seealso cref="ToTitleCaseForced"/>
@@ -957,10 +957,10 @@ public static class OmnifactotumStringExtensions
     ///     (including words that are entirely in upper case).
     /// </summary>
     /// <param name="value">
-    ///     The string to convert to title case.
+    ///     The string to convert to the title case.
     /// </param>
     /// <returns>
-    ///     The specified string converted to title case.
+    ///     The specified string converted to the title case.
     /// </returns>
     /// <seealso cref="ToTitleCase"/>
     /// <seealso cref="ToTitleCaseForced"/>

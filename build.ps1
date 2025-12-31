@@ -7,9 +7,12 @@ using namespace System.Diagnostics
 using namespace System.IO
 using namespace System.Management.Automation
 using namespace System.Net
+using namespace System.Text
 using namespace System.Xml
 using namespace System.Xml.Linq
 
+[System.Diagnostics.CodeAnalysis.SuppressMessage('PSAvoidUsingCmdletAliases', '')]
+[System.Diagnostics.CodeAnalysis.SuppressMessage('PSUseApprovedVerbs', '')]
 [CmdletBinding(PositionalBinding = $false)]
 param
 (
@@ -18,28 +21,19 @@ param
     [string] $BuildConfiguration = 'Debug',
 
     [Parameter()]
-    [ValidateSet('Any CPU')]
-    [string] $BuildPlatform = 'Any CPU',
-
-    [Parameter()]
-    [switch] $EnableDotCover,
-
-    [Parameter()]
     [AllowNull()]
     [AllowEmptyString()]
     [string] $PrereleaseSuffix = '-debug',
+
+    [Parameter()]
+    [AllowNull()]
+    [scriptblock] $TestFrameworkFilter = $null,
 
     [Parameter()]
     [switch] $AppveyorBuild,
 
     [Parameter()]
     [string] $AppveyorArtifactsSubdirectory = '.artifacts',
-
-    [Parameter()]
-    [string] $AppveyorBinariesSubdirectory = 'src\.out\bin',
-
-    [Parameter()]
-    [string] $AppveyorNuGetPackageSubdirectory = 'src\.out\NuGet',
 
     [Parameter()]
     [AllowNull()]
@@ -80,7 +74,6 @@ begin
     [ValidateNotNullOrEmpty()] [string] $workspaceRootDirectoryPath = $PSScriptRoot
     [string] $solutionFilePattern = '*.sln'
     [string] $buildPropsFilePattern = 'Directory.Build.props'
-    [string] $projectPlatform = 'AnyCPU'
 
     class FileXmlData
     {
@@ -92,6 +85,11 @@ begin
             if ([string]::IsNullOrWhiteSpace($filePath))
             {
                 throw [ArgumentException]::new('The file path cannot be blank.', 'filePath')
+            }
+
+            if (![File]::Exists($filePath))
+            {
+                throw [FileNotFoundException]::new("File ""$filePath"" is not found.")
             }
 
             [xml] $xmlDocument = [xml]::new()
@@ -116,6 +114,23 @@ begin
 
             [XmlElement] $element = $elements[0]
             return $element.InnerText
+        }
+
+        [string] GetAttributeValue([string] $xPath)
+        {
+            if ([string]::IsNullOrWhiteSpace($xPath))
+            {
+                throw [ArgumentException]::new('The XPath cannot be blank.', 'xPath')
+            }
+
+            [XmlNode[]] $nodes = @($this.Document.SelectNodes($xPath))
+            if ($nodes.Count -ne 1)
+            {
+                throw "There must be exactly one node matching XPath ""$xPath"" in ""$($this.FilePath)"", but found: $($nodes.Count)."
+            }
+
+            [XmlNode] $node = $nodes[0]
+            return $node.'#text'
         }
 
         [string] GetProjectPropertyText([string] $propertyName)
@@ -182,6 +197,25 @@ begin
             Write-Host ''
             Write-Host -ForegroundColor Magenta ('=' * 100)
             Write-Host ''
+        }
+    }
+
+    function Remove-TrailingPathSeparator
+    {
+        [CmdletBinding(PositionalBinding = $false)]
+        param
+        (
+            [Parameter(Position = 0, ValueFromPipeline = $true)]
+            [string] $Value
+        )
+        process
+        {
+            if ([string]::IsNullOrEmpty($Value))
+            {
+                throw [ArgumentException]::new('The value cannot be null or empty.', 'Value')
+            }
+
+            return $Value.TrimEnd([char[]]@([Path]::DirectorySeparatorChar, [Path]::AltDirectorySeparatorChar))
         }
     }
 
@@ -283,6 +317,76 @@ begin
         Write-Host ''
     }
 
+    function Remove-FileSystemObjectForced
+    {
+        [CmdletBinding(PositionalBinding = $false)]
+        param
+        (
+            [Parameter(Position = 0, ValueFromPipeline = $true)]
+            [Alias('Path')]
+            [string] $LiteralPath,
+
+            [Parameter()]
+            [ValidateRange(0, [byte]::MaxValue)]
+            [int] $MaxRetryCount = 10,
+
+            [Parameter()]
+            [timespan] $MaxRetryDelay = $([timespan]::FromSeconds(5))
+        )
+        begin
+        {
+            [timespan] $minMaxRetryDelay = [timespan]::FromSeconds(1)
+        }
+        process
+        {
+            [timespan] $resolvedMaxRetryDelay = if ($MaxRetryDelay -lt $minMaxRetryDelay) { $minMaxRetryDelay } else { $MaxRetryDelay }
+            [timespan] $resolvedMinRetryDelay = [timespan]::FromTicks($resolvedMaxRetryDelay.Ticks / 10)
+
+            if (![File]::Exists($LiteralPath) -and ![Directory]::Exists($LiteralPath))
+            {
+                return
+            }
+
+            Write-Host "Deleting ""$LiteralPath""."
+
+            [int] $retriesLeft = $MaxRetryCount + 1
+            while ($retriesLeft -gt 0)
+            {
+                $retriesLeft--
+
+                try
+                {
+                    Remove-Item -Path $LiteralPath -Recurse -Force | Out-Null
+                    break
+                }
+                catch
+                {
+                    if (!(Test-Path $LiteralPath))
+                    {
+                        break
+                    }
+
+                    [Exception] $exception = $_.Exception
+
+                    if ($retriesLeft -le 0)
+                    {
+                        Write-Host -ForegroundColor Red "Failed to delete ""$LiteralPath"" (retries: $MaxRetryCount): [$($exception.GetType().FullName)] $($exception.Message)"
+                        throw
+                    }
+
+                    [timespan] $currentDelay = [timespan]::FromTicks((Get-Random -Minimum $resolvedMinRetryDelay.Ticks -Maximum ($resolvedMaxRetryDelay.Ticks + 1)))
+
+                    Write-Warning `
+                        -WarningAction Continue `
+                        -Message ("Could not delete ""$LiteralPath"". Retrying in $currentDelay. Retries left: $retriesLeft." `
+                            + "$([Environment]::NewLine)[$($exception.GetType().FullName)] $($exception.Message)")
+
+                    [System.Threading.Thread]::Sleep($currentDelay) | Out-Null
+                }
+            }
+        }
+    }
+
     function Ensure-CleanDirectory
     {
         [CmdletBinding(PositionalBinding = $false)]
@@ -290,18 +394,61 @@ begin
         (
             [Parameter(Position = 0, ValueFromPipeline = $true)]
             [Alias('Path')]
-            [string] $LiteralPath
+            [string] $LiteralPath,
+
+            [Parameter()]
+            [ValidateRange(0, [byte]::MaxValue)]
+            [int] $MaxRetryCount = 10,
+
+            [Parameter()]
+            [timespan] $MaxRetryDelay = $([timespan]::FromSeconds(5))
         )
         process
         {
-            if (Test-Path $LiteralPath)
-            {
-                Write-Host "Deleting ""$LiteralPath""."
-                Remove-Item -Path $LiteralPath -Recurse -Force | Out-Null
-            }
+            Remove-FileSystemObjectForced -LiteralPath $LiteralPath -MaxRetryCount $MaxRetryCount -MaxRetryDelay $MaxRetryDelay
 
             Write-Host "Creating directory ""$LiteralPath""."
-            New-Item -Path $LiteralPath -ItemType Directory -Force | Out-Null
+            New-Item -Force -ItemType Directory -Path $LiteralPath | Out-Null
+        }
+    }
+
+    function Ensure-Directories
+    {
+        [CmdletBinding(PositionalBinding = $false)]
+        param
+        (
+            [Parameter()]
+            [string[]] $DirectoryPaths = $null,
+
+            [Parameter()]
+            [string[]] $FilePaths = $null
+        )
+        process
+        {
+            [string[]] $allDirectoryPaths = @()
+
+            if ($DirectoryPaths -is [object])
+            {
+                $allDirectoryPaths += $DirectoryPaths
+            }
+
+            if ($FilePaths -is [object])
+            {
+                $allDirectoryPaths += @($FilePaths | % { [Path]::GetDirectoryName($_) })
+            }
+
+            $allDirectoryPaths = $allDirectoryPaths | Sort-Object -Unique
+            foreach ($item in $allDirectoryPaths)
+            {
+                if ([Directory]::Exists($item))
+                {
+                    Write-Verbose "Directory ""$item"" already exists."
+                    continue
+                }
+
+                Write-Host "Creating directory ""$item""."
+                New-Item -Force -ItemType Directory -Path $item | Out-Null
+            }
         }
     }
 
@@ -325,6 +472,78 @@ begin
         }
     }
 
+    function Find-SingleFileSystemObject
+    {
+        [CmdletBinding(PositionalBinding = $false)]
+        param
+        (
+            [Parameter()]
+            [string] $RootDirectory,
+
+            [Parameter()]
+            [switch] $File,
+
+            [Parameter()]
+            [switch] $Directory,
+
+            [Parameter()]
+            [switch] $Recurse,
+
+            [Parameter()]
+            [string] $FilterWildcard = $null,
+
+            [Parameter()]
+            [scriptblock] $FilterScript = $null
+        )
+        process
+        {
+            if ([string]::IsNullOrWhiteSpace($RootDirectory))
+            {
+                throw [ArgumentException]::new('The root directory cannot be blank.', 'RootDirectory')
+            }
+
+            if ($File -and $Directory)
+            {
+                throw [ArgumentException]::new('Invalid combination of parameters: a file system object cannot be both a file and a directory at the same time.')
+            }
+
+            [hashtable] $commandParameters = `
+            @{
+                Force = $true
+                Recurse = $Recurse
+                File = $File
+                Directory = $Directory
+                LiteralPath = $RootDirectory
+            }
+
+            if (![string]::IsNullOrEmpty($FilterWildcard))
+            {
+                $commandParameters.Filter = $FilterWildcard
+            }
+
+            [scriptblock] $resolvedFilterScript = if ($FilterScript -is [scriptblock]) { $FilterScript } else { { $true } }
+
+            [string[]] $allFoundFilePaths = @(Get-ChildItem @commandParameters | ? $resolvedFilterScript | Select-Object -ExpandProperty FullName)
+
+            if ($allFoundFilePaths.Count -ne 1)
+            {
+                [string] $criteriaString = "file: $File, directory: $Directory, recursive: $Recurse"
+                if (![string]::IsNullOrEmpty($FilterWildcard))
+                {
+                    $criteriaString += ", filter wildcard: '$FilterWildcard'"
+                }
+                if ($FilterScript -is [scriptblock])
+                {
+                    $criteriaString += ", filter script: { $FilterScript }"
+                }
+
+                throw "There must be exactly one file matching the specified criteria within ""$RootDirectory"", but found: $($allFoundFilePaths.Count). Criteria: $criteriaString"
+            }
+
+            return $allFoundFilePaths[0]
+        }
+    }
+
     function Find-SingleFileInWorkspace
     {
         [CmdletBinding(PositionalBinding = $false)]
@@ -335,21 +554,7 @@ begin
         )
         process
         {
-            if ([string]::IsNullOrWhiteSpace($Pattern))
-            {
-                throw [ArgumentException]::new('The file pattern cannot be blank.', 'Pattern')
-            }
-
-            [string[]] $allFoundFilePaths = `
-                Get-ChildItem -Path $workspaceRootDirectoryPath -Include $Pattern -Recurse -Force -File `
-                    | Select-Object -ExpandProperty FullName
-
-            if ($allFoundFilePaths.Count -ne 1)
-            {
-                throw "There must be exactly one file matching ""$Pattern"" within ""$workspaceRootDirectoryPath"", but found: $($allFoundFilePaths.Count)."
-            }
-
-            return $allFoundFilePaths[0]
+            return $(Find-SingleFileSystemObject -RootDirectory $workspaceRootDirectoryPath -Recurse -File -FilterWildcard $Pattern)
         }
     }
 }
@@ -362,16 +567,12 @@ process
     try
     {
         Write-Host -ForegroundColor Green "BuildConfiguration: ""$BuildConfiguration"""
-        Write-Host -ForegroundColor Green "BuildPlatform: ""$BuildPlatform"""
-        Write-Host -ForegroundColor Green "EnableDotCover: $EnableDotCover"
         Write-Host -ForegroundColor Green "PrereleaseSuffix: ""$PrereleaseSuffix"""
         Write-Host ''
         Write-Host -ForegroundColor Green "AppveyorBuild: $AppveyorBuild"
         if ($AppveyorBuild)
         {
             Write-Host -ForegroundColor Green "AppveyorArtifactsSubdirectory: ""$AppveyorArtifactsSubdirectory"""
-            Write-Host -ForegroundColor Green "AppveyorBinariesSubdirectory: ""$AppveyorBinariesSubdirectory"""
-            Write-Host -ForegroundColor Green "AppveyorNuGetPackageSubdirectory: ""$AppveyorNuGetPackageSubdirectory"""
             Write-Host -ForegroundColor Green "AppveyorSourceCodeRevisionId: ""$AppveyorSourceCodeRevisionId"""
             Write-Host -ForegroundColor Green "AppveyorSourceCodeBranch: ""$AppveyorSourceCodeBranch"""
             Write-Host -ForegroundColor Green "AppveyorBuildNumber: ""$AppveyorBuildNumber"""
@@ -385,10 +586,6 @@ process
         if ([string]::IsNullOrWhiteSpace($BuildConfiguration))
         {
             throw [ArgumentException]::new('The build configuration cannot be blank.', 'BuildConfiguration')
-        }
-        if ([string]::IsNullOrWhiteSpace($BuildPlatform))
-        {
-            throw [ArgumentException]::new('The build platform cannot be blank.', 'BuildPlatform')
         }
 
         if (![string]::IsNullOrEmpty($PrereleaseSuffix))
@@ -414,18 +611,6 @@ process
                 throw [ArgumentException]::new(
                     'The artifacts subdirectory cannot be blank when AppveyorBuild is ON.',
                     'AppveyorArtifactsSubdirectory')
-            }
-            if ([string]::IsNullOrWhiteSpace($AppveyorBinariesSubdirectory))
-            {
-                throw [ArgumentException]::new(
-                    'The subirectory that contains binaries cannot be blank when AppveyorBuild is ON.',
-                    'AppveyorBinariesSubdirectory')
-            }
-            if ([string]::IsNullOrWhiteSpace($AppveyorNuGetPackageSubdirectory))
-            {
-                throw [ArgumentException]::new(
-                    'The subirectory that NuGet package(s) cannot be blank when AppveyorBuild is ON.',
-                    '$AppveyorNuGetPackageSubdirectory')
             }
             if ([string]::IsNullOrWhiteSpace($AppveyorSourceCodeRevisionId))
             {
@@ -506,6 +691,8 @@ process
                     throw '7-Zip executable path is not assigned.'
                 }
 
+                [string] $resolvedArchiveFilePath = [Path]::GetFullPath($ArchiveFilePath)
+
                 [string[]] $processedItems = @($Items | % { """$_""" })
 
                 Execute-Command `
@@ -521,7 +708,7 @@ process
                                 '-r'
                                 '-mx1'
                                 '-bd'
-                                """$ArchiveFilePath"""
+                                """$resolvedArchiveFilePath"""
                                 '--'
                             ) `
                             + $processedItems
@@ -533,10 +720,120 @@ process
         [ValidateNotNullOrEmpty()] [string] $solutionDirectoryPath = [Path]::GetDirectoryName($solutionFilePath)
         [ValidateNotNullOrEmpty()] [string] $solutionNameOnly = [Path]::GetFileNameWithoutExtension($solutionFilePath)
 
+        function Get-ProjectFilePath
+        {
+            [CmdletBinding(PositionalBinding = $false)]
+            param
+            (
+                [Parameter(Position = 0, ValueFromPipeline = $true)]
+                [ValidateNotNullOrEmpty()]
+                [string] $ProjectName = $([ArgumentNullException]::new('ProjectName'))
+            )
+            process
+            {
+                [string] $result = [Path]::Combine($solutionDirectoryPath, $ProjectName, "$ProjectName.csproj")
+
+                if (![File]::Exists($result))
+                {
+                    throw [FileNotFoundException]::new("The project file ""$result"" corresponding to the project ""$ProjectName"" is not found.")
+                }
+
+                return $result
+            }
+        }
+
+        function Get-MSBuildPropertyValues
+        {
+            [CmdletBinding(PositionalBinding = $false)]
+            param
+            (
+                [Parameter()]
+                [ValidateNotNullOrEmpty()]
+                [string] $ProjectName = $([ArgumentNullException]::new('ProjectName')),
+
+                [Parameter()]
+                [ValidateNotNull()]
+                [string[]] $Properties = $([ArgumentNullException]::new('Properties'))
+            )
+            process
+            {
+                if ($Properties -isnot [object] -or $Properties.Count -eq 0)
+                {
+                    throw [ArgumentException]::new('No properties are specified.', 'Properties')
+                }
+
+                [string] $projectPath = Get-ProjectFilePath -ProjectName $ProjectName
+
+                # Always adding a non-existent property to make the number of properties > 1, which makes CLI to return JSON
+                [string] $nonExistentPropertyName = "stub_$([Guid]::NewGuid().ToString('N').Substring(0, 11))"
+                [string] $propertiesString = (@($nonExistentPropertyName) + @($Properties)) -join ','
+
+                [string] $commandResult = Execute-DotNetCli `
+                    -TitleDetails 'Get properties' `
+                    -ProjectPath:$projectPath `
+                    -Verbosity quiet `
+                    -Command build "--target:""$initialTargets""" "--getProperty:""$propertiesString"""
+
+                #Write-Verbose -Verbose "[Get-MSBuildPropertyValues:RAW]$([Environment]::NewLine)$commandResult"
+
+                [ValidateNotNull()] [psobject] $propertiesContainerObject = `
+                    try
+                    {
+                        ConvertFrom-Json -InputObject $commandResult
+                    }
+                    catch
+                    {
+                        [string] $errorDetails = Get-ErrorDetails
+                        [string] $newLine = [Environment]::NewLine
+                        [string] $outputDetails = "$($newLine)<<<$($newLine)$commandResult$($newLine)>>>"
+
+                        throw "[Get-MSBuildPropertyValues] Cannot deserialize JSON output of the DotNet CLI command:$($outputDetails)$($newLine)$($newLine)* ERROR: $($errorDetails)"
+                    }
+
+                #Write-Verbose -Verbose "[Get-MSBuildPropertyValues:JSON]$([Environment]::NewLine)$($propertiesContainerObject | ConvertTo-Json -Compress)"
+
+                [ValidateNotNull()] [psobject] $propertiesObject = $propertiesContainerObject.Properties
+
+                [psobject] $result = [psobject]::new()
+                foreach ($property in $Properties)
+                {
+                    [string] $value = $propertiesObject.$property
+                    $result | Add-Member -MemberType NoteProperty -Name $property -Value $value
+                }
+
+                #Write-Verbose -Verbose "[Get-MSBuildPropertyValues]$([Environment]::NewLine)$($result | ConvertTo-Json -Compress)"
+
+                return $result
+            }
+        }
+
+        function Get-SingleMSBuildPropertyValue
+        {
+            [CmdletBinding(PositionalBinding = $false)]
+            param
+            (
+                [Parameter()]
+                [ValidateNotNullOrEmpty()]
+                [string] $ProjectName = $([ArgumentNullException]::new('ProjectName')),
+
+                [Parameter()]
+                [ValidateNotNullOrEmpty()]
+                [string] $Property = $([ArgumentNullException]::new('Property'))
+            )
+            process
+            {
+                return $(Get-MSBuildPropertyValues -ProjectName $ProjectName -Properties $Property | Select-Object -ExpandProperty $Property)
+            }
+        }
+
+        [string] $mainProjectFileName = $solutionNameOnly
+
         [ValidateNotNullOrEmpty()] [string] $buildPropsFilePath = $buildPropsFilePattern | Find-SingleFileInWorkspace
         [FileXmlData] $buildPropsFileXmlData = [FileXmlData]::new($buildPropsFilePath)
-        [string] $versionString = $buildPropsFileXmlData.GetProjectPropertyText('Version')
 
+        [ValidateNotNullOrEmpty()] [string] $initialTargets = $buildPropsFileXmlData.GetAttributeValue('/Project/@InitialTargets')
+
+        [string] $versionString = $buildPropsFileXmlData.GetProjectPropertyText('Version')
         [version] $version = $null
         if (![version]::TryParse($versionString, [ref] $version) -or $version.Revision -ge 0)
         {
@@ -588,29 +885,66 @@ process
                 -Value "v$version [build $resolvedBuildNumber] [$dateStamp]"
         }
 
-        [ValidateNotNullOrEmpty()] [string] $testProjectFileNameOnly = "$solutionNameOnly.Tests"
-        [ValidateNotNullOrEmpty()] [string] $testProjectFilePath = [Path]::Combine($solutionDirectoryPath, $testProjectFileNameOnly, "$testProjectFileNameOnly.csproj")
-
-        [FileXmlData] $testProjectFileXmlData = [FileXmlData]::new($testProjectFilePath)
-        [string] $targetFrameworksString = $testProjectFileXmlData.GetProjectPropertyText('TargetFrameworks')
-
-        [string[]] $testFrameworks = $targetFrameworksString -csplit ';'
-        if ($testFrameworks.Count -eq 0)
+        [string] $testProjectSuffix = '.Tests'
+        [string[]] $testProjectNames = Get-ChildItem -Recurse:$false -Directory -Name -Path "$solutionDirectoryPath/*$testProjectSuffix"
+        if ($testProjectNames.Count -eq 0)
         {
-            throw "No target frameworks defined in ""$testProjectFilePath"" at ""$targetFrameworksElementPath""."
+            throw "No test project directories are found in ""$solutionDirectoryPath""."
         }
 
-        [string] $temporaryDirectoryPath = [Path]::GetFullPath([Path]::Combine($PSScriptRoot, '.temp'))
-        Ensure-CleanDirectory -LiteralPath $temporaryDirectoryPath
+        [string[]] $testFrameworks = @()
+        foreach ($testProjectName in $testProjectNames)
+        {
+            [string] $testProjectFilePath = Get-ProjectFilePath -ProjectName $testProjectName
+            [FileXmlData] $testProjectFileXmlData = [FileXmlData]::new($testProjectFilePath)
+            [string] $targetFrameworksString = $testProjectFileXmlData.GetProjectPropertyText('TargetFrameworks')
+
+            $testFrameworks += $targetFrameworksString -csplit ';'
+        }
+
+        $testFrameworks = $testFrameworks | Select-Object -Unique
+        if ($testFrameworks.Count -eq 0)
+        {
+            throw "No target frameworks are defined in the test projects: $(($testProjectNames | % { "'$_'" }) -join ', ')."
+        }
+
+
+        Write-Host -ForegroundColor Green  "Discovered test projects: $(($testProjectNames | % { "'$_'" }) -join ', ')."
+        Write-Host -ForegroundColor Green  "Discovered frameworks for test run: $(($testFrameworks | % { "'$_'" }) -join ', ')."
+
+        if ($TestFrameworkFilter -is [scriptblock])
+        {
+            $testFrameworks = $testFrameworks | ? $TestFrameworkFilter
+            if ($testFrameworks.Count -eq 0)
+            {
+                throw [ArgumentException]::new('After applying the filter, there are no test frameworks to run for.', 'TestFrameworkFilter')
+            }
+
+            Write-Host -ForegroundColor Green  "Discovered frameworks for test run (after filtering): $(($testFrameworks | % { "'$_'" }) -join ', ')."
+        }
+
+        Write-Host ''
 
         Write-MajorSeparator
         [ValidateNotNullOrEmpty()] [string] $dotNetCliPath = Get-ApplicationPath -Verbose -Name dotnet
 
-        Write-MajorSeparator
-        Execute-Command -Title '* DotNet CLI Version' -Command $dotNetCliPath -CommandArguments '--version'
+        [string] $startupStackName = [Guid]::NewGuid().ToString('N')
+        Push-Location -LiteralPath $solutionDirectoryPath -StackName $startupStackName
+        try
+        {
+            Write-MajorSeparator
+            Execute-Command -Title '* DotNet CLI Version' -Command $dotNetCliPath -CommandArguments '--version'
 
-        Write-MajorSeparator
-        Execute-Command -Title '* DotNet SDKs' -Command $dotNetCliPath -CommandArguments '--list-sdks'
+            Write-MajorSeparator
+            Execute-Command -Title '* DotNet CLI Information' -Command $dotNetCliPath -CommandArguments '--info'
+
+            Write-MajorSeparator
+            Execute-Command -Title '* DotNet SDKs' -Command $dotNetCliPath -CommandArguments '--list-sdks'
+        }
+        finally
+        {
+            Pop-Location -StackName $startupStackName
+        }
 
         function Create-DotNetCliExecuteCommandParameters
         {
@@ -618,10 +952,20 @@ process
             param
             (
                 [Parameter()]
+                [ValidateNotNullOrEmpty()]
+                [string] $ProjectPath = $solutionFilePath,
+
+                [Parameter()]
                 [switch] $NoBuildConfiguration,
 
                 [Parameter()]
+                [AllowNull()]
+                [AllowEmptyString()]
                 [string] $TitleDetails = $null,
+
+                [Parameter()]
+                [ValidateSet('quiet', 'minimal', 'normal', 'detailed', 'diagnostic')]
+                [string] $Verbosity = 'normal',
 
                 [Parameter(Position = 0)]
                 [string] $Command,
@@ -642,14 +986,28 @@ process
 
                 [string[]] $commonCommandArguments = `
                     @(
-                        """$solutionFilePath"""
-                        '--verbosity:normal' # quiet, minimal, normal, detailed, and diagnostic
-                        "-p:IsAppveyorBuild=$AppveyorBuild"
-                        "-p:Version=""$version"""
-                        "-p:FileVersion=""$version.$resolvedBuildNumber"""
-                        "-p:InformationalVersion=""$informationalVersion"""
-                        "-p:VersionSuffix=""$resolvedPrereleaseSuffix"""
+                        """$ProjectPath"""
+                        "--verbosity:$Verbosity"
+                        "--property:IsAppveyorBuild=$AppveyorBuild"
+                        "--property:ContinuousIntegrationBuild=$AppveyorBuild"
+                        "--property:Version=""$version"""
+                        "--property:FileVersion=""$version.$resolvedBuildNumber"""
+                        "--property:InformationalVersion=""$informationalVersion"""
+                        "--property:VersionSuffix=""$resolvedPrereleaseSuffix"""
                     )
+
+                if ($AppveyorBuild)
+                {
+                    if (![string]::IsNullOrWhiteSpace($AppveyorSourceCodeBranch))
+                    {
+                        $commonCommandArguments += "--property:__X_SourceCodeBranch=""$AppveyorSourceCodeBranch"""
+                    }
+
+                    if (![string]::IsNullOrWhiteSpace($AppveyorSourceCodeRevisionId))
+                    {
+                        $commonCommandArguments += "--property:__X_SourceCodeRevisionId=""$AppveyorSourceCodeRevisionId"""
+                    }
+                }
 
                 if (!$NoBuildConfiguration)
                 {
@@ -677,7 +1035,20 @@ process
             param
             (
                 [Parameter()]
+                [ValidateNotNullOrEmpty()]
+                [string] $ProjectPath = $solutionFilePath,
+
+                [Parameter()]
                 [switch] $NoBuildConfiguration,
+
+                [Parameter()]
+                [AllowNull()]
+                [AllowEmptyString()]
+                [string] $TitleDetails = $null,
+
+                [Parameter()]
+                [ValidateSet('quiet', 'minimal', 'normal', 'detailed', 'diagnostic')]
+                [string] $Verbosity = 'normal',
 
                 [Parameter(Position = 0)]
                 [string] $Command,
@@ -688,31 +1059,56 @@ process
             process
             {
                 [hashtable] $executeCommandParameters = Create-DotNetCliExecuteCommandParameters `
+                    -ProjectPath:$ProjectPath `
                     -NoBuildConfiguration:$NoBuildConfiguration `
+                    -TitleDetails:$TitleDetails `
+                    -Verbosity:$Verbosity `
                     -Command:$Command `
                     -CommandArguments:$CommandArguments
 
                 Write-MajorSeparator
-                Execute-Command @executeCommandParameters
+
+                [string] $localStackName = [Guid]::NewGuid().ToString('N')
+                Push-Location -LiteralPath $solutionDirectoryPath -StackName $localStackName
+                try
+                {
+                    Execute-Command @executeCommandParameters
+                }
+                finally
+                {
+                    Pop-Location -StackName $localStackName
+                }
             }
         }
 
-        [string] $coverageOutputDirectoryPath = $null
-        if ($EnableDotCover)
-        {
-            # Watch: https://github.com/dotnet/msbuild/issues/3911
-            $coverageOutputDirectoryPath = [Path]::GetFullPath([Path]::Combine($solutionDirectoryPath, '.out', 'binCoverage'))
-            Ensure-CleanDirectory -LiteralPath $coverageOutputDirectoryPath
-        }
+        [psobject] $commonBuildProperties = Get-MSBuildPropertyValues `
+            -ProjectName $mainProjectFileName `
+            -Properties `
+                @(
+                    '__X_BaseBinPath'
+                    '__X_TestResultsDirectory'
+                    '__X_CoverageResultsDirectory'
+                    'PackageOutputPath'
+                )
+
+        [string] $binariesBaseDirectoryPath = $commonBuildProperties.'__X_BaseBinPath' | Remove-TrailingPathSeparator
+        [string] $testOutputDirectoryPath = $commonBuildProperties.'__X_TestResultsDirectory' | Remove-TrailingPathSeparator
+        [string] $coverageOutputDirectoryPath = $commonBuildProperties.'__X_CoverageResultsDirectory' | Remove-TrailingPathSeparator
+        [string] $nuGetPackageDirectoryPath = $commonBuildProperties.'PackageOutputPath' | Remove-TrailingPathSeparator
+
+        Write-Host -ForegroundColor Green "Binaries base directory: ""$binariesBaseDirectoryPath"""
+        Write-Host -ForegroundColor Green "Test output directory: ""$testOutputDirectoryPath"""
+        Write-Host -ForegroundColor Green "Coverage output directory: ""$coverageOutputDirectoryPath"""
+        Write-Host -ForegroundColor Green "NuGet package directory: ""$nuGetPackageDirectoryPath"""
 
         Execute-DotNetCli clean
         Execute-DotNetCli -NoBuildConfiguration restore --force --no-cache
 
         [string[]] $dotNetBuildCommandArguments = `
             @(
-                '--no-incremental'
                 '--no-restore'
-                "-p:Platform=""$BuildPlatform"""
+                '--no-incremental'
+                '--disable-build-servers'
             )
 
         Execute-DotNetCli build @dotNetBuildCommandArguments
@@ -722,16 +1118,14 @@ process
         {
             $archiveVersionSuffix = "-v$($version).$($resolvedBuildNumber)$($PrereleaseSuffix).rev-$($shortRevisionId)"
 
-            [string] $binariesBaseDirectoryPath = $AppveyorBinariesSubdirectory | Resolve-WorkspacePath
-            [string] $binariesDirectoryPath = [Path]::Combine($binariesBaseDirectoryPath, $projectPlatform, $BuildConfiguration)
-            [string] $binariesArchiveFilePath = "$resolvedArtifactsDirectoryPath\$($solutionNameOnly).Binaries$($archiveVersionSuffix).zip"
+            [string] $binariesArchiveFilePath = "$resolvedArtifactsDirectoryPath/$($solutionNameOnly).Binaries$($archiveVersionSuffix).zip"
 
             Write-MajorSeparator
 
             Execute-SevenZip `
                 -Description 'Binaries' `
                 -ArchiveFilePath $binariesArchiveFilePath `
-                -Items "$binariesDirectoryPath\*.*"
+                -Items "$binariesBaseDirectoryPath/*.*"
 
             Write-MajorSeparator
 
@@ -822,162 +1216,109 @@ process
 
             if ($shouldCopyPackageToArtifacts)
             {
-                [string] $nuGetPackageDirectoryPath = $AppveyorNuGetPackageSubdirectory | Resolve-WorkspacePath
-
                 Copy-Item `
                     -Verbose `
-                    -Path "$nuGetPackageDirectoryPath\*.*nupkg" `
+                    -Path "$nuGetPackageDirectoryPath/*.*nupkg" `
                     -Destination $resolvedArtifactsDirectoryPath `
                     -Recurse `
                     | Out-Null
             }
         }
 
-        [string] $snapshotFileBaseName = "$([Path]::GetFileNameWithoutExtension($solutionFilePath)).CoverageResult"
+        Write-MajorSeparator
+
+        [string] $reportGeneratorExecutableName = 'reportgenerator.exe'
+        [string] $reportGeneratorExecutablePath = Get-ApplicationPath -Verbose -Name $reportGeneratorExecutableName -ErrorAction SilentlyContinue
+        if ([string]::IsNullOrEmpty($reportGeneratorExecutablePath))
+        {
+            Write-MajorSeparator
+
+            Execute-Command -Title 'Install ReportGenerator .NET tool' $dotNetCliPath tool install --global dotnet-reportgenerator-globaltool
+            $reportGeneratorExecutablePath = Get-ApplicationPath -Verbose -Name $reportGeneratorExecutableName
+        }
+
+        [string] $coberturaCoverageFileName = 'coverage.cobertura.xml'
+
+        [string[]] $coverageReportTypes = `
+            @(
+                'Badges'
+                'Cobertura'
+                'Markdown'
+                'MarkdownSummaryGithub'
+                'Html_Light'
+                'Html_Dark'
+                'TextSummary'
+            )
 
         foreach ($testFramework in $testFrameworks)
         {
-            [string] $coverageSnapshotFilePath = $null
-            [string] $dotCoverExecutablePath = $null
-
-            [string[]] $testExecutionCliOptions = `
+            [string[]] $testExecutionCliArguments = `
                 @(
                     '--no-build'
                     '--logger:trx'
                     '--logger:html'
                     '--logger:console'
                     "--framework:""$testFramework"""
+                    '--collect:"XPlat Code Coverage;Format=cobertura"'
                 )
 
             if ($AppveyorBuild)
             {
-                $testExecutionCliOptions += @('--test-adapter-path:.', '--logger:Appveyor')
+                $testExecutionCliArguments += @('--test-adapter-path:.', '--logger:Appveyor')
             }
 
-            $testExecutionCliOptions += `
+            $testExecutionCliArguments += `
                 @(
                     '--',
                     "NUnit.DefaultTestNamePattern=""[$testFramework]{m}{a}#{i}"""
                 )
 
-            [hashtable] $testExecutionCommandParameters = `
-                Create-DotNetCliExecuteCommandParameters -TitleDetails $testFramework test @testExecutionCliOptions
-
-            if ($EnableDotCover)
-            {
-                [string] $dotCoverExecutableName = 'dotcover.exe'
-
-                $dotCoverExecutablePath = Get-ApplicationPath -Verbose -Name $dotCoverExecutableName -ErrorAction SilentlyContinue
-                if ([string]::IsNullOrEmpty($dotCoverExecutablePath))
-                {
-                    Write-MajorSeparator
-
-                    [string] $chocolateyExecutablePath = Get-ApplicationPath -Verbose -Name 'choco.exe'
-                    Execute-Command -Title 'Install dotCover CLI' $chocolateyExecutablePath install --yes --no-progress --version=2025.1.5 dotcover-cli
-                    $dotCoverExecutablePath = Get-ApplicationPath -Verbose -Name $dotCoverExecutableName
-                }
-
-                $coverageSnapshotFilePath = [Path]::Combine(
-                    $coverageOutputDirectoryPath,
-                    $snapshotFileBaseName,
-                    "$snapshotFileBaseName.$testFramework.dcvr")
-
-                [XDocument] $coverageAnalysisParametersDocument = [XDocument]::new(
-                    [XElement]::new(
-                        'AnalyseParams',
-                        @(
-                            [XElement]::new('TargetExecutable', $testExecutionCommandParameters.Command),
-                            [XElement]::new('TargetArguments', ($testExecutionCommandParameters.CommandArguments -join ' ')),
-                            [XElement]::new('AnalyzeTargetArguments', 'False'),
-                            [XElement]::new('Output', $coverageSnapshotFilePath),
-                            [XElement]::new(
-                                'Filters',
-                                @(
-                                    [XElement]::new(
-                                        'ExcludeFilters',
-                                        @(
-                                            [XElement]::new(
-                                                'FilterEntry',
-                                                @(
-                                                    [XElement]::new('ModuleMask', '*.Tests'),
-                                                    [XElement]::new('ClassMask', '*'),
-                                                    [XElement]::new('FunctionMask', '*')
-                                                ))
-                                        ))
-                                ))
-                        )))
-
-                [string] $coverageAnalysisParametersFilePath = [Path]::Combine(
-                    $temporaryDirectoryPath,
-                    'CoverageAnalysis.Parameters.xml')
-
-                $coverageAnalysisParametersDocument.Save($coverageAnalysisParametersFilePath, [SaveOptions]::None) | Out-Null
-
-                [hashtable] $newTestExecutionCommandParameters = `
-                    @{
-                        Title = "$($testExecutionCommandParameters.Title) (via dotCover)"
-                        Command = $dotCoverExecutablePath
-                        CommandArguments = @('cover', """$coverageAnalysisParametersFilePath""")
-                    }
-
-                $testExecutionCommandParameters = $newTestExecutionCommandParameters
-            }
-
             Write-MajorSeparator
-            [ErrorRecord] $testExecutionErrorRecord = $null
-            try
+            Execute-DotNetCli -TitleDetails $testFramework -Command test @testExecutionCliArguments
+
+            [string] $testOutputDestinationBase = [Path]::Combine($testOutputDirectoryPath, $testFramework)
+            foreach ($testProjectName in $testProjectNames)
             {
-                Execute-Command @testExecutionCommandParameters
-            }
-            catch
-            {
-                if (!$EnableDotCover -and !$AppveyorBuild)
+                [string] $testResultsDirectory = Get-SingleMSBuildPropertyValue -ProjectName $testProjectName -Property 'VSTestResultsDirectory' | Remove-TrailingPathSeparator
+                if (![Directory]::Exists($testResultsDirectory))
                 {
-                    throw
+                    Write-Warning -WarningAction Continue "Not collecting test results of '$testProjectName' for '$testFramework': directory ""$testResultsDirectory"" is not found."
+                    continue
                 }
 
-                $testExecutionErrorRecord = $_
+                [string[]] $fileList = @()
+                $fileList += Find-SingleFileSystemObject -RootDirectory $testResultsDirectory -File -FilterWildcard '*.trx'
+                $fileList += Find-SingleFileSystemObject -RootDirectory $testResultsDirectory -File -FilterWildcard '*.html'
 
-                Write-Host ''
-                Write-Warning -WarningAction Continue (Get-ErrorDetails)
-                Write-Host ''
-            }
+                [string] $coberturaDirectory = Find-SingleFileSystemObject `
+                    -RootDirectory $testResultsDirectory `
+                    -Directory `
+                    -FilterScript { [guid] $g = [guid]::Empty; [Guid]::TryParse($_.Name, [ref] $g) }
 
-            if ($EnableDotCover)
-            {
-                if (![File]::Exists($coverageSnapshotFilePath))
-                {
-                    if ($testExecutionErrorRecord)
-                    {
-                        Write-Error -ErrorAction Stop $testExecutionErrorRecord
-                    }
+                $fileList += Find-SingleFileSystemObject -RootDirectory $coberturaDirectory -File -FilterWildcard $coberturaCoverageFileName
 
-                    throw "Coverage snapshot file ""$coverageSnapshotFilePath"" is not found."
-                }
-
-                [string] $coverageHtmlReportFilePath = [Path]::ChangeExtension($coverageSnapshotFilePath, '.html')
-                [string] $coverageJsonReportFilePath = [Path]::ChangeExtension($coverageSnapshotFilePath, '.json')
-
-                [XDocument] $coverageReportParametersDocument = [XDocument]::new(
-                    [XElement]::new(
-                        'ReportParams',
-                        @(
-                            [XElement]::new('Source', $coverageSnapshotFilePath),
-                            [XElement]::new('ReportType', 'HTML,JSON'),
-                            [XElement]::new('Output', $coverageHtmlReportFilePath),
-                            [XElement]::new('Output', $coverageJsonReportFilePath)
-                        )))
-
-                [string] $coverageReportParametersFilePath =  [Path]::Combine($temporaryDirectoryPath, 'CoverageReport.Parameters.xml')
-                $coverageReportParametersDocument.Save($coverageReportParametersFilePath, [SaveOptions]::None) | Out-Null
+                [string] $testOutputDestination = [Path]::Combine($testOutputDestinationBase, $testProjectName)
+                Write-Host "Copying test artifacts to ""$testOutputDestination""."
+                Ensure-Directories -DirectoryPaths $testOutputDestination
+                Copy-Item -LiteralPath $fileList -Destination $testOutputDestination
+                Remove-FileSystemObjectForced -LiteralPath $testResultsDirectory
 
                 Write-MajorSeparator
-                Execute-Command -Title "Creating dotCover report(s)" $dotCoverExecutablePath report """$coverageReportParametersFilePath"""
-            }
 
-            if ($testExecutionErrorRecord)
-            {
-                Write-Error -ErrorAction Stop $testExecutionErrorRecord
+                foreach ($coverageReportType in $coverageReportTypes)
+                {
+                    [string[]] $commandArguments = `
+                        @(
+                            """-reports:$testOutputDestinationBase/**/$coberturaCoverageFileName"""
+                            """-targetdir:$coverageOutputDirectoryPath/$testFramework/$coverageReportType"""
+                            """-reporttypes:$coverageReportType"""
+                        )
+
+                    Execute-Command `
+                        -Title "Create Coverage report ($testFramework|$coverageReportType)" `
+                        -Command $reportGeneratorExecutablePath `
+                        -CommandArguments $commandArguments
+                }
             }
         }
 
@@ -985,31 +1326,25 @@ process
 
         if ($AppveyorBuild)
         {
-            [string] $testResultsSubdirectory = $buildPropsFileXmlData.GetProjectPropertyText('__X_TestResultsSubdirectory')
-
-            [string] $binariesDirectoryPath = $AppveyorBinariesSubdirectory | Resolve-WorkspacePath
-            [string] $testResultsDirectoryPath = [Path]::Combine($binariesDirectoryPath, $projectPlatform, $BuildConfiguration, $testProjectFileNameOnly, $testResultsSubdirectory)
-            [string] $testResultsArchiveFilePath = "$resolvedArtifactsDirectoryPath\$($solutionNameOnly).$($testResultsSubdirectory)$($archiveVersionSuffix).zip"
+            [string] $testResultsSubdirectory = [Path]::GetFileName($testOutputDirectoryPath)
+            [string] $testResultsArchiveFilePath = "$resolvedArtifactsDirectoryPath/$($solutionNameOnly).$($testResultsSubdirectory)$($archiveVersionSuffix).zip"
 
             Execute-SevenZip `
                 -Description 'Test Results' `
                 -ArchiveFilePath $testResultsArchiveFilePath `
-                -Items "$testResultsDirectoryPath\*.*"
+                -Items "$testOutputDirectoryPath/*.*"
 
             Write-MajorSeparator
 
-            if ($EnableDotCover)
-            {
-                [string] $coverageResultDirectoryPath = [Path]::Combine($coverageOutputDirectoryPath, $snapshotFileBaseName)
-                [string] $coverageResultArchiveFilePath = "$resolvedArtifactsDirectoryPath\$($snapshotFileBaseName)$($archiveVersionSuffix).zip"
+            [string] $coverageResultsSubdirectory = [Path]::GetFileName($coverageOutputDirectoryPath)
+            [string] $coverageResultsArchiveFilePath = "$resolvedArtifactsDirectoryPath/$($solutionNameOnly).$($coverageResultsSubdirectory)$($archiveVersionSuffix).zip"
 
-                Execute-SevenZip `
-                    -Description 'Coverage Results' `
-                    -ArchiveFilePath $coverageResultArchiveFilePath `
-                    -Items "$coverageResultDirectoryPath\*.*"
+            Execute-SevenZip `
+                -Description 'Coverage Results' `
+                -ArchiveFilePath $coverageResultsArchiveFilePath `
+                -Items "$coverageOutputDirectoryPath/*.*"
 
-                Write-MajorSeparator
-            }
+            Write-MajorSeparator
         }
     }
     catch

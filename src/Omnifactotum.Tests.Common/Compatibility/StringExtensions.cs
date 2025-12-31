@@ -3,8 +3,9 @@ using System;
 using System.Text.RegularExpressions;
 
 //// ReSharper disable once CheckNamespace :: Compatibility (.NET 6+)
-namespace Omnifactotum.Tests;
+namespace System;
 
+[System.Diagnostics.CodeAnalysis.ExcludeFromCodeCoverageAttribute]
 internal static class StringExtensions
 {
     private static readonly Regex LineEndingRegex = new(@"\u000d\u000a|\u000d|\u000a", RegexOptions.Singleline | RegexOptions.Compiled);

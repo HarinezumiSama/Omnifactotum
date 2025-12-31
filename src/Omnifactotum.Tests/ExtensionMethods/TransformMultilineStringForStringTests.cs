@@ -12,11 +12,11 @@ internal sealed class TransformMultilineStringForStringTests : TransformMultilin
         base.ExecuteTestTransformMultilineStringWhenInvalidArgumentThenThrows(normalizeLineEndings);
 
         Assert.That(
-            () => ExecuteTransformMultilineString(default!, null!, normalizeLineEndings),
+            () => ExecuteTransformMultilineString(null!, null!, normalizeLineEndings),
             Throws.ArgumentNullException);
 
         Assert.That(
-            () => ExecuteTransformMultilineString(default!, (_, _) => throw new NotImplementedException(), normalizeLineEndings),
+            () => ExecuteTransformMultilineString(null!, (_, _) => throw new NotImplementedException(), normalizeLineEndings),
             Throws.ArgumentNullException.With.Property(nameof(ArgumentNullException.ParamName)).EqualTo("value"));
     }
 

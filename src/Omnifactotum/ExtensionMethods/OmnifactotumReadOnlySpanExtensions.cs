@@ -1,10 +1,13 @@
-﻿using System.Runtime.CompilerServices;
-using System.Text;
+﻿using System.Text;
 using System.Threading;
 using Omnifactotum;
 using Omnifactotum.Annotations;
-using NotNullIfNotNull = System.Diagnostics.CodeAnalysis.NotNullIfNotNullAttribute;
 using PureAttribute = System.Diagnostics.Contracts.PureAttribute;
+using SuppressMessageAttribute = System.Diagnostics.CodeAnalysis.SuppressMessageAttribute;
+
+#if NETSTANDARD2_1_OR_GREATER || NET5_0_OR_GREATER
+using System.Runtime.CompilerServices;
+#endif
 
 //// ReSharper disable RedundantNullnessAttributeWithNullableReferenceTypes
 //// ReSharper disable UseNullableReferenceTypesAnnotationSyntax
@@ -24,7 +27,7 @@ public static class OmnifactotumReadOnlySpanExtensions
     ///     The span of bytes to convert.
     /// </param>
     /// <param name="separator">
-    ///     An optional separator used to split hexadecimal representation of each byte.
+    ///     An optional separator used to split the hexadecimal representation of each byte.
     /// </param>
     /// <param name="upperCase">
     ///     <see langword="true"/> to use upper case letters (<c>A..F</c>) in the resulting hexadecimal string;
@@ -36,7 +39,7 @@ public static class OmnifactotumReadOnlySpanExtensions
     [Pure]
     [Omnifactotum.Annotations.Pure]
     [NotNull]
-    public static unsafe string ToHexString(this ReadOnlySpan<byte> bytes, [CanBeNull] string? separator = null, bool upperCase = false)
+    public static string ToHexString(this ReadOnlySpan<byte> bytes, [CanBeNull] string? separator = null, bool upperCase = false)
     {
         var bytesLength = bytes.Length;
         if (bytesLength == 0)
@@ -47,33 +50,37 @@ public static class OmnifactotumReadOnlySpanExtensions
         var resolvedSeparator = separator ?? string.Empty;
         var resultLength = checked(bytesLength * 2 + (bytesLength - 1) * resolvedSeparator.Length);
 
-        fixed (byte* bytesPointer = bytes)
+#if NETSTANDARD2_1_OR_GREATER || NET5_0_OR_GREATER
+        unsafe
         {
-            var state = (Pointer: (IntPtr)bytesPointer, Length: bytesLength, Separator: resolvedSeparator, UpperCase: upperCase);
+            fixed (byte* bytesPointer = bytes)
+            {
+                var state = (Pointer: (IntPtr)bytesPointer, Length: bytesLength, Separator: resolvedSeparator, UpperCase: upperCase);
 
-            return string.Create(
-                resultLength,
-                state,
-                static (targetSpan, parameters) =>
-                {
-                    var bytes = new ReadOnlySpan<byte>((byte*)parameters.Pointer, parameters.Length);
-                    var separatorSpan = parameters.Separator.AsSpan();
-                    var separatorLength = separatorSpan.Length;
-                    var hexAlphaBase = (char)((parameters.UpperCase ? 'A' : 'a') - 10);
-
-                    for (int index = 0, targetIndex = 0; index < bytes.Length; index++)
+                return string.Create(
+                    resultLength,
+                    state,
+                    static (targetSpan, parameters) =>
                     {
-                        if (separatorLength != 0 && index > 0)
-                        {
-                            separatorSpan.CopyTo(targetSpan.Slice(targetIndex, separatorLength));
-                            targetIndex += separatorLength;
-                        }
+                        var bytes = new ReadOnlySpan<byte>((byte*)parameters.Pointer, parameters.Length);
+                        var separatorSpan = parameters.Separator.AsSpan();
+                        var separatorLength = separatorSpan.Length;
+                        var hexAlphaBase = (char)((parameters.UpperCase ? 'A' : 'a') - 10);
 
-                        var @byte = bytes[index];
-                        targetSpan[targetIndex++] = GetHexDigit((uint)(@byte >> 4), hexAlphaBase);
-                        targetSpan[targetIndex++] = GetHexDigit(@byte, hexAlphaBase);
-                    }
-                });
+                        for (int index = 0, targetIndex = 0; index < bytes.Length; index++)
+                        {
+                            if (separatorLength != 0 && index > 0)
+                            {
+                                separatorSpan.CopyTo(targetSpan.Slice(targetIndex, separatorLength));
+                                targetIndex += separatorLength;
+                            }
+
+                            var @byte = bytes[index];
+                            targetSpan[targetIndex++] = GetHexDigit((uint)(@byte >> 4), hexAlphaBase);
+                            targetSpan[targetIndex++] = GetHexDigit(@byte, hexAlphaBase);
+                        }
+                    });
+            }
         }
 
         [MethodImpl(OmnifactotumConstants.MethodOptimizationOptions.Standard)]
@@ -82,6 +89,26 @@ public static class OmnifactotumReadOnlySpanExtensions
             var digit = value & 0x0F;
             return (char)(digit < 10 ? digit + '0' : digit + hexAlphaBase);
         }
+#else
+        const string UpperCaseFormat = "X2";
+        const string LowerCaseFormat = "x2";
+
+        var format = upperCase ? UpperCaseFormat : LowerCaseFormat;
+        var resultBuilder = new StringBuilder(resultLength);
+
+        for (var index = 0; index < bytes.Length; index++)
+        {
+            if (index != 0)
+            {
+                resultBuilder.Append(resolvedSeparator);
+            }
+
+            var item = bytes[index].ToString(format);
+            resultBuilder.Append(item);
+        }
+
+        return resultBuilder.ToString();
+#endif
     }
 
     /// <summary>
@@ -122,6 +149,7 @@ public static class OmnifactotumReadOnlySpanExtensions
     [Pure]
     [Omnifactotum.Annotations.Pure]
     [NotNull]
+    [SuppressMessage("ReSharper", "ReplaceSliceWithRangeIndexer", Justification = "Multiple target frameworks.")]
     public static string TransformMultilineString(
         this ReadOnlySpan<char> value,
         [NotNull] Func<string, int, string> transformLine,
@@ -145,7 +173,7 @@ public static class OmnifactotumReadOnlySpanExtensions
         const char CarriageReturn = '\r';
         const char LineFeed = '\n';
 
-        var newLineSpan = normalizeLineEndings ? Environment.NewLine.AsSpan() : default;
+        var newLineSpan = normalizeLineEndings ? Environment.NewLine.AsSpan() : ReadOnlySpan<char>.Empty;
 
         var position = 0;
         var index = -1;
@@ -159,21 +187,43 @@ public static class OmnifactotumReadOnlySpanExtensions
             }
 
             string line;
-            ReadOnlySpan<char> lineSeparator;
+            ReadOnlySpan<char> lineSeparatorSpan;
 
-            var remainingValueSpan = value[position..];
+            var remainingValueSpan = value.Slice(position);
 
             var lineLength = remainingValueSpan.IndexOfAny(CarriageReturn, LineFeed);
             if (lineLength < 0)
             {
+#if NETSTANDARD2_1_OR_GREATER || NET5_0_OR_GREATER
                 line = new string(remainingValueSpan);
-                lineSeparator = ReadOnlySpan<char>.Empty;
+#else
+                unsafe
+                {
+                    fixed (char* remainingValueSpanPointer = &remainingValueSpan.GetPinnableReference())
+                    {
+                        line = new string(remainingValueSpanPointer, 0, remainingValueSpan.Length);
+                    }
+                }
+#endif
+                lineSeparatorSpan = ReadOnlySpan<char>.Empty;
 
                 position += remainingValueSpan.Length;
             }
             else
             {
-                line = new string(remainingValueSpan[..lineLength]);
+                var lineSpan = remainingValueSpan.Slice(0, lineLength);
+
+#if NETSTANDARD2_1_OR_GREATER || NET5_0_OR_GREATER
+                line = new string(lineSpan);
+#else
+                unsafe
+                {
+                    fixed (char* lineSpanPointer = &lineSpan.GetPinnableReference())
+                    {
+                        line = new string(lineSpanPointer, 0, lineSpan.Length);
+                    }
+                }
+#endif
 
                 var ch = remainingValueSpan[lineLength];
                 position += lineLength + 1;
@@ -185,12 +235,23 @@ public static class OmnifactotumReadOnlySpanExtensions
                     lineSeparatorLength++;
                 }
 
-                lineSeparator = normalizeLineEndings ? newLineSpan : remainingValueSpan.Slice(lineLength, lineSeparatorLength);
+                lineSeparatorSpan = normalizeLineEndings ? newLineSpan : remainingValueSpan.Slice(lineLength, lineSeparatorLength);
             }
 
             var updatedLine = transformLine(line, index);
             resultBuilder.Append(updatedLine);
-            resultBuilder.Append(lineSeparator);
+
+#if NETSTANDARD2_1_OR_GREATER || NET5_0_OR_GREATER
+            resultBuilder.Append(lineSeparatorSpan);
+#else
+            unsafe
+            {
+                fixed (char* lineSeparatorSpanPointer = &lineSeparatorSpan.GetPinnableReference())
+                {
+                    resultBuilder.Append(lineSeparatorSpanPointer, lineSeparatorSpan.Length);
+                }
+            }
+#endif
         }
 
         return resultBuilder.ToString();
@@ -226,38 +287,42 @@ public static class OmnifactotumReadOnlySpanExtensions
     ///     The UI representation of the specified span of characters.
     /// </returns>
     /// <seealso cref="OmnifactotumStringExtensions.ToUIString"/>
-    ///// <example>
-    /////     <code>
-    ///// <![CDATA[
-    /////         ReadOnlySpan<char> value1 = string.Empty;
-    /////         Console.WriteLine("Value is {0}.", value1.ToUIString()); // Output: Value is "".
-    ///// ]]>
-    /////     </code>
-    /////     <code>
-    ///// <![CDATA[
-    /////         ReadOnlySpan<char> value2 = "Hello";
-    /////         Console.WriteLine("Value is {0}.", value2.ToUIString()); // Output: Value is "Hello".
-    ///// ]]>
-    /////     </code>
-    /////     <code>
-    ///// <![CDATA[
-    /////         ReadOnlySpan<char> value3 = "Class 'MyClass' is found in the project \"MyProject\".";
-    /////         Console.WriteLine("Value is {0}.", value3.ToUIString()); // Output: Value is "Class 'MyClass' is found in the project ""MyProject"".".
-    ///// ]]>
-    /////     </code>
-    ///// </example>
+    /// <example>
+    ///     <code>
+    /// <![CDATA[
+    ///         ReadOnlySpan<char> value1 = string.Empty;
+    ///         Console.WriteLine("Value is {0}.", value1.ToUIString()); // Output: Value is "".
+    /// ]]>
+    ///     </code>
+    ///     <code>
+    /// <![CDATA[
+    ///         ReadOnlySpan<char> value2 = "Hello";
+    ///         Console.WriteLine("Value is {0}.", value2.ToUIString()); // Output: Value is "Hello".
+    /// ]]>
+    ///     </code>
+    ///     <code>
+    /// <![CDATA[
+    ///         ReadOnlySpan<char> value3 = "Class 'MyClass' is found in the project \"MyProject\".";
+    ///         Console.WriteLine("Value is {0}.", value3.ToUIString()); // Output: Value is "Class 'MyClass' is found in the project ""MyProject"".".
+    /// ]]>
+    ///     </code>
+    /// </example>
     [Pure]
     [Omnifactotum.Annotations.Pure]
     [NotNull]
+    [SuppressMessage("ReSharper", "RedundantIfElseBlock", Justification = "Multiple target frameworks.")]
     public static string ToUIString(this ReadOnlySpan<char> value)
     {
+        const string SingleDoubleQuoteResult = "\"\"\"\"";
+
         switch (value)
         {
             case { Length: 0 }:
                 return OmnifactotumConstants.DoubleDoubleQuote;
 
+#if NETSTANDARD2_1_OR_GREATER || NET5_0_OR_GREATER
             case [OmnifactotumConstants.DoubleQuoteChar]:
-                return "\"\"\"\"";
+                return SingleDoubleQuoteResult;
 
             case [var ch]:
                 return string.Create(
@@ -269,6 +334,23 @@ public static class OmnifactotumReadOnlySpanExtensions
                         span[1] = ch;
                         span[2] = OmnifactotumConstants.DoubleQuoteChar;
                     });
+#else
+            case { Length: 1 } when value[0] == OmnifactotumConstants.DoubleQuoteChar:
+                return SingleDoubleQuoteResult;
+
+            case { Length: 1 }:
+                {
+                    var ch = value[0];
+                    ReadOnlySpan<char> span = stackalloc char[] { OmnifactotumConstants.DoubleQuoteChar, ch, OmnifactotumConstants.DoubleQuoteChar };
+                    unsafe
+                    {
+                        fixed (char* spanPointer = span)
+                        {
+                            return new string(spanPointer, 0, span.Length);
+                        }
+                    }
+                }
+#endif
         }
 
         const int MaxStackBufferLength = 1024 / sizeof(char);
@@ -288,7 +370,7 @@ public static class OmnifactotumReadOnlySpanExtensions
                     sourceValueSpan.CopyTo(resultStringSpan[1..]);
                     resultStringSpan[^1] = OmnifactotumConstants.DoubleQuoteChar;
                 });
-#else
+#elif NETSTANDARD2_1_OR_GREATER || NET5_0_OR_GREATER
             unsafe
             {
                 fixed (char* valuePointer = &value.GetPinnableReference())
@@ -306,34 +388,64 @@ public static class OmnifactotumReadOnlySpanExtensions
                         });
                 }
             }
+#else
+            var resultBuffer = resultValueLength > MaxStackBufferLength ? new char[resultValueLength] : stackalloc char[resultValueLength];
+
+            var resultLength = 0;
+            resultBuffer[resultLength++] = OmnifactotumConstants.DoubleQuoteChar;
+
+            value.CopyTo(resultBuffer.Slice(resultLength));
+            resultLength += value.Length;
+
+            resultBuffer[resultLength++] = OmnifactotumConstants.DoubleQuoteChar;
+
+            unsafe
+            {
+                fixed (char* resultBufferPointer = resultBuffer)
+                {
+                    return new string(resultBufferPointer, 0, resultLength);
+                }
+            }
 #endif
         }
-
-        var requiredBufferLength = value.Length * 2 + 2;
-        var resultBuffer = requiredBufferLength > MaxStackBufferLength ? new char[requiredBufferLength] : stackalloc char[requiredBufferLength];
-
-        var resultLength = 0;
-        resultBuffer[resultLength++] = OmnifactotumConstants.DoubleQuoteChar;
-
-        var copiedSpan = value[..(firstDoubleQuoteCharIndex + 1)];
-        copiedSpan.CopyTo(resultBuffer[resultLength..]);
-        resultLength += copiedSpan.Length;
-
-        resultBuffer[resultLength++] = OmnifactotumConstants.DoubleQuoteChar;
-
-        for (var index = firstDoubleQuoteCharIndex + 1; index < value.Length; index++)
+        else
         {
-            var ch = value[index];
+            var requiredBufferLength = value.Length * 2 + 2;
+            var resultBuffer = requiredBufferLength > MaxStackBufferLength ? new char[requiredBufferLength] : stackalloc char[requiredBufferLength];
 
-            resultBuffer[resultLength++] = ch;
-            if (ch == OmnifactotumConstants.DoubleQuoteChar)
+            var resultLength = 0;
+            resultBuffer[resultLength++] = OmnifactotumConstants.DoubleQuoteChar;
+
+            var copiedSpan = value.Slice(0, firstDoubleQuoteCharIndex + 1);
+            copiedSpan.CopyTo(resultBuffer.Slice(resultLength));
+            resultLength += copiedSpan.Length;
+
+            resultBuffer[resultLength++] = OmnifactotumConstants.DoubleQuoteChar;
+
+            for (var index = firstDoubleQuoteCharIndex + 1; index < value.Length; index++)
             {
-                resultBuffer[resultLength++] = OmnifactotumConstants.DoubleQuoteChar;
+                var ch = value[index];
+
+                resultBuffer[resultLength++] = ch;
+                if (ch == OmnifactotumConstants.DoubleQuoteChar)
+                {
+                    resultBuffer[resultLength++] = OmnifactotumConstants.DoubleQuoteChar;
+                }
             }
+
+            resultBuffer[resultLength++] = OmnifactotumConstants.DoubleQuoteChar;
+
+#if NETSTANDARD2_1_OR_GREATER || NET5_0_OR_GREATER
+            return new string(resultBuffer.Slice(0, resultLength));
+#else
+            unsafe
+            {
+                fixed (char* resultBufferPointer = &resultBuffer.GetPinnableReference())
+                {
+                    return new string(resultBufferPointer, 0, resultLength);
+                }
+            }
+#endif
         }
-
-        resultBuffer[resultLength++] = OmnifactotumConstants.DoubleQuoteChar;
-
-        return new string(resultBuffer[..resultLength]);
     }
 }

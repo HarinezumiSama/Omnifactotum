@@ -29,23 +29,27 @@ internal sealed class OmnifactotumGenericObjectExtensionsTests
         Assert.That(() => someObject.EnsureNotNull(), Is.SameAs(someObject));
 
 #if NET5_0_OR_GREATER
-        const string ExpectedNullObjectFailureMessage = $"The following expression is null: {{ {nameof(NullObject)} }}. (Parameter 'value')";
+        var expectedNullObjectFailureMessage = $"The following expression is null: {{ {nameof(NullObject)} }}.{
+            LocalFactotum.GetArgumentExceptionParameterDetails("value")}";
 #else
-        const string ExpectedNullObjectFailureMessage = $"Exception of type '{nameof(System)}.{nameof(ArgumentNullException)}' was thrown. (Parameter 'value')";
+        var expectedNullObjectFailureMessage = $"Exception of type '{nameof(System)}.{nameof(ArgumentNullException)}' was thrown.{
+            LocalFactotum.GetArgumentExceptionParameterDetails("value")}";
 #endif
 
-        Assert.That(() => NullObject.EnsureNotNull(), Throws.TypeOf<ArgumentNullException>().With.Message.EqualTo(ExpectedNullObjectFailureMessage));
+        Assert.That(() => NullObject.EnsureNotNull(), Throws.TypeOf<ArgumentNullException>().With.Message.EqualTo(expectedNullObjectFailureMessage));
 
 #if NET5_0_OR_GREATER
-        const string ExpectedExpressionFailureMessage =
-            $"The following expression is null: {{ new {nameof(RecursiveNode)}().Parent?.Parent?.Value }}. (Parameter 'value')";
+        var expectedExpressionFailureMessage =
+            $"The following expression is null: {{ new {nameof(RecursiveNode)}().Parent?.Parent?.Value }}.{
+                LocalFactotum.GetArgumentExceptionParameterDetails("value")}";
 #else
-        const string ExpectedExpressionFailureMessage = $"Exception of type '{nameof(System)}.{nameof(ArgumentNullException)}' was thrown. (Parameter 'value')";
+        var expectedExpressionFailureMessage = $"Exception of type '{nameof(System)}.{nameof(ArgumentNullException)}' was thrown.{
+            LocalFactotum.GetArgumentExceptionParameterDetails("value")}";
 #endif
 
         Assert.That(
             () => (new RecursiveNode().Parent?.Parent?.Value).EnsureNotNull(),
-            Throws.TypeOf<ArgumentNullException>().With.Message.EqualTo(ExpectedExpressionFailureMessage));
+            Throws.TypeOf<ArgumentNullException>().With.Message.EqualTo(expectedExpressionFailureMessage));
     }
 
     [Test]
@@ -55,13 +59,14 @@ internal sealed class OmnifactotumGenericObjectExtensionsTests
         Assert.That(() => someValue.EnsureNotNull(), Is.EqualTo(someValue.Value));
 
 #if NET5_0_OR_GREATER
-        const string ExpectedExpressionFailureMessage =
-            "The following expression is null: { (int?)null }. (Parameter 'value')";
+        var expectedExpressionFailureMessage =
+            $"The following expression is null: {{ (int?)null }}.{LocalFactotum.GetArgumentExceptionParameterDetails("value")}";
 #else
-        const string ExpectedExpressionFailureMessage = $"Exception of type '{nameof(System)}.{nameof(ArgumentNullException)}' was thrown. (Parameter 'value')";
+        var expectedExpressionFailureMessage = $"Exception of type '{nameof(System)}.{nameof(ArgumentNullException)}' was thrown.{
+            LocalFactotum.GetArgumentExceptionParameterDetails("value")}";
 #endif
 
-        Assert.That(() => ((int?)null).EnsureNotNull(), Throws.TypeOf<ArgumentNullException>().With.Message.EqualTo(ExpectedExpressionFailureMessage));
+        Assert.That(() => ((int?)null).EnsureNotNull(), Throws.TypeOf<ArgumentNullException>().With.Message.EqualTo(expectedExpressionFailureMessage));
     }
 
     [Test]

@@ -297,44 +297,44 @@ public static class ObjectValidator
             }
         }
         else if (TryAddSupportedListMembers(
-            parentMemberData,
-            members,
-            typeof(ImmutableArray<>),
-            typeof(ICollection<>),
-            nameof(ICollection<object>.Count)))
+                     parentMemberData,
+                     members,
+                     typeof(ImmutableArray<>),
+                     typeof(ICollection<>),
+                     nameof(ICollection<object>.Count)))
         {
             // Nothing to do
         }
         else if (TryAddSupportedListMembers(
-            parentMemberData,
-            members,
-            typeof(IReadOnlyList<>),
-            typeof(IReadOnlyCollection<>),
-            nameof(IReadOnlyCollection<object>.Count)))
+                     parentMemberData,
+                     members,
+                     typeof(IReadOnlyList<>),
+                     typeof(IReadOnlyCollection<>),
+                     nameof(IReadOnlyCollection<object>.Count)))
         {
             // Nothing to do
         }
         else if (TryAddSupportedListMembers(
-            parentMemberData,
-            members,
-            typeof(IList<>),
-            typeof(ICollection<>),
-            nameof(ICollection<object>.Count)))
+                     parentMemberData,
+                     members,
+                     typeof(IList<>),
+                     typeof(ICollection<>),
+                     nameof(ICollection<object>.Count)))
         {
             // Nothing to do
         }
         else if (TryAddSupportedListMembers(
-            parentMemberData,
-            members,
-            typeof(IList),
-            typeof(ICollection),
-            nameof(ICollection.Count)))
+                     parentMemberData,
+                     members,
+                     typeof(IList),
+                     typeof(ICollection),
+                     nameof(ICollection.Count)))
         {
             // Nothing to do
         }
         else if (instanceType
-                .GetInterfaces()
-                .FirstOrDefault(static t => t.IsConstructedGenericType && t.GetGenericTypeDefinition() == typeof(IEnumerable<>)) is { } enumerableType)
+                     .GetInterfaces()
+                     .FirstOrDefault(static t => t.IsConstructedGenericType && t.GetGenericTypeDefinition() == typeof(IEnumerable<>)) is { } enumerableType)
         {
             var addGenericEnumerableMembersMethodDefinition =
                 ((Expression<Action<MemberData, ICollection<MemberData>>>)(static (data, members) => AddGenericEnumerableMembers<object>(data, members)))
@@ -443,7 +443,12 @@ public static class ObjectValidator
 
         var getItemPropertyInfo = listType
             .GetProperties()
+#if NETSTANDARD2_1_OR_GREATER || NET5_0_OR_GREATER
             .SingleOrDefault(static propertyInfo => propertyInfo.GetIndexParameters() is [var parameterInfo] && parameterInfo.ParameterType == typeof(int))
+#else
+            .SingleOrDefault(
+                static propertyInfo => propertyInfo.GetIndexParameters() is { Length: 1 } parameterInfos && parameterInfos[0].ParameterType == typeof(int))
+#endif
             .EnsureNotNull();
 
         if (isInterface)

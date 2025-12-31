@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using NUnit.Framework;
 using Omnifactotum.Annotations;
@@ -13,10 +14,58 @@ namespace Omnifactotum.Tests.Validation;
 [SuppressMessage("ReSharper", "ClassCanBeSealed.Local")]
 internal sealed class ValidationFactotumTests
 {
-    private const string InvalidConstraintTypeExceptionMessageEnding =
-        """
-        is not a valid constraint type (must be an instantiatable class that implements "Omnifactotum.Validation.Constraints.IMemberConstraint"). (Parameter 'constraintType')
-        """;
+    private static readonly string InvalidConstraintTypeExceptionMessageEnding =
+        $"""
+         is not a valid constraint type (must be an instantiatable class that implements "Omnifactotum.Validation.Constraints.IMemberConstraint").{
+             LocalFactotum.GetArgumentExceptionParameterDetails("constraintType")}
+         """;
+
+    public static IEnumerable<TestCaseData> TestValidateAndRegisterMemberConstraintTypeAndCreateMemberConstraintWhenInvalidArgumentThenThrowsCases
+    {
+        get
+        {
+            yield return new TestCaseData(
+                typeof(string),
+                $"""
+                 "System.String" {InvalidConstraintTypeExceptionMessageEnding}
+                 """);
+
+            yield return new TestCaseData(
+                typeof(IMemberConstraint),
+                $"""
+                 "Omnifactotum.Validation.Constraints.IMemberConstraint" {InvalidConstraintTypeExceptionMessageEnding}
+                 """);
+
+            yield return new TestCaseData(
+                typeof(NotNullConstraint<>),
+                $"""
+                 "Omnifactotum.Validation.Constraints.NotNullConstraint<T>" {InvalidConstraintTypeExceptionMessageEnding}
+                 """);
+
+            yield return new TestCaseData(
+                typeof(ITestMemberConstraint),
+                $"""
+                 "Omnifactotum.Tests.Validation.ValidationFactotumTests.ITestMemberConstraint" {InvalidConstraintTypeExceptionMessageEnding}
+                 """);
+
+            yield return new TestCaseData(
+                typeof(TestMemberConstraintBase),
+                $"""
+                 "Omnifactotum.Tests.Validation.ValidationFactotumTests.TestMemberConstraintBase" {InvalidConstraintTypeExceptionMessageEnding}
+                 """);
+
+            yield return new TestCaseData(
+                typeof(NoParameterlessConstructorMemberConstraint),
+                "The constraint type \"Omnifactotum.Tests.Validation.ValidationFactotumTests.NoParameterlessConstructorMemberConstraint\"\x0020"
+                + $"must have a parameterless constructor.{LocalFactotum.GetArgumentExceptionParameterDetails("constraintType")}");
+
+            yield return new TestCaseData(
+                typeof(ValueTypeMemberConstraint),
+                $"""
+                 "Omnifactotum.Tests.Validation.ValidationFactotumTests.ValueTypeMemberConstraint" {InvalidConstraintTypeExceptionMessageEnding}
+                 """);
+        }
+    }
 
     [Test]
     [TestCase(typeof(NotNullConstraint))]
@@ -47,41 +96,7 @@ internal sealed class ValidationFactotumTests
     }
 
     [Test]
-    [TestCase(
-        typeof(string),
-        $"""
-        "System.String" {InvalidConstraintTypeExceptionMessageEnding}
-        """)]
-    [TestCase(
-        typeof(IMemberConstraint),
-        $"""
-        "Omnifactotum.Validation.Constraints.IMemberConstraint" {InvalidConstraintTypeExceptionMessageEnding}
-        """)]
-    [TestCase(
-        typeof(NotNullConstraint<>),
-        $"""
-        "Omnifactotum.Validation.Constraints.NotNullConstraint<T>" {InvalidConstraintTypeExceptionMessageEnding}
-        """)]
-    [TestCase(
-        typeof(ITestMemberConstraint),
-        $"""
-        "Omnifactotum.Tests.Validation.ValidationFactotumTests.ITestMemberConstraint" {InvalidConstraintTypeExceptionMessageEnding}
-        """)]
-    [TestCase(
-        typeof(TestMemberConstraintBase),
-        $"""
-        "Omnifactotum.Tests.Validation.ValidationFactotumTests.TestMemberConstraintBase" {InvalidConstraintTypeExceptionMessageEnding}
-        """)]
-    [TestCase(
-        typeof(NoParameterlessConstructorMemberConstraint),
-        """
-        The constraint type "Omnifactotum.Tests.Validation.ValidationFactotumTests.NoParameterlessConstructorMemberConstraint" must have a parameterless constructor. (Parameter 'constraintType')
-        """)]
-    [TestCase(
-        typeof(ValueTypeMemberConstraint),
-        $"""
-        "Omnifactotum.Tests.Validation.ValidationFactotumTests.ValueTypeMemberConstraint" {InvalidConstraintTypeExceptionMessageEnding}
-        """)]
+    [TestCaseSource(nameof(TestValidateAndRegisterMemberConstraintTypeAndCreateMemberConstraintWhenInvalidArgumentThenThrowsCases))]
     public void TestValidateAndRegisterMemberConstraintTypeAndCreateMemberConstraintWhenInvalidArgumentThenThrows(
         Type constraintType,
         string expectedExceptionMessage)

@@ -8,6 +8,7 @@ using System.Text;
 using System.Text.RegularExpressions;
 using Omnifactotum.Annotations;
 using PureAttribute = System.Diagnostics.Contracts.PureAttribute;
+using SuppressMessageAttribute = System.Diagnostics.CodeAnalysis.SuppressMessageAttribute;
 
 //// ReSharper disable RedundantNullnessAttributeWithNullableReferenceTypes
 //// ReSharper disable once UseNullableReferenceTypesAnnotationSyntax
@@ -28,7 +29,11 @@ public sealed class TemplatedStringResolver
     /// <seealso cref="TemplateVariables"/>
     public static readonly StringComparer DefaultTemplateVariableNameComparer = StringComparer.Ordinal;
 
+#if NETSTANDARD2_1_OR_GREATER || NET5_0_OR_GREATER
     private delegate void AppendAction(ReadOnlySpan<char> value);
+#else
+    private delegate void AppendAction(string value);
+#endif
 
     /// <summary>
     ///     Initializes a new instance of the <see cref="TemplatedStringResolver"/> class using the specified template variables.
@@ -65,7 +70,7 @@ public sealed class TemplatedStringResolver
 
         if (invalidVariableNames.Length != 0)
         {
-            throw new ArgumentException($@"The following variable names are invalid: {invalidVariableNames.ToUIString()}.", nameof(templateVariables));
+            throw new ArgumentException($"The following variable names are invalid: {invalidVariableNames.ToUIString()}.", nameof(templateVariables));
         }
     }
 
@@ -166,6 +171,7 @@ public sealed class TemplatedStringResolver
     [Pure]
     [Omnifactotum.Annotations.Pure]
     [NotNull]
+    [SuppressMessage("ReSharper", "CanSimplifyDictionaryTryGetValueWithGetValueOrDefault", Justification = "Multiple target frameworks.")]
     public string Resolve(
         [NotNull] string templatedString,
         TemplatedStringResolverOptions options = TemplatedStringResolverOptions.None)
@@ -210,11 +216,19 @@ public sealed class TemplatedStringResolver
             var match = Constants.TemplateRegex.Match(templatedString, index);
             if (!match.Success)
             {
+#if NETSTANDARD2_1_OR_GREATER || NET5_0_OR_GREATER
                 onAppend?.Invoke(templatedString.AsSpan(index));
+#else
+                onAppend?.Invoke(templatedString.Substring(index));
+#endif
                 break;
             }
 
+#if NETSTANDARD2_1_OR_GREATER || NET5_0_OR_GREATER
             onAppend?.Invoke(templatedString.AsSpan(index, match.Index - index));
+#else
+            onAppend?.Invoke(templatedString.Substring(index, match.Index - index));
+#endif
             index = match.Index + match.Length;
 
             var openingBraceGroup = match.Groups[Constants.GroupNames.OpeningBrace];
@@ -244,7 +258,7 @@ public sealed class TemplatedStringResolver
                     }
 
                     throw new TemplatedStringResolverException(
-                        $@"Error at index {match.Index}: the injected variable {variableName.ToUIString()} is not defined.");
+                        $"Error at index {match.Index}: the injected variable {variableName.ToUIString()} is not defined.");
                 }
 
                 onAppend?.Invoke(variableValue);
@@ -257,27 +271,38 @@ public sealed class TemplatedStringResolver
                 if (!options.IsAnySet(TemplatedStringResolverOptions.TolerateUnexpectedTokens))
                 {
                     throw new TemplatedStringResolverException(
-                        $@"Error at index {match.Index}: unexpected token {unexpectedTokenGroup.Value.ToUIString()}.");
+                        $"Error at index {match.Index}: unexpected token {unexpectedTokenGroup.Value.ToUIString()}.");
                 }
 
                 onAppend?.Invoke(unexpectedTokenGroup.Value);
                 continue;
             }
 
-            //// ReSharper disable once RedundantCast
-            var successfulGroups = ((IEnumerable<Group>)match.Groups).Where(group => group.Success).ToArray();
+            var successfulGroups = match
+                .Groups
+#if !NETSTANDARD2_1_OR_GREATER
+                .Cast<Group>()
+#endif
+                .Where(static group => group.Success)
+                .ToArray();
 
             var successfulGroupsDescription = successfulGroups
-                .Select(group => $@"{GetGroupName(group)} @ {group.Index}: {group.Value.ToUIString()}")
+                .Select(group => $"{GetGroupName(group)} @ {group.Index}: {group.Value.ToUIString()}")
                 .Distinct(StringComparer.Ordinal)
                 .Join(",\x0020");
 
             throw new InvalidOperationException(
-                $@"[Internal error] Error at index {match.Index}: unexpected regular expression match has occurred: {successfulGroupsDescription}.");
+                $"[Internal error] Error at index {match.Index}: unexpected regular expression match has occurred: {successfulGroupsDescription}.");
         }
 
         [NotNull]
-        static string GetGroupName([NotNull] Group group) => $@"{nameof(Group)} {group.Name.ToUIString()}";
+        [SuppressMessage("ReSharper", "UnusedParameter.Local", Justification = "Local contract.")]
+        static string GetGroupName([NotNull] Group group)
+#if NETSTANDARD2_1_OR_GREATER || NET47_OR_GREATER || NETCOREAPP1_1_OR_GREATER
+            => $"{nameof(Group)} {group.Name.ToUIString()}";
+#else
+            => nameof(Group);
+#endif
     }
 
     private static class Constants
@@ -293,11 +318,11 @@ public sealed class TemplatedStringResolver
         private static readonly string EscapedOpeningBraceChar = Regex.Escape(OpeningBraceChar.ToString(CultureInfo.InvariantCulture));
         private static readonly string EscapedClosingBraceChar = Regex.Escape(ClosingBraceChar.ToString(CultureInfo.InvariantCulture));
 
-        private static readonly string VariableNameRegexPattern = $@"[^{EscapedOpeningBraceChar}{EscapedClosingBraceChar}]*";
-        private static readonly string ValidVariableNameRegexPattern = $@"^{VariableNameRegexPattern}$";
+        private static readonly string VariableNameRegexPattern = $"[^{EscapedOpeningBraceChar}{EscapedClosingBraceChar}]*";
+        private static readonly string ValidVariableNameRegexPattern = $"^{VariableNameRegexPattern}$";
 
         private static readonly string TemplateRegexPattern =
-            $@"(?<{GroupNames.OpeningBrace}>{EscapedOpeningBraceChar}{EscapedOpeningBraceChar}) | (?:{
+            $"(?<{GroupNames.OpeningBrace}>{EscapedOpeningBraceChar}{EscapedOpeningBraceChar}) | (?:{
                 EscapedOpeningBraceChar}(?<{GroupNames.VariableName}>{VariableNameRegexPattern}){EscapedClosingBraceChar}) | (?<{
                     GroupNames.ClosingBrace}>{EscapedClosingBraceChar}{EscapedClosingBraceChar}) | (?<{
                         GroupNames.UnexpectedToken}>(?:{EscapedOpeningBraceChar}|{EscapedClosingBraceChar}))";

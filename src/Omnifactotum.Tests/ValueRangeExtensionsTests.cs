@@ -60,13 +60,15 @@ internal sealed class ValueRangeExtensionsTests
             Throws.ArgumentException
                 .With.Property(nameof(ArgumentException.ParamName))
                 .EqualTo("getNext")
-                .With.Message.EqualTo("The next value (1) is less than or equal to the previous value (1). (Parameter 'getNext')"));
+                .With.Message.EqualTo(
+                    $"The next value (1) is less than or equal to the previous value (1).{LocalFactotum.GetArgumentExceptionParameterDetails("getNext")}"));
 
         Assert.That(
             () => ValueRange.Create(1, 2).Enumerate(i => i - 1).ToArray(),
             Throws.ArgumentException.With.Property(nameof(ArgumentException.ParamName))
                 .EqualTo("getNext")
-                .With.Message.EqualTo("The next value (0) is less than or equal to the previous value (1). (Parameter 'getNext')"));
+                .With.Message.EqualTo(
+                    $"The next value (0) is less than or equal to the previous value (1).{LocalFactotum.GetArgumentExceptionParameterDetails("getNext")}"));
     }
 
     [Test]

@@ -165,9 +165,9 @@ public static partial class Factotum
             .GetType()
             .GetProperties(BindingFlags.Public | BindingFlags.Instance)
             .Where(info => info.CanWrite && info.GetIndexParameters().Length == 0)
-            .Select(info => KeyValuePair.Create(info, info.GetSingleOrDefaultCustomAttribute<DefaultValueAttribute>(false)))
+            .Select(info => OmnifactotumKeyValuePair.Create(info, info.GetSingleOrDefaultCustomAttribute<DefaultValueAttribute>(false)))
             .Where(pair => pair.Value is not null)
-            .Select(pair => KeyValuePair.Create(pair.Key, pair.Value!.Value))
+            .Select(pair => OmnifactotumKeyValuePair.Create(pair.Key, pair.Value!.Value))
             .ToArray();
 
         foreach (var propertyRecord in propertyRecords)

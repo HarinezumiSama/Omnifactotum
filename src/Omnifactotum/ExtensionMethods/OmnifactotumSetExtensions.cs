@@ -14,6 +14,11 @@ namespace System.Collections.Generic;
 /// </summary>
 public static class OmnifactotumSetExtensions
 {
+#if NET10_0_OR_GREATER
+#error As of .NET 10, `System.Collections.Generic.CollectionExtensions.AsReadOnly<T>()` is available
+#error Also, as of .NET 9, `System.Collections.ObjectModel.ReadOnlySet<T>` is available
+#endif
+
     /// <summary>
     ///     Returns a read-only wrapper for the specified set.
     /// </summary>

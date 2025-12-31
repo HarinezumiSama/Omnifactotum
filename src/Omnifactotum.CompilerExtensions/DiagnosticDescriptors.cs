@@ -1,4 +1,8 @@
-﻿using Microsoft.CodeAnalysis;
+﻿using System;
+using System.Linq;
+using System.Reflection;
+using System.Web;
+using Microsoft.CodeAnalysis;
 
 namespace Omnifactotum.CompilerExtensions;
 
@@ -11,7 +15,7 @@ internal static class DiagnosticDescriptors
         category: DiagnosticCategories.WellKnown.Style,
         defaultSeverity: DiagnosticSeverity.Warning,
         isEnabledByDefault: true,
-        helpLinkUri: $"{BaseHelpLinkUri}{DiagnosticDescriptorIds.AsyncMethodMissingAsyncSuffix}.md");
+        helpLinkUri: InternalConstants.GetHelpLinkUri(DiagnosticDescriptorIds.AsyncMethodMissingAsyncSuffix));
 
     public static readonly DiagnosticDescriptor SyncMethodHasAsyncSuffix = new(
         id: DiagnosticDescriptorIds.SyncMethodHasAsyncSuffix,
@@ -20,7 +24,7 @@ internal static class DiagnosticDescriptors
         category: DiagnosticCategories.WellKnown.Style,
         defaultSeverity: DiagnosticSeverity.Warning,
         isEnabledByDefault: true,
-        helpLinkUri: $"{BaseHelpLinkUri}{DiagnosticDescriptorIds.SyncMethodHasAsyncSuffix}.md");
+        helpLinkUri: InternalConstants.GetHelpLinkUri(DiagnosticDescriptorIds.SyncMethodHasAsyncSuffix));
 
     public static readonly DiagnosticDescriptor AsyncMethodMissingCancellationTokenParameter = new(
         id: DiagnosticDescriptorIds.AsyncMethodMissingCancellationTokenParameter,
@@ -29,14 +33,44 @@ internal static class DiagnosticDescriptors
         category: DiagnosticCategories.WellKnown.Design,
         defaultSeverity: DiagnosticSeverity.Warning,
         isEnabledByDefault: true,
-        helpLinkUri: $"{BaseHelpLinkUri}{DiagnosticDescriptorIds.AsyncMethodMissingCancellationTokenParameter}.md");
-
-    ////private const string BaseHelpLinkUri = "https://github.com/HarinezumiSama/Omnifactotum/blob/master/doc/Analyzers/Rule-"; // ❗TEMP
-    private const string BaseHelpLinkUri = "https://github.com/HarinezumiSama/Omnifactotum/blob/develop/doc/Analyzers/Rule-"; // ❗TEMP
+        helpLinkUri: InternalConstants.GetHelpLinkUri(DiagnosticDescriptorIds.AsyncMethodMissingCancellationTokenParameter));
 
     /// <remarks>
     ///     Calling <see cref="DiagnosticDescriptorIds.Validate"/> here since the static constructor of <see cref="DiagnosticDescriptorIds"/> is not called
     ///     (presumably because the constants are literals that don't require type initialization).
     /// </remarks>
     static DiagnosticDescriptors() => DiagnosticDescriptorIds.Validate();
+
+    private static class InternalConstants
+    {
+        private const string FallbackSourceCodeReference = "master";
+
+        private static readonly string EncodedSourceCodeReference = HttpUtility.UrlEncode(GetSourceCodeReference());
+
+        public static string GetHelpLinkUri(string diagnosticId)
+        {
+            if (string.IsNullOrEmpty(diagnosticId))
+            {
+                throw new ArgumentException("The diagnostic ID can be neither empty string nor null.", nameof(diagnosticId));
+            }
+
+            return $"https://github.com/HarinezumiSama/Omnifactotum/blob/{EncodedSourceCodeReference}/doc/Analyzers/Rule-{diagnosticId}.md";
+        }
+
+        private static string GetSourceCodeReference() => InternalGetAssemblyMetadataValue("SourceCodeRevisionId") ?? FallbackSourceCodeReference;
+
+        private static string? InternalGetAssemblyMetadataValue(string key)
+        {
+            if (string.IsNullOrEmpty(key))
+            {
+                throw new ArgumentException("The value can be neither empty string nor null.", nameof(key));
+            }
+
+            var attribute = typeof(InternalConstants).Assembly
+                .GetCustomAttributes<AssemblyMetadataAttribute>()
+                .SingleOrDefault(attribute => attribute.Key == key);
+
+            return attribute?.Value;
+        }
+    }
 }

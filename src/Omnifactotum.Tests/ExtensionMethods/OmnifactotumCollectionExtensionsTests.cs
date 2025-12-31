@@ -11,8 +11,11 @@ using System.Threading;
 using System.Threading.Tasks;
 using NUnit.Framework;
 using NUnit.Framework.Constraints;
-using Omnifactotum.Annotations;
 using Omnifactotum.NUnit;
+
+#if NETCOREAPP3_1_OR_GREATER || NET5_0_OR_GREATER
+using Omnifactotum.Annotations;
+#endif
 
 namespace Omnifactotum.Tests.ExtensionMethods;
 
@@ -691,7 +694,7 @@ internal sealed class OmnifactotumCollectionExtensionsTests
         Assert.That(() => new ReferenceTypeDisposable?[0].DisposeCollectionItemsSafely(), Throws.Nothing);
         Assert.That(() => ImmutableArray<ReferenceTypeDisposable>.Empty.DisposeCollectionItemsSafely(), Throws.Nothing);
 
-        ExecuteTestCase((i1, i2, i3) => Enumerable.Repeat(i1, 1).Append(i2).Append(i3));
+        ExecuteTestCase((i1, i2, i3) => Enumerable.Repeat(i1, 1).Concat([i2, i3]));
         ExecuteTestCase((i1, i2, i3) => new[] { i1, i2, i3 });
         ExecuteTestCase((i1, i2, i3) => ImmutableArray.Create(i1, i2, i3));
 
@@ -727,7 +730,7 @@ internal sealed class OmnifactotumCollectionExtensionsTests
         Assert.That(() => new ValueTypeDisposable?[0].DisposeCollectionItemsSafely(), Throws.Nothing);
         Assert.That(() => ImmutableArray<ValueTypeDisposable?>.Empty.DisposeCollectionItemsSafely(), Throws.Nothing);
 
-        ExecuteTestCase((i1, i2, i3) => Enumerable.Repeat(i1, 1).Append(i2).Append(i3));
+        ExecuteTestCase((i1, i2, i3) => Enumerable.Repeat(i1, 1).Concat([i2, i3]));
         ExecuteTestCase((i1, i2, i3) => new[] { i1, i2, i3 });
         ExecuteTestCase((i1, i2, i3) => ImmutableArray.Create(i1, i2, i3));
 
@@ -951,8 +954,8 @@ internal sealed class OmnifactotumCollectionExtensionsTests
     [Test]
     public void TestEmptyIfNullWhenArgumentIsNotNullNorItsEquivalentThenSucceeds()
     {
-        ExecuteTestCase(new[] { 17 }.Append(23), [17, 23]);
-        ExecuteTestCase(new[] { "Hello" }.Append("world"), ["Hello", "world"]);
+        ExecuteTestCase(new[] { 17 }.Concat([23]), [17, 23]);
+        ExecuteTestCase(new[] { "Hello" }.Concat(["world"]), ["Hello", "world"]);
 
         ExecuteTestCase(new[] { 19, 29 }, [19, 29]);
         ExecuteTestCase(new[] { "Bye", "all" }, ["Bye", "all"]);
@@ -1067,6 +1070,83 @@ internal sealed class OmnifactotumCollectionExtensionsTests
         }
     }
 
+    [Test]
+    [SuppressMessage("ReSharper", "InvokeAsExtensionMethod")]
+    [SuppressMessage("ReSharper", "RedundantCast")]
+    public void TestToHashSetWithComparerArgument()
+    {
+        Assert.That(
+            () => OmnifactotumCollectionExtensions.ToHashSet((IEnumerable<int>?)null!, EqualityComparer<int>.Default),
+            Throws.ArgumentNullException.With.Property(nameof(ArgumentException.ParamName)).EqualTo("collection"));
+
+        Assert.That(
+            () => OmnifactotumCollectionExtensions.ToHashSet((IEnumerable<int>?)null!, (IEqualityComparer<int>?)null),
+            Throws.ArgumentNullException.With.Property(nameof(ArgumentException.ParamName)).EqualTo("collection"));
+
+        //// ReSharper disable StringLiteralTypo
+        var inputCollection = new[] { "breaKFAst", "зАвтрак", "朝ごはん", "bREAkfast", "petiT-DÉjeuner", "заВТрак", "早餐" };
+        //// ReSharper restore StringLiteralTypo
+
+        var comparer1 = StringComparer.OrdinalIgnoreCase;
+        var expectedItems1 = inputCollection.Distinct(comparer1).ToArray();
+
+        var hashSet1 = OmnifactotumCollectionExtensions.ToHashSet(inputCollection, comparer1);
+        Assert.That(hashSet1.Comparer, Is.SameAs(comparer1));
+        Assert.That(hashSet1.Count, Is.EqualTo(expectedItems1.Length));
+        foreach (var item in expectedItems1)
+        {
+            Assert.That(hashSet1.Contains(item), Is.True);
+            Assert.That(hashSet1.Contains(item.ToLowerInvariant()), Is.True);
+            Assert.That(hashSet1.Contains(item.ToUpperInvariant()), Is.True);
+        }
+
+        var comparer2 = StringComparer.Ordinal;
+        var expectedItems2 = inputCollection.Distinct(comparer2).ToArray();
+
+        var hashSet2 = OmnifactotumCollectionExtensions.ToHashSet(inputCollection, comparer2);
+        Assert.That(hashSet2.Comparer, Is.SameAs(comparer2));
+        Assert.That(hashSet2.Count, Is.EqualTo(expectedItems2.Length));
+        foreach (var item in expectedItems2)
+        {
+            var itemLower = item.ToLowerInvariant();
+            var itemUpper = item.ToUpperInvariant();
+
+            Assert.That(hashSet2.Contains(item), Is.True);
+            Assert.That(hashSet2.Contains(itemLower), item == itemLower ? Is.True : Is.False);
+            Assert.That(hashSet2.Contains(itemUpper), item == itemUpper ? Is.True : Is.False);
+        }
+    }
+
+    [Test]
+    [SuppressMessage("ReSharper", "InvokeAsExtensionMethod")]
+    [SuppressMessage("ReSharper", "RedundantCast")]
+    public void TestToHashSetWithoutComparerArgument()
+    {
+        Assert.That(
+            () => OmnifactotumCollectionExtensions.ToHashSet((IEnumerable<int>?)null!),
+            Throws.ArgumentNullException.With.Property(nameof(ArgumentException.ParamName)).EqualTo("collection"));
+
+        //// ReSharper disable StringLiteralTypo
+        var inputCollection = new[] { "breaKFAst", "зАвтрак", "朝ごはん", "bREAkfast", "petiT-DÉjeuner", "заВТрак", "早餐" };
+        //// ReSharper restore StringLiteralTypo
+
+        var expectedItems = inputCollection.Distinct().ToArray();
+
+        var hashSet = OmnifactotumCollectionExtensions.ToHashSet(inputCollection);
+        Assert.That(hashSet.Comparer, Is.SameAs(EqualityComparer<string>.Default));
+        Assert.That(hashSet.Count, Is.EqualTo(expectedItems.Length));
+        foreach (var item in expectedItems)
+        {
+            var itemLower = item.ToLowerInvariant();
+            var itemUpper = item.ToUpperInvariant();
+
+            Assert.That(hashSet.Contains(item), Is.True);
+            Assert.That(hashSet.Contains(itemLower), item == itemLower ? Is.True : Is.False);
+            Assert.That(hashSet.Contains(itemUpper), item == itemUpper ? Is.True : Is.False);
+        }
+    }
+
+#if NETCOREAPP3_1_OR_GREATER || NET5_0_OR_GREATER
     [Test]
     public void TestEnumerateToListAsyncWhenInvalidArgumentThenThrows()
     {
@@ -1211,6 +1291,7 @@ internal sealed class OmnifactotumCollectionExtensionsTests
                     .Property(nameof(OperationCanceledException.CancellationToken))
                     .EqualTo(cancellationToken));
     }
+#endif
 
     [Test]
     public void TestFlattenWhenInvalidArgumentThenThrows()

@@ -1,4 +1,17 @@
-﻿using System;
+﻿#if NETFRAMEWORK
+using System;
+using System.CodeDom.Compiler;
+using System.IO;
+using System.Diagnostics.CodeAnalysis;
+using System.Reflection;
+using System.Reflection.Emit;
+using Microsoft.CSharp;
+using NUnit.Framework;
+using Omnifactotum.NUnit;
+using static Omnifactotum.FormattableStringFactotum;
+
+#else
+using System;
 using System.Diagnostics.CodeAnalysis;
 using System.IO;
 using System.Linq;
@@ -10,6 +23,8 @@ using Microsoft.CodeAnalysis.CSharp;
 using NUnit.Framework;
 using Omnifactotum.NUnit;
 using static Omnifactotum.FormattableStringFactotum;
+
+#endif
 
 namespace Omnifactotum.Tests.ExtensionMethods;
 
@@ -30,17 +45,41 @@ internal sealed class OmnifactotumAssemblyExtensionsTests
         => Assert.That(() => ((Assembly?)null)!.GetLocalPath(), Throws.TypeOf<ArgumentNullException>());
 
     [Test]
+#if NETFRAMEWORK
+    [TestCase(false)]
+    [TestCase(true)]
+#else
     [TestCase(OutputKind.DynamicallyLinkedLibrary)]
     [TestCase(OutputKind.ConsoleApplication)]
-    public void TestGetLocalPathWhenInMemoryAssemblyIsPassedThenThrows(OutputKind outputKind)
+#endif
+    public void TestGetLocalPathWhenInMemoryAssemblyIsPassedThenThrows(
+#if NETFRAMEWORK
+        bool generateExecutable
+#else
+        OutputKind outputKind
+#endif
+    )
     {
-        const string SourceCode = @"static class Program { static void Main() { } }";
+        const string SourceCode = "static class Program { static void Main() { } }";
 
+#if NETFRAMEWORK
+        var codeProvider = new CSharpCodeProvider();
+
+        var compilerResults = codeProvider.CompileAssemblyFromSource(
+            new CompilerParameters { GenerateInMemory = true, GenerateExecutable = generateExecutable },
+            SourceCode);
+
+        Assert.That(compilerResults, Is.Not.Null);
+        Assert.That(compilerResults.Errors, Is.Empty);
+
+        var assembly = compilerResults.CompiledAssembly.AssertNotNull();
+
+#else
         var syntaxTree = CSharpSyntaxTree.ParseText(SourceCode);
 
         var compilation = CSharpCompilation
             .Create(
-                AsInvariant($@"{nameof(TestGetLocalPathWhenInMemoryAssemblyIsPassedThenThrows)}_{Guid.NewGuid():N}"),
+                AsInvariant($"{nameof(TestGetLocalPathWhenInMemoryAssemblyIsPassedThenThrows)}_{Guid.NewGuid():N}"),
                 options: new CSharpCompilationOptions(outputKind, platform: Platform.AnyCpu))
             .AssertNotNull()
             .AddReferences(MetadataReference.CreateFromFile(typeof(object).Assembly.Location))
@@ -57,11 +96,12 @@ internal sealed class OmnifactotumAssemblyExtensionsTests
             emitResult.Success,
             Is.True,
             () => AsInvariant(
-                $@"Failed to compile an in-memory assembly:{Environment.NewLine}{
-                    emitResult.Diagnostics.Select(d => AsInvariant($@"* {d.GetMessage()}")).Join(Environment.NewLine)}"));
+                $"Failed to compile an in-memory assembly:{Environment.NewLine}{
+                    emitResult.Diagnostics.Select(d => AsInvariant($"* {d.GetMessage()}")).Join(Environment.NewLine)}"));
 
         stream.Position = 0;
         var assembly = AssemblyLoadContext.Default.LoadFromStream(stream).AssertNotNull();
+#endif
 
         Assert.That(() => assembly.GetLocalPath(), Throws.TypeOf<ArgumentException>());
     }
@@ -69,10 +109,13 @@ internal sealed class OmnifactotumAssemblyExtensionsTests
     [Test]
     [TestCase(AssemblyBuilderAccess.Run)]
     [TestCase(AssemblyBuilderAccess.RunAndCollect)]
+#if NETFRAMEWORK
+    [TestCase(AssemblyBuilderAccess.RunAndSave)]
+#endif
     public void TestGetLocalPathWhenDynamicAssemblyIsPassedThenThrows(AssemblyBuilderAccess assemblyBuilderAccess)
     {
         var assemblyBuilder = AssemblyBuilder.DefineDynamicAssembly(
-            new AssemblyName(AsInvariant($@"{nameof(TestGetLocalPathWhenDynamicAssemblyIsPassedThenThrows)}_{Guid.NewGuid():N}")),
+            new AssemblyName(AsInvariant($"{nameof(TestGetLocalPathWhenDynamicAssemblyIsPassedThenThrows)}_{Guid.NewGuid():N}")),
             assemblyBuilderAccess);
 
         Assert.That(() => assemblyBuilder.GetLocalPath(), Throws.TypeOf<ArgumentException>());

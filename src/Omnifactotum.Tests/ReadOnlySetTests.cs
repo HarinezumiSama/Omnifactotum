@@ -315,7 +315,7 @@ internal sealed class ReadOnlySetTests
         var readOnlySet = new ReadOnlySet<int>(set);
 
         Assert.That(readOnlySet.SetEquals(set.ToArray()), Is.True);
-        Assert.That(readOnlySet.SetEquals(set.ToArray().Append(ValueExtra)), Is.False);
+        Assert.That(readOnlySet.SetEquals(set.ToArray().Concat([ValueExtra])), Is.False);
     }
 
     private static HashSet<int> CreateSet() => [Value1, Value2, Value3, Value17];

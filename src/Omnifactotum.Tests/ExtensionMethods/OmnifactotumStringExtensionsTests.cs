@@ -184,31 +184,33 @@ internal sealed class OmnifactotumStringExtensionsTests
     public void TestEnsureNotEmpty()
     {
 #if NET5_0_OR_GREATER
-        const string ExpectedNullStringFailureMessage =
-            $"The following expression is null or an empty string: {{ {nameof(NullString)} }}. (Parameter 'value')";
+        var expectedNullStringFailureMessage =
+            $"The following expression is null or an empty string: {{ {nameof(NullString)} }}.{LocalFactotum.GetArgumentExceptionParameterDetails("value")}";
 #else
-        const string ExpectedNullStringFailureMessage = "The value is null or an empty string. (Parameter 'value')";
+        var expectedNullStringFailureMessage = $"The value is null or an empty string.{LocalFactotum.GetArgumentExceptionParameterDetails("value")}";
 #endif
 
         Assert.That(
             () => NullString.EnsureNotEmpty(),
-            Throws.ArgumentException.With.Message.EqualTo(ExpectedNullStringFailureMessage));
+            Throws.ArgumentException.With.Message.EqualTo(expectedNullStringFailureMessage));
 
 #if NET5_0_OR_GREATER
-        const string ExpectedEmptyStringFailureMessage = "The following expression is null or an empty string: { string.Empty }. (Parameter 'value')";
+        var expectedEmptyStringFailureMessage = $"The following expression is null or an empty string: {{ string.Empty }}.{
+            LocalFactotum.GetArgumentExceptionParameterDetails("value")}";
 #else
-        const string ExpectedEmptyStringFailureMessage = "The value is null or an empty string. (Parameter 'value')";
+        var expectedEmptyStringFailureMessage = $"The value is null or an empty string.{LocalFactotum.GetArgumentExceptionParameterDetails("value")}";
 #endif
 
         Assert.That(
             () => string.Empty.EnsureNotEmpty(),
-            Throws.ArgumentException.With.Message.EqualTo(ExpectedEmptyStringFailureMessage));
+            Throws.ArgumentException.With.Message.EqualTo(expectedEmptyStringFailureMessage));
 
 #if NET5_0_OR_GREATER
-        const string ExpectedExpressionFailureMessage =
-            "The following expression is null or an empty string: { directedGraph.First().Tails.First().Tails.First().Value }. (Parameter 'value')";
+        var expectedExpressionFailureMessage =
+            $"The following expression is null or an empty string: {{ directedGraph.First().Tails.First().Tails.First().Value }}.{
+                LocalFactotum.GetArgumentExceptionParameterDetails("value")}";
 #else
-        const string ExpectedExpressionFailureMessage = "The value is null or an empty string. (Parameter 'value')";
+        var expectedExpressionFailureMessage = $"The value is null or an empty string.{LocalFactotum.GetArgumentExceptionParameterDetails("value")}";
 #endif
 
         var directedGraph = new DirectedGraph<string?>
@@ -230,7 +232,7 @@ internal sealed class OmnifactotumStringExtensionsTests
 
         Assert.That(
             () => directedGraph.First().Tails.First().Tails.First().Value.EnsureNotEmpty(),
-            Throws.ArgumentException.With.Message.EqualTo(ExpectedExpressionFailureMessage));
+            Throws.ArgumentException.With.Message.EqualTo(expectedExpressionFailureMessage));
 
         Assert.That(() => "\x0020".EnsureNotEmpty(), Is.EqualTo("\x0020"));
         Assert.That(() => "\t".EnsureNotEmpty(), Is.EqualTo("\t"));
@@ -247,41 +249,44 @@ internal sealed class OmnifactotumStringExtensionsTests
     public void TestEnsureNotBlank()
     {
 #if NET5_0_OR_GREATER
-        const string ExpectedNullStringFailureMessage =
-            $"The following expression is null or a blank string: {{ {nameof(NullString)} }}. (Parameter 'value')";
+        var expectedNullStringFailureMessage =
+            $"The following expression is null or a blank string: {{ {nameof(NullString)} }}.{LocalFactotum.GetArgumentExceptionParameterDetails("value")}";
 #else
-        const string ExpectedNullStringFailureMessage = "The value is null or a blank string. (Parameter 'value')";
+        var expectedNullStringFailureMessage = $"The value is null or a blank string.{LocalFactotum.GetArgumentExceptionParameterDetails("value")}";
 #endif
 
         Assert.That(
             () => NullString.EnsureNotBlank(),
-            Throws.ArgumentException.With.Message.EqualTo(ExpectedNullStringFailureMessage));
+            Throws.ArgumentException.With.Message.EqualTo(expectedNullStringFailureMessage));
 
 #if NET5_0_OR_GREATER
-        const string ExpectedEmptyStringFailureMessage = "The following expression is null or a blank string: { string.Empty }. (Parameter 'value')";
+        var expectedEmptyStringFailureMessage = $"The following expression is null or a blank string: {{ string.Empty }}.{
+            LocalFactotum.GetArgumentExceptionParameterDetails("value")}";
 #else
-        const string ExpectedEmptyStringFailureMessage = "The value is null or a blank string. (Parameter 'value')";
+        var expectedEmptyStringFailureMessage = $"The value is null or a blank string.{LocalFactotum.GetArgumentExceptionParameterDetails("value")}";
 #endif
 
         Assert.That(
             () => string.Empty.EnsureNotBlank(),
-            Throws.ArgumentException.With.Message.EqualTo(ExpectedEmptyStringFailureMessage));
+            Throws.ArgumentException.With.Message.EqualTo(expectedEmptyStringFailureMessage));
 
 #if NET5_0_OR_GREATER
-        const string ExpectedBlankStringFailureMessage = "The following expression is null or a blank string: { \"\\t\\r\\n\\x0020\" }. (Parameter 'value')";
+        var expectedBlankStringFailureMessage = $"The following expression is null or a blank string: {{ \"\\t\\r\\n\\x0020\" }}.{
+            LocalFactotum.GetArgumentExceptionParameterDetails("value")}";
 #else
-        const string ExpectedBlankStringFailureMessage = "The value is null or a blank string. (Parameter 'value')";
+        var expectedBlankStringFailureMessage = $"The value is null or a blank string.{LocalFactotum.GetArgumentExceptionParameterDetails("value")}";
 #endif
 
         Assert.That(
             () => "\t\r\n\x0020".EnsureNotBlank(),
-            Throws.ArgumentException.With.Message.EqualTo(ExpectedBlankStringFailureMessage));
+            Throws.ArgumentException.With.Message.EqualTo(expectedBlankStringFailureMessage));
 
 #if NET5_0_OR_GREATER
-        const string ExpectedExpressionFailureMessage =
-            "The following expression is null or a blank string: { directedGraph.First().Tails.First().Tails.First().Value }. (Parameter 'value')";
+        var expectedExpressionFailureMessage =
+            $"The following expression is null or a blank string: {{ directedGraph.First().Tails.First().Tails.First().Value }}.{
+                LocalFactotum.GetArgumentExceptionParameterDetails("value")}";
 #else
-        const string ExpectedExpressionFailureMessage = "The value is null or a blank string. (Parameter 'value')";
+        var expectedExpressionFailureMessage = $"The value is null or a blank string.{LocalFactotum.GetArgumentExceptionParameterDetails("value")}";
 #endif
 
         var directedGraph = new DirectedGraph<string?>
@@ -303,7 +308,7 @@ internal sealed class OmnifactotumStringExtensionsTests
 
         Assert.That(
             () => directedGraph.First().Tails.First().Tails.First().Value.EnsureNotBlank(),
-            Throws.ArgumentException.With.Message.EqualTo(ExpectedExpressionFailureMessage));
+            Throws.ArgumentException.With.Message.EqualTo(expectedExpressionFailureMessage));
 
         Assert.That(() => "X".EnsureNotBlank(), Is.EqualTo("X"));
         Assert.That(() => "Hello world".EnsureNotBlank(), Is.EqualTo("Hello world"));

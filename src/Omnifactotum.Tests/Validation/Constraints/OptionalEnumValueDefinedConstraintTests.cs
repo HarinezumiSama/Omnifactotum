@@ -13,7 +13,7 @@ namespace Omnifactotum.Tests.Validation.Constraints;
 internal sealed class OptionalEnumValueDefinedConstraintTests : TypedConstraintTestsBase<OptionalEnumValueDefinedConstraint<ConsoleColor>, ConsoleColor?>
 {
     protected override IEnumerable<ConsoleColor?> GetTypedValidValues()
-        => EnumFactotum.GetAllValues<ConsoleColor>().Select(item => (ConsoleColor?)item).Prepend(null);
+        => new ConsoleColor?[] { null }.Concat(EnumFactotum.GetAllValues<ConsoleColor>().Select(item => (ConsoleColor?)item));
 
     protected override IEnumerable<ConsoleColor?> GetTypedInvalidValues()
     {

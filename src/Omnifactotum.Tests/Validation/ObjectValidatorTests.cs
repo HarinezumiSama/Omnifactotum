@@ -196,20 +196,44 @@ internal sealed partial class ObjectValidatorTests
 #endif
                     $"{InstanceExpression}.ContainedValue.NullableImmutableStrings",
                     $"{InstanceExpression}.ContainedValue.AnotherNullableImmutableStrings.Value.Item[1]",
+#if NETFRAMEWORK
+                    $"Convert({InstanceExpression}.ContainedValue.MultipleDataItems[1]).Value",
+#else
                     $"Convert({InstanceExpression}.ContainedValue.MultipleDataItems[1], AnotherSimpleData).Value",
+#endif
                     $"{InstanceExpression}.ContainedValue.AnotherSimpleDataArray[1].Value",
                     $"{InstanceExpression}.ContainedValue.AnotherSimpleDataCollection.Item[1].Value",
+#if NETFRAMEWORK
+                    $"Convert({InstanceExpression}.ContainedValue.AnotherSimpleDataCustomEnumerable.Cast().First()).Value",
+#else
                     $"Convert({InstanceExpression}.ContainedValue.AnotherSimpleDataCustomEnumerable.Cast().First(), AnotherSimpleData).Value",
+#endif
                     $"{InstanceExpression}.ContainedValue.AnotherSimpleDataCustomGenericEnumerable.Skip(2).First().Value",
+#if NETFRAMEWORK
+                    $"Convert({InstanceExpression}.ContainedValue.AnotherSimpleDataCustomGenericEnumerableObject).Skip(2).First().Value",
+#else
                     $"Convert({InstanceExpression}.ContainedValue.AnotherSimpleDataCustomGenericEnumerableObject, IEnumerable`1).Skip(2).First().Value",
+#endif
                     $"{InstanceExpression}.ContainedValue.AnotherSimpleDataCustomGenericList.Item[1].Value",
                     $"{InstanceExpression}.ContainedValue.AnotherSimpleDataCustomGenericList.Item[2].Value",
+#if NETFRAMEWORK
+                    $"Convert({InstanceExpression}.ContainedValue.AnotherSimpleDataCustomList.Item[1]).Value",
+#else
                     $"Convert({InstanceExpression}.ContainedValue.AnotherSimpleDataCustomList.Item[1], AnotherSimpleData).Value",
+#endif
                     $"{InstanceExpression}.ContainedValue.AnotherSimpleDataCustomList.Item[3]",
+#if NETFRAMEWORK
+                    $"Convert({InstanceExpression}.ContainedValue.AnotherSimpleDataCustomList.Item[4]).Value",
+#else
                     $"Convert({InstanceExpression}.ContainedValue.AnotherSimpleDataCustomList.Item[4], AnotherSimpleData).Value",
+#endif
                     $"{InstanceExpression}.ContainedValue.AnotherSimpleDataCustomReadOnlyList.Item[3].Value",
                     $"{InstanceExpression}.ContainedValue.AnotherSimpleDataImmutableList.Item[2].Value",
+#if NETFRAMEWORK
+                    $"Convert({InstanceExpression}.ContainedValue.SingleBaseData).Value"
+#else
                     $"Convert({InstanceExpression}.ContainedValue.SingleBaseData, AnotherSimpleData).Value"
+#endif
                 }
             },
             {
@@ -289,23 +313,50 @@ internal sealed partial class ObjectValidatorTests
             $"[{InstanceExpression}.ContainedValue.AnotherNullableImmutableStrings.Value.Item[1]] The 'string' value cannot be null.",
             $"[{InstanceExpression}.ContainedValue.AnotherSimpleDataArray[1].Value] The value cannot be null.",
             $"[{InstanceExpression}.ContainedValue.AnotherSimpleDataCollection.Item[1].Value] The value cannot be null.",
-            $"[Convert({InstanceExpression
-            }.ContainedValue.AnotherSimpleDataCustomEnumerable.Cast().First(), AnotherSimpleData).Value] The value cannot be null.",
+
+#if NETFRAMEWORK
+            $"[Convert({InstanceExpression}.ContainedValue.AnotherSimpleDataCustomEnumerable.Cast().First()).Value] The value cannot be null.",
+#else
+            $"[Convert({
+                InstanceExpression}.ContainedValue.AnotherSimpleDataCustomEnumerable.Cast().First(), AnotherSimpleData).Value] The value cannot be null.",
+#endif
+
             $"[{InstanceExpression}.ContainedValue.AnotherSimpleDataCustomGenericEnumerable.Skip(2).First().Value] The value cannot be null.",
+
+#if NETFRAMEWORK
+            $"[Convert({InstanceExpression}.ContainedValue.AnotherSimpleDataCustomGenericEnumerableObject).Skip(2).First().Value] The value cannot be null.",
+#else
             $"[Convert({InstanceExpression
             }.ContainedValue.AnotherSimpleDataCustomGenericEnumerableObject, IEnumerable`1).Skip(2).First().Value] The value cannot be null.",
+#endif
+
             $"[{InstanceExpression}.ContainedValue.AnotherSimpleDataCustomGenericList.Item[1].Value] The value cannot be null.",
             $"[{InstanceExpression}.ContainedValue.AnotherSimpleDataCustomGenericList.Item[2].Value] The value cannot be null.",
+
+#if NETFRAMEWORK
+            $"[Convert({InstanceExpression}.ContainedValue.AnotherSimpleDataCustomList.Item[1]).Value] The value cannot be null.",
+#else
             $"[Convert({InstanceExpression}.ContainedValue.AnotherSimpleDataCustomList.Item[1], AnotherSimpleData).Value] The value cannot be null.",
+#endif
+
             $"[{InstanceExpression}.ContainedValue.AnotherSimpleDataCustomList.Item[3]] The value cannot be null.",
+
+#if NETFRAMEWORK
+            $"[Convert({InstanceExpression}.ContainedValue.AnotherSimpleDataCustomList.Item[4]).Value] The value cannot be null.",
+#else
             $"[Convert({InstanceExpression}.ContainedValue.AnotherSimpleDataCustomList.Item[4], AnotherSimpleData).Value] The value cannot be null.",
+#endif
+
             $"[{InstanceExpression}.ContainedValue.AnotherSimpleDataCustomReadOnlyList.Item[3].Value] The value cannot be null.",
             $"[{InstanceExpression}.ContainedValue.AnotherSimpleDataImmutableList.Item[2].Value] The value cannot be null.",
             $"[{InstanceExpression}.ContainedValue.Data.NullableValue] The value cannot be null.",
+
             $"[{InstanceExpression
             }.ContainedValue.Data.StartDate] Validation of the constraint \"Omnifactotum.Tests.Validation.ObjectValidatorTests.UtcDateConstraint\" failed.",
+
             $"[{InstanceExpression
             }.ContainedValue.Data.StartDate] Validation of the constraint \"Omnifactotum.Tests.Validation.ObjectValidatorTests.UtcDateTypedConstraint\" failed.",
+
             $"[{InstanceExpression}.ContainedValue.Data.Value] The value cannot be null."
         ]);
 
@@ -320,10 +371,20 @@ internal sealed partial class ObjectValidatorTests
 
         expectedExceptionMessageItems.AddRange(
         [
+#if NETFRAMEWORK
+            $"[Convert({InstanceExpression}.ContainedValue.MultipleDataItems[1]).Value] The value cannot be null.",
+#else
             $"[Convert({InstanceExpression}.ContainedValue.MultipleDataItems[1], AnotherSimpleData).Value] The value cannot be null.",
+#endif
+
             $"[{InstanceExpression}.ContainedValue.NonEmptyValue] The value must not be null or an empty string.",
             $"[{InstanceExpression}.ContainedValue.NullableImmutableStrings] The value cannot be null.",
+
+#if NETFRAMEWORK
+            $"[Convert({InstanceExpression}.ContainedValue.SingleBaseData).Value] The value cannot be null."
+#else
             $"[Convert({InstanceExpression}.ContainedValue.SingleBaseData, AnotherSimpleData).Value] The value cannot be null."
+#endif
         ]);
 
         var expectedExceptionMessage = expectedExceptionMessageItems
@@ -480,7 +541,11 @@ internal sealed partial class ObjectValidatorTests
             {
                 typeof(NotNullConstraint),
                 [
+#if NETFRAMEWORK
+                    $"Convert({InstanceExpression}.Properties.Skip(2).First()).Value.ContainedValue"
+#else
                     $"Convert({InstanceExpression}.Properties.Skip(2).First(), KeyValuePair`2).Value.ContainedValue"
+#endif
                 ]
             },
             {

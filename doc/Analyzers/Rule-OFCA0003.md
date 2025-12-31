@@ -1,4 +1,4 @@
-﻿# Omnifactotum Analyzer
+﻿# [Omnifactotum Analyzers](./README.md)
 
 ## Rule `OFCA0003`
 

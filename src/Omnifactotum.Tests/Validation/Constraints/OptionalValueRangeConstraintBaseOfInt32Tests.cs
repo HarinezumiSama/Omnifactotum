@@ -21,7 +21,7 @@ internal sealed class OptionalValueRangeConstraintBaseOfInt32Tests
         Assert.That(() => testee.ExposedRange.Upper, Is.EqualTo(23));
     }
 
-    protected override IEnumerable<int?> GetTypedValidValues() => Enumerable.Range(-17, 23).Select(i => i.AsNullable()).Prepend(null);
+    protected override IEnumerable<int?> GetTypedValidValues() => new int?[] { null }.Concat(Enumerable.Range(-17, 23).Select(i => i.AsNullable()));
 
     protected override IEnumerable<int?> GetTypedInvalidValues()
     {

@@ -109,3 +109,14 @@
 - `OutFunc<in T, TOutput, out TResult>`
 - `OutFunc<in T1, in T2, TOutput, out TResult>`
 - `OutFunc<in T1, in T2, in T3, TOutput, out TResult>`
+
+
+### Dealing with Compatibility Issues
+
+Due to certain inconsistencies between `.NET Standard 2.0`, `.NET Framework 4.*`, and `.NET Core 2.x`, you may need to apply one or more workarounds as described below when using **`Omnifactotum`** with your projects compiled for `.NET Standard 2.0` or `.NET Core 2.x` **-or-** a mix of `.NET Standard 2.0` and/or `.NET Core 2.x` and/or `.NET Framework 4.x`:
+
+| Omnifactotum's Class or Method                                                                                                             | Workaround                                                                                                                                                                                  |
+|:-------------------------------------------------------------------------------------------------------------------------------------------|:--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| `System.Collections.Generic.KeyValuePair`                                                                                                  | Use [`Omnifactotum.OmnifactotumKeyValuePair`](./src/Omnifactotum/OmnifactotumKeyValuePair.cs).                                                                                              |
+| <code>[OmnifactotumCollectionExtensions](./src/Omnifactotum/ExtensionMethods/OmnifactotumCollectionExtensions.cs).ToHashSet(...)</code>    | Use static method invocation instead of extension method invocation. That is: `OmnifactotumCollectionExtensions.ToHashSet(collection)` instead of `collection.ToHashSet()`.                 |
+| <code>[OmnifactotumDictionaryExtensions](./src/Omnifactotum/ExtensionMethods/OmnifactotumDictionaryExtensions.cs).GetValueOrDefault</code> | Use static method invocation instead of extension method invocation. That is: `OmnifactotumDictionaryExtensions.GetValueOrDefault(dictionary)` instead of `dictionary.GetValueOrDefault()`. |

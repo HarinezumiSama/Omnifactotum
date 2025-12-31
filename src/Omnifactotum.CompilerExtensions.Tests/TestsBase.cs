@@ -4,13 +4,32 @@ using System.IO;
 using Microsoft.CodeAnalysis.Testing;
 using NUnit.Framework;
 
-namespace Omnifactotum.Tests.CompilerExtensions;
+#if !NET6_0_OR_GREATER
+using System;
+#endif
+
+namespace Omnifactotum.CompilerExtensions.Tests;
 
 [TestFixture]
 internal abstract class TestsBase
 {
+    [SuppressMessage("ReSharper", "UseCollectionExpression", Justification = "Multiple target frameworks.")]
     protected static ReferenceAssemblies CreateReferenceAssemblies()
     {
+#if NET461
+        return ReferenceAssemblies.NetFramework.Net461.Default.AddPackages(
+            ImmutableArray.Create(
+                new PackageIdentity("System.Collections.Immutable", "7.0.0"),
+                new PackageIdentity("System.Threading.Tasks.Extensions", "4.5.4"),
+                new PackageIdentity("Microsoft.Bcl.AsyncInterfaces", "5.0.0")));
+#elif NET472
+        return ReferenceAssemblies.NetFramework.Net472.Default.AddPackages(
+            ImmutableArray.Create(
+                new PackageIdentity("System.Threading.Tasks.Extensions", "4.5.4"),
+                new PackageIdentity("Microsoft.Bcl.AsyncInterfaces", "5.0.0")));
+#elif NETCOREAPP2_1
+        return ReferenceAssemblies.NetCore.NetCoreApp21;
+#else
 #if NET9_0
         const string NetVersion = "9.0";
 #elif NET8_0
@@ -47,6 +66,7 @@ internal abstract class TestsBase
                 .AddPackages(ImmutableArray.Create(new PackageIdentity("Microsoft.AspNetCore.App.Ref", $"{NetVersion}.0")));
 
         return referenceAssemblies;
+#endif
     }
 
     protected static string RemoveExtension(string filePath) => Path.GetFullPath(Path.ChangeExtension(filePath, null));

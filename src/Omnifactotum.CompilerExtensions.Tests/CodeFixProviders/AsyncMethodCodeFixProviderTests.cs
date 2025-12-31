@@ -4,7 +4,6 @@ using System.Threading.Tasks;
 using Microsoft.CodeAnalysis.CSharp.Testing;
 using Microsoft.CodeAnalysis.Testing.Verifiers;
 using NUnit.Framework;
-using Omnifactotum.CompilerExtensions;
 using Omnifactotum.CompilerExtensions.Analyzers;
 using Omnifactotum.CompilerExtensions.CodeFixProviders;
 using Omnifactotum.NUnit;
@@ -13,7 +12,7 @@ using Verifier =
         Omnifactotum.CompilerExtensions.Analyzers.AsyncMethodAnalyzer,
         Omnifactotum.CompilerExtensions.CodeFixProviders.AsyncMethodCodeFixProvider>;
 
-namespace Omnifactotum.Tests.CompilerExtensions.CodeFixProviders;
+namespace Omnifactotum.CompilerExtensions.Tests.CodeFixProviders;
 
 [TestFixture(TestOf = typeof(AsyncMethodCodeFixProvider))]
 internal sealed class AsyncMethodCodeFixProviderTests : TestsBase

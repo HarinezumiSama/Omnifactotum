@@ -6,12 +6,11 @@ using Microsoft.CodeAnalysis.CSharp.Testing;
 using Microsoft.CodeAnalysis.Testing;
 using Microsoft.CodeAnalysis.Testing.Verifiers;
 using NUnit.Framework;
-using Omnifactotum.CompilerExtensions;
 using Omnifactotum.CompilerExtensions.Analyzers;
 using Omnifactotum.NUnit;
 using Verifier = Microsoft.CodeAnalysis.CSharp.Testing.NUnit.AnalyzerVerifier<Omnifactotum.CompilerExtensions.Analyzers.AsyncMethodAnalyzer>;
 
-namespace Omnifactotum.Tests.CompilerExtensions.Analyzers;
+namespace Omnifactotum.CompilerExtensions.Tests.Analyzers;
 
 [TestFixture(TestOf = typeof(AsyncMethodAnalyzer))]
 internal sealed class AsyncMethodAnalyzerTests : TestsBase

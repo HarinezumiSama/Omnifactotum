@@ -124,7 +124,7 @@ internal sealed class KeyedComparerTests
             Throws.ArgumentException
                 .With
                 .Message
-                .EqualTo("Invalid value type \"System.Int64\". (Parameter 'left')")
+                .EqualTo($"Invalid value type \"System.Int64\".{LocalFactotum.GetArgumentExceptionParameterDetails("left")}")
                 .And
                 .With
                 .Property(nameof(ArgumentException.ParamName))
@@ -135,7 +135,7 @@ internal sealed class KeyedComparerTests
             Throws.ArgumentException
                 .With
                 .Message
-                .EqualTo("Invalid value type \"System.Decimal\". (Parameter 'right')")
+                .EqualTo($"Invalid value type \"System.Decimal\".{LocalFactotum.GetArgumentExceptionParameterDetails("right")}")
                 .And
                 .With
                 .Property(nameof(ArgumentException.ParamName))
@@ -164,7 +164,7 @@ internal sealed class KeyedComparerTests
             Throws.ArgumentException
                 .With
                 .Message
-                .EqualTo("Invalid value type \"System.Int64\". (Parameter 'left')")
+                .EqualTo($"Invalid value type \"System.Int64\".{LocalFactotum.GetArgumentExceptionParameterDetails("left")}")
                 .And
                 .With
                 .Property(nameof(ArgumentException.ParamName))
@@ -175,7 +175,7 @@ internal sealed class KeyedComparerTests
             Throws.ArgumentException
                 .With
                 .Message
-                .EqualTo("Invalid value type \"System.Decimal\". (Parameter 'right')")
+                .EqualTo($"Invalid value type \"System.Decimal\".{LocalFactotum.GetArgumentExceptionParameterDetails("right")}")
                 .And
                 .With
                 .Property(nameof(ArgumentException.ParamName))
