@@ -1,4 +1,5 @@
-﻿using System.Diagnostics.CodeAnalysis;
+﻿using System;
+using System.Diagnostics.CodeAnalysis;
 using NUnit.Framework;
 using Omnifactotum.NUnit;
 
@@ -7,6 +8,13 @@ namespace Omnifactotum.Tests;
 [TestFixture(TestOf = typeof(CaseInsensitiveString))]
 internal sealed class CaseInsensitiveStringTests
 {
+    [Test]
+    public void TestStaticFields()
+    {
+        Assert.That(CaseInsensitiveString.Comparer, Is.SameAs(StringComparer.OrdinalIgnoreCase));
+        Assert.That(CaseInsensitiveString.Empty.Value, Is.EqualTo(string.Empty));
+    }
+
     [Test]
     public void TestParameterlessConstruction()
     {

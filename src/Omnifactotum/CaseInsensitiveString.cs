@@ -35,6 +35,11 @@ public readonly struct CaseInsensitiveString
     [PublicAPI]
     public static readonly StringComparer Comparer = StringComparer.OrdinalIgnoreCase;
 
+    /// <summary>
+    ///     Represents the empty <see cref="CaseInsensitiveString"/>, that is, the one that corresponds to <see cref="string.Empty"/>.
+    /// </summary>
+    public static readonly CaseInsensitiveString Empty = new(string.Empty);
+
     private readonly string _value;
 
     /// <summary>
