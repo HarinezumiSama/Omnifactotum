@@ -12,64 +12,39 @@
 
 ---
 
-### Changes in 0.23.0 (since 0.22.0)
+### Changes in 0.24.0 (since 0.23.0)
 
 #### Breaking changes
 
-- `MemberConstraintValidationError`: Removed the obsolete property `ErrorMessage`
-- Removed obsolete validation constraints
-  - `NotBlankStringConstraint` (use `NotNullAndNotBlankStringConstraint` instead)
-  - `NotNullOrEmptyCollectionConstraint` (use `NotNullAndNotEmptyCollectionConstraint` instead)
-  - `NotNullOrEmptyCollectionConstraint<T>` (use `NotNullAndNotEmptyCollectionConstraint<T>` instead)
-  - `NotNullOrEmptyStringConstraint` (use `NotNullAndNotEmptyStringConstraint` instead)
-  - `RegexStringConstraintBase` (use `NotNullRegexStringConstraintBase` instead)
-  - `WebUrlConstraint` (use `NotNullWebUrlConstraint` instead)
+- `CaseInsensitiveString`: Now a null `string` corresponds to a null `CaseInsensitiveString` and the underlying string value cannot be null
+- Newly added **Omnifactotum Compiler Extensions** may break your code if it does not comply with the added analyzer rules (for more details, refer to the _New features_ section)
 
 #### New features
 
-- Implemented building the NuGet package for .NET 8 and .NET 9
-- Added the `CaseInsensitiveString` structure
-- `OmnifactotumArrayExtensions`
-  - Added `EmptyIfNull(this T[]?)`
-- `OmnifactotumCollectionExtensions`
-  - Added `EmptyIfNull(this IEnumerable<T>?)`
-  - Added `ReplaceItems<TCollection, T>(this TCollection collection, IEnumerable<T>) where TCollection : ICollection<T>`
-- `OmnifactotumImmutableArrayExtensions`
-  - Added `EmptyIfDefault(this ImmutableArray<T>)`
-  - Added `EmptyIfNullOrDefault<T>(this ImmutableArray<T>?)`
-- Added `OmnifactotumKeyValuePairExtensions` with `ToValueTuple<TKey, TValue>()`
-- `OmnifactotumReadOnlySpanExtensions`
-  - Added `ToUIString(this ReadOnlySpan<char>)`
-- `OmnifactotumStringExtensions`
-  - Added `EmptyIfNull(this string?)`
-- `OmnifactotumTaskExtensions`
-  - Added `EnsureNotNullAsync(this Task<T?>)` (.NET 5+)
-- `OmnifactotumValueTaskExtensions`
-  - Added `EnsureNotNullAsync(this ValueTask<T?>)` (.NET 5+)
-- Added `OmnifactotumValueTupleExtensions` with `ToKeyValuePair<TKey, TValue>()` and `ToDictionaryEntry<TKey, TValue>()`
-
-#### Deprecations
-
-- Deprecated the `CaseInsensitiveStringKey` structure in favor of the `CaseInsensitiveString` structure
-- `OmnifactotumArrayExtensions`
-  - Deprecated `AvoidNull(this T[]?)` in favor of `EmptyIfNull(this T[]?)`
-- `OmnifactotumCollectionExtensions`
-  - Deprecated `AvoidNull(this IEnumerable<T>?)` in favor of `EmptyIfNull(this IEnumerable<T>?)`
-  - Deprecated `SetItems<T>(ICollection<T> collection, IEnumerable<T>)` in favor of `ReplaceItems<TCollection, T>()`
-- `OmnifactotumGenericObjectExtensions`
-  - Deprecated `AsArray<T>(this T)`
-  - Deprecated `AsCollection<T>(this T)`
-  - Deprecated `AsList<T>(this T)`
-  - Deprecated `AvoidNull<T>(this T?, Func<T>)`
-- `OmnifactotumImmutableArrayExtensions`
-  - Deprecated `AvoidNull(this ImmutableArray<T>)` in favor of `EmptyIfDefault(this ImmutableArray<T>)`
-  - Deprecated `AvoidNullOrDefault<T>(this ImmutableArray<T>?)` in favor of `EmptyIfNullOrDefault<T>(this ImmutableArray<T>?)`
-- `OmnifactotumStringExtensions`
-  - Deprecated `AvoidNull(this string?)` in favor of `EmptyIfNull(this string?)`
+- Added **Omnifactotum Compiler Extensions**
+  - Analyzers:
+    - OFCA0001: Asynchronous method/function lacks 'Async' suffix
+    - OFCA0002: Synchronous method/function has 'Async' suffix
+    - OFCA0003: Asynchronous method/function lacks 'CancellationToken' parameter
+  - Code fixers for:
+    - OFCA0001: Asynchronous method/function lacks 'Async' suffix
+    - OFCA0002: Synchronous method/function has 'Async' suffix
+- Reinstated support of:
+  - `.NET Framework 4.6.1`
+  - `.NET Framework 4.7.2`
+  - `.NET Standard 2.0`
+- `CaseInsensitiveString`
+  - Added the `Empty` static field (corresponds to `string.Empty`)
+- `OmnifactotumStringBuilderExtensions`:
+  - Added `AppendWhiteSpace(this StringBuilder)`
+  - Added `AppendWhiteSpaces(this StringBuilder, int)`
+- `OmnifactotumValueTupleExtensions`:
+  - Added `ToValueRange<T>(this ValueTuple<T, T>)`
+- `ValueRangeExtensions`:
+  - Added `GetMidpoint<T>(this ValueRange<T>)` (.NET 7+)
+  - Added `ToValueTuple<T>(this ValueRange<T>)`
 
 #### Updates and fixes
 
-- Documentation fix in `OmnifactotumStringExtensions.TrimPrefix()`
-- Performance improvements in `OmnifactotumStringExtensions.ToUIString()` and `OmnifactotumStringBuilderExtensions.AppendUIString()`
-- `MemberConstraintBase.FormatValue<TValue>()`: Fixed formatting of a known enumeration value
-- `OmnifactotumCollectionExtensions.FindDuplicates<T,TKey>(...)`: Minor refactoring/optimization
+- Object validation
+  - Fixed retrieving `Count` of supported collections (the previous approach did not work particularly for `ObservableCollection<T>`)
