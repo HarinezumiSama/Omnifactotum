@@ -261,6 +261,26 @@ internal sealed partial class ObjectValidatorTests
             set;
         }
 
+        [MemberConstraint(typeof(NotNullConstraint))]
+        [MemberItemConstraint(typeof(NotNullConstraint))]
+        [MemberItemConstraint(typeof(NotNullConstraint<string>))]
+        public IReadOnlyCollection<string>? NullableReadOnlyCollectionOfStrings
+        {
+            [UsedImplicitly]
+            get;
+            set;
+        }
+
+        [MemberConstraint(typeof(NotNullConstraint))]
+        [MemberItemConstraint(typeof(NotNullConstraint))]
+        [MemberItemConstraint(typeof(NotNullConstraint<string>))]
+        public ObservableCollection<string>? NullableObservableCollectionOfStrings
+        {
+            [UsedImplicitly]
+            get;
+            set;
+        }
+
         [ValidatableMember]
         public BaseAnotherSimpleData? SingleBaseData
         {

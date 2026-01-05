@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Collections.Immutable;
+using System.Collections.ObjectModel;
 using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using System.Linq.Expressions;
@@ -64,6 +65,8 @@ internal sealed partial class ObjectValidatorTests
             ImmutableStrings = ImmutableArray.Create("E"),
             NullableImmutableStrings = ImmutableArray<string>.Empty,
             AnotherNullableImmutableStrings = ImmutableArray<string>.Empty,
+            NullableReadOnlyCollectionOfStrings = Array.Empty<string>().AsReadOnly(),
+            NullableObservableCollectionOfStrings = new ObservableCollection<string>(),
             SingleBaseData = new AnotherSimpleData { Value = "Q" }
         };
 
@@ -99,7 +102,9 @@ internal sealed partial class ObjectValidatorTests
             ImmutableMultipleDataItems = ImmutableArray.Create<BaseAnotherSimpleData>(new AnotherSimpleData { Value = "D" }),
             ImmutableStrings = ImmutableArray<string>.Empty,
             NullableImmutableStrings = ImmutableArray.Create("F1"),
-            AnotherNullableImmutableStrings = ImmutableArray.Create("F2")
+            AnotherNullableImmutableStrings = ImmutableArray.Create("F2"),
+            NullableReadOnlyCollectionOfStrings = new[] { "G" }.AsReadOnly(),
+            NullableObservableCollectionOfStrings = new ObservableCollection<string>(["H"])
         };
 
         EnsureTestValidationSucceeded(data2);
@@ -170,6 +175,8 @@ internal sealed partial class ObjectValidatorTests
                     new AnotherSimpleData()),
                 ImmutableMultipleDataItems = ImmutableArray.Create<BaseAnotherSimpleData>(new AnotherSimpleData { Value = "D" }),
                 AnotherNullableImmutableStrings = ImmutableArray.Create("E", null!, "F"),
+                NullableReadOnlyCollectionOfStrings = new[] { "G", "H", null! }.AsReadOnly(),
+                NullableObservableCollectionOfStrings = new ObservableCollection<string>([null!, "I"]),
                 SingleBaseData = new AnotherSimpleData()
             }
         };
@@ -230,16 +237,25 @@ internal sealed partial class ObjectValidatorTests
                     $"{InstanceExpression}.ContainedValue.AnotherSimpleDataCustomReadOnlyList.Item[3].Value",
                     $"{InstanceExpression}.ContainedValue.AnotherSimpleDataImmutableList.Item[2].Value",
 #if NETFRAMEWORK
-                    $"Convert({InstanceExpression}.ContainedValue.SingleBaseData).Value"
+                    $"Convert({InstanceExpression}.ContainedValue.SingleBaseData).Value",
+                    $"Convert({InstanceExpression}.ContainedValue.NullableReadOnlyCollectionOfStrings).Item[2]",
 #else
-                    $"Convert({InstanceExpression}.ContainedValue.SingleBaseData, AnotherSimpleData).Value"
+                    $"Convert({InstanceExpression}.ContainedValue.SingleBaseData, AnotherSimpleData).Value",
+                    $"Convert({InstanceExpression}.ContainedValue.NullableReadOnlyCollectionOfStrings, ReadOnlyCollection`1).Item[2]",
 #endif
+                    $"{InstanceExpression}.ContainedValue.NullableObservableCollectionOfStrings.Item[0]"
                 }
             },
             {
                 typeof(NotNullConstraint<string>),
                 [
-                    $"{InstanceExpression}.ContainedValue.AnotherNullableImmutableStrings.Value.Item[1]"
+                    $"{InstanceExpression}.ContainedValue.AnotherNullableImmutableStrings.Value.Item[1]",
+#if NETFRAMEWORK
+                    $"Convert({InstanceExpression}.ContainedValue.NullableReadOnlyCollectionOfStrings).Item[2]",
+#else
+                    $"Convert({InstanceExpression}.ContainedValue.NullableReadOnlyCollectionOfStrings, ReadOnlyCollection`1).Item[2]",
+#endif
+                    $"{InstanceExpression}.ContainedValue.NullableObservableCollectionOfStrings.Item[0]"
                 ]
             },
 #if NET7_0_OR_GREATER
@@ -380,7 +396,18 @@ internal sealed partial class ObjectValidatorTests
             $"[{InstanceExpression}.ContainedValue.NonEmptyValue] The value must not be null or an empty string.",
             $"[{InstanceExpression}.ContainedValue.NullableImmutableStrings] The value cannot be null.",
 
+            $"[{InstanceExpression}.ContainedValue.NullableObservableCollectionOfStrings.Item[0]] The value cannot be null.",
+            $"[{InstanceExpression}.ContainedValue.NullableObservableCollectionOfStrings.Item[0]] The 'string' value cannot be null.",
+
 #if NETFRAMEWORK
+            $"[Convert({InstanceExpression}.ContainedValue.NullableReadOnlyCollectionOfStrings).Item[2]] The value cannot be null.",
+            $"[Convert({InstanceExpression}.ContainedValue.NullableReadOnlyCollectionOfStrings).Item[2]] The 'string' value cannot be null.",
+#else
+            $"[Convert({InstanceExpression}.ContainedValue.NullableReadOnlyCollectionOfStrings, ReadOnlyCollection`1).Item[2]] The value cannot be null.",
+            $"[Convert({InstanceExpression}.ContainedValue.NullableReadOnlyCollectionOfStrings, ReadOnlyCollection`1).Item[2]] The 'string' value cannot be null.",
+#endif
+#if NETFRAMEWORK
+
             $"[Convert({InstanceExpression}.ContainedValue.SingleBaseData).Value] The value cannot be null."
 #else
             $"[Convert({InstanceExpression}.ContainedValue.SingleBaseData, AnotherSimpleData).Value] The value cannot be null."

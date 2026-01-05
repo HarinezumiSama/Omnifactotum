@@ -10,6 +10,7 @@ using Omnifactotum.Validation.Annotations;
 using Omnifactotum.Validation.Constraints;
 using DisallowNullAttribute = System.Diagnostics.CodeAnalysis.DisallowNullAttribute;
 using PureAttribute = System.Diagnostics.Contracts.PureAttribute;
+using SuppressMessageAttribute = System.Diagnostics.CodeAnalysis.SuppressMessageAttribute;
 
 #if NET5_0_OR_GREATER
 using System.Runtime.CompilerServices;
@@ -296,6 +297,7 @@ public static class ObjectValidator
                 members.Add(itemData);
             }
         }
+        //// ReSharper disable once DuplicatedChainedIfBodies
         else if (TryAddSupportedListMembers(
                      parentMemberData,
                      members,
@@ -305,6 +307,7 @@ public static class ObjectValidator
         {
             // Nothing to do
         }
+        //// ReSharper disable once DuplicatedChainedIfBodies
         else if (TryAddSupportedListMembers(
                      parentMemberData,
                      members,
@@ -314,6 +317,7 @@ public static class ObjectValidator
         {
             // Nothing to do
         }
+        //// ReSharper disable once DuplicatedChainedIfBodies
         else if (TryAddSupportedListMembers(
                      parentMemberData,
                      members,
@@ -323,6 +327,7 @@ public static class ObjectValidator
         {
             // Nothing to do
         }
+        //// ReSharper disable once DuplicatedChainedIfBodies
         else if (TryAddSupportedListMembers(
                      parentMemberData,
                      members,
@@ -385,9 +390,10 @@ public static class ObjectValidator
     }
 
     [MustUseReturnValue]
+    [SuppressMessage("ReSharper", "SuggestBaseTypeForParameter", Justification = "Performance.")]
     private static bool TryAddSupportedListMembers(
         MemberData parentMemberData,
-        ICollection<MemberData> members,
+        List<MemberData> members,
         Type listTypeDefinition,
         Type collectionTypeDefinition,
         string collectionCountPropertyName)
@@ -399,7 +405,7 @@ public static class ObjectValidator
         Factotum.Assert(collectionTypeDefinition.IsInterface && collectionTypeDefinition.IsGenericTypeDefinition == isGenericList);
 
         var instance = parentMemberData.Value;
-        if (instance is null)
+        if (instance is null || ValidationFactotum.IsDefaultImmutableArray(instance))
         {
             return false;
         }
@@ -412,7 +418,7 @@ public static class ObjectValidator
             var interfaces = valueType.GetInterfaces();
 
             listType = isGenericList
-                ? interfaces.FirstOrDefault(t => t.IsConstructedGenericType && t.GetGenericTypeDefinition() == listTypeDefinition)
+                ? interfaces.FirstOrDefault(type => type.IsConstructedGenericType && type.GetGenericTypeDefinition() == listTypeDefinition)
                 : interfaces.Contains(listTypeDefinition)
                     ? listTypeDefinition
                     : null;
@@ -429,17 +435,19 @@ public static class ObjectValidator
             return false;
         }
 
-        var readOnlyCollectionType = isGenericList
+        var collectionType = isGenericList
             ? collectionTypeDefinition.MakeGenericType(listType.GetGenericArguments().Single())
             : collectionTypeDefinition;
 
-        Factotum.Assert(readOnlyCollectionType.IsAssignableFrom(listType));
+        Factotum.Assert(collectionType.IsAssignableFrom(listType));
 
-        var countPropertyInfo = readOnlyCollectionType.GetProperty(collectionCountPropertyName, BindingFlags.Instance | BindingFlags.Public).EnsureNotNull();
+        var countPropertyInfo = collectionType.GetProperty(collectionCountPropertyName, BindingFlags.Instance | BindingFlags.Public).EnsureNotNull();
         Factotum.Assert(countPropertyInfo.PropertyType == typeof(int) && countPropertyInfo.GetMethod is not null);
-        var countMethodInfo = valueType.GetInterfaceMethodImplementation(countPropertyInfo.GetMethod);
 
-        var count = Expression.Lambda<Func<int>>(Expression.Property(Expression.Constant(instance), countMethodInfo)).Compile().Invoke();
+        var countExpression = Expression.Lambda<Func<int>>(
+            Expression.Property(Expression.Convert(Expression.Constant(instance), collectionType), countPropertyInfo.GetMethod));
+
+        var count = countExpression.Compile().Invoke();
 
         var getItemPropertyInfo = listType
             .GetProperties()
