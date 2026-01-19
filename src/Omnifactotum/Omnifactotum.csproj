@@ -67,6 +67,7 @@
 
     <ItemGroup>
         <None Include="$(__X_SolutionDir)\..\README.NuGet.md" Pack="true" PackagePath="/"/>
+        <None Include="$(__X_SolutionDir)\Common\Omnifactotum.png" Pack="true" Visible="false" PackagePath="/" />
 
         <None
             Include="$(__X_RootSolutionOutputPath)\bin\$(Configuration)\$(MSBuildProjectName).CompilerExtensions\netstandard2.0\$(MSBuildProjectName).CompilerExtensions.dll"
@@ -77,5 +78,6 @@
 
     <PropertyGroup>
         <PackageReadmeFile>README.NuGet.md</PackageReadmeFile>
+        <PackageIcon>Omnifactotum.png</PackageIcon>
     </PropertyGroup>
 </Project>

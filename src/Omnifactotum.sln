@@ -23,6 +23,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Common", "Common", "{D7C50C
 		Omnifactotum.sln.DotSettings = Omnifactotum.sln.DotSettings
 		Settings.StyleCop = Settings.StyleCop
 		global.json = global.json
+		Common\Omnifactotum.png = Common\Omnifactotum.png
 	EndProjectSection
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Documentation", "Documentation", "{1FEA2492-6B65-4591-AD47-57143EE361CA}"
