@@ -34,6 +34,12 @@
     </Suppression>
     <Suppression>
         <DiagnosticId>CP0002</DiagnosticId>
+        <Target>M:System.Collections.Generic.OmnifactotumSetExtensions.AsReadOnly``1(System.Collections.Generic.ISet{``0})</Target>
+        <Left>lib/net9.0/Omnifactotum.dll</Left>
+        <Right>lib/net10.0/Omnifactotum.dll</Right>
+    </Suppression>
+    <Suppression>
+        <DiagnosticId>CP0002</DiagnosticId>
         <Target>M:System.Collections.Generic.OmnifactotumCollectionExtensions.ToHashSet``1(System.Collections.Generic.IEnumerable{``0},System.Collections.Generic.IEqualityComparer{``0})</Target>
         <Left>lib/netstandard2.0/Omnifactotum.dll</Left>
         <Right>lib/net461/Omnifactotum.dll</Right>

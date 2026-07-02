@@ -9,7 +9,7 @@ branches:
   - develop
   - /^feature\/.*/
   - /^patch\/v\d+\.\d+\.x$/
-image: Visual Studio 2022
+image: Visual Studio 2026
 configuration: Release
 shallow_clone: true
 nuget:
@@ -48,10 +48,12 @@ build_script:
     Microsoft.PowerShell.Core\Set-StrictMode -Version 1;
     $ProgressPreference = [System.Management.Automation.ActionPreference]::SilentlyContinue;
 
-    # Reason: AppVeyor build image 'Visual Studio 2022' doesn't contain .NET 2.1, 3.1, and 5.0 SDKs anymore
+    # Reason: AppVeyor build image 'Visual Studio 2026' doesn't contain .NET 2.1, 3.1, 5.0, 6.0, and 7.0 SDKs
     choco install --yes --no-progress 'dotnetcore-2.1-sdk'
     choco install --yes --no-progress 'dotnetcore-3.1-sdk-4xx'
     choco install --yes --no-progress 'dotnet-5.0-sdk-4xx'
+    choco install --yes --no-progress 'dotnet-6.0-sdk-4xx'
+    choco install --yes --no-progress 'dotnet-7.0-sdk-4xx'
 
     & .\build.ps1 `
         -Verbose `

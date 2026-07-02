@@ -1264,7 +1264,7 @@ process
 
             if ($AppveyorBuild)
             {
-                $testExecutionCliArguments += @('--test-adapter-path:.', '--logger:Appveyor')
+                $testExecutionCliArguments += @('--logger:Appveyor')
             }
 
             $testExecutionCliArguments += `

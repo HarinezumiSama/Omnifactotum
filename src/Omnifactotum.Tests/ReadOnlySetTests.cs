@@ -1,13 +1,21 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using NUnit.Framework;
 using Omnifactotum.NUnit;
+
+#if NET10_0_OR_GREATER
+using ReadOnlySetOfInt = System.Collections.ObjectModel.ReadOnlySet<int>;
+#else
+using ReadOnlySetOfInt = Omnifactotum.ReadOnlySet<int>;
+#endif
 
 namespace Omnifactotum.Tests;
 
 [TestFixture(TestOf = typeof(OmnifactotumSetExtensions))]
 [TestFixture(TestOf = typeof(ReadOnlySet<>))]
+[SuppressMessage("Performance", "CA1859:Use concrete types when possible for improved performance", Justification = "Test cases.")]
 internal sealed class ReadOnlySetTests
 {
     private const int Value1 = 1;
@@ -24,13 +32,13 @@ internal sealed class ReadOnlySetTests
             Throws.TypeOf<ArgumentNullException>().With.Property(nameof(ArgumentException.ParamName)).EqualTo("set"));
 
         Assert.That(
-            () => new ReadOnlySet<int>(null!),
+            () => new ReadOnlySetOfInt(null!),
             Throws.TypeOf<ArgumentNullException>().With.Property(nameof(ArgumentException.ParamName)).EqualTo("set"));
     }
 
     [Test]
     [TestCaseSource(typeof(ConstructionCases))]
-    public void TestConstruction(Func<ISet<int>, ReadOnlySet<int>> getReadOnlySet)
+    public void TestConstruction(Func<ISet<int>, ReadOnlySetOfInt> getReadOnlySet)
     {
         var set = CreateSet();
 
@@ -50,11 +58,12 @@ internal sealed class ReadOnlySetTests
     }
 
     [Test]
+    [SuppressMessage("Performance", "CA1860:Avoid using 'Enumerable.Any()' extension method")]
     public void TestChangeTrackingScenario()
     {
         var set = CreateSet();
 
-        var readOnlySet = new ReadOnlySet<int>(set);
+        var readOnlySet = new ReadOnlySetOfInt(set);
         Assert.That(readOnlySet.Count, Is.EqualTo(set.Count));
         Assert.That(readOnlySet, Is.EquivalentTo(set));
 
@@ -82,10 +91,10 @@ internal sealed class ReadOnlySetTests
         var set = CreateSet();
 
         var count = set.Count;
-        var readOnlySet = new ReadOnlySet<int>(set);
+        var readOnlySet = new ReadOnlySetOfInt(set);
         Assert.That(((ICollection<int>)readOnlySet).IsReadOnly, Is.True);
 
-        var collection = (ICollection<int>)readOnlySet;
+        ICollection<int> collection = readOnlySet;
         Assert.That(collection.IsReadOnly, Is.True);
 
         void AssertNoChanges()
@@ -161,7 +170,7 @@ internal sealed class ReadOnlySetTests
     {
         var set = CreateSet();
 
-        var readOnlySet = new ReadOnlySet<int>(set);
+        var readOnlySet = new ReadOnlySetOfInt(set);
 
         var values = readOnlySet.AsEnumerable().ToList();
         Assert.That(values.Count, Is.EqualTo(set.Count));
@@ -173,7 +182,7 @@ internal sealed class ReadOnlySetTests
     {
         var set = CreateSet();
 
-        var readOnlySet = new ReadOnlySet<int>(set);
+        var readOnlySet = new ReadOnlySetOfInt(set);
 
         Assert.That(readOnlySet.Contains(Value1), Is.True);
         Assert.That(readOnlySet.Contains(Value2), Is.True);
@@ -188,8 +197,8 @@ internal sealed class ReadOnlySetTests
     {
         var set = CreateSet();
 
-        var readOnlySet = new ReadOnlySet<int>(set);
-        var collection = (ICollection<int>)readOnlySet;
+        var readOnlySet = new ReadOnlySetOfInt(set);
+        ICollection<int> collection = readOnlySet;
 
         Assert.That(collection.Contains(Value1), Is.True);
         Assert.That(collection.Contains(Value2), Is.True);
@@ -204,8 +213,8 @@ internal sealed class ReadOnlySetTests
     {
         var set = CreateSet();
 
-        var readOnlySet = new ReadOnlySet<int>(set);
-        var collection = (ICollection<int>)readOnlySet;
+        var readOnlySet = new ReadOnlySetOfInt(set);
+        ICollection<int> collection = readOnlySet;
 
         var array = new int[collection.Count];
         collection.CopyTo(array, 0);
@@ -218,7 +227,7 @@ internal sealed class ReadOnlySetTests
     {
         var set = CreateSet();
 
-        var readOnlySet = new ReadOnlySet<int>(set);
+        var readOnlySet = new ReadOnlySetOfInt(set);
 
         Assert.That(
             readOnlySet.IsProperSubsetOf([Value1, Value2, Value3, Value17, ValueExtra]),
@@ -238,7 +247,7 @@ internal sealed class ReadOnlySetTests
     {
         var set = CreateSet();
 
-        var readOnlySet = new ReadOnlySet<int>(set);
+        var readOnlySet = new ReadOnlySetOfInt(set);
 
         Assert.That(
             readOnlySet.IsProperSupersetOf([Value1, Value2, Value3]),
@@ -258,7 +267,7 @@ internal sealed class ReadOnlySetTests
     {
         var set = CreateSet();
 
-        var readOnlySet = new ReadOnlySet<int>(set);
+        var readOnlySet = new ReadOnlySetOfInt(set);
 
         Assert.That(
             readOnlySet.IsSubsetOf([Value1, Value2, Value3, Value17, ValueExtra]),
@@ -278,7 +287,7 @@ internal sealed class ReadOnlySetTests
     {
         var set = CreateSet();
 
-        var readOnlySet = new ReadOnlySet<int>(set);
+        var readOnlySet = new ReadOnlySetOfInt(set);
 
         Assert.That(
             readOnlySet.IsSupersetOf([Value1, Value2, Value3]),
@@ -298,7 +307,7 @@ internal sealed class ReadOnlySetTests
     {
         var set = CreateSet();
 
-        var readOnlySet = new ReadOnlySet<int>(set);
+        var readOnlySet = new ReadOnlySetOfInt(set);
 
         Assert.That(readOnlySet.Overlaps([Value1]), Is.True);
         Assert.That(readOnlySet.Overlaps([Value17, Value1]), Is.True);
@@ -312,7 +321,7 @@ internal sealed class ReadOnlySetTests
     {
         var set = CreateSet();
 
-        var readOnlySet = new ReadOnlySet<int>(set);
+        var readOnlySet = new ReadOnlySetOfInt(set);
 
         Assert.That(readOnlySet.SetEquals(set.ToArray()), Is.True);
         Assert.That(readOnlySet.SetEquals(set.ToArray().Concat([ValueExtra])), Is.False);
@@ -324,10 +333,10 @@ internal sealed class ReadOnlySetTests
     {
         protected override IEnumerable<TestCaseData> GetCases()
         {
-            yield return new TestCaseData(new Func<ISet<int>, ReadOnlySet<int>>(static obj => obj.AsReadOnly()))
+            yield return new TestCaseData(new Func<ISet<int>, ReadOnlySetOfInt>(static obj => obj.AsReadOnly()))
                 .SetDescription("Implicit creation");
 
-            yield return new TestCaseData(new Func<ISet<int>, ReadOnlySet<int>>(static obj => new ReadOnlySet<int>(obj)))
+            yield return new TestCaseData(new Func<ISet<int>, ReadOnlySetOfInt>(static obj => new ReadOnlySetOfInt(obj)))
                 .SetDescription("Explicit creation");
         }
     }

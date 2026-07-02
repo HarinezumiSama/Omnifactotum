@@ -30,7 +30,9 @@ internal abstract class TestsBase
 #elif NETCOREAPP2_1
         return ReferenceAssemblies.NetCore.NetCoreApp21;
 #else
-#if NET9_0
+#if NET10_0
+        const string NetVersion = "10.0";
+#elif NET9_0
         const string NetVersion = "9.0";
 #elif NET8_0
         const string NetVersion = "8.0";
