@@ -1,4 +1,25 @@
-﻿### Changes in 0.24.0 (since 0.23.0)
+﻿### Changes in 0.25.0 (since 0.24.0)
+
+#### Breaking changes
+
+- **.NET 10+**: Removed `System.Collections.Generic.OmnifactotumSetExtensions.AsReadOnly<T>()` since .NET 10+ has `System.Collections.Generic.CollectionExtensions.AsReadOnly<T>(ISet<T>)`
+
+#### New features
+
+- Added support for the **.NET 10** target framework
+- **Omnifactotum Compiler Extensions**
+  - Analyzers for the object validation attributes (`MemberConstraintAttribute`, `MemberConstraintAttribute<TMemberConstraint>`, `MemberItemConstraintAttribute`, and `MemberItemConstraintAttribute<TMemberConstraint>`):
+    - OFCA0011: Validation constraint type does not implement the required interface `IMemberConstraint`
+    - OFCA0012: Validation constraint type does not have a required parameterless constructor
+    - OFCA0013: Validation attribute can be replaced with its generic equivalent
+    - OFCA0014: Validation constraint type is not compatible with the type of the validated value
+  - Code fixers for:
+    - OFCA0013: Validation attribute can be replaced with its generic equivalent
+- Added the package icon
+
+---
+
+### Changes in 0.24.0 (since 0.23.0)
 
 #### Breaking changes
 
@@ -403,3 +424,15 @@
 #### Minor updates and fixes
 
 - `TemplatedStringResolver`: `GetVariableNames()` now uses the same resolver function for the variable name comparer as in the `TemplatedStringResolver` constructor
+
+---
+
+### Changes in 0.7.0 to 0.12.0
+
+See [Omnifactotum.ReleaseNotes.UpTo-v0.12.0.md](Omnifactotum.ReleaseNotes.UpTo-v0.12.0.md).
+
+---
+
+### Changes in 0.3.x to 0.6.0
+
+See [Omnifactotum.ReleaseNotes.UpTo-v0.6.0.md](Omnifactotum.ReleaseNotes.UpTo-v0.6.0.md).

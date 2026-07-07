@@ -12,39 +12,21 @@
 
 ---
 
-### Changes in 0.24.0 (since 0.23.0)
+### Changes in 0.25.0 (since 0.24.0)
 
 #### Breaking changes
 
-- `CaseInsensitiveString`: Now a null `string` corresponds to a null `CaseInsensitiveString` and the underlying string value cannot be null
-- Newly added **Omnifactotum Compiler Extensions** may break your code if it does not comply with the added analyzer rules (for more details, refer to the _New features_ section)
+- **.NET 10+**: Removed `System.Collections.Generic.OmnifactotumSetExtensions.AsReadOnly<T>()` since .NET 10+ has `System.Collections.Generic.CollectionExtensions.AsReadOnly<T>(ISet<T>)`
 
 #### New features
 
-- Added **Omnifactotum Compiler Extensions**
-  - Analyzers:
-    - OFCA0001: Asynchronous method/function lacks 'Async' suffix
-    - OFCA0002: Synchronous method/function has 'Async' suffix
-    - OFCA0003: Asynchronous method/function lacks 'CancellationToken' parameter
+- Added support for the **.NET 10** target framework
+- **Omnifactotum Compiler Extensions**
+  - Analyzers for the object validation attributes (`MemberConstraintAttribute`, `MemberConstraintAttribute<TMemberConstraint>`, `MemberItemConstraintAttribute`, and `MemberItemConstraintAttribute<TMemberConstraint>`):
+    - OFCA0011: Validation constraint type does not implement the required interface `IMemberConstraint`
+    - OFCA0012: Validation constraint type does not have a required parameterless constructor
+    - OFCA0013: Validation attribute can be replaced with its generic equivalent
+    - OFCA0014: Validation constraint type is not compatible with the type of the validated value
   - Code fixers for:
-    - OFCA0001: Asynchronous method/function lacks 'Async' suffix
-    - OFCA0002: Synchronous method/function has 'Async' suffix
-- Reinstated support of:
-  - `.NET Framework 4.6.1`
-  - `.NET Framework 4.7.2`
-  - `.NET Standard 2.0`
-- `CaseInsensitiveString`
-  - Added the `Empty` static field (corresponds to `string.Empty`)
-- `OmnifactotumStringBuilderExtensions`:
-  - Added `AppendWhiteSpace(this StringBuilder)`
-  - Added `AppendWhiteSpaces(this StringBuilder, int)`
-- `OmnifactotumValueTupleExtensions`:
-  - Added `ToValueRange<T>(this ValueTuple<T, T>)`
-- `ValueRangeExtensions`:
-  - Added `GetMidpoint<T>(this ValueRange<T>)` (.NET 7+)
-  - Added `ToValueTuple<T>(this ValueRange<T>)`
-
-#### Updates and fixes
-
-- Object validation
-  - Fixed retrieving `Count` of supported collections (the previous approach did not work particularly for `ObservableCollection<T>`)
+    - OFCA0013: Validation attribute can be replaced with its generic equivalent
+- Added the package icon
