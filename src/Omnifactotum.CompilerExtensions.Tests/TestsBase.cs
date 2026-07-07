@@ -1,6 +1,5 @@
 ﻿using System.Collections.Immutable;
 using System.Diagnostics.CodeAnalysis;
-using System.IO;
 using Microsoft.CodeAnalysis.Testing;
 using NUnit.Framework;
 
@@ -29,49 +28,24 @@ internal abstract class TestsBase
                 new PackageIdentity("Microsoft.Bcl.AsyncInterfaces", "5.0.0")));
 #elif NETCOREAPP2_1
         return ReferenceAssemblies.NetCore.NetCoreApp21;
-#else
-#if NET10_0
-        const string NetVersion = "10.0";
-#elif NET9_0
-        const string NetVersion = "9.0";
-#elif NET8_0
-        const string NetVersion = "8.0";
-#elif NET7_0
-        const string NetVersion = "7.0";
-#elif NET6_0
-        const string NetVersion = "6.0";
-#elif NET5_0
-        const string NetVersion = "5.0";
 #elif NETCOREAPP3_1
-        const string NetVersion = "3.1";
+        return ReferenceAssemblies.NetCore.NetCoreApp31;
+#elif NET5_0
+        return ReferenceAssemblies.Net.Net50;
+#elif NET6_0
+        return ReferenceAssemblies.Net.Net60;
+#elif NET7_0
+        return ReferenceAssemblies.Net.Net70;
+#elif NET8_0
+        return ReferenceAssemblies.Net.Net80;
+#elif NET9_0
+        return ReferenceAssemblies.Net.Net90;
+#elif NET10_0
+        return ReferenceAssemblies.Net.Net100;
 #else
-        const string NetVersion = "<N/A>";
 #error Unexpected target .NET version (NetVersion)
 #endif
-
-#if NETCOREAPP3_1
-        const string TargetFramework = "netcoreapp3.1";
-#elif NET5_0_OR_GREATER
-        const string TargetFramework = $"net{NetVersion}";
-#else
-        const string TargetFramework = "<N/A>";
-#error Unexpected target .NET version (TargetFramework)
-#endif
-
-        var referenceAssemblies =
-            new ReferenceAssemblies(
-                    TargetFramework,
-                    new PackageIdentity(
-                        "Microsoft.NETCore.App.Ref",
-                        $"{NetVersion}.0"),
-                    Path.Combine("ref", TargetFramework))
-                .AddPackages(ImmutableArray.Create(new PackageIdentity("Microsoft.AspNetCore.App.Ref", $"{NetVersion}.0")));
-
-        return referenceAssemblies;
-#endif
     }
-
-    protected static string RemoveExtension(string filePath) => Path.GetFullPath(Path.ChangeExtension(filePath, null));
 
     public abstract record BaseTestData
     {
@@ -92,7 +66,7 @@ internal abstract class TestsBase
 
     public sealed record AnalyzerTestData : BaseTestData;
 
-    public sealed record CodeFixTestData : BaseTestData
+    public abstract record CodeChangeTestData : BaseTestData
     {
         private readonly string _fixedSource;
 
@@ -106,4 +80,6 @@ internal abstract class TestsBase
             init => _fixedSource = value.ReplaceLineEndings();
         }
     }
+
+    public sealed record CodeFixTestData : CodeChangeTestData;
 }

@@ -1,9 +1,8 @@
-﻿# [Omnifactotum Analyzers](./README.md)
+﻿# [Omnifactotum Compiler Extensions](./README.md)
 
-## Rule `OFCA0001`
+## Analyzer Rule `OFCA0002`
 
-- `Asynchronous method/function lacks 'Async' suffix`
-  - By convention, methods that return commonly awaitable types (`Task`, `Task<T>`, `ValueTask`, and `ValueTask<T>`) should have names that end with `Async` (see [Microsoft Naming convention](https://learn.microsoft.com/en-us/dotnet/csharp/asynchronous-programming/task-asynchronous-programming-model#naming-convention)).
+- `Synchronous method/function has 'Async' suffix`
   - There might be certain exceptions to this rule when it is not applicable and thus can be ignored (see _[Additional Information](#additional-information)_).
 
 ### Additional Information

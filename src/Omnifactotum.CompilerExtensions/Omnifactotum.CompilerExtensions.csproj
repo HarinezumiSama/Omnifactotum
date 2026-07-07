@@ -25,6 +25,13 @@
         <InternalsVisibleTo Include="Omnifactotum.CompilerExtensions.Tests"/>
     </ItemGroup>
 
+    <!-- ❗TODO❗ -->
+    <!--<ItemGroup>
+        <Compile Include="../Omnifactotum/Annotations/JetBrains.Annotations.cs" />
+        <Compile Include="../Omnifactotum/Validation/Annotations/MemberConstraintAttribute.cs" />
+        <Compile Include="../Omnifactotum/Validation/Annotations/MemberConstraintAttribute{T}.cs" />
+    </ItemGroup>-->
+
     <ItemGroup>
         <PackageReference Include="Microsoft.CodeAnalysis.Analyzers" Version="3.3.4">
             <PrivateAssets>all</PrivateAssets>

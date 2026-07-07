@@ -1,6 +1,6 @@
-﻿# [Omnifactotum Analyzers](./README.md)
+﻿# [Omnifactotum Compiler Extensions](./README.md)
 
-## Rule `OFCA0003`
+## Analyzer Rule `OFCA0003`
 
 - `Asynchronous method/function lacks 'CancellationToken' parameter`
   - There might be certain exceptions to this rule when it is not applicable and thus can be ignored (see _[Additional Information](#additional-information)_).

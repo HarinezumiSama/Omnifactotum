@@ -28,12 +28,16 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Common", "Common", "{D7C50C
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Documentation", "Documentation", "{1FEA2492-6B65-4591-AD47-57143EE361CA}"
 EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Analyzers", "Analyzers", "{0AED0C86-8673-4BD5-BF02-756D7E3A9106}"
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "CompilerExtensions", "CompilerExtensions", "{0AED0C86-8673-4BD5-BF02-756D7E3A9106}"
 	ProjectSection(SolutionItems) = preProject
-		..\doc\Analyzers\README.md = ..\doc\Analyzers\README.md
-		..\doc\Analyzers\Rule-OFCA0001.md = ..\doc\Analyzers\Rule-OFCA0001.md
-		..\doc\Analyzers\Rule-OFCA0002.md = ..\doc\Analyzers\Rule-OFCA0002.md
-		..\doc\Analyzers\Rule-OFCA0003.md = ..\doc\Analyzers\Rule-OFCA0003.md
+		..\doc\CompilerExtensions\README.md = ..\doc\CompilerExtensions\README.md
+		..\doc\CompilerExtensions\Rule-OFCA0001.md = ..\doc\CompilerExtensions\Rule-OFCA0001.md
+		..\doc\CompilerExtensions\Rule-OFCA0002.md = ..\doc\CompilerExtensions\Rule-OFCA0002.md
+		..\doc\CompilerExtensions\Rule-OFCA0003.md = ..\doc\CompilerExtensions\Rule-OFCA0003.md
+		..\doc\CompilerExtensions\Rule-OFCA0011.md = ..\doc\CompilerExtensions\Rule-OFCA0011.md
+		..\doc\CompilerExtensions\Rule-OFCA0012.md = ..\doc\CompilerExtensions\Rule-OFCA0012.md
+		..\doc\CompilerExtensions\Rule-OFCA0013.md = ..\doc\CompilerExtensions\Rule-OFCA0013.md
+		..\doc\CompilerExtensions\Rule-OFCA0014.md = ..\doc\CompilerExtensions\Rule-OFCA0014.md
 	EndProjectSection
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Omnifactotum", "Omnifactotum\Omnifactotum.csproj", "{1054B8A0-40D7-4FBC-A658-9AC9179035F8}"

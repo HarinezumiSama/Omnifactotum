@@ -1,21 +1,20 @@
 ﻿using System;
 using System.Diagnostics;
 using System.Diagnostics.CodeAnalysis;
+using System.Runtime.CompilerServices;
 using System.Threading;
 
 namespace Omnifactotum.CompilerExtensions;
 
-internal sealed class InternalLogger<T>
+internal sealed class InternalLogger<T> : IInternalLogger
     where T : class
 {
-    private static readonly string MutexName = $@"Global\{typeof(InternalLogger<T>).Namespace}:{typeof(InternalLogger<T>).Name}|{typeof(T).FullName}";
+    private static readonly string MutexName = $@"Global\{typeof(InternalLogger<T>)}:{typeof(InternalLogger<T>).Name}|{typeof(T).FullName}";
 
     [SuppressMessage("ReSharper", "UnusedMember.Local")]
-    private static readonly string LogFilePath = $@"C:\__{typeof(T).Namespace}.log";
+    private static readonly string LogFilePath = $@"C:\__{typeof(T).FullName}.log";
 
-    private static readonly string Prefix = typeof(T).Name;
-
-    ////[Conditional("DEBUG")]
+    //// [Conditional("DEBUG")]
     [Conditional("__NON_EXISTING__")] //// To make the compiler remove calls to this method when `[Conditional("DEBUG")]` is commented out
     [SuppressMessage("MicrosoftCodeAnalysisCorrectness", "RS1035:Do not use APIs banned for analyzers", Justification = "TEMP: For debugging")]
     public void AppendLog(string message)
@@ -29,16 +28,19 @@ internal sealed class InternalLogger<T>
 
         try
         {
-            var detailedMessage = $"[{DateTime.Now:yyyy-MM-dd HH:mm:ss.fffffff} | {Prefix}] {message}";
+            var detailedMessage = $"[{DateTime.Now:yyyy-MM-dd HH:mm:ss.fffffff}] {message}";
 
             Trace.WriteLine(detailedMessage);
 
             // Uncomment the line below temporarily (❗) when needed for debugging purposes
-            ////System.IO.File.AppendAllText(LogFilePath, $"{detailedMessage}{InternalHelper.NewLine}{InternalHelper.NewLine}");
+            //// System.IO.File.AppendAllText(LogFilePath, $"{detailedMessage}{InternalHelper.NewLine}{InternalHelper.NewLine}");
         }
         finally
         {
             mutex.ReleaseMutex();
         }
     }
+
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    void IInternalLogger.AppendLog(string message) => AppendLog(message);
 }

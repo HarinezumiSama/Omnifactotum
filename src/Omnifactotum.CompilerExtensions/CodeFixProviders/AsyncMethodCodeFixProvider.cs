@@ -113,19 +113,17 @@ public sealed class AsyncMethodCodeFixProvider : CodeFixProvider
 
     private static async Task<Solution> RenameSymbolAsync(FixerContext context, SyntaxNode targetNode, string newName, CancellationToken cancellationToken)
     {
-        var document = context.Document;
-        var semanticModel = (await document.GetSemanticModelAsync(cancellationToken)).EnsureNotNull();
-        var symbol = semanticModel.GetDeclaredSymbol(targetNode, cancellationToken).EnsureNotNull();
-
-        return await Renamer.RenameSymbolAsync(document.Project.Solution, symbol, new SymbolRenameOptions(), newName, cancellationToken);
+        var symbol = context.SemanticModel.GetDeclaredSymbol(targetNode, cancellationToken).EnsureNotNull();
+        return await Renamer.RenameSymbolAsync(context.Document.Project.Solution, symbol, new SymbolRenameOptions(), newName, cancellationToken);
     }
 
     private readonly struct FixerContext
     {
-        private FixerContext(CodeFixContext codeFixContext, SyntaxNode rootNode)
+        private FixerContext(CodeFixContext codeFixContext, SyntaxNode rootNode, SemanticModel semanticModel)
         {
             CodeFixContext = codeFixContext;
             RootNode = rootNode;
+            SemanticModel = semanticModel;
         }
 
         public CodeFixContext CodeFixContext { get; }
@@ -133,6 +131,8 @@ public sealed class AsyncMethodCodeFixProvider : CodeFixProvider
         public Document Document => CodeFixContext.Document;
 
         public SyntaxNode RootNode { get; }
+
+        public SemanticModel SemanticModel { get; }
 
         [SuppressMessage("ReSharper", "ConvertIfStatementToReturnStatement")]
         [SuppressMessage("ReSharper", "UseNullPropagation")]
@@ -144,13 +144,13 @@ public sealed class AsyncMethodCodeFixProvider : CodeFixProvider
                 return null;
             }
 
-            // var semanticModel = await context.Document.GetSemanticModelAsync(context.CancellationToken).ConfigureAwait(false);
-            // if (semanticModel is null)
-            // {
-            //     return null;
-            // }
+            var semanticModel = await context.Document.GetSemanticModelAsync(context.CancellationToken).ConfigureAwait(false);
+            if (semanticModel is null)
+            {
+                return null;
+            }
 
-            return new FixerContext(codeFixContext: context, rootNode: rootNode);
+            return new FixerContext(codeFixContext: context, rootNode: rootNode, semanticModel: semanticModel);
         }
     }
 }

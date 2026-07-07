@@ -27,7 +27,7 @@ public sealed partial class AsyncMethodAnalyzer : DiagnosticAnalyzer
     /// <inheritdoc/>
     public override void Initialize(AnalysisContext context)
     {
-        Logger.AppendLog($"{nameof(Initialize)}");
+        Logger.AppendLog($"{nameof(Initialize)}()");
 
         context.ConfigureGeneratedCodeAnalysis(GeneratedCodeAnalysisFlags.None);
         if (!Debugger.IsAttached)
@@ -63,7 +63,8 @@ public sealed partial class AsyncMethodAnalyzer : DiagnosticAnalyzer
         var declaredSymbol = context.SemanticModel.GetDeclaredSymbol(context.Node, context.CancellationToken);
 
         Logger.AppendLog(
-            $"{nameof(AnalyzeMethodDeclaration)}: Node type: '{context.Node.GetType().Name}'. Declared symbol type: '{declaredSymbol?.GetType().Name}'.");
+            $"{nameof(AnalyzeMethodDeclaration)}: Assembly: '{context.Compilation.Assembly.Name}'. Node type: '{
+                context.Node.GetType().Name}'. Declared symbol type: '{declaredSymbol?.GetType().Name}'.");
 
         if (context.IsGeneratedCode
             || context.Node is not CSharpSyntaxNode syntaxNode
@@ -72,14 +73,16 @@ public sealed partial class AsyncMethodAnalyzer : DiagnosticAnalyzer
             return;
         }
 
-        Logger.AppendLog($"{nameof(AnalyzeMethodDeclaration)}: method/function '{methodSymbol.GetDiagnosticDisplayString()}'");
+        Logger.AppendLog(
+            $"{nameof(AnalyzeMethodDeclaration)}: Assembly: '{context.Compilation.Assembly.Name}'. Method/function: '{
+                methodSymbol.GetDiagnosticDisplayString()}'.");
 
         if (AnalyzerContext.TryCreate(context) is not { } analyzerContext)
         {
             return;
         }
 
-        if (methodSymbol.OverriddenMethod is not null || methodSymbol.ImplementsInterface())
+        if (methodSymbol.OverriddenMethod is not null || methodSymbol.ImplementsAnyInterface())
         {
             return;
         }

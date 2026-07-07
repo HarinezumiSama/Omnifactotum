@@ -8,7 +8,7 @@
 
 - [Complete Release Notes](https://github.com/HarinezumiSama/Omnifactotum/blob/master/src/Omnifactotum.ReleaseNotes.md)
 - [ReadMe](https://github.com/HarinezumiSama/Omnifactotum/blob/master/README.md)
-- [Omnifactotum Analyzers](https://github.com/HarinezumiSama/Omnifactotum/blob/master/doc/Analyzers/README.md)
+- [Omnifactotum Compiler Extensions](https://github.com/HarinezumiSama/Omnifactotum/blob/master/doc/CompilerExtensions/README.md)
 
 ---
 

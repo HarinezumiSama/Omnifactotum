@@ -21,7 +21,7 @@ public sealed class MemberConstraintAttribute : BaseMemberConstraintAttribute, I
     /// <param name="constraintType">
     ///     The type, implementing the <see cref="IMemberConstraint"/> interface, used to validate
     ///     the member annotated with this <see cref="MemberConstraintAttribute"/> attribute. The type must
-    ///     have parameterless constructor.
+    ///     have a parameterless constructor.
     /// </param>
     public MemberConstraintAttribute([NotNull] Type constraintType)
         : base(constraintType)

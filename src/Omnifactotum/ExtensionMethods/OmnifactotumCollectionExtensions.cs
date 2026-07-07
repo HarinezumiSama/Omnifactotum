@@ -670,7 +670,7 @@ public static class OmnifactotumCollectionExtensions
     [Pure]
     [Omnifactotum.Annotations.Pure]
     [NotNull]
-    [SuppressMessage("ReSharper", "UseCollectionExpression")]
+    [SuppressMessage("ReSharper", "UseCollectionExpression", Justification = "Multiple target frameworks.")]
     public static IEnumerable<T> EmptyIfNull<T>([CanBeNull] [NoEnumeration] this IEnumerable<T>? source)
         => source is null || source.IsDefaultImmutableArray() ? Enumerable.Empty<T>() : source;
 
@@ -794,7 +794,7 @@ public static class OmnifactotumCollectionExtensions
     /// </returns>
     [MethodImpl(OmnifactotumConstants.MethodOptimizationOptions.Maximum)]
     [NotNull]
-    [SuppressMessage("ReSharper", "UseCollectionExpression")]
+    [SuppressMessage("ReSharper", "UseCollectionExpression", Justification = "Multiple target frameworks.")]
     public static HashSet<T> ToHashSet<T>(
         [NotNull] [InstantHandle]
 #if NETFRAMEWORK && !NET472_OR_GREATER

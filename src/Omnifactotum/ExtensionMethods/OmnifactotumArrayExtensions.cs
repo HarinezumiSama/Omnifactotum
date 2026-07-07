@@ -170,7 +170,7 @@ public static class OmnifactotumArrayExtensions
     [Pure]
     [Omnifactotum.Annotations.Pure]
     [NotNull]
-    [SuppressMessage("ReSharper", "UseCollectionExpression")]
+    [SuppressMessage("ReSharper", "UseCollectionExpression", Justification = "Multiple target frameworks.")]
     public static T[] EmptyIfNull<T>([CanBeNull] this T[]? source) => source ?? Array.Empty<T>();
 
     /// <summary>

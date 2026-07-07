@@ -4,11 +4,13 @@ using System.Diagnostics.CodeAnalysis;
 using System.Threading.Tasks;
 using Microsoft.CodeAnalysis.CSharp.Testing;
 using Microsoft.CodeAnalysis.Testing;
-using Microsoft.CodeAnalysis.Testing.Verifiers;
 using NUnit.Framework;
 using Omnifactotum.CompilerExtensions.Analyzers;
 using Omnifactotum.NUnit;
-using Verifier = Microsoft.CodeAnalysis.CSharp.Testing.NUnit.AnalyzerVerifier<Omnifactotum.CompilerExtensions.Analyzers.AsyncMethodAnalyzer>;
+using Verifier =
+    Microsoft.CodeAnalysis.CSharp.Testing.CSharpAnalyzerVerifier<
+        Omnifactotum.CompilerExtensions.Analyzers.AsyncMethodAnalyzer,
+        Microsoft.CodeAnalysis.Testing.DefaultVerifier>;
 
 namespace Omnifactotum.CompilerExtensions.Tests.Analyzers;
 
@@ -26,6 +28,7 @@ internal sealed class AsyncMethodAnalyzerTests : TestsBase
                     new AnalyzerTestData
                     {
                         InitialSource =
+                            // language=c#
                             """
                             using System.Collections.Generic;
                             using System.Threading;
@@ -96,6 +99,7 @@ internal sealed class AsyncMethodAnalyzerTests : TestsBase
                     new AnalyzerTestData
                     {
                         InitialSource =
+                            // language=c#
                             """
                             using System.Collections.Generic;
                             using System.Threading;
@@ -292,6 +296,7 @@ internal sealed class AsyncMethodAnalyzerTests : TestsBase
                     new AnalyzerTestData
                     {
                         InitialSource =
+                            // language=c#
                             """
                             using System.Collections.Generic;
                             using System.Threading;
@@ -366,6 +371,7 @@ internal sealed class AsyncMethodAnalyzerTests : TestsBase
                     new AnalyzerTestData
                     {
                         InitialSource =
+                            // language=c#
                             """
                             using System.Collections.Generic;
                             using System.Threading;
@@ -546,7 +552,7 @@ internal sealed class AsyncMethodAnalyzerTests : TestsBase
     {
         testData.AssertNotNull();
 
-        var analyzerTest = new CSharpAnalyzerTest<AsyncMethodAnalyzer, NUnitVerifier>
+        var analyzerTest = new CSharpAnalyzerTest<AsyncMethodAnalyzer, DefaultVerifier>
         {
             ReferenceAssemblies = CreateReferenceAssemblies(),
             TestCode = testData.InitialSource

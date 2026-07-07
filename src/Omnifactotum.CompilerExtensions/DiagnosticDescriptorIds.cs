@@ -14,6 +14,11 @@ internal static class DiagnosticDescriptorIds
     public const string SyncMethodHasAsyncSuffix = "OFCA0002";
     public const string AsyncMethodMissingCancellationTokenParameter = "OFCA0003";
 
+    public const string ValidationConstraintTypeNotImplementsInterface = "OFCA0011";
+    public const string ValidationConstraintTypeNoParameterlessConstructor = "OFCA0012";
+    public const string GenericValidationAttributeCanBeUsed = "OFCA0013";
+    public const string ValidationConstraintTypeIncompatibleWithMemberType = "OFCA0014";
+
     internal static void Validate()
     {
         var fieldInfos = typeof(DiagnosticDescriptorIds)

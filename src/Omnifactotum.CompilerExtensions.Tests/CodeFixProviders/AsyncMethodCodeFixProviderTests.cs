@@ -2,15 +2,16 @@
 using System.Collections.Immutable;
 using System.Threading.Tasks;
 using Microsoft.CodeAnalysis.CSharp.Testing;
-using Microsoft.CodeAnalysis.Testing.Verifiers;
+using Microsoft.CodeAnalysis.Testing;
 using NUnit.Framework;
 using Omnifactotum.CompilerExtensions.Analyzers;
 using Omnifactotum.CompilerExtensions.CodeFixProviders;
 using Omnifactotum.NUnit;
 using Verifier =
-    Microsoft.CodeAnalysis.CSharp.Testing.NUnit.CodeFixVerifier<
+    Microsoft.CodeAnalysis.CSharp.Testing.CSharpCodeFixVerifier<
         Omnifactotum.CompilerExtensions.Analyzers.AsyncMethodAnalyzer,
-        Omnifactotum.CompilerExtensions.CodeFixProviders.AsyncMethodCodeFixProvider>;
+        Omnifactotum.CompilerExtensions.CodeFixProviders.AsyncMethodCodeFixProvider,
+        Microsoft.CodeAnalysis.Testing.DefaultVerifier>;
 
 namespace Omnifactotum.CompilerExtensions.Tests.CodeFixProviders;
 
@@ -27,6 +28,7 @@ internal sealed class AsyncMethodCodeFixProviderTests : TestsBase
                     new CodeFixTestData
                     {
                         InitialSource =
+                            // language=c#
                             """
                             using System.Threading;
                             using System.Threading.Tasks;
@@ -44,6 +46,7 @@ internal sealed class AsyncMethodCodeFixProviderTests : TestsBase
                                 .WithSpan(6, 17, 6, 40)),
                         CodeActionIndex = 0,
                         FixedSource =
+                            // language=c#
                             """
                             using System.Threading;
                             using System.Threading.Tasks;
@@ -59,6 +62,7 @@ internal sealed class AsyncMethodCodeFixProviderTests : TestsBase
             yield return new TestCaseData(
                     new CodeFixTestData
                     {
+                        // language=c#
                         InitialSource =
                             """
                             using System.Threading;
@@ -88,6 +92,7 @@ internal sealed class AsyncMethodCodeFixProviderTests : TestsBase
                                 .WithSpan(6, 18, 6, 49)),
                         CodeActionIndex = 0,
                         FixedSource =
+                            // language=c#
                             """
                             using System.Threading;
                             using System.Threading.Tasks;
@@ -115,6 +120,7 @@ internal sealed class AsyncMethodCodeFixProviderTests : TestsBase
                     new CodeFixTestData
                     {
                         InitialSource =
+                            // language=c#
                             """
                             using System.Collections.Generic;
                             using System.Threading;
@@ -136,6 +142,7 @@ internal sealed class AsyncMethodCodeFixProviderTests : TestsBase
                                 .WithSpan(9, 40, 9, 69)),
                         CodeActionIndex = 0,
                         FixedSource =
+                            // language=c#
                             """
                             using System.Collections.Generic;
                             using System.Threading;
@@ -158,6 +165,7 @@ internal sealed class AsyncMethodCodeFixProviderTests : TestsBase
                     new CodeFixTestData
                     {
                         InitialSource =
+                            // language=c#
                             """
                             using System.Threading;
                             using System.Threading.Tasks;
@@ -174,6 +182,7 @@ internal sealed class AsyncMethodCodeFixProviderTests : TestsBase
                                 .WithSpan(6, 17, 6, 41)),
                         CodeActionIndex = 0,
                         FixedSource =
+                            // language=c#
                             """
                             using System.Threading;
                             using System.Threading.Tasks;
@@ -190,6 +199,7 @@ internal sealed class AsyncMethodCodeFixProviderTests : TestsBase
                     new CodeFixTestData
                     {
                         InitialSource =
+                            // language=c#
                             """
                             using System.Threading;
                             using System.Threading.Tasks;
@@ -216,6 +226,7 @@ internal sealed class AsyncMethodCodeFixProviderTests : TestsBase
                                 .WithSpan(6, 10, 6, 37)),
                         CodeActionIndex = 0,
                         FixedSource =
+                            // language=c#
                             """
                             using System.Threading;
                             using System.Threading.Tasks;
@@ -242,6 +253,7 @@ internal sealed class AsyncMethodCodeFixProviderTests : TestsBase
                     new CodeFixTestData
                     {
                         InitialSource =
+                            // language=c#
                             """
                             using System.Threading;
                             using System.Threading.Tasks;
@@ -261,6 +273,7 @@ internal sealed class AsyncMethodCodeFixProviderTests : TestsBase
                                 .WithSpan(8, 16, 8, 41)),
                         CodeActionIndex = 0,
                         FixedSource =
+                            // language=c#
                             """
                             using System.Threading;
                             using System.Threading.Tasks;
@@ -284,7 +297,7 @@ internal sealed class AsyncMethodCodeFixProviderTests : TestsBase
     {
         testData.AssertNotNull();
 
-        var codeFixTest = new CSharpCodeFixTest<AsyncMethodAnalyzer, AsyncMethodCodeFixProvider, NUnitVerifier>
+        var codeFixTest = new CSharpCodeFixTest<AsyncMethodAnalyzer, AsyncMethodCodeFixProvider, DefaultVerifier>
         {
             ReferenceAssemblies = CreateReferenceAssemblies(),
             TestCode = testData.InitialSource,
