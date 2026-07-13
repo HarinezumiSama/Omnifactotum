@@ -135,26 +135,6 @@ public static class OmnifactotumArrayExtensions
     }
 
     /// <summary>
-    ///     Avoids the specified array being a <see langword="null"/> reference.
-    ///     Returns the specified array if it is not <see langword="null"/>; otherwise, returns an empty array.
-    /// </summary>
-    /// <typeparam name="T">
-    ///     The type of elements in the array.
-    /// </typeparam>
-    /// <param name="source">
-    ///     The array to secure from a <see langword="null"/> reference.
-    /// </param>
-    /// <returns>
-    ///     The source array if it is not <see langword="null"/>; otherwise, an empty array.
-    /// </returns>
-    [Obsolete($"Use '{nameof(OmnifactotumArrayExtensions)}.{nameof(EmptyIfNull)}()' instead.")]
-    [MethodImpl(OmnifactotumConstants.MethodOptimizationOptions.Maximum)]
-    [Pure]
-    [Omnifactotum.Annotations.Pure]
-    [NotNull]
-    public static T[] AvoidNull<T>([CanBeNull] this T[]? source) => EmptyIfNull(source);
-
-    /// <summary>
     ///     Returns an empty array if the specified source array is <see langword="null"/>; otherwise, returns the source array.
     /// </summary>
     /// <typeparam name="T">

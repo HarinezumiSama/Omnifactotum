@@ -275,66 +275,6 @@ public static class OmnifactotumGenericObjectExtensions
     public static Type GetTypeSafely<T>(this T value) => value is null ? typeof(T) : value.GetType();
 
     /// <summary>
-    ///     Creates an array containing the specified value as its sole element.
-    /// </summary>
-    /// <typeparam name="T">
-    ///     The type of the input value and elements of the resulting array.
-    /// </typeparam>
-    /// <param name="value">
-    ///     The value to create an array from.
-    /// </param>
-    /// <returns>
-    ///     An array containing the specified value as its sole element.
-    /// </returns>
-    [MethodImpl(OmnifactotumConstants.MethodOptimizationOptions.Maximum)]
-    [Pure]
-    [Omnifactotum.Annotations.Pure]
-    [NotNull]
-    [Obsolete("This method has been deprecated and will be removed in a future release.")]
-    public static T[] AsArray<T>(this T value) => new[] { value };
-
-    /// <summary>
-    ///     Creates a strongly-typed list containing the specified value as its sole element.
-    /// </summary>
-    /// <typeparam name="T">
-    ///     The type of the input value and elements of the resulting list.
-    /// </typeparam>
-    /// <param name="value">
-    ///     The value to create a list from.
-    /// </param>
-    /// <returns>
-    ///     A strongly-typed list containing the specified value as its sole element.
-    /// </returns>
-    [MethodImpl(OmnifactotumConstants.MethodOptimizationOptions.Maximum)]
-    [Pure]
-    [Omnifactotum.Annotations.Pure]
-    [NotNull]
-    [Obsolete("This method has been deprecated and will be removed in a future release.")]
-    public static List<T> AsList<T>(this T value) => new() { value };
-
-    /// <summary>
-    ///     Creates a strongly-typed collection containing the specified value as its sole element.
-    /// </summary>
-    /// <typeparam name="T">
-    ///     The type of the input value and elements of the resulting collection.
-    /// </typeparam>
-    /// <param name="value">
-    ///     The value to create a collection from.
-    /// </param>
-    /// <returns>
-    ///     A strongly-typed collection containing the specified value as its sole element.
-    /// </returns>
-    [MethodImpl(OmnifactotumConstants.MethodOptimizationOptions.Maximum)]
-    [Pure]
-    [Omnifactotum.Annotations.Pure]
-    [NotNull]
-    [Obsolete("This method has been deprecated and will be removed in a future release.")]
-    public static IEnumerable<T> AsCollection<T>(this T value)
-    {
-        yield return value;
-    }
-
-    /// <summary>
     ///     Converts the specified value of the value type to a corresponding <see cref="Nullable{T}"/> value.
     /// </summary>
     /// <param name="value">
@@ -352,48 +292,6 @@ public static class OmnifactotumGenericObjectExtensions
     public static T? AsNullable<T>(this T value)
         where T : struct
         => value;
-
-    /// <summary>
-    ///     Avoids the specified reference type value being a <see langword="null"/> reference.
-    ///     Returns the specified value if it is not <see langword="null"/>;
-    ///     otherwise, returns the fallback value retrieved via calling the method specified by the <paramref name="getFallbackValue"/> parameter.
-    /// </summary>
-    /// <typeparam name="T">
-    ///     The type of the value to handle.
-    /// </typeparam>
-    /// <param name="source">
-    ///     The value to secure from a <see langword="null"/> reference.
-    /// </param>
-    /// <param name="getFallbackValue">
-    ///     The method that will return the default value to use instead of <see langword="null"/>.
-    /// </param>
-    /// <returns>
-    ///     The original reference type value if it is not <see langword="null"/>;
-    ///     otherwise, the fallback value retrieved via calling the method specified by the <paramref name="getFallbackValue"/> parameter.
-    /// </returns>
-    /// <exception cref="ArgumentNullException">
-    ///     <paramref name="getFallbackValue"/> is <see langword="null"/>.
-    /// </exception>
-    [Pure]
-    [Omnifactotum.Annotations.Pure]
-    [NotNull]
-    [Obsolete("This method has been deprecated and will be removed in a future release.")]
-    public static T AvoidNull<T>([CanBeNull] this T? source, [NotNull] [InstantHandle] Func<T> getFallbackValue)
-        where T : class
-    {
-        if (getFallbackValue is null)
-        {
-            throw new ArgumentNullException(nameof(getFallbackValue));
-        }
-
-        var result = source ?? getFallbackValue();
-        if (result is null)
-        {
-            throw new InvalidOperationException("The method that had to return non-null value returned null.");
-        }
-
-        return result;
-    }
 
     /// <summary>
     ///     <para>

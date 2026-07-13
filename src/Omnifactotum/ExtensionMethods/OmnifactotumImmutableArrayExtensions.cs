@@ -15,29 +15,6 @@ namespace System.Collections.Immutable;
 public static class OmnifactotumImmutableArrayExtensions
 {
     /// <summary>
-    ///     Avoids the specified <see cref="ImmutableArray{T}"/> being an uninitialized instance. Returns the specified <see cref="ImmutableArray{T}"/>
-    ///     if it is initialized (that is, <see cref="ImmutableArray{T}.IsDefault"/> is <see langword="false"/>);
-    ///     otherwise, returns <see cref="ImmutableArray{T}.Empty"/>.
-    /// </summary>
-    /// <typeparam name="T">
-    ///     The type of elements in the immutable array.
-    /// </typeparam>
-    /// <param name="source">
-    ///     The immutable array to secure from being an uninitialized instance.
-    /// </param>
-    /// <returns>
-    ///     The source immutable array if it is initialized (that is, <see cref="ImmutableArray{T}.IsDefault"/> is <see langword="false"/>);
-    ///     otherwise, <see cref="ImmutableArray{T}.Empty"/>.
-    /// </returns>
-    /// <seealso cref="ImmutableArray{T}.IsDefault"/>
-    /// <seealso cref="EmptyIfDefault{T}"/>
-    [Obsolete($"Use '{nameof(OmnifactotumImmutableArrayExtensions)}.{nameof(EmptyIfDefault)}()' instead.")]
-    [Pure]
-    [Omnifactotum.Annotations.Pure]
-    [MethodImpl(OmnifactotumConstants.MethodOptimizationOptions.Maximum)]
-    public static ImmutableArray<T> AvoidDefault<T>([NoEnumeration] this ImmutableArray<T> source) => EmptyIfDefault(source);
-
-    /// <summary>
     ///     Returns the specified <see cref="ImmutableArray{T}"/> if it is initialized
     ///     (that is, if <see cref="ImmutableArray{T}.IsDefault"/> is <see langword="false"/>);
     ///     otherwise (that is, if <see cref="ImmutableArray{T}.IsDefault"/> is <see langword="true"/>),
@@ -61,29 +38,6 @@ public static class OmnifactotumImmutableArrayExtensions
     [MethodImpl(OmnifactotumConstants.MethodOptimizationOptions.Maximum)]
     public static ImmutableArray<T> EmptyIfDefault<T>([NoEnumeration] this ImmutableArray<T> source)
         => source is { IsDefault: true } ? ImmutableArray<T>.Empty : source;
-
-    /// <summary>
-    ///     Avoids the specified nullable <see cref="ImmutableArray{T}"/> being a <see langword="null"/> reference or an uninitialized instance.
-    ///     Returns the specified <see cref="ImmutableArray{T}"/> if it is not a <see langword="null"/> reference and is initialized
-    ///     (that is, <see cref="ImmutableArray{T}.IsDefault"/> is <see langword="false"/>); otherwise, returns <see cref="ImmutableArray{T}.Empty"/>.
-    /// </summary>
-    /// <typeparam name="T">
-    ///     The type of elements in the immutable array.
-    /// </typeparam>
-    /// <param name="source">
-    ///     The collection to secure from a <see langword="null"/> reference or from being an uninitialized instance.
-    /// </param>
-    /// <returns>
-    ///     The source immutable array if it is not <see langword="null"/> and is initialized
-    ///     (that is, <see cref="ImmutableArray{T}.IsDefault"/> is <see langword="false"/>); otherwise, <see cref="ImmutableArray{T}.Empty"/>.
-    /// </returns>
-    /// <seealso cref="ImmutableArray{T}.IsDefault"/>
-    /// <seealso cref="EmptyIfNullOrDefault{T}"/>
-    [Obsolete($"Use '{nameof(OmnifactotumImmutableArrayExtensions)}.{nameof(EmptyIfNullOrDefault)}()' instead.")]
-    [Pure]
-    [Omnifactotum.Annotations.Pure]
-    [MethodImpl(OmnifactotumConstants.MethodOptimizationOptions.Maximum)]
-    public static ImmutableArray<T> AvoidNullOrDefault<T>([CanBeNull] [NoEnumeration] this ImmutableArray<T>? source) => EmptyIfNullOrDefault(source);
 
     /// <summary>
     ///     Returns the specified <see cref="ImmutableArray{T}"/> if it is not <see langword="null"/> and is initialized

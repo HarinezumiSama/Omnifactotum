@@ -288,61 +288,6 @@ internal sealed class OmnifactotumCollectionExtensionsTests
         Assert.That(stringBuilder.ToString(), Is.EqualTo("a:0./:1."));
     }
 
-#pragma warning disable CS0618 // Type or member is obsolete
-    [Test]
-    public void TestSetItemsWhenInvalidArgumentThenThrows()
-    {
-        Assert.That(() => default(List<string>)!.SetItems([string.Empty]), Throws.ArgumentNullException);
-        Assert.That(() => new List<string>().SetItems(null!), Throws.ArgumentNullException);
-    }
-
-    [Test]
-    public void TestSetItemsValidArgumentsThenSucceeds()
-    {
-        static int[] CreateIntItems1() => [17, 42, -19];
-        static int[] CreateIntItems2() => [19, -37, 17, 0];
-
-        InvokeTestSetItems<int, Collection<int>>(CreateIntItems1, CreateIntItems2);
-        InvokeTestSetItems<int, List<int>>(CreateIntItems1, CreateIntItems2);
-
-        static string[] CreateStringItems1() => ["az", "zA", "qwerty"];
-        static string[] CreateStringItems2() => [nameof(TestSetItemsValidArgumentsThenSucceeds), string.Empty];
-
-        InvokeTestSetItems<string, Collection<string>>(CreateStringItems1, CreateStringItems2);
-        InvokeTestSetItems<string, List<string>>(CreateStringItems1, CreateStringItems2);
-
-        static KeyValuePair<int, string>[] CreateKeyValuePairItems1()
-            => [KeyValuePair.Create(17, "seventeen"), KeyValuePair.Create(-1, "minus one")];
-
-        static KeyValuePair<int, string>[] CreateKeyValuePairItems2()
-            => [KeyValuePair.Create(-13, "minus thirteen"), KeyValuePair.Create(0, "zero"), KeyValuePair.Create(int.MaxValue, "wow")];
-
-        InvokeTestSetItems<KeyValuePair<int, string>, Dictionary<int, string>>(CreateKeyValuePairItems1, CreateKeyValuePairItems2);
-
-        static void InvokeTestSetItems<T, TCollection>(Func<T[]> createItems1, Func<T[]> createItems2)
-            where TCollection : ICollection<T>, new()
-        {
-            var collection = new TCollection();
-
-            Assert.That(collection, Is.Not.Null);
-            Assert.That(createItems1, Is.Not.Null);
-            Assert.That(createItems2, Is.Not.Null);
-
-            var items1 = createItems1().AssertNotNull();
-            var items2 = createItems2().AssertNotNull();
-
-            collection.SetItems(items1);
-            Assert.That(collection, Is.EqualTo(items1));
-
-            collection.SetItems(items2);
-            Assert.That(collection, Is.EqualTo(items2));
-
-            collection.SetItems([]);
-            Assert.That(collection, Is.Empty);
-        }
-    }
-#pragma warning restore CS0618 // Type or member is obsolete
-
     [Test]
     public void TestReplaceItemsWhenInvalidArgumentThenThrows()
     {
@@ -360,7 +305,7 @@ internal sealed class OmnifactotumCollectionExtensionsTests
         InvokeTestReplaceItems<int, List<int>>(CreateIntItems1, CreateIntItems2);
 
         static string[] CreateStringItems1() => ["az", "zA", "qwerty"];
-        static string[] CreateStringItems2() => [nameof(TestSetItemsValidArgumentsThenSucceeds), string.Empty];
+        static string[] CreateStringItems2() => [nameof(TestReplaceItemsValidArgumentsThenSucceeds), string.Empty];
 
         InvokeTestReplaceItems<string, Collection<string>>(CreateStringItems1, CreateStringItems2);
         InvokeTestReplaceItems<string, List<string>>(CreateStringItems1, CreateStringItems2);
@@ -792,6 +737,7 @@ internal sealed class OmnifactotumCollectionExtensionsTests
         => Assert.That(() => default(IList<string>)!.AsReadOnly(), Throws.TypeOf<ArgumentNullException>());
 
     [Test]
+    [SuppressMessage("ReSharper", "ConvertClosureToMethodGroup")]
     public void TestAsReadOnly()
     {
         Assert.That(() => default(ImmutableArray<int>).AsReadOnly(), Is.Empty);
@@ -868,66 +814,6 @@ internal sealed class OmnifactotumCollectionExtensionsTests
     }
 
 #endif
-
-#pragma warning disable CS0618 // Type or member is obsolete
-    [Test]
-    public void TestAvoidNullWhenArgumentIsNullOrItsEquivalentThenSucceeds()
-    {
-        ExecuteTestCase(default(IEnumerable<int>));
-        ExecuteTestCase(default(IEnumerable<string>));
-
-        ExecuteTestCase(default(int[]));
-        ExecuteTestCase(default(string[]));
-
-        ExecuteTestCase(default(List<int>));
-        ExecuteTestCase(default(List<string>));
-
-        ExecuteTestCase(default(ImmutableList<int>));
-        ExecuteTestCase(default(ImmutableList<string>));
-
-        ExecuteTestCase(default(ImmutableArray<int>));
-        ExecuteTestCase(default(ImmutableArray<string>));
-
-        [SuppressMessage("ReSharper", "ConvertClosureToMethodGroup")]
-        static void ExecuteTestCase<T>(IEnumerable<T>? input) => Assert.That(() => input.AvoidNull(), Is.EqualTo(Enumerable.Empty<T>()));
-    }
-
-    [Test]
-    public void TestAvoidNullWhenArgumentIsNotNullNorItsEquivalentThenSucceeds()
-    {
-        ExecuteTestCase(17.AsArray().Concat(23.AsArray()), [17, 23]);
-        ExecuteTestCase("Hello".AsArray().Concat("world".AsArray()), ["Hello", "world"]);
-
-        ExecuteTestCase(new[] { 19, 29 }, [19, 29]);
-        ExecuteTestCase(new[] { "Bye", "all" }, ["Bye", "all"]);
-
-        ExecuteTestCase(new List<int> { 23, 31 }, [23, 31]);
-        ExecuteTestCase(new List<string> { "Hello", "all" }, ["Hello", "all"]);
-
-        ExecuteTestCase(ImmutableList.Create(3, -7), [3, -7]);
-        ExecuteTestCase(ImmutableList.Create("Hello", "people"), ["Hello", "people"]);
-
-        ExecuteTestCase(ImmutableArray.Create(-3, 7), [-3, 7]);
-        ExecuteTestCase(ImmutableArray.Create("Bye", "people"), ["Bye", "people"]);
-
-        [SuppressMessage("ReSharper", "ConvertClosureToMethodGroup")]
-        [SuppressMessage("ReSharper", "SuggestBaseTypeForParameter")]
-        static void ExecuteTestCase<TEnumerable, TElement>(TEnumerable input, TElement[] expectedResult)
-            where TEnumerable : IEnumerable<TElement>?
-        {
-            expectedResult.AssertNotNull();
-
-            Constraint constraint = Is.EqualTo(expectedResult);
-            if (!typeof(TEnumerable).IsValueType)
-            {
-                constraint &= Is.SameAs(input);
-            }
-
-            Assert.That(() => input.AvoidNull(), constraint);
-            Assert.That(() => input!.ToArray(), Is.EqualTo(expectedResult));
-        }
-    }
-#pragma warning restore CS0618 // Type or member is obsolete
 
     [Test]
     public void TestEmptyIfNullWhenArgumentIsNullOrItsEquivalentThenSucceeds()

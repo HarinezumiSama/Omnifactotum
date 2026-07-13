@@ -260,26 +260,6 @@ public static class OmnifactotumCollectionExtensions
     }
 
     /// <summary>
-    ///     [OBSOLETE] Sets the items in the specified collection to the specified items.
-    ///     The previously contained items are removed from the collection.
-    /// </summary>
-    /// <typeparam name="T">
-    ///     The type of the elements in the collection.
-    /// </typeparam>
-    /// <param name="collection">
-    ///     The collection to set the items of.
-    /// </param>
-    /// <param name="items">
-    ///     The items to put to the collection.
-    /// </param>
-    [Obsolete($"Use '{nameof(OmnifactotumCollectionExtensions)}.{nameof(ReplaceItems)}' instead.")]
-    [MethodImpl(OmnifactotumConstants.MethodOptimizationOptions.Maximum)]
-    public static void SetItems<T>(
-        [NotNull] this ICollection<T> collection,
-        [NotNull] [InstantHandle] IEnumerable<T> items)
-        => collection.ReplaceItems(items);
-
-    /// <summary>
     ///     Replaces the items in the collection with the specified items.
     /// </summary>
     /// <typeparam name="TCollection">
@@ -630,26 +610,6 @@ public static class OmnifactotumCollectionExtensions
             item.DisposeSafely();
         }
     }
-
-    /// <summary>
-    ///     Avoids the specified collection being a <see langword="null"/> reference.
-    ///     Returns the specified collection if it is not <see langword="null"/>; otherwise, returns an empty collection.
-    /// </summary>
-    /// <typeparam name="T">
-    ///     The type of elements in the collection.
-    /// </typeparam>
-    /// <param name="source">
-    ///     The collection to secure from a <see langword="null"/> reference.
-    /// </param>
-    /// <returns>
-    ///     The source collection if it is not <see langword="null"/>; otherwise, an empty collection.
-    /// </returns>
-    [Obsolete($"Use '{nameof(OmnifactotumCollectionExtensions)}.{nameof(EmptyIfNull)}()' instead.")]
-    [MethodImpl(OmnifactotumConstants.MethodOptimizationOptions.Maximum)]
-    [Pure]
-    [Omnifactotum.Annotations.Pure]
-    [NotNull]
-    public static IEnumerable<T> AvoidNull<T>([CanBeNull] [NoEnumeration] this IEnumerable<T>? source) => EmptyIfNull(source);
 
     /// <summary>
     ///     Returns an empty collection if the specified source collection is <see langword="null"/> or an uninitialized <see cref="ImmutableArray{T}"/>;
@@ -1098,7 +1058,6 @@ public static class OmnifactotumCollectionExtensions
     }
 
 #if !NET7_0_OR_GREATER
-
     /// <summary>
     ///     Creates a read-only wrapper for the specified list.
     /// </summary>
@@ -1123,7 +1082,6 @@ public static class OmnifactotumCollectionExtensions
 #endif
 
 #if !NET6_0_OR_GREATER
-
     /// <summary>
     ///     Splits the elements of a sequence into chunks of size at most <paramref name="size"/>.
     /// </summary>
@@ -1356,7 +1314,6 @@ public static class OmnifactotumCollectionExtensions
             .ToDictionary(item => item.Key, item => item.Value, wrapperComparer);
 
 #if !NET6_0_OR_GREATER
-
     /// <remarks>
     ///     This code is based on
     ///     <see href="https://github.com/dotnet/runtime/blob/6fdb82aea93465ee046c7f903a96d5c2027a3ecd/src/libraries/System.Linq/src/System/Linq/Chunk.cs"/>.

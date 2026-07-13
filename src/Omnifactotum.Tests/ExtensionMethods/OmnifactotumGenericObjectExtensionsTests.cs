@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using System.Globalization;
 using System.IO;
@@ -16,7 +15,6 @@ namespace Omnifactotum.Tests.ExtensionMethods;
 [SuppressMessage("ReSharper", "PropertyCanBeMadeInitOnly.Local", Justification = "Multiple target frameworks.")]
 internal sealed class OmnifactotumGenericObjectExtensionsTests
 {
-    private const string? NullString = null;
     private const object? NullObject = null;
 
     [Test]
@@ -87,38 +85,38 @@ internal sealed class OmnifactotumGenericObjectExtensionsTests
     [SuppressMessage("ReSharper", "ExpressionIsAlwaysNull")]
     public void TestToUIStringWithFormatAndFormatProviderSucceeds()
     {
-        const string NumberFormat = @"N0";
+        const string NumberFormat = "N0";
 
         //// ReSharper disable StringLiteralTypo :: Date/time format specifiers
-        const string RussianDateFormat = @"dddd', 'd' 'MMMM' 'yyyy' г. 'HH':'mm':'ss";
-        const string JapaneseDateFormat = @"yyyy'年'MMMMd'日'dddd' 'HH':'mm':'ss";
+        const string RussianDateFormat = "dddd', 'd' 'MMMM' 'yyyy' г. 'HH':'mm':'ss";
+        const string JapaneseDateFormat = "yyyy'年'MMMMd'日'dddd' 'HH':'mm':'ss";
         //// ReSharper restore StringLiteralTypo
 
-        var russianCultureInfo = new CultureInfo(@"ru-RU");
-        var japaneseCultureInfo = new CultureInfo(@"ja-JP");
+        var russianCultureInfo = new CultureInfo("ru-RU");
+        var japaneseCultureInfo = new CultureInfo("ja-JP");
 
         int? nullableIntegerNull = null;
         int? nullableInteger = 1234567;
         var nullableDateTime = (DateTime?)new DateTime(2016, 11, 19, 22, 14, 13);
 
-        Assert.That(nullableIntegerNull.ToUIString(NumberFormat, russianCultureInfo), Is.EqualTo(@"null"));
-        Assert.That(nullableIntegerNull.ToUIString(NumberFormat, japaneseCultureInfo), Is.EqualTo(@"null"));
+        Assert.That(nullableIntegerNull.ToUIString(NumberFormat, russianCultureInfo), Is.EqualTo("null"));
+        Assert.That(nullableIntegerNull.ToUIString(NumberFormat, japaneseCultureInfo), Is.EqualTo("null"));
 
         Assert.That(nullableInteger.ToUIString(NumberFormat, russianCultureInfo), Is.EqualTo(@"1 234 567"));
-        Assert.That(nullableInteger.ToUIString(NumberFormat, japaneseCultureInfo), Is.EqualTo(@"1,234,567"));
+        Assert.That(nullableInteger.ToUIString(NumberFormat, japaneseCultureInfo), Is.EqualTo("1,234,567"));
 
-        Assert.That(((DateTime?)null).ToUIString(RussianDateFormat, russianCultureInfo), Is.EqualTo(@"null"));
-        Assert.That(((DateTime?)null).ToUIString(JapaneseDateFormat, japaneseCultureInfo), Is.EqualTo(@"null"));
+        Assert.That(((DateTime?)null).ToUIString(RussianDateFormat, russianCultureInfo), Is.EqualTo("null"));
+        Assert.That(((DateTime?)null).ToUIString(JapaneseDateFormat, japaneseCultureInfo), Is.EqualTo("null"));
 
         //// ReSharper disable StringLiteralTypo :: False detection (not English)
         Assert.That(
             nullableDateTime.ToUIString(RussianDateFormat, russianCultureInfo),
-            Is.EqualTo(@"суббота, 19 ноября 2016 г. 22:14:13"));
+            Is.EqualTo("суббота, 19 ноября 2016 г. 22:14:13"));
         //// ReSharper restore StringLiteralTypo
 
         Assert.That(
             nullableDateTime.ToUIString(JapaneseDateFormat, japaneseCultureInfo),
-            Is.EqualTo(@"2016年11月19日土曜日 22:14:13"));
+            Is.EqualTo("2016年11月19日土曜日 22:14:13"));
     }
 
     [Test]
@@ -152,6 +150,7 @@ internal sealed class OmnifactotumGenericObjectExtensionsTests
 
     [SuppressMessage("Microsoft.CodeAnalysis.CSharp", "RS1024")]
     [Test]
+    [SuppressMessage("ReSharper", "ConvertClosureToMethodGroup")]
     public void TestGetObjectReferenceDescription()
     {
         Assert.That(() => default(TestClass).GetObjectReferenceDescription(), Is.EqualTo("null"));
@@ -162,19 +161,20 @@ internal sealed class OmnifactotumGenericObjectExtensionsTests
         Assert.That(
             () => obj1.GetObjectReferenceDescription(),
             Is.EqualTo(
-                $@"Omnifactotum.Tests.ExtensionMethods.OmnifactotumGenericObjectExtensionsTests.TestClass:0x{hashCode1:X8}"));
+                $"Omnifactotum.Tests.ExtensionMethods.OmnifactotumGenericObjectExtensionsTests.TestClass:0x{hashCode1:X8}"));
 
         var obj2 = new object();
         var hashCode2 = RuntimeHelpers.GetHashCode(obj2);
-        Assert.That(() => obj2.GetObjectReferenceDescription(), Is.EqualTo($@"System.Object:0x{hashCode2:X8}"));
+        Assert.That(() => obj2.GetObjectReferenceDescription(), Is.EqualTo($"System.Object:0x{hashCode2:X8}"));
 
         var obj3 = new string('w', 17);
         var hashCode3 = RuntimeHelpers.GetHashCode(obj3);
-        Assert.That(() => obj3.GetObjectReferenceDescription(), Is.EqualTo($@"System.String:0x{hashCode3:X8}"));
+        Assert.That(() => obj3.GetObjectReferenceDescription(), Is.EqualTo($"System.String:0x{hashCode3:X8}"));
     }
 
     [SuppressMessage("Microsoft.CodeAnalysis.CSharp", "RS1024")]
     [Test]
+    [SuppressMessage("ReSharper", "ConvertClosureToMethodGroup")]
     public void TestGetShortObjectReferenceDescription()
     {
         Assert.That(() => default(TestClass).GetObjectReferenceDescription(), Is.EqualTo("null"));
@@ -184,76 +184,16 @@ internal sealed class OmnifactotumGenericObjectExtensionsTests
 
         Assert.That(
             () => obj1.GetShortObjectReferenceDescription(),
-            Is.EqualTo($@"OmnifactotumGenericObjectExtensionsTests.TestClass:0x{hashCode1:X8}"));
+            Is.EqualTo($"OmnifactotumGenericObjectExtensionsTests.TestClass:0x{hashCode1:X8}"));
 
         var obj2 = new object();
         var hashCode2 = RuntimeHelpers.GetHashCode(obj2);
-        Assert.That(() => obj2.GetShortObjectReferenceDescription(), Is.EqualTo($@"object:0x{hashCode2:X8}"));
+        Assert.That(() => obj2.GetShortObjectReferenceDescription(), Is.EqualTo($"object:0x{hashCode2:X8}"));
 
         var obj3 = new string('z', 17);
         var hashCode3 = RuntimeHelpers.GetHashCode(obj3);
-        Assert.That(() => obj3.GetShortObjectReferenceDescription(), Is.EqualTo($@"string:0x{hashCode3:X8}"));
+        Assert.That(() => obj3.GetShortObjectReferenceDescription(), Is.EqualTo($"string:0x{hashCode3:X8}"));
     }
-
-#pragma warning disable CS0618 // Type or member is obsolete
-    [Test]
-    public void TestAsArraySucceeds()
-    {
-        const int IntValue = 17;
-        const string StringValue = "eaacda5096aa41048c86cdbccc27ed03";
-        var obj = new object();
-
-        Assert.That(() => IntValue.AsArray(), Is.TypeOf<int[]>().And.EqualTo(new[] { IntValue }));
-        Assert.That(() => StringValue.AsArray(), Is.TypeOf<string[]>().And.EqualTo(new[] { StringValue }));
-        Assert.That(() => obj.AsArray(), Is.TypeOf<object[]>().And.EqualTo(new[] { obj }));
-        Assert.That(() => NullString.AsArray(), Is.TypeOf<string[]>().And.EqualTo(new[] { NullString }));
-        Assert.That(() => NullObject.AsArray(), Is.TypeOf<object[]>().And.EqualTo(new[] { NullObject }));
-    }
-#pragma warning restore CS0618 // Type or member is obsolete
-
-#pragma warning disable CS0618 // Type or member is obsolete
-    [Test]
-    public void TestAsListSucceeds()
-    {
-        const int IntValue = 13;
-        const string StringValue = "3037df31af4d426b8edc4469bdf0744c";
-        var obj = new object();
-
-        Assert.That(() => IntValue.AsList(), Is.TypeOf<List<int>>().And.EqualTo(new[] { IntValue }));
-        Assert.That(() => StringValue.AsList(), Is.TypeOf<List<string>>().And.EqualTo(new[] { StringValue }));
-        Assert.That(() => obj.AsList(), Is.TypeOf<List<object>>().And.EqualTo(new[] { obj }));
-        Assert.That(() => NullString.AsList(), Is.TypeOf<List<string>>().And.EqualTo(new[] { NullString }));
-        Assert.That(() => NullObject.AsList(), Is.TypeOf<List<object>>().And.EqualTo(new[] { NullObject }));
-    }
-#pragma warning restore CS0618 // Type or member is obsolete
-
-#pragma warning disable CS0618 // Type or member is obsolete
-    [Test]
-    public void TestAsCollectionSucceeds()
-    {
-        const int IntValue = 29;
-        const string StringValue = "f00136299c4249e5b5ed8d3eb18bbfb4";
-        var obj = new object();
-
-        Assert.That(
-            () => IntValue.AsCollection(),
-            Is.InstanceOf<IEnumerable<int>>().And.EqualTo(new[] { IntValue }));
-
-        Assert.That(
-            () => StringValue.AsCollection(),
-            Is.InstanceOf<IEnumerable<string>>().And.EqualTo(new[] { StringValue }));
-
-        Assert.That(() => obj.AsCollection(), Is.InstanceOf<IEnumerable<object>>().And.EqualTo(new[] { obj }));
-
-        Assert.That(
-            () => NullString.AsCollection(),
-            Is.InstanceOf<IEnumerable<string>>().And.EqualTo(new[] { NullString }));
-
-        Assert.That(
-            () => NullObject.AsCollection(),
-            Is.InstanceOf<IEnumerable<object>>().And.EqualTo(new[] { NullObject }));
-    }
-#pragma warning restore CS0618 // Type or member is obsolete
 
     [Test]
     [TestCase(int.MinValue)]
@@ -273,32 +213,6 @@ internal sealed class OmnifactotumGenericObjectExtensionsTests
         var nullableIntValue = value.AsNullable();
         Assert.That(nullableIntValue, Is.EqualTo(value));
     }
-
-#pragma warning disable CS0618 // Type or member is obsolete
-    [Test]
-    [SuppressMessage("ReSharper", "AssignNullToNotNullAttribute")]
-    public void TestAvoidNullWhenDefaultValueProviderIsNullThenThrows()
-        => Assert.That(() => new object().AvoidNull(null!), Throws.ArgumentNullException);
-
-    [Test]
-    public void TestAvoidNullWhenNullValueIsPassedAndDefaultValueProviderReturnsNullThenThrows()
-        => Assert.That(() => ((TestClass?)null).AvoidNull(() => null!), Throws.InvalidOperationException);
-
-    [Test]
-    public void TestAvoidNullWhenNonNullValueIsPassedThenSucceedsAndReturnsPassedValue()
-    {
-        var input = new TestClass();
-        Assert.That(() => input.AvoidNull(() => null!), Is.SameAs(input));
-        Assert.That(() => input.AvoidNull(() => new TestClass()), Is.SameAs(input));
-    }
-
-    [Test]
-    public void TestAvoidNullWhenNullValueIsPassedThenSucceedsAndReturnsValueProvidedByDefaultValueProvider()
-    {
-        var output = new TestClass();
-        Assert.That(() => ((TestClass?)null).AvoidNull(() => output), Is.SameAs(output));
-    }
-#pragma warning restore CS0618 // Type or member is obsolete
 
     [Test]
     public void TestGetHashCodeSafelyWithDefaultNullValueHashCodeSucceeds()

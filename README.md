@@ -75,7 +75,6 @@
 ### The *non-exhaustive* list of own functional classes
 
 - `ByReferenceEqualityComparer<T>`
-- `CaseInsensitiveStringKey` (deprecated in favor of `CaseInsensitiveString`)
 - `CaseInsensitiveString`
 - `ColoredConsoleTraceListener`
 - `DirectedGraph<T>` and `DirectedGraphNode<T>`

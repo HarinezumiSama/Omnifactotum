@@ -293,23 +293,6 @@ public static class OmnifactotumStringExtensions
             : value;
 
     /// <summary>
-    ///     Avoids the specified string value being a <see langword="null"/> reference.
-    ///     Returns the specified string value if it is not <see langword="null"/>; otherwise, returns <see cref="string.Empty"/>.
-    /// </summary>
-    /// <param name="source">
-    ///     The string value to secure from a <see langword="null"/> reference.
-    /// </param>
-    /// <returns>
-    ///     The source string value if it is not <see langword="null"/>; otherwise, <see cref="string.Empty"/>.
-    /// </returns>
-    [Obsolete($"Use '{nameof(OmnifactotumStringExtensions)}.{nameof(EmptyIfNull)}()' instead.")]
-    [Pure]
-    [Omnifactotum.Annotations.Pure]
-    [MethodImpl(OmnifactotumConstants.MethodOptimizationOptions.Standard)]
-    [NotNull]
-    public static string AvoidNull([CanBeNull] this string? source) => EmptyIfNull(source);
-
-    /// <summary>
     ///     Returns <see cref="string.Empty"/> if the specified string value is <see langword="null"/>; otherwise, returns the original string value.
     /// </summary>
     /// <param name="value">
