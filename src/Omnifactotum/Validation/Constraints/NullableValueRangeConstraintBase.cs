@@ -54,7 +54,7 @@ public abstract class NullableValueRangeConstraintBase<T> : TypedMemberConstrain
     {
         if (value is not { } innerValue)
         {
-            AddError(memberContext, ValidationMessages.CannotBeNull);
+            AddError(memberContext, ValidationErrorDetails.Predefined.MustNotBeNull);
             return;
         }
 

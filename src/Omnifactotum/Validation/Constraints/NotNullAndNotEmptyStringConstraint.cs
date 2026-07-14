@@ -10,7 +10,7 @@ public sealed class NotNullAndNotEmptyStringConstraint : TypedMemberConstraintBa
     {
         if (string.IsNullOrEmpty(value))
         {
-            AddError(memberContext, ValidationMessages.StringCannotBeNullOrEmpty);
+            AddError(memberContext, ValidationErrorDetails.Predefined.StringMustNotBeNullOrEmpty);
         }
     }
 }

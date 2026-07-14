@@ -21,5 +21,5 @@ internal sealed class OptionalNotBlankStringConstraintTests : TypedConstraintTes
         yield return "\t\x0020\r\n";
     }
 
-    protected override ValidationErrorDetails GetTypedInvalidValueErrorDetails(string? invalidValue) => "The string value must not be blank.";
+    protected override ValidationErrorDetails GetTypedInvalidValueErrorDetails(string? invalidValue) => "The string value, when not null, must not be blank.";
 }

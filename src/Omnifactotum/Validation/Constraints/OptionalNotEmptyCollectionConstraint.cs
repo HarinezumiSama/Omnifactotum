@@ -17,7 +17,7 @@ public sealed class OptionalNotEmptyCollectionConstraint : TypedMemberConstraint
 
         if (value.Count == 0)
         {
-            AddError(memberContext, ValidationMessages.CollectionCannotBeEmpty);
+            AddError(memberContext, ValidationErrorDetails.Predefined.CollectionMustNotBeEmpty);
         }
     }
 }

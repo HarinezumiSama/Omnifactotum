@@ -18,7 +18,7 @@ public sealed class OptionalNotBlankStringConstraint : TypedMemberConstraintBase
 
         if (string.IsNullOrWhiteSpace(value))
         {
-            AddError(memberContext, ValidationMessages.StringCannotBeBlank);
+            AddError(memberContext, ValidationErrorDetails.Predefined.StringMustNotBeBlank);
         }
     }
 }

@@ -20,5 +20,5 @@ internal sealed class OptionalNotEmptyStringConstraintTests : TypedConstraintTes
         yield return string.Empty;
     }
 
-    protected override ValidationErrorDetails GetTypedInvalidValueErrorDetails(string? invalidValue) => "The value must not be an empty string.";
+    protected override ValidationErrorDetails GetTypedInvalidValueErrorDetails(string? invalidValue) => "The string value, when not null, must not be empty.";
 }

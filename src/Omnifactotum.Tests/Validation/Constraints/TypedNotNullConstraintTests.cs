@@ -19,5 +19,5 @@ internal sealed class TypedNotNullConstraintTests : TypedConstraintTestsBase<Not
         yield return null;
     }
 
-    protected override ValidationErrorDetails GetTypedInvalidValueErrorDetails(string? invalidValue) => "The 'string' value cannot be null.";
+    protected override ValidationErrorDetails GetTypedInvalidValueErrorDetails(string? invalidValue) => "The 'string' value must not be null.";
 }

@@ -10,13 +10,9 @@ public sealed class NotNullAndNotEmptyCollectionConstraint : TypedMemberConstrai
     /// <inheritdoc />
     protected override void ValidateTypedValue(MemberConstraintValidationContext memberContext, ICollection? value)
     {
-        if (value is null || ValidationFactotum.IsDefaultImmutableArray(value))
+        if (value is null || ValidationFactotum.IsDefaultImmutableArray(value) || value.Count == 0)
         {
-            AddError(memberContext, ValidationMessages.CannotBeNull);
-        }
-        else if (value.Count == 0)
-        {
-            AddError(memberContext, ValidationMessages.CollectionCannotBeEmpty);
+            AddError(memberContext, ValidationErrorDetails.Predefined.CollectionMustNotBeNullOrEmpty);
         }
     }
 }

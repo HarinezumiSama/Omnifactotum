@@ -33,6 +33,5 @@ internal sealed class TypedNotNullAndNotEmptyCollectionConstraintTests
         yield return PureReadOnlyCollection<int>.Empty;
     }
 
-    protected override ValidationErrorDetails GetTypedInvalidValueErrorDetails(IEnumerable<int>? invalidValue)
-        => invalidValue is null or ImmutableArray<int> { IsDefault: true } ? "The value cannot be null." : "The collection cannot be empty.";
+    protected override ValidationErrorDetails GetTypedInvalidValueErrorDetails(IEnumerable<int>? invalidValue) => "The collection must not be null or empty.";
 }

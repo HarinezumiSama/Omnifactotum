@@ -16,6 +16,7 @@ namespace Omnifactotum.Tests.Validation;
 [TestFixture(TestOf = typeof(ObjectValidator))]
 [SuppressMessage("ReSharper", "PropertyCanBeMadeInitOnly.Local")]
 [SuppressMessage("Performance", "CA1822:Mark members as static")]
+[SuppressMessage("ReSharper", "UseCollectionExpression", Justification = "Multiple target frameworks.")]
 internal sealed partial class ObjectValidatorTests
 {
     private const string ValidationResultPropertyName = nameof(ObjectValidationException.ValidationResult);
@@ -114,6 +115,7 @@ internal sealed partial class ObjectValidatorTests
 
     [Test]
     [SuppressMessage("ReSharper", "ArrangeObjectCreationWhenTypeEvident")]
+    [SuppressMessage("ReSharper", "ConvertClosureToMethodGroup")]
     public void TestValidateWhenValidationFailed()
     {
         var dataContainer = new SimpleContainer<ComplexData>
@@ -325,47 +327,47 @@ internal sealed partial class ObjectValidatorTests
 
         expectedExceptionMessageItems.AddRange(
         [
-            $"[{InstanceExpression}.ContainedValue.AnotherNullableImmutableStrings.Value.Item[1]] The value cannot be null.",
-            $"[{InstanceExpression}.ContainedValue.AnotherNullableImmutableStrings.Value.Item[1]] The 'string' value cannot be null.",
-            $"[{InstanceExpression}.ContainedValue.AnotherSimpleDataArray[1].Value] The value cannot be null.",
-            $"[{InstanceExpression}.ContainedValue.AnotherSimpleDataCollection.Item[1].Value] The value cannot be null.",
+            $"[{InstanceExpression}.ContainedValue.AnotherNullableImmutableStrings.Value.Item[1]] The value must not be null.",
+            $"[{InstanceExpression}.ContainedValue.AnotherNullableImmutableStrings.Value.Item[1]] The 'string' value must not be null.",
+            $"[{InstanceExpression}.ContainedValue.AnotherSimpleDataArray[1].Value] The value must not be null.",
+            $"[{InstanceExpression}.ContainedValue.AnotherSimpleDataCollection.Item[1].Value] The value must not be null.",
 
 #if NETFRAMEWORK
-            $"[Convert({InstanceExpression}.ContainedValue.AnotherSimpleDataCustomEnumerable.Cast().First()).Value] The value cannot be null.",
+            $"[Convert({InstanceExpression}.ContainedValue.AnotherSimpleDataCustomEnumerable.Cast().First()).Value] The value must not be null.",
 #else
             $"[Convert({
-                InstanceExpression}.ContainedValue.AnotherSimpleDataCustomEnumerable.Cast().First(), AnotherSimpleData).Value] The value cannot be null.",
+                InstanceExpression}.ContainedValue.AnotherSimpleDataCustomEnumerable.Cast().First(), AnotherSimpleData).Value] The value must not be null.",
 #endif
 
-            $"[{InstanceExpression}.ContainedValue.AnotherSimpleDataCustomGenericEnumerable.Skip(2).First().Value] The value cannot be null.",
+            $"[{InstanceExpression}.ContainedValue.AnotherSimpleDataCustomGenericEnumerable.Skip(2).First().Value] The value must not be null.",
 
 #if NETFRAMEWORK
-            $"[Convert({InstanceExpression}.ContainedValue.AnotherSimpleDataCustomGenericEnumerableObject).Skip(2).First().Value] The value cannot be null.",
+            $"[Convert({InstanceExpression}.ContainedValue.AnotherSimpleDataCustomGenericEnumerableObject).Skip(2).First().Value] The value must not be null.",
 #else
             $"[Convert({InstanceExpression
-            }.ContainedValue.AnotherSimpleDataCustomGenericEnumerableObject, IEnumerable`1).Skip(2).First().Value] The value cannot be null.",
+            }.ContainedValue.AnotherSimpleDataCustomGenericEnumerableObject, IEnumerable`1).Skip(2).First().Value] The value must not be null.",
 #endif
 
-            $"[{InstanceExpression}.ContainedValue.AnotherSimpleDataCustomGenericList.Item[1].Value] The value cannot be null.",
-            $"[{InstanceExpression}.ContainedValue.AnotherSimpleDataCustomGenericList.Item[2].Value] The value cannot be null.",
+            $"[{InstanceExpression}.ContainedValue.AnotherSimpleDataCustomGenericList.Item[1].Value] The value must not be null.",
+            $"[{InstanceExpression}.ContainedValue.AnotherSimpleDataCustomGenericList.Item[2].Value] The value must not be null.",
 
 #if NETFRAMEWORK
-            $"[Convert({InstanceExpression}.ContainedValue.AnotherSimpleDataCustomList.Item[1]).Value] The value cannot be null.",
+            $"[Convert({InstanceExpression}.ContainedValue.AnotherSimpleDataCustomList.Item[1]).Value] The value must not be null.",
 #else
-            $"[Convert({InstanceExpression}.ContainedValue.AnotherSimpleDataCustomList.Item[1], AnotherSimpleData).Value] The value cannot be null.",
+            $"[Convert({InstanceExpression}.ContainedValue.AnotherSimpleDataCustomList.Item[1], AnotherSimpleData).Value] The value must not be null.",
 #endif
 
-            $"[{InstanceExpression}.ContainedValue.AnotherSimpleDataCustomList.Item[3]] The value cannot be null.",
+            $"[{InstanceExpression}.ContainedValue.AnotherSimpleDataCustomList.Item[3]] The value must not be null.",
 
 #if NETFRAMEWORK
-            $"[Convert({InstanceExpression}.ContainedValue.AnotherSimpleDataCustomList.Item[4]).Value] The value cannot be null.",
+            $"[Convert({InstanceExpression}.ContainedValue.AnotherSimpleDataCustomList.Item[4]).Value] The value must not be null.",
 #else
-            $"[Convert({InstanceExpression}.ContainedValue.AnotherSimpleDataCustomList.Item[4], AnotherSimpleData).Value] The value cannot be null.",
+            $"[Convert({InstanceExpression}.ContainedValue.AnotherSimpleDataCustomList.Item[4], AnotherSimpleData).Value] The value must not be null.",
 #endif
 
-            $"[{InstanceExpression}.ContainedValue.AnotherSimpleDataCustomReadOnlyList.Item[3].Value] The value cannot be null.",
-            $"[{InstanceExpression}.ContainedValue.AnotherSimpleDataImmutableList.Item[2].Value] The value cannot be null.",
-            $"[{InstanceExpression}.ContainedValue.Data.NullableValue] The value cannot be null.",
+            $"[{InstanceExpression}.ContainedValue.AnotherSimpleDataCustomReadOnlyList.Item[3].Value] The value must not be null.",
+            $"[{InstanceExpression}.ContainedValue.AnotherSimpleDataImmutableList.Item[2].Value] The value must not be null.",
+            $"[{InstanceExpression}.ContainedValue.Data.NullableValue] The value must not be null.",
 
             $"[{InstanceExpression
             }.ContainedValue.Data.StartDate] Validation of the constraint \"Omnifactotum.Tests.Validation.ObjectValidatorTests.UtcDateConstraint\" failed.",
@@ -373,44 +375,44 @@ internal sealed partial class ObjectValidatorTests
             $"[{InstanceExpression
             }.ContainedValue.Data.StartDate] Validation of the constraint \"Omnifactotum.Tests.Validation.ObjectValidatorTests.UtcDateTypedConstraint\" failed.",
 
-            $"[{InstanceExpression}.ContainedValue.Data.Value] The value cannot be null."
+            $"[{InstanceExpression}.ContainedValue.Data.Value] The value must not be null."
         ]);
 
 #if NET7_0_OR_GREATER
         expectedExceptionMessageItems.AddRange(
         [
-            $"[{InstanceExpression}.ContainedValue.GenericMemberConstraintAttributeData] The value cannot be null.",
-            $"[{InstanceExpression}.ContainedValue.GenericMemberConstraintAttributeData] The 'ObjectValidatorTests.SimpleData' value cannot be null.",
-            $"[{InstanceExpression}.ContainedValue.GenericMemberItemConstraintAnotherSimpleDataArray[0]] The value cannot be null."
+            $"[{InstanceExpression}.ContainedValue.GenericMemberConstraintAttributeData] The value must not be null.",
+            $"[{InstanceExpression}.ContainedValue.GenericMemberConstraintAttributeData] The 'ObjectValidatorTests.SimpleData' value must not be null.",
+            $"[{InstanceExpression}.ContainedValue.GenericMemberItemConstraintAnotherSimpleDataArray[0]] The value must not be null."
         ]);
 #endif
 
         expectedExceptionMessageItems.AddRange(
         [
 #if NETFRAMEWORK
-            $"[Convert({InstanceExpression}.ContainedValue.MultipleDataItems[1]).Value] The value cannot be null.",
+            $"[Convert({InstanceExpression}.ContainedValue.MultipleDataItems[1]).Value] The value must not be null.",
 #else
-            $"[Convert({InstanceExpression}.ContainedValue.MultipleDataItems[1], AnotherSimpleData).Value] The value cannot be null.",
+            $"[Convert({InstanceExpression}.ContainedValue.MultipleDataItems[1], AnotherSimpleData).Value] The value must not be null.",
 #endif
 
-            $"[{InstanceExpression}.ContainedValue.NonEmptyValue] The value must not be null or an empty string.",
-            $"[{InstanceExpression}.ContainedValue.NullableImmutableStrings] The value cannot be null.",
+            $"[{InstanceExpression}.ContainedValue.NonEmptyValue] The string value must not be null or empty.",
+            $"[{InstanceExpression}.ContainedValue.NullableImmutableStrings] The value must not be null.",
 
-            $"[{InstanceExpression}.ContainedValue.NullableObservableCollectionOfStrings.Item[0]] The value cannot be null.",
-            $"[{InstanceExpression}.ContainedValue.NullableObservableCollectionOfStrings.Item[0]] The 'string' value cannot be null.",
+            $"[{InstanceExpression}.ContainedValue.NullableObservableCollectionOfStrings.Item[0]] The value must not be null.",
+            $"[{InstanceExpression}.ContainedValue.NullableObservableCollectionOfStrings.Item[0]] The 'string' value must not be null.",
 
 #if NETFRAMEWORK
-            $"[Convert({InstanceExpression}.ContainedValue.NullableReadOnlyCollectionOfStrings).Item[2]] The value cannot be null.",
-            $"[Convert({InstanceExpression}.ContainedValue.NullableReadOnlyCollectionOfStrings).Item[2]] The 'string' value cannot be null.",
+            $"[Convert({InstanceExpression}.ContainedValue.NullableReadOnlyCollectionOfStrings).Item[2]] The value must not be null.",
+            $"[Convert({InstanceExpression}.ContainedValue.NullableReadOnlyCollectionOfStrings).Item[2]] The 'string' value must not be null.",
 #else
-            $"[Convert({InstanceExpression}.ContainedValue.NullableReadOnlyCollectionOfStrings, ReadOnlyCollection`1).Item[2]] The value cannot be null.",
-            $"[Convert({InstanceExpression}.ContainedValue.NullableReadOnlyCollectionOfStrings, ReadOnlyCollection`1).Item[2]] The 'string' value cannot be null.",
+            $"[Convert({InstanceExpression}.ContainedValue.NullableReadOnlyCollectionOfStrings, ReadOnlyCollection`1).Item[2]] The value must not be null.",
+            $"[Convert({
+                InstanceExpression}.ContainedValue.NullableReadOnlyCollectionOfStrings, ReadOnlyCollection`1).Item[2]] The 'string' value must not be null.",
 #endif
 #if NETFRAMEWORK
-
-            $"[Convert({InstanceExpression}.ContainedValue.SingleBaseData).Value] The value cannot be null."
+            $"[Convert({InstanceExpression}.ContainedValue.SingleBaseData).Value] The value must not be null."
 #else
-            $"[Convert({InstanceExpression}.ContainedValue.SingleBaseData, AnotherSimpleData).Value] The value cannot be null."
+            $"[Convert({InstanceExpression}.ContainedValue.SingleBaseData, AnotherSimpleData).Value] The value must not be null."
 #endif
         ]);
 
@@ -460,6 +462,7 @@ internal sealed partial class ObjectValidatorTests
     [TestCase("var_842c9c8e")]
     [TestCase("[var1.var2.var3]")]
     [TestCase("[var:SimpleContainer<SimpleData>]")]
+    [SuppressMessage("ReSharper", "ConvertClosureToMethodGroup")]
     public void TestValidateWhenValidInstanceExpressionAndValidationFailed(string? explicitInstanceExpression)
     {
         var expectedInstanceExpression = explicitInstanceExpression ?? ObjectValidator.DefaultRootObjectParameterName;
@@ -543,6 +546,7 @@ internal sealed partial class ObjectValidatorTests
     }
 
     [Test]
+    [SuppressMessage("ReSharper", "ConvertClosureToMethodGroup")]
     public void TestValidateDictionaryWhenValidationFailed()
     {
         var mapContainer = new MapContainer
@@ -717,6 +721,7 @@ internal sealed partial class ObjectValidatorTests
         Assert.That(() => validatorContext.Errors.Count, Is.EqualTo(errorCount));
     }
 
+    [SuppressMessage("ReSharper", "ConvertClosureToMethodGroup")]
     private static void EnsureTestValidationSucceeded<T>(T data)
     {
         ClearLastMemberContexts();

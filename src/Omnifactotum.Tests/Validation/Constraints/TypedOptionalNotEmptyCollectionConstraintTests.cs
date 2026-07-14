@@ -33,5 +33,6 @@ internal sealed class TypedOptionalNotEmptyCollectionConstraintTests
         yield return PureReadOnlyCollection<int>.Empty;
     }
 
-    protected override ValidationErrorDetails GetTypedInvalidValueErrorDetails(IEnumerable<int>? invalidValue) => "The collection cannot be empty.";
+    protected override ValidationErrorDetails GetTypedInvalidValueErrorDetails(IEnumerable<int>? invalidValue)
+        => "The collection, when not null, must not be empty.";
 }

@@ -40,5 +40,5 @@ internal sealed class NotNullConstraintTests : ConstraintTestsBase<NotNullConstr
         yield return default(ImmutableArray<int?>);
     }
 
-    protected override ValidationErrorDetails GetInvalidValueErrorDetails(object? invalidValue) => "The value cannot be null.";
+    protected override ValidationErrorDetails GetInvalidValueErrorDetails(object? invalidValue) => "The value must not be null.";
 }

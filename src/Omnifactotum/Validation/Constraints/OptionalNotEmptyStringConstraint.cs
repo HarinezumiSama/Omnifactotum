@@ -10,7 +10,7 @@ public sealed class OptionalNotEmptyStringConstraint : TypedMemberConstraintBase
     {
         if (value is { Length: 0 })
         {
-            AddError(memberContext, ValidationMessages.StringCannotBeEmpty);
+            AddError(memberContext, ValidationErrorDetails.Predefined.StringMustNotBeEmpty);
         }
     }
 }

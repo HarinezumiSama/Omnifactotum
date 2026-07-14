@@ -25,7 +25,7 @@ public sealed class OptionalNotEmptyCollectionConstraint<T> : TypedMemberConstra
             case IReadOnlyCollection<T> readOnlyCollection:
                 if (readOnlyCollection.Count == 0)
                 {
-                    AddError(memberContext, ValidationMessages.CollectionCannotBeEmpty);
+                    AddError(memberContext, ValidationErrorDetails.Predefined.CollectionMustNotBeEmpty);
                 }
 
                 break;
@@ -33,7 +33,7 @@ public sealed class OptionalNotEmptyCollectionConstraint<T> : TypedMemberConstra
             case ICollection<T> collection:
                 if (collection.Count == 0)
                 {
-                    AddError(memberContext, ValidationMessages.CollectionCannotBeEmpty);
+                    AddError(memberContext, ValidationErrorDetails.Predefined.CollectionMustNotBeEmpty);
                 }
 
                 break;

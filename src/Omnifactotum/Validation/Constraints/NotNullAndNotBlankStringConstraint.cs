@@ -13,7 +13,7 @@ public sealed class NotNullAndNotBlankStringConstraint : TypedMemberConstraintBa
     {
         if (string.IsNullOrWhiteSpace(value))
         {
-            AddError(memberContext, ValidationMessages.StringCannotBeNullOrBlank);
+            AddError(memberContext, ValidationErrorDetails.Predefined.StringMustNotBeNullOrBlank);
         }
     }
 }

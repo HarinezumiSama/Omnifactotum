@@ -15,7 +15,7 @@ public sealed class NotNullConstraint<T> : TypedMemberConstraintBase<T?>
     where T : class
 {
     [SuppressMessage("ReSharper", "StaticMemberInGenericType", Justification = "False detection.")]
-    private static readonly ValidationErrorDetails FailureMessage = AsInvariant($"The '{ValueTypeQualifiedName}' value cannot be null.");
+    private static readonly ValidationErrorDetails FailureMessage = AsInvariant($"The '{ValueTypeQualifiedName}' value must not be null.");
 
     /// <inheritdoc />
     protected override void ValidateTypedValue(MemberConstraintValidationContext memberContext, T? value)

@@ -23,6 +23,6 @@ internal sealed class NullableEnumValueDefinedConstraintTests : TypedConstraintT
 
     protected override ValidationErrorDetails GetTypedInvalidValueErrorDetails(ConsoleColor? invalidValue)
         => invalidValue is null
-            ? "The value cannot be null."
+            ? "The value must not be null."
             : AsInvariant($"The value {(int)invalidValue} is not defined in the enumeration 'ConsoleColor'.");
 }

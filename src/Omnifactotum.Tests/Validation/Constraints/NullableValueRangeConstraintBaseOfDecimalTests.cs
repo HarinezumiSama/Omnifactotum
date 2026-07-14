@@ -40,7 +40,7 @@ internal sealed class NullableValueRangeConstraintBaseOfDecimalTests
 
     protected override ValidationErrorDetails GetTypedInvalidValueErrorDetails(decimal? invalidValue)
         => invalidValue is null
-            ? "The value cannot be null."
+            ? "The value must not be null."
             : AsInvariant($"The value {invalidValue.Value} is not within the valid range [1.1 ~ 3.9].");
 
     internal sealed class ValueRangeConstraint : NullableValueRangeConstraintBase<decimal>

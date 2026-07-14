@@ -40,9 +40,5 @@ internal sealed class NotNullAndNotEmptyCollectionConstraintTests : TypedConstra
         yield return ImmutableArray<int?>.Empty;
     }
 
-    protected override ValidationErrorDetails GetTypedInvalidValueErrorDetails(ICollection? invalidValue)
-        => invalidValue is null or ImmutableArray<object?> { IsDefault: true } or ImmutableArray<string> { IsDefault: true }
-            or ImmutableArray<int> { IsDefault: true } or ImmutableArray<int?> { IsDefault: true }
-            ? "The value cannot be null."
-            : "The collection cannot be empty.";
+    protected override ValidationErrorDetails GetTypedInvalidValueErrorDetails(ICollection? invalidValue) => "The collection must not be null or empty.";
 }

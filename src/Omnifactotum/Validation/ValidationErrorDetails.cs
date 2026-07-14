@@ -10,7 +10,7 @@ namespace Omnifactotum.Validation;
 /// <summary>
 ///     A container of the validation error details.
 /// </summary>
-public sealed class ValidationErrorDetails
+public sealed partial class ValidationErrorDetails
 {
     /// <summary>
     ///     Initializes a new instance of the <see cref="ValidationErrorDetails"/> class.

@@ -35,7 +35,7 @@ internal sealed class NullableValueRangeConstraintBaseOfInt32Tests
 
     protected override ValidationErrorDetails GetTypedInvalidValueErrorDetails(int? invalidValue)
         => invalidValue is null
-            ? "The value cannot be null."
+            ? "The value must not be null."
             : AsInvariant($"The value {invalidValue.Value} is not within the valid range ({{ <-17> .:. <23> }}).");
 
     internal sealed class ValueRangeConstraint : NullableValueRangeConstraintBase<int>

@@ -18,7 +18,7 @@ public sealed class NullableEnumValueDefinedConstraint<TEnum> : TypedMemberConst
     {
         if (value is null)
         {
-            AddError(memberContext, ValidationMessages.CannotBeNull);
+            AddError(memberContext, ValidationErrorDetails.Predefined.MustNotBeNull);
             return;
         }
 

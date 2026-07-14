@@ -10,7 +10,7 @@ public sealed class NotNullConstraint : MemberConstraintBase
     {
         if (value is null || ValidationFactotum.IsDefaultImmutableArray(value))
         {
-            AddError(memberContext, ValidationMessages.CannotBeNull);
+            AddError(memberContext, ValidationErrorDetails.Predefined.MustNotBeNull);
         }
     }
 }

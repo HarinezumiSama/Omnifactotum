@@ -20,13 +20,13 @@ public sealed class NotNullAndNotEmptyCollectionConstraint<T> : TypedMemberConst
         switch (value)
         {
             case null or ImmutableArray<T> { IsDefault: true }:
-                AddError(memberContext, ValidationMessages.CannotBeNull);
+                AddError(memberContext, ValidationErrorDetails.Predefined.CollectionMustNotBeNullOrEmpty);
                 break;
 
             case IReadOnlyCollection<T> readOnlyCollection:
                 if (readOnlyCollection.Count == 0)
                 {
-                    AddError(memberContext, ValidationMessages.CollectionCannotBeEmpty);
+                    AddError(memberContext, ValidationErrorDetails.Predefined.CollectionMustNotBeNullOrEmpty);
                 }
 
                 break;
@@ -34,7 +34,7 @@ public sealed class NotNullAndNotEmptyCollectionConstraint<T> : TypedMemberConst
             case ICollection<T> collection:
                 if (collection.Count == 0)
                 {
-                    AddError(memberContext, ValidationMessages.CollectionCannotBeEmpty);
+                    AddError(memberContext, ValidationErrorDetails.Predefined.CollectionMustNotBeNullOrEmpty);
                 }
 
                 break;
