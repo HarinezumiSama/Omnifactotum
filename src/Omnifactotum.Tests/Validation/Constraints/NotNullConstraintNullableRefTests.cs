@@ -1,4 +1,3 @@
-﻿using System;
 using System.Collections.Generic;
 using NUnit.Framework;
 using Omnifactotum.Validation;
@@ -6,14 +5,14 @@ using Omnifactotum.Validation.Constraints;
 
 namespace Omnifactotum.Tests.Validation.Constraints;
 
-[TestFixture(TestOf = typeof(NotNullConstraint<>))]
-[Obsolete($"To be removed when obsolete '{nameof(NotNullConstraint<>)}<T>' is removed.")]
-internal sealed class TypedNotNullConstraintTests : TypedConstraintTestsBase<NotNullConstraint<string>, string?>
+[TestFixture(TestOf = typeof(NotNullConstraint.NullableRef<>))]
+internal sealed class NotNullConstraintNullableRefTests : TypedConstraintTestsBase<NotNullConstraint.NullableRef<string>, string?>
 {
     protected override IEnumerable<string?> GetTypedValidValues()
     {
+        yield return string.Empty;
         yield return "A";
-        yield return "ad414644a9324f8ebdde4befbc2d3c6a";
+        yield return "2487251784294a1FA87E4CE42cfb0e59";
     }
 
     protected override IEnumerable<string?> GetTypedInvalidValues()

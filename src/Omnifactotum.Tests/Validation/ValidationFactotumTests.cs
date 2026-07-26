@@ -36,10 +36,30 @@ internal sealed class ValidationFactotumTests
                  "Omnifactotum.Validation.Constraints.IMemberConstraint" {InvalidConstraintTypeExceptionMessageEnding}
                  """);
 
+#pragma warning disable CS0618 // Type or member is obsolete
             yield return new TestCaseData(
                 typeof(NotNullConstraint<>),
                 $"""
                  "Omnifactotum.Validation.Constraints.NotNullConstraint<T>" {InvalidConstraintTypeExceptionMessageEnding}
+                 """);
+#pragma warning restore CS0618 // Type or member is obsolete
+
+            yield return new TestCaseData(
+                typeof(NotNullConstraint.Ref<>),
+                $"""
+                 "Omnifactotum.Validation.Constraints.NotNullConstraint.Ref<T>" {InvalidConstraintTypeExceptionMessageEnding}
+                 """);
+
+            yield return new TestCaseData(
+                typeof(NotNullConstraint.NullableRef<>),
+                $"""
+                 "Omnifactotum.Validation.Constraints.NotNullConstraint.NullableRef<T>" {InvalidConstraintTypeExceptionMessageEnding}
+                 """);
+
+            yield return new TestCaseData(
+                typeof(NotNullConstraint.NullableValue<>),
+                $"""
+                 "Omnifactotum.Validation.Constraints.NotNullConstraint.NullableValue<T>" {InvalidConstraintTypeExceptionMessageEnding}
                  """);
 
             yield return new TestCaseData(
@@ -69,8 +89,12 @@ internal sealed class ValidationFactotumTests
 
     [Test]
     [TestCase(typeof(NotNullConstraint))]
+#pragma warning disable CS0618 // Type or member is obsolete
     [TestCase(typeof(NotNullConstraint<object>))]
     [TestCase(typeof(NotNullConstraint<string>))]
+#pragma warning restore CS0618 // Type or member is obsolete
+    [TestCase(typeof(NotNullConstraint.NullableRef<object>))]
+    [TestCase(typeof(NotNullConstraint.NullableRef<string>))]
     [TestCase(typeof(NotNullAndNotEmptyCollectionConstraint))]
     [TestCase(typeof(NotNullAndNotEmptyCollectionConstraint<object>))]
     [TestCase(typeof(NotNullAndNotEmptyCollectionConstraint<string>))]

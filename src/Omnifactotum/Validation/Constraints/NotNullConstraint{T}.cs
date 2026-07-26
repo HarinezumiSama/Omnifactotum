@@ -1,16 +1,19 @@
-﻿using System.Collections.Immutable;
+﻿using System;
+using System.Collections.Immutable;
 using System.Diagnostics.CodeAnalysis;
 using static Omnifactotum.FormattableStringFactotum;
 
 namespace Omnifactotum.Validation.Constraints;
 
 /// <summary>
-///     Specifies that the annotated member should not be <see langword="null"/> or an uninitialized <see cref="ImmutableArray{T}"/>.
+///     [DEPRECATED] Specifies that the annotated member should not be <see langword="null"/> or an uninitialized <see cref="ImmutableArray{T}"/>.
 /// </summary>
 /// <typeparam name="T">
 ///     The type of the value to validate.
 /// </typeparam>
-/// <seealso cref="ImmutableArray{T}.IsDefault"/>
+[Obsolete(
+    $"Use '{nameof(NotNullConstraint)}.{nameof(NotNullConstraint.Ref<>)}<{nameof(T)}>' or '{
+        nameof(NotNullConstraint)}.{nameof(NotNullConstraint.NullableRef<>)}<{nameof(T)}>' instead.")]
 public sealed class NotNullConstraint<T> : TypedMemberConstraintBase<T?>
     where T : class
 {

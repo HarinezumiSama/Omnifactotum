@@ -65,7 +65,7 @@ internal sealed partial class ObjectValidatorTests
         // Making sure that an internal constructor is allowed for a member constraint
         [UsedImplicitly]
         internal MapContainerPropertiesPairConstraint()
-            : base(typeof(NotNullAndNotEmptyStringConstraint), typeof(NotNullConstraint<SimpleContainer<int?>>))
+            : base(typeof(NotNullAndNotEmptyStringConstraint), typeof(NotNullConstraint.Ref<SimpleContainer<int?>>))
         {
             // Nothing to do
         }

@@ -28,8 +28,8 @@ internal static class ValidationFactotum
 {
     private static readonly Dictionary<Type, Func<IMemberConstraint>> MemberConstraintFactoryMap = new();
 
-    private static readonly MethodInfo IsDefaultImmutableArrayMethodDefinition =
-        ((Expression<Func<ImmutableArray<object>, bool>>)(static obj => IsDefaultImmutableArray(obj)))
+    private static readonly MethodInfo InternalIsDefaultImmutableArrayMethodDefinition =
+        ((Expression<Func<ImmutableArray<object>, bool>>)(static obj => InternalIsDefaultImmutableArray(obj)))
         .GetLastMethod()
         .EnsureNotNull()
         .GetGenericMethodDefinition();
@@ -194,7 +194,7 @@ internal static class ValidationFactotum
 
     [Pure]
     [Omnifactotum.Annotations.Pure]
-    public static bool IsDefaultImmutableArray(object? value)
+    public static bool IsDefaultImmutableArray<T>(T value)
     {
         if (value is null)
         {
@@ -211,7 +211,7 @@ internal static class ValidationFactotum
         }
 
         var elementType = type.GetGenericArguments().Single();
-        var method = IsDefaultImmutableArrayMethodDefinition.MakeGenericMethod(elementType);
+        var method = InternalIsDefaultImmutableArrayMethodDefinition.MakeGenericMethod(elementType);
 
         var result = (bool)method.Invoke(null, [value]).EnsureNotNull();
         return result;
@@ -249,7 +249,7 @@ internal static class ValidationFactotum
     }
 
     [MethodImpl(OmnifactotumConstants.MethodOptimizationOptions.Standard)]
-    private static bool IsDefaultImmutableArray<T>(ImmutableArray<T> array) => array.IsDefault;
+    private static bool InternalIsDefaultImmutableArray<T>(ImmutableArray<T> array) => array.IsDefault;
 
     internal static class StringLengthConstraint
     {

@@ -28,7 +28,7 @@ internal sealed partial class ObjectValidatorTests
         [MemberItemConstraint(typeof(MapContainerPropertiesPairConstraint))]
         [MemberItemConstraint(typeof(CustomNotAbcStringMapKeyConstraint))]
         [MemberItemConstraint(
-            typeof(KeyValuePairConstraint<string, SimpleContainer<int?>?, NotAbcStringConstraint, NotNullConstraint<SimpleContainer<int?>>>))]
+            typeof(KeyValuePairConstraint<string, SimpleContainer<int?>, NotAbcStringConstraint, NotNullConstraint.Ref<SimpleContainer<int?>>>))]
         public IEnumerable<KeyValuePair<string, SimpleContainer<int?>>>? Properties
         {
             [UsedImplicitly]
@@ -113,7 +113,7 @@ internal sealed partial class ObjectValidatorTests
 
 #if NET7_0_OR_GREATER
         [MemberConstraint<NotNullConstraint>]
-        [MemberConstraint<NotNullConstraint<SimpleData>>]
+        [MemberConstraint<NotNullConstraint.NullableRef<SimpleData>>]
         public SimpleData? GenericMemberConstraintAttributeData
         {
             [UsedImplicitly]
@@ -233,7 +233,7 @@ internal sealed partial class ObjectValidatorTests
         }
 
         [MemberItemConstraint(typeof(NotNullConstraint))]
-        [MemberItemConstraint(typeof(NotNullConstraint<string>))]
+        [MemberItemConstraint(typeof(NotNullConstraint.Ref<string>))]
         public ImmutableArray<string> ImmutableStrings
         {
             [UsedImplicitly]
@@ -243,7 +243,7 @@ internal sealed partial class ObjectValidatorTests
 
         [MemberConstraint(typeof(NotNullConstraint))]
         [MemberItemConstraint(typeof(NotNullConstraint))]
-        [MemberItemConstraint(typeof(NotNullConstraint<string>))]
+        [MemberItemConstraint(typeof(NotNullConstraint.Ref<string>))]
         public ImmutableArray<string>? NullableImmutableStrings
         {
             [UsedImplicitly]
@@ -253,7 +253,7 @@ internal sealed partial class ObjectValidatorTests
 
         [MemberConstraint(typeof(NotNullConstraint))]
         [MemberItemConstraint(typeof(NotNullConstraint))]
-        [MemberItemConstraint(typeof(NotNullConstraint<string>))]
+        [MemberItemConstraint(typeof(NotNullConstraint.Ref<string>))]
         public ImmutableArray<string>? AnotherNullableImmutableStrings
         {
             [UsedImplicitly]
@@ -263,7 +263,7 @@ internal sealed partial class ObjectValidatorTests
 
         [MemberConstraint(typeof(NotNullConstraint))]
         [MemberItemConstraint(typeof(NotNullConstraint))]
-        [MemberItemConstraint(typeof(NotNullConstraint<string>))]
+        [MemberItemConstraint(typeof(NotNullConstraint.Ref<string>))]
         public IReadOnlyCollection<string>? NullableReadOnlyCollectionOfStrings
         {
             [UsedImplicitly]
@@ -273,7 +273,7 @@ internal sealed partial class ObjectValidatorTests
 
         [MemberConstraint(typeof(NotNullConstraint))]
         [MemberItemConstraint(typeof(NotNullConstraint))]
-        [MemberItemConstraint(typeof(NotNullConstraint<string>))]
+        [MemberItemConstraint(typeof(NotNullConstraint.Ref<string>))]
         public ObservableCollection<string>? NullableObservableCollectionOfStrings
         {
             [UsedImplicitly]

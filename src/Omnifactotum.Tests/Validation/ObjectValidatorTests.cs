@@ -249,7 +249,7 @@ internal sealed partial class ObjectValidatorTests
                 }
             },
             {
-                typeof(NotNullConstraint<string>),
+                typeof(NotNullConstraint.Ref<string>),
                 [
                     $"{InstanceExpression}.ContainedValue.AnotherNullableImmutableStrings.Value.Item[1]",
 #if NETFRAMEWORK
@@ -262,7 +262,7 @@ internal sealed partial class ObjectValidatorTests
             },
 #if NET7_0_OR_GREATER
             {
-                typeof(NotNullConstraint<SimpleData>),
+                typeof(NotNullConstraint.NullableRef<SimpleData>),
                 [
                     $"{InstanceExpression}.ContainedValue.GenericMemberConstraintAttributeData"
                 ]
