@@ -46,7 +46,7 @@ public abstract class MemberConstraintBase : IMemberConstraint
             };
 
     /// <summary>
-    ///     Validates the specified value is scope of the specified memberContext.
+    ///     Validates the specified value in scope of the specified memberContext.
     /// </summary>
     /// <param name="memberContext">
     ///     The context of the validated member.

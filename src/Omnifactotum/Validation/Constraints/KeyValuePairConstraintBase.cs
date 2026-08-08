@@ -46,7 +46,7 @@ public abstract class KeyValuePairConstraintBase<TKey, TValue> : TypedMemberCons
     protected Type ValueConstraintType { get; }
 
     /// <summary>
-    ///     Validates the specified strongly-typed value is scope of the specified context.
+    ///     Validates the specified strongly-typed value in scope of the specified context.
     /// </summary>
     /// <param name="memberContext">
     ///     The context of validation.

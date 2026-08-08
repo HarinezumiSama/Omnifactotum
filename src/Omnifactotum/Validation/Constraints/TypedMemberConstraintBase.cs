@@ -82,7 +82,7 @@ public abstract class TypedMemberConstraintBase<T> : MemberConstraintBase
     }
 
     /// <summary>
-    ///     Validates the specified strongly-typed value is scope of the specified memberContext.
+    ///     Validates the specified strongly-typed value in scope of the specified member context.
     /// </summary>
     /// <param name="memberContext">
     ///     The context of the validated member.

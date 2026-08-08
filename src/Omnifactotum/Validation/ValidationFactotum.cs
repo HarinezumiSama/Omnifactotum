@@ -1,10 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Collections.Immutable;
+using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using System.Linq.Expressions;
 using System.Reflection;
 using System.Runtime.CompilerServices;
+using Omnifactotum.Annotations;
 using Omnifactotum.Validation.Constraints;
 using static Omnifactotum.FormattableStringFactotum;
 using PureAttribute = System.Diagnostics.Contracts.PureAttribute;
@@ -202,6 +204,7 @@ internal static class ValidationFactotum
         var type = value.GetType();
 
         var isImmutableArray = type.IsConstructedGenericType && type.GetGenericTypeDefinition() == typeof(ImmutableArray<>);
+
         if (!isImmutableArray)
         {
             return false;
@@ -247,4 +250,39 @@ internal static class ValidationFactotum
 
     [MethodImpl(OmnifactotumConstants.MethodOptimizationOptions.Standard)]
     private static bool IsDefaultImmutableArray<T>(ImmutableArray<T> array) => array.IsDefault;
+
+    internal static class StringLengthConstraint
+    {
+        public static int ValidateLength(int length, [InvokerParameterName] string lengthName)
+            => length < 0
+                ? throw new ArgumentOutOfRangeException(lengthName, length, "The value must be greater than or equal to zero.")
+                : length;
+
+        public static void ValidateMinMaxLengths(
+            int minLength,
+            [InvokerParameterName] string minLengthName,
+            int maxLength,
+            [InvokerParameterName] string maxLengthName)
+        {
+            ValidateLength(minLength, minLengthName);
+            ValidateLength(maxLength, maxLengthName);
+
+            if (maxLength < minLength)
+            {
+                throw new ArgumentOutOfRangeException(
+                    maxLengthName,
+                    null,
+                    AsInvariant(
+                        $"'{maxLengthName}' must be greater than or equal to '{minLengthName}' ({
+                            minLengthName} = {minLength}, {maxLengthName} = {maxLength})."));
+            }
+        }
+
+        [SuppressMessage("ReSharper", "VariableLengthStringHexEscapeSequence")]
+        public static string GetActualValueDetails(string? value)
+        {
+            var valueDescription = value is null ? "is null" : AsInvariant($"length is {value.Length}");
+            return $"\x0020Actual value {valueDescription}.";
+        }
+    }
 }
